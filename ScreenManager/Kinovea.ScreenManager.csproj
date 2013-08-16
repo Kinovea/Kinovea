@@ -255,7 +255,13 @@
     <Compile Include="CoordinateSystem.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="IScreenManagerUIContainer.cs" />
+    <Compile Include="UserInterface\CommonControlsCapture.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\CommonControlsCapture.Designer.cs">
+      <DependentUpon>CommonControlsCapture.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\ICommonControlsManager.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
     <Compile Include="ManipulationType.cs" />
@@ -632,11 +638,11 @@
     <Compile Include="UserInterface\FormColorPicker.Designer.cs">
       <DependentUpon>FormColorPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\CommonControls.cs">
+    <Compile Include="UserInterface\CommonControlsPlayers.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserInterface\CommonControls.Designer.cs">
-      <DependentUpon>CommonControls.cs</DependentUpon>
+    <Compile Include="UserInterface\CommonControlsPlayers.Designer.cs">
+      <DependentUpon>CommonControlsPlayers.cs</DependentUpon>
     </Compile>
     <Compile Include="Languages\ScreenManagerLang.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -779,6 +785,10 @@
     <EmbeddedResource Include="Thumbnails\ThumbnailViewerFiles.resx">
       <DependentUpon>ThumbnailViewerFiles.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\CommonControlsCapture.resx">
+      <DependentUpon>CommonControlsCapture.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormColorPicker.resx">
       <DependentUpon>FormColorPicker.cs</DependentUpon>
     </EmbeddedResource>
@@ -808,9 +818,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UserInterface\CommonControls.resx">
+    <EmbeddedResource Include="UserInterface\CommonControlsPlayers.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>CommonControls.cs</DependentUpon>
+      <DependentUpon>CommonControlsPlayers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.es.resx">
       <SubType>Designer</SubType>

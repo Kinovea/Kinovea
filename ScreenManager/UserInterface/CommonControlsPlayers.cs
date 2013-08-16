@@ -1,3 +1,4 @@
+#region License
 /*
 Copyright © Joan Charmant 2008.
 joan.charmant@gmail.com 
@@ -17,24 +18,19 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
+#endregion
 
-using Kinovea.ScreenManager.Languages;
 using System;
-using System.ComponentModel;
 using System.Drawing;
-using System.Resources;
-using System.Threading;
 using System.Windows.Forms;
+using Kinovea.ScreenManager.Languages;
+using Kinovea.ScreenManager.Properties;
 
 namespace Kinovea.ScreenManager
 {
-    public partial class CommonControls : UserControl
+    public partial class CommonControlsPlayers : UserControl
     {
         #region Properties
-        public IScreenManagerUIContainer Controller
-        {
-            set { controller = value; }
-        }
         public bool Playing
         {
             get { return playing;  }
@@ -59,13 +55,13 @@ namespace Kinovea.ScreenManager
         private bool playing;
         private bool syncMerging;
         private long oldPosition;
-        private IScreenManagerUIContainer controller;
+        private ICommonControlsManager screenManager;
         private Button btnSnapShot = new Button();
         private Button btnDualVideo = new Button();
         #endregion
 
         #region Construction
-        public CommonControls()
+        public CommonControlsPlayers()
         {
             InitializeComponent();
             PostInit();
@@ -108,6 +104,10 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
+        public void SetManager(ICommonControlsManager screenManager)
+        {
+            this.screenManager = screenManager;
+        }
         public void RefreshUICulture()
         {
             // Labels
@@ -126,57 +126,13 @@ namespace Kinovea.ScreenManager
             
             RefreshMergeTooltip();
         }
-        public void First()
-        {
-            if(controller != null)
-            {
-                controller.CommonCtrl_GotoFirst();
-                trkFrame.Position = trkFrame.Minimum;
-                trkFrame.Invalidate();
-                PlayStopped();
-            }
-        }
-        public void Previous()
-        {
-            if(controller != null)
-            { 
-                controller.CommonCtrl_GotoPrev(); 
-                trkFrame.Position--;
-                trkFrame.Invalidate();
-            }
-        }
-        public void Play()
-        {
-            if(controller != null)
-            {
-                playing = !playing;
-                RefreshPlayButton();
-                controller.CommonCtrl_Play(); 
-            }
-        }
-        public void Next()
-        {
-            if(controller != null)
-            { 
-                controller.CommonCtrl_GotoNext(); 
-                trkFrame.Position++;
-                trkFrame.Invalidate();
-            }
-        }
-        public void Last()
-        {
-            if(controller != null)
-            {
-                controller.CommonCtrl_GotoLast(); 
-                trkFrame.Position = trkFrame.Maximum;
-                trkFrame.Invalidate();
-            }
-        }
+
         public void UpdateSyncPosition(long position)
         {
             trkFrame.UpdateSyncPointMarker(position);
             trkFrame.Invalidate();
         }
+
         public void SetupTrkFrame(long min, long max, long pos)
         {
             trkFrame.Minimum = min;
@@ -184,12 +140,60 @@ namespace Kinovea.ScreenManager
             trkFrame.Position = pos;
             trkFrame.Invalidate();
         }
+
         public void UpdateTrkFrame(long position)
         {
             trkFrame.Position = position;
             trkFrame.Invalidate();
         }
         #endregion
+
+        private void First()
+        {
+            if (screenManager == null)
+                return;
+
+            screenManager.CommonCtrl_GotoFirst();
+            trkFrame.Position = trkFrame.Minimum;
+            trkFrame.Invalidate();
+            PlayStopped();
+        }
+        private void Previous()
+        {
+            if (screenManager == null)
+                return;
+ 
+            screenManager.CommonCtrl_GotoPrev(); 
+            trkFrame.Position--;
+            trkFrame.Invalidate();
+        }
+        private void Play()
+        {
+            if (screenManager == null)
+                return;
+
+            playing = !playing;
+            RefreshPlayButton();
+            screenManager.CommonCtrl_PlayToggled(); 
+        }
+        private void Next()
+        {
+            if (screenManager == null)
+                return;
+ 
+            screenManager.CommonCtrl_GotoNext(); 
+            trkFrame.Position++;
+            trkFrame.Invalidate();
+        }
+        private void Last()
+        {
+            if (screenManager == null)
+                return;
+
+            screenManager.CommonCtrl_GotoLast(); 
+            trkFrame.Position = trkFrame.Maximum;
+            trkFrame.Invalidate();
+        }
         
         #region UI Handlers
         private void CommonControls_Resize(object sender, EventArgs e)
@@ -219,66 +223,57 @@ namespace Kinovea.ScreenManager
         }
         private void btnSwap_Click(object sender, EventArgs e)
         {
-            if(controller != null)
-                controller.CommonCtrl_Swap(); 
+            if(screenManager != null)
+                screenManager.CommonCtrl_Swap(); 
         }
         private void btnSync_Click(object sender, EventArgs e)
         {
-            if(controller != null)
-                controller.CommonCtrl_Sync(); 
+            if(screenManager != null)
+                screenManager.CommonCtrl_Sync(); 
         }
         private void btnMerge_Click(object sender, EventArgs e)
         {
-            if(controller != null)
+            if(screenManager != null)
             { 
                 syncMerging = !syncMerging;
-                controller.CommonCtrl_Merge();
+                screenManager.CommonCtrl_Merge();
                 RefreshMergeTooltip();
             }
         }
         private void btnSnapshot_Click(object sender, EventArgs e)
         {
-            if(controller != null)
-                controller.CommonCtrl_Snapshot();
+            if(screenManager != null)
+                screenManager.CommonCtrl_DualSnapshot();
         }
         private void btnDualVideo_Click(object sender, EventArgs e)
         {
-            if(controller != null)
-                controller.CommonCtrl_DualVideo();
+            if(screenManager != null)
+                screenManager.CommonCtrl_DualSave();
         }
         private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
         {
             if(e.Position != oldPosition)
             {
                 oldPosition = e.Position;
-                if(controller != null)
-                    controller.CommonCtrl_PositionChanged(e.Position); 
+                if(screenManager != null)
+                    screenManager.CommonCtrl_PositionChanged(e.Position); 
             }
         }
-        #endregion
-        
-        #region TrkFrame Handlers
-        
         #endregion
         
         #region Lower level helpers
         private void RefreshPlayButton()
         {
-            if (playing)
-                buttonPlay.Image = Kinovea.ScreenManager.Properties.Resources.liqpause6;
-            else
-                buttonPlay.Image = Kinovea.ScreenManager.Properties.Resources.liqplay17;
+            buttonPlay.Image = playing ? Resources.liqpause6 : Resources.liqplay17;
         }
         private void PlayStopped()
         {
-            buttonPlay.Image = Kinovea.ScreenManager.Properties.Resources.liqplay17;
+            buttonPlay.Image = Resources.liqplay17;
         }
         private void RefreshMergeTooltip()
         {
-            if(syncMerging)
-                toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_DisableMerge);
-            else
-                toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_EnableMerge);	
+            string text = syncMerging ? ScreenManagerLang.ToolTip_CommonCtrl_DisableMerge : ScreenManagerLang.ToolTip_CommonCtrl_EnableMerge;
+            toolTips.SetToolTip(btnMerge, text);
         }
         #endregion
     }

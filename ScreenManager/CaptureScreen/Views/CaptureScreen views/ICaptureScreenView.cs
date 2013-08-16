@@ -18,7 +18,6 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -26,6 +25,9 @@ namespace Kinovea.ScreenManager
 {
     public interface ICaptureScreenView
     {
+        string CurrentImageFilename { get; }
+        string CurrentVideoFilename { get; }
+
         void DisplayAsActiveScreen(bool active);
         void FullScreen(bool fullScreen);
         void RefreshUICulture();

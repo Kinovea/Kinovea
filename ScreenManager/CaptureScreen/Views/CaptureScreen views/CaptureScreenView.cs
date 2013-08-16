@@ -34,6 +34,16 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public partial class CaptureScreenView : KinoveaControl, ICaptureScreenView
     {
+        public string CurrentImageFilename
+        {
+            get { return fnbImage.Filename; }
+        }
+
+        public string CurrentVideoFilename
+        {
+            get { return fnbVideo.Filename; }
+        }
+
         #region Members
         private CaptureScreen presenter;
         private CapturedFilesView capturedFilesView;

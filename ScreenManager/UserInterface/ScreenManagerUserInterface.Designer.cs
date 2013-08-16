@@ -32,11 +32,9 @@ namespace Kinovea.ScreenManager
             this.pnlScreens = new System.Windows.Forms.Panel();
             this.splitScreensPanel = new System.Windows.Forms.SplitContainer();
             this.splitScreens = new System.Windows.Forms.SplitContainer();
-            this.commonControls = new Kinovea.ScreenManager.CommonControls();
             this.pbLogo = new System.Windows.Forms.PictureBox();
             this.pnlScreens.SuspendLayout();
             this.splitScreensPanel.Panel1.SuspendLayout();
-            this.splitScreensPanel.Panel2.SuspendLayout();
             this.splitScreensPanel.SuspendLayout();
             this.splitScreens.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).BeginInit();
@@ -70,7 +68,6 @@ namespace Kinovea.ScreenManager
             // splitScreensPanel.Panel2
             // 
             this.splitScreensPanel.Panel2.BackColor = System.Drawing.Color.White;
-            this.splitScreensPanel.Panel2.Controls.Add(this.commonControls);
             this.splitScreensPanel.Size = new System.Drawing.Size(574, 367);
             this.splitScreensPanel.SplitterDistance = 315;
             this.splitScreensPanel.TabIndex = 0;
@@ -96,18 +93,6 @@ namespace Kinovea.ScreenManager
             this.splitScreens.Size = new System.Drawing.Size(574, 315);
             this.splitScreens.SplitterDistance = 287;
             this.splitScreens.TabIndex = 0;
-            // 
-            // commonControls
-            // 
-            this.commonControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.commonControls.BackColor = System.Drawing.Color.White;
-            this.commonControls.Location = new System.Drawing.Point(0, 0);
-            this.commonControls.Name = "commonControls";
-            this.commonControls.Playing = false;
-            this.commonControls.Size = new System.Drawing.Size(545, 45);
-            this.commonControls.SyncMerging = false;
-            this.commonControls.TabIndex = 4;
             // 
             // pbLogo
             // 
@@ -138,7 +123,6 @@ namespace Kinovea.ScreenManager
             this.DoubleClick += new System.EventHandler(this.ScreenManagerUserInterface_DoubleClick);
             this.pnlScreens.ResumeLayout(false);
             this.splitScreensPanel.Panel1.ResumeLayout(false);
-            this.splitScreensPanel.Panel2.ResumeLayout(false);
             this.splitScreensPanel.ResumeLayout(false);
             this.splitScreens.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).EndInit();
@@ -152,7 +136,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.SplitContainer splitScreensPanel;
         private System.Windows.Forms.SplitContainer splitScreens;
         private System.Windows.Forms.Panel pnlScreens;
-        private Kinovea.ScreenManager.CommonControls commonControls;
 
     }
 }

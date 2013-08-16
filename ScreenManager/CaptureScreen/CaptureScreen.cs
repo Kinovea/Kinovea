@@ -141,13 +141,13 @@ namespace Kinovea.ScreenManager
             InitializeMetadata();
             
             view.SetToolbarView(drawingToolbarPresenter.View);
-            
+
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
             
             nonGrabbingInteractionTimer.Interval = 15;
             nonGrabbingInteractionTimer.Tick += NonGrabbingInteractionTimer_Tick;
         }
-        
+
         #region Public methods
         
         public void LoadCamera(CameraSummary summary)
@@ -179,6 +179,27 @@ namespace Kinovea.ScreenManager
         {
             this.shared = shared;
             UpdateMemory();
+        }
+
+        public void ForceGrabbingStatus(bool grab)
+        {
+            if (grabber == null || grabber.Grabbing == grab)
+                return;
+
+            ToggleGrabbing();
+        }
+
+        public void ForceRecordingStatus(bool record)
+        {
+            if (recording == record)
+                return;
+
+            ToggleRecording(view.CurrentVideoFilename);
+        }
+
+        public void PerformSnapshot()
+        {
+            MakeSnapshot(view.CurrentImageFilename);
         }
 
         #region AbstractScreen Implementation
@@ -238,6 +259,10 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Methods called from the view. These could also be events or commands.
+        public void View_SetAsActive()
+        {
+            OnActivated(EventArgs.Empty);
+        }
         public void View_Close()
         {
             OnCloseAsked(EventArgs.Empty);
@@ -257,18 +282,10 @@ namespace Kinovea.ScreenManager
         }
         public void View_ToggleGrabbing()
         {
-             if(grabber == null)
+            if(grabber == null)
                 return;
-                
-             if(grabber.Grabbing)
-             {
-                StopGrabber(true);
-                view.Toast(ScreenManagerLang.Toast_Pause, 750);
-             }
-             else
-             {
-                StartGrabber();
-             }
+
+            ToggleGrabbing();
         }
         public void View_DelayChanged(double value)
         {
@@ -288,13 +305,9 @@ namespace Kinovea.ScreenManager
         }
         public void View_ToggleRecording(string filename)
         {
-            if(recording)
-                StopRecording();
-            else
-                StartRecording(filename);
-            
-            view.UpdateRecordingStatus(recording);
+            ToggleRecording(filename);
         }
+        
         public void View_ValidateFilename(string filename)
         {
             bool allowEmpty = true;
@@ -339,13 +352,33 @@ namespace Kinovea.ScreenManager
                 UpdateBufferCapacity();
             }
         }
+        private void ToggleGrabbing()
+        {
+            if (grabber.Grabbing)
+            {
+                StopGrabber(true);
+                view.Toast(ScreenManagerLang.Toast_Pause, 750);
+            }
+            else
+            {
+                StartGrabber();
+            }
+        }
         private void Grabber_GrabbingStatusChanged(object sender, EventArgs e)
         {
             view.UpdateGrabbingStatus(grabber.Grabbing);
         }
         private void Grabber_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {
-            dummy.BeginInvoke((Action) delegate { ImageReceived(e.Image);});
+            try
+            {
+                dummy.BeginInvoke((Action)delegate { ImageReceived(e.Image); });
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("Begin invoke failed on dummy control.", ex.ToString());
+                dummy = new Control();
+            }
         }
         private void ImageReceived(Bitmap image)
         {
@@ -662,6 +695,15 @@ namespace Kinovea.ScreenManager
         
             DialogResult result = MessageBox.Show(msgText, msgTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             return result == DialogResult.Yes;
+        }
+        private void ToggleRecording(string filename)
+        {
+            if (recording)
+                StopRecording();
+            else
+                StartRecording(filename);
+
+            view.UpdateRecordingStatus(recording);
         }
         private void StartRecording(string filename)
         {
