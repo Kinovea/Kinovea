@@ -356,6 +356,11 @@ namespace Kinovea.ScreenManager
                 case ThumbnailViewerCameraCommands.LaunchSelected:
                     CameraTypeManager.LoadCamera(selectedThumbnail.Summary, -1);
                     break;
+                case ThumbnailViewerCameraCommands.Refresh:
+                    refreshImages = true;
+                    CameraTypeManager.DiscoverCameras();
+                    this.Focus();
+                    break;
                 default:
                     return base.ExecuteCommand(cmd);
             }
