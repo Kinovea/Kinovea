@@ -30,6 +30,7 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using System.Linq;
 
 using Kinovea.Camera;
 using Kinovea.ScreenManager.Languages;
@@ -39,7 +40,7 @@ using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {
-    public class ScreenManagerKernel : IKernel, IScreenHandler, IScreenManagerUIContainer
+    public class ScreenManagerKernel : IKernel, IScreenHandler, ICommonControlsManager
     {
         #region Properties
         public UserControl UI
@@ -70,6 +71,8 @@ namespace Kinovea.ScreenManager
         private bool cancelLastCommand;			// true when a RemoveScreen command was canceled by user.
 
         private List<AbstractScreen> screenList = new List<AbstractScreen>();
+        private IEnumerable<PlayerScreen> playerScreens;
+        private IEnumerable<CaptureScreen> captureScreens;
         private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
         
@@ -184,6 +187,9 @@ namespace Kinovea.ScreenManager
             svgFilesWatcher.Created += OnSVGFilesChanged;
             svgFilesWatcher.Deleted += OnSVGFilesChanged;
             svgFilesWatcher.Renamed += OnSVGFilesChanged;
+
+            playerScreens = screenList.Where(s => s is PlayerScreen).Select(s => s as PlayerScreen);
+            captureScreens = screenList.Where(s => s is CaptureScreen).Select(s => s as CaptureScreen);
         }
 
         private void InitializeVideoFilters()
@@ -196,6 +202,7 @@ namespace Kinovea.ScreenManager
             filterMenus.Add(CreateFilterMenu(new VideoFilterReverse()));
             //m_filterMenus.Add(CreateFilterMenu(new VideoFilterSandbox()));
         }
+
         private ToolStripMenuItem CreateFilterMenu(AbstractVideoFilter _filter)
         {
             // TODO: test if we can directly use a copy of the argument in the closure.
@@ -213,12 +220,14 @@ namespace Kinovea.ScreenManager
             };
             return menu;
         }
+
         public void SetInteractiveEffect(InteractiveEffect _effect)
         {
             PlayerScreen player = activeScreen as PlayerScreen;
             if(player != null)
                 player.SetInteractiveEffect(_effect);
         }
+        
         public void PrepareScreen()
         {
             // Prepare a screen to hold the command line argument file.
@@ -576,8 +585,8 @@ namespace Kinovea.ScreenManager
             // An individual player asks for a global pause.
             if (synching && view.CommonPlaying)
             {
-                view.CommonPlaying = false;
-                CommonCtrl_Play();
+                view.DisplayAsPaused();
+                CommonCtrl_PlayToggled();
             }
         }
         public void Player_SelectionChanged(PlayerScreen screen, bool initialization)
@@ -594,24 +603,19 @@ namespace Kinovea.ScreenManager
             
             // Transfer the caller's image to the other screen.
             // The image has been cloned and transformed in the caller screen.
-            if(syncMerging && image != null)
-            {
-                foreach (AbstractScreen s in screenList)
-                {
-                    if (s != screen && s is PlayerScreen)
-                        ((PlayerScreen)s).SetSyncMergeImage(image, !dualSaveInProgress);
-                }
-            }
+            if (!syncMerging || image == null)
+                return;
+           
+            foreach (PlayerScreen s in playerScreens)
+                s.SetSyncMergeImage(image, !dualSaveInProgress);
         }
         public void Player_SendImage(PlayerScreen screen, Bitmap image)
         {
             // An image was sent from a screen to be added as an observational reference in the other screen.
             // The image has been cloned and transformed in the caller screen.
-            for(int i=0;i<screenList.Count;i++)
-            {
-                if (screenList[i] != screen && screenList[i] is PlayerScreen)
-                    screenList[i].AddImageDrawing(image);
-            }			
+            foreach (PlayerScreen s in playerScreens)
+                if (s != screen)
+                    s.AddImageDrawing(image);
         }
         public void Player_Reset(PlayerScreen screen)
         {
@@ -621,149 +625,18 @@ namespace Kinovea.ScreenManager
         }
         public void Capture_FileSaved(CaptureScreen screen)
         {
-            // A file was saved in one screen, we need to update the text on the other.
-            for(int i=0;i<screenList.Count;i++)
-            {
-                if (screenList[i] != screen && screenList[i] is CaptureScreen)
-                    screenList[i].RefreshUICulture();
-            }
-        }
-        public void Capture_LoadVideo(CaptureScreen screen, string path)
-        {
-            // Launch a video in the other screen.
-            
-            if(screenList.Count == 1)
-            {
-                // Create the screen if necessary.
-                // The buffer of the capture screen will be reset during the operation.
-                DoLoadMovieInScreen(path, -1, true);
-            }
-            else if(screenList.Count == 2)
-            {
-                // Identify the other screen.
-                AbstractScreen otherScreen = null;
-                int iOtherScreenIndex = 0;
-                for(int i=0;i<screenList.Count;i++)
-                {
-                    if (screenList[i] != screen)
-                    {
-                        otherScreen = screenList[i];
-                        iOtherScreenIndex = i+1;
-                    }
-                }
-                
-                if(otherScreen is CaptureScreen)
-                {
-                    // Unload capture screen to play the video ?
-                }
-                else if(otherScreen is PlayerScreen)
-                {
-                    // Replace the video.
-                    DoLoadMovieInScreen(path, iOtherScreenIndex, true);
-                }
-            }
+            foreach (CaptureScreen s in captureScreens)
+                if (s != screen)
+                    s.RefreshUICulture();
         }
         #endregion
-        
-        #region ICommonControlsHandler Implementation
-        public void View_FileLoadAsked(object source, FileLoadAskedEventArgs e)
+
+        #region ICommonControlsManager Implementation
+        public void CommonCtrl_Swap()
         {
-            DoLoadMovieInScreen(e.Source, e.Target, true);
+            mnuSwapScreensOnClick(null, EventArgs.Empty);	
         }
-        public void CameraTypeManager_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
-        {
-            CameraTypeManager.StopDiscoveringCameras();
-            DoLoadCameraInScreen(e.Source, e.Target);
-        }
-        public void CommonCtrl_GotoFirst()
-        {
-            DoStopPlaying();
-            
-            if (synching)
-            {
-                currentFrame = 0;
-                OnCommonPositionChanged(currentFrame, true);
-                view.UpdateTrkFrame(currentFrame);
-                
-            }
-            else
-            {
-                // Ask global GotoFirst.
-                foreach (AbstractScreen screen in screenList)
-                {
-                    if (screen is PlayerScreen)
-                        ((PlayerScreen)screen).view.buttonGotoFirst_Click(null, EventArgs.Empty);
-                }
-            }	
-        }
-        public void CommonCtrl_GotoPrev()
-        {
-            DoStopPlaying();
-            
-            if (synching)
-            {
-                if (currentFrame > 0)
-                {
-                    currentFrame--;
-                    OnCommonPositionChanged(currentFrame, true);
-                    view.UpdateTrkFrame(currentFrame);
-                }
-            }
-            else
-            {
-                // Ask global GotoPrev.
-                foreach (AbstractScreen screen in screenList)
-                {
-                    if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                        ((PlayerScreen)screen).view.buttonGotoPrevious_Click(null, EventArgs.Empty);
-                }
-            }	
-        }
-        public void CommonCtrl_GotoNext()
-        {
-            DoStopPlaying();
-            
-            if (synching)
-            {
-                if (currentFrame < maxFrame)
-                {
-                    currentFrame++;
-                    OnCommonPositionChanged(-1, true);
-                    view.UpdateTrkFrame(currentFrame);
-                }
-            }
-            else
-            {
-                // Ask global GotoNext.
-                foreach (AbstractScreen screen in screenList)
-                {
-                    if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                        ((PlayerScreen)screen).view.buttonGotoNext_Click(null, EventArgs.Empty);
-                }
-            }	
-        }
-        public void CommonCtrl_GotoLast()
-        {
-            DoStopPlaying();
-            
-            if (synching)
-            {
-                currentFrame = maxFrame;
-                OnCommonPositionChanged(currentFrame, true);
-                view.UpdateTrkFrame(currentFrame);
-                
-            }
-            else
-            {
-                // Demander un GotoLast à tout le monde
-                foreach (AbstractScreen screen in screenList)
-                {
-                    if (screen is PlayerScreen)
-                        ((PlayerScreen)screen).view.buttonGotoLast_Click(null, EventArgs.Empty);
-                }
-            }	
-        }
-        public void CommonCtrl_Play()
+        public void CommonCtrl_PlayToggled()
         {
             if (synching)
             {
@@ -791,9 +664,76 @@ namespace Kinovea.ScreenManager
                     EnsurePause(1);
             }
         }
-        public void CommonCtrl_Swap()
+        public void CommonCtrl_GotoFirst()
         {
-            mnuSwapScreensOnClick(null, EventArgs.Empty);	
+            DoStopPlaying();
+            
+            if (synching)
+            {
+                currentFrame = 0;
+                OnCommonPositionChanged(currentFrame, true);
+                view.UpdateTrkFrame(currentFrame);
+            }
+            else
+            {
+                foreach (PlayerScreen screen in playerScreens)
+                    screen.view.buttonGotoFirst_Click(this, EventArgs.Empty);
+            }	
+        }
+        public void CommonCtrl_GotoPrev()
+        {
+            DoStopPlaying();
+            
+            if (synching)
+            {
+                if (currentFrame > 0)
+                {
+                    currentFrame--;
+                    OnCommonPositionChanged(currentFrame, true);
+                    view.UpdateTrkFrame(currentFrame);
+                }
+            }
+            else
+            {
+                foreach (PlayerScreen screen in playerScreens)
+                    screen.view.buttonGotoPrevious_Click(this, EventArgs.Empty);
+            }	
+        }
+        public void CommonCtrl_GotoNext()
+        {
+            DoStopPlaying();
+            
+            if (synching)
+            {
+                if (currentFrame < maxFrame)
+                {
+                    currentFrame++;
+                    OnCommonPositionChanged(-1, true);
+                    view.UpdateTrkFrame(currentFrame);
+                }
+            }
+            else
+            {
+                foreach (PlayerScreen player in playerScreens)
+                    player.view.buttonGotoNext_Click(this, EventArgs.Empty);
+            }	
+        }
+        public void CommonCtrl_GotoLast()
+        {
+            DoStopPlaying();
+            
+            if (synching)
+            {
+                currentFrame = maxFrame;
+                OnCommonPositionChanged(currentFrame, true);
+                view.UpdateTrkFrame(currentFrame);
+                
+            }
+            else
+            {
+                foreach (PlayerScreen player in playerScreens)
+                    player.view.buttonGotoLast_Click(this, EventArgs.Empty);
+            }	
         }
         public void CommonCtrl_Sync()
         {
@@ -833,45 +773,7 @@ namespace Kinovea.ScreenManager
             currentFrame = _iPosition;
             OnCommonPositionChanged(currentFrame, true);
         }
-    
-        public void CommonCtrl_Snapshot()
-        {
-            // Retrieve current images and create a composite out of them.
-            if (!synching || screenList.Count != 2)
-                return;
-        
-            PlayerScreen ps1 = screenList[0] as PlayerScreen;
-            PlayerScreen ps2 = screenList[1] as PlayerScreen;
-            if (ps1 == null || ps2 == null)
-                return;
-            
-            DoStopPlaying();
-                
-            // get a copy of the images with drawings flushed on.
-            Bitmap leftImage = ps1.GetFlushedImage();
-            Bitmap rightImage = ps2.GetFlushedImage();
-            Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
-                
-            // Configure Save dialog.
-            SaveFileDialog dlgSave = new SaveFileDialog();
-            dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
-            dlgSave.RestoreDirectory = true;
-            dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
-            dlgSave.FilterIndex = 1;
-            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
-                
-            // Launch the dialog and save image.
-            if (dlgSave.ShowDialog() == DialogResult.OK)
-                ImageHelper.Save(dlgSave.FileName, composite);
-
-            composite.Dispose();
-            leftImage.Dispose();
-            rightImage.Dispose();
-                
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
-        }
-    
-        public void CommonCtrl_DualVideo()
+        public void CommonCtrl_DualSave()
         {
             // Create and save a composite video with side by side synchronized images.
             // If merge is active, just save one video.
@@ -931,6 +833,58 @@ namespace Kinovea.ScreenManager
             currentFrame = iCurrentFrame;
             OnCommonPositionChanged(currentFrame, true);
         }
+        public void CommonCtrl_DualSnapshot()
+        {
+            // Retrieve current images and create a composite out of them.
+            if (!synching || screenList.Count != 2)
+                return;
+        
+            PlayerScreen ps1 = screenList[0] as PlayerScreen;
+            PlayerScreen ps2 = screenList[1] as PlayerScreen;
+            if (ps1 == null || ps2 == null)
+                return;
+            
+            DoStopPlaying();
+                
+            // get a copy of the images with drawings flushed on.
+            Bitmap leftImage = ps1.GetFlushedImage();
+            Bitmap rightImage = ps2.GetFlushedImage();
+            Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
+                
+            // Configure Save dialog.
+            SaveFileDialog dlgSave = new SaveFileDialog();
+            dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
+            dlgSave.RestoreDirectory = true;
+            dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
+            dlgSave.FilterIndex = 1;
+            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
+                
+            // Launch the dialog and save image.
+            if (dlgSave.ShowDialog() == DialogResult.OK)
+                ImageHelper.Save(dlgSave.FileName, composite);
+
+            composite.Dispose();
+            leftImage.Dispose();
+            rightImage.Dispose();
+                
+            NotificationCenter.RaiseRefreshFileExplorer(this, false);
+        }
+
+        public void CommonCtrl_GrabbingChanged(bool grab)
+        {
+            foreach (CaptureScreen screen in captureScreens)
+                screen.ForceGrabbingStatus(grab);
+        }
+        public void CommonCtrl_Snapshot()
+        {
+            foreach (CaptureScreen screen in captureScreens)
+                screen.PerformSnapshot();
+        }
+        public void CommonCtrl_RecordingChanged(bool record)
+        {
+            foreach (CaptureScreen screen in captureScreens)
+                screen.ForceRecordingStatus(record);
+        }
         #endregion
         
         #region Public Methods
@@ -970,17 +924,17 @@ namespace Kinovea.ScreenManager
         }
         public void RemoveFirstEmpty(bool storeState)
         {
-            for(int i=0;i<screenList.Count;i++)
+            foreach (AbstractScreen screen in screenList)
             {
-                if(screenList[i].Full)
+                if (screen.Full)
                     continue;
-                
+
                 // We store the current state now.
                 // (We don't store it at construction time to handle the redo case better)
-                if (storeState) 
+                if (storeState)
                     StoreCurrentState();
-                
-                RemoveScreen(screenList[i]);
+
+                RemoveScreen(screen);
                 break;
             }
             
@@ -1044,21 +998,25 @@ namespace Kinovea.ScreenManager
         }
         public void OrganizeCommonControls()
         {
-            bool show = screenList.Count == 2 && screenList[0] is PlayerScreen && screenList[1] is PlayerScreen;
-            view.ShowCommonControls(show);
-            canShowCommonControls = show;
+            if (screenList.Count == 2)
+            {
+                Pair<Type, Type> types = new Pair<Type, Type>(screenList[0].GetType(), screenList[1].GetType());
+                bool show = types.First == types.Second;
+                view.ShowCommonControls(show, types);
+                canShowCommonControls = show;
+            }
+            else
+            {
+                view.ShowCommonControls(false, null);
+                canShowCommonControls = false;
+            }
         }
         public void UpdateCaptureBuffers()
         {
             // The screen list has changed and involve capture screens.
             // Update their shared state to trigger a memory buffer reset.
-            bool shared = screenList.Count == 2;
-            foreach(AbstractScreen screen in screenList)
-            {
-                CaptureScreen capScreen = screen as CaptureScreen;
-                if(capScreen != null)
-                    capScreen.SetShared(shared);
-            }
+            foreach (CaptureScreen screen in captureScreens)
+                screen.SetShared(screenList.Count == 2);
         }
         public void FullScreen(bool fullScreen)
         {
@@ -2366,6 +2324,7 @@ namespace Kinovea.ScreenManager
         {
             DoLoadMovieInScreen(e.Path, e.Target, false);
         }
+        
         private void DoLoadMovieInScreen(string path, int forcedScreen, bool storeState)
         {
             if(!File.Exists(path))
@@ -2392,12 +2351,22 @@ namespace Kinovea.ScreenManager
         
         public void DoStopPlaying()
         {
-            foreach (AbstractScreen screen in screenList)
-                if (screen is PlayerScreen)
-                    ((PlayerScreen)screen).StopPlaying();
-
+            foreach (PlayerScreen player in playerScreens)
+                player.StopPlaying();
+            
             StopDynamicSync();
             view.DisplayAsPaused();
+        }
+
+        private void View_FileLoadAsked(object source, FileLoadAskedEventArgs e)
+        {
+            DoLoadMovieInScreen(e.Source, e.Target, true);
+        }
+
+        private void CameraTypeManager_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
+        {
+            CameraTypeManager.StopDiscoveringCameras();
+            DoLoadCameraInScreen(e.Source, e.Target);
         }
         #endregion
 

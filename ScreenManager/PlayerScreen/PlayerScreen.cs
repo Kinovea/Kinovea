@@ -168,7 +168,13 @@ namespace Kinovea.ScreenManager
         public long Position
         {
             // Used to feed SyncPosition. 
-            get { return frameServer.VideoReader.Current.Timestamp - frameServer.VideoReader.Info.FirstTimeStamp; }
+            get 
+            {
+                if (frameServer.VideoReader.Current == null)
+                    return 0;
+
+                return frameServer.VideoReader.Current.Timestamp - frameServer.VideoReader.Info.FirstTimeStamp; 
+            }
         }
         public bool SyncMerge
         {

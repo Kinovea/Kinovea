@@ -1,6 +1,6 @@
 namespace Kinovea.ScreenManager
 {
-    partial class CommonControls
+    partial class CommonControlsPlayers
     {
         /// <summary> 
         /// Required designer variable.
@@ -168,8 +168,8 @@ namespace Kinovea.ScreenManager
             // 
             // trkFrame
             // 
-            this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.trkFrame.Cursor = System.Windows.Forms.Cursors.Hand;
             this.trkFrame.Location = new System.Drawing.Point(383, 13);
             this.trkFrame.Maximum = ((long)(0));
@@ -200,10 +200,11 @@ namespace Kinovea.ScreenManager
             this.btnMerge.UseVisualStyleBackColor = false;
             this.btnMerge.Click += new System.EventHandler(this.btnMerge_Click);
             // 
-            // CommonControls
+            // CommonControlsPlayers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.btnMerge);
             this.Controls.Add(this.trkFrame);
             this.Controls.Add(this.btnSync);
@@ -214,11 +215,12 @@ namespace Kinovea.ScreenManager
             this.Controls.Add(this.buttonGotoNext);
             this.Controls.Add(this.buttonGotoLast);
             this.Controls.Add(this.buttonPlay);
-            this.Name = "CommonControls";
+            this.Name = "CommonControlsPlayers";
             this.Size = new System.Drawing.Size(665, 45);
             this.Resize += new System.EventHandler(this.CommonControls_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
         private System.Windows.Forms.Button btnMerge;
 
