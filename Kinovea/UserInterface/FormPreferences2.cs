@@ -46,14 +46,16 @@ namespace Kinovea.Root
         #endregion
         
         #region Construction and Initialization
-        public FormPreferences2(int initPage)
+        public FormPreferences2()
         {
             InitializeComponent();
             
             this.Text = "   " + RootLang.dlgPreferences_Title;
             btnSave.Text = RootLang.Generic_Save;
             btnCancel.Text = RootLang.Generic_Cancel;
-            
+
+            int initPage = PreferencesManager.GeneralPreferences.PreferencesTab;
+
             ImportPages();
             DisplayPage(initPage);
         }
@@ -118,6 +120,7 @@ namespace Kinovea.Root
         }
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            PreferencesManager.Save();
             Close();
         }
         #endregion
@@ -156,10 +159,13 @@ namespace Kinovea.Root
         }
         private void LoadPage(PreferencePanelButtton button)
         {
-            foreach(IPreferencePanel prefPanel in pages)
+            for (int i = 0; i < pages.Count; i++)
             {
-                prefPanel.Visible = (prefPanel == button.PreferencePanel);
-            }			
+                if (button.PreferencePanel == pages[i])
+                    PreferencesManager.GeneralPreferences.PreferencesTab = i;
+
+                pages[i].Visible = (pages[i] == button.PreferencePanel);
+            }
         }
         #endregion
     }
