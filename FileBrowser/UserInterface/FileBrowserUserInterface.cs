@@ -614,7 +614,7 @@ namespace Kinovea.FileBrowser
             {
                 ListViewItem lvi = new ListViewItem(Path.GetFileName(filename));
                 lvi.Tag = filename;
-                lvi.ImageIndex = 6;
+                lvi.ImageIndex = 3;
                 listView.Items.Add(lvi);
             }
             

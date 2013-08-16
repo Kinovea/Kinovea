@@ -264,11 +264,11 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void RefreshPlayButton()
         {
-            buttonPlay.Image = playing ? Resources.liqpause6 : Resources.liqplay17;
+            buttonPlay.Image = playing ? Resources.flatpause3b : Player.flatplay;
         }
         private void PlayStopped()
         {
-            buttonPlay.Image = Resources.liqplay17;
+            buttonPlay.Image = Player.flatplay;
         }
         private void RefreshMergeTooltip()
         {
