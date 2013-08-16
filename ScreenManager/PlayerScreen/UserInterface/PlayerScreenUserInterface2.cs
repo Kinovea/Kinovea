@@ -3435,75 +3435,65 @@ namespace Kinovea.ScreenManager
         }
         private void GotoNextKeyframe()
         {
-            if (m_FrameServer.Metadata.Count > 1)
+            if (m_FrameServer.Metadata.Count == 0)
+                return;
+            
+            int next = -1;
+            for (int i = 0; i < m_FrameServer.Metadata.Count; i++)
             {
-                int iNextKeyframe = -1;
-                for (int i = 0; i < m_FrameServer.Metadata.Count; i++)
+                if (m_iCurrentPosition < m_FrameServer.Metadata[i].Position)
                 {
-                    if (m_iCurrentPosition < m_FrameServer.Metadata[i].Position)
-                    {
-                        iNextKeyframe = i;
-                        break;
-                    }
+                    next = i;
+                    break;
                 }
-
-                if (iNextKeyframe >= 0 && m_FrameServer.Metadata[iNextKeyframe].Position <= m_iSelEnd)
-                {
-                    ThumbBoxClick(thumbnails[iNextKeyframe], EventArgs.Empty);
-                }
-                
             }
+
+            if (next >= 0 && m_FrameServer.Metadata[next].Position <= m_iSelEnd)
+                ThumbBoxClick(thumbnails[next], EventArgs.Empty);
         }
         private void GotoPreviousKeyframe()
         {
-            if (m_FrameServer.Metadata.Count > 0)
+            if (m_FrameServer.Metadata.Count == 0)
+                return;
+            
+            int prev = -1;
+            for (int i = m_FrameServer.Metadata.Count - 1; i >= 0; i--)
             {
-                int iPrevKeyframe = -1;
-                for (int i = m_FrameServer.Metadata.Count - 1; i >= 0; i--)
+                if (m_iCurrentPosition > m_FrameServer.Metadata[i].Position)
                 {
-                    if (m_iCurrentPosition > m_FrameServer.Metadata[i].Position)
-                    {
-                        iPrevKeyframe = i;
-                        break;
-                    }
+                    prev = i;
+                    break;
                 }
-
-                if (iPrevKeyframe >= 0 && m_FrameServer.Metadata[iPrevKeyframe].Position >= m_iSelStart)
-                {
-                    ThumbBoxClick(thumbnails[iPrevKeyframe], EventArgs.Empty);
-                }
-
             }
+
+            if (prev >= 0 && m_FrameServer.Metadata[prev].Position >= m_iSelStart)
+                ThumbBoxClick(thumbnails[prev], EventArgs.Empty);
         }
 
         private void AddKeyframe()
         {
             int i = 0;
-            // Check if it's not already registered.
-            bool bAlreadyKeyFrame = false;
+            bool alreadyAKeyFrame = false;
             for (i = 0; i < m_FrameServer.Metadata.Count; i++)
             {
                 if (m_FrameServer.Metadata[i].Position == m_iCurrentPosition)
                 {
-                    bAlreadyKeyFrame = true;
+                    alreadyAKeyFrame = true;
                     m_iActiveKeyFrameIndex = i;
                 }
             }
 
-            // Add it to the list.
-            if (!bAlreadyKeyFrame)
-            {
-                IUndoableCommand cak = new CommandAddKeyframe(this, m_FrameServer.Metadata, m_iCurrentPosition);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(cak);
+            if (alreadyAKeyFrame)
+                return;
+            
+            IUndoableCommand cak = new CommandAddKeyframe(this, m_FrameServer.Metadata, m_iCurrentPosition);
+            CommandManager cm = CommandManager.Instance();
+            cm.LaunchUndoableCommand(cak);
                 
-                // If it is the very first key frame, we raise the KF panel.
-                // Otherwise we keep whatever choice the user made.
-                if(m_FrameServer.Metadata.Count == 1)
-                {
-                    DockKeyframePanel(false);
-                }
-            }
+            // If it is the very first key frame, we raise the KF panel.
+            // Otherwise we keep whatever choice the user made.
+            if(m_FrameServer.Metadata.Count == 1)
+                DockKeyframePanel(false);
         }
         public void OnAddKeyframe(long _iPosition)
         {
