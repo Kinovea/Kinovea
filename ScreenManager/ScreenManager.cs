@@ -318,7 +318,7 @@ namespace Kinovea.ScreenManager
             mnuTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
             mnuTwoMixed.MergeAction = MergeAction.Append;
                         
-            mnuSwapScreens.Image = Properties.Resources.arrow_swap;
+            mnuSwapScreens.Image = Properties.Resources.flatswap3d;
             mnuSwapScreens.Enabled = false;
             mnuSwapScreens.Click += new EventHandler(mnuSwapScreensOnClick);
             mnuSwapScreens.MergeAction = MergeAction.Append;
@@ -737,7 +737,7 @@ namespace Kinovea.ScreenManager
         }
         public void CommonCtrl_Sync()
         {
-            if (synching && screenList.Count != 2)
+            if (!synching || screenList.Count != 2)
                 return;
             
             log.Debug("Sync point change.");

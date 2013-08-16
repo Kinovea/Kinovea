@@ -31,10 +31,10 @@ namespace Kinovea.ScreenManager
             this.components = new System.ComponentModel.Container();
             this.lblInfo = new System.Windows.Forms.Label();
             this.toolTips = new System.Windows.Forms.ToolTip(this.components);
-            this.btnSwap = new System.Windows.Forms.Button();
             this.btnGrab = new System.Windows.Forms.Button();
             this.btnRecord = new System.Windows.Forms.Button();
             this.btnSnapshot = new System.Windows.Forms.Button();
+            this.btnSwap = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblInfo
@@ -46,23 +46,6 @@ namespace Kinovea.ScreenManager
             this.lblInfo.Size = new System.Drawing.Size(78, 12);
             this.lblInfo.TabIndex = 10;
             this.lblInfo.Text = "Common controls";
-            // 
-            // btnSwap
-            // 
-            this.btnSwap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnSwap.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSwap.FlatAppearance.BorderSize = 0;
-            this.btnSwap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnSwap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSwap.Image = global::Kinovea.ScreenManager.Properties.Resources.swap4;
-            this.btnSwap.Location = new System.Drawing.Point(198, 8);
-            this.btnSwap.Margin = new System.Windows.Forms.Padding(0);
-            this.btnSwap.MinimumSize = new System.Drawing.Size(25, 25);
-            this.btnSwap.Name = "btnSwap";
-            this.btnSwap.Size = new System.Drawing.Size(25, 25);
-            this.btnSwap.TabIndex = 11;
-            this.btnSwap.UseVisualStyleBackColor = true;
-            this.btnSwap.Click += new System.EventHandler(this.btnSwap_Click);
             // 
             // btnGrab
             // 
@@ -118,6 +101,23 @@ namespace Kinovea.ScreenManager
             this.btnSnapshot.Tag = "";
             this.btnSnapshot.UseVisualStyleBackColor = false;
             this.btnSnapshot.Click += new System.EventHandler(this.btnSnapshot_Click);
+            // 
+            // btnSwap
+            // 
+            this.btnSwap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnSwap.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSwap.FlatAppearance.BorderSize = 0;
+            this.btnSwap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnSwap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSwap.Image = global::Kinovea.ScreenManager.Properties.Resources.flatswap3d;
+            this.btnSwap.Location = new System.Drawing.Point(198, 8);
+            this.btnSwap.Margin = new System.Windows.Forms.Padding(0);
+            this.btnSwap.MinimumSize = new System.Drawing.Size(18, 18);
+            this.btnSwap.Name = "btnSwap";
+            this.btnSwap.Size = new System.Drawing.Size(25, 25);
+            this.btnSwap.TabIndex = 11;
+            this.btnSwap.UseVisualStyleBackColor = true;
+            this.btnSwap.Click += new System.EventHandler(this.btnSwap_Click);
             // 
             // CommonControlsCapture
             // 

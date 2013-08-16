@@ -255,6 +255,11 @@
     <Compile Include="CoordinateSystem.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Properties\Player.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Player.resx</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\CommonControlsCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -705,6 +710,10 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
+    <EmbeddedResource Include="Properties\Player.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Player.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\Controls\FrameTracker.resx">
       <DependentUpon>FrameTracker.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -922,6 +931,90 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\clipboard-block.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\play2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\play3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\end.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\next.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\prev.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\start.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatplay40x30.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatnext.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatprev.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatend.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatstart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatend2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatnext2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatprev2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatstart2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatend3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatnext3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatprev3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatstart3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatloop3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatswap3b.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatsync3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatpause3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatpause3b.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatswap3d.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flatsync3c.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\camera_video.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

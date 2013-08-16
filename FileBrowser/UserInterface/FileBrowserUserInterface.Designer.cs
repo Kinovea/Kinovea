@@ -169,13 +169,10 @@ namespace Kinovea.FileBrowser
             // 
             this.imgListFiles.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListFiles.ImageStream")));
             this.imgListFiles.TransparentColor = System.Drawing.Color.Transparent;
-            this.imgListFiles.Images.SetKeyName(0, "film.png");
-            this.imgListFiles.Images.SetKeyName(1, "media-playback-start.png");
-            this.imgListFiles.Images.SetKeyName(2, "video-x-generic.png");
-            this.imgListFiles.Images.SetKeyName(3, "film.jpg");
-            this.imgListFiles.Images.SetKeyName(4, "bullet_yellow.jpg");
-            this.imgListFiles.Images.SetKeyName(5, "bullet_blue.jpg");
-            this.imgListFiles.Images.SetKeyName(6, "bullet_blue2.jpg");
+            this.imgListFiles.Images.SetKeyName(0, "bullet_yellow.jpg");
+            this.imgListFiles.Images.SetKeyName(1, "bullet_blue.jpg");
+            this.imgListFiles.Images.SetKeyName(2, "bullet_blue2.jpg");
+            this.imgListFiles.Images.SetKeyName(3, "bulletfile.png");
             // 
             // lblVideoFiles
             // 

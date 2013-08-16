@@ -149,7 +149,7 @@ namespace Kinovea.ScreenManager
                         m_SyncMergeImage.Dispose();
                 }
                 
-                buttonPlayingMode.Enabled = !m_bSynched;
+                btnPlayingMode.Enabled = !m_bSynched;
             }
         }
         public long SelectionDuration
@@ -385,7 +385,7 @@ namespace Kinovea.ScreenManager
             EnableDisableAllPlayingControls(true);
             EnableDisableDrawingTools(true);
             EnableDisableSnapshot(true);
-            buttonPlay.Image = Resources.liqplay17;
+            buttonPlay.Image = Player.flatplay;
             sldrSpeed.Value = 100;
             sldrSpeed.Enabled = false;
             lblFileName.Text = "";
@@ -1494,14 +1494,14 @@ namespace Kinovea.ScreenManager
                     // Go into Pause mode.
                     StopPlaying();
                     m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-                    buttonPlay.Image = Resources.liqplay17;
+                    buttonPlay.Image = Player.flatplay;
                     ActivateKeyframe(m_iCurrentPosition);
                     ToastPause();
                 }
                 else
                 {
                     // Go into Play mode
-                    buttonPlay.Image = Resources.liqpause6;
+                    buttonPlay.Image = Resources.flatpause3b;
                     StartMultimediaTimer((int)GetPlaybackFrameInterval());
                 }
             }
@@ -1888,13 +1888,13 @@ namespace Kinovea.ScreenManager
         {
             if (m_ePlayingMode == PlayingMode.Once)
             {
-                buttonPlayingMode.Image = Resources.playmodeonce;
-                toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Once);		
+                btnPlayingMode.Image = Resources.playmodeonce;
+                toolTips.SetToolTip(btnPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Once);		
             }
             else if(m_ePlayingMode == PlayingMode.Loop)
             {
-                buttonPlayingMode.Image = Resources.playmodeloop;
-                toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Loop);	
+                btnPlayingMode.Image = Resources.playmodeloop;
+                toolTips.SetToolTip(btnPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Loop);	
             }
         }
         #endregion
@@ -2319,7 +2319,7 @@ namespace Kinovea.ScreenManager
             
             if (_bAllowUIUpdate)
             {
-                buttonPlay.Image = Resources.liqplay17;
+                buttonPlay.Image = Player.flatplay;
                 DoInvalidate();
                 UpdatePositionUI();
             }
@@ -2452,11 +2452,11 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(buttonGotoLast, ScreenManagerLang.ToolTip_Last);
             if (m_ePlayingMode == PlayingMode.Once)
             {
-                toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Once);
+                toolTips.SetToolTip(btnPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Once);
             }
             else
             {
-                toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Loop);
+                toolTips.SetToolTip(btnPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Loop);
             }
             
             // Export buttons
@@ -4282,7 +4282,7 @@ namespace Kinovea.ScreenManager
             buttonGotoNext.Enabled = _bEnable;
             buttonGotoPrevious.Enabled = _bEnable;
             buttonPlay.Enabled = _bEnable;
-            buttonPlayingMode.Enabled = _bEnable;
+            btnPlayingMode.Enabled = _bEnable;
             
             lblSpeedTuner.Enabled = _bEnable;
             trkFrame.EnableDisable(_bEnable);
