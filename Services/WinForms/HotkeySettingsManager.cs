@@ -110,7 +110,8 @@ namespace Kinovea.Services
                 },
                 { "ThumbnailViewerCamera", new HotkeyCommand[]{
                     hk(ThumbnailViewerCameraCommands.LaunchSelected, Keys.Enter), 
-                    hk(ThumbnailViewerCameraCommands.RenameSelected, Keys.F2)
+                    hk(ThumbnailViewerCameraCommands.RenameSelected, Keys.F2),
+                    hk(ThumbnailViewerCameraCommands.Refresh, Keys.F5)
                     }
                 },
                 { "PlayerScreen", new HotkeyCommand[]{

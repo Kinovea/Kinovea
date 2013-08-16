@@ -24,6 +24,7 @@ namespace Kinovea.Services
     {
         RenameSelected,
         LaunchSelected,
+        Refresh
     }
 
     public enum ThumbnailViewerContainerCommands
