@@ -52,6 +52,8 @@ namespace Kinovea.ScreenManager
         public CaptureScreenView(CaptureScreen presenter)
         {
             InitializeComponent();
+            lblCameraTitle.Text = "";
+            lblCameraInfo.Text = "";
             this.presenter = presenter;
             ToggleCapturedVideosPanel();
             sldrDelay.ValueChanged += SldrDelay_ValueChanged;
