@@ -527,7 +527,7 @@ namespace Kinovea.Root
         }
         private void mnuPreferencesOnClick(object sender, EventArgs e)
         {
-            FormPreferences2 fp = new FormPreferences2(-1);
+            FormPreferences2 fp = new FormPreferences2();
             fp.ShowDialog();
             fp.Dispose();
             
