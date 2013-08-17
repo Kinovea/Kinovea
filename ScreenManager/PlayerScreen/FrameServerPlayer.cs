@@ -153,6 +153,9 @@ namespace Kinovea.ScreenManager
                             false,
                             false,
                             _DelegateOutputBitmap);
+
+                    PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(fve.Filename);
+                    PreferencesManager.Save();
                 }
             }
             
