@@ -27,6 +27,7 @@ using System.Threading;
 using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -202,18 +203,14 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgSaveVideoTitle;
             saveFileDialog.InitialDirectory = Path.GetDirectoryName(m_OriginalFilename);
-            saveFileDialog.FilterIndex = 1;
             saveFileDialog.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
-            
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            saveFileDialog.FilterIndex = FilesystemHelper.GetFilterIndex(saveFileDialog.Filter, PreferencesManager.PlayerPreferences.VideoFormat);
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(saveFileDialog.FileName))
             {
-                filePath = saveFileDialog.FileName;
-                if (filePath.Length > 0)
-                {
-                    m_Filename = filePath;                	
-                    DialogResult = DialogResult.OK;
-                    result = DialogResult.OK;
-                }
+                m_Filename = saveFileDialog.FileName;
+                DialogResult = DialogResult.OK;
+                result = DialogResult.OK;
             }
             return result;
         }

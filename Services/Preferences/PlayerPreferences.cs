@@ -88,6 +88,16 @@ namespace Kinovea.Services
         {
             get { return recentColors; }
         }
+        public KinoveaImageFormat ImageFormat
+        {
+            get { return imageFormat; }
+            set { imageFormat = value; }
+        }
+        public KinoveaVideoFormat VideoFormat
+        {
+            get { return videoFormat; }
+            set { videoFormat = value; }
+        }
         #endregion
         
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -102,6 +112,8 @@ namespace Kinovea.Services
         private List<Color> recentColors = new List<Color>();
         private int maxRecentColors = 12;
         private bool syncLockSpeed = true;
+        private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
+        private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MKV;
         
         public void AddRecentColor(Color _color)
         {
@@ -117,6 +129,8 @@ namespace Kinovea.Services
             writer.WriteElementString("WorkingZoneSeconds", workingZoneSeconds.ToString());
             writer.WriteElementString("WorkingZoneMemory", workingZoneMemory.ToString());
             writer.WriteElementString("SyncLockSpeed", syncLockSpeed ? "true" : "false");
+            writer.WriteElementString("ImageFormat", imageFormat.ToString());
+            writer.WriteElementString("VideoFormat", videoFormat.ToString());
             
             writer.WriteStartElement("InfoFading");
             defaultFading.WriteXml(writer);
@@ -170,6 +184,12 @@ namespace Kinovea.Services
                         break;
                     case "SyncLockSpeed":
                         syncLockSpeed = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "ImageFormat":
+                        imageFormat = (KinoveaImageFormat)Enum.Parse(typeof(KinoveaImageFormat), reader.ReadElementContentAsString());
+                        break;
+                    case "VideoFormat":
+                        videoFormat = (KinoveaVideoFormat)Enum.Parse(typeof(KinoveaVideoFormat), reader.ReadElementContentAsString());
                         break;
                     case "InfoFading":
                         defaultFading.ReadXml(reader);

@@ -4349,7 +4349,7 @@ namespace Kinovea.ScreenManager
                 dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
                 dlgSave.RestoreDirectory = true;
                 dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
-                dlgSave.FilterIndex = 1;
+                dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
                 
                 if(InteractiveFiltering)
                     dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
@@ -4361,6 +4361,10 @@ namespace Kinovea.ScreenManager
                     Bitmap outputImage = GetFlushedImage();
                     ImageHelper.Save(dlgSave.FileName, outputImage);
                     outputImage.Dispose();
+
+                    PreferencesManager.PlayerPreferences.ImageFormat = FilesystemHelper.GetImageFormat(dlgSave.FileName);
+                    PreferencesManager.Save();
+
                     m_FrameServer.AfterSave();
                 }
             }
