@@ -145,10 +145,12 @@ namespace Kinovea.ScreenManager
             popMenu.Items.AddRange(new ToolStripItem[] { 
                 mnuLaunch, 
                 mnuSep, 
+                mnuOpenInExplorer,
                 mnuRename, 
-                mnuDelete, 
                 new ToolStripSeparator(),
-                mnuOpenInExplorer });
+                mnuDelete
+            });
+
             this.ContextMenuStrip = popMenu;
         }
         #endregion

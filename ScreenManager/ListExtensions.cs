@@ -3,12 +3,11 @@ using System.Collections.Generic;
 
 namespace Kinovea.ScreenManager
 {
-    // Extensions on IList to provide missing BinarySearch.
     public static class ListExtensions
     {
+        // Provide missing BinarySearch.
         // Code taken from:
         // http://philosopherdeveloper.wordpress.com/2010/05/24/whats-annoying-about-sortedlisttkey-tvalue-indexofkey-a-k-a-whats-sweet-about-reflector/
-    
         public static int BinarySearch<T>(this IList<T> list, int index, int length, T value, IComparer<T> comparer) 
         {
             if (list == null)
