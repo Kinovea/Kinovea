@@ -41,11 +41,15 @@ namespace Kinovea.Services
         GotoPreviousImage,
         GotoPreviousImageForceLoop,
         GotoFirstImage,
-        GotoPreviousKeyframe, 
+        GotoPreviousKeyframe,
+        BackwardRound10Percent,
+        BackwardRound1Percent,
 
         GotoNextImage,
         GotoLastImage,
         GotoNextKeyframe,
+        ForwardRound10Percent,
+        ForwardRound1Percent,
 
         GotoSyncPoint,
 

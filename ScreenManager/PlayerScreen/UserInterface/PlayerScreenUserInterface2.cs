@@ -1147,8 +1147,20 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.GotoPreviousKeyframe:
                     GotoPreviousKeyframe();
                     break;
+                case PlayerScreenCommands.BackwardRound10Percent:
+                    JumpToPercent(10, false);
+                    break;
+                case PlayerScreenCommands.BackwardRound1Percent:
+                    JumpToPercent(1, false);
+                    break;
                 case PlayerScreenCommands.GotoNextImage:
                     buttonGotoNext_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.ForwardRound10Percent:
+                    JumpToPercent(10, true);
+                    break;
+                case PlayerScreenCommands.ForwardRound1Percent:
+                    JumpToPercent(1, true);
                     break;
                 case PlayerScreenCommands.GotoLastImage:
                     buttonGotoLast_Click(null, EventArgs.Empty);
@@ -1440,31 +1452,49 @@ namespace Kinovea.ScreenManager
         }
         public void buttonGotoNext_Click(object sender, EventArgs e)
         {
-            if (m_FrameServer.Loaded)
-            {
-                OnPoke();
-                StopPlaying();
-                m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-                m_iFramesToDecode = 1;
-
-                // If we are outside the primary zone or going to get out, seek to start.
-                // We also only do the seek if we are after the m_iStartingPosition,
-                // Sometimes, the second frame will have a time stamp inferior to the first,
-                // which sort of breaks our sentinels.
-                if (((m_iCurrentPosition < m_iSelStart) || (m_iCurrentPosition >= m_iSelEnd)) &&
-                    (m_iCurrentPosition >= m_iStartingPosition))
-                {
-                    ShowNextFrame(m_iSelStart, true);
-                }
-                else
-                {
-                    ShowNextFrame(-1, true);
-                }
-
-                UpdatePositionUI();
-                ActivateKeyframe(m_iCurrentPosition);
-            }
+            if (!m_FrameServer.Loaded)
+                return;
             
+            OnPoke();
+            StopPlaying();
+            m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+            m_iFramesToDecode = 1;
+
+            // If we are outside the primary zone or going to get out, seek to start.
+            // We also only do the seek if we are after the m_iStartingPosition,
+            // Sometimes, the second frame will have a time stamp inferior to the first,
+            // which sort of breaks our sentinels.
+            if (((m_iCurrentPosition < m_iSelStart) || (m_iCurrentPosition >= m_iSelEnd)) &&
+                (m_iCurrentPosition >= m_iStartingPosition))
+                ShowNextFrame(m_iSelStart, true);
+            else
+                ShowNextFrame(-1, true);
+
+            UpdatePositionUI();
+            ActivateKeyframe(m_iCurrentPosition);
+        }
+        public void JumpToPercent(int round, bool forward)
+        {
+            if (!m_FrameServer.Loaded)
+                return;
+
+            StopPlaying();
+            m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+            m_iFramesToDecode = 1;
+
+            float normalized = ((float)m_iCurrentPosition - m_iSelStart) / m_iSelDuration;
+            int currentPercentage = (int)Math.Round(normalized * 100);
+            int maxSteps = 100/round;
+            int currentStep = currentPercentage / round;
+            int nextStep = forward ? currentStep + 1 : currentStep - 1;
+            nextStep = Math.Max(Math.Min(nextStep, maxSteps), 0);
+            int newPercentage = nextStep * round;
+            long newPosition = m_iSelStart + (long)(((float)newPercentage / 100) * m_iSelDuration);
+
+            ShowNextFrame(newPosition, true);
+
+            UpdatePositionUI();
+            ActivateKeyframe(m_iCurrentPosition);
         }
         public void buttonGotoLast_Click(object sender, EventArgs e)
         {
@@ -3499,7 +3529,9 @@ namespace Kinovea.ScreenManager
         {
             // Public because called from CommandAddKeyframe.Execute()
             // Title becomes the current timecode. (relative to sel start or sel minimum ?)
-            
+            if (m_FrameServer.CurrentImage == null)
+                return;
+
             Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched), m_FrameServer.CurrentImage, m_FrameServer.Metadata);
             
             if (_iPosition != m_iCurrentPosition)
@@ -3527,10 +3559,7 @@ namespace Kinovea.ScreenManager
             kf.GenerateDisabledThumbnail();
 
             if (!m_bIsCurrentlyPlaying)
-            {
                 ActivateKeyframe(m_iCurrentPosition);
-            }
-            
         }
         private void RemoveKeyframe(int _iKeyframeIndex)
         {
