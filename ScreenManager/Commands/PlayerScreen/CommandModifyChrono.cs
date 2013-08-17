@@ -63,9 +63,6 @@ namespace Kinovea.ScreenManager
         
         public CommandModifyChrono(PlayerScreenUserInterface view, Metadata metadata, ChronoModificationType modificationType, long newValue)
         {
-            if (chrono == null)
-                return;
-            
             // In the special case of Countdown toggle, the new value will be 0 -> false, true otherwise .
             this.view = view;
             this.metadata = metadata;
@@ -73,6 +70,9 @@ namespace Kinovea.ScreenManager
             this.newValue = newValue;
             this.modificationType = modificationType;
 
+            if (chrono == null)
+                return;
+            
             memoTimeStart = chrono.TimeStart;
             memoTimeStop = chrono.TimeStop;
             memoTimeInvisible = chrono.TimeInvisible;
