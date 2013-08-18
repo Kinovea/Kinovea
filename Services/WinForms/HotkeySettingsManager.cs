@@ -27,6 +27,9 @@ namespace Kinovea.Services
 
         public static void Import(Dictionary<string, HotkeyCommand[]> imported)
         {
+            if (hotkeys == null)
+                hotkeys = CreateDefaultSettings();
+
             foreach (string category in imported.Keys)
                 foreach (HotkeyCommand command in imported[category])
                     Update(category, command);
