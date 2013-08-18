@@ -79,10 +79,11 @@ namespace Kinovea.Services
             else
                 log.InfoFormat("{0} version {1} - Experimental release.", ApplicationName, Version.ToString());
             
-            log.Info(".NET Framework Version : " + Environment.Version.ToString());
-            log.Info("OS Version : " + Environment.OSVersion.ToString());
-            log.Info("Primary Screen : " + SystemInformation.PrimaryMonitorSize.ToString());
-            log.Info("Virtual Screen : " + SystemInformation.VirtualScreen.ToString());
+            log.InfoFormat(".NET Framework Version : {0}", Environment.Version.ToString());
+            log.InfoFormat("OS Version : {0}", Environment.OSVersion.ToString());
+            log.InfoFormat("CLR bitness : {0}", IntPtr.Size == 8 ? "x64" : "x86");
+            log.InfoFormat("Primary Screen : {0}", SystemInformation.PrimaryMonitorSize.ToString());
+            log.InfoFormat("Virtual Screen : {0}", SystemInformation.VirtualScreen.ToString());
         }
     }
 }
