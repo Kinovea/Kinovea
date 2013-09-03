@@ -130,12 +130,6 @@
       <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </Reference>
-    <Reference Include="Kinovea.Video, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Video\bin\x86\Debug\Kinovea.Video.dll</HintPath>
-      <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
@@ -157,6 +151,11 @@
     <ClInclude Include="TimestampInfo.h" />
     <ClInclude Include="VideoFileWriter.h" />
     <ClInclude Include="VideoReaderFFMpeg.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Video\Kinovea.Video.csproj">
+      <Project>{4cbb8462-00a7-4814-ad3b-07c82eeeb0de}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
