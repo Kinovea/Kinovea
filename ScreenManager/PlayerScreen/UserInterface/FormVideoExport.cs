@@ -198,7 +198,6 @@ namespace Kinovea.ScreenManager
             // Save Video file. (Either Alone or along with the Analysis muxed into it.)
             //--------------------------------------------------------------------------
             DialogResult result = DialogResult.Cancel;
-            string filePath = null;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgSaveVideoTitle;
@@ -212,6 +211,7 @@ namespace Kinovea.ScreenManager
                 DialogResult = DialogResult.OK;
                 result = DialogResult.OK;
             }
+
             return result;
         }
         private DialogResult DoSaveAnalysis()
