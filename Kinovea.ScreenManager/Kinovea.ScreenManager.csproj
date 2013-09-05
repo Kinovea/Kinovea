@@ -809,24 +809,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
-      <Project>7EC5DEBF-DF52-40F5-A9FE-1B2007B6116D</Project>
-      <Name>Kinovea.Camera</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PlayerServer\PlayerServer\PlayerServer.vcxproj">
-      <Project>{F80DBE6D-D394-4811-B5E6-7528F849C71A}</Project>
-      <Name>Kinovea.Video.FFMpeg</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Services\Kinovea.Services.csproj">
-      <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
-      <Name>Kinovea.Services</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Video\Kinovea.Video.csproj">
-      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
-      <Name>Kinovea.Video</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="UserInterface\CommonControlsPlayers.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CommonControlsPlayers.cs</DependentUpon>
@@ -1015,6 +997,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\camera_video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
+      <Project>{2BF373B8-5D33-4FCF-8C30-5E8CAF6777E7}</Project>
+      <Name>Kinovea.Camera</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
+      <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
+      <Name>Kinovea.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Video.FFMpeg\PlayerServer\PlayerServer.vcxproj">
+      <Project>{F80DBE6D-D394-4811-B5E6-7528F849C71A}</Project>
+      <Name>Kinovea.Video.FFMpeg</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
+      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
+      <Name>Kinovea.Video</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

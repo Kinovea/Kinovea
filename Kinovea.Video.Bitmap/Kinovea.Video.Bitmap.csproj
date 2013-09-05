@@ -76,7 +76,7 @@
     <Compile Include="VideoReaderBitmap.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Video\Kinovea.Video.csproj">
+    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
       <Name>Kinovea.Video</Name>
     </ProjectReference>

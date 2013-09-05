@@ -184,12 +184,6 @@
     <Compile Include="XmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Video\Kinovea.Video.csproj">
-      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
-      <Name>Kinovea.Video</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -206,7 +200,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
+      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
+      <Name>Kinovea.Video</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

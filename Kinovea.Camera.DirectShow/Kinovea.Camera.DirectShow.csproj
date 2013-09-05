@@ -84,13 +84,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
-      <Project>7EC5DEBF-DF52-40F5-A9FE-1B2007B6116D</Project>
+      <Project>{2BF373B8-5D33-4FCF-8C30-5E8CAF6777E7}</Project>
       <Name>Kinovea.Camera</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Services\Kinovea.Services.csproj">
+    <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Kinovea.Services</Name>
-      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
