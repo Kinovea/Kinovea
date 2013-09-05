@@ -110,13 +110,7 @@ namespace Kinovea.Services
         
         public void RemoveShortcut(ShortcutFolder shortcut)
         {
-            for(int i=shortcutFolders.Count-1; i>=0; i--)
-            {
-                if(shortcutFolders[i].Location == shortcut.Location)
-                    shortcutFolders.RemoveAt(i);
-            }
-            
-            shortcutFolders.Sort();
+            shortcutFolders.RemoveAll(s => s.Location == shortcut.Location);
         }
         
         public void AddShortcut(ShortcutFolder shortcut)
