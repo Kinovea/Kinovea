@@ -90,7 +90,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <ProjectReference>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
     <Link>
       <AdditionalDependencies>avformat.lib;avdevice.lib;avcodec.lib;avfilter.lib;avutil.lib;swscale.lib;swresample.lib;postproc.lib</AdditionalDependencies>
