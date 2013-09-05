@@ -153,7 +153,7 @@
     <ClInclude Include="VideoReaderFFMpeg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Video\Kinovea.Video.csproj">
+    <ProjectReference Include="..\..\Kinovea.Video\Kinovea.Video.csproj">
       <Project>{4cbb8462-00a7-4814-ad3b-07c82eeeb0de}</Project>
     </ProjectReference>
   </ItemGroup>
