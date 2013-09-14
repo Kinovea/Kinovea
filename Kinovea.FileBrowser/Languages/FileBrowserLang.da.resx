@@ -74,4 +74,6 @@
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Slet genvej</value></data>
    <data name="tabExplorer" xml:space="preserve"><value>Stifinder</value></data>
    <data name="tabShortcuts" xml:space="preserve"><value>Genveje</value></data>
+   
+   
 </root>

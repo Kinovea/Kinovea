@@ -74,4 +74,6 @@
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Effacer le raccourci</value></data>
    <data name="tabExplorer" xml:space="preserve"><value>Explorateur</value></data>
    <data name="tabShortcuts" xml:space="preserve"><value>Raccourcis</value></data>
+   
+   
 </root>

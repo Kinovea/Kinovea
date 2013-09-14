@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 
 namespace Kinovea.Services
 {
@@ -123,6 +124,10 @@ namespace Kinovea.Services
         {
             get { return Languages["ru"]; }
         }
+        public static string Serbian
+        {
+            get { return languages["sr-Latn-CS"]; }
+        }
         #endregion
         
         private static Dictionary<string, string> languages = null;
@@ -148,6 +153,7 @@ namespace Kinovea.Services
             languages.Add("pt", "Português");
             languages.Add("ro", "Română");
             languages.Add("ru", "Русский");
+            languages.Add("sr-Latn-CS", "Srpski");
             languages.Add("fi", "Suomi");
             languages.Add("sv", "Svenska");
             languages.Add("tr", "Türkçe");
@@ -155,8 +161,20 @@ namespace Kinovea.Services
         }
         public static bool IsSupportedCulture(CultureInfo ci)
         {
-            string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
-            return Languages.ContainsKey(neutral);
+            return Languages.ContainsKey(ci.Name) || (!ci.IsNeutralCulture && Languages.ContainsKey(ci.Parent.Name));
+        }
+
+        public static string GetCurrentCultureName()
+        {
+            string uiCultureName = Thread.CurrentThread.CurrentUICulture.Name;
+            CultureInfo ci = new CultureInfo(uiCultureName);
+
+            if (Languages.ContainsKey(uiCultureName))
+                return uiCultureName;
+            else if (!ci.IsNeutralCulture && Languages.ContainsKey(ci.Parent.Name))
+                return ci.Parent.Name;
+            else
+                return "en";
         }
     }
 }
