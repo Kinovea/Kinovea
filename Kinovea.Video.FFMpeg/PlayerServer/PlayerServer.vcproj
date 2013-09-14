@@ -6,7 +6,7 @@
 	ProjectGUID="{F80DBE6D-D394-4811-B5E6-7528F849C71A}"
 	RootNamespace="PlayerServer"
 	Keyword="ManagedCProj"
-	TargetFrameworkVersion="131072"
+	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -152,6 +152,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -209,13 +210,9 @@
 			MinFrameworkVersion="131072"
 		/>
 		<AssemblyReference
-			RelativePath="..\..\Video\bin\x86\Debug\Kinovea.Video.dll"
+			RelativePath="..\..\Kinovea\bin\x86\Release\Kinovea.Video.dll"
 			AssemblyName="Kinovea.Video, Version=1.0.0.0, processorArchitecture=IA64"
-			CopyLocal="false"
-			CopyLocalDependencies="false"
-			UseDependenciesInBuild="false"
-			CopyLocalSatelliteAssemblies="false"
-			MinFrameworkVersion="0"
+			MinFrameworkVersion="196613"
 		/>
 	</References>
 	<Files>
