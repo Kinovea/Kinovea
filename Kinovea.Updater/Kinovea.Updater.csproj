@@ -157,6 +157,7 @@
     <EmbeddedResource Include="Languages\UpdaterLang.lt.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.no.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.ru.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.sr-Latn-CS.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.sv.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.tr.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.Zh-CHS.resx" />

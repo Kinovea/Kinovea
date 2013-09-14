@@ -67,13 +67,13 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="lblFolders" xml:space="preserve"><value>Aplankai:</value></data>
-   <data name="lblVideoFiles" xml:space="preserve"><value>Vaizdo dokumentai:</value></data>
-   <data name="mnuAddShortcut" xml:space="preserve"><value>Pridėti nuorodą</value></data>
-   <data name="mnuAddToShortcuts" xml:space="preserve"><value>Papildyti nuorodą</value></data>
-   <data name="mnuDeleteShortcut" xml:space="preserve"><value>Naukinti nuorodą</value></data>
-   <data name="tabExplorer" xml:space="preserve"><value>Naršyklė</value></data>
-   <data name="tabShortcuts" xml:space="preserve"><value>Nuorodos</value></data>
+   <data name="lblFolders" xml:space="preserve"><value>Fascikle:</value></data>
+   <data name="lblVideoFiles" xml:space="preserve"><value>Video datoteke:</value></data>
+   <data name="mnuAddShortcut" xml:space="preserve"><value>Dodaj prečicu</value></data>
+   <data name="mnuAddToShortcuts" xml:space="preserve"><value>Dodaj u prečice</value></data>
+   <data name="mnuDeleteShortcut" xml:space="preserve"><value>Izbriši prečicu</value></data>
+   <data name="tabExplorer" xml:space="preserve"><value>Istraživač</value></data>
+   <data name="tabShortcuts" xml:space="preserve"><value>Prečice</value></data>
    
    
 </root>
