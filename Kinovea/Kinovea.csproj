@@ -344,19 +344,34 @@
       <Link>swscale-2.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\msvcm90.dll">
+    <None Include="..\Refs\Microsoft.VC90.CRT\msvcm90.dll">
       <Visible>False</Visible>
       <Link>msvcm90.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\msvcp90.dll">
+    <None Include="..\Refs\Microsoft.VC90.CRT\msvcp90.dll">
       <Visible>False</Visible>
       <Link>msvcp90.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\msvcr90.dll">
+    <None Include="..\Refs\Microsoft.VC90.CRT\msvcr90.dll">
       <Visible>False</Visible>
       <Link>msvcr90.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest">
+      <Visible>False</Visible>
+      <Link>Microsoft.VC90.CRT.manifest</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\Microsoft.VC90.OpenMP\vcomp90.dll">
+      <Visible>False</Visible>
+      <Link>vcomp90.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\Microsoft.VC90.OpenMP\Microsoft.VC90.OpenMP.manifest">
+      <Visible>False</Visible>
+      <Link>Microsoft.VC90.OpenMP.manifest</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="app.config" />
