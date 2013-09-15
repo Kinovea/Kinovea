@@ -63,6 +63,11 @@ namespace Kinovea.Camera.DirectShow
         {
             defaultIcon = IconLibrary.GetIcon("webcam");
         }
+
+        public override bool SanityCheck()
+        {
+            return true;
+        }
         
         public override List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs)
         {

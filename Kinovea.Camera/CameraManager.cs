@@ -52,7 +52,12 @@ namespace Kinovea.Camera
         /// Whether cameras of this type can be manually connected from the wizard.
         /// </summary>
         public abstract bool HasConnectionWizard { get; }
-        
+
+        /// <summary>
+        /// Checks that the necessary component are available for the manager to work.
+        /// This function will be called once, if it returns false the manager will be discarded.
+        /// </summary>
+        public abstract bool SanityCheck();
         
         /// <summary>
         /// Get the list of reachable cameras, try to connect to each of them to get a snapshot, and return a small summary of the device.
