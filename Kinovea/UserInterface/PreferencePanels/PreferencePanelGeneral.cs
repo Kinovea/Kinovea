@@ -70,8 +70,7 @@ namespace Kinovea.Root
         }
         private void ImportPreferences()
         {
-            CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-            uiCultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
+            uiCultureName = LanguageManager.GetCurrentCultureName();
             maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
         }
         private void InitPage()

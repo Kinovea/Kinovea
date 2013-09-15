@@ -85,6 +85,7 @@
     <ErrorReport>prompt</ErrorReport>
     <DebugSymbols>false</DebugSymbols>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
@@ -241,6 +242,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\RootLang.ru.resx" />
+    <EmbeddedResource Include="Languages\RootLang.sr-Latn-CS.resx" />
     <EmbeddedResource Include="Languages\RootLang.sv.resx" />
     <EmbeddedResource Include="Languages\RootLang.tr.resx" />
     <EmbeddedResource Include="Languages\RootLang.Zh-CHS.resx" />
@@ -343,19 +345,34 @@
       <Link>swscale-2.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\msvcm90.dll">
+    <None Include="..\Refs\Microsoft.VC90.CRT\msvcm90.dll">
       <Visible>False</Visible>
       <Link>msvcm90.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\msvcp90.dll">
+    <None Include="..\Refs\Microsoft.VC90.CRT\msvcp90.dll">
       <Visible>False</Visible>
       <Link>msvcp90.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\msvcr90.dll">
+    <None Include="..\Refs\Microsoft.VC90.CRT\msvcr90.dll">
       <Visible>False</Visible>
       <Link>msvcr90.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest">
+      <Visible>False</Visible>
+      <Link>Microsoft.VC90.CRT.manifest</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\Microsoft.VC90.OpenMP\vcomp90.dll">
+      <Visible>False</Visible>
+      <Link>vcomp90.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\Microsoft.VC90.OpenMP\Microsoft.VC90.OpenMP.manifest">
+      <Visible>False</Visible>
+      <Link>Microsoft.VC90.OpenMP.manifest</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="app.config" />
@@ -378,27 +395,27 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FileBrowser\Kinovea.FileBrowser.csproj">
-      <Project>{85924D93-541A-46E6-BF9A-EBE3B73887EC}</Project>
-      <Name>Kinovea.FileBrowser</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
       <Project>7EC5DEBF-DF52-40F5-A9FE-1B2007B6116D</Project>
       <Name>Kinovea.Camera</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ScreenManager\Kinovea.ScreenManager.csproj">
+    <ProjectReference Include="..\Kinovea.FileBrowser\Kinovea.FileBrowser.csproj">
+      <Project>{85924D93-541A-46E6-BF9A-EBE3B73887EC}</Project>
+      <Name>Kinovea.FileBrowser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.ScreenManager\Kinovea.ScreenManager.csproj">
       <Project>{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}</Project>
       <Name>Kinovea.ScreenManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Services\Kinovea.Services.csproj">
+    <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Kinovea.Services</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Updater\Kinovea.Updater.csproj">
+    <ProjectReference Include="..\Kinovea.Updater\Kinovea.Updater.csproj">
       <Project>{0A577C03-D217-4540-AAB4-D167A85E32C0}</Project>
       <Name>Kinovea.Updater</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Video\Kinovea.Video.csproj">
+    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
       <Name>Kinovea.Video</Name>
     </ProjectReference>

@@ -494,13 +494,8 @@ namespace Kinovea.Root
         private void mnuLanguage_OnClick(object sender, EventArgs e)
         {
             ToolStripMenuItem menu = sender as ToolStripMenuItem;
-            if(menu != null)
-            {
-                if(menu.Tag is string)
-                {
-                    SwitchCulture((string)menu.Tag);
-                }
-            }
+            if(menu != null && menu.Tag is string)
+                SwitchCulture((string)menu.Tag);
         }
         private void SwitchCulture(string name)
         {
@@ -512,9 +507,8 @@ namespace Kinovea.Root
         {
             foreach(ToolStripMenuItem mnuLang in m_LanguageMenus.Values)
                 mnuLang.Checked = false;
-            
-            CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();            
-            string cultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
+
+            string cultureName = LanguageManager.GetCurrentCultureName();
             
             try
             {
@@ -720,16 +714,15 @@ namespace Kinovea.Root
             bool englishFound = false;
             int i = 0;
 
-            CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-            string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
+            string cultureName = LanguageManager.GetCurrentCultureName();
                             
             // Look for a matching locale, or English.
             int totalResource = manual ? hiLocal.UserGuides.Count : hiLocal.HelpVideos.Count;
             while (!localeFound && i < totalResource)
             {
                 HelpItem hi = manual ? hiLocal.UserGuides[i] : hiLocal.HelpVideos[i];
-                
-                if (hi.Language == neutral)
+
+                if (hi.Language == cultureName)
                 {
                     localeFound = true;
                     resourceUri = hi.FileLocation;
