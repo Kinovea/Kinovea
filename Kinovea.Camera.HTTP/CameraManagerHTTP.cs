@@ -72,6 +72,11 @@ namespace Kinovea.Camera.HTTP
         {
             defaultIcon = IconLibrary.GetIcon("network");
         }
+
+        public override bool SanityCheck()
+        {
+            return true;
+        }
         
         public override List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs)
         {

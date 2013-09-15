@@ -53,6 +53,7 @@
 	<xsl:call-template name="saveResx"><xsl:with-param name="col" select="21" /></xsl:call-template>
 	<xsl:call-template name="saveResx"><xsl:with-param name="col" select="22" /></xsl:call-template>
 	<xsl:call-template name="saveResx"><xsl:with-param name="col" select="23" /></xsl:call-template>
+	<xsl:call-template name="saveResx"><xsl:with-param name="col" select="24" /></xsl:call-template>
 </xsl:template>
 
 

@@ -24,10 +24,10 @@ import zipfile
 #------------------------------------------------------------------------------------------
 # Function that moves resx files of a specific module to this module's language directory.
 #------------------------------------------------------------------------------------------
-def MoveToDestination(module):
-	print "Moving to " + module + "directory."
+def MoveToDestination(module, target):
+	print "Moving to " + target + " directory."
 	for file in glob.glob(module + "Lang*.resx"):
-		shutil.copy(file, os.path.join("..\\..\\" + module + "\\Languages", file))
+		shutil.copy(file, os.path.join("..\\..\\" + target + "\\Languages", file))
 
 #------------------------------------------------------------------------------------------
 # Function that removes empty resource strings from a resx file.
@@ -56,13 +56,13 @@ def ValidateResx(file):
 #------------------------------------------------------------------------------------------
 # Function that call the resgen executable to create a strongly typed ressource accessor
 #------------------------------------------------------------------------------------------
-def ResGen(module):
+def ResGen(module, target):
 	print "Generating " + module + " ressources accessor."
 	# Sample command : "ScreenManagerLang.resx" /str:cs,Kinovea.ScreenManager.Languages,ScreenManagerLang,ScreenManagerLang.Designer.cs
 	
 	moduleLang = module + "Lang"
 		
-	os.chdir("..\\..\\" + module + "\\Languages")
+	os.chdir("..\\..\\" + target + "\\Languages")
 	os.system(resgenDir + " " + moduleLang + ".resx /str:cs,Kinovea." + module + ".Languages," + moduleLang + "," + moduleLang + ".Designer.cs") 
 
 #------------------------------------------------------------------------------------------
@@ -100,17 +100,17 @@ for file in glob.glob("*.resx"):
 
 # 3. Move final files to their destination.
 print "\nMoving resources to their final destination"
-MoveToDestination("Root")
-MoveToDestination("Updater")
-MoveToDestination("FileBrowser")
-MoveToDestination("ScreenManager")
+MoveToDestination("Root", "Kinovea")
+MoveToDestination("Updater", "Kinovea.Updater")
+MoveToDestination("FileBrowser", "Kinovea.FileBrowser")
+MoveToDestination("ScreenManager", "Kinovea.ScreenManager")
 
 #4. Regenerate the strongly typed ressource accessors
 print "\nRegenerating the strongly typed ressources accessors"
-ResGen("Root")
-ResGen("Updater")
-ResGen("FileBrowser")
-ResGen("ScreenManager")
+ResGen("Root", "Kinovea")
+ResGen("Updater", "Kinovea.Updater")
+ResGen("FileBrowser", "Kinovea.FileBrowser")
+ResGen("ScreenManager", "Kinovea.ScreenManager")
 
 print "Done."
 
