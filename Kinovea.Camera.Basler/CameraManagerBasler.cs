@@ -67,6 +67,23 @@ namespace Kinovea.Camera.Basler
             defaultIcon = IconLibrary.GetIcon("webcam");
         }
         
+        public override bool SanityCheck()
+        {
+            bool result = false;
+            try
+            {
+                // Trigger a P/Invoke to see if the correct native DLL is installed.
+                Pylon.EnumerateDevices();
+                result = true;
+            }
+            catch (Exception e)
+            {
+                log.DebugFormat("Basler Camera subsystem not available. {0}", e.ToString());
+            }
+
+            return result;
+        }
+        
         public override List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs)
         {
             List<CameraSummary> summaries = new List<CameraSummary>();

@@ -87,8 +87,11 @@ namespace Kinovea.Camera
                             continue;
                         
                         CameraManager manager = (CameraManager)Activator.CreateInstance(t, null);
-                        manager.CameraImageReceived += CameraManager_CameraImageReceived;
-                        cameraManagers.Add(manager);
+                        if (manager.SanityCheck())
+                        {
+                            manager.CameraImageReceived += CameraManager_CameraImageReceived;
+                            cameraManagers.Add(manager);
+                        }
                     }
                 }
                 catch (ReflectionTypeLoadException ex)

@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Video.GIF", "Kinove
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea", "Kinovea\Kinovea.csproj", "{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.Basler", "Kinovea.Camera.Basler\Kinovea.Camera.Basler.csproj", "{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -302,6 +304,24 @@ Global
 		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Win32.ActiveCfg = Release|x86
 		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|x86.ActiveCfg = Release|x86
 		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|x86.Build.0 = Release|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Debug|Win32.ActiveCfg = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Debug|x86.ActiveCfg = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Debug|x86.Build.0 = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.DebugExternals|Any CPU.ActiveCfg = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.DebugExternals|Mixed Platforms.ActiveCfg = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.DebugExternals|Mixed Platforms.Build.0 = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.DebugExternals|Win32.ActiveCfg = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.DebugExternals|x86.ActiveCfg = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.DebugExternals|x86.Build.0 = Debug|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Release|Any CPU.ActiveCfg = Release|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Release|Mixed Platforms.Build.0 = Release|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Release|Win32.ActiveCfg = Release|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Release|x86.ActiveCfg = Release|x86
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -315,5 +335,6 @@ Global
 		{2BF373B8-5D33-4FCF-8C30-5E8CAF6777E7} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
 		{104B98B4-961D-4ED4-B7C3-7E790065AAED} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
 		{7B8CF26D-B8AF-4914-B395-93661D225EA3} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
+		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A} = {58D505DA-544D-4DCD-B3DB-6562E446E6C4}
 	EndGlobalSection
 EndGlobal
