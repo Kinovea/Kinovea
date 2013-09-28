@@ -44,8 +44,8 @@ namespace Kinovea.ScreenManager
     {
         #region Members
         // Options - initialize in the constructor.
-        private float similarityTreshold = 0.0f;					// Discard candidate block with lower similarity.
-        private float templateUpdateThreshold = 1.0f;	// Only update the template if that dissimilar.
+        private double similarityTreshold = 0.0f;					// Discard candidate block with lower similarity.
+        private double templateUpdateThreshold = 1.0f;	// Only update the template if that dissimilar.
         private Size blockWindow = new Size(20, 20);						// Size of block to be matched.
         private Size searchWindow = new Size(100, 100);				// Size of window of candidates.
         
@@ -55,43 +55,7 @@ namespace Kinovea.ScreenManager
         #endregion		
         
         #region Constructor
-        public TrackerBlock2(int width, int height)
-        {
-            similarityTreshold = 0.50f;
-            
-            // If simi is better than this, we keep the same template, to avoid the template update drift.
-            
-            // When using CCORR : 0.90 or 0.95.
-            // When using CCOEFF : 0.80
-            templateUpdateThreshold = 0.80f;
-            
-            
-            //int blockFactor = 15;	// Bigger template.
-            int blockFactor = 20;	// Smaller template can improve tracking by focusing on the object instead of Bg.
-            int blockWidth = width / blockFactor;
-            int blockHeight = height / blockFactor;
-            
-            if(blockWidth < 20) 
-            {
-                blockWidth = 20;
-            }
-            
-            if(blockHeight < 20) 
-            {
-                blockHeight = 20;
-            }
-            
-            blockWindow = new Size(blockWidth, blockHeight);
-            
-            
-            float searchFactor = 4.0f;
-            searchWindow = new Size((int)(blockWidth * searchFactor), (int)(blockHeight * searchFactor));
-            
-            log.Debug(String.Format("Template matching: Image:{0}x{1}, Template:{2}, Search Window:{3}, Similarity thr.:{4}, Tpl update thr.:{5}",
-                                    width, height, blockWindow.ToString(), searchWindow.ToString(), similarityTreshold, templateUpdateThreshold));
-            
-        }
-        public TrackerBlock2(TrackerBlockParameters parameters)
+        public TrackerBlock2(TrackerParameters parameters)
         {
             similarityTreshold = parameters.SimilarityThreshold;
             templateUpdateThreshold = parameters.TemplateUpdateThreshold;

@@ -27,6 +27,7 @@ namespace Kinovea.ScreenManager
     public interface ITrackable
     {
         Guid ID { get; }
+        TrackingProfile CustomTrackingProfile { get; }
         
         Dictionary<string, Point> GetTrackablePoints();
         void SetTracking(bool tracking);

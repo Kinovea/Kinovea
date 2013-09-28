@@ -32,12 +32,12 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Tracks a reference template in the given image. Returns similarity score and position of best candidate.
         /// </summary>
-        public static TrackResult Track(TrackerParameters trackerParameters, TrackFrame reference, Bitmap image)
+        public static TrackResult Track(Size searchWindow, TrackFrame reference, Bitmap image)
         {
             if(image == null)
                 throw new ArgumentException("image");
-            
-            Rectangle searchZone = reference.Location.Box(trackerParameters.SearchWindowSize);
+
+            Rectangle searchZone = reference.Location.Box(searchWindow);
             Rectangle imageBounds = new Rectangle(0, 0, image.Width, image.Height);
             searchZone.Intersect(imageBounds);
             
@@ -52,31 +52,31 @@ namespace Kinovea.ScreenManager
             
             BitmapData imageData = image.LockBits(imageBounds, ImageLockMode.ReadOnly, image.PixelFormat );
             BitmapData templateData = template.LockBits(templateBounds, ImageLockMode.ReadOnly, template.PixelFormat );
-			
+            
             Image<Bgra, Byte> cvImage = new Image<Bgra, Byte>(imageData.Width, imageData.Height, imageData.Stride, imageData.Scan0);
-			Image<Bgra, Byte> cvTemplate = new Image<Bgra, Byte>(templateData.Width, templateData.Height, templateData.Stride, templateData.Scan0);
-			
+            Image<Bgra, Byte> cvTemplate = new Image<Bgra, Byte>(templateData.Width, templateData.Height, templateData.Stride, templateData.Scan0);
+            
             cvImage.ROI = searchZone;
             
             int similarityMapWidth = searchZone.Width - template.Width + 1;
-			int similarityMapHeight = searchZone.Height - template.Height + 1;
-			Image<Gray, Single> similarityMap = new Image<Gray, Single>(similarityMapWidth, similarityMapHeight);
-			
-			CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_CCOEFF_NORMED);
-				
-			image.UnlockBits(imageData);
-		    template.UnlockBits(templateData);
-				
-		    Point minLoc = new Point(0,0);
+            int similarityMapHeight = searchZone.Height - template.Height + 1;
+            Image<Gray, Single> similarityMap = new Image<Gray, Single>(similarityMapWidth, similarityMapHeight);
+            
+            CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_CCOEFF_NORMED);
+                
+            image.UnlockBits(imageData);
+            template.UnlockBits(templateData);
+                
+            Point minLoc = new Point(0,0);
             Point maxLoc = new Point(0,0);
             double minSimilarity = 0;
             double maxSimilarity = 0;
-		    
+            
             CvInvoke.cvMinMaxLoc(similarityMap.Ptr, ref minSimilarity, ref maxSimilarity, ref minLoc, ref maxLoc, IntPtr.Zero);
-				
-		    Point location = new Point(searchZone.Left + maxLoc.X + template.Width / 2, searchZone.Top + maxLoc.Y + template.Height / 2);
-		    
-		    return new TrackResult(maxSimilarity, location);
-		}
+                
+            Point location = new Point(searchZone.Left + maxLoc.X + template.Width / 2, searchZone.Top + maxLoc.Y + template.Height / 2);
+            
+            return new TrackResult(maxSimilarity, location);
+        }
     }
 }

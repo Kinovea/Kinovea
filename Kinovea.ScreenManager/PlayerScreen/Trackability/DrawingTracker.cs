@@ -40,14 +40,16 @@ namespace Kinovea.ScreenManager
         
         private ITrackable drawing;
         private bool isTracking;
+        private TrackerParameters parameters;
         private Dictionary<string, TrackablePoint> trackablePoints = new Dictionary<string, TrackablePoint>();
         
-        public DrawingTracker(ITrackable drawing, TrackingContext context)
+        public DrawingTracker(ITrackable drawing, TrackingContext context, TrackerParameters parameters)
         {
             this.drawing = drawing;
+            this.parameters = parameters;
             
             foreach(KeyValuePair<string, Point> pair in drawing.GetTrackablePoints())
-                trackablePoints.Add(pair.Key, new TrackablePoint(context, pair.Value));
+                trackablePoints.Add(pair.Key, new TrackablePoint(context, parameters, pair.Value));
             
             drawing.TrackablePointMoved += drawing_TrackablePointMoved;
         }
@@ -79,11 +81,17 @@ namespace Kinovea.ScreenManager
             drawing.SetTracking(isTracking);
         }
         
+        public void Reset()
+        {
+            foreach (TrackablePoint trackablePoint in trackablePoints.Values)
+                trackablePoint.Reset();
+        }
+
         public void Dispose()
         {
-            foreach(TrackablePoint trackablePoint in trackablePoints.Values)
-                trackablePoint.Dispose();
-            
+            foreach (TrackablePoint trackablePoint in trackablePoints.Values)
+                trackablePoint.Reset();
+                        
             drawing.TrackablePointMoved -= drawing_TrackablePointMoved;
         }
         

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Defense line</Name>
+  <Id>32ea0553-bee6-48fe-b20b-0493a1d73526</Id>
+  <PointCount>4</PointCount>
+  <Segments>
+    <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
+    <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
+    <Segment point1="2" point2="3" name="" style="Solid" width="2"/>
+  </Segments>
+  <Handles>
+    <Handle type="Point" reference="0" trackable="true"/>
+    <Handle type="Point" reference="1" trackable="true"/>
+    <Handle type="Point" reference="2" trackable="true"/>
+    <Handle type="Point" reference="3" trackable="true"/>
+  </Handles>
+  <InitialConfiguration>
+    <Point>80;80</Point>
+    <Point>80;100</Point>
+    <Point>80;120</Point>
+    <Point>80;140</Point>
+  </InitialConfiguration>
+  <TrackingProfile>
+    <SimilarityThreshold>0.5</SimilarityThreshold>
+    <UpdateTemplateThreshold>0.8</UpdateTemplateThreshold>
+    <SearchWindow unit="Pixels">75;60</SearchWindow>
+    <BlockWindow unit="Pixels">25;50</BlockWindow>
+  </TrackingProfile>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADWSURBVDhPY/j//z8DDDclWzPgw8hqYWy4ZpAAFs0J
+    QDE/mDipBsgBNX4G4v9AbAkyhFQDtkM1LyXHBbFQzW+BtBC615Bdgi0M7IAaPkENiMIWqIQMuAXV/AdI
+    bwHiHCAGhQc8kAkZ0AxU/AFqCCgAYfgBkO2BHpj4olEUqBjkha1A/AtqUCkpBrABFVcD8TeoZhCdRKwB
+    rkCFN5CcvwLIlsYWnRiJA6qoBKr5FZDuIzoakZKzIlogoiRznLGAZAAP0IA0IG4B4mnkuABrriSYF7Ap
+    ICQGAJJoJ2qW4Q5fAAAAAElFTkSuQmCC
+  </Icon>
+</KinoveaPostureTool>
