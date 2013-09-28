@@ -471,7 +471,9 @@ namespace Kinovea.ScreenManager
         {
             if(initialized)
                 return;
-            
+
+            trackabilityManager.Initialize(imageSize);
+
             for(int i = 0; i<totalStaticExtraDrawings;i++)
                 PostDrawingCreationHooks(extraDrawings[i]);
             

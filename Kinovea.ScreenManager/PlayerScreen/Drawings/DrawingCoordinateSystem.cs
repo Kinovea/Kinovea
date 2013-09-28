@@ -229,6 +229,10 @@ namespace Kinovea.ScreenManager
         {
             get { return id; }
         }
+        public TrackingProfile CustomTrackingProfile
+        {
+            get { return null; }
+        }
         public Dictionary<string, Point> GetTrackablePoints()
         {
             return points;

@@ -219,7 +219,8 @@ namespace Kinovea.ScreenManager
             // Create the first point
             if (_CurrentImage != null)
             {
-                m_Tracker = new TrackerBlock2(_CurrentImage.Width, _CurrentImage.Height);
+                TrackerParameters parameters = GetTrackerParameters(_CurrentImage.Size);
+                m_Tracker = new TrackerBlock2(parameters);
                 AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, _origin.X, _origin.Y, 1.0f, _t, _CurrentImage, m_Positions);
                 if(atp != null)
                     m_Positions.Add(atp);
@@ -229,7 +230,8 @@ namespace Kinovea.ScreenManager
             else
             {
                 // Happens when loading Metadata from file or demuxing.
-                m_Tracker = new TrackerBlock2(_imageSize.Width, _imageSize.Height);
+                TrackerParameters parameters = GetTrackerParameters(_imageSize);
+                m_Tracker = new TrackerBlock2(parameters);
                 m_Positions.Add(m_Tracker.CreateOrphanTrackPoint(_origin.X, _origin.Y, _t));
             }
 
@@ -863,6 +865,10 @@ namespace Kinovea.ScreenManager
                     break;
                 }
             }
+        }
+        private TrackerParameters GetTrackerParameters(Size size)
+        {
+            return new TrackerParameters(new TrackingProfile(), size);
         }
         #endregion
         

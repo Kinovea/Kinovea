@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Football formation 4-3-3</Name>
+  <Id>64ea0553-bee6-48fe-b20b-0493a1d73347</Id>
+  <PointCount>10</PointCount>
+  <Segments>
+    <Segment point1="0" point2="1" name="" style="Solid" width="1" color="#0000ff"/>
+    <Segment point1="1" point2="2" name="" style="Solid" width="1" color="#0000ff"/>
+    <Segment point1="2" point2="3" name="" style="Solid" width="1" color="#0000ff"/>
+    
+    <Segment point1="0" point2="4" name="" style="Solid" width="1" color="#ffff00"/>
+    <Segment point1="1" point2="4" name="" style="Solid" width="1" color="#ffff00"/>
+    <Segment point1="1" point2="5" name="" style="Solid" width="1" color="#ffff00"/>
+    <Segment point1="2" point2="5" name="" style="Solid" width="1" color="#ffff00"/>
+    <Segment point1="2" point2="6" name="" style="Solid" width="1" color="#ffff00"/>
+    <Segment point1="3" point2="6" name="" style="Solid" width="1" color="#ffff00"/>
+    
+    <Segment point1="4" point2="7" name="" style="Solid" width="1" color="#ff0000"/>
+    <Segment point1="5" point2="8" name="" style="Solid" width="1" color="#ff0000"/>
+    <Segment point1="6" point2="9" name="" style="Solid" width="1" color="#ff0000"/>
+  </Segments>
+  
+  <Handles>
+    <Handle type="Point" reference="0" trackable="true" color="#0000ff"/>
+    <Handle type="Point" reference="1" trackable="true" color="#0000ff"/>
+    <Handle type="Point" reference="2" trackable="true" color="#0000ff"/>
+    <Handle type="Point" reference="3" trackable="true" color="#0000ff"/>
+    
+    <Handle type="Point" reference="4" trackable="true" color="#ffff00"/>
+    <Handle type="Point" reference="5" trackable="true" color="#ffff00"/>
+    <Handle type="Point" reference="6" trackable="true" color="#ffff00"/>
+    
+    <Handle type="Point" reference="7" trackable="true" color="#ff0000"/>
+    <Handle type="Point" reference="8" trackable="true" color="#ff0000"/>
+    <Handle type="Point" reference="9" trackable="true" color="#ff0000"/>
+  </Handles>
+  <InitialConfiguration>
+    <Point>100;100</Point>
+    <Point>100;200</Point>
+    <Point>100;300</Point>
+    <Point>100;400</Point>
+    
+    <Point>200;150</Point>
+    <Point>200;250</Point>
+    <Point>200;350</Point>
+    
+    <Point>300;150</Point>
+    <Point>300;250</Point>
+    <Point>300;350</Point>
+  </InitialConfiguration>
+  
+  <TrackingProfile>
+    <SimilarityThreshold>0.5</SimilarityThreshold>
+    <UpdateTemplateThreshold>0.8</UpdateTemplateThreshold>
+    <SearchWindow unit="Pixels">75;60</SearchWindow>
+    <BlockWindow unit="Pixels">25;50</BlockWindow>
+    <ResetOnMove>false</ResetOnMove>
+  </TrackingProfile>
+  
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADWSURBVDhPY/j//z8DDDclWzPgw8hqYWy4ZpAAFs0J
+    QDE/mDipBsgBNX4G4v9AbAkyhFQDtkM1LyXHBbFQzW+BtBC615Bdgi0M7IAaPkENiMIWqIQMuAXV/AdI
+    bwHiHCAGhQc8kAkZ0AxU/AFqCCgAYfgBkO2BHpj4olEUqBjkha1A/AtqUCkpBrABFVcD8TeoZhCdRKwB
+    rkCFN5CcvwLIlsYWnRiJA6qoBKr5FZDuIzoakZKzIlogoiRznLGAZAAP0IA0IG4B4mnkuABrriSYF7Ap
+    ICQGAJJoJ2qW4Q5fAAAAAElFTkSuQmCC
+  </Icon>
+</KinoveaPostureTool>

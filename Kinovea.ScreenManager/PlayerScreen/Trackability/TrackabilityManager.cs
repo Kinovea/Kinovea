@@ -38,15 +38,25 @@ namespace Kinovea.ScreenManager
         }
         
         private Dictionary<Guid, DrawingTracker> trackers = new Dictionary<Guid, DrawingTracker>();
+        private TrackingProfileManager trackingProfileManager = new TrackingProfileManager();
+        private Size imageSize;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
+        public void Initialize(Size imageSize)
+        {
+            this.imageSize = imageSize;
+        }
+
         public void Add(ITrackable drawing, VideoFrame videoFrame)
         {
             if(trackers.ContainsKey(drawing.ID))
                return;
             
+            TrackingProfile profile = drawing.CustomTrackingProfile ?? trackingProfileManager.Current;
+            TrackerParameters parameters = new TrackerParameters(profile, imageSize);
+
             TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-            trackers.Add(drawing.ID, new DrawingTracker(drawing, context));
+            trackers.Add(drawing.ID, new DrawingTracker(drawing, context, parameters));
         }
         
         public void Clear()

@@ -63,7 +63,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region Private Methods
+        #region Members
         private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
         private DrawingStyle m_StylePreset;
         #endregion

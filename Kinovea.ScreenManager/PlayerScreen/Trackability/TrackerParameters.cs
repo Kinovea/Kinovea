@@ -28,22 +28,66 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackerParameters
     {
-        /// <summary>
-        /// Size of window to search into.
-        /// </summary>
-        public Size SearchWindowSize
+        public double SimilarityThreshold
         {
-            get { return searchWindowSize; }
-            set { searchWindowSize = value; }
+            get { return similarityThreshold; }
         }
-        
-        private Size searchWindowSize = new Size(80, 80);
-        
-        public TrackerParameters(Size searchWindowSize)
+
+        public double TemplateUpdateThreshold
         {
-            this.searchWindowSize = searchWindowSize;
+            get { return templateUpdateThreshold; }
         }
+
+        public Size SearchWindow
+        {
+            get { return searchWindow; }
+        }
+
+        public Size BlockWindow
+        {
+            get { return blockWindow; }
+        }
+
+        public bool ResetOnMove
+        {
+            get { return resetOnMove; }
+        }
+
+
+        private double similarityThreshold = 0.50f;
         
-        public TrackerParameters(){}
+        // If simi is better than this, we keep the same template, to avoid the template update drift.
+        // When using CCORR : 0.90 or 0.95.
+        // When using CCOEFF : 0.80
+        private double templateUpdateThreshold = 0.80f;
+        private Size searchWindow;
+        private Size blockWindow;
+        private bool resetOnMove = true;
+
+        public TrackerParameters(double similarityThreshold, double templateUpdateThreshold, Size searchWindow, Size blockWindow, bool resetOnMove)
+        {
+            this.similarityThreshold = similarityThreshold;
+            this.templateUpdateThreshold = templateUpdateThreshold;
+            this.searchWindow = searchWindow;
+            this.blockWindow = blockWindow;
+            this.resetOnMove = resetOnMove;
+        }
+
+        public TrackerParameters(TrackingProfile profile, Size imageSize)
+        {
+            this.similarityThreshold = profile.SimilarityThreshold;
+            this.templateUpdateThreshold = profile.TemplateUpdateThreshold;
+
+            this.searchWindow = profile.SearchWindow;
+            if (profile.SearchWindowUnit == TrackerParameterUnit.Percentage)
+                this.searchWindow = new Size((int)(imageSize.Width * (profile.SearchWindow.Width / 100.0)), (int)(imageSize.Height * (profile.SearchWindow.Height / 100.0)));
+
+            this.blockWindow = profile.BlockWindow;
+            if (profile.BlockWindowUnit == TrackerParameterUnit.Percentage)
+                this.blockWindow = new Size((int)(imageSize.Width * (profile.BlockWindow.Width / 100.0)), (int)(imageSize.Height * (profile.BlockWindow.Height / 100.0)));
+
+            this.resetOnMove = profile.ResetOnMove;
+        }
     }
+
 }

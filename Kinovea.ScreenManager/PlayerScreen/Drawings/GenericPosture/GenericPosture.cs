@@ -51,6 +51,7 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureComputedPoint> ComputedPoints { get; private set;}
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
+        public TrackingProfile CustomTrackingProfile { get; private set; }
         public GenericPostureCapabilities Capabilities { get; private set;}
         public Dictionary<string, bool> OptionGroups { get; private set;}
         
@@ -82,6 +83,7 @@ namespace Kinovea.ScreenManager
             ComputedPoints = new List<GenericPostureComputedPoint>();
             HitZones = new List<GenericPostureAbstractHitZone>();
             Capabilities = GenericPostureCapabilities.None;
+            CustomTrackingProfile = null;
             OptionGroups = new Dictionary<string, bool>();
             
             if(string.IsNullOrEmpty(descriptionFile))
@@ -199,6 +201,9 @@ namespace Kinovea.ScreenManager
                         case "HitZone":
     						ParseHitZone(r);
     						break;
+                        case "TrackingProfile":
+                            ParseTrackingProfile(r);
+                            break;
                         case "DefaultOptions":
     						ParseDefaultOptions(r);
     						break;
@@ -370,6 +375,60 @@ namespace Kinovea.ScreenManager
             
             r.ReadEndElement();
         }
+        private void ParseTrackingProfile(XmlReader r)
+        {
+            TrackingProfile classic = new TrackingProfile();
+            double similarityThreshold = classic.SimilarityThreshold;
+            double updateThreshold = classic.TemplateUpdateThreshold;
+            Size searchWindow = classic.SearchWindow;
+            Size blockWindow = classic.BlockWindow;
+            TrackerParameterUnit searchWindowUnit = classic.SearchWindowUnit;
+            TrackerParameterUnit blockWindowUnit = classic.BlockWindowUnit;
+            bool resetOnMove = classic.ResetOnMove;
+
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "SimilarityThreshold":
+                        similarityThreshold = r.ReadElementContentAsDouble();
+                        break;
+                    case "UpdateTemplateThreshold":
+                        updateThreshold = r.ReadElementContentAsDouble();
+                        break;
+                    case "SearchWindow":
+                        if (r.MoveToAttribute("unit"))
+                            searchWindowUnit = (TrackerParameterUnit)Enum.Parse(typeof(TrackerParameterUnit), r.ReadContentAsString());
+
+                        r.ReadStartElement();
+                        searchWindow = XmlHelper.ParseSize(r.ReadContentAsString());
+                        r.ReadEndElement();
+                        break;
+                    case "BlockWindow":
+                        if (r.MoveToAttribute("unit"))
+                            blockWindowUnit = (TrackerParameterUnit)Enum.Parse(typeof(TrackerParameterUnit), r.ReadContentAsString());
+
+                        r.ReadStartElement();
+                        blockWindow = XmlHelper.ParseSize(r.ReadContentAsString());
+                        r.ReadEndElement();
+                        break;
+                    case "ResetOnMove":
+                        resetOnMove = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    default:
+                        string outerXml = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                        break;
+                }
+            }
+            
+            r.ReadEndElement();
+
+            string name = Guid.NewGuid().ToString();
+            CustomTrackingProfile = new TrackingProfile(name, similarityThreshold, updateThreshold, searchWindow, blockWindow, searchWindowUnit, blockWindowUnit, resetOnMove);
+        }
         private void ParseHitZone(XmlReader r)
         {
             r.ReadStartElement();
@@ -519,7 +578,14 @@ namespace Kinovea.ScreenManager
                 trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), p));
             }
         }
-              
+
+        public void SignalTrackablePointMoved(int handleIndex, EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
+        {
+            int index = Handles[handleIndex].Reference;
+            Point p = new Point((int)Points[index].X, (int)Points[index].Y);
+            trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), p));
+        }
+
         public void SetTrackablePointValue(string name, Point value, CalibrationHelper calibrationHelper)
         {
             // Value coming from tracking.
