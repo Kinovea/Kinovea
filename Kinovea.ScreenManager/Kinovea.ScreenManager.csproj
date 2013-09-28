@@ -255,6 +255,7 @@
     <Compile Include="CoordinateSystem.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackerBlockParameters.cs" />
     <Compile Include="Properties\Player.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
