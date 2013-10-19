@@ -197,7 +197,7 @@ namespace Kinovea.ScreenManager
                 DrawComputedPoints(penEdge, basePenEdgeColor, brushHandle, baseBrushHandleColor, alpha, opacity, _canvas, _transformer);
                 DrawSegments(penEdge, basePenEdgeColor, alpha, _canvas, _transformer, points);
                 DrawEllipses(penEdge, basePenEdgeColor, alpha, _canvas, _transformer, points);
-                DrawHandles(brushHandle, baseBrushHandleColor, alpha, _canvas, points);
+                DrawHandles(brushHandle, baseBrushHandleColor, alpha, _canvas, _transformer, points);
                 DrawAngles(penEdge, basePenEdgeColor, brushFill, baseBrushFillColor, alpha, alphaBackground, opacity, _canvas, _transformer, points);
                 DrawDistances(brushFill, baseBrushFillColor, alphaBackground, opacity, _canvas, _transformer, points);
                 DrawPositions(brushFill, baseBrushFillColor, alphaBackground, opacity, _canvas, _transformer, points);
@@ -515,7 +515,7 @@ namespace Kinovea.ScreenManager
             
             penEdge.Color = basePenEdgeColor;
         }
-        private void DrawHandles(SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, Graphics canvas, List<Point> points)
+        private void DrawHandles(SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, Graphics canvas, IImageToViewportTransformer _transformer, List<Point> points)
         {
             foreach(GenericPostureHandle handle in m_GenericPosture.Handles)
             {
@@ -526,6 +526,13 @@ namespace Kinovea.ScreenManager
                 {
                     brushHandle.Color = handle.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, handle.Color);
                     canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
+
+                    /*Pen p = new Pen(handle.Color);
+                    Point point = points[handle.Reference];
+                    Rectangle block = point.Box(_transformer.Transform(m_GenericPosture.CustomTrackingProfile.BlockWindow));
+                    Rectangle search = point.Box(_transformer.Transform(m_GenericPosture.CustomTrackingProfile.SearchWindow));
+                    canvas.DrawRectangle(p, block);
+                    canvas.DrawRectangle(p, search);*/
                 }
             }
             
