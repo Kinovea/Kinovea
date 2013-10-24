@@ -405,7 +405,7 @@ namespace Kinovea.ScreenManager
         {
             _track.ParentMetadata = this;
             _track.Status = TrackStatus.Edit;
-            _track.m_ShowClosestFrame = _showClosestFrame;
+            _track.ShowClosestFrame = _showClosestFrame;
             _track.MainColor = _color;
             extraDrawings.Add(_track);
             hitExtraDrawingIndex = extraDrawings.Count - 1;
