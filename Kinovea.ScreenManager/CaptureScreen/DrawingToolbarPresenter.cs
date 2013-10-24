@@ -36,6 +36,7 @@ namespace Kinovea.ScreenManager
         public DrawingToolbarPresenter()
         {
             view = new ToolStrip();
+            view.BackColor = Color.White;
         }
         
         public void AddToolButton(AbstractDrawingTool tool, EventHandler handler)
