@@ -119,7 +119,6 @@ namespace Kinovea.Root
             lblAccelerationUnit.Text = "Acceleration :";
             cmbAccelerationUnit.Items.Add(String.Format("Meters per second squared ({0})", UnitHelper.AccelerationAbbreviation(AccelerationUnit.MetersPerSecondSquared)));
             cmbAccelerationUnit.Items.Add(String.Format("Feet per second squared ({0})", UnitHelper.AccelerationAbbreviation(AccelerationUnit.FeetPerSecondSquared)));
-            cmbAccelerationUnit.Items.Add(String.Format("Gravity ({0})", UnitHelper.AccelerationAbbreviation(AccelerationUnit.Gravity)));
 
             // Memory tab
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
