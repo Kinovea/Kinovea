@@ -53,6 +53,12 @@ namespace Kinovea.ScreenManager
             get { return speedUnit; }
             set { speedUnit = value;}
         }
+
+        public AccelerationUnit AccelerationUnit
+        {
+            get { return accelerationUnit; }
+            set { accelerationUnit = value; }
+        }
         
         public double FramesPerSecond
         {
@@ -75,6 +81,7 @@ namespace Kinovea.ScreenManager
         
         private LengthUnit lengthUnit = LengthUnit.Pixels;
         private SpeedUnit speedUnit = SpeedUnit.PixelsPerFrame;
+        private AccelerationUnit accelerationUnit = AccelerationUnit.PixelsPerFrameSquared;
         private double framesPerSecond = 25;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -83,6 +90,7 @@ namespace Kinovea.ScreenManager
         public CalibrationHelper()
         {
             speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
+            accelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
             calibrator = calibrationLine;
         }
         #endregion
@@ -148,6 +156,14 @@ namespace Kinovea.ScreenManager
             PointF b = calibrator.Transform(p2);
             return GeometryHelper.GetDistance(a, b);
         }
+
+        public float TransformScalar(float v)
+        {
+            PointF a = calibrator.Transform(PointF.Empty);
+            PointF b = calibrator.Transform(new PointF(v, 0));
+            float d = GeometryHelper.GetDistance(a, b);
+            return v < 0 ? -d : d;
+        }
         
         public string GetPointText(PointF p, bool precise, bool abbreviation)
         {
@@ -167,22 +183,65 @@ namespace Kinovea.ScreenManager
             return calibrator.Transform(p);
         }
         
-        public string GetSpeedText(PointF p1, PointF p2, int frames)
+        public string GetSpeedText(PointF p0, PointF p1, int interval, Component component)
         {
-            if((p1.X == p2.X && p1.Y == p2.Y) || frames == 0)
+            if(p0 == p1 || interval == 0)
                 return "0" + " " + UnitHelper.SpeedAbbreviation(speedUnit);
+
+            // px/f
+            float v = GetSpeed(p0, p1, interval, component);
             
-            float length = GetLength(p1, p2);
-            
-            // The user may have configured a preferred speed unit but not done any space calibration. Force use of px/f.
-            SpeedUnit unit = (lengthUnit == LengthUnit.Pixels && speedUnit != SpeedUnit.PixelsPerFrame) ? SpeedUnit.PixelsPerFrame : speedUnit;
-            
-            // Convert distance from length units to speed units, in case the user calibrated space in cm but want speed in m/s for example.
-            double length2 = UnitHelper.ConvertLengthForSpeedUnit(length, lengthUnit, unit);
-            
-            double speed = UnitHelper.GetSpeed(length2, frames, framesPerSecond, unit);
-            
-            string text = String.Format("{0:0.00} {1}", speed, UnitHelper.SpeedAbbreviation(unit));
+            // calibrated length unit/f
+            float v2 = TransformScalar(v);
+
+            // speed unit. (e.g: m/s). If the user hasn't calibrated, force usage of px/f.
+            SpeedUnit unit = lengthUnit == LengthUnit.Pixels ? SpeedUnit.PixelsPerFrame : speedUnit;
+            double v3 = UnitHelper.ConvertVelocity(v2, framesPerSecond, lengthUnit, unit);
+
+            string text = String.Format("{0:0.00} {1}", v3, UnitHelper.SpeedAbbreviation(unit));
+            return text;
+        }
+
+        private float GetSpeed(PointF p0, PointF p1, int dt, Component component)
+        {
+            // In pixels per frame.
+            float d = 0F;
+            switch (component)
+            {
+                case Component.Magnitude:
+                    d = GeometryHelper.GetDistance(p0, p1);
+                    break;
+                case Component.Horizontal:
+                    d = p1.X - p0.X;
+                    break;
+                case Component.Vertical:
+                    d = p1.Y - p0.Y;
+                    d = -d;
+                    break;
+            }
+
+            float v = d / dt;
+            return v;
+        }
+
+        public string GetAccelerationText(PointF p0, PointF p2, int interval1, PointF p1, PointF p3, int interval2, int interval3, Component component)
+        {
+            if (interval1 == 0 || interval2 == 0)
+                return "0" + " " + UnitHelper.AccelerationAbbreviation(accelerationUnit);
+
+            // px/f²
+            float v1 = GetSpeed(p0, p1, interval1, component);
+            float v2 = GetSpeed(p2, p3, interval2, component);
+            float a = (v2-v1)/interval3;
+
+            // calibrated length unit/f²
+            float a2 = TransformScalar(a);
+
+            // acceleration unit. (e.g: m/s²). If the user hasn't calibrated, force usage of px/f².
+            AccelerationUnit unit = lengthUnit == LengthUnit.Pixels ? AccelerationUnit.PixelsPerFrameSquared : accelerationUnit;
+            double a3 = UnitHelper.ConvertAcceleration(a2, framesPerSecond, lengthUnit, unit);
+
+            string text = String.Format("{0:0.00} {1}", a3, UnitHelper.AccelerationAbbreviation(unit));
             return text;
         }
         #endregion

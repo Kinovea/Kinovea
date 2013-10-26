@@ -701,6 +701,8 @@ namespace Kinovea.ScreenManager
             }
             
             m_FrameServer.Metadata.CalibrationHelper.SpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
+            m_FrameServer.Metadata.CalibrationHelper.AccelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
+
             m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
             // Refresh image to update timecode in chronos, grids colors, default fading, etc.

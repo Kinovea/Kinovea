@@ -44,6 +44,11 @@ namespace Kinovea.Services
             get { return speedUnit; }
             set { speedUnit = value; }
         }
+        public AccelerationUnit AccelerationUnit
+        {
+            get { return accelerationUnit; }
+            set { accelerationUnit = value; }
+        }
         public ImageAspectRatio AspectRatio
         {
             get { return aspectRatio; }
@@ -102,6 +107,7 @@ namespace Kinovea.Services
         
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
         private SpeedUnit speedUnit = SpeedUnit.MetersPerSecond;
+        private AccelerationUnit accelerationUnit = AccelerationUnit.MetersPerSecondSquared;
         private ImageAspectRatio aspectRatio = ImageAspectRatio.Auto;
         private bool deinterlaceByDefault;
         private int workingZoneSeconds = 12;
@@ -124,6 +130,7 @@ namespace Kinovea.Services
         {
             writer.WriteElementString("TimecodeFormat", timecodeFormat.ToString());
             writer.WriteElementString("SpeedUnit", speedUnit.ToString());
+            writer.WriteElementString("AccelerationUnit", accelerationUnit.ToString());
             writer.WriteElementString("AspectRatio", aspectRatio.ToString());
             writer.WriteElementString("DeinterlaceByDefault", deinterlaceByDefault ? "true" : "false");
             writer.WriteElementString("WorkingZoneSeconds", workingZoneSeconds.ToString());
@@ -169,6 +176,9 @@ namespace Kinovea.Services
                         break;
                     case "SpeedUnit":
                         speedUnit = (SpeedUnit) Enum.Parse(typeof(SpeedUnit), reader.ReadElementContentAsString());
+                        break;
+                    case "AccelerationUnit":
+                        accelerationUnit = (AccelerationUnit)Enum.Parse(typeof(AccelerationUnit), reader.ReadElementContentAsString());
                         break;
                     case "AspectRatio":
                         aspectRatio = (ImageAspectRatio) Enum.Parse(typeof(ImageAspectRatio), reader.ReadElementContentAsString());

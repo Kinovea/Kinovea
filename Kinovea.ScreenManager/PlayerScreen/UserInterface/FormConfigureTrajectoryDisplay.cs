@@ -69,8 +69,18 @@ namespace Kinovea.ScreenManager
         {
             // Combo must be filled in the order of the enum.
             cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None);
+            cmbExtraData.Items.Add("Position");            
+            //cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
             cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
             cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed);
+            cmbExtraData.Items.Add("Vertical velocity");
+            cmbExtraData.Items.Add("Horizontal velocity");
+            cmbExtraData.Items.Add("Acceleration");
+            cmbExtraData.Items.Add("Vertical acceleration");
+            cmbExtraData.Items.Add("Horizontal acceleration");
+
+            //cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalVelocity);
+            //cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity);
         }
         private void SetupStyleControls()
         {

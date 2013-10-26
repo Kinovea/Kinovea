@@ -255,9 +255,14 @@
     <Compile Include="CoordinateSystem.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="PlayerScreen\Geometry\Component.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackerParameterUnit.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackingProfile.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackingProfileManager.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackExtraData.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackMarker.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackStatus.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackView.cs" />
     <Compile Include="Properties\Player.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
