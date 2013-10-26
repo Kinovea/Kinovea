@@ -136,7 +136,7 @@
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Beweging rechts-naar-links</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Werkelijke afmetingen van het segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Fixeer de afmeting</value></data>
-   
+   <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Vlak Calibratie</value></data>
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Huidige selectie:</value></data>
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Eigenschappen</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Geen andere optie beschikbaar</value></data>
@@ -173,7 +173,7 @@
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Bewaar alleen de Kernbeeldgegevens.</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Alleen de beschrijving van de tekeningen en andere onderdelen van de analyse worden opgeslagen.#Het bestand kan later in een video worden geïmporteerd.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Bewaar video en Kernbeeldgegevens in een enkel bestand.</value></data>
-   
+   <data name="dlgSaveAnalysisOrVideo_HintMuxed" xml:space="preserve"><value>not translated</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Markeer permanent de Kernbeeld gegevens op de video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>De onderdelen van de analyse zijn zichtbaar in de afspelers, maar niet meer bewerkbaar.# Extra commentaar verbonden aan de Kernbeelden worden niet opgeslagen.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Bewaar alleen video.</value></data>
@@ -212,8 +212,8 @@
    <data name="Generic_Close" xml:space="preserve"><value>Sluiten</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Kleur:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuratie</value></data>
-   
-   
+   <data name="Generic_Calibration" xml:space="preserve"><value>Calibratie</value></data>
+   <data name="Generic_GridDivisionsPicker" xml:space="preserve"><value>Verdeling:</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Lettergrootte:</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Breedte:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Doorzichtigheid</value></data>
@@ -232,7 +232,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Snelheid :</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Positie</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Werkgebied :</value></data>
-   
+   <data name="LengthUnit_Millimeters" xml:space="preserve"><value>Millimeters</value></data>
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Centimeters</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>Meters</value></data>
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Inches</value></data>
@@ -310,7 +310,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Herstart Trajectpad Editor</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Fixeer de afmeting</value></data>
-   
+   <data name="mnuCalibrate" xml:space="preserve"><value>Calibreer…</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Zend beeld naar de andere video</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>High Speed camera...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Maak laatste frame van het werkgebied nu het huidige frame</value></data>
