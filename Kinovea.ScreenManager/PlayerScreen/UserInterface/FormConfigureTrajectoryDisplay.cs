@@ -58,6 +58,7 @@ namespace Kinovea.ScreenManager
             m_Track.DrawingStyle.Memorize();
             
             InitExtraDataCombo();
+            InitMarkerCombo();
             SetupStyleControls();
             SetCurrentOptions();
             InitCulture();
@@ -70,8 +71,8 @@ namespace Kinovea.ScreenManager
             // Combo must be filled in the order of the enum.
             cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None);
             cmbExtraData.Items.Add("Position");            
+            cmbExtraData.Items.Add("Total distance");
             //cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
-            cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
             cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed);
             cmbExtraData.Items.Add("Vertical velocity");
             cmbExtraData.Items.Add("Horizontal velocity");
@@ -81,6 +82,13 @@ namespace Kinovea.ScreenManager
 
             //cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalVelocity);
             //cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity);
+        }
+        private void InitMarkerCombo()
+        {
+            cmbMarker.Items.Add("Cross");
+            cmbMarker.Items.Add("Circle");
+            cmbMarker.Items.Add("Vector");
+            cmbMarker.Items.Add("Target");
         }
         private void SetupStyleControls()
         {
@@ -146,6 +154,7 @@ namespace Kinovea.ScreenManager
             }
             tbLabel.Text = m_Track.Label;
             cmbExtraData.SelectedIndex = (int)m_Track.ExtraData;
+            cmbMarker.SelectedIndex = (int)m_Track.Marker;
         }
         private void InitCulture()
         {
@@ -201,8 +210,16 @@ namespace Kinovea.ScreenManager
         private void CmbExtraData_SelectedIndexChanged(object sender, EventArgs e)
         {
             m_Track.ExtraData = (TrackExtraData)cmbExtraData.SelectedIndex;
-            if(m_Invalidate != null) m_Invalidate();
+            if(m_Invalidate != null) 
+                m_Invalidate();
         }
+        private void CmbMarker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            m_Track.Marker = (TrackMarker)cmbMarker.SelectedIndex;
+            if (m_Invalidate != null) 
+                m_Invalidate();
+        }
+
         private void element_ValueChanged(object sender, EventArgs e)
         {
             if(m_Invalidate != null) m_Invalidate();

@@ -8,6 +8,7 @@ namespace Kinovea.ScreenManager
     public enum TrackMarker
     {
         Cross,
+        Circle,
         Vector,
         Target
     }

@@ -101,6 +101,11 @@ namespace Kinovea.ScreenManager
                 IntegrateKeyframes();
             }
         }
+        public TrackMarker Marker
+        {
+            get { return trackMarker; }
+            set { trackMarker = value; }
+        }
         public long BeginTimeStamp
         {
             get { return beginTimeStamp; }
@@ -166,6 +171,7 @@ namespace Kinovea.ScreenManager
         private TrackView trackView = TrackView.Complete;
         private TrackStatus trackStatus = TrackStatus.Edit;
         private TrackExtraData trackExtraData = TrackExtraData.None;
+        private TrackMarker trackMarker = TrackMarker.Cross;
         private int movingHandler = -1;
         private bool invalid;                                 // Used for XML import.
             
@@ -485,26 +491,54 @@ namespace Kinovea.ScreenManager
             int radius = defaultCrossRadius;
             Point location = transformer.Transform(positions[currentPoint].Point);
             
-            //if(trackStatus == TrackStatus.Edit)
+            if(trackStatus == TrackStatus.Edit || trackMarker == TrackMarker.Cross ||
+                (trackMarker == TrackMarker.Vector && currentPoint == 0))
             {
-                // Little cross.
                 using(Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
                 {
                   canvas.DrawLine(p, location.X, location.Y - radius, location.X, location.Y + radius);
                   canvas.DrawLine(p, location.X - radius, location.Y, location.X + radius, location.Y);
                 }
             }
-            /*else
+            else
             {
-                // Crash test dummy style target.
-                /*int diameter = radius * 2;
-                canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 0, 90);
-                canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 90, 90);
-                canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 180, 90);
-                canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 270, 90);
-                canvas.DrawEllipse(Pens.White, location.Box(radius + 2));* /
-                canvas.DrawEllipse(Pens.White, location.Box(radius));
-            }*/
+                if (trackMarker == TrackMarker.Vector)
+                {
+                    Point a = positions[currentPoint - 1].Point;
+                    Point b = positions[currentPoint].Point;
+                    Vector v = new Vector(a, b);
+                    Vector vScaled = v * 10;
+
+                    using(Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+                    {
+                        p.EndCap = LineCap.ArrowAnchor;
+                        p.Width = 4;
+
+                        if (trackExtraData == TrackExtraData.HorizontalVelocity || trackExtraData == TrackExtraData.HorizontalAcceleration)
+                            canvas.DrawLine(p, location.X, location.Y, location.X + vScaled.X, location.Y);
+                        else if (trackExtraData == TrackExtraData.VerticalVelocity || trackExtraData == TrackExtraData.VerticalAcceleration)
+                            canvas.DrawLine(p, location.X, location.Y, location.X, location.Y + vScaled.Y);
+                        else
+                            canvas.DrawLine(p, location.X, location.Y, location.X + vScaled.X, location.Y + vScaled.Y);
+                    }
+                }
+                else if (trackMarker == TrackMarker.Circle)
+                {
+                    using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+                    {
+                        canvas.DrawEllipse(p, location.Box(radius));
+                    }
+                }
+                else if (trackMarker == TrackMarker.Target)
+                {
+                    int diameter = radius * 2;
+                    canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 0, 90);
+                    canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 90, 90);
+                    canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 180, 90);
+                    canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 270, 90);
+                    canvas.DrawEllipse(Pens.White, location.Box(radius + 2));
+                }   
+            }
         }
         private void DrawKeyframesTitles(Graphics canvas, double fadingFactor, IImageToViewportTransformer transformer)
         {
@@ -954,6 +988,10 @@ namespace Kinovea.ScreenManager
             enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
             string xmlExtraData = enumConverter.ConvertToString(trackExtraData);
             xmlWriter.WriteElementString("ExtraData", xmlExtraData);
+
+            enumConverter = TypeDescriptor.GetConverter(typeof(TrackMarker));
+            string xmlTrackMarker = enumConverter.ConvertToString(trackMarker);
+            xmlWriter.WriteElementString("Marker", xmlTrackMarker);
             
             TrackPointsToXml(xmlWriter);
             
@@ -1056,6 +1094,12 @@ namespace Kinovea.ScreenManager
                         {
                             TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
                             trackExtraData = (TrackExtraData)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
+                            break;
+                        }
+                    case "Marker":
+                        {
+                            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackMarker));
+                            trackMarker = (TrackMarker)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
                             break;
                         }
                     case "TrackPointList":
@@ -1245,6 +1289,17 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Miscellaneous private methods
+        /*private bool CanShowVectorArrows()
+        {
+            switch(trackExtraData)
+            {
+                case TrackExtraData.Acceleration:
+                case TrackExtraData.HorizontalAcceleration:
+                case TrackExtraData.VerticalAcceleration:
+                case TrackExtraData.Speed:
+                case TrackExtraData.
+            }
+        }*/
         private int FindClosestPoint(long currentTimestamp)
         {
             return FindClosestPoint(currentTimestamp, positions);
