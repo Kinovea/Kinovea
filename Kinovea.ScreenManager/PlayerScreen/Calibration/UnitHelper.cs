@@ -25,6 +25,21 @@ namespace Kinovea.ScreenManager
 {
     public static class UnitHelper
     {
+        // http://en.wikipedia.org/wiki/Conversion_of_units
+        // 1 inch 			= 0.0254 m.
+        // 1 foot			= 0.3048 m.
+        // 1 yard 			= 0.9144 m.
+        // 1 mile 			= 1 609.344 m.
+        // 1 nautical mile  = 1 852 m.
+        private const double millimeterToMeters = 0.001;
+        private const double centimeterToMeters = 0.01;
+        private const double inchToMeters = 0.0254;
+        private const double footToMeters = 0.3048;
+        private const double yardToMeters = 0.9144;
+        private const double kilometerToMeters = 1000;
+        private const double mileToMeters = 1609.344;
+        private const double nauticalMileToMeters = 1852;
+
         public static string LengthAbbreviation(LengthUnit unit)
         {
             string result = "";
@@ -88,59 +103,95 @@ namespace Kinovea.ScreenManager
             
             return abbreviation;
         }
-        
-        public static double ConvertLengthForSpeedUnit(double length, LengthUnit lengthUnit, SpeedUnit speedUnits)
+
+        public static string AccelerationAbbreviation(AccelerationUnit unit)
         {
-            // Convert from one length unit to another.
-            // We first convert from whatever unit into meters, then from meters to the output.
-            // The scenario where the space is calibrated but the user wants the speed in pixels is not supported.
-            
-            if(lengthUnit == LengthUnit.Pixels || lengthUnit == LengthUnit.Percentage)
-                return speedUnits == SpeedUnit.PixelsPerFrame ? length : 0;
-            
-            // http://en.wikipedia.org/wiki/Conversion_of_units
-            // 1 inch 			= 0.0254 m.
-            // 1 foot			= 0.3048 m.
-            // 1 yard 			= 0.9144 m.
-            // 1 mile 			= 1 609.344 m.
-            // 1 nautical mile  = 1 852 m.
-            
-            const double millimeterToMeters = 0.001;
-            const double centimeterToMeters = 0.01;
-            const double inchToMeters = 0.0254;
-            const double footToMeters = 0.3048;
-            const double yardToMeters = 0.9144;
-            const double kilometerToMeters = 1000;
-            const double mileToMeters = 1609.344;
-            const double nauticalMileToMeters = 1852;
-            
-            double meters = 0;
-            
-            switch(lengthUnit)
+            string abbreviation = "";
+            switch (unit)
             {
-                case LengthUnit.Millimeters:
-                    meters = length * millimeterToMeters;
+                case AccelerationUnit.FeetPerSecondSquared:
+                    abbreviation = "ft/s²";
                     break;
-                case LengthUnit.Centimeters:
-                    meters = length * centimeterToMeters;
+                case AccelerationUnit.MetersPerSecondSquared:
+                    abbreviation = "m/s²";
                     break;
-                case LengthUnit.Meters:
-                    meters = length;
-                    break;
-                case LengthUnit.Inches:
-                    meters = length * inchToMeters;
-                    break;
-                case LengthUnit.Feet:
-                    meters = length * footToMeters;
-                    break;
-                case LengthUnit.Yards:
-                    meters = length * yardToMeters;
+                case AccelerationUnit.PixelsPerFrameSquared:
+                default:
+                    abbreviation = "px/f²";
                     break;
             }
+
+            return abbreviation;
+        }
+
+        public static double ConvertVelocity(double v, double framesPerSecond, LengthUnit lengthUnit, SpeedUnit unit)
+        {
+            // v is given in <lengthUnit>/f.
+            if (unit == SpeedUnit.PixelsPerFrame)
+                return v;
+
+            double v2 = ConvertLengthForSpeedUnit(v, lengthUnit, unit);
             
             double result = 0;
+            double perSecond = v2 * framesPerSecond;
+
+            switch (unit)
+            {
+                case SpeedUnit.FeetPerSecond:
+                case SpeedUnit.MetersPerSecond:
+                    result = perSecond;
+                    break;
+                case SpeedUnit.KilometersPerHour:
+                case SpeedUnit.MilesPerHour:
+                case SpeedUnit.Knots:
+                    result = perSecond * 3600;
+                    break;
+                default:
+                    result = v2;
+                    break;
+            }
+
+            return result;
+        }
+
+        public static double ConvertAcceleration(double a, double framesPerSecond, LengthUnit lengthUnit, AccelerationUnit unit)
+        {
+            // a is given in <lengthUnit>/frame².
+            if (unit == AccelerationUnit.PixelsPerFrameSquared)
+                return a;
+
+            double a2 = ConvertLengthForAccelerationUnit(a, lengthUnit, unit);
             
-            switch(speedUnits)
+            double result = 0;
+            double perSecondSquared = a2 * framesPerSecond;
+
+            switch (unit)
+            {
+                case AccelerationUnit.FeetPerSecondSquared:
+                case AccelerationUnit.MetersPerSecondSquared:
+                    result = perSecondSquared;
+                    break;
+                default:
+                    result = a2;
+                    break;
+            }
+
+            return result;
+        }
+
+        private static double ConvertLengthForSpeedUnit(double length, LengthUnit lengthUnit, SpeedUnit speedUnits)
+        {
+            // Convert from one length unit to another, target unit is extracted from velocity unit.
+            // We first convert from whatever unit into meters, then from meters to the output.
+
+            // The scenario where the space is calibrated but the user wants the speed in pixels is not supported.
+            if (lengthUnit == LengthUnit.Pixels || lengthUnit == LengthUnit.Percentage)
+                return speedUnits == SpeedUnit.PixelsPerFrame ? length : 0;
+
+            double meters = GetMeters(length, lengthUnit);
+
+            double result = 0;
+            switch (speedUnits)
             {
                 case SpeedUnit.FeetPerSecond:
                     result = meters / footToMeters;
@@ -162,38 +213,67 @@ namespace Kinovea.ScreenManager
                     result = 0;
                     break;
             }
-            
+
             return result;
         }
-        
-        public static double GetSpeed(double length, int frames, double framesPerSecond, SpeedUnit speedUnit)
+
+        private static double ConvertLengthForAccelerationUnit(double length, LengthUnit lengthUnit, AccelerationUnit accUnit)
         {
-            // Length is given in the right unit.
+            // Convert from one length unit to another, target unit is extracted from acceleration unit.
+            // We first convert from whatever unit into meters, then from meters to the output.
+
+            // The scenario where the space is calibrated but the user wants the acceleration in pixels is not supported.
+            if (lengthUnit == LengthUnit.Pixels || lengthUnit == LengthUnit.Percentage)
+                return accUnit == AccelerationUnit.PixelsPerFrameSquared ? length : 0;
+
+            double meters = GetMeters(length, lengthUnit);
+
             double result = 0;
-            double perSecond = (length / frames ) * framesPerSecond;
-            
-            // Convert to expected time unit.
-            switch(speedUnit)
+            switch (accUnit)
             {
-                case SpeedUnit.FeetPerSecond:
-                case SpeedUnit.MetersPerSecond:
-                    // To seconds.
-                    result = perSecond;
+                case AccelerationUnit.FeetPerSecondSquared:
+                    result = meters / footToMeters;
                     break;
-                case SpeedUnit.KilometersPerHour:
-                case SpeedUnit.MilesPerHour:
-                case SpeedUnit.Knots:
-                    // To hours.
-                    result = perSecond * 3600;
+                case AccelerationUnit.MetersPerSecondSquared:
+                    result = meters;
                     break;
-                case SpeedUnit.PixelsPerFrame:
+                case AccelerationUnit.PixelsPerFrameSquared:
                 default:
-                    // To frames.
-                    result = length / frames;
+                    result = 0;
                     break;
             }
-            
+
             return result;
-        }        
+        }
+
+        private static double GetMeters(double length, LengthUnit unit)
+        {
+            double meters = 0;
+
+            switch (unit)
+            {
+                case LengthUnit.Millimeters:
+                    meters = length * millimeterToMeters;
+                    break;
+                case LengthUnit.Centimeters:
+                    meters = length * centimeterToMeters;
+                    break;
+                case LengthUnit.Meters:
+                    meters = length;
+                    break;
+                case LengthUnit.Inches:
+                    meters = length * inchToMeters;
+                    break;
+                case LengthUnit.Feet:
+                    meters = length * footToMeters;
+                    break;
+                case LengthUnit.Yards:
+                    meters = length * yardToMeters;
+                    break;
+            }
+
+            return meters;
+        }  
+    
     }
 }

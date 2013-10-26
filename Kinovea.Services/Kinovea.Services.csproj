@@ -137,6 +137,8 @@
     <Compile Include="Events\ExplorerTabEventArgs.cs" />
     <Compile Include="Events\StatusUpdatedEventArgs.cs" />
     <Compile Include="Pair.cs" />
+    <Compile Include="Preferences\AccelerationUnit.cs" />
+    <Compile Include="Preferences\AngleUnit.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
     <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
