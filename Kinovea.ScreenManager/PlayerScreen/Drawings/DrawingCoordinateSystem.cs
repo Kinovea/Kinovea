@@ -105,8 +105,8 @@ namespace Kinovea.ScreenManager
         private Guid id = Guid.NewGuid();
         private Dictionary<string, Point> points = new Dictionary<string, Point>();
         private bool showAxis = true;
-        private bool showGrid;
-        private bool showGraduations;
+        private bool showGrid = true;
+        private bool showGraduations = true;
         private Size imageSize;
 
         // Decoration
