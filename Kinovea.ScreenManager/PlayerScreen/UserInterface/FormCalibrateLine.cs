@@ -120,9 +120,8 @@ namespace Kinovea.ScreenManager
                 float ratio = length / pixelLength;
                 
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Line);
-
-                calibrationHelper.CalibrationByLine_SetPixelToUnit(ratio);
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
+                calibrationHelper.CalibrationByLine_SetPixelToUnit(ratio);
             }
             catch
             {

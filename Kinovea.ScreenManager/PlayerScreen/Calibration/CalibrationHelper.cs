@@ -113,10 +113,15 @@ namespace Kinovea.ScreenManager
         public void CalibrationByLine_SetPixelToUnit(float ratio)
         {
             calibrationLine.SetPixelToUnit(ratio);
+
+            if (CalibrationChanged != null)
+                CalibrationChanged(this, EventArgs.Empty);
         }
         public void CalibrationByLine_SetOrigin(PointF p)
         {
             calibrationLine.SetOrigin(p);
+            if (CalibrationChanged != null)
+                CalibrationChanged(this, EventArgs.Empty);
         }
         public PointF CalibrationByLine_GetOrigin()
         {
@@ -129,6 +134,8 @@ namespace Kinovea.ScreenManager
         public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
         {
             calibrationPlane.Initialize(size, quadImage);
+            if (CalibrationChanged != null)
+                CalibrationChanged(this, EventArgs.Empty);
         }
         public SizeF CalibrationByPlane_GetRectangleSize()
         {
@@ -137,17 +144,18 @@ namespace Kinovea.ScreenManager
         
         #endregion
         
-        #region Value extractors
-        public string GetLengthText(PointF p1, PointF p2, bool precise, bool abbreviation)
+        #region Value computers
+        public float GetScalar(float v)
         {
-            float length = GetLength(p1, p2);
-            string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
-            string text = String.Format(valueTemplate, length);
-            
-            if(abbreviation)
-                text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
-            
-            return text;
+            PointF a = calibrator.Transform(PointF.Empty);
+            PointF b = calibrator.Transform(new PointF(v, 0));
+            float d = GeometryHelper.GetDistance(a, b);
+            return v < 0 ? -d : d;
+        }
+
+        public PointF GetPoint(PointF p)
+        {
+            return calibrator.Transform(p);
         }
         
         public float GetLength(PointF p1, PointF p2)
@@ -156,53 +164,23 @@ namespace Kinovea.ScreenManager
             PointF b = calibrator.Transform(p2);
             return GeometryHelper.GetDistance(a, b);
         }
-
-        public float TransformScalar(float v)
-        {
-            PointF a = calibrator.Transform(PointF.Empty);
-            PointF b = calibrator.Transform(new PointF(v, 0));
-            float d = GeometryHelper.GetDistance(a, b);
-            return v < 0 ? -d : d;
-        }
         
-        public string GetPointText(PointF p, bool precise, bool abbreviation)
+        public float GetSpeed(PointF p0, PointF p1, int dt, Component component)
         {
-            PointF a = GetPoint(p);
-            
-            string valueTemplate = precise ? "{{{0:0.00};{1:0.00}}}" : "{{{0:0};{1:0}}}";
-            string text = String.Format(valueTemplate, a.X, a.Y);
-            
-            if(abbreviation)
-                text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
-            
-            return text;
-        }
-        
-        public PointF GetPoint(PointF p)
-        {
-            return calibrator.Transform(p);
-        }
-        
-        public string GetSpeedText(PointF p0, PointF p1, int interval, Component component)
-        {
-            if(p0 == p1 || interval == 0)
-                return "0" + " " + UnitHelper.SpeedAbbreviation(speedUnit);
-
             // px/f
-            float v = GetSpeed(p0, p1, interval, component);
-            
+            float v = GetSpeedPixelsPerFrame(p0, p1, dt, component);
+
             // calibrated length unit/f
-            float v2 = TransformScalar(v);
+            float v2 = GetScalar(v);
 
             // speed unit. (e.g: m/s). If the user hasn't calibrated, force usage of px/f.
-            SpeedUnit unit = lengthUnit == LengthUnit.Pixels ? SpeedUnit.PixelsPerFrame : speedUnit;
+            SpeedUnit unit = IsCalibrated ? speedUnit : SpeedUnit.PixelsPerFrame;
             double v3 = UnitHelper.ConvertVelocity(v2, framesPerSecond, lengthUnit, unit);
 
-            string text = String.Format("{0:0.00} {1}", v3, UnitHelper.SpeedAbbreviation(unit));
-            return text;
+            return (float)v3;
         }
 
-        private float GetSpeed(PointF p0, PointF p1, int dt, Component component)
+        private float GetSpeedPixelsPerFrame(PointF p0, PointF p1, int dt, Component component)
         {
             // In pixels per frame.
             float d = 0F;
@@ -224,27 +202,67 @@ namespace Kinovea.ScreenManager
             return v;
         }
 
-        public string GetAccelerationText(PointF p0, PointF p2, int interval1, PointF p1, PointF p3, int interval2, int interval3, Component component)
+        public float GetAcceleration(PointF p0, PointF p2, int interval1, PointF p1, PointF p3, int interval2, int interval3, Component component)
         {
-            if (interval1 == 0 || interval2 == 0)
-                return "0" + " " + UnitHelper.AccelerationAbbreviation(accelerationUnit);
-
             // px/f²
-            float v1 = GetSpeed(p0, p1, interval1, component);
-            float v2 = GetSpeed(p2, p3, interval2, component);
-            float a = (v2-v1)/interval3;
+            float v1 = GetSpeedPixelsPerFrame(p0, p1, interval1, component);
+            float v2 = GetSpeedPixelsPerFrame(p2, p3, interval2, component);
+            float a = (v2 - v1) / interval3;
 
             // calibrated length unit/f²
-            float a2 = TransformScalar(a);
+            float a2 = GetScalar(a);
 
             // acceleration unit. (e.g: m/s²). If the user hasn't calibrated, force usage of px/f².
-            AccelerationUnit unit = lengthUnit == LengthUnit.Pixels ? AccelerationUnit.PixelsPerFrameSquared : accelerationUnit;
+            AccelerationUnit unit = IsCalibrated ? accelerationUnit : AccelerationUnit.PixelsPerFrameSquared;
             double a3 = UnitHelper.ConvertAcceleration(a2, framesPerSecond, lengthUnit, unit);
 
-            string text = String.Format("{0:0.00} {1}", a3, UnitHelper.AccelerationAbbreviation(unit));
-            return text;
+            return (float)a3;
         }
         #endregion
+
+        #region Value as text
+        public string GetPointText(PointF p, bool precise, bool abbreviation)
+        {
+            // TODO: remove this function in favore of getting the raw value and formatting in the caller ?
+            PointF a = GetPoint(p);
+            
+            string valueTemplate = precise ? "{{{0:0.00};{1:0.00}}}" : "{{{0:0};{1:0}}}";
+            string text = String.Format(valueTemplate, a.X, a.Y);
+            
+            if(abbreviation)
+                text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
+            
+            return text;
+        }
+        
+        public string GetLengthText(PointF p1, PointF p2, bool precise, bool abbreviation)
+        {
+            float length = GetLength(p1, p2);
+            string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
+            string text = String.Format(valueTemplate, length);
+            
+            if(abbreviation)
+                text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
+            
+            return text;
+        }
+
+        public string GetLengthAbbreviation()
+        {
+            return UnitHelper.LengthAbbreviation(lengthUnit);
+        }
+        public string GetSpeedAbbreviation()
+        {
+            SpeedUnit unit = IsCalibrated ? speedUnit : SpeedUnit.PixelsPerFrame;
+            return UnitHelper.SpeedAbbreviation(unit);
+        }
+        public string GetAccelerationAbbreviation()
+        {
+            AccelerationUnit unit = IsCalibrated ? accelerationUnit : AccelerationUnit.PixelsPerFrameSquared;
+            return UnitHelper.AccelerationAbbreviation(unit);
+        }
+        #endregion
+        
         
         #region Inverse transformations (from calibrated space to image space).
         public float GetImageLength(PointF p1, PointF p2)
@@ -254,16 +272,19 @@ namespace Kinovea.ScreenManager
             return GeometryHelper.GetDistance(a, b);
         }
         
+        public float GetImageScalar(float v)
+        {
+            PointF a = calibrator.Untransform(PointF.Empty);
+            PointF b = calibrator.Untransform(new PointF(v, 0));
+            float d = GeometryHelper.GetDistance(a, b);
+            return v < 0 ? -d : d;
+        }
+
         public PointF GetImagePoint(PointF p)
         {
             return calibrator.Untransform(p);
         }
         #endregion
-        
-        public string GetLengthAbbreviation()
-        {
-            return UnitHelper.LengthAbbreviation(lengthUnit);
-        }
        
         #region Serialization
         public void WriteXml(XmlWriter w)

@@ -90,7 +90,11 @@ namespace Kinovea.ScreenManager
         public TrackStatus Status
         {
             get { return trackStatus; }
-            set { trackStatus = value; }
+            set 
+            { 
+                trackStatus = value;
+                AfterTrackStatusChanged();
+            }
         }
         public TrackExtraData ExtraData
         {
@@ -186,7 +190,10 @@ namespace Kinovea.ScreenManager
        
         // Internal data.
         private List<AbstractTrackPoint> positions = new List<AbstractTrackPoint>();
+        private List<TrajectoryPoint> trajectoryPoints = new List<TrajectoryPoint>();
         private List<KeyframeLabel> keyframesLabels = new List<KeyframeLabel>();
+        private KinematicsHelper kinematicsHelper = new KinematicsHelper();
+        private IImageToViewportTransformer transformer;
         
         private long beginTimeStamp;     			// absolute.
         private long endTimeStamp = long.MaxValue; 	// absolute.
@@ -277,9 +284,12 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing implementation
         public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
+
             if (currentTimestamp < beginTimeStamp)
                 return;
                 
+            this.transformer = transformer;
+            
             // 0. Compute the fading factor. 
             // Special case from other drawings:
             // ref frame is last point, and we only fade after it, not before.
@@ -367,7 +377,7 @@ namespace Kinovea.ScreenManager
         {
             int result = -1;
 
-            if (currentTimestamp < beginTimeStamp && currentTimestamp > endTimeStamp)
+            if (currentTimestamp < beginTimeStamp || currentTimestamp > endTimeStamp)
             {
                 movingHandler = -1;
                 return -1;
@@ -504,23 +514,31 @@ namespace Kinovea.ScreenManager
             {
                 if (trackMarker == TrackMarker.Vector)
                 {
-                    Point a = positions[currentPoint - 1].Point;
-                    Point b = positions[currentPoint].Point;
-                    Vector v = new Vector(a, b);
-                    Vector vScaled = v * 10;
-
-                    using(Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+                    /*for (int i = 0; i < trajectoryPoints.Count; i++)
                     {
-                        p.EndCap = LineCap.ArrowAnchor;
-                        p.Width = 4;
+                        Point pos = transformer.Transform(positions[i].Point);
 
-                        if (trackExtraData == TrackExtraData.HorizontalVelocity || trackExtraData == TrackExtraData.HorizontalAcceleration)
-                            canvas.DrawLine(p, location.X, location.Y, location.X + vScaled.X, location.Y);
-                        else if (trackExtraData == TrackExtraData.VerticalVelocity || trackExtraData == TrackExtraData.VerticalAcceleration)
-                            canvas.DrawLine(p, location.X, location.Y, location.X, location.Y + vScaled.Y);
-                        else
-                            canvas.DrawLine(p, location.X, location.Y, location.X + vScaled.X, location.Y + vScaled.Y);
-                    }
+                        TrajectoryPoint tp = trajectoryPoints[i];
+                        if (float.IsNaN(tp.Speed))
+                            continue;
+
+                        Vector v = new Vector(tp.HorizontalVelocity, tp.VerticalVelocity);
+
+                        Vector vScaled = new Vector(parentMetadata.CalibrationHelper.GetImageScalar(v.X) * 10, -parentMetadata.CalibrationHelper.GetImageScalar(v.Y) * 10);
+
+                        using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+                        {
+                            p.EndCap = LineCap.ArrowAnchor;
+                            p.Width = 2;
+
+                            if (trackExtraData == TrackExtraData.HorizontalVelocity || trackExtraData == TrackExtraData.HorizontalAcceleration)
+                                canvas.DrawLine(p, pos.X, pos.Y, pos.X + vScaled.X, pos.Y);
+                            else if (trackExtraData == TrackExtraData.VerticalVelocity || trackExtraData == TrackExtraData.VerticalAcceleration)
+                                canvas.DrawLine(p, pos.X, pos.Y, pos.X, pos.Y + vScaled.Y);
+                            else
+                                canvas.DrawLine(p, pos.X, pos.Y, pos.X + vScaled.X, pos.Y + vScaled.Y);
+                        }
+                    }*/
                 }
                 else if (trackMarker == TrackMarker.Circle)
                 {
@@ -608,135 +626,55 @@ namespace Kinovea.ScreenManager
         #region Extra informations (Speed, distance)
         private string GetExtraDataText(int index)
         {
-            string displayText = "";
+            CalibrationHelper helper = parentMetadata.CalibrationHelper;
+            CultureInfo culture = CultureInfo.InvariantCulture;
+            string displayText = "###";
+
             switch(trackExtraData)
             {
                 case TrackExtraData.Position:
-                    displayText = GetPositionText(index);
+                    PointF p = trajectoryPoints[index].Coordinates;
+                    displayText = string.Format(culture, "{0:0.00} ; {1:0.00} {2}", p.X, p.Y, helper.GetLengthAbbreviation());
                     break;
                 case TrackExtraData.TotalDistance:
-                    displayText = GetDistanceText(index);
+                    float d = trajectoryPoints[index].TotalDistance;
+                    displayText = string.Format(culture, "{0:0.00} {1}", d, helper.GetLengthAbbreviation());
                     break;
                 case TrackExtraData.Speed:
-                    displayText = GetSpeedText(index, Component.Magnitude);
+                    float v = trajectoryPoints[index].Speed;
+                    if (!float.IsNaN(v))
+                        displayText = string.Format(culture, "{0:0.00} {1}", v, helper.GetSpeedAbbreviation());
                     break;
                 case TrackExtraData.HorizontalVelocity:
-                    displayText = GetSpeedText(index, Component.Horizontal);
+                    float hv = trajectoryPoints[index].HorizontalVelocity;
+                    if (!float.IsNaN(hv))
+                        displayText = string.Format(culture, "{0:0.00} {1}", hv, helper.GetSpeedAbbreviation());
                     break;
                 case TrackExtraData.VerticalVelocity:
-                    displayText = GetSpeedText(index, Component.Vertical);
+                    float vv = trajectoryPoints[index].VerticalVelocity;
+                    if (!float.IsNaN(vv))
+                        displayText = string.Format(culture, "{0:0.00} {1}", vv, helper.GetSpeedAbbreviation());
                     break;
                 case TrackExtraData.Acceleration:
-                    displayText = GetAccelerationText(index, Component.Magnitude);
+                    float a = trajectoryPoints[index].Acceleration;
+                    if (!float.IsNaN(a))
+                        displayText = string.Format(culture, "{0:0.00} {1}", a, helper.GetAccelerationAbbreviation());
                     break;
                 case TrackExtraData.HorizontalAcceleration:
-                    displayText = GetAccelerationText(index, Component.Horizontal);
+                    float ha = trajectoryPoints[index].HorizontalAcceleration;
+                    if (!float.IsNaN(ha))
+                        displayText = string.Format(culture, "{0:0.00} {1}", ha, helper.GetAccelerationAbbreviation());
                     break;
                 case TrackExtraData.VerticalAcceleration:
-                    displayText = GetAccelerationText(index, Component.Vertical);
+                    float va = trajectoryPoints[index].VerticalAcceleration;
+                    if (!float.IsNaN(va))
+                        displayText = string.Format(culture, "{0:0.00} {1}", va, helper.GetAccelerationAbbreviation());
                     break;
                 case TrackExtraData.None:
+                default:
                     break;
             }	
             return displayText;
-        }
-
-        private string GetPositionText(int p)
-        {
-            if (positions.Count < 1)
-                return "";
-
-            return parentMetadata.CalibrationHelper.GetPointText(positions[p].Point.ToPointF(), true, true);
-        }
-        private string GetDistanceText(int p)
-        {
-            // Cumulative distance between origin and point.
-            if(positions.Count < 1)
-                return "";
-            
-            if(p < 1 || p >= positions.Count)
-                return parentMetadata.CalibrationHelper.GetLengthText(PointF.Empty, PointF.Empty, false, true);
-            
-            float length = 0;
-            for(int i = 0; i < p; i++)
-                length += GeometryHelper.GetDistance(positions[i].Point, positions[i+1].Point);
-            
-            return parentMetadata.CalibrationHelper.GetLengthText(PointF.Empty, new PointF(length, 0), true, true);
-        }
-        private string GetSpeedText(int p, Component component)
-        {
-            // Instantaneous speed at p.
-            if(positions.Count < 1)
-                return "";
-            
-            if(p < 1 || p >= positions.Count)
-                return parentMetadata.CalibrationHelper.GetSpeedText(PointF.Empty, PointF.Empty, 0, component);
-
-            // If last point we compute the average velocity of the last segment,
-            // otherwise we compute the central point velocity.
-            PointF a = positions[p - 1].Point.ToPointF();
-            PointF b;
-            int interval;
-
-            if (p == positions.Count - 1)
-            {
-                b = positions[p].Point.ToPointF();
-                interval = 1;
-            }
-            else
-            {
-                b = positions[p + 1].Point.ToPointF();
-                interval = 2;
-            }
-
-            return parentMetadata.CalibrationHelper.GetSpeedText(a, b, interval, component);
-        }
-
-        private string GetAccelerationText(int p, Component component)
-        {
-            // Instantaneous acceleration at p.
-            if (positions.Count < 2)
-                return "";
-
-            if (p < 2 || p >= positions.Count)
-                return parentMetadata.CalibrationHelper.GetAccelerationText(PointF.Empty, PointF.Empty, 0, PointF.Empty, PointF.Empty, 0, 0, component);
-
-            // We need velocities at i-1 and i+1 to get instantaneous acceleration at i.
-            // If i is the last point, the second velocity will be the avg velocity of the last segment,
-            // If i is the penultimate, the second velocity will be the avg velocity of the last segment.
-            // otherwise, it will be the central point velocity at i+1.
-            PointF a = positions[p - 2].Point.ToPointF();
-            PointF b = positions[p].Point.ToPointF();
-            int interval1 = 2;
-            
-            PointF c;
-            PointF d;
-            int interval2;
-            int interval3;
-
-            if (p == positions.Count - 1)
-            {
-                c = positions[p-1].Point.ToPointF();
-                d = positions[p].Point.ToPointF();
-                interval2 = 1;
-                interval3 = 1;
-            }
-            else if (p == positions.Count - 2)
-            {
-                c = positions[p].Point.ToPointF();
-                d = positions[p + 1].Point.ToPointF();
-                interval2 = 1;
-                interval3 = 2;
-            }
-            else
-            {
-                c = positions[p].Point.ToPointF();
-                d = positions[p + 2].Point.ToPointF();
-                interval2 = 2;
-                interval3 = 2;
-            }
-            
-            return parentMetadata.CalibrationHelper.GetAccelerationText(a, b, interval1, c, d, interval2, interval3, component);
         }
         #endregion
     
@@ -878,10 +816,12 @@ namespace Kinovea.ScreenManager
         public void StopTracking()
         {
             trackStatus = TrackStatus.Interactive;
+            AfterTrackStatusChanged();
         }
         public void RestartTracking()
         {
             trackStatus = TrackStatus.Edit;
+            AfterTrackStatusChanged();
         }
         #endregion
         
@@ -1205,6 +1145,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Miscellaneous public methods
+        public void CalibrationChanged()
+        {
+            trajectoryPoints = kinematicsHelper.ComputeValues(positions, parentMetadata.CalibrationHelper);
+            IntegrateKeyframes();
+        }
         public void IntegrateKeyframes()
         {
             //-----------------------------------------------------------------------------------
@@ -1289,17 +1234,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Miscellaneous private methods
-        /*private bool CanShowVectorArrows()
+        private void AfterTrackStatusChanged()
         {
-            switch(trackExtraData)
-            {
-                case TrackExtraData.Acceleration:
-                case TrackExtraData.HorizontalAcceleration:
-                case TrackExtraData.VerticalAcceleration:
-                case TrackExtraData.Speed:
-                case TrackExtraData.
-            }
-        }*/
+            if (trackStatus == TrackStatus.Interactive)
+                trajectoryPoints = kinematicsHelper.ComputeValues(positions, parentMetadata.CalibrationHelper);
+        }
         private int FindClosestPoint(long currentTimestamp)
         {
             return FindClosestPoint(currentTimestamp, positions);
