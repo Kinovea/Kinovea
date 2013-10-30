@@ -503,7 +503,6 @@ namespace Kinovea.ScreenManager
         }
         public void UpdateTrajectoriesForKeyframes()
         {
-            // Called when keyframe added, removed or title changed
             foreach(DrawingTrack t in Tracks())
                 t.IntegrateKeyframes();
         }
@@ -1484,7 +1483,8 @@ namespace Kinovea.ScreenManager
         }
         private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
-            UpdateTrajectoriesForKeyframes();
+            foreach (DrawingTrack t in Tracks())
+                t.CalibrationChanged();
         }
         private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs e)
         {
