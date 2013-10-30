@@ -27,17 +27,17 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// AbstractTrackPoint defines the common interface of a track position, 
-	/// and implements the common utility methods.
-	/// This class is not intended to be instanciated directly, 
-	/// use one of the derivative class instead, like TrackPointSURF or TrackPointBlock.
-	/// 
-	/// TrackPoints are always instanciated by Tracker concrete implementations.
-	/// At this abstract level, the TrackPoint is basically a 3D (x, y, timestamp) point.
-	/// </summary>
-	public abstract class AbstractTrackPoint
-	{
+    /// <summary>
+    /// AbstractTrackPoint defines the common interface of a track position, 
+    /// and implements the common utility methods.
+    /// This class is not intended to be instanciated directly, 
+    /// use one of the derivative class instead, like TrackPointSURF or TrackPointBlock.
+    /// 
+    /// TrackPoints are always instanciated by Tracker concrete implementations.
+    /// At this abstract level, the TrackPoint is basically a 3D (x, y, timestamp) point.
+    /// </summary>
+    public abstract class AbstractTrackPoint
+    {
         public Point Point
         {
             get { return new Point(X, Y);}
@@ -49,32 +49,32 @@ namespace Kinovea.ScreenManager
         }
         
         #region Members
-		public int X;
+        public int X;
         public int Y;
         public long T;          // timestamp relative to the first time stamp of the track
         #endregion
-		
+        
         #region Abstract Methods
-		/// <summary>
-		/// Reset data. This is used when the user manually moves a point.
-		/// Dispose any unmanaged resource.
-		/// </summary>
+        /// <summary>
+        /// Reset data. This is used when the user manually moves a point.
+        /// Dispose any unmanaged resource.
+        /// </summary>
         public abstract void ResetTrackData();
         #endregion
         
         #region Concrete Constructor
         protected AbstractTrackPoint()
         {
-        	//not implemented.
+            //not implemented.
         }
         #endregion
         
-		#region Concrete Public Methods
-		public void WriteXml(XmlWriter xmlWriter)
-		{
-			xmlWriter.WriteString(String.Format(CultureInfo.InvariantCulture, "{0};{1};{2}", X, Y, T));
-		}
-		public void ReadXml(XmlReader xmlReader)
+        #region Concrete Public Methods
+        public void WriteXml(XmlWriter xmlWriter)
+        {
+            xmlWriter.WriteString(String.Format(CultureInfo.InvariantCulture, "{0};{1};{2}", X, Y, T));
+        }
+        public void ReadXml(XmlReader xmlReader)
         {
             string xmlString = xmlReader.ReadElementContentAsString();
 
@@ -91,10 +91,10 @@ namespace Kinovea.ScreenManager
                 // will default to {0,0,0}.
             }
         }
-		public Rectangle Box(int radius)
-		{
-		    return new Point(X,Y).Box(radius);
-		}
-		#endregion
-	}
+        public Rectangle Box(int radius)
+        {
+            return new Point(X,Y).Box(radius);
+        }
+        #endregion
+    }
 }
