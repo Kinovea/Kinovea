@@ -3851,7 +3851,7 @@ namespace Kinovea.ScreenManager
             // m_DescaledMouse would have been set during the MouseDown event.
             CheckCustomDecodingSize(true);
             DrawingTrack trk = new DrawingTrack(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.CurrentImage, m_FrameServer.CurrentImage.Size);
-            m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, Color.CornflowerBlue); // todo: get color from track tool.
+            m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, TrackColorCycler.Next()); 
             
             // Return to the pointer tool.
             m_ActiveTool = m_PointerTool;
