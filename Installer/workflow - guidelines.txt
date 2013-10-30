@@ -1,24 +1,17 @@
 
-Last update: 2011-08-10. (0.8.16)
+Last update: 2013-10-27. (0.8.21)
 
 /!\ Use NSIS Unicode.
 
 1. Set experimental / release mode in RootKernel constructor.
 2. Check log level in OtherFiles\logConf.xml
 3. Update readme.txt (Refer to Mercurial changelog)
-4. Rebuild PlayerServer in release mode. (todo: move this to NSIS script)
-5. Update NSIS script.
-    - Version number.
-    - New folders if needed.
+4. Make sure everything builds and run correctly.
+5. Update build command line in NSIS script to match folder.
+6. Copy HelpVideos and Manuals folder to OtherFiles.
 6. kinovea.nsi -> Compile unicode script.
 
 Smoke tests:
 - Version number
 - Open a small file, add some drawings, save as new file with drawings muxed in separate stream, reopen and check.
 - Check new stuff.
-
-7. Archive binary.
-8. Upload on kinovea.org
-9. Upload update.xml or updatebeta.xml
-10. svn tag.
-11. Announce.
