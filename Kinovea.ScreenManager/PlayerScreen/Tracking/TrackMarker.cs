@@ -9,7 +9,6 @@ namespace Kinovea.ScreenManager
     {
         Cross,
         Circle,
-        Vector,
         Target
     }
 }

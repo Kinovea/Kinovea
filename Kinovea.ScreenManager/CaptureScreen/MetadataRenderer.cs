@@ -33,12 +33,10 @@ namespace Kinovea.ScreenManager
             this.metadata = metadata;
         }
     
-        public void Render(Graphics viewportCanvas, Point imageLocation, float imageZoom)
+        public void Render(Graphics viewportCanvas, Point imageLocation, float imageZoom, long timestamp)
         {
             if(metadata == null)
                 return;
-            
-            long timestamp = 0;
             
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             

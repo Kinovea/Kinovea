@@ -40,11 +40,14 @@ namespace Kinovea.ScreenManager
         {
             get { return metadata.HitDrawing;}
         }
+        
         #endregion
         
         #region Members
         private Metadata metadata;
         private ScreenToolManager screenToolManager;
+        private long fixedTimestamp;
+        private int fixedKeyframe;
         #endregion
         
         public MetadataManipulator(Metadata metadata, ScreenToolManager screenToolManager)
@@ -52,7 +55,17 @@ namespace Kinovea.ScreenManager
             this.metadata = metadata;
             this.screenToolManager = screenToolManager;
         }
-    
+        
+        public void SetFixedTimestamp(long timestamp)
+        {
+            this.fixedTimestamp = timestamp;
+        }
+
+        public void SetFixedKeyframe(int index)
+        {
+            this.fixedKeyframe = index;
+        }
+
         public bool OnMouseLeftDown(Point mouse, Point imageLocation, float imageZoom)
         {
             if(metadata == null || screenToolManager == null)
@@ -71,7 +84,7 @@ namespace Kinovea.ScreenManager
             if(screenToolManager.IsUsingHandTool)
             {
                 // TODO: Change cursor.
-                handled = screenToolManager.HandTool.OnMouseDown(metadata, 0, imagePoint, 0, false);
+                handled = screenToolManager.HandTool.OnMouseDown(metadata, fixedKeyframe, imagePoint, fixedTimestamp, false);
             }
             else
             {
@@ -107,7 +120,7 @@ namespace Kinovea.ScreenManager
             return handled;
         }
         
-        public void OnMouseUp()
+        public void OnMouseUp(Bitmap bitmap)
         {
             // TODO: Handle magnifier.
             // TODO: Memorize the action we just finished to enable undo.
@@ -117,6 +130,7 @@ namespace Kinovea.ScreenManager
             if(screenToolManager.IsUsingHandTool)
             {
                 screenToolManager.HandTool.OnMouseUp();
+                metadata.UpdateTrackPoint(bitmap);
                 // On Poke.
                 // magnifier on mouse up.
                 
@@ -150,8 +164,7 @@ namespace Kinovea.ScreenManager
             Point imagePoint = transformer.Untransform(mouse);
             
             int keyframeIndex = 0;
-            long timestamp = 0;
-            return metadata.IsOnDrawing(keyframeIndex, imagePoint, timestamp);
+            return metadata.IsOnDrawing(keyframeIndex, imagePoint, fixedTimestamp);
         }
         
         public Cursor GetCursor(float scale)
