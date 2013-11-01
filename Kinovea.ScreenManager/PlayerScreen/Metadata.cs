@@ -219,6 +219,7 @@ namespace Kinovea.ScreenManager
         private SpotlightManager spotlightManager;
         private AutoNumberManager autoNumberManager;
         private DrawingCoordinateSystem drawingCoordinateSystem;
+        private TrackerParameters lastUsedTrackerParameters;
         
         private bool mirrored;
         private bool showingMeasurables;
@@ -407,8 +408,22 @@ namespace Kinovea.ScreenManager
             _track.Status = TrackStatus.Edit;
             _track.ShowClosestFrame = _showClosestFrame;
             _track.MainColor = _color;
+            if (lastUsedTrackerParameters != null)
+                _track.TrackerParameters = lastUsedTrackerParameters;
             extraDrawings.Add(_track);
             hitExtraDrawingIndex = extraDrawings.Count - 1;
+
+            _track.TrackerParametersChanged += Track_TrackerParametersChanged;
+        }
+
+        private void Track_TrackerParametersChanged(object sender, EventArgs e)
+        {
+            // Remember last trackerparameters used.
+            DrawingTrack track = sender as DrawingTrack;
+            if (track == null)
+                return;
+
+            lastUsedTrackerParameters = track.TrackerParameters;
         }
         
         public void DeleteHitDrawing()
@@ -529,7 +544,7 @@ namespace Kinovea.ScreenManager
                 return;
             
             DrawingTrack t = extraDrawings[hitExtraDrawingIndex] as DrawingTrack;
-            if(t != null && t.Status == TrackStatus.Edit)
+            if(t != null && (t.Status == TrackStatus.Edit || t.Status == TrackStatus.Configuration))
                 t.UpdateTrackPoint(_bmp);
         }
         public void CleanupHash()

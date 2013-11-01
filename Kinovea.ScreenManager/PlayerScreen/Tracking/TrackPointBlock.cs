@@ -32,6 +32,7 @@ namespace Kinovea.ScreenManager
         public Bitmap Template;
         public bool IsReferenceBlock;
         public double Similarity;
+        public int TemplateAge;
         
         public TrackPointBlock(int _x, int _y, long _t)
             : this(_x, _y, _t, null)
@@ -43,12 +44,14 @@ namespace Kinovea.ScreenManager
             Y = _y;
             T = _t;
             Template = _img;
+            TemplateAge = 0;
         }
         
         public override void ResetTrackData()
         {
             IsReferenceBlock = false;
             Similarity = 1.0;
+            TemplateAge = 0;
             
             if(Template != null)
             {

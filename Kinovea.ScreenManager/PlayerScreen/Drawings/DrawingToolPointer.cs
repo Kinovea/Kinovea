@@ -384,36 +384,36 @@ namespace Kinovea.ScreenManager
                 DrawingTrack trk = _Metadata.ExtraDrawings[i] as DrawingTrack;
                 if(trk != null)
                 {
-                    // Result: 
-                    // -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
-                
+                    // Handle signification depends on track status.
                     int handle = trk.HitTest(_MouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem);
-    
-                    if (handle >= 0)
+                    if (handle < 0)
+                        continue;
+
+                    bTrackHit = true;
+                    m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
+                    _Metadata.SelectedExtraDrawing = i;
+
+                    manipulationType = ManipulationType.Move;
+
+                    switch (trk.Status)
                     {
-                        bTrackHit = true;
-                        m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
-                        _Metadata.SelectedExtraDrawing = i;
-    
-                        if(handle > 1)
-                        {
-                            // Touched target or handler.
-                            // The handler would have been saved inside the track object.
-                            manipulationType = ManipulationType.Move;	
-                        }
-                        else if (trk.Status == TrackStatus.Interactive)
-                        {
-                            manipulationType = ManipulationType.Resize;
-                            m_iResizingHandle = handle;	
-                        }
-                        else
-                        {
-                            // edit mode + 0 or 1.
-                            manipulationType = ManipulationType.Move;
-                        }
-                       
-                        break;
+                        case TrackStatus.Interactive:
+                            if (handle == 0 || handle == 1)
+                            {
+                                manipulationType = ManipulationType.Resize;
+                                m_iResizingHandle = handle;
+                            }
+                            break;
+                        case TrackStatus.Configuration:
+                            if (handle > 1)
+                            {
+                                manipulationType = ManipulationType.Resize;
+                                m_iResizingHandle = handle;
+                            }
+                            break;
                     }
+
+                    break;
                 }	
             }
 

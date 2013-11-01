@@ -20,6 +20,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Xml;
+using System.Globalization;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -51,6 +54,19 @@ namespace Kinovea.ScreenManager
         public bool ResetOnMove
         {
             get { return resetOnMove; }
+        }
+
+        public int ContentHash
+        {
+            get
+            {
+                int hash = 0;
+                hash ^= similarityThreshold.GetHashCode();
+                hash ^= templateUpdateThreshold.GetHashCode();
+                hash ^= searchWindow.GetHashCode();
+                hash ^= blockWindow.GetHashCode();
+                return hash;
+            }
         }
 
 
@@ -88,6 +104,51 @@ namespace Kinovea.ScreenManager
 
             this.resetOnMove = profile.ResetOnMove;
         }
-    }
+        
+        public void WriteXml(XmlWriter w)
+        {
+            w.WriteElementString("SimilarityThreshold", String.Format(CultureInfo.InvariantCulture, "{0}", similarityThreshold));
+            w.WriteElementString("TemplateUpdateThreshold", String.Format(CultureInfo.InvariantCulture, "{0}", templateUpdateThreshold));
+            w.WriteElementString("SearchWindow", String.Format(CultureInfo.InvariantCulture, "{0};{1}", searchWindow.Width, searchWindow.Height));
+            w.WriteElementString("BlockWindow", String.Format(CultureInfo.InvariantCulture, "{0};{1}", blockWindow.Width, blockWindow.Height));
+        }
 
+        public static TrackerParameters ReadXml(XmlReader r)
+        {
+            TrackingProfile classic = new TrackingProfile();
+            double similarityThreshold = classic.SimilarityThreshold;
+            double updateThreshold = classic.TemplateUpdateThreshold;
+            Size searchWindow = classic.SearchWindow;
+            Size blockWindow = classic.BlockWindow;
+            
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "SimilarityThreshold":
+                        similarityThreshold = r.ReadElementContentAsDouble();
+                        break;
+                    case "TemplateUpdateThreshold":
+                        updateThreshold = r.ReadElementContentAsDouble();
+                        break;
+                    case "SearchWindow":
+                        searchWindow = XmlHelper.ParseSize(r.ReadElementContentAsString());
+                        break;
+                    case "BlockWindow":
+                        blockWindow = XmlHelper.ParseSize(r.ReadElementContentAsString());
+                        break;
+                    default:
+                        string outerXml = r.ReadOuterXml();
+                        break;
+                }
+            }
+            
+            r.ReadEndElement();
+
+            TrackerParameters parameters = new TrackerParameters(similarityThreshold, updateThreshold, searchWindow, blockWindow, false);
+            return parameters;
+        }
+    }
 }

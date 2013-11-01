@@ -4000,11 +4000,12 @@ namespace Kinovea.ScreenManager
             DrawingTrack trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as DrawingTrack;
             if(trk == null)
                 return;
-            
-            formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(trk, DoInvalidate);
+
+            formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(trk, m_FrameServer.Metadata, m_FrameServer.CurrentImage, m_iCurrentPosition, DoInvalidate);
             fctd.StartPosition = FormStartPosition.CenterScreen;
             fctd.ShowDialog();
             fctd.Dispose();
+            DoInvalidate();
         }
         private void OnShowClosestFrame(Point _mouse, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly)
         {

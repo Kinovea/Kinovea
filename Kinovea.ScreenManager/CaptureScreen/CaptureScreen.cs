@@ -296,6 +296,7 @@ namespace Kinovea.ScreenManager
             {
                 Bitmap displayImage = buffer.Read(displayImageAge);
                 viewportController.Bitmap = displayImage;
+                viewportController.Timestamp = 0;
                 viewportController.Refresh();
             }
         }
@@ -404,6 +405,7 @@ namespace Kinovea.ScreenManager
             }
             
             viewportController.Bitmap = displayImage;
+            viewportController.Timestamp = 0;
             
             if(recording)
                 recorder.EnqueueFrame(CopyImage(displayImage));

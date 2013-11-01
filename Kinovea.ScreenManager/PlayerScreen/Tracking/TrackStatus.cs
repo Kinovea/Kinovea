@@ -8,6 +8,7 @@ namespace Kinovea.ScreenManager
     public enum TrackStatus
     {
         Edit,
-        Interactive
+        Interactive,
+        Configuration
     }
 }

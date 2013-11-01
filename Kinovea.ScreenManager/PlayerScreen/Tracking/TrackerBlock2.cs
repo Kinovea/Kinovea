@@ -42,13 +42,24 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackerBlock2 : AbstractTracker
     {
+        public override TrackerParameters Parameters
+        {
+            get { return parameters; }
+            set 
+            { 
+                parameters = value;
+                SetParameters(parameters);
+            }
+        }
+
         #region Members
         // Options - initialize in the constructor.
         private double similarityTreshold = 0.0f;					// Discard candidate block with lower similarity.
         private double templateUpdateThreshold = 1.0f;	// Only update the template if that dissimilar.
         private Size blockWindow = new Size(20, 20);						// Size of block to be matched.
         private Size searchWindow = new Size(100, 100);				// Size of window of candidates.
-        
+        private TrackerParameters parameters;
+
         // Monitoring, debugging.
         private static readonly bool monitoring = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -57,10 +68,8 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public TrackerBlock2(TrackerParameters parameters)
         {
-            similarityTreshold = parameters.SimilarityThreshold;
-            templateUpdateThreshold = parameters.TemplateUpdateThreshold;
-            searchWindow = parameters.SearchWindow;
-            blockWindow = parameters.BlockWindow;
+            this.parameters = parameters;
+            SetParameters(parameters);
         }
         #endregion
         
@@ -183,6 +192,7 @@ namespace Kinovea.ScreenManager
             // Copy the template from the image into its own Bitmap.
             
             Bitmap tpl = new Bitmap(blockWindow.Width, blockWindow.Height, PixelFormat.Format32bppPArgb);
+            int age = 0;
             
             bool updateWithCurrentImage = true;
             
@@ -194,6 +204,7 @@ namespace Kinovea.ScreenManager
                 {		
                     tpl = AForge.Imaging.Image.Clone(prevBlock.Template);
                     updateWithCurrentImage = false;
+                    age = prevBlock.TemplateAge + 1;
                 }
             }
             
@@ -271,6 +282,7 @@ namespace Kinovea.ScreenManager
             #endregion
             
             TrackPointBlock tpb = new TrackPointBlock(x, y, t, tpl);
+            tpb.TemplateAge = age;
             tpb.IsReferenceBlock = manual;
             tpb.Similarity = manual ? 1.0f : similarity;
         
@@ -284,14 +296,26 @@ namespace Kinovea.ScreenManager
             // We'll need to reconstruct it when we have the corresponding image.
             return new TrackPointBlock(x, y, t);
         }
-        public override void Draw(Graphics canvas, Point point, IImageToViewportTransformer transformer, Color color, double opacityFactor)
+        public override void Draw(Graphics canvas, AbstractTrackPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor)
         {
             // Draw the search and template boxes around the point.
-            Point p = transformer.Transform(point);
+            Point p = transformer.Transform(point.Point);
+            Rectangle search = p.Box(transformer.Transform(searchWindow));
+
             using(Pen pen = new Pen(Color.FromArgb((int)(opacityFactor * 192), color)))
             {
-                canvas.DrawRectangle(pen, p.Box(transformer.Transform(searchWindow)));
+                canvas.DrawRectangle(pen, search);
                 canvas.DrawRectangle(pen, p.Box(transformer.Transform(blockWindow)));
+
+                if (point is TrackPointBlock)
+                {
+                    TrackPointBlock tpb = (TrackPointBlock)point;
+                    string score = string.Format("{0:0.000} ({1})", tpb.Similarity, tpb.TemplateAge);
+                    Font f = new Font("Arial", 16, FontStyle.Bold);
+                    Brush b = tpb.Similarity > parameters.TemplateUpdateThreshold ? Brushes.Green : Brushes.Red;
+                    canvas.DrawString(score, f, b, search.Location.Translate(0, -25));
+                    f.Dispose();
+                }
             }
         }
         public override Rectangle GetEditRectangle(Point position)
@@ -299,5 +323,13 @@ namespace Kinovea.ScreenManager
             return position.Box(searchWindow);
         }
         #endregion
+    
+        private void SetParameters(TrackerParameters parameters)
+        {
+            similarityTreshold = parameters.SimilarityThreshold;
+            templateUpdateThreshold = parameters.TemplateUpdateThreshold;
+            searchWindow = parameters.SearchWindow;
+            blockWindow = parameters.BlockWindow;
+        }
     }
 }

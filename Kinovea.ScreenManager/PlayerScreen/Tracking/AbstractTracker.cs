@@ -31,6 +31,9 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public abstract class AbstractTracker
     {
+        public abstract TrackerParameters Parameters { get; set; }
+
+
         #region Abstract Methods
         
         /// <summary>
@@ -63,7 +66,7 @@ namespace Kinovea.ScreenManager
         /// Draw a visual representation of the tracking taking place.
         /// This may only make sense for users having an idea of how the tracking works.
         /// </summary>
-        public abstract void Draw(Graphics canvas, Point point, IImageToViewportTransformer transformer, Color color, double opacityFactor);
+        public abstract void Draw(Graphics canvas, AbstractTrackPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor);
         
         /// <summary>
         /// Retrieve the target rectangle for easy mouse manipulation.

@@ -49,6 +49,12 @@ namespace Kinovea.ScreenManager
             get { return bitmap;}
             set { bitmap = value;}
         }
+
+        public long Timestamp
+        {
+            get { return timestamp; }
+            set { timestamp = value; }
+        }
         
         public Rectangle DisplayRectangle
         {
@@ -83,6 +89,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private Viewport view;
         private Bitmap bitmap;
+        private long timestamp;
         private Rectangle displayRectangle;
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
@@ -126,7 +133,7 @@ namespace Kinovea.ScreenManager
             if(metadataRenderer == null)
                 return;
             
-            metadataRenderer.Render(canvas, location, zoom);
+            metadataRenderer.Render(canvas, location, zoom, timestamp);
         }
         
         public bool OnMouseLeftDown(Point mouse, Point imageLocation, float imageZoom)
@@ -150,7 +157,7 @@ namespace Kinovea.ScreenManager
             if(metadataManipulator == null)
                 return;
             
-            metadataManipulator.OnMouseUp();
+            metadataManipulator.OnMouseUp(bitmap);
             Refresh();
         }
         
