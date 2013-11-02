@@ -125,7 +125,12 @@ namespace Kinovea.ScreenManager
                 UpdateBoundingBoxes();
             }
         }
-        
+        public bool DisplayBestFitCircle
+        {
+            get { return displayBestFitCircle; }
+            set { displayBestFitCircle = value; }
+        }
+
         public long BeginTimeStamp
         {
             get { return beginTimeStamp; }
@@ -192,6 +197,7 @@ namespace Kinovea.ScreenManager
         private TrackStatus trackStatus = TrackStatus.Edit;
         private TrackExtraData trackExtraData = TrackExtraData.None;
         private TrackMarker trackMarker = TrackMarker.Cross;
+        private bool displayBestFitCircle;
         private int movingHandler = -1;
         private bool invalid;                                 // Used for XML import.
             
@@ -349,7 +355,7 @@ namespace Kinovea.ScreenManager
             if(positions.Count > 0)
             {
                 // Angular motion
-                if (trackStatus == TrackStatus.Interactive)
+                if (displayBestFitCircle && trackStatus == TrackStatus.Interactive)
                     DrawAngularMotion(canvas, currentPoint, opacityFactor, transformer);
 
                 // Track.
@@ -654,8 +660,8 @@ namespace Kinovea.ScreenManager
                 return;
 
             Point location = transformer.Transform(positions[currentPoint].Point);
-            Point center = transformer.Transform(trajectoryPoints[0].RotationCenter);
-            int radius = transformer.Transform((int)trajectoryPoints[0].RotationRadius);
+            Point center = transformer.Transform(trajectoryPoints[currentPoint].RotationCenter);
+            int radius = transformer.Transform((int)trajectoryPoints[currentPoint].RotationRadius);
  
             using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
             {
@@ -1054,6 +1060,8 @@ namespace Kinovea.ScreenManager
             string xmlTrackMarker = enumConverter.ConvertToString(trackMarker);
             xmlWriter.WriteElementString("Marker", xmlTrackMarker);
 
+            xmlWriter.WriteElementString("DisplayBestFitCircle", displayBestFitCircle.ToString().ToLower());
+
             xmlWriter.WriteStartElement("TrackerParameters");
             tracker.Parameters.WriteXml(xmlWriter);
             xmlWriter.WriteEndElement();
@@ -1174,6 +1182,9 @@ namespace Kinovea.ScreenManager
                             trackMarker = (TrackMarker)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
                             break;
                         }
+                    case "DisplayBestFitCircle":
+                        displayBestFitCircle = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     case "TrackerParameters":
                         tracker.Parameters = TrackerParameters.ReadXml(xmlReader);
                         break;
