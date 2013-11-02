@@ -65,7 +65,6 @@ namespace Kinovea.ScreenManager
             this.invalidate = invalidate;
             this.timestamp = timestamp;
             
-            
             pnlViewport.Controls.Add(viewportController.View);
             viewportController.View.Dock = DockStyle.Fill;
 
@@ -90,8 +89,9 @@ namespace Kinovea.ScreenManager
             track.DrawingStyle.Memorize();
 
             InitViewCombo();
-            InitExtraDataCombo();
             InitMarkerCombo();
+            InitExtraDataCombo();
+            chkBestFitCircle.Checked = track.DisplayBestFitCircle;
             InitTrackParameters();
             SetupStyleControls();
             SetCurrentOptions();
@@ -210,6 +210,7 @@ namespace Kinovea.ScreenManager
             lblView.Text = "Visibility:";
             lblMarker.Text = "Marker:";
             lblExtra.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelExtraData;
+            chkBestFitCircle.Text = "Display best fit circle";
             
             grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
 
@@ -266,6 +267,14 @@ namespace Kinovea.ScreenManager
         private void CmbExtraData_SelectedIndexChanged(object sender, EventArgs e)
         {
             track.ExtraData = (TrackExtraData)cmbExtraData.SelectedIndex;
+            bool useAngularKinematics = track.ExtraData == TrackExtraData.AngularDisplacement ||
+                track.ExtraData == TrackExtraData.AngularVelocity ||
+                track.ExtraData == TrackExtraData.AngularAcceleration ||
+                track.ExtraData == TrackExtraData.CentripetalAcceleration;
+
+            if (!chkBestFitCircle.Checked && useAngularKinematics)
+                chkBestFitCircle.Checked = true;
+
             if(invalidate != null) 
                 invalidate();
         }
@@ -281,58 +290,14 @@ namespace Kinovea.ScreenManager
             if(invalidate != null) 
                 invalidate();
         }
-        #endregion
-        
-        #region OK/Cancel/Closing
-        private void Form_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (!manualClose) 
-            {
-                UnhookEvents();
-                Revert();
-            }
 
-            track.Status = memoStatus;
-        }
-        private void UnhookEvents()
+
+        private void chkBestFitCircle_CheckedChanged(object sender, EventArgs e)
         {
-            // Unhook style event handlers
-            foreach(AbstractStyleElement element in elements)
-            {
-                element.ValueChanged -= element_ValueChanged;
-            }
-        }
-        private void Revert()
-        {
-            // Revert to memo and re-update data.
-            track.DrawingStyle.Revert();
-            track.DrawingStyle.RaiseValueChanged();
-            track.RecallState();
-            if(invalidate != null) 
+            track.DisplayBestFitCircle = chkBestFitCircle.Checked;
+
+            if (invalidate != null)
                 invalidate();
-        }
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            UnhookEvents();
-            manualClose = true;
-        }
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            UnhookEvents();
-            Revert();
-            manualClose = true;
-        }
-        #endregion
-
-        private void formConfigureTrajectoryDisplay_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pnlViewport_Click(object sender, EventArgs e)
-        {
-            // Test
-            viewportController.Refresh();
         }
 
         private void tbBlockWidth_TextChanged(object sender, EventArgs e)
@@ -391,7 +356,59 @@ namespace Kinovea.ScreenManager
             Size searchSize = new Size(track.TrackerParameters.SearchWindow.Width, height);
             PushTrackerParameters(blockSize, searchSize);
         }
+        #endregion
         
+        #region OK/Cancel/Closing
+        private void Form_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!manualClose) 
+            {
+                UnhookEvents();
+                Revert();
+            }
+
+            track.Status = memoStatus;
+        }
+        private void UnhookEvents()
+        {
+            // Unhook style event handlers
+            foreach(AbstractStyleElement element in elements)
+            {
+                element.ValueChanged -= element_ValueChanged;
+            }
+        }
+        private void Revert()
+        {
+            // Revert to memo and re-update data.
+            track.DrawingStyle.Revert();
+            track.DrawingStyle.RaiseValueChanged();
+            track.RecallState();
+            if(invalidate != null) 
+                invalidate();
+        }
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            UnhookEvents();
+            manualClose = true;
+        }
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            UnhookEvents();
+            Revert();
+            manualClose = true;
+        }
+        #endregion
+
+        private void formConfigureTrajectoryDisplay_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pnlViewport_Click(object sender, EventArgs e)
+        {
+            // Test
+            viewportController.Refresh();
+        }
         
         private bool ExtractTrackerParameter(TextBox tb, out int value)
         {
@@ -407,5 +424,6 @@ namespace Kinovea.ScreenManager
             track.TrackerParameters = new TrackerParameters(old.SimilarityThreshold, old.TemplateUpdateThreshold, search, block, old.ResetOnMove); ;
             viewportController.Refresh();
         }
+
     }
 }

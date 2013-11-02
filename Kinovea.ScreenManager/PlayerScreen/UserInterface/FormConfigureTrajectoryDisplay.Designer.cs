@@ -42,6 +42,8 @@ namespace Kinovea.ScreenManager
             this.lblExtra = new System.Windows.Forms.Label();
             this.grpIdentification = new System.Windows.Forms.GroupBox();
             this.grpTracking = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.tbSearchHeight = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tbSearchWidth = new System.Windows.Forms.TextBox();
@@ -51,8 +53,7 @@ namespace Kinovea.ScreenManager
             this.tbBlockWidth = new System.Windows.Forms.TextBox();
             this.lblObjectWindow = new System.Windows.Forms.Label();
             this.pnlViewport = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.chkBestFitCircle = new System.Windows.Forms.CheckBox();
             this.grpConfig.SuspendLayout();
             this.grpIdentification.SuspendLayout();
             this.grpTracking.SuspendLayout();
@@ -62,7 +63,7 @@ namespace Kinovea.ScreenManager
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(601, 431);
+            this.btnOK.Location = new System.Drawing.Point(640, 470);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(99, 24);
             this.btnOK.TabIndex = 45;
@@ -74,7 +75,7 @@ namespace Kinovea.ScreenManager
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(706, 431);
+            this.btnCancel.Location = new System.Drawing.Point(745, 470);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(99, 24);
             this.btnCancel.TabIndex = 50;
@@ -84,7 +85,7 @@ namespace Kinovea.ScreenManager
             // 
             // grpAppearance
             // 
-            this.grpAppearance.Location = new System.Drawing.Point(12, 196);
+            this.grpAppearance.Location = new System.Drawing.Point(12, 232);
             this.grpAppearance.Name = "grpAppearance";
             this.grpAppearance.Size = new System.Drawing.Size(297, 128);
             this.grpAppearance.TabIndex = 29;
@@ -112,6 +113,7 @@ namespace Kinovea.ScreenManager
             // 
             // grpConfig
             // 
+            this.grpConfig.Controls.Add(this.chkBestFitCircle);
             this.grpConfig.Controls.Add(this.cmbView);
             this.grpConfig.Controls.Add(this.lblView);
             this.grpConfig.Controls.Add(this.cmbMarker);
@@ -120,7 +122,7 @@ namespace Kinovea.ScreenManager
             this.grpConfig.Controls.Add(this.lblExtra);
             this.grpConfig.Location = new System.Drawing.Point(12, 74);
             this.grpConfig.Name = "grpConfig";
-            this.grpConfig.Size = new System.Drawing.Size(297, 116);
+            this.grpConfig.Size = new System.Drawing.Size(297, 152);
             this.grpConfig.TabIndex = 51;
             this.grpConfig.TabStop = false;
             this.grpConfig.Text = "Generic_Configuration";
@@ -208,12 +210,30 @@ namespace Kinovea.ScreenManager
             this.grpTracking.Controls.Add(this.label4);
             this.grpTracking.Controls.Add(this.tbBlockWidth);
             this.grpTracking.Controls.Add(this.lblObjectWindow);
-            this.grpTracking.Location = new System.Drawing.Point(9, 330);
+            this.grpTracking.Location = new System.Drawing.Point(9, 366);
             this.grpTracking.Name = "grpTracking";
             this.grpTracking.Size = new System.Drawing.Size(300, 93);
             this.grpTracking.TabIndex = 44;
             this.grpTracking.TabStop = false;
             this.grpTracking.Text = "Tracking";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(248, 56);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(18, 13);
+            this.label2.TabIndex = 54;
+            this.label2.Text = "px";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(248, 30);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(18, 13);
+            this.label1.TabIndex = 53;
+            this.label1.Text = "px";
             // 
             // tbSearchHeight
             // 
@@ -290,34 +310,27 @@ namespace Kinovea.ScreenManager
             this.pnlViewport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.pnlViewport.Location = new System.Drawing.Point(315, 12);
             this.pnlViewport.Name = "pnlViewport";
-            this.pnlViewport.Size = new System.Drawing.Size(490, 411);
+            this.pnlViewport.Size = new System.Drawing.Size(529, 452);
             this.pnlViewport.TabIndex = 52;
             this.pnlViewport.Click += new System.EventHandler(this.pnlViewport_Click);
             // 
-            // label1
+            // chkBestFitCircle
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(248, 30);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(18, 13);
-            this.label1.TabIndex = 53;
-            this.label1.Text = "px";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(248, 56);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(18, 13);
-            this.label2.TabIndex = 54;
-            this.label2.Text = "px";
+            this.chkBestFitCircle.AutoSize = true;
+            this.chkBestFitCircle.Location = new System.Drawing.Point(24, 115);
+            this.chkBestFitCircle.Name = "chkBestFitCircle";
+            this.chkBestFitCircle.Size = new System.Drawing.Size(122, 17);
+            this.chkBestFitCircle.TabIndex = 54;
+            this.chkBestFitCircle.Text = "Display best fit circle";
+            this.chkBestFitCircle.UseVisualStyleBackColor = true;
+            this.chkBestFitCircle.CheckedChanged += new System.EventHandler(this.chkBestFitCircle_CheckedChanged);
             // 
             // formConfigureTrajectoryDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(817, 467);
+            this.ClientSize = new System.Drawing.Size(856, 506);
             this.Controls.Add(this.pnlViewport);
             this.Controls.Add(this.grpTracking);
             this.Controls.Add(this.grpIdentification);
@@ -372,6 +385,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Panel pnlViewport;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkBestFitCircle;
 
     }
 }
