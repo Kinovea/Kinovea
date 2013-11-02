@@ -140,19 +140,35 @@ namespace Kinovea.ScreenManager
             return abbreviation;
         }
 
-        public static string AngularSpeedAbbreviation(AngularSpeedUnit unit)
+        public static string AngularVelocityAbbreviation(AngularVelocityUnit unit)
         {
             string abbreviation = "";
             switch (unit)
             {
-                case AngularSpeedUnit.DegreesPerSecond:
+                case AngularVelocityUnit.DegreesPerSecond:
                     abbreviation = "deg/s";
                     break;
-                case AngularSpeedUnit.RadiansPerSecond:
+                case AngularVelocityUnit.RadiansPerSecond:
                     abbreviation = "rad/s";
                     break;
-                case AngularSpeedUnit.RevolutionsPerMinute:
+                case AngularVelocityUnit.RevolutionsPerMinute:
                     abbreviation = "rpm";
+                    break;
+            }
+
+            return abbreviation;
+        }
+
+        public static string AngularAccelerationAbbreviation(AngularAccelerationUnit unit)
+        {
+            string abbreviation = "";
+            switch (unit)
+            {
+                case AngularAccelerationUnit.DegreesPerSecondSquared:
+                    abbreviation = "deg/s²";
+                    break;
+                case AngularAccelerationUnit.RadiansPerSecondSquared:
+                    abbreviation = "rad/s²";
                     break;
             }
 
@@ -208,6 +224,50 @@ namespace Kinovea.ScreenManager
                     break;
                 default:
                     result = a2;
+                    break;
+            }
+
+            return result;
+        }
+
+        public static double ConvertAngularVelocity(double radiansPerFrame, double framesPerSecond, AngularVelocityUnit unit)
+        {
+            if (unit == AngularVelocityUnit.RadiansPerFrame)
+                return radiansPerFrame;
+
+            double result = 0;
+
+            switch (unit)
+            {
+                case AngularVelocityUnit.DegreesPerSecond:
+                    result = radiansPerFrame * MathHelper.RadiansToDegrees * framesPerSecond;
+                    break;
+                case AngularVelocityUnit.RadiansPerSecond:
+                    result = radiansPerFrame * framesPerSecond;
+                    break;
+                case AngularVelocityUnit.RevolutionsPerMinute:
+                    double revolutionsPerFrame = radiansPerFrame / (2 * Math.PI);
+                    result = revolutionsPerFrame * framesPerSecond * 60;
+                    break;
+            }
+
+            return result;
+        }
+
+        public static double ConvertAngularAcceleration(double radiansPerFrameSquared, double framesPerSecond, AngularAccelerationUnit unit)
+        {
+            if (unit == AngularAccelerationUnit.RadiansPerFrameSquared)
+                return radiansPerFrameSquared;
+
+            double result = 0;
+
+            switch (unit)
+            {
+                case AngularAccelerationUnit.DegreesPerSecondSquared:
+                    result = radiansPerFrameSquared * MathHelper.RadiansToDegrees * framesPerSecond;
+                    break;
+                case AngularAccelerationUnit.RadiansPerSecondSquared:
+                    result = radiansPerFrameSquared * framesPerSecond;
                     break;
             }
 

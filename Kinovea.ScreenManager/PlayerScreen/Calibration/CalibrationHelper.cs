@@ -82,6 +82,9 @@ namespace Kinovea.ScreenManager
         private LengthUnit lengthUnit = LengthUnit.Pixels;
         private SpeedUnit speedUnit = SpeedUnit.PixelsPerFrame;
         private AccelerationUnit accelerationUnit = AccelerationUnit.PixelsPerFrameSquared;
+        private AngleUnit angleUnit = AngleUnit.Degree;
+        private AngularVelocityUnit angularVelocityUnit = AngularVelocityUnit.DegreesPerSecond;
+        private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
         private double framesPerSecond = 25;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -91,6 +94,9 @@ namespace Kinovea.ScreenManager
         {
             speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
             accelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
+            angleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
+            angularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit;
+            angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
             calibrator = calibrationLine;
         }
         #endregion
@@ -164,7 +170,7 @@ namespace Kinovea.ScreenManager
             PointF b = calibrator.Transform(p2);
             return GeometryHelper.GetDistance(a, b);
         }
-        
+
         public float GetSpeed(PointF p0, PointF p1, int dt, Component component)
         {
             // px/f
@@ -218,6 +224,20 @@ namespace Kinovea.ScreenManager
 
             return (float)a3;
         }
+
+        public float GetAngle(float radians)
+        {
+            return angleUnit == AngleUnit.Radian ? radians : (float)(radians * MathHelper.RadiansToDegrees);
+        }
+
+        public float GetAngularVelocity(float radiansPerFrame)
+        {
+            return (float)UnitHelper.ConvertAngularVelocity(radiansPerFrame, framesPerSecond, angularVelocityUnit);            
+        }
+        public float GetAngularAcceleration(float radiansPerFrameSquared)
+        {
+            return (float)UnitHelper.ConvertAngularAcceleration(radiansPerFrameSquared, framesPerSecond, angularAccelerationUnit); 
+        }
         #endregion
 
         #region Value as text
@@ -260,6 +280,18 @@ namespace Kinovea.ScreenManager
         {
             AccelerationUnit unit = IsCalibrated ? accelerationUnit : AccelerationUnit.PixelsPerFrameSquared;
             return UnitHelper.AccelerationAbbreviation(unit);
+        }
+        public string GetAngleAbbreviation()
+        {
+            return UnitHelper.AngleAbbreviation(angleUnit);
+        }
+        public string GetAngularVelocityAbbreviation()
+        {
+            return UnitHelper.AngularVelocityAbbreviation(angularVelocityUnit);
+        }
+        public string GetAngularAccelerationAbbreviation()
+        {
+            return UnitHelper.AngularAccelerationAbbreviation(angularAccelerationUnit);
         }
         #endregion
         

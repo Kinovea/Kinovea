@@ -139,7 +139,8 @@
     <Compile Include="Pair.cs" />
     <Compile Include="Preferences\AccelerationUnit.cs" />
     <Compile Include="Preferences\AngleUnit.cs" />
-    <Compile Include="Preferences\AngularSpeedUnit.cs" />
+    <Compile Include="Preferences\AngularAccelerationUnit.cs" />
+    <Compile Include="Preferences\AngularVelocityUnit.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
     <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
