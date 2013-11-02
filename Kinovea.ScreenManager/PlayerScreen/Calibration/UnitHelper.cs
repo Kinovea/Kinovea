@@ -124,6 +124,41 @@ namespace Kinovea.ScreenManager
             return abbreviation;
         }
 
+        public static string AngleAbbreviation(AngleUnit unit)
+        {
+            string abbreviation = "";
+            switch (unit)
+            {
+                case AngleUnit.Degree:
+                    abbreviation = "°";
+                    break;
+                case AngleUnit.Radian:
+                    abbreviation = "rad";
+                    break;
+            }
+
+            return abbreviation;
+        }
+
+        public static string AngularSpeedAbbreviation(AngularSpeedUnit unit)
+        {
+            string abbreviation = "";
+            switch (unit)
+            {
+                case AngularSpeedUnit.DegreesPerSecond:
+                    abbreviation = "deg/s";
+                    break;
+                case AngularSpeedUnit.RadiansPerSecond:
+                    abbreviation = "rad/s";
+                    break;
+                case AngularSpeedUnit.RevolutionsPerMinute:
+                    abbreviation = "rpm";
+                    break;
+            }
+
+            return abbreviation;
+        }
+
         public static double ConvertVelocity(double v, double framesPerSecond, LengthUnit lengthUnit, SpeedUnit unit)
         {
             // v is given in <lengthUnit>/f.

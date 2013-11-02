@@ -55,6 +55,8 @@ namespace Kinovea.Root
         private ImageAspectRatio imageAspectRatio;
         private SpeedUnit speedUnit;
         private AccelerationUnit accelerationUnit;
+        private AngleUnit angleUnit;
+        private AngularSpeedUnit angularSpeedUnit;
         private bool syncLockSpeeds;
         private int workingZoneSeconds;
         private int workingZoneMemory;
@@ -79,6 +81,9 @@ namespace Kinovea.Root
             imageAspectRatio = PreferencesManager.PlayerPreferences.AspectRatio;       
             speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
             accelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
+            angleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
+            angularSpeedUnit = PreferencesManager.PlayerPreferences.AngularSpeedUnit;
+            
             syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
             
             workingZoneSeconds = PreferencesManager.PlayerPreferences.WorkingZoneSeconds;
@@ -108,7 +113,8 @@ namespace Kinovea.Root
             //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps);	// Debug purposes.
             
             // Combo Speed units (MUST be filled in the order of the enum)
-            lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
+            //lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
+            lblSpeedUnit.Text = "Speed:";
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.MetersPerSecond)));
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.KilometersPerHour)));
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.FeetPerSecond)));
@@ -116,9 +122,18 @@ namespace Kinovea.Root
             //cmbSpeedUnit.Items.Add(RootLang.dlgPreferences_Speed_Knots);		// Is this useful at all ?
 
             //lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
-            lblAccelerationUnit.Text = "Acceleration :";
+            lblAccelerationUnit.Text = "Acceleration:";
             cmbAccelerationUnit.Items.Add(String.Format("Meters per second squared ({0})", UnitHelper.AccelerationAbbreviation(AccelerationUnit.MetersPerSecondSquared)));
             cmbAccelerationUnit.Items.Add(String.Format("Feet per second squared ({0})", UnitHelper.AccelerationAbbreviation(AccelerationUnit.FeetPerSecondSquared)));
+
+            lblAngleUnit.Text = "Angle:";
+            cmbAngleUnit.Items.Add(String.Format("Degrees ({0})", UnitHelper.AngleAbbreviation(AngleUnit.Degree)));
+            cmbAngleUnit.Items.Add(String.Format("Radians ({0})", UnitHelper.AngleAbbreviation(AngleUnit.Radian)));
+
+            lblAngularSpeedUnit.Text = "Angular speed:";
+            cmbAngularSpeedUnit.Items.Add(String.Format("Degrees per second ({0})", UnitHelper.AngularSpeedAbbreviation(AngularSpeedUnit.DegreesPerSecond)));
+            cmbAngularSpeedUnit.Items.Add(String.Format("Radians per second ({0})", UnitHelper.AngularSpeedAbbreviation(AngularSpeedUnit.RadiansPerSecond)));
+            cmbAngularSpeedUnit.Items.Add(String.Format("Revolutions per minute ({0})", UnitHelper.AngularSpeedAbbreviation(AngularSpeedUnit.RevolutionsPerMinute)));
 
             // Memory tab
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
@@ -131,6 +146,8 @@ namespace Kinovea.Root
             SelectCurrentTimecodeFormat();
             SelectCurrentSpeedUnit();
             SelectCurrentAccelerationUnit();
+            SelectCurrentAngleUnit();
+            SelectCurrentAngularSpeedUnit();
             SelectCurrentImageFormat();
             
             trkWorkingZoneSeconds.Value = workingZoneSeconds;
@@ -153,7 +170,16 @@ namespace Kinovea.Root
             int selected = (int)accelerationUnit;
             cmbAccelerationUnit.SelectedIndex = selected < cmbAccelerationUnit.Items.Count ? selected : 0;
         }
-
+        private void SelectCurrentAngleUnit()
+        {
+            int selected = (int)angleUnit;
+            cmbAngleUnit.SelectedIndex = selected < cmbAngleUnit.Items.Count ? selected : 0;
+        }
+        private void SelectCurrentAngularSpeedUnit()
+        {
+            int selected = (int)angularSpeedUnit;
+            cmbAngularSpeedUnit.SelectedIndex = selected < cmbAngularSpeedUnit.Items.Count ? selected : 0;
+        }
         private void SelectCurrentImageFormat()
         {
             int selected = (int)imageAspectRatio;
@@ -186,6 +212,14 @@ namespace Kinovea.Root
         {
             accelerationUnit = (AccelerationUnit)cmbAccelerationUnit.SelectedIndex;
         }
+        private void cmbAngleUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            angleUnit = (AngleUnit)cmbAngleUnit.SelectedIndex;
+        }
+        private void cmbAngularSpeedUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            angularSpeedUnit = (AngularSpeedUnit)cmbAngularSpeedUnit.SelectedIndex;
+        }
         private void trkWorkingZoneSeconds_ValueChanged(object sender, EventArgs e)
         {
             lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
@@ -207,6 +241,8 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.AspectRatio = imageAspectRatio;
             PreferencesManager.PlayerPreferences.SpeedUnit = speedUnit;
             PreferencesManager.PlayerPreferences.AccelerationUnit = accelerationUnit;
+            PreferencesManager.PlayerPreferences.AngleUnit = angleUnit;
+            PreferencesManager.PlayerPreferences.AngularSpeedUnit = angularSpeedUnit;          
             PreferencesManager.PlayerPreferences.WorkingZoneSeconds = workingZoneSeconds;
             PreferencesManager.PlayerPreferences.WorkingZoneMemory = workingZoneMemory;
         }

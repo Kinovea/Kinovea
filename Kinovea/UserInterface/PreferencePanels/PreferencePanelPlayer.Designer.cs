@@ -60,23 +60,25 @@ namespace Kinovea.Root
             this.cmbImageFormats = new System.Windows.Forms.ComboBox();
             this.lblImageFormat = new System.Windows.Forms.Label();
             this.chkLockSpeeds = new System.Windows.Forms.CheckBox();
-            this.tabMemory = new System.Windows.Forms.TabPage();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.cmbTimeCodeFormat = new System.Windows.Forms.ComboBox();
-            this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
-            this.cmbSpeedUnit = new System.Windows.Forms.ComboBox();
-            this.lblSpeedUnit = new System.Windows.Forms.Label();
-            this.cmbAccelerationUnit = new System.Windows.Forms.ComboBox();
-            this.lblAccelerationUnit = new System.Windows.Forms.Label();
+            this.cmbAngularSpeedUnit = new System.Windows.Forms.ComboBox();
+            this.lblAngularSpeedUnit = new System.Windows.Forms.Label();
             this.cmbAngleUnit = new System.Windows.Forms.ComboBox();
             this.lblAngleUnit = new System.Windows.Forms.Label();
+            this.cmbAccelerationUnit = new System.Windows.Forms.ComboBox();
+            this.lblAccelerationUnit = new System.Windows.Forms.Label();
+            this.cmbSpeedUnit = new System.Windows.Forms.ComboBox();
+            this.lblSpeedUnit = new System.Windows.Forms.Label();
+            this.cmbTimeCodeFormat = new System.Windows.Forms.ComboBox();
+            this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
+            this.tabMemory = new System.Windows.Forms.TabPage();
             this.grpSwitchToAnalysis.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneSeconds)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneMemory)).BeginInit();
             this.tabSubPages.SuspendLayout();
             this.tabGeneral.SuspendLayout();
-            this.tabMemory.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabMemory.SuspendLayout();
             this.SuspendLayout();
             // 
             // chkDeinterlace
@@ -210,19 +212,10 @@ namespace Kinovea.Root
             this.chkLockSpeeds.UseVisualStyleBackColor = true;
             this.chkLockSpeeds.CheckedChanged += new System.EventHandler(this.ChkLockSpeedsCheckedChanged);
             // 
-            // tabMemory
-            // 
-            this.tabMemory.Controls.Add(this.grpSwitchToAnalysis);
-            this.tabMemory.Location = new System.Drawing.Point(4, 22);
-            this.tabMemory.Name = "tabMemory";
-            this.tabMemory.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMemory.Size = new System.Drawing.Size(424, 210);
-            this.tabMemory.TabIndex = 1;
-            this.tabMemory.Text = "Memory";
-            this.tabMemory.UseVisualStyleBackColor = true;
-            // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.cmbAngularSpeedUnit);
+            this.tabPage1.Controls.Add(this.lblAngularSpeedUnit);
             this.tabPage1.Controls.Add(this.cmbAngleUnit);
             this.tabPage1.Controls.Add(this.lblAngleUnit);
             this.tabPage1.Controls.Add(this.cmbAccelerationUnit);
@@ -238,6 +231,78 @@ namespace Kinovea.Root
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Units";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // cmbAngularSpeedUnit
+            // 
+            this.cmbAngularSpeedUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbAngularSpeedUnit.Location = new System.Drawing.Point(214, 150);
+            this.cmbAngularSpeedUnit.Name = "cmbAngularSpeedUnit";
+            this.cmbAngularSpeedUnit.Size = new System.Drawing.Size(184, 21);
+            this.cmbAngularSpeedUnit.TabIndex = 39;
+            this.cmbAngularSpeedUnit.SelectedIndexChanged += new System.EventHandler(this.cmbAngularSpeedUnit_SelectedIndexChanged);
+            // 
+            // lblAngularSpeedUnit
+            // 
+            this.lblAngularSpeedUnit.AutoSize = true;
+            this.lblAngularSpeedUnit.Location = new System.Drawing.Point(21, 155);
+            this.lblAngularSpeedUnit.Name = "lblAngularSpeedUnit";
+            this.lblAngularSpeedUnit.Size = new System.Drawing.Size(81, 13);
+            this.lblAngularSpeedUnit.TabIndex = 38;
+            this.lblAngularSpeedUnit.Text = "Angular speed :";
+            // 
+            // cmbAngleUnit
+            // 
+            this.cmbAngleUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbAngleUnit.Location = new System.Drawing.Point(214, 116);
+            this.cmbAngleUnit.Name = "cmbAngleUnit";
+            this.cmbAngleUnit.Size = new System.Drawing.Size(184, 21);
+            this.cmbAngleUnit.TabIndex = 37;
+            this.cmbAngleUnit.SelectedIndexChanged += new System.EventHandler(this.cmbAngleUnit_SelectedIndexChanged);
+            // 
+            // lblAngleUnit
+            // 
+            this.lblAngleUnit.AutoSize = true;
+            this.lblAngleUnit.Location = new System.Drawing.Point(21, 121);
+            this.lblAngleUnit.Name = "lblAngleUnit";
+            this.lblAngleUnit.Size = new System.Drawing.Size(40, 13);
+            this.lblAngleUnit.TabIndex = 36;
+            this.lblAngleUnit.Text = "Angle :";
+            // 
+            // cmbAccelerationUnit
+            // 
+            this.cmbAccelerationUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbAccelerationUnit.Location = new System.Drawing.Point(214, 83);
+            this.cmbAccelerationUnit.Name = "cmbAccelerationUnit";
+            this.cmbAccelerationUnit.Size = new System.Drawing.Size(184, 21);
+            this.cmbAccelerationUnit.TabIndex = 35;
+            this.cmbAccelerationUnit.SelectedIndexChanged += new System.EventHandler(this.cmbAccelerationUnit_SelectedIndexChanged);
+            // 
+            // lblAccelerationUnit
+            // 
+            this.lblAccelerationUnit.AutoSize = true;
+            this.lblAccelerationUnit.Location = new System.Drawing.Point(21, 88);
+            this.lblAccelerationUnit.Name = "lblAccelerationUnit";
+            this.lblAccelerationUnit.Size = new System.Drawing.Size(72, 13);
+            this.lblAccelerationUnit.TabIndex = 34;
+            this.lblAccelerationUnit.Text = "Acceleration :";
+            // 
+            // cmbSpeedUnit
+            // 
+            this.cmbSpeedUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSpeedUnit.Location = new System.Drawing.Point(214, 52);
+            this.cmbSpeedUnit.Name = "cmbSpeedUnit";
+            this.cmbSpeedUnit.Size = new System.Drawing.Size(184, 21);
+            this.cmbSpeedUnit.TabIndex = 33;
+            this.cmbSpeedUnit.SelectedIndexChanged += new System.EventHandler(this.cmbSpeedUnit_SelectedIndexChanged);
+            // 
+            // lblSpeedUnit
+            // 
+            this.lblSpeedUnit.AutoSize = true;
+            this.lblSpeedUnit.Location = new System.Drawing.Point(21, 57);
+            this.lblSpeedUnit.Name = "lblSpeedUnit";
+            this.lblSpeedUnit.Size = new System.Drawing.Size(50, 13);
+            this.lblSpeedUnit.TabIndex = 32;
+            this.lblSpeedUnit.Text = "Velocity :";
             // 
             // cmbTimeCodeFormat
             // 
@@ -257,58 +322,16 @@ namespace Kinovea.Root
             this.lblTimeMarkersFormat.TabIndex = 27;
             this.lblTimeMarkersFormat.Text = "Time markers format :";
             // 
-            // cmbSpeedUnit
+            // tabMemory
             // 
-            this.cmbSpeedUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSpeedUnit.Location = new System.Drawing.Point(214, 62);
-            this.cmbSpeedUnit.Name = "cmbSpeedUnit";
-            this.cmbSpeedUnit.Size = new System.Drawing.Size(184, 21);
-            this.cmbSpeedUnit.TabIndex = 33;
-            this.cmbSpeedUnit.SelectedIndexChanged += new System.EventHandler(this.cmbSpeedUnit_SelectedIndexChanged);
-            // 
-            // lblSpeedUnit
-            // 
-            this.lblSpeedUnit.AutoSize = true;
-            this.lblSpeedUnit.Location = new System.Drawing.Point(21, 67);
-            this.lblSpeedUnit.Name = "lblSpeedUnit";
-            this.lblSpeedUnit.Size = new System.Drawing.Size(50, 13);
-            this.lblSpeedUnit.TabIndex = 32;
-            this.lblSpeedUnit.Text = "Velocity :";
-            // 
-            // cmbAccelerationUnit
-            // 
-            this.cmbAccelerationUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbAccelerationUnit.Location = new System.Drawing.Point(214, 99);
-            this.cmbAccelerationUnit.Name = "cmbAccelerationUnit";
-            this.cmbAccelerationUnit.Size = new System.Drawing.Size(184, 21);
-            this.cmbAccelerationUnit.TabIndex = 35;
-            this.cmbAccelerationUnit.SelectedIndexChanged += new System.EventHandler(this.cmbAccelerationUnit_SelectedIndexChanged);
-            // 
-            // lblAccelerationUnit
-            // 
-            this.lblAccelerationUnit.AutoSize = true;
-            this.lblAccelerationUnit.Location = new System.Drawing.Point(21, 104);
-            this.lblAccelerationUnit.Name = "lblAccelerationUnit";
-            this.lblAccelerationUnit.Size = new System.Drawing.Size(72, 13);
-            this.lblAccelerationUnit.TabIndex = 34;
-            this.lblAccelerationUnit.Text = "Acceleration :";
-            // 
-            // cmbAngleUnit
-            // 
-            this.cmbAngleUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbAngleUnit.Location = new System.Drawing.Point(214, 137);
-            this.cmbAngleUnit.Name = "cmbAngleUnit";
-            this.cmbAngleUnit.Size = new System.Drawing.Size(184, 21);
-            this.cmbAngleUnit.TabIndex = 37;
-            // 
-            // lblAngleUnit
-            // 
-            this.lblAngleUnit.AutoSize = true;
-            this.lblAngleUnit.Location = new System.Drawing.Point(21, 142);
-            this.lblAngleUnit.Name = "lblAngleUnit";
-            this.lblAngleUnit.Size = new System.Drawing.Size(40, 13);
-            this.lblAngleUnit.TabIndex = 36;
-            this.lblAngleUnit.Text = "Angle :";
+            this.tabMemory.Controls.Add(this.grpSwitchToAnalysis);
+            this.tabMemory.Location = new System.Drawing.Point(4, 22);
+            this.tabMemory.Name = "tabMemory";
+            this.tabMemory.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMemory.Size = new System.Drawing.Size(424, 210);
+            this.tabMemory.TabIndex = 1;
+            this.tabMemory.Text = "Memory";
+            this.tabMemory.UseVisualStyleBackColor = true;
             // 
             // PreferencePanelPlayer
             // 
@@ -325,9 +348,9 @@ namespace Kinovea.Root
             this.tabSubPages.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.tabGeneral.PerformLayout();
-            this.tabMemory.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabMemory.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -353,5 +376,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblSpeedUnit;
         private System.Windows.Forms.ComboBox cmbTimeCodeFormat;
         private System.Windows.Forms.Label lblTimeMarkersFormat;
+        private System.Windows.Forms.ComboBox cmbAngularSpeedUnit;
+        private System.Windows.Forms.Label lblAngularSpeedUnit;
 	}
 }
