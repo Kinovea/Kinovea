@@ -59,7 +59,25 @@ namespace Kinovea.ScreenManager
             get { return accelerationUnit; }
             set { accelerationUnit = value; }
         }
-        
+
+        public AngleUnit AngleUnit
+        {
+            get { return angleUnit; }
+            set { angleUnit = value; }
+        }
+
+        public AngularVelocityUnit AngularVelocityUnit
+        {
+            get { return angularVelocityUnit; }
+            set { angularVelocityUnit = value; }
+        }
+
+        public AngularAccelerationUnit AngularAccelerationUnit
+        {
+            get { return angularAccelerationUnit; }
+            set { angularAccelerationUnit = value; }
+        }
+
         public double FramesPerSecond
         {
             // Frames per second, as in real action reference. (takes high speed camera into account.)
@@ -233,6 +251,25 @@ namespace Kinovea.ScreenManager
         public float GetAngularVelocity(float radiansPerFrame)
         {
             return (float)UnitHelper.ConvertAngularVelocity(radiansPerFrame, framesPerSecond, angularVelocityUnit);            
+        }
+        
+        public float GetTangentialVelocity(float radiansPerFrame, float radius)
+        {
+            float pixelsPerFrame = radiansPerFrame * radius;
+
+            float lengthPerFrame = GetScalar(pixelsPerFrame);
+
+            // speed unit. (e.g: m/s). If the user hasn't calibrated, force usage of px/f.
+            SpeedUnit unit = IsCalibrated ? speedUnit : SpeedUnit.PixelsPerFrame;
+            double velocity = UnitHelper.ConvertVelocity(lengthPerFrame, framesPerSecond, lengthUnit, unit);
+
+            return (float)velocity;
+        }
+
+        public float GetCentripetalAcceleration(float radiansPerFrame, float radius)
+        {
+            float value = radiansPerFrame * radiansPerFrame * radius;
+            return (float)UnitHelper.ConvertAngularAcceleration(value, framesPerSecond, angularAccelerationUnit);
         }
         public float GetAngularAcceleration(float radiansPerFrameSquared)
         {

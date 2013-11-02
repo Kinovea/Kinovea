@@ -155,6 +155,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MathNet.Iridium">
+      <HintPath>..\Refs\Math.Net\MathNet.Iridium.dll</HintPath>
+    </Reference>
     <Reference Include="SharpVectorBindings">
       <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
     </Reference>

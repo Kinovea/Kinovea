@@ -120,6 +120,7 @@ namespace Kinovea.ScreenManager
             cmbExtraData.Items.Add("Position");            
             cmbExtraData.Items.Add("Total distance");
             //cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
+
             cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed);
             cmbExtraData.Items.Add("Vertical velocity");
             cmbExtraData.Items.Add("Horizontal velocity");
@@ -127,8 +128,10 @@ namespace Kinovea.ScreenManager
             cmbExtraData.Items.Add("Vertical acceleration");
             cmbExtraData.Items.Add("Horizontal acceleration");
 
-            //cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalVelocity);
-            //cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity);
+            cmbExtraData.Items.Add("Angular displacement");
+            cmbExtraData.Items.Add("Angular velocity");
+            cmbExtraData.Items.Add("Angular acceleration");
+            cmbExtraData.Items.Add("Centripetal acceleration");
         }
         private void InitMarkerCombo()
         {

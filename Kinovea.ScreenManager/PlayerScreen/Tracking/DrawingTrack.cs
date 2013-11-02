@@ -348,6 +348,10 @@ namespace Kinovea.ScreenManager
             
             if(positions.Count > 0)
             {
+                // Angular motion
+                if (trackStatus == TrackStatus.Interactive)
+                    DrawAngularMotion(canvas, currentPoint, opacityFactor, transformer);
+
                 // Track.
                 if( opacityFactor == 1.0 && trackView != TrackView.Label)
                     DrawMarker(canvas, opacityFactor, transformer);
@@ -644,6 +648,26 @@ namespace Kinovea.ScreenManager
                     kl.Draw(canvas, transformer, fadingFactor);
             }
         }
+        private void DrawAngularMotion(Graphics canvas, int currentPoint, double fadingFactor, IImageToViewportTransformer transformer)
+        {
+            if (positions.Count < 3)
+                return;
+
+            Point location = transformer.Transform(positions[currentPoint].Point);
+            Point center = transformer.Transform(trajectoryPoints[0].RotationCenter);
+            int radius = transformer.Transform((int)trajectoryPoints[0].RotationRadius);
+ 
+            using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+            {
+                p.Width = 2;
+                canvas.DrawEllipse(p, center.Box(4));
+
+                p.Width = 2;
+                p.DashStyle = DashStyle.Dash;
+                canvas.DrawEllipse(p, center.Box(radius));
+                canvas.DrawLine(p, center, location);
+            }
+        }
         private void DrawMainLabel(Graphics canvas, int currentPoint, double fadingFactor, IImageToViewportTransformer transformer)
         {
             // Draw the main label and its connector to the current point.
@@ -738,11 +762,34 @@ namespace Kinovea.ScreenManager
                     if (!float.IsNaN(va))
                         displayText = string.Format(culture, "{0:0.00} {1}", va, helper.GetAccelerationAbbreviation());
                     break;
+                case TrackExtraData.AngularDisplacement:                
+                    float angle = trajectoryPoints[index].DisplacementAngle;
+                    displayText = string.Format(culture, "{0:0.00} {1}", angle, helper.GetAngleAbbreviation());
+                    break;
+                case TrackExtraData.AngularVelocity:
+                    float angularVelocity = trajectoryPoints[index].AngularVelocity;
+                    if (!float.IsNaN(angularVelocity)) 
+                        displayText = string.Format(culture, "{0:0.00} {1}", angularVelocity, helper.GetAngularVelocityAbbreviation());
+                    break;
+                case TrackExtraData.AngularAcceleration:
+                    float angularAcceleration = trajectoryPoints[index].AngularAcceleration;
+                    if (!float.IsNaN(angularAcceleration))
+                        displayText = string.Format(culture, "{0:0.00} {1}", angularAcceleration, helper.GetAngularAccelerationAbbreviation());
+                    break;
+                case TrackExtraData.CentripetalAcceleration:
+                    float centripetalAcceleration = trajectoryPoints[index].CentripetalAcceleration;
+                    if (!float.IsNaN(centripetalAcceleration))
+                        displayText = string.Format(culture, "{0:0.00} {1}", centripetalAcceleration, helper.GetAngularAccelerationAbbreviation());
+                    break;
                 case TrackExtraData.None:
                 default:
                     break;
             }	
             return displayText;
+
+            //float tangentialVelocity = trajectoryPoints[index].TangentialVelocity;
+            //if (!float.IsNaN(tangentialVelocity))
+            //    displayText = string.Format(culture, "{0:0.00} {1}", tangentialVelocity, helper.GetSpeedAbbreviation());
         }
         #endregion
     
@@ -851,35 +898,41 @@ namespace Kinovea.ScreenManager
 
             endTimeStamp = positions[positions.Count - 1].T;
             // Todo: we must now refill the last point with a patch image.
+
+            trajectoryPoints = kinematicsHelper.ComputeValues(positions, parentMetadata.CalibrationHelper);
+            IntegrateKeyframes();
         }
         public List<AbstractTrackPoint> GetEndOfTrack(long timestamp)
         {
             // Called from CommandDeleteEndOfTrack,
             // We need to keep the old values in case the command is undone.
-          List<AbstractTrackPoint> endOfTrack = positions.SkipWhile(p => p.T >= timestamp).ToList();
+            List<AbstractTrackPoint> endOfTrack = positions.SkipWhile(p => p.T >= timestamp).ToList();
             return endOfTrack;
         }
         public void AppendPoints(long currentTimestamp, List<AbstractTrackPoint> choppedPoints)
         {
             // Called when undoing CommandDeleteEndOfTrack,
             // revival of the discarded points.
-            if (choppedPoints.Count > 0)
-            {
-                // Some points may have been re added already and we don't want to mix the two lists.
-                // Find the append insertion point, remove extra stuff, and append.
-                int iMatchedPoint = positions.Count - 1;
+            if (choppedPoints.Count == 0)
+                return;
+            
+            // Some points may have been re added already and we don't want to mix the two lists.
+            // Find the append insertion point, remove extra stuff, and append.
+            int iMatchedPoint = positions.Count - 1;
                 
-                while (positions[iMatchedPoint].T >= choppedPoints[0].T && iMatchedPoint > 0)
-                    iMatchedPoint--;
+            while (positions[iMatchedPoint].T >= choppedPoints[0].T && iMatchedPoint > 0)
+                iMatchedPoint--;
 
-                if (iMatchedPoint < positions.Count - 1)
-                    positions.RemoveRange(iMatchedPoint + 1, positions.Count - (iMatchedPoint+1));
+            if (iMatchedPoint < positions.Count - 1)
+                positions.RemoveRange(iMatchedPoint + 1, positions.Count - (iMatchedPoint+1));
 
-                foreach (AbstractTrackPoint trkpos in choppedPoints)
-                    positions.Add(trkpos);
+            foreach (AbstractTrackPoint trkpos in choppedPoints)
+                positions.Add(trkpos);
 
-                endTimeStamp = positions[positions.Count - 1].T;
-            }
+            endTimeStamp = positions[positions.Count - 1].T;
+            
+            trajectoryPoints = kinematicsHelper.ComputeValues(positions, parentMetadata.CalibrationHelper);
+            IntegrateKeyframes();
         }
         public void StopTracking()
         {
@@ -1013,9 +1066,16 @@ namespace Kinovea.ScreenManager
             
             xmlWriter.WriteStartElement("MainLabel");
             xmlWriter.WriteAttributeString("Text", mainLabelText);
+            
+            // Reset to first point.
+            if (positions.Count > 0)
+                mainLabel.SetAttach(positions[0].Point, true);
             mainLabel.WriteXml(xmlWriter);
             xmlWriter.WriteEndElement();
 
+            if (positions.Count > 0)
+                mainLabel.SetAttach(positions[currentPoint].Point, true);
+            
             if (keyframesLabels.Count > 0)
             {
                 xmlWriter.WriteStartElement("KeyframeLabelList");
