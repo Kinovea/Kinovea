@@ -518,8 +518,11 @@ namespace Kinovea.ScreenManager
         }
         public void UpdateTrajectoriesForKeyframes()
         {
-            foreach(DrawingTrack t in Tracks())
+            foreach (DrawingTrack t in Tracks())
+            {
                 t.IntegrateKeyframes();
+                t.CalibrationChanged();
+            }
         }
         public void AllDrawingTextToNormalMode()
         {

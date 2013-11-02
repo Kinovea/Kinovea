@@ -17,6 +17,11 @@ namespace Kinovea.ScreenManager
 
         Acceleration,
         VerticalAcceleration,
-        HorizontalAcceleration
+        HorizontalAcceleration,
+
+        AngularDisplacement,
+        AngularVelocity,
+        AngularAcceleration,
+        CentripetalAcceleration
     }
 }
