@@ -56,7 +56,8 @@ namespace Kinovea.Root
         private SpeedUnit speedUnit;
         private AccelerationUnit accelerationUnit;
         private AngleUnit angleUnit;
-        private AngularSpeedUnit angularSpeedUnit;
+        private AngularVelocityUnit angularVelocityUnit;
+        private AngularAccelerationUnit angularAccelerationUnit;
         private bool syncLockSpeeds;
         private int workingZoneSeconds;
         private int workingZoneMemory;
@@ -82,7 +83,8 @@ namespace Kinovea.Root
             speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
             accelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
             angleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
-            angularSpeedUnit = PreferencesManager.PlayerPreferences.AngularSpeedUnit;
+            angularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit;
+            angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
             
             syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
             
@@ -130,10 +132,14 @@ namespace Kinovea.Root
             cmbAngleUnit.Items.Add(String.Format("Degrees ({0})", UnitHelper.AngleAbbreviation(AngleUnit.Degree)));
             cmbAngleUnit.Items.Add(String.Format("Radians ({0})", UnitHelper.AngleAbbreviation(AngleUnit.Radian)));
 
-            lblAngularSpeedUnit.Text = "Angular speed:";
-            cmbAngularSpeedUnit.Items.Add(String.Format("Degrees per second ({0})", UnitHelper.AngularSpeedAbbreviation(AngularSpeedUnit.DegreesPerSecond)));
-            cmbAngularSpeedUnit.Items.Add(String.Format("Radians per second ({0})", UnitHelper.AngularSpeedAbbreviation(AngularSpeedUnit.RadiansPerSecond)));
-            cmbAngularSpeedUnit.Items.Add(String.Format("Revolutions per minute ({0})", UnitHelper.AngularSpeedAbbreviation(AngularSpeedUnit.RevolutionsPerMinute)));
+            lblAngularVelocityUnit.Text = "Angular velocity:";
+            cmbAngularVelocityUnit.Items.Add(String.Format("Degrees per second ({0})", UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.DegreesPerSecond)));
+            cmbAngularVelocityUnit.Items.Add(String.Format("Radians per second ({0})", UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.RadiansPerSecond)));
+            cmbAngularVelocityUnit.Items.Add(String.Format("Revolutions per minute ({0})", UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.RevolutionsPerMinute)));
+
+            lblAngularAcceleration.Text = "Angular acceleration:";
+            cmbAngularAccelerationUnit.Items.Add(String.Format("Degrees per second squared ({0})", UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.DegreesPerSecondSquared)));
+            cmbAngularAccelerationUnit.Items.Add(String.Format("Radians per second squared ({0})", UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.RadiansPerSecondSquared)));
 
             // Memory tab
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
@@ -143,11 +149,7 @@ namespace Kinovea.Root
             // Fill in initial values.            
             chkDeinterlace.Checked = deinterlaceByDefault;
             chkLockSpeeds.Checked = syncLockSpeeds;
-            SelectCurrentTimecodeFormat();
-            SelectCurrentSpeedUnit();
-            SelectCurrentAccelerationUnit();
-            SelectCurrentAngleUnit();
-            SelectCurrentAngularSpeedUnit();
+            SelectCurrentUnits();
             SelectCurrentImageFormat();
             
             trkWorkingZoneSeconds.Value = workingZoneSeconds;
@@ -155,31 +157,27 @@ namespace Kinovea.Root
             trkWorkingZoneMemory.Value = workingZoneMemory;
             lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneMemory, trkWorkingZoneMemory.Value);
         }
-        private void SelectCurrentTimecodeFormat()
+        private void SelectCurrentUnits()
         {
-            int selected = (int)timecodeFormat;
-            cmbTimeCodeFormat.SelectedIndex = selected < cmbTimeCodeFormat.Items.Count ? selected : 0;
+            int time = (int)timecodeFormat;
+            cmbTimeCodeFormat.SelectedIndex = time < cmbTimeCodeFormat.Items.Count ? time : 0;
+
+            int speed = (int)speedUnit;
+            cmbSpeedUnit.SelectedIndex = speed < cmbSpeedUnit.Items.Count ? speed : 0;
+
+            int acceleration = (int)accelerationUnit;
+            cmbAccelerationUnit.SelectedIndex = acceleration < cmbAccelerationUnit.Items.Count ? acceleration : 0;
+
+            int angle = (int)angleUnit;
+            cmbAngleUnit.SelectedIndex = angle < cmbAngleUnit.Items.Count ? angle : 0;
+
+            int angularVelocity = (int)angularVelocityUnit;
+            cmbAngularVelocityUnit.SelectedIndex = angularVelocity < cmbAngularVelocityUnit.Items.Count ? angularVelocity : 0;
+
+            int angularAcceleration = (int)angularAccelerationUnit;
+            cmbAngularAccelerationUnit.SelectedIndex = angularAcceleration < cmbAngularAccelerationUnit.Items.Count ? angularAcceleration : 0;
         }
-        private void SelectCurrentSpeedUnit()
-        {
-            int selected = (int)speedUnit;
-            cmbSpeedUnit.SelectedIndex = selected < cmbSpeedUnit.Items.Count ? selected : 0;
-        }
-        private void SelectCurrentAccelerationUnit()
-        {
-            int selected = (int)accelerationUnit;
-            cmbAccelerationUnit.SelectedIndex = selected < cmbAccelerationUnit.Items.Count ? selected : 0;
-        }
-        private void SelectCurrentAngleUnit()
-        {
-            int selected = (int)angleUnit;
-            cmbAngleUnit.SelectedIndex = selected < cmbAngleUnit.Items.Count ? selected : 0;
-        }
-        private void SelectCurrentAngularSpeedUnit()
-        {
-            int selected = (int)angularSpeedUnit;
-            cmbAngularSpeedUnit.SelectedIndex = selected < cmbAngularSpeedUnit.Items.Count ? selected : 0;
-        }
+        
         private void SelectCurrentImageFormat()
         {
             int selected = (int)imageAspectRatio;
@@ -216,9 +214,13 @@ namespace Kinovea.Root
         {
             angleUnit = (AngleUnit)cmbAngleUnit.SelectedIndex;
         }
-        private void cmbAngularSpeedUnit_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbAngularVelocityUnit_SelectedIndexChanged(object sender, EventArgs e)
         {
-            angularSpeedUnit = (AngularSpeedUnit)cmbAngularSpeedUnit.SelectedIndex;
+            angularVelocityUnit = (AngularVelocityUnit)cmbAngularVelocityUnit.SelectedIndex;
+        }
+        private void cmbAngularAccelerationUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            angularAccelerationUnit = (AngularAccelerationUnit)cmbAngularAccelerationUnit.SelectedIndex;
         }
         private void trkWorkingZoneSeconds_ValueChanged(object sender, EventArgs e)
         {
@@ -242,7 +244,8 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.SpeedUnit = speedUnit;
             PreferencesManager.PlayerPreferences.AccelerationUnit = accelerationUnit;
             PreferencesManager.PlayerPreferences.AngleUnit = angleUnit;
-            PreferencesManager.PlayerPreferences.AngularSpeedUnit = angularSpeedUnit;          
+            PreferencesManager.PlayerPreferences.AngularVelocityUnit = angularVelocityUnit;
+            PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;          
             PreferencesManager.PlayerPreferences.WorkingZoneSeconds = workingZoneSeconds;
             PreferencesManager.PlayerPreferences.WorkingZoneMemory = workingZoneMemory;
         }

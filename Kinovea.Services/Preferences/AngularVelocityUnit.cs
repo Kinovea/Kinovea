@@ -5,10 +5,11 @@ using System.Text;
 
 namespace Kinovea.Services
 {
-    public enum AngularSpeedUnit
+    public enum AngularVelocityUnit
     {
         DegreesPerSecond,
         RadiansPerSecond,
-        RevolutionsPerMinute
+        RevolutionsPerMinute,
+        RadiansPerFrame
     }
 }
