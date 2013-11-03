@@ -186,7 +186,17 @@ namespace Kinovea.ScreenManager
         }
         public override List<ToolStripItem> ContextMenu
         {
-            get { return null; }
+            get 
+            {
+                if (trackStatus != TrackStatus.Interactive)
+                    return null;
+
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                // Initialize menu each time to get translated texts.
+                InitializeMenu();
+                contextMenu.Add(mnuMeasurement);
+                return contextMenu;
+            }
         }
         #endregion
 
@@ -236,6 +246,10 @@ namespace Kinovea.ScreenManager
         // Configuration
         private BoundingBox searchWindow = new BoundingBox(10);
         private BoundingBox blockWindow = new BoundingBox(4);
+
+        // Context menu
+        private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
+        private List<ToolStripMenuItem> mnuMeasurementOptions = new List<ToolStripMenuItem>();
         
         // Memorization poul
         private TrackView memoTrackView;
@@ -299,7 +313,10 @@ namespace Kinovea.ScreenManager
             BindStyle();
             
             styleHelper.ValueChanged += mainStyle_ValueChanged;
+            InitializeMenu();
         }
+
+        
         public DrawingTrack(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, Size imageSize)
             : this(Point.Empty,0, null, imageSize)
         {
@@ -722,6 +739,36 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Extra informations (Speed, distance)
+        public string GetExtraDataOptionText(TrackExtraData data)
+        {
+            switch (data)
+            {
+                case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
+                case TrackExtraData.Position: return "Position";
+                case TrackExtraData.TotalDistance: return "Total distance";
+                case TrackExtraData.Speed: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed;
+                case TrackExtraData.VerticalVelocity: return "Vertical velocity";
+                case TrackExtraData.HorizontalVelocity: return "Horizontal velocity";
+                case TrackExtraData.Acceleration: return "Acceleration";
+                case TrackExtraData.VerticalAcceleration: return "Vertical acceleration";
+                case TrackExtraData.HorizontalAcceleration: return "Horizontal acceleration";
+                case TrackExtraData.AngularDisplacement: return "Angular displacement";
+                case TrackExtraData.AngularVelocity: return "Angular velocity";
+                case TrackExtraData.AngularAcceleration: return "Angular acceleration";
+                case TrackExtraData.CentripetalAcceleration: return "Centripetal acceleration";
+            }
+
+            return "";
+        }
+
+        public bool IsUsingAngularKinematics()
+        {
+            return trackExtraData == TrackExtraData.AngularDisplacement ||
+                trackExtraData == TrackExtraData.AngularVelocity ||
+                trackExtraData == TrackExtraData.AngularAcceleration ||
+                trackExtraData == TrackExtraData.CentripetalAcceleration;
+        }
+
         private string GetExtraDataText(int index)
         {
             CalibrationHelper helper = parentMetadata.CalibrationHelper;
@@ -1385,6 +1432,45 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Miscellaneous private methods
+        private void InitializeMenu()
+        {
+            mnuMeasurement.MergeIndex = 1;
+            mnuMeasurement.Image = Properties.Drawings.measure;
+            mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
+
+            // TODO: unhook event handlers ?
+            mnuMeasurement.DropDownItems.Clear();
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.None));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Position));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.TotalDistance));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Speed));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.VerticalVelocity));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.HorizontalVelocity));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Acceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.VerticalAcceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.HorizontalAcceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.AngularDisplacement));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.AngularVelocity));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.AngularAcceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.CentripetalAcceleration));
+        }
+        private ToolStripMenuItem GetMeasurementMenu(TrackExtraData data)
+        {
+            ToolStripMenuItem mnu = new ToolStripMenuItem();
+            mnu.Text = GetExtraDataOptionText(data);
+            mnu.Checked = trackExtraData == data;
+
+            mnu.Click += (s, e) =>
+            {
+                trackExtraData = data;
+                displayBestFitCircle = IsUsingAngularKinematics();
+                IntegrateKeyframes();
+                Action invalidateImage = (Action)mnu.Tag;
+                invalidateImage();
+            };
+
+            return mnu;
+        }
         private void AfterTrackStatusChanged()
         {
             if (trackStatus == TrackStatus.Interactive)

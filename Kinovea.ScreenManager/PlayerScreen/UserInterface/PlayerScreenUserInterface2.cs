@@ -1040,8 +1040,7 @@ namespace Kinovea.ScreenManager
             //mnuDeleteEndOfTrajectory.Image = Properties.Resources.track_trim2;
             mnuConfigureTrajectory.Click += new EventHandler(mnuConfigureTrajectory_Click);
             mnuConfigureTrajectory.Image = Properties.Drawings.configure;
-            popMenuTrack.Items.AddRange(new ToolStripItem[] { mnuConfigureTrajectory, new ToolStripSeparator(), mnuStopTracking, mnuRestartTracking, new ToolStripSeparator(), mnuDeleteEndOfTrajectory, mnuDeleteTrajectory });
-
+            
             // 4. Chrono pop menu (Start, Stop, Hide, etc.)
             mnuChronoConfigure.Click += new EventHandler(mnuChronoConfigure_Click);
             mnuChronoConfigure.Image = Properties.Drawings.configure;
@@ -2719,6 +2718,15 @@ namespace Kinovea.ScreenManager
                 }
                 else if(hitDrawing is DrawingTrack)
                 {
+                    popMenuTrack.Items.Clear();
+                    popMenuTrack.Items.Add(mnuConfigureTrajectory);
+                    
+                    bool customMenus = AddDrawingCustomMenus(hitDrawing, popMenuTrack.Items);
+                    if (customMenus)
+                        popMenuTrack.Items.Add(new ToolStripSeparator());
+                    
+                    popMenuTrack.Items.AddRange(new ToolStripItem[] { mnuStopTracking, mnuRestartTracking, new ToolStripSeparator(), mnuDeleteEndOfTrajectory, mnuDeleteTrajectory });
+
                     if (((DrawingTrack)hitDrawing).Status == TrackStatus.Edit)
                     {
                         mnuStopTracking.Visible = true;
@@ -2833,7 +2841,11 @@ namespace Kinovea.ScreenManager
                 }
                 
                 tsmi.Tag = (Action)DoInvalidate;    // Inject dependency on this screen's invalidate method.
-                menuItems.Add(tsmi);
+                
+                if (tsmi.MergeIndex >= 0)
+                    menuItems.Insert(tsmi.MergeIndex, tsmi);
+                else
+                    menuItems.Add(tsmi);
             }
             
             return true;
