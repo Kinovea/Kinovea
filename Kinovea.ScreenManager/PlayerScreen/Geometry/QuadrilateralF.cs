@@ -77,6 +77,13 @@ namespace Kinovea.ScreenManager
                 return new QuadrilateralF(1, 1);
             }
         }
+        public static QuadrilateralF CenteredUnitSquare
+        {
+            get
+            {
+                return new QuadrilateralF(new PointF(-1, 1), new PointF(1, 1), new PointF(1, -1), new PointF(-1, -1));
+            }
+        }
         #endregion
         
         #region Members
@@ -103,7 +110,7 @@ namespace Kinovea.ScreenManager
             C = new PointF(width, height);
             D = new PointF(0, height);
         }
-        
+
         #region Public methods
         public void Translate(float x, float y)
         {
