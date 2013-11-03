@@ -391,7 +391,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override void MoveDrawing(int dx, int dy, Keys modifierKeys)
+        public override void MoveDrawing(int dx, int dy, Keys modifierKeys, bool zooming)
         {
             if (trackStatus == TrackStatus.Interactive && movingHandler > 1)
             {
@@ -435,7 +435,7 @@ namespace Kinovea.ScreenManager
                     TrackerParametersChanged(this, EventArgs.Empty);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             if (currentTimestamp < beginTimeStamp || currentTimestamp > endTimeStamp)
             {

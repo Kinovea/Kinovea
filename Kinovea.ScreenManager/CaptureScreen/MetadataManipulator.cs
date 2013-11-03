@@ -203,7 +203,7 @@ namespace Kinovea.ScreenManager
             bool hitExisting = false;
             foreach(DrawingText label in metadata.Labels())
             {
-                int hit = label.HitTest(imagePoint, currentTimestamp, transformer);
+                int hit = label.HitTest(imagePoint, currentTimestamp, transformer, metadata.CoordinateSystem.Zooming);
                 if(hit >= 0)
                 {
                     hitExisting = true;

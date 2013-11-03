@@ -217,7 +217,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             if(infosFading.GetOpacityFactor(currentTimestamp) <= 0)
                 return -1;
@@ -230,13 +230,16 @@ namespace Kinovea.ScreenManager
                     return i+1;
             }
             
-            if (quadImage.Contains(point))
+            if (!zooming && quadImage.Contains(point))
                 return 0;
             
             return -1;
         }
-        public override void MoveDrawing(int dx, int dy, Keys modifierKeys)
+        public override void MoveDrawing(int dx, int dy, Keys modifierKeys, bool zooming)
         {
+            if (zooming)
+                return;
+
             if ((modifierKeys & Keys.Alt) == Keys.Alt)
             {
                 // Change the number of divisions.

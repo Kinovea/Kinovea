@@ -2644,7 +2644,7 @@ namespace Kinovea.ScreenManager
                 {
                     if (ad is DrawingText)
                     {
-                        int hitRes = ad.HitTest(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.CoordinateSystem);
+                        int hitRes = ad.HitTest(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.CoordinateSystem, m_FrameServer.Metadata.CoordinateSystem.Zooming);
                         if (hitRes >= 0)
                         {
                             bEdit = true;

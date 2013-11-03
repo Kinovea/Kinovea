@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
         /// <param name="_point">The coordinates at original image scale of the point to evaluate</param>
         /// <param name="_iCurrentTimestamp">The current time position in the video</param>
         /// <returns>-1 : missed. 0 : The drawing as a whole has been hit. n (with n>0) : The id of a manipulation handle that has been hit</returns>
-        public abstract int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer);
+        public abstract int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming);
         
         /// <summary>
         /// Move the specified handle to its new location.
@@ -107,10 +107,11 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Move the drawing as a whole.
         /// </summary>
-        /// <param name="_deltaX">Change in x coordinates</param>
-        /// <param name="_deltaY">Change in y coordinates</param>
-        /// <param name="_ModifierKeys">Modifiers key pressed while moving the drawing</param>
-        public abstract void MoveDrawing(int dx, int dy, Keys modifierKeys);
+        /// <param name="dx">Change in x coordinates</param>
+        /// <param name="dy">Change in y coordinates</param>
+        /// <param name="modifierKeys">Modifiers key pressed while moving the drawing</param>
+        /// <param name="zooming">Whether the image is currently zoomed in</param>
+        public abstract void MoveDrawing(int dx, int dy, Keys modifierKeys, bool zooming);
         
         
         
