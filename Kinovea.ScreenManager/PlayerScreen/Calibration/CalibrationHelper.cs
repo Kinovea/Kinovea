@@ -353,6 +353,23 @@ namespace Kinovea.ScreenManager
         {
             return calibrator.Untransform(p);
         }
+
+        public Ellipse GetEllipseFromCircle(PointF center, float radius)
+        {
+            if(calibratorType == CalibratorType.Line)
+                return new Ellipse(GetImagePoint(center), GetImageScalar(radius), GetImageScalar(radius), 0);
+            
+            // Get the square enclosing the circle for mapping.
+            PointF a = GetImagePoint(center.Translate(-radius, -radius));
+            PointF b = GetImagePoint(center.Translate(radius, -radius));
+            PointF c = GetImagePoint(center.Translate(radius, radius));
+            PointF d = GetImagePoint(center.Translate(-radius, radius));
+            QuadrilateralF quadImage = new QuadrilateralF(a, b, c, d);
+
+            ProjectiveMapping mapping = new ProjectiveMapping();
+            mapping.Update(QuadrilateralF.CenteredUnitSquare, quadImage);
+            return mapping.Ellipse();
+        }
         #endregion
        
         #region Serialization

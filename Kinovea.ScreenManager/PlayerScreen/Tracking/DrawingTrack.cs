@@ -374,7 +374,7 @@ namespace Kinovea.ScreenManager
             {
                 // Angular motion
                 if (displayBestFitCircle && trackStatus == TrackStatus.Interactive)
-                    DrawAngularMotion(canvas, currentPoint, opacityFactor, transformer);
+                    DrawBestFitCircle(canvas, currentPoint, opacityFactor, transformer);
 
                 // Track.
                 if( opacityFactor == 1.0 && trackView != TrackView.Label)
@@ -672,7 +672,7 @@ namespace Kinovea.ScreenManager
                     kl.Draw(canvas, transformer, fadingFactor);
             }
         }
-        private void DrawAngularMotion(Graphics canvas, int currentPoint, double fadingFactor, IImageToViewportTransformer transformer)
+        private void DrawBestFitCircle(Graphics canvas, int currentPoint, double fadingFactor, IImageToViewportTransformer transformer)
         {
             if (positions.Count < 3)
                 return;
@@ -683,18 +683,32 @@ namespace Kinovea.ScreenManager
             PointF centerInImage = parentMetadata.CalibrationHelper.GetImagePoint(trajectoryPoints[currentPoint].RotationCenter);
             Point center = transformer.Transform(centerInImage);
 
-            float radiusInImage = parentMetadata.CalibrationHelper.GetImageScalar(trajectoryPoints[currentPoint].RotationRadius);
-            int radius = transformer.Transform((int)radiusInImage);
+            // Get ellipse.
+            Ellipse ellipseInImage = parentMetadata.CalibrationHelper.GetEllipseFromCircle(trajectoryPoints[currentPoint].RotationCenter, trajectoryPoints[currentPoint].RotationRadius);
+
+            PointF ellipseCenter = transformer.Transform(ellipseInImage.Center);
+            float semiMinorAxis = transformer.Transform((int)ellipseInImage.SemiMinorAxis);
+            float semiMajorAxis = transformer.Transform((int)ellipseInImage.SemiMajorAxis);
+            Ellipse ellipse = new Ellipse(ellipseCenter, semiMajorAxis, semiMinorAxis, ellipseInImage.Rotation);
+            RectangleF rect = new RectangleF(-ellipse.SemiMajorAxis, -ellipse.SemiMinorAxis, ellipse.SemiMajorAxis * 2, ellipse.SemiMinorAxis * 2);
+            float angle = (float)(ellipse.Rotation * MathHelper.RadiansToDegrees);
             
             using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
             {
+                // Center and radius
                 p.Width = 2;
                 canvas.DrawEllipse(p, center.Box(4));
-
-                p.Width = 2;
                 p.DashStyle = DashStyle.Dash;
-                canvas.DrawEllipse(p, center.Box(radius));
                 canvas.DrawLine(p, center, location);
+                
+                // Ellipse or circle
+                canvas.TranslateTransform(ellipse.Center.X, ellipse.Center.Y);
+                canvas.RotateTransform(angle);
+                
+                canvas.DrawEllipse(p, rect);
+                
+                canvas.RotateTransform(-angle);
+                canvas.TranslateTransform(-ellipse.Center.X, -ellipse.Center.Y);
             }
         }
         private void DrawMainLabel(Graphics canvas, int currentPoint, double fadingFactor, IImageToViewportTransformer transformer)
