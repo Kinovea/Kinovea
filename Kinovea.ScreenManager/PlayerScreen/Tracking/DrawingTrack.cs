@@ -149,6 +149,7 @@ namespace Kinovea.ScreenManager
             set 
             { 
                 styleHelper.Color = value;
+                style.ReadValue();
                 mainLabel.BackColor = value;
             }
         }
