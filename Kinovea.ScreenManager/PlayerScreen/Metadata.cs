@@ -488,6 +488,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             trackabilityManager.Initialize(imageSize);
+            calibrationHelper.CalibrationByLine_SetOrigin(imageSize.Center());
 
             for(int i = 0; i<totalStaticExtraDrawings;i++)
                 PostDrawingCreationHooks(extraDrawings[i]);
@@ -519,10 +520,7 @@ namespace Kinovea.ScreenManager
         public void UpdateTrajectoriesForKeyframes()
         {
             foreach (DrawingTrack t in Tracks())
-            {
-                t.IntegrateKeyframes();
                 t.CalibrationChanged();
-            }
         }
         public void AllDrawingTextToNormalMode()
         {
@@ -734,15 +732,10 @@ namespace Kinovea.ScreenManager
                 if(reader != null) 
                     reader.Close();
             }
-            
-            if(calibrationHelper.CalibratorType == CalibratorType.Line && !calibrationHelper.CalibrationByLine_GetIsOriginSet())
-            {
-                PointF origin = new Point(imageSize.Width / 2, imageSize.Height / 2);
-                calibrationHelper.CalibrationByLine_SetOrigin(origin);
-            }
-            
-            UpdateTrajectoriesForKeyframes();
+
             drawingCoordinateSystem.UpdateOrigin();
+            foreach (DrawingTrack t in Tracks())
+                t.CalibrationChanged();
         }
         private string ConvertIfNeeded(string _kva, bool _bIsFile)
         {
@@ -1481,7 +1474,7 @@ namespace Kinovea.ScreenManager
             
             spotlightManager = new SpotlightManager();
             autoNumberManager = new AutoNumberManager(ToolManager.AutoNumbers.StylePreset.Clone());
-            drawingCoordinateSystem = new DrawingCoordinateSystem(new Point(-1,-1), ToolManager.CoordinateSystem.StylePreset.Clone());
+            drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.CoordinateSystem.StylePreset.Clone());
             
             extraDrawings.Add(spotlightManager);
             extraDrawings.Add(autoNumberManager);
@@ -1501,6 +1494,8 @@ namespace Kinovea.ScreenManager
         }
         private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
+            drawingCoordinateSystem.UpdateOrigin();
+
             foreach (DrawingTrack t in Tracks())
                 t.CalibrationChanged();
         }
