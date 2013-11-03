@@ -116,22 +116,19 @@ namespace Kinovea.ScreenManager
         private void InitExtraDataCombo()
         {
             // Combo must be filled in the order of the enum.
-            cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None);
-            cmbExtraData.Items.Add("Position");            
-            cmbExtraData.Items.Add("Total distance");
-            //cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
-
-            cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed);
-            cmbExtraData.Items.Add("Vertical velocity");
-            cmbExtraData.Items.Add("Horizontal velocity");
-            cmbExtraData.Items.Add("Acceleration");
-            cmbExtraData.Items.Add("Vertical acceleration");
-            cmbExtraData.Items.Add("Horizontal acceleration");
-
-            cmbExtraData.Items.Add("Angular displacement");
-            cmbExtraData.Items.Add("Angular velocity");
-            cmbExtraData.Items.Add("Angular acceleration");
-            cmbExtraData.Items.Add("Centripetal acceleration");
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.None));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Position));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.TotalDistance));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Speed));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.VerticalVelocity));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.HorizontalVelocity));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Acceleration));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.VerticalAcceleration));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.HorizontalAcceleration));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.AngularDisplacement));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.AngularVelocity));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.AngularAcceleration));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.CentripetalAcceleration));
         }
         private void InitMarkerCombo()
         {
@@ -210,7 +207,7 @@ namespace Kinovea.ScreenManager
             lblView.Text = "Visibility:";
             lblMarker.Text = "Marker:";
             lblExtra.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelExtraData;
-            chkBestFitCircle.Text = "Display best fit circle";
+            chkBestFitCircle.Text = "Display rotation circle";
             
             grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
 
@@ -267,12 +264,9 @@ namespace Kinovea.ScreenManager
         private void CmbExtraData_SelectedIndexChanged(object sender, EventArgs e)
         {
             track.ExtraData = (TrackExtraData)cmbExtraData.SelectedIndex;
-            bool useAngularKinematics = track.ExtraData == TrackExtraData.AngularDisplacement ||
-                track.ExtraData == TrackExtraData.AngularVelocity ||
-                track.ExtraData == TrackExtraData.AngularAcceleration ||
-                track.ExtraData == TrackExtraData.CentripetalAcceleration;
+            track.IsUsingAngularKinematics();
 
-            if (!chkBestFitCircle.Checked && useAngularKinematics)
+            if (track.IsUsingAngularKinematics())
                 chkBestFitCircle.Checked = true;
 
             if(invalidate != null) 
