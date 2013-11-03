@@ -200,13 +200,13 @@ namespace Kinovea.ScreenManager
                                 case SelectedObjectType.ExtraDrawing:
                                     if (metadata.SelectedExtraDrawing >= 0)
                                     {
-                                        metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
+                                        metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys, metadata.CoordinateSystem.Zooming);
                                     }
                                     break;
                                 case SelectedObjectType.Drawing:
                                     if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
                                     {
-                                        metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
+                                        metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys, metadata.CoordinateSystem.Zooming);
                                     }
                                     break;
                                 default:
@@ -310,7 +310,7 @@ namespace Kinovea.ScreenManager
 
             while (hitRes < 0 && iCurrentDrawing < kf.Drawings.Count)
             {
-                hitRes = kf.Drawings[iCurrentDrawing].HitTest(_MouseCoordinates, _iCurrentTimeStamp, transformer);
+                hitRes = kf.Drawings[iCurrentDrawing].HitTest(_MouseCoordinates, _iCurrentTimeStamp, transformer, transformer.Zooming);
                 if (hitRes >= 0)
                 {
                     bDrawingHit = true;
@@ -348,7 +348,7 @@ namespace Kinovea.ScreenManager
 
             while (hitResult < 0 && currentDrawing < metadata.ExtraDrawings.Count)
             {
-                hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CoordinateSystem);
+                hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
                 if (hitResult >= 0)
                 {
                     isOnDrawing = true;
@@ -385,7 +385,7 @@ namespace Kinovea.ScreenManager
                 if(trk != null)
                 {
                     // Handle signification depends on track status.
-                    int handle = trk.HitTest(_MouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem);
+                    int handle = trk.HitTest(_MouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem, _Metadata.CoordinateSystem.Zooming);
                     if (handle < 0)
                         continue;
 

@@ -125,11 +125,11 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
         {
             m_PointList = m_PointList.Select(p => p.Translate(_deltaX, _deltaY)).ToList();
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
             double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);

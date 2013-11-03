@@ -203,7 +203,7 @@ namespace Kinovea.ScreenManager
                 DrawPositions(brushFill, baseBrushFillColor, alphaBackground, opacity, _canvas, _transformer, points);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
@@ -256,7 +256,7 @@ namespace Kinovea.ScreenManager
             UpdateAngles();
             SignalTrackablePointMoved(index);
         }
-        public override void MoveDrawing(int deltaX, int deltaY, Keys modifiers)
+        public override void MoveDrawing(int deltaX, int deltaY, Keys modifiers, bool zooming)
         {
             for(int i = 0;i<m_GenericPosture.Points.Count;i++)
                 m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Translate(deltaX, deltaY);

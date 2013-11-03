@@ -141,12 +141,12 @@ namespace Kinovea.ScreenManager
             if(m_iRadius < 10) 
                 m_iRadius = 10;
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
         {
             m_Center.X += _deltaX;
             m_Center.Y += _deltaY;
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;

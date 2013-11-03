@@ -164,7 +164,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawString(text, fontText, brushText, rect.Location);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
@@ -180,7 +180,7 @@ namespace Kinovea.ScreenManager
             styleHelper.ForceFontSize(wantedHeight, text);
             UpdateLabelRectangle();
         }
-        public override void MoveDrawing(int deltaX, int deltaY, Keys modifierKeys)
+        public override void MoveDrawing(int deltaX, int deltaY, Keys modifierKeys, bool zooming)
         {
             background.Move(deltaX, deltaY);
             RelocateEditbox();

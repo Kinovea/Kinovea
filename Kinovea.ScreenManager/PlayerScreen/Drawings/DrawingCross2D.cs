@@ -172,13 +172,13 @@ namespace Kinovea.ScreenManager
             if(handleNumber == 1)
                 m_LabelCoordinates.SetLabel(point);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
         {
             points["0"] = new Point(points["0"].X + _deltaX, points["0"].Y + _deltaY);
             SignalTrackablePointMoved();
             m_LabelCoordinates.SetAttach(points["0"], true);
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;

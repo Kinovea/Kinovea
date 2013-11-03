@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
                 m_LabelMeasure.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
             double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
@@ -241,7 +241,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
         {
             points["a"] = new Point(points["a"].X + _deltaX, points["a"].Y + _deltaY);
             points["b"] = new Point(points["b"].X + _deltaX, points["b"].Y + _deltaY);
