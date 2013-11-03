@@ -290,7 +290,7 @@ namespace Kinovea.ScreenManager
         
         public void UpdateOrigin()
         {
-            if(CalibrationHelper != null && CalibrationHelper.IsCalibrated && CalibrationHelper.CalibratorType == CalibratorType.Line)
+            if(CalibrationHelper != null && CalibrationHelper.CalibratorType == CalibratorType.Line)
             {
                 PointF p = CalibrationHelper.CalibrationByLine_GetOrigin();
                 points["0"] = new Point((int)p.X, (int)p.Y);

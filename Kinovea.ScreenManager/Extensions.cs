@@ -114,11 +114,20 @@ namespace Kinovea.ScreenManager
         {
             return new Size((int)(s.Width * scale), (int)(s.Height * scale));
         }
-        
+        public static Point Center(this Size size)
+        {
+            return new Point(size.Width / 2, size.Height / 2);
+        }
+
+
         // SizeF
         public static Size Scale(this SizeF s, float scale)
         {
             return new Size((int)(s.Width * scale), (int)(s.Height * scale));
+        }
+        public static PointF Center(this SizeF size)
+        {
+            return new PointF(size.Width / 2, size.Height / 2);
         }
         
         // Rectangle

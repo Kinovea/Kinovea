@@ -676,10 +676,15 @@ namespace Kinovea.ScreenManager
             if (positions.Count < 3)
                 return;
 
+            // trajectoryPoints values are expressed in user coordinates, so we need to first get them back to image coords, 
+            // and then to convert them for display screen.
             Point location = transformer.Transform(positions[currentPoint].Point);
-            Point center = transformer.Transform(trajectoryPoints[currentPoint].RotationCenter);
-            int radius = transformer.Transform((int)trajectoryPoints[currentPoint].RotationRadius);
- 
+            PointF centerInImage = parentMetadata.CalibrationHelper.GetImagePoint(trajectoryPoints[currentPoint].RotationCenter);
+            Point center = transformer.Transform(centerInImage);
+
+            float radiusInImage = parentMetadata.CalibrationHelper.GetImageScalar(trajectoryPoints[currentPoint].RotationRadius);
+            int radius = transformer.Transform((int)radiusInImage);
+            
             using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
             {
                 p.Width = 2;
@@ -843,6 +848,9 @@ namespace Kinovea.ScreenManager
             //float tangentialVelocity = trajectoryPoints[index].TangentialVelocity;
             //if (!float.IsNaN(tangentialVelocity))
             //    displayText = string.Format(culture, "{0:0.00} {1}", tangentialVelocity, helper.GetSpeedAbbreviation());
+
+            //float totalArc = trajectoryPoints[index].TotalDisplacementAngle * trajectoryPoints[index].RotationRadius;
+            //displayText = string.Format(culture, "{0:0.00} {1}", totalArc, helper.GetLengthAbbreviation());
         }
         #endregion
     
