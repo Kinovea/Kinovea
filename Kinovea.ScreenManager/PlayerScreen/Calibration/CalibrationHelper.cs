@@ -134,26 +134,27 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
-        public void CalibrationByLine_SetPixelToUnit(float ratio)
+        /// <summary>
+        /// Returns the origin of the world in image coordinates.
+        /// </summary>
+        public PointF GetOrigin()
         {
-            calibrationLine.SetPixelToUnit(ratio);
-
+            return calibrator.Untransform(PointF.Empty);
+        }
+        /// <summary>
+        /// Takes a point in image coordinates to act as the origin of the current coordinate system.
+        /// </summary>
+        public void SetOrigin(PointF p)
+        {
+            calibrator.SetOrigin(p);
             if (CalibrationChanged != null)
                 CalibrationChanged(this, EventArgs.Empty);
         }
-        public void CalibrationByLine_SetOrigin(PointF p)
+        public void CalibrationByLine_Initialize(float ratio)
         {
-            calibrationLine.SetOrigin(p);
+            calibrationLine.Initialize(ratio);
             if (CalibrationChanged != null)
                 CalibrationChanged(this, EventArgs.Empty);
-        }
-        public PointF CalibrationByLine_GetOrigin()
-        {
-            return calibrationLine.Origin;
-        }
-        public bool CalibrationByLine_GetIsOriginSet()
-        {
-            return calibrationLine.IsOriginSet;
         }
         public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
         {
@@ -163,9 +164,46 @@ namespace Kinovea.ScreenManager
         }
         public SizeF CalibrationByPlane_GetRectangleSize()
         {
+            // Used to populate the calibration dialog.
             return calibrationPlane.Size;
         }
-        
+        public RectangleF GetBoundingRectangle(Size container)
+        {
+            // Tries to find a rectangle in real world coordinates corresponding to the image corners.
+            // This is used by coordinate systems to find a good filling of the image plane for drawing the grid.
+            // The result is given back in real world coordinates.
+
+            // Note: this is currently computed at each draw, it should be computed only when the calibration changes.
+
+            RectangleF result;
+            if (calibratorType == CalibratorType.Line)
+            {
+                PointF a = calibrator.Transform(PointF.Empty);
+                PointF b = calibrator.Transform(new PointF(container.Width, 0));
+                PointF c = calibrator.Transform(new PointF(container.Width, container.Height));
+                PointF d = calibrator.Transform(new PointF(0, container.Height));
+                result = new RectangleF(a.X, a.Y, b.X - a.X, a.Y - d.Y);
+            }
+            else
+            {
+                // Redo the user mapping but use the bounding box of the user quadrilateral instead.
+                // This way we are sure the image corners have real world equivalent.
+                RectangleF bbox = calibrationPlane.QuadImage.GetBoundingBox();
+                QuadrilateralF quadImage = new QuadrilateralF(bbox);
+            
+                CalibrationPlane calibrationPlane2 = new CalibrationPlane();
+                calibrationPlane2.Initialize(calibrationPlane.Size, quadImage);
+                calibrationPlane2.SetOrigin(calibrationPlane.Untransform(PointF.Empty));
+
+                PointF a = calibrationPlane2.Transform(PointF.Empty);
+                PointF b = calibrationPlane2.Transform(new PointF(container.Width, 0));
+                PointF c = calibrationPlane2.Transform(new PointF(container.Width, container.Height));
+                PointF d = calibrationPlane2.Transform(new PointF(0, container.Height));
+                result = new RectangleF(a.X, a.Y, b.X - a.X, a.Y - d.Y);
+            }
+
+            return result;
+        }
         #endregion
         
         #region Value computers
@@ -331,8 +369,7 @@ namespace Kinovea.ScreenManager
             return UnitHelper.AngularAccelerationAbbreviation(angularAccelerationUnit);
         }
         #endregion
-        
-        
+         
         #region Inverse transformations (from calibrated space to image space).
         public float GetImageLength(PointF p1, PointF p2)
         {

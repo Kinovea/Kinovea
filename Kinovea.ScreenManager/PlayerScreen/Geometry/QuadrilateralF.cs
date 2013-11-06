@@ -111,6 +111,14 @@ namespace Kinovea.ScreenManager
             D = new PointF(0, height);
         }
 
+        public QuadrilateralF(RectangleF rect)
+        {
+            A = rect.Location;
+            B = new PointF(rect.Right, rect.Top);
+            C = new PointF(rect.Right, rect.Bottom);
+            D = new PointF(rect.Left, rect.Bottom);
+        }
+
         #region Public methods
         public void Translate(float x, float y)
         {

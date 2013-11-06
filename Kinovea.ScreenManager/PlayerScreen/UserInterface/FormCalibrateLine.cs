@@ -121,7 +121,7 @@ namespace Kinovea.ScreenManager
                 
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Line);
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
-                calibrationHelper.CalibrationByLine_SetPixelToUnit(ratio);
+                calibrationHelper.CalibrationByLine_Initialize(ratio);
             }
             catch
             {
