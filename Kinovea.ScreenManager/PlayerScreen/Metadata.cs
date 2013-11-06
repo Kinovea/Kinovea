@@ -488,7 +488,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             trackabilityManager.Initialize(imageSize);
-            calibrationHelper.CalibrationByLine_SetOrigin(imageSize.Center());
+            calibrationHelper.SetOrigin(imageSize.Center());
 
             for(int i = 0; i<totalStaticExtraDrawings;i++)
                 PostDrawingCreationHooks(extraDrawings[i]);

@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem menuHide = new ToolStripMenuItem();
         
         private const int defaultBackgroundAlpha = 92;
-        private const int gridAlpha = 92;
+        private const int gridAlpha = 128;
         private const int textMargin = 8;
         #endregion
 
@@ -154,35 +154,93 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            if(!Visible)
+            if(!Visible || CalibrationHelper == null)
                 return;
-            
-            float widthUserUnit = CalibrationHelper.GetLength(PointF.Empty, new PointF((float)imageSize.Width, 0));
-            float stepSizeUserUnit = RulerStepSize(widthUserUnit, 10);
-            int stepSizePixels = (int)CalibrationHelper.GetImageLength(PointF.Empty, new PointF(stepSizeUserUnit, 0));
-            
-            Point origin = transformer.Transform(points["0"]);
-            Size size = transformer.Transform(imageSize);
-            int stepSize = transformer.Transform(stepSizePixels);
-            
-            using(Pen penLine = styleHelper.GetBackgroundPen(255))
+
+            RectangleF bounds = CalibrationHelper.GetBoundingRectangle(imageSize);
+            float stepSizeWidth = RulerStepSize(bounds.Width, 12);
+            float stepSizeHeight = stepSizeWidth;
+
+            if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
+                stepSizeHeight = RulerStepSize(bounds.Height, 12);
+
+            using (Pen penLine = styleHelper.GetBackgroundPen(255))
             {
-                if(!showGrid && !showGraduations && !showAxis)
-                {
-                    DrawMarker(canvas, penLine, origin);
-                }
-                else
-                {
-                    if(showGrid)
-                        DrawGrid(canvas, penLine, origin, size, stepSize);
-                    
-                    if(showGraduations)
-                        DrawGraduations(canvas, penLine, origin, size, stepSize, stepSizeUserUnit);
-                    
-                    DrawAxis(canvas, penLine, origin, size);
-                }
+                DrawGrid(canvas, transformer, bounds, stepSizeWidth, stepSizeHeight);
             }
         }
+        private void DrawGrid(Graphics canvas, IImageToViewportTransformer transformer, RectangleF bounds, float stepWidth, float stepHeight)
+        {
+            Pen p = styleHelper.GetBackgroundPen(gridAlpha);
+            SolidBrush brushFill = styleHelper.GetBackgroundBrush(defaultBackgroundAlpha);
+            SolidBrush fontBrush = styleHelper.GetForegroundBrush(255);
+            Font font = styleHelper.GetFont(1.0F);
+
+            float top = bounds.Y;
+            float bottom = bounds.Y - bounds.Height;
+
+            // Verticals
+            float x = 0;
+            while (x <= bounds.Right)
+            {
+                p.DashStyle = x == 0 ? DashStyle.Solid : DashStyle.Dash;
+                TextAlignment alignment = x == 0 ? TextAlignment.BottomRight : TextAlignment.Bottom;
+                DrawLine(canvas, transformer, p, new PointF(x, top), new PointF(x, bottom));
+                DrawStepTextForPlane(canvas, transformer, new PointF(x, 0), alignment, x, brushFill, fontBrush, font);
+                x += stepWidth;
+            }
+            x = -stepWidth;
+            while (x >= bounds.Left)
+            {
+                DrawLine(canvas, transformer, p, new PointF(x, top), new PointF(x, bottom));
+                DrawStepTextForPlane(canvas, transformer, new PointF(x, 0), TextAlignment.Bottom, x, brushFill, fontBrush, font);
+                x -= stepWidth;
+            }
+
+            // Horizontals
+            float y = 0;
+            while (y >= bottom)
+            {
+                p.DashStyle = y == 0 ? DashStyle.Solid : DashStyle.Dash;
+                DrawLine(canvas, transformer, p, new PointF(bounds.Left, y), new PointF(bounds.Right, y));
+                if (y != 0)
+                    DrawStepTextForPlane(canvas, transformer, new PointF(0, y), TextAlignment.Left, y, brushFill, fontBrush, font);
+                y -= stepHeight;
+            }
+            y = stepHeight;
+            while (y <= top)
+            {
+                DrawLine(canvas, transformer, p, new PointF(bounds.Left, y), new PointF(bounds.Right, y));
+                DrawStepTextForPlane(canvas, transformer, new PointF(0, y), TextAlignment.Left, y, brushFill, fontBrush, font);
+                y += stepHeight;
+            }
+
+            font.Dispose();
+            fontBrush.Dispose();
+            brushFill.Dispose();
+            p.Dispose();
+        }
+
+        private void DrawStepTextForPlane(Graphics canvas, IImageToViewportTransformer transformer, PointF tickPosition, TextAlignment textAlignment, float tickValue, SolidBrush brushFill, SolidBrush fontBrush, Font font)
+        {
+            string label = String.Format("{0}", tickValue);
+            PointF loc = transformer.Transform(CalibrationHelper.GetImagePoint(tickPosition));
+
+            SizeF labelSize = canvas.MeasureString(label, font);
+            PointF textPosition = GetTextPosition(loc, textAlignment, labelSize);
+            RectangleF backRectangle = new RectangleF(textPosition, labelSize);
+
+            RoundedRectangle.Draw(canvas, backRectangle, brushFill, font.Height / 4, false, false, null);
+            canvas.DrawString(label, font, fontBrush, backRectangle.Location);
+        }
+
+        private void DrawLine(Graphics canvas, IImageToViewportTransformer transformer, Pen penLine, PointF a, PointF b)
+        {
+            Point p1 = transformer.Transform(CalibrationHelper.GetImagePoint(a));
+            Point p2 = transformer.Transform(CalibrationHelper.GetImagePoint(b));
+            canvas.DrawLine(penLine, p1, p2);
+        }
+
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
@@ -213,9 +271,8 @@ namespace Kinovea.ScreenManager
                 points["0"] = new Point(points["0"].X, point.Y);
             else if(handleNumber == 3)
                 points["0"] = new Point(point.X, points["0"].Y);
-            
-            CalibrationHelper.SetCalibratorFromType(CalibratorType.Line);
-            CalibrationHelper.CalibrationByLine_SetOrigin(point);
+
+            CalibrationHelper.SetOrigin(points["0"]);
             SignalTrackablePointMoved();
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
@@ -246,7 +303,7 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
-            CalibrationHelper.CalibrationByLine_SetOrigin(value);
+            CalibrationHelper.SetOrigin(value);
         }
         private void SignalTrackablePointMoved()
         {
@@ -290,9 +347,9 @@ namespace Kinovea.ScreenManager
         
         public void UpdateOrigin()
         {
-            if(CalibrationHelper != null && CalibrationHelper.CalibratorType == CalibratorType.Line)
+            if(CalibrationHelper != null)
             {
-                PointF p = CalibrationHelper.CalibrationByLine_GetOrigin();
+                PointF p = CalibrationHelper.GetImagePoint(PointF.Empty);
                 points["0"] = new Point((int)p.X, (int)p.Y);
             }
         }
@@ -301,132 +358,6 @@ namespace Kinovea.ScreenManager
         private void BindStyle()
         {
             style.Bind(styleHelper, "Bicolor", "line color");
-        }
-        private void DrawAxis(Graphics canvas, Pen pen, Point origin, Size size)
-        {
-            canvas.DrawLine(pen, 0, origin.Y, size.Width, origin.Y);
-            canvas.DrawLine(pen, origin.X, 0, origin.X, size.Height);
-        }
-        private void DrawMarker(Graphics canvas, Pen pen, Point origin)
-        {
-            int radius = 5;
-            canvas.DrawLine(pen, origin.X - radius, origin.Y, origin.X + radius, origin.Y);
-            canvas.DrawLine(pen, origin.X, origin.Y - radius, origin.X, origin.Y + radius);
-        }
-        private void DrawGrid(Graphics canvas, Pen pen, Point origin, Size size, int stepSize)
-        {
-            Pen p = new Pen(Color.FromArgb(gridAlpha, pen.Color), pen.Width);
-            p.DashStyle = DashStyle.Dash;
-            
-            DrawLinesAtTicks(canvas, p, origin, size, stepSize, size.Height, size.Width, false);
-            
-            p.Dispose();
-        }
-        private void DrawGraduations(Graphics canvas, Pen pen, Point origin, Size size, int stepSize, float stepSizeUserUnit)
-        {
-            DrawLinesAtTicks(canvas, pen, origin, size, stepSize, 10, 10, true, true, stepSizeUserUnit);
-        }
-        private void DrawLinesAtTicks(Graphics canvas, Pen pen, Point origin, Size size, int stepSize, int linesHeight, int linesWidth, bool relative)
-        {
-            DrawLinesAtTicks(canvas, pen, origin, size, stepSize, linesHeight, linesWidth, relative, false, 0);
-        }
-        private void DrawLinesAtTicks(Graphics canvas, Pen pen, Point origin, Size size, int stepSize, int linesHeight, int linesWidth, bool relative, bool graduations, float stepSizeUserUnit)
-        {
-            SolidBrush brushFill = styleHelper.GetBackgroundBrush(defaultBackgroundAlpha);
-            SolidBrush fontBrush = styleHelper.GetForegroundBrush(255);
-            Font font = styleHelper.GetFont(1.0F);
-            
-            int top = relative ? origin.Y - linesHeight / 2 : 0;
-            int bottom = relative ? origin.Y + linesHeight / 2 : linesHeight;
-            int left = relative ? origin.X - linesWidth / 2 : 0;
-            int right = relative ? origin.X + linesWidth / 2 : linesWidth;
-         
-            // Vertical lines.
-            int x = origin.X;
-            int tick = 0;             
-            while(x < size.Width)
-            {
-                canvas.DrawLine(pen, x, top, x, bottom);    
-                if(graduations)
-                {
-                    string grad = String.Format("{0}", (tick * stepSizeUserUnit));
-                    PointF tickPosition = new PointF(x, origin.Y);
-                    if(tick == 0)
-                        DrawStepText(canvas, tickPosition, TextAlignment.BottomRight, grad, brushFill, fontBrush, font);
-                    else
-                        DrawStepText(canvas, tickPosition, TextAlignment.Bottom, grad, brushFill, fontBrush, font);
-                    tick++;
-                }
-                
-                x += stepSize;
-            }
-            
-            x = origin.X - stepSize;
-            tick = -1;
-            while(x >= 0)
-            {
-                canvas.DrawLine(pen, x, top, x, bottom);
-                
-                if(graduations)
-                {
-                    string grad = String.Format("{0}", tick * stepSizeUserUnit);
-                    PointF tickPosition = new PointF(x, origin.Y);
-                    DrawStepText(canvas, tickPosition, TextAlignment.Bottom, grad, brushFill, fontBrush, font);
-                    tick--;
-                }
-                
-                x -= stepSize;
-            }
-            
-            // Horizontal lines.
-            int y = origin.Y;            
-            tick = 0;
-            while(y < size.Height)
-            {
-                canvas.DrawLine(pen, left, y, right, y);    
-                if(graduations)
-                {
-                    if(tick != 0)
-                    {
-                        string grad = String.Format("{0}", -tick * stepSizeUserUnit);
-                        PointF tickPosition = new PointF(origin.X, y);
-                        DrawStepText(canvas, tickPosition, TextAlignment.Left, grad, brushFill, fontBrush, font);
-                    }
-                    
-                    tick++;
-                }
-                
-                y += stepSize;
-            }
-            
-            y = origin.Y - stepSize;
-            tick = -1;
-            while(y >= 0)
-            {
-                canvas.DrawLine(pen, left, y, right, y);
-                if(graduations)
-                {
-                    string grad = String.Format("{0}", -tick * stepSizeUserUnit);
-                    PointF tickPosition = new PointF(origin.X, y);
-                    DrawStepText(canvas, tickPosition, TextAlignment.Left, grad, brushFill, fontBrush, font);
-                    tick--;
-                }
-                
-                y -= stepSize;
-            }
-            
-            brushFill.Dispose();
-            fontBrush.Dispose();
-            font.Dispose();
-        }
-        private void DrawStepText(Graphics canvas, PointF tickPosition, TextAlignment textAlignment, string label, SolidBrush brushFill, SolidBrush fontBrush, Font font)
-        {
-            SizeF labelSize = canvas.MeasureString(label, font);
-            PointF textPosition = GetTextPosition(tickPosition, textAlignment, labelSize);
-            RectangleF backRectangle = new RectangleF(textPosition, labelSize);
-            
-            RoundedRectangle.Draw(canvas, backRectangle, brushFill, font.Height/4, false, false, null);
-            canvas.DrawString(label, font, fontBrush, backRectangle.Location);
         }
         private PointF GetTextPosition(PointF tickPosition, TextAlignment textAlignment, SizeF textSize)
         {

@@ -35,50 +35,33 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class CalibrationLine : ICalibrator
     {
-        public bool IsOriginSet
-        {
-            get { return (origin.X >= 0 && origin.Y >= 0); }
-        }
-        
-        public PointF Origin 
-        {
-            get { return origin;}
-        }
-        private PointF origin = new PointF(-1, -1);
+        private PointF origin;
         private float scale = 1.0f;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
         
         #region ICalibrator
         public PointF Transform(PointF p)
         {
-            PointF p2 = p;
-            
-            if(IsOriginSet)
-                p2 = new PointF(p.X - origin.X, - (p.Y - origin.Y));
-
+            PointF p2 = new PointF(p.X - origin.X, - (p.Y - origin.Y));
             p2 = p2.Scale(scale, scale);
             return p2;
         }
        
         public PointF Untransform(PointF p)
         {
-            PointF p2 = p;
-            
-            p2 = p.Scale(1/scale, 1/scale);
-            
-            if(IsOriginSet)
-                p2 = new PointF(p2.X + origin.X, origin.Y - p2.Y);
-            
+            PointF p2 = p.Scale(1/scale, 1/scale);
+            p2 = new PointF(p2.X + origin.X, origin.Y - p2.Y);
             return p2;
         }
-        #endregion
         
         public void SetOrigin(PointF p)
         {
             origin = p;
         }
-        public void SetPixelToUnit(float ratio)
+        #endregion
+        
+        
+        public void Initialize(float ratio)
         {
             scale = ratio;
         }

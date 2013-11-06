@@ -43,6 +43,11 @@ namespace Kinovea.ScreenManager
             get { return size; }
             set { size = value;}
         }
+
+        public QuadrilateralF QuadImage
+        {
+            get { return quadImage; }
+        }
         
         private bool initialized;
         private SizeF size;
@@ -50,30 +55,62 @@ namespace Kinovea.ScreenManager
         private ProjectiveMapping mapping = new ProjectiveMapping();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
+        // Origin of world expressed in calibration coordinates.
+        private PointF origin;
         
         #region ICalibrator
+        /// <summary>
+        /// Takes a point in image coordinates and gives it back in real world coordinates.
+        /// </summary>
         public PointF Transform(PointF p)
         {
             if(!initialized)
                 return p;
             
-            return mapping.Backward(p);
+            return CalibratedToWorld(mapping.Backward(p));
         }
         
+        /// <summary>
+        /// Takes a point in real world coordinates and gives it back in image coordinates.
+        /// </summary>
         public PointF Untransform(PointF p)
         {
             if(!initialized)
                 return p;
-            
-            return mapping.Forward(p);
+
+            return mapping.Forward(WorldToCalibrated(p));
         }
-        #endregion
+
+        public void SetOrigin(PointF p)
+        {
+            origin = mapping.Backward(p);
+        }
         
+        #endregion
+
+        private PointF CalibratedToWorld(PointF p)
+        {
+            return new PointF(- origin.X + p.X, origin.Y - p.Y);
+        }
+
+        private PointF WorldToCalibrated(PointF p)
+        {
+            return new PointF(origin.X + p.X, origin.Y - p.Y);
+        }
+        
+        /// <summary>
+        /// Initialize the projective mapping.
+        /// </summary>
+        /// <param name="size">Real world dimension of the reference rectangle.</param>
+        /// <param name="quadImage">Image coordinates of the reference rectangle.</param>
         public void Initialize(SizeF size, QuadrilateralF quadImage)
         {
             this.size = size;
             this.quadImage = quadImage.Clone();
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
+
+            origin = mapping.Backward(quadImage.D);
+
             this.initialized = true;
         }
         
