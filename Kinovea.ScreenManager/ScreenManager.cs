@@ -3006,7 +3006,7 @@ namespace Kinovea.ScreenManager
                 {
                     state.Loaded = true;
                     state.FilePath = ((PlayerScreen)screen).FilePath;
-                    state.MetadataString = ((PlayerScreen)screen).FrameServer.Metadata.ToXmlString(1);
+                    state.MetadataString = ((PlayerScreen)screen).FrameServer.Metadata.ToXmlString();
                 }
                 else
                 {
