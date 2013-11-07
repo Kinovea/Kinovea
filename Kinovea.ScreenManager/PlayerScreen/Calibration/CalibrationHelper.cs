@@ -186,7 +186,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                // Redo the user mapping but use the bounding box of the user quadrilateral instead.
+                // Redo the user mapping but use the bounding box of the user quadrilateral instead of the quadrilateral itself.
                 // This way we are sure the image corners have real world equivalent.
                 RectangleF bbox = calibrationPlane.QuadImage.GetBoundingBox();
                 QuadrilateralF quadImage = new QuadrilateralF(bbox);

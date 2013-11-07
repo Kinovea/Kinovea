@@ -230,7 +230,6 @@ namespace Kinovea.ScreenManager
         private long averageTimeStampsPerFrame = 1;
         private long firstTimeStamp;
         private long selectionStart;
-        private int duplicateFactor = 1;
         private int referenceHash;
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
         private CoordinateSystem coordinateSystem = new CoordinateSystem();
@@ -841,9 +840,6 @@ namespace Kinovea.ScreenManager
                     case "SelectionStart":
                         inputSelectionStart = r.ReadElementContentAsLong();
                         break;
-                    case "DuplicationFactor":
-                        duplicateFactor = r.ReadElementContentAsInt();
-                        break;
                     case "Calibration":
                         CalibrationHelper.ReadXml(r);
                         break;
@@ -861,6 +857,9 @@ namespace Kinovea.ScreenManager
                         break;
                     case "AutoNumbers":
                         ParseAutoNumbers(r);
+                        break;
+                    case "CoordinateSystem":
+                        ParseCoordinateSystem(r);
                         break;
                     default:
                         // We still need to properly skip the unparsed nodes.
@@ -1097,6 +1096,10 @@ namespace Kinovea.ScreenManager
             extraDrawings.RemoveAt(index);
             extraDrawings.Insert(index, autoNumberManager);
         }
+        private void ParseCoordinateSystem(XmlReader _xmlReader)
+        {
+            drawingCoordinateSystem.ReadXml(_xmlReader);
+        }
         private PointF GetScaling()
         {
             PointF scaling = new PointF(1.0f, 1.0f);
@@ -1110,16 +1113,8 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Writing
-        public String ToXmlString(int _iDuplicateFactor)
+        public String ToXmlString()
         {
-            // The duplicate factor is used in the context of extreme slow motion (causing the output to be less than 8fps).
-            // In that case there is frame duplication and we store this information in the metadata when it is embedded in the file.
-            // On input, it will be used to adjust the key images positions.
-            // We change the global variable so it can be used during xml export, but it's only temporary.
-            // It is possible that an already duplicated clip is further slowed down.
-            int memoDuplicateFactor = duplicateFactor;
-            duplicateFactor *= _iDuplicateFactor;
-            
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = false;
             settings.CloseOutput = true;
@@ -1137,8 +1132,6 @@ namespace Kinovea.ScreenManager
                     log.Error(e);
                 }
             }
-            
-            duplicateFactor = memoDuplicateFactor;
             
             return builder.ToString();
         }
@@ -1194,6 +1187,7 @@ namespace Kinovea.ScreenManager
             WriteTracks(w);
             WriteSpotlights(w);
             WriteAutoNumbers(w);
+            WriteCoordinateSystem(w);
             
             w.WriteEndElement();
         }
@@ -1263,7 +1257,12 @@ namespace Kinovea.ScreenManager
             autoNumberManager.WriteXml(w);
             w.WriteEndElement();
         }
-          
+        private void WriteCoordinateSystem(XmlWriter w)
+        {
+            w.WriteStartElement("CoordinateSystem");
+            drawingCoordinateSystem.WriteXml(w);
+            w.WriteEndElement();
+        } 
         private void WriteGeneralInformation(XmlWriter w)
         {
             w.WriteElementString("FormatVersion", "2.0");
@@ -1277,9 +1276,6 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("AverageTimeStampsPerFrame", averageTimeStampsPerFrame.ToString());
             w.WriteElementString("FirstTimeStamp", firstTimeStamp.ToString());
             w.WriteElementString("SelectionStart", selectionStart.ToString());
-            
-            if(duplicateFactor > 1)
-                w.WriteElementString("DuplicationFactor", duplicateFactor.ToString());
             
             // Calibration
             WriteCalibrationHelp(w);
@@ -1361,7 +1357,6 @@ namespace Kinovea.ScreenManager
                     if (bRelative)
                     {
                         iFrameNumber = (int)(_iInputTimestamp / inputAverageTimeStampsPerFrame);
-                        iFrameNumber *= duplicateFactor;
                         iOutputTimestamp = (int)(iFrameNumber * averageTimeStampsPerFrame);
                     }
                     else
@@ -1370,12 +1365,10 @@ namespace Kinovea.ScreenManager
                         {
                             // There was a selection.
                             iFrameNumber = (int)((_iInputTimestamp - inputSelectionStart) / inputAverageTimeStampsPerFrame);
-                            iFrameNumber *= duplicateFactor;
                         }
                         else
                         {
                             iFrameNumber = (int)((_iInputTimestamp - inputFirstTimeStamp) / inputAverageTimeStampsPerFrame);
-                            iFrameNumber *= duplicateFactor;
                         }
                         
                         iOutputTimestamp = (int)(iFrameNumber * averageTimeStampsPerFrame) + firstTimeStamp;

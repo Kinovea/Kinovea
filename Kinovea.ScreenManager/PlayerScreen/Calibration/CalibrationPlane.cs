@@ -125,7 +125,8 @@ namespace Kinovea.ScreenManager
             WritePointF(w, "C", quadImage.C);
             WritePointF(w, "D", quadImage.D);
             w.WriteEndElement();
-            
+
+            WritePointF(w, "Origin", origin);
         }
         private void WritePointF(XmlWriter w, string name, PointF p)
         {
@@ -144,6 +145,9 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Quadrilateral":
                         ParseQuadrilateral(r);
+                        break;
+                    case "Origin":
+                        origin = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();

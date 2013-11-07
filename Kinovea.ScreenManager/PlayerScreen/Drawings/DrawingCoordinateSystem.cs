@@ -53,8 +53,8 @@ namespace Kinovea.ScreenManager
         {
             get 
             { 
-                int iHash = styleHelper.ContentHash;
-                return iHash;
+                int hash = Visible.GetHashCode();
+                return hash;
             }
         } 
         public DrawingStyle DrawingStyle
@@ -344,7 +344,33 @@ namespace Kinovea.ScreenManager
             CallInvalidateFromMenu(sender);
         }
         #endregion
-        
+
+        #region Serialization
+        public void WriteXml(XmlWriter w)
+        {
+            w.WriteElementString("Visible", Visible.ToString().ToLower());
+        }
+        public void ReadXml(XmlReader r)
+        {
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "Visible":
+                        Visible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        break;
+                }
+            }
+
+            r.ReadEndElement();
+        }            
+        #endregion
+
         public void UpdateOrigin()
         {
             if(CalibrationHelper != null)

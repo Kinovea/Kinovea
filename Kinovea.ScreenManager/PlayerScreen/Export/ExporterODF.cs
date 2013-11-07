@@ -36,7 +36,7 @@ namespace Kinovea.ScreenManager
         
         public void Export(string path, Metadata metadata)
         {
-            string kvaString = metadata.ToXmlString(1);
+            string kvaString = metadata.ToXmlString();
             XmlDocument kvaDoc = new XmlDocument();
 			kvaDoc.LoadXml(kvaString);
 			
