@@ -9,6 +9,6 @@ namespace Kinovea.Services
     {
         MetersPerSecondSquared,
         FeetPerSecondSquared,
-        PixelsPerFrameSquared
+        PixelsPerSecondSquared
     }
 }

@@ -9,7 +9,6 @@ namespace Kinovea.Services
     {
         DegreesPerSecond,
         RadiansPerSecond,
-        RevolutionsPerMinute,
-        RadiansPerFrame
+        RevolutionsPerMinute
     }
 }

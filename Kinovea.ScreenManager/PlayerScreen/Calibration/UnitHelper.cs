@@ -40,6 +40,7 @@ namespace Kinovea.ScreenManager
         private const double mileToMeters = 1609.344;
         private const double nauticalMileToMeters = 1852;
 
+        #region Abbreviations
         public static string LengthAbbreviation(LengthUnit unit)
         {
             string result = "";
@@ -95,9 +96,9 @@ namespace Kinovea.ScreenManager
                 case SpeedUnit.Knots:
                     abbreviation = "kn";
                     break;
-                case SpeedUnit.PixelsPerFrame:
+                case SpeedUnit.PixelsPerSecond:
                 default:
-                    abbreviation = "px/f";
+                    abbreviation = "px/s";
                     break;
             }
             
@@ -115,9 +116,9 @@ namespace Kinovea.ScreenManager
                 case AccelerationUnit.MetersPerSecondSquared:
                     abbreviation = "m/s²";
                     break;
-                case AccelerationUnit.PixelsPerFrameSquared:
+                case AccelerationUnit.PixelsPerSecondSquared:
                 default:
-                    abbreviation = "px/f²";
+                    abbreviation = "px/s²";
                     break;
             }
 
@@ -174,18 +175,16 @@ namespace Kinovea.ScreenManager
 
             return abbreviation;
         }
+        #endregion
 
-        public static double ConvertVelocity(double v, double framesPerSecond, LengthUnit lengthUnit, SpeedUnit unit)
+        /// <summary>
+        /// Takes a velocity in length unit per second and returns it in speed unit.
+        /// </summary>
+        public static float ConvertVelocity(float v, LengthUnit lengthUnit, SpeedUnit unit)
         {
-            // v is given in <lengthUnit>/f.
-            if (unit == SpeedUnit.PixelsPerFrame)
-                return v;
-
-            double v2 = ConvertLengthForSpeedUnit(v, lengthUnit, unit);
+            float result = 0;
+            float perSecond = ConvertLengthForSpeedUnit(v, lengthUnit, unit);
             
-            double result = 0;
-            double perSecond = v2 * framesPerSecond;
-
             switch (unit)
             {
                 case SpeedUnit.FeetPerSecond:
@@ -198,92 +197,72 @@ namespace Kinovea.ScreenManager
                     result = perSecond * 3600;
                     break;
                 default:
-                    result = v2;
+                    result = 0;
                     break;
             }
 
             return result;
         }
 
-        public static double ConvertAcceleration(double a, double framesPerSecond, LengthUnit lengthUnit, AccelerationUnit unit)
+        /// <summary>
+        /// Takes an acceleration in length unit per second squared and returns it in acceleration unit.
+        /// </summary>
+        public static float ConvertAcceleration(float a, LengthUnit lengthUnit, AccelerationUnit unit)
         {
-            // a is given in <lengthUnit>/frame².
-            if (unit == AccelerationUnit.PixelsPerFrameSquared)
-                return a;
-
-            double a2 = ConvertLengthForAccelerationUnit(a, lengthUnit, unit);
-            
-            double result = 0;
-            double perSecondSquared = a2 * framesPerSecond;
-
-            switch (unit)
-            {
-                case AccelerationUnit.FeetPerSecondSquared:
-                case AccelerationUnit.MetersPerSecondSquared:
-                    result = perSecondSquared;
-                    break;
-                default:
-                    result = a2;
-                    break;
-            }
-
-            return result;
+            float perSecondSquared = ConvertLengthForAccelerationUnit(a, lengthUnit, unit);
+            return perSecondSquared;
         }
 
-        public static double ConvertAngularVelocity(double radiansPerFrame, double framesPerSecond, AngularVelocityUnit unit)
+        /// <summary>
+        /// Takes an angular velocity in radians per second and returns it in angular velocity unit.
+        /// </summary>
+        public static double ConvertAngularVelocity(double radiansPerSecond, AngularVelocityUnit unit)
         {
-            if (unit == AngularVelocityUnit.RadiansPerFrame)
-                return radiansPerFrame;
-
             double result = 0;
 
             switch (unit)
             {
                 case AngularVelocityUnit.DegreesPerSecond:
-                    result = radiansPerFrame * MathHelper.RadiansToDegrees * framesPerSecond;
+                    result = radiansPerSecond * MathHelper.RadiansToDegrees;
                     break;
                 case AngularVelocityUnit.RadiansPerSecond:
-                    result = radiansPerFrame * framesPerSecond;
+                    result = radiansPerSecond;
                     break;
                 case AngularVelocityUnit.RevolutionsPerMinute:
-                    double revolutionsPerFrame = radiansPerFrame / (2 * Math.PI);
-                    result = revolutionsPerFrame * framesPerSecond * 60;
+                    double revolutionsPerSecond = radiansPerSecond / (2 * Math.PI);
+                    result = revolutionsPerSecond * 60;
                     break;
             }
 
             return result;
         }
 
-        public static double ConvertAngularAcceleration(double radiansPerFrameSquared, double framesPerSecond, AngularAccelerationUnit unit)
+        public static float ConvertAngularAcceleration(float radiansPerSecondSquared, AngularAccelerationUnit unit)
         {
-            if (unit == AngularAccelerationUnit.RadiansPerFrameSquared)
-                return radiansPerFrameSquared;
-
-            double result = 0;
+            float result = 0;
 
             switch (unit)
             {
                 case AngularAccelerationUnit.DegreesPerSecondSquared:
-                    result = radiansPerFrameSquared * MathHelper.RadiansToDegrees * framesPerSecond;
+                    result = (float)(radiansPerSecondSquared * MathHelper.RadiansToDegrees);
                     break;
                 case AngularAccelerationUnit.RadiansPerSecondSquared:
-                    result = radiansPerFrameSquared * framesPerSecond;
+                    result = radiansPerSecondSquared;
                     break;
             }
 
             return result;
         }
 
-        private static double ConvertLengthForSpeedUnit(double length, LengthUnit lengthUnit, SpeedUnit speedUnits)
+        private static float ConvertLengthForSpeedUnit(float length, LengthUnit lengthUnit, SpeedUnit speedUnits)
         {
             // Convert from one length unit to another, target unit is extracted from velocity unit.
             // We first convert from whatever unit into meters, then from meters to the output.
 
-            // The scenario where the space is calibrated but the user wants the speed in pixels is not supported.
             if (lengthUnit == LengthUnit.Pixels || lengthUnit == LengthUnit.Percentage)
-                return speedUnits == SpeedUnit.PixelsPerFrame ? length : 0;
+                return length;
 
-            double meters = GetMeters(length, lengthUnit);
+            float meters = GetMeters(length, lengthUnit);
 
             double result = 0;
             switch (speedUnits)
@@ -303,23 +282,23 @@ namespace Kinovea.ScreenManager
                 case SpeedUnit.Knots:
                     result = meters / nauticalMileToMeters;
                     break;
-                case SpeedUnit.PixelsPerFrame:
+                case SpeedUnit.PixelsPerSecond:
                 default:
                     result = 0;
                     break;
             }
 
-            return result;
+            return (float)result;
         }
 
-        private static double ConvertLengthForAccelerationUnit(double length, LengthUnit lengthUnit, AccelerationUnit accUnit)
+        private static float ConvertLengthForAccelerationUnit(float length, LengthUnit lengthUnit, AccelerationUnit accUnit)
         {
             // Convert from one length unit to another, target unit is extracted from acceleration unit.
             // We first convert from whatever unit into meters, then from meters to the output.
 
             // The scenario where the space is calibrated but the user wants the acceleration in pixels is not supported.
             if (lengthUnit == LengthUnit.Pixels || lengthUnit == LengthUnit.Percentage)
-                return accUnit == AccelerationUnit.PixelsPerFrameSquared ? length : 0;
+                return length;
 
             double meters = GetMeters(length, lengthUnit);
 
@@ -332,16 +311,16 @@ namespace Kinovea.ScreenManager
                 case AccelerationUnit.MetersPerSecondSquared:
                     result = meters;
                     break;
-                case AccelerationUnit.PixelsPerFrameSquared:
+                case AccelerationUnit.PixelsPerSecondSquared:
                 default:
                     result = 0;
                     break;
             }
 
-            return result;
+            return (float)result;
         }
 
-        private static double GetMeters(double length, LengthUnit unit)
+        private static float GetMeters(float length, LengthUnit unit)
         {
             double meters = 0;
 
@@ -367,8 +346,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            return meters;
+            return (float)meters;
         }  
-    
     }
 }

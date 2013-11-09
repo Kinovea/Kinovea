@@ -29,6 +29,6 @@ namespace Kinovea.Services
         FeetPerSecond,
         MilesPerHour,
         Knots,
-        PixelsPerFrame
+        PixelsPerSecond
     }
 }

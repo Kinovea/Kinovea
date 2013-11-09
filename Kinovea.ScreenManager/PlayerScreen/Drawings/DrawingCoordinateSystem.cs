@@ -77,19 +77,19 @@ namespace Kinovea.ScreenManager
                 // Rebuild the menu to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 
-                menuShowAxis.Text = ScreenManagerLang.mnuCoordinateSystemShowAxis;
-                menuShowGrid.Text = ScreenManagerLang.mnuCoordinateSystemShowGrid;
-                menuShowGraduations.Text = ScreenManagerLang.mnuCoordinateSystemShowTickMarks;
+                //menuShowAxis.Text = ScreenManagerLang.mnuCoordinateSystemShowAxis;
+                //menuShowGrid.Text = ScreenManagerLang.mnuCoordinateSystemShowGrid;
+                //menuShowGraduations.Text = ScreenManagerLang.mnuCoordinateSystemShowTickMarks;
                 menuHide.Text = ScreenManagerLang.mnuCoordinateSystemHide;
                 
-                menuShowAxis.Checked = showAxis;
-                menuShowGrid.Checked = showGrid;
-                menuShowGraduations.Checked = showGraduations;
+                //menuShowAxis.Checked = showAxis;
+                //menuShowGrid.Checked = showGrid;
+                //menuShowGraduations.Checked = showGraduations;
                 
-                contextMenu.Add(menuShowAxis);
+                /*contextMenu.Add(menuShowAxis);
                 contextMenu.Add(menuShowGrid);
                 contextMenu.Add(menuShowGraduations);
-                contextMenu.Add(new ToolStripSeparator());
+                contextMenu.Add(new ToolStripSeparator());*/
                 contextMenu.Add(menuHide);
                 
                 return contextMenu; 
@@ -258,7 +258,7 @@ namespace Kinovea.ScreenManager
             
             if(showGrid || showGraduations || showAxis)
             {
-                if(IsPointOnHorizontalAxis(point))
+                if(IsPointOnHorizontalAxis(point, transformer))
                     result = 2;
                 else if(IsPointOnVerticalAxis(point))
                     result = 3;
@@ -268,12 +268,12 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {
-            if(handleNumber == 1)
+            if (handleNumber == 1)
                 points["0"] = point;
-            else if(handleNumber == 2)
-                points["0"] = new Point(points["0"].X, point.Y);
-            else if(handleNumber == 3)
-                points["0"] = new Point(point.X, points["0"].Y);
+            else if (handleNumber == 2)
+                MoveHorizontalAxis(point);
+            else if (handleNumber == 3)
+                MoveVerticalAxis(point);
 
             CalibrationHelper.SetOrigin(points["0"]);
             SignalTrackablePointMoved();
@@ -413,19 +413,55 @@ namespace Kinovea.ScreenManager
             
             return textPosition;
         }
-        private bool IsPointOnHorizontalAxis(Point p)
+        private bool IsPointOnHorizontalAxis(Point p, IImageToViewportTransformer transformer)
         {
-            int widenRadius = 5;
-            Rectangle axis = new Rectangle(0, points["0"].Y - widenRadius, imageSize.Width, widenRadius * 2);
-            return axis.Contains(p);
+            RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
+            PointF a = CalibrationHelper.GetImagePoint(new PointF(bounds.X, 0));
+            PointF b = CalibrationHelper.GetImagePoint(new PointF(bounds.X + bounds.Width, 0));
+            return IsPointOnLine(p, a, b);
         }
         private bool IsPointOnVerticalAxis(Point p)
         {
-            int widenRadius = 5;
-            Rectangle axis = new Rectangle(points["0"].X - widenRadius, 0, widenRadius * 2, imageSize.Height);
-            return axis.Contains(p);
+            RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
+            PointF a = CalibrationHelper.GetImagePoint(new PointF(0, bounds.Y));
+            PointF b = CalibrationHelper.GetImagePoint(new PointF(0, bounds.Y - bounds.Height));
+            return IsPointOnLine(p, a, b);
         }
-        
+        private bool IsPointOnLine(Point p, PointF a, PointF b)
+        {
+            if (a == b)
+                return false;
+
+            bool hit = false;
+            using (GraphicsPath path = new GraphicsPath())
+            using (Pen pen = new Pen(Color.Black, 5))
+            {
+                path.AddLine(a, b);
+                path.Widen(pen);
+                using (Region r = new Region(path))
+                {
+                    hit = r.IsVisible(p);
+                }
+            }
+
+            //int widenRadius = 5;
+            //Rectangle axis = new Rectangle(0, points["0"].Y - widenRadius, imageSize.Width, widenRadius * 2);
+            //return axis.Contains(p);
+            return hit;
+        }
+        private void MoveHorizontalAxis(Point p)
+        {
+            PointF point = CalibrationHelper.GetPoint(p);
+            PointF origin = CalibrationHelper.GetImagePoint(new PointF(0, point.Y));
+            points["0"] = new Point((int)Math.Round(origin.X), (int)Math.Round(origin.Y));
+        }
+        private void MoveVerticalAxis(Point p)
+        {
+            PointF point = CalibrationHelper.GetPoint(p);
+            PointF origin = CalibrationHelper.GetImagePoint(new PointF(point.X, 0));
+            points["0"] = new Point((int)Math.Round(origin.X), (int)Math.Round(origin.Y));
+        }
+
         /// <summary>
         /// Utility function to find nice spacing for tick marks.
         /// </summary>

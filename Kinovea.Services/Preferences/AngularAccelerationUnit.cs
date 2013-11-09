@@ -8,7 +8,6 @@ namespace Kinovea.Services
     public enum AngularAccelerationUnit
     {
         DegreesPerSecondSquared,
-        RadiansPerSecondSquared,
-        RadiansPerFrameSquared
+        RadiansPerSecondSquared
     }
 }
