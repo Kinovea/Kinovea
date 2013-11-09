@@ -12,6 +12,8 @@ namespace Kinovea.ScreenManager
         public List<TrajectoryPoint> ComputeValues(List<AbstractTrackPoint> input, CalibrationHelper calibrationHelper)
         {
             // Computes values at all points from the given trajectory.
+            // Values will be expressed in the user configured unit for the measurement.
+            // For this reason, derivatives should restart from the base positions.
             List<TrajectoryPoint> result = new List<TrajectoryPoint>();
             if (input.Count == 0)
                 return result;
@@ -23,6 +25,8 @@ namespace Kinovea.ScreenManager
             ComputeTotalDistance(result, input, calibrationHelper);
             ComputeVelocity(result, input, calibrationHelper);
             ComputeAcceleration(result, input, calibrationHelper);
+            
+            // All angular kinematics are based on the best fit circle.
             ComputeRotationCenter(result, input, calibrationHelper);
             ComputeDisplacementAngle(result, input, calibrationHelper);
             ComputeAngularVelocity(result, input, calibrationHelper);
@@ -47,9 +51,9 @@ namespace Kinovea.ScreenManager
 
             for (int i = 1; i < input.Count; i++)
             {
-                PointF p0 = input[i-1].Point.ToPointF();
-                PointF p1 = input[i].Point.ToPointF();
-                float d = calibrationHelper.GetLength(p0, p1);
+                PointF a = calibrationHelper.GetPoint(input[i - 1].Point.ToPointF());
+                PointF b = calibrationHelper.GetPoint(input[i].Point.ToPointF());
+                float d = GeometryHelper.GetDistance(a, b);
                 distance += d;
                 result[i].TotalDistance = distance;
             }
@@ -57,9 +61,6 @@ namespace Kinovea.ScreenManager
 
         private void ComputeVelocity(List<TrajectoryPoint> result, List<AbstractTrackPoint> input, CalibrationHelper calibrationHelper)
         {
-            // We cannot compute speed in pixel here and just send the result to calibration helper for conversion.
-            // we need to pass each point to calibration to compute correct speed.
-
             // uncomputable values.
             result[0].Speed = float.NaN;
             result[0].HorizontalVelocity = float.NaN;
@@ -72,15 +73,38 @@ namespace Kinovea.ScreenManager
             result[input.Count - 1].HorizontalVelocity = float.NaN;
             result[input.Count - 1].VerticalVelocity = float.NaN;
 
+            if (input.Count == 2)
+                return;
+
             for (int i = 1; i < input.Count - 1; i++)
             {
-                PointF p0 = input[i - 1].Point.ToPointF();
-                PointF p2 = input[i + 1].Point.ToPointF();
+                PointF a = calibrationHelper.GetPoint(input[i - 1].Point.ToPointF());
+                PointF b = calibrationHelper.GetPoint(input[i + 1].Point.ToPointF());
+                float t = calibrationHelper.GetTime(2);
 
-                result[i].Speed = calibrationHelper.GetSpeed(p0, p2, 2, Component.Magnitude);
-                result[i].HorizontalVelocity = calibrationHelper.GetSpeed(p0, p2, 2, Component.Horizontal);
-                result[i].VerticalVelocity = calibrationHelper.GetSpeed(p0, p2, 2, Component.Vertical);
+                result[i].Speed = calibrationHelper.ConvertSpeed(GetSpeed(a, b, t, Component.Magnitude));
+                result[i].HorizontalVelocity = calibrationHelper.ConvertSpeed(GetSpeed(a, b, t, Component.Horizontal));
+                result[i].VerticalVelocity = calibrationHelper.ConvertSpeed(GetSpeed(a, b, t, Component.Vertical));
             }
+        }
+
+        private float GetSpeed(PointF a, PointF b, float t, Component component)
+        {
+            float d = 0;
+            switch (component)
+            {
+                case Component.Magnitude:
+                    d = GeometryHelper.GetDistance(a, b);
+                    break;
+                case Component.Horizontal:
+                    d = b.X - a.X;
+                    break;
+                case Component.Vertical:
+                    d = b.Y - a.Y;
+                    break;
+            }
+
+            return d / t;
         }
 
         private void ComputeAcceleration(List<TrajectoryPoint> result, List<AbstractTrackPoint> input, CalibrationHelper calibrationHelper)
@@ -111,14 +135,24 @@ namespace Kinovea.ScreenManager
             
             for (int i = 2; i < input.Count - 2; i++)
             {
-                PointF p0 = input[i - 2].Point.ToPointF();
-                PointF p2 = input[i].Point.ToPointF();
-                PointF p4 = input[i + 2].Point.ToPointF();
+                PointF p0 = calibrationHelper.GetPoint(input[i - 2].Point.ToPointF());
+                PointF p2 = calibrationHelper.GetPoint(input[i].Point.ToPointF());
+                PointF p4 = calibrationHelper.GetPoint(input[i + 2].Point.ToPointF());
+                float t02 = calibrationHelper.GetTime(2);
+                float t24 = calibrationHelper.GetTime(2);
+                float t13 = calibrationHelper.GetTime(2);
 
-                result[i].Acceleration = calibrationHelper.GetAcceleration(p0, p2, 2, p2, p4, 2, 2, Component.Magnitude);
-                result[i].HorizontalAcceleration = calibrationHelper.GetAcceleration(p0, p2, 2, p2, p4, 2, 2, Component.Horizontal);
-                result[i].VerticalAcceleration = calibrationHelper.GetAcceleration(p0, p2, 2, p2, p4, 2, 2, Component.Vertical);        
+                result[i].Acceleration = calibrationHelper.ConvertAcceleration(GetAcceleration(p0, p2, p4, t02, t24, t13, Component.Magnitude));
+                result[i].HorizontalAcceleration = calibrationHelper.ConvertAcceleration(GetAcceleration(p0, p2, p4, t02, t24, t13, Component.Horizontal));
+                result[i].VerticalAcceleration = calibrationHelper.ConvertAcceleration(GetAcceleration(p0, p2, p4, t02, t24, t13, Component.Vertical));
             }
+        }
+
+        private float GetAcceleration(PointF p0, PointF p2, PointF p4, float t02, float t24, float t13, Component component)
+        {
+            float v02 = GetSpeed(p0, p2, t02, component);
+            float v24 = GetSpeed(p2, p4, t24, component);
+            return (v24 - v02) / t13;
         }
 
         private void ComputeRotationCenter(List<TrajectoryPoint> result, List<AbstractTrackPoint> input, CalibrationHelper calibrationHelper)
@@ -178,8 +212,8 @@ namespace Kinovea.ScreenManager
             {
                 float displacement = GetDisplacementAngle(result, i, i -1);
                 total += displacement;
-                result[i].DisplacementAngle = calibrationHelper.GetAngle(displacement);
-                result[i].TotalDisplacementAngle = calibrationHelper.GetAngle(total);
+                result[i].DisplacementAngle = calibrationHelper.ConvertAngle(displacement);
+                result[i].TotalDisplacementAngle = calibrationHelper.ConvertAngle(total);
             }
         }
 
@@ -201,10 +235,11 @@ namespace Kinovea.ScreenManager
             {
                 float d1 = GetDisplacementAngle(result, i, i - 1);
                 float d2 = GetDisplacementAngle(result, i + 1, i);
-                float inRadPerFrame = (d1 + d2) / 2;
-                result[i].AngularVelocity = calibrationHelper.GetAngularVelocity(inRadPerFrame);
-                result[i].TangentialVelocity = calibrationHelper.GetTangentialVelocity(inRadPerFrame, result[i].RotationRadius);
-                result[i].CentripetalAcceleration = calibrationHelper.GetCentripetalAcceleration(inRadPerFrame, result[i].RotationRadius);
+                float time = calibrationHelper.GetTime(2);
+                float inRadPerSecond = (d1 + d2) / time;
+                result[i].AngularVelocity = calibrationHelper.ConvertAngularVelocity(inRadPerSecond);
+                result[i].TangentialVelocity = calibrationHelper.ConvertSpeed(inRadPerSecond * result[i].RotationRadius);
+                result[i].CentripetalAcceleration = calibrationHelper.ConvertAcceleration(inRadPerSecond * inRadPerSecond * result[i].RotationRadius);
             }
         }
 
@@ -232,19 +267,26 @@ namespace Kinovea.ScreenManager
                 float d2 = GetDisplacementAngle(result, i, i - 1);
                 float d3 = GetDisplacementAngle(result, i + 1, i);
                 float d4 = GetDisplacementAngle(result, i + 2, i + 1);
-                float v1 = (d1 + d2) / 2;
-                float v2 = (d3 + d4) / 2;
-                float a = (v2 - v1) / 2;
-                result[i].AngularAcceleration = calibrationHelper.GetAngularAcceleration(a);
+                float t02 = calibrationHelper.GetTime(2);
+                float t24 = calibrationHelper.GetTime(2);
+                float t13 = calibrationHelper.GetTime(2);
+
+                float v1 = (d1 + d2) / t02;
+                float v2 = (d3 + d4) / t24;
+                float a = (v2 - v1) / t13;
+                result[i].AngularAcceleration = calibrationHelper.ConvertAngularAcceleration(a);
             }
         }
     
+        /// <summary>
+        /// Returns displacement angle in radians.
+        /// </summary>
         private float GetDisplacementAngle(List<TrajectoryPoint> result, int a, int b)
         {
             float displacement = Math.Abs(result[a].AbsoluteAngle - result[b].AbsoluteAngle);
 
             // To solve the ambiguity when moving through the x axis we keep the smallest value.
-            // This assumes the motion is incrementing by small pieces rather than more than a half circle.
+            // This assumes the motion is incrementing by small pieces rather than more than a half circle at a time.
             displacement = Math.Min(displacement, (float)(2 * Math.PI - displacement));
             return displacement;
         }

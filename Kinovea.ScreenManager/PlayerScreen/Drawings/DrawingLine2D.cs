@@ -311,10 +311,10 @@ namespace Kinovea.ScreenManager
                 // Spreadsheet support.
                 _xmlWriter.WriteStartElement("Measure");
                 
-                PointF a = new PointF(points["a"].X, points["a"].Y);
-                PointF b = new PointF(points["b"].X, points["b"].Y);
-                
-                float len = CalibrationHelper.GetLength(a, b);
+                PointF a = CalibrationHelper.GetPoint(new PointF(points["a"].X, points["a"].Y));
+                PointF b = CalibrationHelper.GetPoint(new PointF(points["b"].X, points["b"].Y));
+
+                float len = GeometryHelper.GetDistance(a, b);
                 string value = String.Format("{0:0.00}", len);
                 string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
 

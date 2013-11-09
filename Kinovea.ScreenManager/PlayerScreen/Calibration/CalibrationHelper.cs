@@ -99,8 +99,8 @@ namespace Kinovea.ScreenManager
         private Size imageSize;
         private RectangleF boundingRectangle;
         private LengthUnit lengthUnit = LengthUnit.Pixels;
-        private SpeedUnit speedUnit = SpeedUnit.PixelsPerFrame;
-        private AccelerationUnit accelerationUnit = AccelerationUnit.PixelsPerFrameSquared;
+        private SpeedUnit speedUnit = SpeedUnit.PixelsPerSecond;
+        private AccelerationUnit accelerationUnit = AccelerationUnit.PixelsPerSecondSquared;
         private AngleUnit angleUnit = AngleUnit.Degree;
         private AngularVelocityUnit angularVelocityUnit = AngularVelocityUnit.DegreesPerSecond;
         private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
@@ -187,111 +187,49 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Value computers
-        public float GetScalar(float v)
-        {
-            PointF a = calibrator.Transform(PointF.Empty);
-            PointF b = calibrator.Transform(new PointF(v, 0));
-            float d = GeometryHelper.GetDistance(a, b);
-            return v < 0 ? -d : d;
-        }
-
+        /// <summary>
+        /// Takes a point in image coordinates and returns it in real world coordinates.
+        /// </summary>
         public PointF GetPoint(PointF p)
         {
             return calibrator.Transform(p);
         }
+
+        /// <summary>
+        /// Takes an interval in frames and returns it in seconds.
+        /// </summary>
+        public float GetTime(int frames)
+        {
+            // TODO: have the function takes a number of timestamps instead for better accuracy.
+            return (float)(frames / framesPerSecond);
+        }
         
-        public float GetLength(PointF p1, PointF p2)
+        /// <summary>
+        /// Takes a speed in calibration units/seconds and returns it in the current speed unit.
+        /// </summary>
+        public float ConvertSpeed(float v)
         {
-            PointF a = calibrator.Transform(p1);
-            PointF b = calibrator.Transform(p2);
-            return GeometryHelper.GetDistance(a, b);
+            return UnitHelper.ConvertVelocity(v, lengthUnit, speedUnit);
         }
 
-        public float GetSpeed(PointF p0, PointF p1, int dt, Component component)
+        public float ConvertAcceleration(float a)
         {
-            // px/f
-            float v = GetSpeedPixelsPerFrame(p0, p1, dt, component);
-
-            // calibrated length unit/f
-            float v2 = GetScalar(v);
-
-            // speed unit. (e.g: m/s). If the user hasn't calibrated, force usage of px/f.
-            SpeedUnit unit = IsCalibrated ? speedUnit : SpeedUnit.PixelsPerFrame;
-            double v3 = UnitHelper.ConvertVelocity(v2, framesPerSecond, lengthUnit, unit);
-
-            return (float)v3;
+            return UnitHelper.ConvertAcceleration(a, lengthUnit, accelerationUnit);
         }
-
-        private float GetSpeedPixelsPerFrame(PointF p0, PointF p1, int dt, Component component)
-        {
-            // In pixels per frame.
-            float d = 0F;
-            switch (component)
-            {
-                case Component.Magnitude:
-                    d = GeometryHelper.GetDistance(p0, p1);
-                    break;
-                case Component.Horizontal:
-                    d = p1.X - p0.X;
-                    break;
-                case Component.Vertical:
-                    d = p1.Y - p0.Y;
-                    d = -d;
-                    break;
-            }
-
-            float v = d / dt;
-            return v;
-        }
-
-        public float GetAcceleration(PointF p0, PointF p2, int interval1, PointF p1, PointF p3, int interval2, int interval3, Component component)
-        {
-            // px/f²
-            float v1 = GetSpeedPixelsPerFrame(p0, p1, interval1, component);
-            float v2 = GetSpeedPixelsPerFrame(p2, p3, interval2, component);
-            float a = (v2 - v1) / interval3;
-
-            // calibrated length unit/f²
-            float a2 = GetScalar(a);
-
-            // acceleration unit. (e.g: m/s²). If the user hasn't calibrated, force usage of px/f².
-            AccelerationUnit unit = IsCalibrated ? accelerationUnit : AccelerationUnit.PixelsPerFrameSquared;
-            double a3 = UnitHelper.ConvertAcceleration(a2, framesPerSecond, lengthUnit, unit);
-
-            return (float)a3;
-        }
-
-        public float GetAngle(float radians)
+        
+        public float ConvertAngle(float radians)
         {
             return angleUnit == AngleUnit.Radian ? radians : (float)(radians * MathHelper.RadiansToDegrees);
         }
 
-        public float GetAngularVelocity(float radiansPerFrame)
+        public float ConvertAngularVelocity(float radiansPerSecond)
         {
-            return (float)UnitHelper.ConvertAngularVelocity(radiansPerFrame, framesPerSecond, angularVelocityUnit);            
+            return (float)UnitHelper.ConvertAngularVelocity(radiansPerSecond, angularVelocityUnit);
         }
         
-        public float GetTangentialVelocity(float radiansPerFrame, float radius)
+        public float ConvertAngularAcceleration(float radiansPerSecondSquared)
         {
-            float pixelsPerFrame = radiansPerFrame * radius;
-
-            float lengthPerFrame = GetScalar(pixelsPerFrame);
-
-            // speed unit. (e.g: m/s). If the user hasn't calibrated, force usage of px/f.
-            SpeedUnit unit = IsCalibrated ? speedUnit : SpeedUnit.PixelsPerFrame;
-            double velocity = UnitHelper.ConvertVelocity(lengthPerFrame, framesPerSecond, lengthUnit, unit);
-
-            return (float)velocity;
-        }
-
-        public float GetCentripetalAcceleration(float radiansPerFrame, float radius)
-        {
-            float value = radiansPerFrame * radiansPerFrame * radius;
-            return (float)UnitHelper.ConvertAngularAcceleration(value, framesPerSecond, angularAccelerationUnit);
-        }
-        public float GetAngularAcceleration(float radiansPerFrameSquared)
-        {
-            return (float)UnitHelper.ConvertAngularAcceleration(radiansPerFrameSquared, framesPerSecond, angularAccelerationUnit); 
+            return UnitHelper.ConvertAngularAcceleration(radiansPerSecondSquared, angularAccelerationUnit); 
         }
         #endregion
 
@@ -312,7 +250,7 @@ namespace Kinovea.ScreenManager
         
         public string GetLengthText(PointF p1, PointF p2, bool precise, bool abbreviation)
         {
-            float length = GetLength(p1, p2);
+            float length = GeometryHelper.GetDistance(GetPoint(p1), GetPoint(p2));
             string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
             string text = String.Format(valueTemplate, length);
             
@@ -328,12 +266,12 @@ namespace Kinovea.ScreenManager
         }
         public string GetSpeedAbbreviation()
         {
-            SpeedUnit unit = IsCalibrated ? speedUnit : SpeedUnit.PixelsPerFrame;
+            SpeedUnit unit = IsCalibrated ? speedUnit : SpeedUnit.PixelsPerSecond;
             return UnitHelper.SpeedAbbreviation(unit);
         }
         public string GetAccelerationAbbreviation()
         {
-            AccelerationUnit unit = IsCalibrated ? accelerationUnit : AccelerationUnit.PixelsPerFrameSquared;
+            AccelerationUnit unit = IsCalibrated ? accelerationUnit : AccelerationUnit.PixelsPerSecondSquared;
             return UnitHelper.AccelerationAbbreviation(unit);
         }
         public string GetAngleAbbreviation()
@@ -366,11 +304,17 @@ namespace Kinovea.ScreenManager
             return v < 0 ? -d : d;
         }
 
+        /// <summary>
+        /// Takes a point in real world coordinates and returns it in image coordinates.
+        /// </summary>
         public PointF GetImagePoint(PointF p)
         {
             return calibrator.Untransform(p);
         }
 
+        /// <summary>
+        /// Takes a circle in real world coordinates and returns a cooresponding ellipse in image coordinates.
+        /// </summary>
         public Ellipse GetEllipseFromCircle(PointF center, float radius)
         {
             if(calibratorType == CalibratorType.Line)

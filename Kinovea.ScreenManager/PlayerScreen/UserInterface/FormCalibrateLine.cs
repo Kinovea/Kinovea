@@ -80,8 +80,10 @@ namespace Kinovea.ScreenManager
         {
             if(calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Line)
             {
-                calibratedLength = calibrationHelper.GetLength(PointF.Empty, new PointF(pixelLength, 0));
-                tbMeasure.Text = String.Format("{0:0.00}", calibratedLength);
+                PointF a = calibrationHelper.GetPoint(PointF.Empty);
+                PointF b = calibrationHelper.GetPoint(new PointF(pixelLength, 0));
+                float d = GeometryHelper.GetDistance(a, b);
+                tbMeasure.Text = String.Format("{0:0.00}", d);
                 
                 cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
             }
