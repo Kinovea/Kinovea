@@ -157,7 +157,10 @@ namespace Kinovea.ScreenManager
             if(!Visible || CalibrationHelper == null)
                 return;
 
-            RectangleF bounds = CalibrationHelper.GetBoundingRectangle(imageSize);
+            RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
+            if (bounds.Size == SizeF.Empty)
+                return;
+
             float stepSizeWidth = RulerStepSize(bounds.Width, 12);
             float stepSizeHeight = stepSizeWidth;
 

@@ -96,7 +96,8 @@ namespace Kinovea.ScreenManager
         private ICalibrator calibrator;
         private CalibrationLine calibrationLine = new CalibrationLine();
         private CalibrationPlane calibrationPlane = new CalibrationPlane();
-        
+        private Size imageSize;
+        private RectangleF boundingRectangle;
         private LengthUnit lengthUnit = LengthUnit.Pixels;
         private SpeedUnit speedUnit = SpeedUnit.PixelsPerFrame;
         private AccelerationUnit accelerationUnit = AccelerationUnit.PixelsPerFrameSquared;
@@ -119,12 +120,36 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region Methods specific to a calibration technique
+        public void Initialize(Size imageSize)
+        {
+            this.imageSize = imageSize;
+            SetOrigin(imageSize.Center());
+        }
+        
+        /// <summary>
+        /// Returns the origin of the coordinate system in image coordinates.
+        /// </summary>
+        public PointF GetOrigin()
+        {
+            return calibrator.Untransform(PointF.Empty);
+        }
+
+        /// <summary>
+        /// Takes a point in image coordinates to act as the origin of the current coordinate system.
+        /// </summary>
+        public void SetOrigin(PointF p)
+        {
+            calibrator.SetOrigin(p);
+            AfterCalibrationChanged();
+        }
+
         public void SetCalibratorFromType(CalibratorType type)
         {
+            // Used by calibration dialogs to force a calibration method for further computations.
+            // Each time the user calibrates, we switch to the method he just used.
             calibratorType = type;
-            
-            switch(type)
+
+            switch (type)
             {
                 case CalibratorType.Line:
                     calibrator = calibrationLine;
@@ -134,78 +159,33 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
+        
         /// <summary>
-        /// Returns the origin of the world in image coordinates.
+        /// Returns best candidates for real world coordinates of the corners of the image.
         /// </summary>
-        public PointF GetOrigin()
+        public RectangleF GetBoundingRectangle()
         {
-            return calibrator.Untransform(PointF.Empty);
+            return boundingRectangle;
         }
-        /// <summary>
-        /// Takes a point in image coordinates to act as the origin of the current coordinate system.
-        /// </summary>
-        public void SetOrigin(PointF p)
-        {
-            calibrator.SetOrigin(p);
-            if (CalibrationChanged != null)
-                CalibrationChanged(this, EventArgs.Empty);
-        }
+
+        #region Methods specific to a calibration technique
         public void CalibrationByLine_Initialize(float ratio)
         {
             calibrationLine.Initialize(ratio);
-            if (CalibrationChanged != null)
-                CalibrationChanged(this, EventArgs.Empty);
+            AfterCalibrationChanged();
         }
         public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
         {
             calibrationPlane.Initialize(size, quadImage);
-            if (CalibrationChanged != null)
-                CalibrationChanged(this, EventArgs.Empty);
+            AfterCalibrationChanged();
         }
         public SizeF CalibrationByPlane_GetRectangleSize()
         {
-            // Used to populate the calibration dialog.
+            // Real size of the calibration rectangle. Used to populate the calibration dialog.
             return calibrationPlane.Size;
         }
-        public RectangleF GetBoundingRectangle(Size container)
-        {
-            // Tries to find a rectangle in real world coordinates corresponding to the image corners.
-            // This is used by coordinate systems to find a good filling of the image plane for drawing the grid.
-            // The result is given back in real world coordinates.
-
-            // Note: this is currently computed at each draw, it should be computed only when the calibration changes.
-
-            RectangleF result;
-            if (calibratorType == CalibratorType.Line)
-            {
-                PointF a = calibrator.Transform(PointF.Empty);
-                PointF b = calibrator.Transform(new PointF(container.Width, 0));
-                PointF c = calibrator.Transform(new PointF(container.Width, container.Height));
-                PointF d = calibrator.Transform(new PointF(0, container.Height));
-                result = new RectangleF(a.X, a.Y, b.X - a.X, a.Y - d.Y);
-            }
-            else
-            {
-                // Redo the user mapping but use the bounding box of the user quadrilateral instead of the quadrilateral itself.
-                // This way we are sure the image corners have real world equivalent.
-                RectangleF bbox = calibrationPlane.QuadImage.GetBoundingBox();
-                QuadrilateralF quadImage = new QuadrilateralF(bbox);
-            
-                CalibrationPlane calibrationPlane2 = new CalibrationPlane();
-                calibrationPlane2.Initialize(calibrationPlane.Size, quadImage);
-                calibrationPlane2.SetOrigin(calibrationPlane.Untransform(PointF.Empty));
-
-                PointF a = calibrationPlane2.Transform(PointF.Empty);
-                PointF b = calibrationPlane2.Transform(new PointF(container.Width, 0));
-                PointF c = calibrationPlane2.Transform(new PointF(container.Width, container.Height));
-                PointF d = calibrationPlane2.Transform(new PointF(0, container.Height));
-                result = new RectangleF(a.X, a.Y, b.X - a.X, a.Y - d.Y);
-            }
-
-            return result;
-        }
         #endregion
-        
+
         #region Value computers
         public float GetScalar(float v)
         {
@@ -442,6 +422,7 @@ namespace Kinovea.ScreenManager
                         calibratorType = CalibratorType.Plane;
                         calibrator = calibrationPlane;
                         calibrationPlane.ReadXml(r);
+                        ComputeBoundingRectangle();
                         break;
                     case "CalibrationLine":
                         calibratorType = CalibratorType.Line;
@@ -459,6 +440,48 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
+        }
+        #endregion
+
+        #region Private helpers
+        private void AfterCalibrationChanged()
+        {
+            ComputeBoundingRectangle();
+
+            if (CalibrationChanged != null)
+                CalibrationChanged(this, EventArgs.Empty);
+        }
+        private void ComputeBoundingRectangle()
+        {
+            // Tries to find a rectangle in real world coordinates corresponding to the image corners.
+            // This is used by coordinate systems to find a good filling of the image plane for drawing the grid.
+            // The result is given back in real world coordinates.
+
+            if (calibratorType == CalibratorType.Line)
+            {
+                PointF a = calibrator.Transform(PointF.Empty);
+                PointF b = calibrator.Transform(new PointF(imageSize.Width, 0));
+                PointF c = calibrator.Transform(new PointF(imageSize.Width, imageSize.Height));
+                PointF d = calibrator.Transform(new PointF(0, imageSize.Height));
+                boundingRectangle = new RectangleF(a.X, a.Y, b.X - a.X, a.Y - d.Y);
+            }
+            else
+            {
+                // Redo the user mapping but use the bounding box of the user quadrilateral instead of the quadrilateral itself.
+                // This way we are sure the image corners have real world equivalent.
+                RectangleF bbox = calibrationPlane.QuadImage.GetBoundingBox();
+                QuadrilateralF quadImage = new QuadrilateralF(bbox);
+
+                CalibrationPlane calibrationPlane2 = new CalibrationPlane();
+                calibrationPlane2.Initialize(calibrationPlane.Size, quadImage);
+                calibrationPlane2.SetOrigin(calibrationPlane.Untransform(PointF.Empty));
+
+                PointF a = calibrationPlane2.Transform(PointF.Empty);
+                PointF b = calibrationPlane2.Transform(new PointF(imageSize.Width, 0));
+                PointF c = calibrationPlane2.Transform(new PointF(imageSize.Width, imageSize.Height));
+                PointF d = calibrationPlane2.Transform(new PointF(0, imageSize.Height));
+                boundingRectangle = new RectangleF(a.X, a.Y, b.X - a.X, a.Y - d.Y);
+            }
         }
         #endregion
     }
