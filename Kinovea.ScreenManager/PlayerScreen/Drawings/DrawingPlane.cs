@@ -233,7 +233,7 @@ namespace Kinovea.ScreenManager
                     return i+1;
             }
             
-            if (!zooming && quadImage.Contains(point))
+            if (!zooming && !inPerspective && quadImage.Contains(point))
                 return 0;
             
             return -1;
@@ -251,8 +251,11 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                if(!inPerspective)
+                if (!inPerspective)
+                {
                     quadImage.Translate(dx, dy);
+                    CalibrationHelper.CalibrationByPlane_Update(quadImage);
+                }
             }
             
             SignalAllTrackablePointsMoved();
@@ -275,7 +278,6 @@ namespace Kinovea.ScreenManager
             }
             
             SignalTrackablePointMoved(handle);
-
             CalibrationHelper.CalibrationByPlane_Update(quadImage);
         }
         #endregion
