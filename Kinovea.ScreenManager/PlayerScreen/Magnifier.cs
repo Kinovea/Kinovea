@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private Guid id = Guid.NewGuid();
-    	private Dictionary<string, Point> points = new Dictionary<string, Point>();
+        private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
     	
         private BoundingBox m_source = new BoundingBox();   // Wrapper for the region of interest in the original image.
         private Rectangle m_insert;                         // The location and size of the insert window, where we paint the region of interest magnified.
@@ -170,8 +170,8 @@ namespace Kinovea.ScreenManager
             m_source.Rectangle = points["0"].Box(50);
             m_insert = new Rectangle(10, 10, (int)(m_source.Rectangle.Width * m_magnificationFactor), (int)(m_source.Rectangle.Height * m_magnificationFactor));
             
-            m_sourceLastLocation = points["0"];
-            m_insertLastLocation = points["0"];
+            m_sourceLastLocation = points["0"].ToPoint();
+            m_insertLastLocation = points["0"].ToPoint();
             
             m_mode = MagnifierMode.None;
         }
@@ -186,20 +186,20 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
-        public Dictionary<string, Point> GetTrackablePoints()
+        public Dictionary<string, PointF> GetTrackablePoints()
         {
             return points;
         }
         public void SetTracking(bool tracking)
         {
         }
-        public void SetTrackablePointValue(string name, Point value)
+        public void SetTrackablePointValue(string name, PointF value)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
-            m_source.Rectangle = points[name].Box(m_source.Rectangle.Size);
+            m_source.Rectangle = points[name].Box(m_source.Rectangle.Size).ToRectangle();
         }
         private void SignalTrackablePointMoved()
         {

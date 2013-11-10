@@ -38,9 +38,9 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public abstract class AbstractTrackPoint
     {
-        public Point Point
+        public PointF Point
         {
-            get { return new Point(X, Y);}
+            get { return new PointF(X, Y);}
         }
         
         public int ContentHash
@@ -49,8 +49,8 @@ namespace Kinovea.ScreenManager
         }
         
         #region Members
-        public int X;
-        public int Y;
+        public float X;
+        public float Y;
         public long T;          // timestamp relative to the first time stamp of the track
         #endregion
         
@@ -81,9 +81,9 @@ namespace Kinovea.ScreenManager
             string[] split = xmlString.Split(new Char[] { ';' });
             try
             {
-                X = int.Parse(split[0]);
-                Y = int.Parse(split[1]);
-                T = int.Parse(split[2]);
+                X = float.Parse(split[0], CultureInfo.InvariantCulture);
+                Y = float.Parse(split[1], CultureInfo.InvariantCulture);
+                T = long.Parse(split[2], CultureInfo.InvariantCulture);
             }
             catch (Exception)
             {
@@ -93,7 +93,7 @@ namespace Kinovea.ScreenManager
         }
         public Rectangle Box(int radius)
         {
-            return new Point(X,Y).Box(radius);
+            return new PointF(X,Y).Box(radius);
         }
         #endregion
     }

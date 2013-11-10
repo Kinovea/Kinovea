@@ -33,6 +33,6 @@ namespace Kinovea.ScreenManager
         /// Continues to setup the drawing.
         /// </summary>
         /// <param name="point">The current location of the mouse, in original image scale coordinates</param>
-        void ContinueSetup(Point point, Keys modifiers);
+        void ContinueSetup(PointF point, Keys modifiers);
     }
 }

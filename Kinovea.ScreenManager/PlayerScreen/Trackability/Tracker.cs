@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
             if(image == null)
                 throw new ArgumentException("image");
 
-            Rectangle searchZone = reference.Location.Box(searchWindow);
+            Rectangle searchZone = reference.Location.Box(searchWindow).ToRectangle();
             Rectangle imageBounds = new Rectangle(0, 0, image.Width, image.Height);
             searchZone.Intersect(imageBounds);
             

@@ -110,12 +110,12 @@ namespace Kinovea.ScreenManager
             foreach(AutoNumber number in autoNumbers)
                 number.Draw(canvas, transformer, currentTimestamp);
         }
-        public override void MoveDrawing(int deltaX, int deltaY, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
             if(selected >= 0 && selected < autoNumbers.Count)
-                autoNumbers[selected].MouseMove(deltaX, deltaY);
+                autoNumbers[selected].MouseMove(dx, dy);
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)

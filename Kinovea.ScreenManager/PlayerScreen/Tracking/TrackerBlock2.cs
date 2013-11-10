@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
             //---------------------------------------------------------------------
                 
             TrackPointBlock lastTrackPoint = (TrackPointBlock)previousPoints[previousPoints.Count - 1];
-            Point lastPoint = lastTrackPoint.Point;
+            PointF lastPoint = lastTrackPoint.Point;
             
             bool matched = false;
             currentPoint = null;
@@ -92,16 +92,16 @@ namespace Kinovea.ScreenManager
             if (lastTrackPoint.Template != null && currentImage != null)
             {
                 // Center search zone around last point.
-                Point searchCenter = lastPoint;
-                Rectangle searchZone = new Rectangle(	searchCenter.X - (searchWindow.Width/2), 
-                                                        searchCenter.Y - (searchWindow.Height/2), 
+                PointF searchCenter = lastPoint;
+                Rectangle searchZone = new Rectangle(	(int)(searchCenter.X - (searchWindow.Width/2)), 
+                                                        (int)(searchCenter.Y - (searchWindow.Height/2)), 
                                                         searchWindow.Width, 
                                                         searchWindow.Height);
                 
                 searchZone.Intersect(new Rectangle(0,0,currentImage.Width, currentImage.Height));
                 
                 double bestScore = 0;
-                Point bestCandidate = new Point(-1,-1);
+                PointF bestCandidate = new PointF(-1,-1);
                 
                 //Image<Bgr, Byte> cvTemplate = new Image<Bgr, Byte>(lastTrackPoint.Template);
                 //Image<Bgr, Byte> cvImage = new Image<Bgr, Byte>(_CurrentImage);
@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
                 
                 if(fMax > similarityTreshold)
                 {
-                    bestCandidate = new Point(searchZone.Left + p2.X + tpl.Width / 2, searchZone.Top + p2.Y + tpl.Height / 2);
+                    bestCandidate = new PointF(searchZone.Left + p2.X + tpl.Width / 2, searchZone.Top + p2.Y + tpl.Height / 2);
                     bestScore = fMax;
                 }
             
@@ -161,7 +161,7 @@ namespace Kinovea.ScreenManager
                 if(bestCandidate.X != -1 && bestCandidate.Y != -1)
                 {
                     // Save template in the point.
-                    currentPoint = CreateTrackPoint(false, bestCandidate.X, bestCandidate.Y, bestScore, position, img, previousPoints);
+                    currentPoint = CreateTrackPoint(false, bestCandidate, bestScore, position, img, previousPoints);
                     ((TrackPointBlock)currentPoint).Similarity = bestScore;
                     
                     matched = true;
@@ -169,7 +169,7 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     // No match. Create the point at the center of the search window (whatever that might be).
-                    currentPoint = CreateTrackPoint(false, searchCenter.X, searchCenter.Y, 0.0f, position, img, previousPoints);
+                    currentPoint = CreateTrackPoint(false, searchCenter, 0.0f, position, img, previousPoints);
                     log.Debug("Track failed. No block over the similarity treshold in the search window.");	
                 }
             }
@@ -177,13 +177,13 @@ namespace Kinovea.ScreenManager
             {
                 // No image. (error case ?)
                 // Create the point at the last point location.
-                currentPoint = CreateTrackPoint(false, lastTrackPoint.X, lastTrackPoint.Y, 0.0f, position, currentImage, previousPoints);
+                currentPoint = CreateTrackPoint(false, lastPoint, 0.0f, position, currentImage, previousPoints);
                 log.Debug("Track failed. No input image, or last point doesn't have any cached block image.");
             }
             
             return matched;
         }
-        public override AbstractTrackPoint CreateTrackPoint(bool manual, int x, int y, double similarity, long t, Bitmap currentImage, List<AbstractTrackPoint> previousPoints)
+        public override AbstractTrackPoint CreateTrackPoint(bool manual, PointF p, double similarity, long t, Bitmap currentImage, List<AbstractTrackPoint> previousPoints)
         {
             // Creates a TrackPoint from the input image at the given coordinates.
             // Stores algorithm internal data in the point, to help next match.
@@ -224,8 +224,8 @@ namespace Kinovea.ScreenManager
                 int imageWidthInBytes = currentImage.Width * pixelSize;
                 int imgOffset = imgStride - (currentImage.Width * pixelSize) + imageWidthInBytes - templateWidthInBytes;
                 
-                int startY = y - (blockWindow.Height / 2);
-                int startX = x - (blockWindow.Width / 2);
+                int startY = (int)(p.Y - (blockWindow.Height / 2));
+                int startX = (int)(p.X - (blockWindow.Width / 2));
                 
                 if(startX < 0) 
                     startX = 0;
@@ -281,20 +281,20 @@ namespace Kinovea.ScreenManager
             }
             #endregion
             
-            TrackPointBlock tpb = new TrackPointBlock(x, y, t, tpl);
+            TrackPointBlock tpb = new TrackPointBlock(p.X, p.Y, t, tpl);
             tpb.TemplateAge = age;
             tpb.IsReferenceBlock = manual;
             tpb.Similarity = manual ? 1.0f : similarity;
         
             return tpb;
         }
-        public override AbstractTrackPoint CreateOrphanTrackPoint(int x, int y, long t)
+        public override AbstractTrackPoint CreateOrphanTrackPoint(PointF p, long t)
         {
             // This creates a bare bone TrackPoint.
             // This is used only in the case of importing from xml.
             // The TrackPoint can't be used as-is to track the next one because it's missing the algo internal data (block).
             // We'll need to reconstruct it when we have the corresponding image.
-            return new TrackPointBlock(x, y, t);
+            return new TrackPointBlock(p.X, p.Y, t);
         }
         public override void Draw(Graphics canvas, AbstractTrackPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor)
         {
@@ -307,7 +307,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawRectangle(pen, search);
                 canvas.DrawRectangle(pen, p.Box(transformer.Transform(blockWindow)));
 
-                if (point is TrackPointBlock)
+                /*if (point is TrackPointBlock)
                 {
                     TrackPointBlock tpb = (TrackPointBlock)point;
                     string score = string.Format("{0:0.000} ({1})", tpb.Similarity, tpb.TemplateAge);
@@ -315,10 +315,10 @@ namespace Kinovea.ScreenManager
                     Brush b = tpb.Similarity > parameters.TemplateUpdateThreshold ? Brushes.Green : Brushes.Red;
                     canvas.DrawString(score, f, b, search.Location.Translate(0, -25));
                     f.Dispose();
-                }
+                }*/
             }
         }
-        public override Rectangle GetEditRectangle(Point position)
+        public override RectangleF GetEditRectangle(PointF position)
         {
             return position.Box(searchWindow);
         }

@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
             get { return time; }
         }
         
-        public Point Location
+        public PointF Location
         {
             get { return location; }
         }
@@ -49,11 +49,11 @@ namespace Kinovea.ScreenManager
         }
 
         private long time;
-        private Point location;
+        private PointF location;
         private Bitmap template;
         private PositionningSource positionningSource;
                 
-        public TrackFrame(long time, Point location, Bitmap template, PositionningSource positionningSource)
+        public TrackFrame(long time, PointF location, Bitmap template, PositionningSource positionningSource)
         {
             this.time = time;
             this.location = location;

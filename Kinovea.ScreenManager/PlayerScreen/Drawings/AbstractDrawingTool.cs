@@ -93,14 +93,14 @@ namespace Kinovea.ScreenManager
     	/// <param name="_iTimestamp">The time position where the drawing is added</param>
     	/// <param name="_AverageTimeStampsPerFrame"></param>
     	/// <returns>A new drawing object</returns>
-    	public abstract AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame);
+    	public abstract AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame);
 
     	/// <summary>
     	/// Retrieve the cursor we should dispaly when this tool is the active tool.
     	/// </summary>
     	/// <param name="_fStretchFactor">Current stretchfactor (including zoom)</param>
     	/// <returns>The cursor to use</returns>
-    	public abstract Cursor GetCursor(double _fStretchFactor);
+    	public abstract Cursor GetCursor(double stretchFactor);
     	#endregion
     	
     	#region Public Concrete Methods

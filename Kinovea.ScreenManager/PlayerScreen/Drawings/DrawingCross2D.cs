@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Guid id = Guid.NewGuid();
-        private Dictionary<string, Point> points = new Dictionary<string, Point>();
+        private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         
         private KeyframeLabel m_LabelCoordinates;
@@ -167,14 +167,14 @@ namespace Kinovea.ScreenManager
                 m_LabelCoordinates.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             if(handleNumber == 1)
                 m_LabelCoordinates.SetLabel(point);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
-            points["0"] = new Point(points["0"].X + _deltaX, points["0"].Y + _deltaY);
+            points["0"] = points["0"].Translate(dx, dy);
             SignalTrackablePointMoved();
             m_LabelCoordinates.SetAttach(points["0"], true);
         }
@@ -207,8 +207,8 @@ namespace Kinovea.ScreenManager
                 switch(_xmlReader.Name)
                 {
                     case "CenterPoint":
-                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        points["0"] = new Point((int)(_scale.X * p.X), (int)(_scale.Y * p.Y));
+                        PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
+                        points["0"] = p.Scale(_scale.X, _scale.Y);
                         break;
                     case "CoordinatesVisible":
                         ShowMeasurableInfo = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
@@ -270,7 +270,7 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
-        public Dictionary<string, Point> GetTrackablePoints()
+        public Dictionary<string, PointF> GetTrackablePoints()
         {
             return points;
         }
@@ -278,7 +278,7 @@ namespace Kinovea.ScreenManager
         {
             this.tracking = tracking;
         }
-        public void SetTrackablePointValue(string name, Point value)
+        public void SetTrackablePointValue(string name, PointF value)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");

@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
             get 
             { 
                 int hash = 0;
-                foreach (Point p in m_PointList)
+                foreach (PointF p in pointList)
                     hash ^= p.GetHashCode();
             
                 hash ^= m_StyleHelper.ContentHash;
@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private List<Point> m_PointList = new List<Point>();
+        private List<PointF> pointList = new List<PointF>();
         private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
         private InfosFading m_InfosFading;
@@ -90,8 +90,8 @@ namespace Kinovea.ScreenManager
         #region Constructors
         public DrawingPencil(Point _origin, Point _second, long _iTimestamp, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
         {
-            m_PointList.Add(_origin);
-            m_PointList.Add(_second);
+            pointList.Add(_origin);
+            pointList.Add(_second);
             m_InfosFading = new InfosFading(_iTimestamp, _AverageTimeStampsPerFrame);
             
             m_StyleHelper.Color = Color.Black;
@@ -118,16 +118,16 @@ namespace Kinovea.ScreenManager
             
             using(Pen penLine = m_StyleHelper.GetPen(fOpacityFactor, _transformer.Scale))
             {
-                Point[] points = m_PointList.Select(p => _transformer.Transform(p)).ToArray();
+                Point[] points = _transformer.Transform(pointList).ToArray();
                 _canvas.DrawCurve(penLine, points, 0.5f);
             }
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
-            m_PointList = m_PointList.Select(p => p.Translate(_deltaX, _deltaY)).ToList();
+            pointList = pointList.Select(p => p.Translate(dx, dy)).ToList();
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
@@ -170,7 +170,7 @@ namespace Kinovea.ScreenManager
         }
         private void ParsePointList(XmlReader _xmlReader, PointF _scale)
         {
-            m_PointList.Clear();
+            pointList.Clear();
             
             _xmlReader.ReadStartElement();
             
@@ -178,9 +178,9 @@ namespace Kinovea.ScreenManager
             {
                 if(_xmlReader.Name == "Point")
                 {
-                    Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                    Point adapted = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    m_PointList.Add(adapted);
+                    PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
+                    PointF adapted = p.Scale(_scale.X, _scale.Y);
+                    pointList.Add(adapted);
                 }
                 else
                 {
@@ -194,9 +194,9 @@ namespace Kinovea.ScreenManager
         public void WriteXml(XmlWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("PointList");
-            _xmlWriter.WriteAttributeString("Count", m_PointList.Count.ToString());
-            foreach (Point p in m_PointList)
-                _xmlWriter.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
+            _xmlWriter.WriteAttributeString("Count", pointList.Count.ToString());
+            foreach (PointF p in pointList)
+                _xmlWriter.WriteElementString("Point", string.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
 
             _xmlWriter.WriteEndElement();
             
@@ -211,7 +211,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(Point point, Keys modifiers)
+        public void ContinueSetup(PointF point, Keys modifiers)
         {
             AddPoint(point, modifiers);
         }
@@ -223,34 +223,34 @@ namespace Kinovea.ScreenManager
             m_Style.Bind(m_StyleHelper, "Color", "color");
             m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
         }
-        private void AddPoint(Point _coordinates, Keys modifiers)
+        private void AddPoint(PointF point, Keys modifiers)
         {
-            Point newPoint = Point.Empty;
-            int pointsUsedToComputeDirection = Math.Min(10, m_PointList.Count);
+            PointF newPoint = PointF.Empty;
+            int pointsUsedToComputeDirection = Math.Min(10, pointList.Count);
             
             if((modifiers & Keys.Shift) == Keys.Shift)
             {
                 // Checks whether the mouse motion is more horizontal or vertical, and only keep this component of the motion.
-                int dx = Math.Abs(_coordinates.X - m_PointList[m_PointList.Count - pointsUsedToComputeDirection].X);
-                int dy = Math.Abs(_coordinates.Y - m_PointList[m_PointList.Count - pointsUsedToComputeDirection].Y);
+                float dx = Math.Abs(point.X - pointList[pointList.Count - pointsUsedToComputeDirection].X);
+                float dy = Math.Abs(point.Y - pointList[pointList.Count - pointsUsedToComputeDirection].Y);
                 if(dx > dy)
-                    newPoint = new Point(_coordinates.X, m_PointList[m_PointList.Count - 1].Y);
+                    newPoint = new PointF(point.X, pointList[pointList.Count - 1].Y);
                 else
-                    newPoint = new Point(m_PointList[m_PointList.Count - 1].X, _coordinates.Y);
+                    newPoint = new PointF(pointList[pointList.Count - 1].X, point.Y);
             }
             else
             {
-                newPoint = _coordinates;
+                newPoint = point;
             }
             
-            m_PointList.Add(newPoint);
+            pointList.Add(newPoint);
         }
-        private bool IsPointInObject(Point _point)
+        private bool IsPointInObject(Point point)
         {
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddCurve(m_PointList.ToArray(), 0.5f);
+                areaPath.AddCurve(pointList.ToArray(), 0.5f);
             
                 RectangleF bounds = areaPath.GetBounds();
                 if(!bounds.IsEmpty)
@@ -264,7 +264,7 @@ namespace Kinovea.ScreenManager
                     }
                     using(Region areaRegion = new Region(areaPath))
                     {
-                        hit = areaRegion.IsVisible(_point);
+                        hit = areaRegion.IsVisible(point);
                     }
                 }
                 else

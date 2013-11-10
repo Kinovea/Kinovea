@@ -86,14 +86,6 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Gets the distance between points A and B.
-        /// </summary>
-        public static float GetDistance(Point a, Point b)
-        {
-            return new Vector(a,b).Norm();
-        }
-        
-        /// <summary>
         /// Returns the signed angle (in radians) between vectors ab and ac.
         /// </summary>
         public static float GetAngle(PointF a, PointF b, PointF c)

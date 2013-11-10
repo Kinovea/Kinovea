@@ -49,8 +49,8 @@ namespace Kinovea.ScreenManager
         {
             get 
             { 
-                int iHash = m_Center.GetHashCode();
-                iHash ^= m_iRadius.GetHashCode();
+                int iHash = center.GetHashCode();
+                iHash ^= radius.GetHashCode();
                 iHash ^= m_StyleHelper.ContentHash;
                 return iHash;
             }
@@ -76,8 +76,8 @@ namespace Kinovea.ScreenManager
 
         #region Members
         // Core
-        private Point m_Center;
-        private int m_iRadius;
+        private PointF center;
+        private int radius;
         private bool m_bSelected;
         // Decoration
         private StyleHelper m_StyleHelper = new StyleHelper();
@@ -90,9 +90,9 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public DrawingCircle(Point _center, int radius, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
-            m_Center = _center;
-            m_iRadius = Math.Min(radius, 10);
-            m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+            this.center = _center;
+            this.radius = Math.Min(radius, 10);
+            this.m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
             
             m_StyleHelper.Color = Color.Empty;
             m_StyleHelper.LineSize = 1;
@@ -121,7 +121,7 @@ namespace Kinovea.ScreenManager
             
             using(Pen p = m_StyleHelper.GetPen(alpha, _transformer.Scale))
             {
-                Rectangle boundingBox = _transformer.Transform(m_Center.Box(m_iRadius));
+                Rectangle boundingBox = _transformer.Transform(center.Box(radius));
                 _canvas.DrawEllipse(p, boundingBox);
                 
                 if(_bSelected)
@@ -132,19 +132,17 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             // User is dragging the outline of the circle, figure out the new radius at this point.
-            int shiftX = Math.Abs(point.X - m_Center.X);
-            int shiftY = Math.Abs(point.Y - m_Center.Y);
-            m_iRadius = (int)Math.Sqrt((shiftX*shiftX) + (shiftY*shiftY));
-            if(m_iRadius < 10) 
-                m_iRadius = 10;
+            float shiftX = Math.Abs(point.X - center.X);
+            float shiftY = Math.Abs(point.Y - center.Y);
+            radius = (int)Math.Sqrt((shiftX*shiftX) + (shiftY*shiftY));
+            radius = Math.Max(radius, 10);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
-            m_Center.X += _deltaX;
-            m_Center.Y += _deltaY;
+            center.Translate(dx, dy);
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
@@ -172,12 +170,10 @@ namespace Kinovea.ScreenManager
                 switch(_xmlReader.Name)
                 {
                     case "Origin":
-                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        m_Center = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                        center = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
                         break;
                     case "Radius":
-                        int radius = _xmlReader.ReadElementContentAsInt();
-                        m_iRadius = (int)((double)radius * _scale.X);
+                        radius = (int)(_xmlReader.ReadElementContentAsInt() * _scale.X);
                         break;
                     case "DrawingStyle":
                         m_Style = new DrawingStyle(_xmlReader);
@@ -197,8 +193,8 @@ namespace Kinovea.ScreenManager
         }
         public void WriteXml(XmlWriter _xmlWriter)
         {
-            _xmlWriter.WriteElementString("Origin", String.Format(CultureInfo.InvariantCulture, "{0};{1}", m_Center.X, m_Center.Y));
-            _xmlWriter.WriteElementString("Radius", m_iRadius.ToString());
+            _xmlWriter.WriteElementString("Origin", String.Format(CultureInfo.InvariantCulture, "{0};{1}", center.X, center.Y));
+            _xmlWriter.WriteElementString("Radius", radius.ToString());
             
             _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
@@ -211,7 +207,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(Point point, Keys modifiers)
+        public void ContinueSetup(PointF point, Keys modifiers)
         {
             MoveHandle(point, 1, modifiers);
         }
@@ -223,29 +219,29 @@ namespace Kinovea.ScreenManager
             m_Style.Bind(m_StyleHelper, "Color", "color");
             m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
         }
-        private bool IsPointInObject(Point _point)
+        private bool IsPointInObject(Point point)
         {
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddEllipse(m_Center.Box(m_iRadius + 10));
+                areaPath.AddEllipse(center.Box(radius + 10));
                 using(Region r = new Region(areaPath))
                 {
-                    hit = r.IsVisible(_point);
+                    hit = r.IsVisible(point);
                 }
             }
             return hit;
         }
-        private bool IsPointOnHandler(Point _point)
+        private bool IsPointOnHandler(Point point)
         {
-            if(m_iRadius < 0)
+            if(radius < 0)
                 return false;
             
             bool hit = false;
             
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddArc(m_Center.Box(m_iRadius + 5), 25, 40);
+                areaPath.AddArc(center.Box(radius + 5), 25, 40);
                 
                 using(Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 10))
                 {
@@ -253,7 +249,7 @@ namespace Kinovea.ScreenManager
                 }
                 using(Region r = new Region(areaPath))
                 {
-                    hit = r.IsVisible(_point);
+                    hit = r.IsVisible(point);
                 }
             }
             

@@ -103,7 +103,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Guid id = Guid.NewGuid();
-        private Dictionary<string, Point> points = new Dictionary<string, Point>();
+        private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool showAxis = true;
         private bool showGrid = true;
         private bool showGraduations = true;
@@ -266,7 +266,7 @@ namespace Kinovea.ScreenManager
             
             return result;
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             if (handleNumber == 1)
                 points["0"] = point;
@@ -278,7 +278,7 @@ namespace Kinovea.ScreenManager
             CalibrationHelper.SetOrigin(points["0"]);
             SignalTrackablePointMoved();
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
         }
         
@@ -293,14 +293,14 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
-        public Dictionary<string, Point> GetTrackablePoints()
+        public Dictionary<string, PointF> GetTrackablePoints()
         {
             return points;
         }
         public void SetTracking(bool tracking)
         {
         }
-        public void SetTrackablePointValue(string name, Point value)
+        public void SetTrackablePointValue(string name, PointF value)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
@@ -377,10 +377,7 @@ namespace Kinovea.ScreenManager
         public void UpdateOrigin()
         {
             if(CalibrationHelper != null)
-            {
-                PointF p = CalibrationHelper.GetImagePoint(PointF.Empty);
-                points["0"] = new Point((int)p.X, (int)p.Y);
-            }
+                points["0"] = CalibrationHelper.GetImagePoint(PointF.Empty);
         }
         
         #region Lower level helpers
@@ -434,7 +431,7 @@ namespace Kinovea.ScreenManager
 
             bool hit = false;
             using (GraphicsPath path = new GraphicsPath())
-            using (Pen pen = new Pen(Color.Black, 5))
+            using (Pen pen = new Pen(Color.Black, 10))
             {
                 path.AddLine(a, b);
                 path.Widen(pen);
@@ -449,17 +446,15 @@ namespace Kinovea.ScreenManager
             //return axis.Contains(p);
             return hit;
         }
-        private void MoveHorizontalAxis(Point p)
+        private void MoveHorizontalAxis(PointF p)
         {
             PointF point = CalibrationHelper.GetPoint(p);
-            PointF origin = CalibrationHelper.GetImagePoint(new PointF(0, point.Y));
-            points["0"] = new Point((int)Math.Round(origin.X), (int)Math.Round(origin.Y));
+            points["0"] = CalibrationHelper.GetImagePoint(new PointF(0, point.Y));
         }
-        private void MoveVerticalAxis(Point p)
+        private void MoveVerticalAxis(PointF p)
         {
             PointF point = CalibrationHelper.GetPoint(p);
-            PointF origin = CalibrationHelper.GetImagePoint(new PointF(point.X, 0));
-            points["0"] = new Point((int)Math.Round(origin.X), (int)Math.Round(origin.Y));
+            points["0"] = CalibrationHelper.GetImagePoint(new PointF(point.X, 0));
         }
 
         /// <summary>

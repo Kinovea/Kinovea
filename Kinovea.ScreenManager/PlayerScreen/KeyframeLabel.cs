@@ -69,19 +69,19 @@ namespace Kinovea.ScreenManager
         private RoundedRectangle m_Background = new RoundedRectangle();
         private long m_iTimestamp;                 					// Absolute time.
         private int m_iAttachIndex;									// The index of the reference point in the track points list.
-        private Point m_AttachLocation;			                    // The point we are attached to (image coordinates).
+        private PointF attachLocation;			                    // The point we are attached to (image coordinates).
         private StyleHelper m_StyleHelper = new StyleHelper();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Construction
         public KeyframeLabel() : this(Point.Empty, Color.Black){}
-        public KeyframeLabel(Point _attachPoint, Color _color)
+        public KeyframeLabel(PointF attachPoint, Color color)
         {
-            m_AttachLocation = _attachPoint;
-            m_Background.Rectangle = new Rectangle(_attachPoint.Translate(-20, -50), Size.Empty);
+            this.attachLocation = attachPoint;
+            m_Background.Rectangle = new Rectangle(attachPoint.Translate(-20, -50).ToPoint(), Size.Empty);
             m_StyleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
-            m_StyleHelper.Bicolor = new Bicolor(Color.FromArgb(160, _color));
+            m_StyleHelper.Bicolor = new Bicolor(Color.FromArgb(160, color));
         }
         public KeyframeLabel(XmlReader _xmlReader, PointF _scale)
             : this(Point.Empty, Color.Black)
@@ -111,7 +111,7 @@ namespace Kinovea.ScreenManager
             {
                 
                 // Small dot and connector. 
-                Point attch = _transformer.Transform(m_AttachLocation);
+                Point attch = _transformer.Transform(attachLocation);
                 Point center = _transformer.Transform(m_Background.Center);
                 _canvas.FillEllipse(fillBrush, attch.Box(2));
                 _canvas.DrawLine(p, attch, center);
@@ -125,19 +125,19 @@ namespace Kinovea.ScreenManager
                 _canvas.DrawString(m_Text, f, fontBrush, rect.Location);
             }
         }    
-        public void SetAttach(Point _point, bool _moveLabel)
+        public void SetAttach(PointF p, bool moveLabel)
         {
-            int dx = _point.X - m_AttachLocation.X;
-            int dy = _point.Y - m_AttachLocation.Y;
+            float dx = p.X - attachLocation.X;
+            float dy = p.Y - attachLocation.Y;
             
-            m_AttachLocation = _point;
+            attachLocation = p;
             
-            if(_moveLabel)
+            if(moveLabel)
                 m_Background.Move(dx, dy);
         }
-        public void SetLabel(Point _point)
+        public void SetLabel(PointF _point)
         {
-            m_Background.CenterOn(_point);
+            m_Background.CenterOn(_point.ToPoint());
         }
         public void MoveLabel(int dx, int dy)
         {
@@ -169,8 +169,8 @@ namespace Kinovea.ScreenManager
                 switch(_xmlReader.Name)
                 {
                     case "SpacePosition":
-                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        Point location = new Point((int)(_scale.X * p.X), (int)(_scale.Y * p.Y));
+                        PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
+                        Point location = p.Scale(_scale.X, _scale.Y).ToPoint();
                         m_Background.Rectangle = new Rectangle(location, Size.Empty);
                         break;
                     case "TimePosition":

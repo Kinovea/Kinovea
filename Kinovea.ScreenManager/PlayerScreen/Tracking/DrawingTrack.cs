@@ -275,7 +275,7 @@ namespace Kinovea.ScreenManager
             {
                 TrackerParameters parameters = GetTrackerParameters(currentImage.Size);
                 tracker = new TrackerBlock2(parameters);
-                AbstractTrackPoint atp = tracker.CreateTrackPoint(true, origin.X, origin.Y, 1.0f, t, currentImage, positions);
+                AbstractTrackPoint atp = tracker.CreateTrackPoint(true, origin, 1.0f, t, currentImage, positions);
                 if(atp != null)
                     positions.Add(atp);
                 else
@@ -286,7 +286,7 @@ namespace Kinovea.ScreenManager
                 // Happens when loading Metadata from file or demuxing.
                 TrackerParameters parameters = GetTrackerParameters(imageSize);
                 tracker = new TrackerBlock2(parameters);
-                positions.Add(tracker.CreateOrphanTrackPoint(origin.X, origin.Y, t));
+                positions.Add(tracker.CreateOrphanTrackPoint(origin, t));
             }
 
             if(!untrackable)
@@ -381,7 +381,7 @@ namespace Kinovea.ScreenManager
                     DrawMarker(canvas, opacityFactor, transformer);
                 
                 if (opacityFactor == 1.0)
-                    DrawTrackerHelp(canvas, positions[currentPoint].Point, transformer, styleHelper.Color, opacityFactor);
+                    DrawTrackerHelp(canvas, transformer, styleHelper.Color, opacityFactor);
 
                 // Main label.
                 if (trackStatus == TrackStatus.Interactive && trackView == TrackView.Label ||
@@ -391,11 +391,11 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override void MoveDrawing(int dx, int dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
             if (trackStatus == TrackStatus.Interactive && movingHandler > 1)
             {
-                MoveLabelTo(dx, dy, movingHandler);
+                MoveLabelTo((int)dx, (int)dy, movingHandler);
                 return;
             }
 
@@ -411,7 +411,7 @@ namespace Kinovea.ScreenManager
 
             
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             if (trackStatus == TrackStatus.Interactive && (handleNumber == 0 || handleNumber == 1))
             {
@@ -422,9 +422,9 @@ namespace Kinovea.ScreenManager
                 TrackerParameters old = tracker.Parameters;
                 
                 if (movingHandler > 1 && movingHandler < 6)
-                    searchWindow.MoveHandleKeepSymmetry(point, movingHandler - 1, positions[currentPoint].Point);
+                    searchWindow.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 1, positions[currentPoint].Point);
                 else if (movingHandler >= 6 && movingHandler < 11)
-                    blockWindow.MoveHandleKeepSymmetry(point, movingHandler - 5, positions[currentPoint].Point);
+                    blockWindow.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 5, positions[currentPoint].Point);
 
                 TrackerParameters newParams = new TrackerParameters(
                     old.SimilarityThreshold, old.TemplateUpdateThreshold, searchWindow.Rectangle.Size, blockWindow.Rectangle.Size, old.ResetOnMove);
@@ -464,7 +464,7 @@ namespace Kinovea.ScreenManager
         private int HitTestEdit(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             // 1: search window.
-            Rectangle search = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow);
+            Rectangle search = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow).ToRectangle();
             if (search.Contains(point))
                 return 1;
 
@@ -516,7 +516,7 @@ namespace Kinovea.ScreenManager
                 int iTotalVisiblePoints = iEnd - iStart;
                 Point[] points = new Point[iTotalVisiblePoints];
                 for (int i = iStart; i < iEnd; i++)
-                    points[i - iStart] = positions[i].Point;
+                    points[i - iStart] = positions[i].Point.ToPoint();
 
                 using (GraphicsPath areaPath = new GraphicsPath())
                 {
@@ -621,7 +621,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawEllipse(Pens.White, location.Box(radius + 2));
             }   
         }
-        private void DrawTrackerHelp(Graphics canvas, Point point, IImageToViewportTransformer transformer, Color color, double opacity)
+        private void DrawTrackerHelp(Graphics canvas, IImageToViewportTransformer transformer, Color color, double opacity)
         {
             if (trackStatus == TrackStatus.Edit)
             {
@@ -870,22 +870,22 @@ namespace Kinovea.ScreenManager
         #endregion
     
         #region User manipulation
-        private void MoveCursor(int X, int y)
+        private void MoveCursor(float dx, float dy)
         {
             if (trackStatus == TrackStatus.Edit)
             {
                 // Move cursor to new coords
                 // In this case, _X and _Y are delta values.
                 // Image will be reseted at mouse up. (=> UpdateTrackPoint)
-                positions[currentPoint].X += X;
-                positions[currentPoint].Y += y;
+                positions[currentPoint].X += dx;
+                positions[currentPoint].Y += dy;
             }
             else
             {
                 // Move Playhead to closest frame (x,y,t).
                 // In this case, _X and _Y are absolute values.
                 if (ShowClosestFrame != null && positions.Count > 1)
-                    ShowClosestFrame(new Point(X, y), positions, totalDistance, false);
+                    ShowClosestFrame(new Point((int)dx, (int)dy), positions, totalDistance, false);
             }
         }
         private void MoveLabelTo(int dx, int dy, int labelNumber)
@@ -1063,16 +1063,16 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < positions.Count; i++)
             {
                 if (positions[i].X < smallestLeft)
-                    smallestLeft = positions[i].X;
+                    smallestLeft = (int)positions[i].X;
 
                 if (positions[i].X > highestRight)
-                    highestRight = positions[i].X;
+                    highestRight = (int)positions[i].X;
 
                 if (positions[i].Y < smallestTop)
-                    smallestTop = positions[i].Y;
+                    smallestTop = (int)positions[i].Y;
                 
                 if (positions[i].Y > highestBottom)
-                    highestBottom = positions[i].Y;
+                    highestBottom = (int)positions[i].Y;
             }
 
             totalDistance = (int)Math.Sqrt(((highestRight - smallestLeft) * (highestRight - smallestLeft))
@@ -1089,7 +1089,7 @@ namespace Kinovea.ScreenManager
             AbstractTrackPoint current = positions[currentPoint];
         
             current.ResetTrackData();
-            AbstractTrackPoint atp = tracker.CreateTrackPoint(true, current.X, current.Y, 1.0f, current.T,  currentImage, positions);
+            AbstractTrackPoint atp = tracker.CreateTrackPoint(true, current.Point, 1.0f, current.T,  currentImage, positions);
             
             if(atp != null)
                  positions[currentPoint] = atp;
@@ -1175,30 +1175,13 @@ namespace Kinovea.ScreenManager
             xmlWriter.WriteAttributeString("Count", positions.Count.ToString());
             xmlWriter.WriteAttributeString("UserUnitLength", parentMetadata.CalibrationHelper.GetLengthAbbreviation());
             
-            // The coordinate system defaults to the first point,
-            // but can be specified by user.
-            //Point coordOrigin = m_Positions[0].Point;
-
-            //if(m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.X >= 0 || m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.Y >= 0)
-            //if(m_ParentMetadata.CalibrationHelper.IsCalibrated)
-            //    coordOrigin = m_ParentMetadata.CalibrationHelper.CoordinatesOrigin;
-            
-            //CalibrationLine calibrationLine = m_ParentMetadata.CalibrationHelper.GetCalibrationByLineOrigin();
-            
             if(positions.Count > 0)
             {
                 foreach (AbstractTrackPoint tp in positions)
                 {
                     xmlWriter.WriteStartElement("TrackPoint");
                     
-                    // Data in user units.
-                    // - The origin of the coordinates system is given as parameter.
-                    // - X goes left (same than internal), Y goes up (opposite than internal).
-                    // - Time is absolute.
-                    //double userX = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)tp.X - (double)coordOrigin.X);
-                    //double userY = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)coordOrigin.Y - (double)tp.Y);
-                    
-                    PointF p = parentMetadata.CalibrationHelper.GetPoint(tp.Point.ToPointF());
+                    PointF p = parentMetadata.CalibrationHelper.GetPoint(tp.Point);
                     string userT = parentMetadata.TimeStampsToTimecode(tp.T, TimecodeFormat.Unknown, false);
                     
                     xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
@@ -1307,14 +1290,11 @@ namespace Kinovea.ScreenManager
             {
                 if(xmlReader.Name == "TrackPoint")
                 {
-                    AbstractTrackPoint tp = tracker.CreateOrphanTrackPoint(0, 0, 0);
+                    AbstractTrackPoint tp = tracker.CreateOrphanTrackPoint(PointF.Empty, 0);
                     tp.ReadXml(xmlReader);
                     
                     // time was stored in relative value, we still need to adjust it.
-                    AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(	
-                                                                (int)(scale.X * tp.X),
-                                                                (int)(scale.Y * tp.Y),
-                                                                remapTimestampCallback(tp.T, true));
+                    AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), remapTimestampCallback(tp.T, true));
 
                     positions.Add(adapted);
                 }
@@ -1447,7 +1427,7 @@ namespace Kinovea.ScreenManager
             trackView = memoTrackView;
             mainLabelText = memoLabel;
         }
-        public Point GetPosition(long timestamp)
+        public PointF GetPosition(long timestamp)
         {
             int index = FindClosestPoint(timestamp);
             return positions[index].Point;
@@ -1503,8 +1483,8 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateBoundingBoxes()
         {
-            searchWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow);
-            blockWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.BlockWindow);
+            searchWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow).ToRectangle();
+            blockWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.BlockWindow).ToRectangle();
         }
         private int FindClosestPoint(long currentTimestamp)
         {

@@ -43,7 +43,7 @@ namespace Kinovea.ScreenManager
         private long position;
         
         private Guid id = Guid.NewGuid();
-        private Dictionary<string, Point> points = new Dictionary<string, Point>();
+        private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         
         private int radius;
@@ -131,17 +131,17 @@ namespace Kinovea.ScreenManager
             }
             return result;
         }
-        public void MouseMove(int deltaX, int deltaY)
+        public void MouseMove(float dx, float dy)
         {
-            points["o"] = new Point(points["o"].X + deltaX, points["o"].Y + deltaY);
+            points["o"] = points["o"].Translate(dx, dy);
             SignalTrackablePointMoved();
         }
-        public void MoveHandleTo(Point point)
+        public void MoveHandleTo(PointF point)
         {
             // Point coordinates are descaled.
             // User is dragging the outline of the circle, figure out the new radius at this point.
-            int shiftX = Math.Abs(point.X - points["o"].X);
-            int shiftY = Math.Abs(point.Y - points["o"].Y);
+            float shiftX = Math.Abs(point.X - points["o"].X);
+            float shiftY = Math.Abs(point.Y - points["o"].Y);
             radius = Math.Max((int)Math.Sqrt((shiftX*shiftX) + (shiftY*shiftY)), minimalRadius);
         }
         #endregion
@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
-        public Dictionary<string, Point> GetTrackablePoints()
+        public Dictionary<string, PointF> GetTrackablePoints()
         {
             return points;
         }
@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
         {
             this.tracking = tracking;
         }
-        public void SetTrackablePointValue(string name, Point value)
+        public void SetTrackablePointValue(string name, PointF value)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");

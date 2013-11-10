@@ -183,13 +183,13 @@ namespace Kinovea.ScreenManager
             
             return result;
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
-            m_BoundingBox.MoveHandle(point, handleNumber, new Size(m_iOriginalWidth, m_iOriginalHeight), true);
+            m_BoundingBox.MoveHandle(point.ToPoint(), handleNumber, new Size(m_iOriginalWidth, m_iOriginalHeight), true);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
-            m_BoundingBox.MoveAndSnap(_deltaX, _deltaY, m_videoSize, m_snapMargin);
+            m_BoundingBox.MoveAndSnap((int)dx, (int)dy, m_videoSize, m_snapMargin);
         }
         #endregion
        

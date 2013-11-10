@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
         QuadrilateralF Transform(QuadrilateralF quadrilateral);
         
         // Untransform : from screen coordinates to image coordinates.
-        Point Untransform(Point point);
+        PointF Untransform(Point point);
         int Untransform(int value);
     }
 }

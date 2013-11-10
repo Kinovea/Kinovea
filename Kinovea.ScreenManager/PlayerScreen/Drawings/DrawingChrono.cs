@@ -253,24 +253,25 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             // Invisible handler to change font size.
-            int wantedHeight = point.Y - m_MainBackground.Rectangle.Location.Y;
+            int wantedHeight = (int)point.Y - m_MainBackground.Rectangle.Location.Y;
             m_StyleHelper.ForceFontSize(wantedHeight, m_Timecode);
+            m_Style.ReadValue();
             UpdateLabelRectangle();
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
-            m_MainBackground.Move(_deltaX, _deltaY);
-            m_lblBackground.Move(_deltaX, _deltaY);
+            m_MainBackground.Move(dx, dy);
+            m_lblBackground.Move(dx, dy);
         }
         #endregion
         
         #region KVA Serialization
         public void WriteXml(XmlWriter _xmlWriter)
         {
-            _xmlWriter.WriteElementString("Position", String.Format("{0};{1}", m_MainBackground.Rectangle.Location.X, m_MainBackground.Rectangle.Location.Y));
+            _xmlWriter.WriteElementString("Position", string.Format("{0};{1}", m_MainBackground.Rectangle.Location.X, m_MainBackground.Rectangle.Location.Y));
             
             _xmlWriter.WriteStartElement("Values");
             _xmlWriter.WriteElementString("Visible", (m_iVisibleTimestamp == long.MaxValue) ? "-1" : m_iVisibleTimestamp.ToString());
@@ -310,7 +311,7 @@ namespace Kinovea.ScreenManager
                 {
                     case "Position":
                         Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        Point location = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                        Point location = p.Scale(_scale.X, _scale.Y);
                         m_MainBackground.Rectangle = new Rectangle(location, Size.Empty);
                         break;
                     case "Values":

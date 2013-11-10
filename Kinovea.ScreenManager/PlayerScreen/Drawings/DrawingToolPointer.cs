@@ -72,9 +72,9 @@ namespace Kinovea.ScreenManager
             get	{ throw new NotImplementedException(); }
         }
         
-        public Point MouseDelta
+        public PointF MouseDelta
         {
-            get { return m_MouseDelta; }
+            get { return mouseDelta; }
         }
         #endregion
         
@@ -85,8 +85,8 @@ namespace Kinovea.ScreenManager
         //--------------------------------------------------------------------
         private ManipulationType manipulationType;
         private SelectedObjectType m_SelectedObjectType;
-        private Point m_lastPoint;
-        private Point m_MouseDelta;
+        private PointF lastPoint;
+        private PointF mouseDelta;
         private Point m_DirectZoomTopLeft;
         private int m_iResizingHandle;
         private Size m_ImgSize;
@@ -100,10 +100,10 @@ namespace Kinovea.ScreenManager
         {
             manipulationType = ManipulationType.None;
             m_SelectedObjectType = SelectedObjectType.None;
-            m_lastPoint = new Point(0, 0);
+            lastPoint = PointF.Empty;
             m_iResizingHandle = 0;
             m_ImgSize = new Size(320,240);
-            m_MouseDelta = new Point(0, 0);
+            mouseDelta = PointF.Empty;
             m_DirectZoomTopLeft = new Point(-1, -1);
 
             SetupHandCursors();
@@ -126,7 +126,7 @@ namespace Kinovea.ScreenManager
         {
             manipulationType = ManipulationType.None;
         }
-        public bool OnMouseDown(Metadata metadata, int _iActiveKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
+        public bool OnMouseDown(Metadata metadata, int activeKeyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, bool allFrames)
         {
             //--------------------------------------------------------------------------------------
             // Change the ManipulationType if we are on a Drawing, Track, etc.
@@ -135,9 +135,6 @@ namespace Kinovea.ScreenManager
             //
             // We give priority to Keyframes Drawings because they can be moved...
             // If a Drawing is under a Trajectory or Chrono, we have to be able to move it around...
-            //
-            // Maybe we could reuse the IsOndrawing, etc. functions from MetaData...
-            // TODO: see if some code can be shared or homogenized with whole image manipulation in ImageManipulator.
             //--------------------------------------------------------------------------------------
 
             bool bHit = true;
@@ -145,11 +142,14 @@ namespace Kinovea.ScreenManager
 
             metadata.UnselectAll();
 
-            if (!IsOnDrawing(metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _iCurrentTimeStamp, _bAllFrames))
+            // Hit testing doesn't need subpixel accuracy.
+            Point coords = mouseCoordinates.ToPoint();
+
+            if (!IsOnDrawing(metadata, activeKeyFrameIndex, coords, currentTimeStamp, allFrames))
             {
-                if (!IsOnTrack(metadata, _MouseCoordinates, _iCurrentTimeStamp))
+                if (!IsOnTrack(metadata, coords, currentTimeStamp))
                 {
-                    if (!IsOnExtraDrawing(metadata, _MouseCoordinates, _iCurrentTimeStamp))
+                    if (!IsOnExtraDrawing(metadata, coords, currentTimeStamp))
                     {
                         // Moving the whole image (Direct Zoom)
                         m_SelectedObjectType = SelectedObjectType.None;
@@ -159,19 +159,19 @@ namespace Kinovea.ScreenManager
             }
             
             // Store position (descaled: in original image coords).
-            m_lastPoint.X = _MouseCoordinates.X;
-            m_lastPoint.Y = _MouseCoordinates.Y;
+            lastPoint.X = mouseCoordinates.X;
+            lastPoint.Y = mouseCoordinates.Y;
 
             return bHit;
         }
-        public bool OnMouseMove(Metadata metadata, Point _MouseLocation, Point _DirectZoomTopLeft, Keys _ModifierKeys)
+        public bool OnMouseMove(Metadata metadata, PointF mouseLocation, Point _DirectZoomTopLeft, Keys _ModifierKeys)
         {
-            // Note: We work with descaled coordinates.
+            // Note: We work with image coordinates at subpixel accuracy.
             // Note: We only get here if left mouse button is down.
 
             bool bIsMovingAnObject = true;
-            int deltaX = 0;
-            int deltaY = 0;
+            float deltaX = 0;
+            float deltaY = 0;
 
             if (m_DirectZoomTopLeft.X == -1)
             {
@@ -180,13 +180,13 @@ namespace Kinovea.ScreenManager
             }
 
             // Find difference between previous and current position
-            deltaX = (_MouseLocation.X - m_lastPoint.X) - (_DirectZoomTopLeft.X - m_DirectZoomTopLeft.X);
-            m_lastPoint.X = _MouseLocation.X;
+            deltaX = (mouseLocation.X - lastPoint.X) - (_DirectZoomTopLeft.X - m_DirectZoomTopLeft.X);
+            lastPoint.X = mouseLocation.X;
             
-            deltaY = (_MouseLocation.Y - m_lastPoint.Y) - (_DirectZoomTopLeft.Y - m_DirectZoomTopLeft.Y);
-            m_lastPoint.Y = _MouseLocation.Y;
+            deltaY = (mouseLocation.Y - lastPoint.Y) - (_DirectZoomTopLeft.Y - m_DirectZoomTopLeft.Y);
+            lastPoint.Y = mouseLocation.Y;
             
-            m_MouseDelta = new Point(deltaX, deltaY);
+            mouseDelta = new PointF(deltaX, deltaY);
             m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
 
             if (deltaX != 0 || deltaY != 0)
@@ -222,13 +222,13 @@ namespace Kinovea.ScreenManager
                                 case SelectedObjectType.ExtraDrawing:
                                     if (metadata.SelectedExtraDrawing >= 0)
                                     {
-                                        metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveHandle(_MouseLocation, m_iResizingHandle, _ModifierKeys);		
+                                        metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveHandle(mouseLocation, m_iResizingHandle, _ModifierKeys);		
                                     }
                                     break;
                                 case SelectedObjectType.Drawing:
                                     if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
                                     {
-                                        metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveHandle(_MouseLocation, m_iResizingHandle, _ModifierKeys);
+                                        metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveHandle(mouseLocation, m_iResizingHandle, _ModifierKeys);
                                     }
                                     break;
                                 default:
@@ -277,7 +277,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Helpers
-        private bool IsOnDrawing(Metadata _Metadata, int _iActiveKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
+        private bool IsOnDrawing(Metadata _Metadata, int _iActiveKeyFrameIndex, Point mouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
         {
             bool bIsOnDrawing = false;
             
@@ -287,7 +287,7 @@ namespace Kinovea.ScreenManager
 
                 for (int i = 0; i < zOrder.Length; i++)
                 {
-                    bIsOnDrawing = DrawingHitTest(_Metadata, zOrder[i], _MouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem);
+                    bIsOnDrawing = DrawingHitTest(_Metadata, zOrder[i], mouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem);
                     if (bIsOnDrawing)
                     {
                         break;
@@ -296,12 +296,12 @@ namespace Kinovea.ScreenManager
             }
             else if (_iActiveKeyFrameIndex >= 0)
             {
-                bIsOnDrawing = DrawingHitTest(_Metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _Metadata[_iActiveKeyFrameIndex].Position, _Metadata.CoordinateSystem);
+                bIsOnDrawing = DrawingHitTest(_Metadata, _iActiveKeyFrameIndex, mouseCoordinates, _Metadata[_iActiveKeyFrameIndex].Position, _Metadata.CoordinateSystem);
             }
 
             return bIsOnDrawing;
         }
-        private bool DrawingHitTest(Metadata _Metadata, int _iKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, CoordinateSystem transformer)
+        private bool DrawingHitTest(Metadata _Metadata, int _iKeyFrameIndex, Point mouseCoordinates, long _iCurrentTimeStamp, CoordinateSystem transformer)
         {
             bool bDrawingHit = false;
             Keyframe kf = _Metadata.Keyframes[_iKeyFrameIndex];
@@ -310,7 +310,7 @@ namespace Kinovea.ScreenManager
 
             while (hitRes < 0 && iCurrentDrawing < kf.Drawings.Count)
             {
-                hitRes = kf.Drawings[iCurrentDrawing].HitTest(_MouseCoordinates, _iCurrentTimeStamp, transformer, transformer.Zooming);
+                hitRes = kf.Drawings[iCurrentDrawing].HitTest(mouseCoordinates, _iCurrentTimeStamp, transformer, transformer.Zooming);
                 if (hitRes >= 0)
                 {
                     bDrawingHit = true;
@@ -374,7 +374,7 @@ namespace Kinovea.ScreenManager
             
             return isOnDrawing;
         }
-        private bool IsOnTrack(Metadata _Metadata, Point _MouseCoordinates, long _iCurrentTimeStamp)
+        private bool IsOnTrack(Metadata _Metadata, Point mouseCoordinates, long _iCurrentTimeStamp)
         {
             // Track have their own special hit test because we need to differenciate the interactive case from the edit case.
             bool bTrackHit = false;
@@ -385,7 +385,7 @@ namespace Kinovea.ScreenManager
                 if(trk != null)
                 {
                     // Handle signification depends on track status.
-                    int handle = trk.HitTest(_MouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem, _Metadata.CoordinateSystem.Zooming);
+                    int handle = trk.HitTest(mouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem, _Metadata.CoordinateSystem.Zooming);
                     if (handle < 0)
                         continue;
 

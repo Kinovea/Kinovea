@@ -100,7 +100,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Guid id = Guid.NewGuid();
-        private Dictionary<string, Point> points = new Dictionary<string, Point>();
+        private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         
         // Decoration
@@ -204,34 +204,26 @@ namespace Kinovea.ScreenManager
             
             return result;
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             int constraintAngleSubdivisions = 8; // (Constraint by 45° steps).
             switch(handleNumber)
             {
                 case 1:
                     if((modifiers & Keys.Shift) == Keys.Shift)
-                    {
-                        PointF result = GeometryHelper.GetPointAtClosestRotationStepCardinal(points["b"], point, constraintAngleSubdivisions);
-                        points["a"] = new Point((int)result.X, (int)result.Y);
-                    }
+                        points["a"] = GeometryHelper.GetPointAtClosestRotationStepCardinal(points["b"], point, constraintAngleSubdivisions);
                     else
-                    {
                         points["a"] = point;
-                    }
+
                     m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
                     SignalTrackablePointMoved("a");
                     break;
                 case 2:
                     if((modifiers & Keys.Shift) == Keys.Shift)
-                    {
-                        PointF result = GeometryHelper.GetPointAtClosestRotationStepCardinal(points["a"], point, constraintAngleSubdivisions);
-                        points["b"] = new Point((int)result.X, (int)result.Y);
-                    }
+                        points["b"] = GeometryHelper.GetPointAtClosestRotationStepCardinal(points["a"], point, constraintAngleSubdivisions);
                     else
-                    {
                         points["b"] = point;
-                    }
+
                     m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
                     SignalTrackablePointMoved("b");
                     break;
@@ -241,10 +233,10 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
-            points["a"] = new Point(points["a"].X + _deltaX, points["a"].Y + _deltaY);
-            points["b"] = new Point(points["b"].X + _deltaX, points["b"].Y + _deltaY);
+            points["a"] = points["a"].Translate(dx, dy);
+            points["b"] = points["b"].Translate(dx, dy);
             m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
             SignalAllTrackablePointsMoved();
         }
@@ -261,14 +253,14 @@ namespace Kinovea.ScreenManager
                 {
                     case "Start":
                         {
-                            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            points["a"] = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
+                            points["a"] = p.Scale(_scale.X, _scale.Y);
                             break;
                         }
                     case "End":
                         {
-                            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            points["b"] = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
+                            points["b"] = p.Scale(_scale.X, _scale.Y);
                             break;
                         }
                     case "DrawingStyle":
@@ -328,7 +320,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(Point point, Keys modifiers)
+        public void ContinueSetup(PointF point, Keys modifiers)
         {
             MoveHandle(point, 2, modifiers);
         }
@@ -343,7 +335,7 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
-        public Dictionary<string, Point> GetTrackablePoints()
+        public Dictionary<string, PointF> GetTrackablePoints()
         {
             return points;
         }
@@ -351,7 +343,7 @@ namespace Kinovea.ScreenManager
         {
             this.tracking = tracking;
         }
-        public void SetTrackablePointValue(string name, Point value)
+        public void SetTrackablePointValue(string name, PointF value)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
@@ -364,7 +356,7 @@ namespace Kinovea.ScreenManager
             if(TrackablePointMoved == null)
                 return;
             
-            foreach(KeyValuePair<string, Point> p in points)
+            foreach(KeyValuePair<string, PointF> p in points)
                 TrackablePointMoved(this, new TrackablePointMovedEventArgs(p.Key, p.Value));
         }
         private void SignalTrackablePointMoved(string name)
@@ -445,7 +437,8 @@ namespace Kinovea.ScreenManager
         }
         private Point GetMiddlePoint()
         {
-            return new Point((points["a"].X + points["b"].X)/2, (points["a"].Y + points["b"].Y)/2);
+            // Used only to attach the measure.
+            return GeometryHelper.GetMiddlePoint(points["a"], points["b"]).ToPoint();
         }
         
         #endregion
