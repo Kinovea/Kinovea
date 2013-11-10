@@ -126,6 +126,9 @@ namespace Kinovea.ScreenManager
         /// 
         /// Style elements and properties need not be of the same type. The style helper knows how to
         /// map a FontSize element to its own Font property for example.
+        /// 
+        /// This binding goes style -> stylehelper. When a style helper is modified directly, style.readvalue() should be called
+        /// to trigger the backwards binding.
         /// </summary>
         /// <param name="_target">The drawing's style helper object</param>
         /// <param name="_targetProperty">The name of the property in the style helper that needs automatic update</param>
