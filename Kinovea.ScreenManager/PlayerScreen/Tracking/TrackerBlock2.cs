@@ -100,9 +100,6 @@ namespace Kinovea.ScreenManager
                 
                 searchZone.Intersect(new Rectangle(0,0,currentImage.Width, currentImage.Height));
                 
-                double bestScore = 0;
-                PointF bestCandidate = new PointF(-1,-1);
-                
                 //Image<Bgr, Byte> cvTemplate = new Image<Bgr, Byte>(lastTrackPoint.Template);
                 //Image<Bgr, Byte> cvImage = new Image<Bgr, Byte>(_CurrentImage);
                 
@@ -130,6 +127,8 @@ namespace Kinovea.ScreenManager
                 tpl.UnlockBits(templateData);
                 
                 // Find max
+                double bestScore = 0;
+                PointF bestCandidate = new PointF(-1,-1);
                 Point p1 = new Point(0,0);
                 Point p2 = new Point(0,0);
                 double fMin = 0;
@@ -160,18 +159,17 @@ namespace Kinovea.ScreenManager
                 // Result of the matching.
                 if(bestCandidate.X != -1 && bestCandidate.Y != -1)
                 {
-                    // Save template in the point.
                     currentPoint = CreateTrackPoint(false, bestCandidate, bestScore, position, img, previousPoints);
                     ((TrackPointBlock)currentPoint).Similarity = bestScore;
-                    
-                    matched = true;
                 }
                 else
                 {
                     // No match. Create the point at the center of the search window (whatever that might be).
-                    currentPoint = CreateTrackPoint(false, searchCenter, 0.0f, position, img, previousPoints);
+                    currentPoint = CreateTrackPoint(false, lastPoint, 0.0f, position, img, previousPoints);
                     log.Debug("Track failed. No block over the similarity treshold in the search window.");	
                 }
+
+                matched = true;
             }
             else
             {
@@ -196,7 +194,7 @@ namespace Kinovea.ScreenManager
             
             bool updateWithCurrentImage = true;
             
-            if(!manual && previousPoints.Count > 0 && similarity > templateUpdateThreshold)
+            if(!manual && previousPoints.Count > 0 && similarity > templateUpdateThreshold || similarity < similarityTreshold)
             {
                 // Do not update the template if it's not that different.
                 TrackPointBlock prevBlock = previousPoints[previousPoints.Count - 1] as TrackPointBlock;
