@@ -34,16 +34,16 @@ namespace Kinovea.ScreenManager
         public double Similarity;
         public int TemplateAge;
         
-        public TrackPointBlock(int _x, int _y, long _t)
-            : this(_x, _y, _t, null)
+        public TrackPointBlock(float x, float y, long t)
+            : this(x, y, t, null)
         {
         }
-        public TrackPointBlock(int _x, int _y, long _t, Bitmap _img)
+        public TrackPointBlock(float x, float y, long t, Bitmap img)
         {
-            X = _x;
-            Y = _y;
-            T = _t;
-            Template = _img;
+            this.X = x;
+            this.Y = y;
+            this.T = t;
+            Template = img;
             TemplateAge = 0;
         }
         
@@ -54,9 +54,8 @@ namespace Kinovea.ScreenManager
             TemplateAge = 0;
             
             if(Template != null)
-            {
                 Template.Dispose();
-            }
+
             Template = null;
         }
     }

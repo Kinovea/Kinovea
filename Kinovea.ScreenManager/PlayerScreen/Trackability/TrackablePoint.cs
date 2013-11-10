@@ -31,21 +31,21 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackablePoint
     {
-        public Point CurrentValue
+        public PointF CurrentValue
         {
             get { return currentValue; }
         }
         
         private bool isTracking;
-        private Point currentValue;
+        private PointF currentValue;
         private TrackingContext context;
         private TrackerParameters trackerParameters;
         private Timeline<TrackFrame> trackTimeline = new Timeline<TrackFrame>();
-        private Point nonTrackingValue;
+        private PointF nonTrackingValue;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public TrackablePoint(TrackingContext context, TrackerParameters trackerParameters, Point value)
+        public TrackablePoint(TrackingContext context, TrackerParameters trackerParameters, PointF value)
         {
             this.context = context;
             this.trackerParameters = trackerParameters;
@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Value adjusted by user.
         /// </summary>
-        public void SetUserValue(Point value)
+        public void SetUserValue(PointF value)
         {
             // For simplicity we consider this a change of target and invalidate all existing data.
             // A more clever technique would be to test for similarity with the second closest patch and invalidate more or less 
@@ -147,9 +147,9 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        private TrackFrame CreateTrackFrame(Point location, PositionningSource positionningSource)
+        private TrackFrame CreateTrackFrame(PointF location, PositionningSource positionningSource)
         {
-            Rectangle region = location.Box(trackerParameters.BlockWindow);
+            Rectangle region = location.Box(trackerParameters.BlockWindow).ToRectangle();
             Bitmap template = context.Image.ExtractTemplate(region);
             return new TrackFrame(context.Time, location, template, positionningSource);
         }

@@ -102,7 +102,7 @@ namespace Kinovea.ScreenManager
         /// <param name="point">The new location of the handle, in original image scale coordinates</param>
         /// <param name="handleNumber">The handle identifier</param>
         /// <param name="modifiers">Modifiers key pressed while moving the handle</param>
-        public abstract void MoveHandle(Point point, int handleNumber, Keys modifiers);
+        public abstract void MoveHandle(PointF point, int handleNumber, Keys modifiers);
         
         /// <summary>
         /// Move the drawing as a whole.
@@ -111,7 +111,7 @@ namespace Kinovea.ScreenManager
         /// <param name="dy">Change in y coordinates</param>
         /// <param name="modifierKeys">Modifiers key pressed while moving the drawing</param>
         /// <param name="zooming">Whether the image is currently zoomed in</param>
-        public abstract void MoveDrawing(int dx, int dy, Keys modifierKeys, bool zooming);
+        public abstract void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming);
         
         
         

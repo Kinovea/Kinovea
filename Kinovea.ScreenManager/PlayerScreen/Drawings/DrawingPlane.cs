@@ -175,9 +175,12 @@ namespace Kinovea.ScreenManager
             using(SolidBrush br = styleHelper.GetBrush(opacityFactor))
             {
                 // Handlers
-                foreach(PointF p in quad)
+                foreach (PointF p in quad)
                     canvas.FillEllipse(br, p.Box(4));
-                
+
+                //foreach (PointF p in quad)
+                   //canvas.DrawEllipse(penEdges, p.Box(3));
+
                 // Grid
                 if (planeIsConvex)
                 {
@@ -235,7 +238,7 @@ namespace Kinovea.ScreenManager
             
             return -1;
         }
-        public override void MoveDrawing(int dx, int dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
             if (zooming)
                 return;
@@ -243,20 +246,18 @@ namespace Kinovea.ScreenManager
             if ((modifierKeys & Keys.Alt) == Keys.Alt)
             {
                 // Change the number of divisions.
-                styleHelper.GridDivisions = styleHelper.GridDivisions + ((dx - dy)/4);
+                styleHelper.GridDivisions = styleHelper.GridDivisions + (int)((dx - dy)/4);
                 styleHelper.GridDivisions = Math.Min(Math.Max(styleHelper.GridDivisions, minimumSubdivisions), maximumSubdivisions);
             }
             else
             {
-                if(inPerspective)
-                    TranslateInPlane(dx, dy);
-                else
+                if(!inPerspective)
                     quadImage.Translate(dx, dy);
             }
             
             SignalAllTrackablePointsMoved();
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             int handle = handleNumber - 1;
             quadImage[handle] = point;
@@ -290,26 +291,22 @@ namespace Kinovea.ScreenManager
                 {
                     case "PointUpperLeft":
                         {
-                            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            quadImage.A = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            quadImage.A = ReadPoint(_xmlReader, _scale); 
                             break;
                         }
                     case "PointUpperRight":
                         {
-                            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            quadImage.B = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            quadImage.B = ReadPoint(_xmlReader, _scale);
                             break;
                         }
                     case "PointLowerRight":
                         {
-                            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            quadImage.C = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            quadImage.C = ReadPoint(_xmlReader, _scale);
                             break;
                         }
                     case "PointLowerLeft":
                         {
-                            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            quadImage.D = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            quadImage.D = ReadPoint(_xmlReader, _scale);
                             break;
                         }
                     case "Perspective":
@@ -336,6 +333,11 @@ namespace Kinovea.ScreenManager
                 inPerspective = true;
                 
             initialized = true;
+        }
+        private PointF ReadPoint(XmlReader reader, PointF scale)
+        {
+            PointF p = XmlHelper.ParsePointF(reader.ReadElementContentAsString());
+            return p.Scale(scale.X, scale.Y);
         }
         public void WriteXml(XmlWriter _xmlWriter)
         {
@@ -397,12 +399,12 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
-        public Dictionary<string, Point> GetTrackablePoints()
+        public Dictionary<string, PointF> GetTrackablePoints()
         {
-            Dictionary<string, Point> points = new Dictionary<string, Point>();
+            Dictionary<string, PointF> points = new Dictionary<string, PointF>();
 
-            for(int i = 0; i<4; i++)
-                points.Add(i.ToString(), new Point((int)quadImage[i].X, (int)quadImage[i].Y));
+            for(int i = 0; i < 4; i++)
+                points.Add(i.ToString(), quadImage[i]);
             
             return points;
         }
@@ -410,7 +412,7 @@ namespace Kinovea.ScreenManager
         {
             this.tracking = tracking;
         }
-        public void SetTrackablePointValue(string name, Point value)
+        public void SetTrackablePointValue(string name, PointF value)
         {
             int p = int.Parse(name);
             quadImage[p] = new PointF(value.X, value.Y);
@@ -423,18 +425,14 @@ namespace Kinovea.ScreenManager
                 return;
             
             for(int i = 0; i<4; i++)
-            {
-                Point p = new Point((int)quadImage[i].X, (int)quadImage[i].Y);
-                TrackablePointMoved(this, new TrackablePointMovedEventArgs(i.ToString(), p));
-            }
+                TrackablePointMoved(this, new TrackablePointMovedEventArgs(i.ToString(), quadImage[i]));
         }
         private void SignalTrackablePointMoved(int index)
         {
             if(TrackablePointMoved == null)
                 return;
             
-            Point p = new Point((int)quadImage[index].X, (int)quadImage[index].Y);
-            TrackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), p));
+            TrackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), quadImage[index]));
         }
         #endregion
         
@@ -462,33 +460,6 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "GridDivisions", "divisions");
         }   
-        
-        private void TranslateInPlane(int deltaX, int deltaY)
-        {
-            // Translate the plane but can't keep the grid sticky with the pointer.
-            // TODO: MoveDrawing() should receive the actual start and end points,
-            // because here a delta doesn't have the same meaning depending on its location.
-            PointF start = quadImage.A;
-            PointF end = quadImage.A.Translate(deltaX, deltaY);
-            TranslateInPlane(start, end);
-        }
-        
-        private void TranslateInPlane(PointF start, PointF end)
-        {
-            // Translate grid on the plane, keeps the same part of the grid under the pointer.
-            PointF old = projectiveMapping.Backward(start);
-            PointF now = projectiveMapping.Backward(end);
-            float dx = now.X - old.X;
-            float dy = now.Y - old.Y;
-            QuadrilateralF grid = quadPlane.Clone();
-            grid.Translate(dx, dy);
-            
-            PointF a = projectiveMapping.Forward(grid.A);
-            PointF b = projectiveMapping.Forward(grid.B);
-            PointF c = projectiveMapping.Forward(grid.C);
-            PointF d = projectiveMapping.Forward(grid.D);
-            quadImage = new QuadrilateralF(a, b, c, d);
-        }
         
         private void mnuCalibrate_Click(object sender, EventArgs e)
         {

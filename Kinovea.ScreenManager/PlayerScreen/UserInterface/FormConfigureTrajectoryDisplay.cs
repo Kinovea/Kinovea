@@ -223,8 +223,8 @@ namespace Kinovea.ScreenManager
             int scale = 2;
             
             // center around current point with zoom.
-            Point position = track.GetPosition(timestamp);
-            PointF normalizedPosition = new PointF((float)position.X / imgSize.Width, (float)position.Y / imgSize.Height);
+            PointF position = track.GetPosition(timestamp);
+            PointF normalizedPosition = new PointF(position.X / imgSize.Width, position.Y / imgSize.Height);
             SizeF normalizedHostSize = new SizeF((float)pnlViewport.Width / imgSize.Width, (float)pnlViewport.Height / imgSize.Height);
             PointF normalizedHostCenter = new PointF(normalizedHostSize.Width / 2, normalizedHostSize.Height / 2);
             PointF normalizedDisplayLocation = new PointF(normalizedHostCenter.X - (normalizedPosition.X * scale), normalizedHostCenter.Y - (normalizedPosition.Y * scale));

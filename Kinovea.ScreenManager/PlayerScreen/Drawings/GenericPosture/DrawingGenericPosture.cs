@@ -249,17 +249,17 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
-        public override void MoveHandle(Point point, int handle, Keys modifiers)
+        public override void MoveHandle(PointF point, int handle, Keys modifiers)
         {
             int index = handle - 1;
             GenericPostureConstraintEngine.MoveHandle(m_GenericPosture, CalibrationHelper, index, point, modifiers);
             UpdateAngles();
             SignalTrackablePointMoved(index);
         }
-        public override void MoveDrawing(int deltaX, int deltaY, Keys modifiers, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
             for(int i = 0;i<m_GenericPosture.Points.Count;i++)
-                m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Translate(deltaX, deltaY);
+                m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Translate(dx, dy);
             
             UpdateAngles();
             SignalAllTrackablePointsMoved();
@@ -397,7 +397,7 @@ namespace Kinovea.ScreenManager
         {
             get { return m_GenericPosture.CustomTrackingProfile; }
         }
-        public Dictionary<string, Point> GetTrackablePoints()
+        public Dictionary<string, PointF> GetTrackablePoints()
         {
             return m_GenericPosture.GetTrackablePoints();
         }
@@ -405,7 +405,7 @@ namespace Kinovea.ScreenManager
         {
             this.tracking = tracking;
         }
-        public void SetTrackablePointValue(string name, Point value)
+        public void SetTrackablePointValue(string name, PointF value)
         {
             m_GenericPosture.SetTrackablePointValue(name, value, CalibrationHelper);
             UpdateAngles();

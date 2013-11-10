@@ -173,16 +173,17 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {	
             // Invisible handler to change font size.
-            int wantedHeight = point.Y - background.Rectangle.Location.Y;
+            int wantedHeight = (int)point.Y - background.Rectangle.Location.Y;
             styleHelper.ForceFontSize(wantedHeight, text);
+            style.ReadValue();
             UpdateLabelRectangle();
         }
-        public override void MoveDrawing(int deltaX, int deltaY, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
-            background.Move(deltaX, deltaY);
+            background.Move(dx, dy);
             RelocateEditbox();
         }
         #endregion

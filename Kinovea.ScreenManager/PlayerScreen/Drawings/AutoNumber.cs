@@ -128,9 +128,9 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
-        public void MouseMove(int _deltaX, int _deltaY)
+        public void MouseMove(float dx, float dy)
         {
-            background.Move(_deltaX, _deltaY);
+            background.Move(dx, dy);
         }
         public bool IsVisible(long _timestamp)
         {

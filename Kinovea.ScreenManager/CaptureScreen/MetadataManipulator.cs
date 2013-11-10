@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
             
             bool handled = false;
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            Point imagePoint = transformer.Untransform(mouse);
+            PointF imagePoint = transformer.Untransform(mouse);
             
             metadata.AllDrawingTextToNormalMode();
             
@@ -89,7 +89,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 handled = true;
-                CreateNewDrawing(imagePoint, transformer);
+                CreateNewDrawing(imagePoint.ToPoint(), transformer);
             }
             
             return handled;
@@ -102,7 +102,7 @@ namespace Kinovea.ScreenManager
             
             bool handled = false;
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            Point imagePoint = transformer.Untransform(mouse);
+            PointF imagePoint = transformer.Untransform(mouse);
             
             if(screenToolManager.IsUsingHandTool)
             {
@@ -114,7 +114,7 @@ namespace Kinovea.ScreenManager
                 // Setting second point of a drawing.
                 IInitializable drawing = metadata.HitDrawing as IInitializable;
                 if(drawing != null)
-                    drawing.ContinueSetup(imagePoint, modifiers);
+                    drawing.ContinueSetup(imagePoint.ToPoint(), modifiers);
             }
             
             return handled;
@@ -161,10 +161,10 @@ namespace Kinovea.ScreenManager
                 return false;
             
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            Point imagePoint = transformer.Untransform(mouse);
+            PointF imagePoint = transformer.Untransform(mouse);
             
             int keyframeIndex = 0;
-            return metadata.IsOnDrawing(keyframeIndex, imagePoint, fixedTimestamp);
+            return metadata.IsOnDrawing(keyframeIndex, imagePoint.ToPoint(), fixedTimestamp);
         }
         
         public Cursor GetCursor(float scale)

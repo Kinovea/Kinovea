@@ -26,12 +26,19 @@ namespace Kinovea.ScreenManager
             ComputeVelocity(result, input, calibrationHelper);
             ComputeAcceleration(result, input, calibrationHelper);
             
-            // All angular kinematics are based on the best fit circle.
-            ComputeRotationCenter(result, input, calibrationHelper);
-            ComputeDisplacementAngle(result, input, calibrationHelper);
-            ComputeAngularVelocity(result, input, calibrationHelper);
-            ComputeAngularAcceleration(result, input, calibrationHelper);
-
+            try
+            {
+                // All angular kinematics are based on the best fit circle.
+                ComputeRotationCenter(result, input, calibrationHelper);
+                ComputeDisplacementAngle(result, input, calibrationHelper);
+                ComputeAngularVelocity(result, input, calibrationHelper);
+                ComputeAngularAcceleration(result, input, calibrationHelper);
+            }
+            catch(Exception)
+            {
+                // log error.
+            }
+            
             return result;
         }
 
@@ -39,7 +46,7 @@ namespace Kinovea.ScreenManager
         {
             for (int i = 0; i < input.Count; i++)
             {
-                PointF point = calibrationHelper.GetPoint(input[i].Point.ToPointF());
+                PointF point = calibrationHelper.GetPoint(input[i].Point);
                 result[i].Coordinates = point;
             }
         }
@@ -51,8 +58,8 @@ namespace Kinovea.ScreenManager
 
             for (int i = 1; i < input.Count; i++)
             {
-                PointF a = calibrationHelper.GetPoint(input[i - 1].Point.ToPointF());
-                PointF b = calibrationHelper.GetPoint(input[i].Point.ToPointF());
+                PointF a = calibrationHelper.GetPoint(input[i - 1].Point);
+                PointF b = calibrationHelper.GetPoint(input[i].Point);
                 float d = GeometryHelper.GetDistance(a, b);
                 distance += d;
                 result[i].TotalDistance = distance;
@@ -78,8 +85,8 @@ namespace Kinovea.ScreenManager
 
             for (int i = 1; i < input.Count - 1; i++)
             {
-                PointF a = calibrationHelper.GetPoint(input[i - 1].Point.ToPointF());
-                PointF b = calibrationHelper.GetPoint(input[i + 1].Point.ToPointF());
+                PointF a = calibrationHelper.GetPoint(input[i - 1].Point);
+                PointF b = calibrationHelper.GetPoint(input[i + 1].Point);
                 float t = calibrationHelper.GetTime(2);
 
                 result[i].Speed = calibrationHelper.ConvertSpeed(GetSpeed(a, b, t, Component.Magnitude));
@@ -135,9 +142,9 @@ namespace Kinovea.ScreenManager
             
             for (int i = 2; i < input.Count - 2; i++)
             {
-                PointF p0 = calibrationHelper.GetPoint(input[i - 2].Point.ToPointF());
-                PointF p2 = calibrationHelper.GetPoint(input[i].Point.ToPointF());
-                PointF p4 = calibrationHelper.GetPoint(input[i + 2].Point.ToPointF());
+                PointF p0 = calibrationHelper.GetPoint(input[i - 2].Point);
+                PointF p2 = calibrationHelper.GetPoint(input[i].Point);
+                PointF p4 = calibrationHelper.GetPoint(input[i + 2].Point);
                 float t02 = calibrationHelper.GetTime(2);
                 float t24 = calibrationHelper.GetTime(2);
                 float t13 = calibrationHelper.GetTime(2);

@@ -177,7 +177,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
-        public void MoveHandleKeepSymmetry(Point point, int handleNumber, Point center)
+        public void MoveHandleKeepSymmetry(Point point, int handleNumber, PointF center)
         {
             Rectangle target = Rectangle.Empty;
             Vector shift = new Vector(point, center);

@@ -132,12 +132,12 @@ namespace Kinovea.ScreenManager
             globalPath.Dispose();
             spotsPath.Dispose();
         }
-        public override void MoveDrawing(int deltaX, int deltaY, Keys modifiers, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
             if(selected >= 0 && selected < spotlights.Count)
-                spotlights[selected].MouseMove(deltaX, deltaY);
+                spotlights[selected].MouseMove(dx, dy);
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             if(selected >= 0 && selected < spotlights.Count)
                 spotlights[selected].MoveHandleTo(point);
@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(Point point, Keys modifiers)
+        public void ContinueSetup(PointF point, Keys modifiers)
         {
             MoveHandle(point, -1, modifiers);
         }

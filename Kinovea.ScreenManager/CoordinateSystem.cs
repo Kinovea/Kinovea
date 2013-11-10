@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Transformations
-        public Point Untransform(Point point)
+        public PointF Untransform(Point point)
         {
             // in: screen coordinates
             // out: image coordinates.
@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
             double unzoomedX = (double)directZoomWindow.Left + (unstretchedX / zoom);
             double unzoomedY = (double)directZoomWindow.Top + (unstretchedY / zoom);
 
-            return new Point((int)unzoomedX, (int)unzoomedY);	
+            return new PointF((float)unzoomedX, (float)unzoomedY);	
         }
         
         public int Untransform(int v)

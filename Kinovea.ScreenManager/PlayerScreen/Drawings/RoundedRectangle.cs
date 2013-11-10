@@ -97,13 +97,13 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
-        public void Move(int _deltaX, int _deltaY)
+        public void Move(float dx, float dy)
         {
-            m_Rectangle = new Rectangle(m_Rectangle.X + _deltaX, m_Rectangle.Y + _deltaY, m_Rectangle.Width, m_Rectangle.Height);
+            m_Rectangle = m_Rectangle.Translate((int)dx, (int)dy);
         }
-        public void CenterOn(Point _point)
+        public void CenterOn(Point point)
         {
-            Point location = new Point(_point.X - m_Rectangle.Size.Width / 2, _point.Y - m_Rectangle.Size.Height / 2);
+            Point location = new Point(point.X - m_Rectangle.Size.Width / 2, point.Y - m_Rectangle.Size.Height / 2);
             m_Rectangle = new Rectangle(location, m_Rectangle.Size);
         }
     }

@@ -555,38 +555,29 @@ namespace Kinovea.ScreenManager
         }
         #endregion
    
-        public Dictionary<string, Point> GetTrackablePoints()
+        public Dictionary<string, PointF> GetTrackablePoints()
         {
-            Dictionary<string, Point> trackablePoints = new Dictionary<string, Point>();
+            Dictionary<string, PointF> trackablePoints = new Dictionary<string, PointF>();
             
-            // TODO: generalize the use of PointF.
             foreach(int index in trackableIndices)
-            {
-                Point p = new Point((int)Points[index].X, (int)Points[index].Y);
-                trackablePoints.Add(index.ToString(), p);
-            }
+                trackablePoints.Add(index.ToString(), Points[index]);
             
             return trackablePoints;
         }
         
         public void SignalAllTrackablePointsMoved(EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
         {
-            // TODO: generalize the use of PointF.
             foreach(int index in trackableIndices)
-            {
-                Point p = new Point((int)Points[index].X, (int)Points[index].Y);
-                trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), p));
-            }
+                trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), Points[index]));
         }
 
         public void SignalTrackablePointMoved(int handleIndex, EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
         {
             int index = Handles[handleIndex].Reference;
-            Point p = new Point((int)Points[index].X, (int)Points[index].Y);
-            trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), p));
+            trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), Points[index]));
         }
 
-        public void SetTrackablePointValue(string name, Point value, CalibrationHelper calibrationHelper)
+        public void SetTrackablePointValue(string name, PointF value, CalibrationHelper calibrationHelper)
         {
             // Value coming from tracking.
             int pointIndex = int.Parse(name);

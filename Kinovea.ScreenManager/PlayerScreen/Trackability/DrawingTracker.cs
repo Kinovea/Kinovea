@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
             this.drawing = drawing;
             this.parameters = parameters;
             
-            foreach(KeyValuePair<string, Point> pair in drawing.GetTrackablePoints())
+            foreach(KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
                 trackablePoints.Add(pair.Key, new TrackablePoint(context, parameters, pair.Value));
             
             drawing.TrackablePointMoved += drawing_TrackablePointMoved;
