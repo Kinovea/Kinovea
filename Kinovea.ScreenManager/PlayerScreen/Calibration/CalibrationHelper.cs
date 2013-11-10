@@ -179,6 +179,11 @@ namespace Kinovea.ScreenManager
             calibrationPlane.Initialize(size, quadImage);
             AfterCalibrationChanged();
         }
+        public void CalibrationByPlane_Update(QuadrilateralF quadImage)
+        {
+            calibrationPlane.Update(quadImage);
+            AfterCalibrationChanged();
+        }
         public SizeF CalibrationByPlane_GetRectangleSize()
         {
             // Real size of the calibration rectangle. Used to populate the calibration dialog.

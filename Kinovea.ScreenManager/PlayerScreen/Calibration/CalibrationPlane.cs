@@ -81,6 +81,9 @@ namespace Kinovea.ScreenManager
             return mapping.Forward(WorldToCalibrated(p));
         }
 
+        /// <summary>
+        /// Takes a point in image coordinates to act as the origin of the current coordinate system.
+        /// </summary>
         public void SetOrigin(PointF p)
         {
             origin = mapping.Backward(p);
@@ -105,13 +108,19 @@ namespace Kinovea.ScreenManager
         /// <param name="quadImage">Image coordinates of the reference rectangle.</param>
         public void Initialize(SizeF size, QuadrilateralF quadImage)
         {
+            PointF originImage = initialized ? Untransform(PointF.Empty) : quadImage.D;
+            
             this.size = size;
             this.quadImage = quadImage.Clone();
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
-
-            origin = mapping.Backward(quadImage.D);
-
+            SetOrigin(originImage);
             this.initialized = true;
+        }
+
+        public void Update(QuadrilateralF quadImage)
+        {
+            this.quadImage = quadImage.Clone();
+            mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
         }
         
         #region Serialization

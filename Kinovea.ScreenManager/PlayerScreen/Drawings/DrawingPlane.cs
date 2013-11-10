@@ -275,6 +275,8 @@ namespace Kinovea.ScreenManager
             }
             
             SignalTrackablePointMoved(handle);
+
+            CalibrationHelper.CalibrationByPlane_Update(quadImage);
         }
         #endregion
     
@@ -418,6 +420,7 @@ namespace Kinovea.ScreenManager
             quadImage[p] = new PointF(value.X, value.Y);
 
             projectiveMapping.Update(quadPlane, quadImage);
+            CalibrationHelper.CalibrationByPlane_Update(quadImage);
         }
         private void SignalAllTrackablePointsMoved()
         {
