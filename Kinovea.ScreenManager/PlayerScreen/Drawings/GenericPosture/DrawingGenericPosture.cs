@@ -628,15 +628,15 @@ namespace Kinovea.ScreenManager
             // FIXME: function duplicated. Move to AngleHelper.
             // This version is already more generic.
             //-------------------------------------------------
-            double value = angle.CalibratedAngle.Sweep;
+            double value = CalibrationHelper.ConvertAngleFromDegrees(angle.CalibratedAngle.Sweep);
             if(value < 0)
                 value = -value;
             
             string label = "";
             if(angle.Tenth)
-                label = String.Format("{0:0.0}°", value);
+                label = String.Format("{0:0.0} {1}", value, CalibrationHelper.GetAngleAbbreviation());
             else
-                label = String.Format("{0}°", (int)Math.Round(value));
+                label = String.Format("{0} {1}", (int)Math.Round(value), CalibrationHelper.GetAngleAbbreviation());
             
             if(!string.IsNullOrEmpty(angle.Symbol))
                 label = string.Format("{0} = {1}", angle.Symbol, label);

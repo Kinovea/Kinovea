@@ -231,7 +231,7 @@ namespace Kinovea.ScreenManager
                         position = timeStampMapper(xmlReader.ReadElementContentAsLong(), false);
                         break;
                     case "Center":
-                        Point p = XmlHelper.ParsePoint(xmlReader.ReadElementContentAsString());
+                        PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
                         points["o"] = p.Scale(scale.X, scale.Y);
                         break;
                     case "Radius":
