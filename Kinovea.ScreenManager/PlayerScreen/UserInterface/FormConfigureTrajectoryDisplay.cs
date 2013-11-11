@@ -106,9 +106,6 @@ namespace Kinovea.ScreenManager
         #region Init
         private void InitViewCombo()
         {
-            /*cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_RadioComplete);
-            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_RadioFocus);
-            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_RadioLabel);*/
             cmbView.Items.Add("Complete");
             cmbView.Items.Add("One second");
             cmbView.Items.Add("Label only");
@@ -134,7 +131,6 @@ namespace Kinovea.ScreenManager
         {
             cmbMarker.Items.Add("Cross");
             cmbMarker.Items.Add("Circle");
-            //cmbMarker.Items.Add("Vector");
             cmbMarker.Items.Add("Target");
         }
         private void InitTrackParameters()

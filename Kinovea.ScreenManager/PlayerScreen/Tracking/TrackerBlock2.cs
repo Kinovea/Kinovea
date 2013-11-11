@@ -54,10 +54,10 @@ namespace Kinovea.ScreenManager
 
         #region Members
         // Options - initialize in the constructor.
-        private double similarityTreshold = 0.0f;					// Discard candidate block with lower similarity.
+        private double similarityTreshold = 0.0f;		// Discard candidate block with lower similarity.
         private double templateUpdateThreshold = 1.0f;	// Only update the template if that dissimilar.
-        private Size blockWindow = new Size(20, 20);						// Size of block to be matched.
-        private Size searchWindow = new Size(100, 100);				// Size of window of candidates.
+        private Size blockWindow = new Size(20, 20);
+        private Size searchWindow = new Size(100, 100);
         private TrackerParameters parameters;
 
         // Monitoring, debugging.
@@ -82,7 +82,6 @@ namespace Kinovea.ScreenManager
             // - The coordinates of all the previous points tracked.
             // - Previous tracking infos, stored in the TrackPoints tracked so far.
             //---------------------------------------------------------------------
-                
             TrackPointBlock lastTrackPoint = (TrackPointBlock)previousPoints[previousPoints.Count - 1];
             PointF lastPoint = lastTrackPoint.Point;
             
@@ -328,6 +327,9 @@ namespace Kinovea.ScreenManager
             templateUpdateThreshold = parameters.TemplateUpdateThreshold;
             searchWindow = parameters.SearchWindow;
             blockWindow = parameters.BlockWindow;
+
+            if (!blockWindow.FitsIn(searchWindow))
+                searchWindow = blockWindow;
         }
     }
 }
