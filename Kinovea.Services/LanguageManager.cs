@@ -128,6 +128,10 @@ namespace Kinovea.Services
         {
             get { return languages["sr-Latn-CS"]; }
         }
+        public static string SerbianCyrl
+        {
+            get { return languages["sr-Cyrl-CS"]; }
+        }
         #endregion
         
         private static Dictionary<string, string> languages = null;
@@ -153,6 +157,7 @@ namespace Kinovea.Services
             languages.Add("pt", "Português");
             languages.Add("ro", "Română");
             languages.Add("ru", "Русский");
+            languages.Add("sr-Cyrl-CS", "Српски");
             languages.Add("sr-Latn-CS", "Srpski");
             languages.Add("fi", "Suomi");
             languages.Add("sv", "Svenska");
