@@ -496,7 +496,7 @@ namespace Kinovea.ScreenManager
                 {
                     if(index < Points.Count)
                     {
-                        Points[index] = XmlHelper.ParsePoint(r.ReadElementContentAsString());
+                        Points[index] = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         index++;
                     }
                     else
