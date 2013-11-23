@@ -194,8 +194,9 @@ namespace Kinovea.ScreenManager
 
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 // Initialize menu each time to get translated texts.
-                InitializeMenu();
+                ReinitializeMenu();
                 contextMenu.Add(mnuMeasurement);
+                contextMenu.Add(mnuAnalysis);
                 return contextMenu;
             }
         }
@@ -223,7 +224,7 @@ namespace Kinovea.ScreenManager
        
         // Internal data.
         private List<AbstractTrackPoint> positions = new List<AbstractTrackPoint>();
-        private List<TrajectoryPoint> trajectoryPoints = new List<TrajectoryPoint>();
+        private TrajectoryKinematics trajectoryKinematics = new TrajectoryKinematics();
         private List<KeyframeLabel> keyframesLabels = new List<KeyframeLabel>();
         private KinematicsHelper kinematicsHelper = new KinematicsHelper();
         private IImageToViewportTransformer transformer;
@@ -251,6 +252,8 @@ namespace Kinovea.ScreenManager
         // Context menu
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
         private List<ToolStripMenuItem> mnuMeasurementOptions = new List<ToolStripMenuItem>();
+        private ToolStripMenuItem mnuAnalysis = new ToolStripMenuItem();
+        
         
         // Memorization poul
         private TrackView memoTrackView;
@@ -314,7 +317,15 @@ namespace Kinovea.ScreenManager
             BindStyle();
             
             styleHelper.ValueChanged += mainStyle_ValueChanged;
-            InitializeMenu();
+            ReinitializeMenu();
+
+            mnuAnalysis.Click += (s, e) =>
+            {
+                // instanciate form.
+                FormTimeseries fts = new FormTimeseries(trajectoryKinematics);
+                FormsHelper.MakeTopmost(fts);
+                fts.Show();
+            };
         }
 
         
@@ -677,14 +688,17 @@ namespace Kinovea.ScreenManager
             if (positions.Count < 3)
                 return;
 
+            PointF rotationCenter = trajectoryKinematics.RotationCenter;
+            double rotationRadius = trajectoryKinematics.RotationRadius;
+
             // trajectoryPoints values are expressed in user coordinates, so we need to first get them back to image coords, 
             // and then to convert them for display screen.
             Point location = transformer.Transform(positions[currentPoint].Point);
-            PointF centerInImage = parentMetadata.CalibrationHelper.GetImagePoint(trajectoryPoints[currentPoint].RotationCenter);
+            PointF centerInImage = parentMetadata.CalibrationHelper.GetImagePoint(rotationCenter);
             Point center = transformer.Transform(centerInImage);
 
             // Get ellipse.
-            Ellipse ellipseInImage = parentMetadata.CalibrationHelper.GetEllipseFromCircle(trajectoryPoints[currentPoint].RotationCenter, trajectoryPoints[currentPoint].RotationRadius);
+            Ellipse ellipseInImage = parentMetadata.CalibrationHelper.GetEllipseFromCircle(rotationCenter, (float)rotationRadius);
 
             PointF ellipseCenter = transformer.Transform(ellipseInImage.Center);
             float semiMinorAxis = transformer.Transform((int)ellipseInImage.SemiMinorAxis);
@@ -798,59 +812,59 @@ namespace Kinovea.ScreenManager
             switch(trackExtraData)
             {
                 case TrackExtraData.Position:
-                    PointF p = trajectoryPoints[index].Coordinates;
+                    PointF p = trajectoryKinematics.RawCoordinates(index);
                     displayText = string.Format(culture, "{0:0.00} ; {1:0.00} {2}", p.X, p.Y, helper.GetLengthAbbreviation());
                     break;
                 case TrackExtraData.TotalDistance:
-                    float d = trajectoryPoints[index].TotalDistance;
+                    float d = (float)trajectoryKinematics.TotalDistance[index];
                     displayText = string.Format(culture, "{0:0.00} {1}", d, helper.GetLengthAbbreviation());
                     break;
                 case TrackExtraData.Speed:
-                    float v = trajectoryPoints[index].Speed;
+                    float v = (float)trajectoryKinematics.Speed[index];
                     if (!float.IsNaN(v))
                         displayText = string.Format(culture, "{0:0.00} {1}", v, helper.GetSpeedAbbreviation());
                     break;
                 case TrackExtraData.HorizontalVelocity:
-                    float hv = trajectoryPoints[index].HorizontalVelocity;
+                    float hv = (float)trajectoryKinematics.HorizontalVelocity[index];
                     if (!float.IsNaN(hv))
                         displayText = string.Format(culture, "{0:0.00} {1}", hv, helper.GetSpeedAbbreviation());
                     break;
                 case TrackExtraData.VerticalVelocity:
-                    float vv = trajectoryPoints[index].VerticalVelocity;
+                    float vv = (float)trajectoryKinematics.VerticalVelocity[index];
                     if (!float.IsNaN(vv))
                         displayText = string.Format(culture, "{0:0.00} {1}", vv, helper.GetSpeedAbbreviation());
                     break;
                 case TrackExtraData.Acceleration:
-                    float a = trajectoryPoints[index].Acceleration;
+                    float a = (float)trajectoryKinematics.Acceleration[index];
                     if (!float.IsNaN(a))
                         displayText = string.Format(culture, "{0:0.00} {1}", a, helper.GetAccelerationAbbreviation());
                     break;
                 case TrackExtraData.HorizontalAcceleration:
-                    float ha = trajectoryPoints[index].HorizontalAcceleration;
+                    float ha = (float)trajectoryKinematics.HorizontalAcceleration[index];
                     if (!float.IsNaN(ha))
                         displayText = string.Format(culture, "{0:0.00} {1}", ha, helper.GetAccelerationAbbreviation());
                     break;
                 case TrackExtraData.VerticalAcceleration:
-                    float va = trajectoryPoints[index].VerticalAcceleration;
+                    float va = (float)trajectoryKinematics.VerticalAcceleration[index];
                     if (!float.IsNaN(va))
                         displayText = string.Format(culture, "{0:0.00} {1}", va, helper.GetAccelerationAbbreviation());
                     break;
-                case TrackExtraData.AngularDisplacement:                
-                    float angle = trajectoryPoints[index].DisplacementAngle;
+                case TrackExtraData.AngularDisplacement:
+                    float angle = (float)trajectoryKinematics.DisplacementAngle[index];
                     displayText = string.Format(culture, "{0:0.00} {1}", angle, helper.GetAngleAbbreviation());
                     break;
                 case TrackExtraData.AngularVelocity:
-                    float angularVelocity = trajectoryPoints[index].AngularVelocity;
+                    float angularVelocity = (float)trajectoryKinematics.AngularVelocity[index];
                     if (!float.IsNaN(angularVelocity)) 
                         displayText = string.Format(culture, "{0:0.00} {1}", angularVelocity, helper.GetAngularVelocityAbbreviation());
                     break;
                 case TrackExtraData.AngularAcceleration:
-                    float angularAcceleration = trajectoryPoints[index].AngularAcceleration;
+                    float angularAcceleration = (float)trajectoryKinematics.AngularAcceleration[index];
                     if (!float.IsNaN(angularAcceleration))
                         displayText = string.Format(culture, "{0:0.00} {1}", angularAcceleration, helper.GetAngularAccelerationAbbreviation());
                     break;
                 case TrackExtraData.CentripetalAcceleration:
-                    float centripetalAcceleration = trajectoryPoints[index].CentripetalAcceleration;
+                    float centripetalAcceleration = (float)trajectoryKinematics.CentripetalAcceleration[index];
                     if (!float.IsNaN(centripetalAcceleration))
                         displayText = string.Format(culture, "{0:0.00} {1}", centripetalAcceleration, helper.GetAngularAccelerationAbbreviation());
                     break;
@@ -975,7 +989,7 @@ namespace Kinovea.ScreenManager
             endTimeStamp = positions[positions.Count - 1].T;
             // Todo: we must now refill the last point with a patch image.
 
-            trajectoryPoints = kinematicsHelper.ComputeValues(positions, parentMetadata.CalibrationHelper);
+            UpdateKinematics();
             IntegrateKeyframes();
         }
         public List<AbstractTrackPoint> GetEndOfTrack(long timestamp)
@@ -1006,8 +1020,8 @@ namespace Kinovea.ScreenManager
                 positions.Add(trkpos);
 
             endTimeStamp = positions[positions.Count - 1].T;
-            
-            trajectoryPoints = kinematicsHelper.ComputeValues(positions, parentMetadata.CalibrationHelper);
+
+            UpdateKinematics();
             IntegrateKeyframes();
         }
         public void StopTracking()
@@ -1343,7 +1357,7 @@ namespace Kinovea.ScreenManager
         #region Miscellaneous public methods
         public void CalibrationChanged()
         {
-            trajectoryPoints = kinematicsHelper.ComputeValues(positions, parentMetadata.CalibrationHelper);
+            UpdateKinematics();
             IntegrateKeyframes();
         }
         public void IntegrateKeyframes()
@@ -1435,7 +1449,15 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Miscellaneous private methods
-        private void InitializeMenu()
+        private void ReinitializeMenu()
+        {
+            InitializeMenuMeasurement();
+
+            mnuAnalysis.MergeIndex = 2;
+            mnuAnalysis.Image = Properties.Resources.function;
+            mnuAnalysis.Text = "Data analysis";
+        }
+        private void InitializeMenuMeasurement()
         {
             mnuMeasurement.MergeIndex = 1;
             mnuMeasurement.Image = Properties.Drawings.measure;
@@ -1477,7 +1499,7 @@ namespace Kinovea.ScreenManager
         private void AfterTrackStatusChanged()
         {
             if (trackStatus == TrackStatus.Interactive)
-                trajectoryPoints = kinematicsHelper.ComputeValues(positions, parentMetadata.CalibrationHelper);
+                UpdateKinematics();
             else if (trackStatus == TrackStatus.Configuration)
                 UpdateBoundingBoxes();
         }
@@ -1485,6 +1507,21 @@ namespace Kinovea.ScreenManager
         {
             searchWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow).ToRectangle();
             blockWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.BlockWindow).ToRectangle();
+        }
+        private void UpdateKinematics()
+        {
+            List<TimedPoint> samples = positions.Select(p => new TimedPoint(p.X, p.Y, p.T)).ToList();
+
+            // Testing smoothing: import test data, fs is 69.9Hz.
+            /*List<TimedPoint> samples = new List<TimedPoint>();
+            int s = 0;
+            foreach (double d in TestData.Data)
+            {
+                samples.Add(new TimedPoint(0, (float)d, s));
+                s++;
+            }*/
+
+            trajectoryKinematics = kinematicsHelper.AnalyzeTrajectory(samples, parentMetadata.CalibrationHelper);
         }
         private int FindClosestPoint(long currentTimestamp)
         {

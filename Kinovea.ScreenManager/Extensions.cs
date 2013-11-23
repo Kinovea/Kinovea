@@ -151,7 +151,30 @@ namespace Kinovea.ScreenManager
             return new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
         }
 
+        // List<T>
+        public static List<double> Subtract(this List<double> a, List<double> b)
+        {
+            if (a.Count != b.Count)
+                throw new ArgumentException("Lists must have the same number of elements");
+            
+            List<double> result = new List<double>();
+            for (int i = 0; i < a.Count; i++)
+                result.Add(a[i] - b[i]);
 
+            return result;
+        }
+
+        public static double[] Subtract(this double[] a, double[] b)
+        {
+            if (a.Length != b.Length)
+                throw new ArgumentException("Lists must have the same number of elements");
+
+            double[] result = new double[a.Length];
+            for (int i = 0; i < a.Length; i++)
+                result[i] = a[i] - b[i];
+
+            return result;
+        }
         
     }
 }

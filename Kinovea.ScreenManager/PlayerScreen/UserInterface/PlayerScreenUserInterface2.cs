@@ -3118,7 +3118,7 @@ namespace Kinovea.ScreenManager
                     log.Error(exp.StackTrace);
                     
                     #if DEBUG
-                    throw;
+                    //throw;
                     #endif
                 }
             }

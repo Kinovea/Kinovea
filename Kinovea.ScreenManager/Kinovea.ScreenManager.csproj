@@ -158,6 +158,12 @@
     <Reference Include="MathNet.Iridium">
       <HintPath>..\Refs\Math.Net\MathNet.Iridium.dll</HintPath>
     </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\Refs\OxyPlot\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.WindowsForms">
+      <HintPath>..\Refs\OxyPlot\OxyPlot.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="SharpVectorBindings">
       <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
     </Reference>
@@ -258,17 +264,28 @@
     <Compile Include="CoordinateSystem.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="PlayerScreen\Geometry\Component.cs" />
+    <Compile Include="PlayerScreen\Kinematics\Component.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackerParameterUnit.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackingProfile.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackingProfileManager.cs" />
-    <Compile Include="PlayerScreen\Tracking\KinematicsHelper.cs" />
+    <Compile Include="PlayerScreen\Kinematics\Butterworth.cs" />
+    <Compile Include="PlayerScreen\Kinematics\FilteringResult.cs" />
+    <Compile Include="PlayerScreen\Kinematics\KinematicsHelper.cs" />
+    <Compile Include="PlayerScreen\Kinematics\StatsHelper.cs" />
+    <Compile Include="PlayerScreen\Kinematics\TestData.cs" />
+    <Compile Include="PlayerScreen\Kinematics\TimedPoint.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackColorCycler.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackExtraData.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackMarker.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackStatus.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackView.cs" />
-    <Compile Include="PlayerScreen\Tracking\TrajectoryPoint.cs" />
+    <Compile Include="PlayerScreen\Kinematics\TrajectoryKinematics.cs" />
+    <Compile Include="Plotting\FormTimeseries.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Plotting\FormTimeseries.Designer.cs">
+      <DependentUpon>FormTimeseries.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Player.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -726,6 +743,9 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
+    <EmbeddedResource Include="Plotting\FormTimeseries.resx">
+      <DependentUpon>FormTimeseries.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Player.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Player.Designer.cs</LastGenOutput>
@@ -1031,6 +1051,13 @@
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
       <Name>Kinovea.Video</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\function.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\thermometer.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

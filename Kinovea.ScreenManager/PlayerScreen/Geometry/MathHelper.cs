@@ -26,6 +26,7 @@ namespace Kinovea.ScreenManager
     {
         public const double RadiansToDegrees = 180 / Math.PI;
         public const double DegreesToRadians = Math.PI / 180;
+        public const double SQRT2 = 1.4142135623730950488;
         
         // Secant 
         public static double Sec(double x)
