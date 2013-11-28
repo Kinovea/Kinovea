@@ -1143,16 +1143,6 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap thermometer {
-            get {
-                object obj = ResourceManager.GetObject("thermometer", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap undock16x16 {
             get {
                 object obj = ResourceManager.GetObject("undock16x16", resourceCulture);
