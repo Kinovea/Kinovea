@@ -265,6 +265,8 @@
     <Compile Include="Delegates.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="PlayerScreen\Kinematics\Component.cs" />
+    <Compile Include="PlayerScreen\Test\MovingObject.cs" />
+    <Compile Include="PlayerScreen\Test\VideoSynthesizer.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackerParameterUnit.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackingProfile.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackingProfileManager.cs" />
@@ -272,7 +274,7 @@
     <Compile Include="PlayerScreen\Kinematics\FilteringResult.cs" />
     <Compile Include="PlayerScreen\Kinematics\KinematicsHelper.cs" />
     <Compile Include="PlayerScreen\Kinematics\StatsHelper.cs" />
-    <Compile Include="PlayerScreen\Kinematics\TestData.cs" />
+    <Compile Include="PlayerScreen\Test\KinematicsTestData.cs" />
     <Compile Include="PlayerScreen\Kinematics\TimedPoint.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackColorCycler.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackExtraData.cs" />
@@ -1055,9 +1057,6 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="Resources\function.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\thermometer.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

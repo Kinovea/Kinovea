@@ -10,7 +10,7 @@ namespace Kinovea.ScreenManager
     /// Taken from David Winter's book "Biomechanics of Human movement".
     /// Sampling frequency : 69.9Hz.
     /// </summary>
-    public class TestData
+    public class KinematicsTestData
     {
         public static double[] RightToeX = new double[]
         {
