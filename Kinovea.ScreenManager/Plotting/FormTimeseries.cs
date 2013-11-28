@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using OxyPlot;
+using OxyPlot.WindowsForms;
 using OxyPlot.Series;
 using OxyPlot.Axes;
 
@@ -14,130 +15,142 @@ namespace Kinovea.ScreenManager
 {
     public partial class FormTimeseries : Form
     {
-        public FormTimeseries(TrajectoryKinematics kinematics)
+        public FormTimeseries(TrajectoryKinematics kinematics, CalibrationHelper calibrationHelper)
         {
             InitializeComponent();
+            
+            this.Text = "Data analysis";
 
-            //DrawPlotCutoffDW(kinematics.Ys);
-            DrawPlotCoordinates(kinematics);
-            DrawPlotVelocity(kinematics);
-            DrawPlotAcceleration(kinematics);
+            DrawPlotCutoffDW(kinematics.Ys);
+            DrawPlot(plotCoordinates, "Position", "pos", calibrationHelper.GetLengthAbbreviation(), kinematics.RawYs, kinematics.RawXs, kinematics.Ys[kinematics.YCutoffIndex].Data, kinematics.Xs[kinematics.XCutoffIndex].Data);
+            DrawPlot(plotHorzVelocity, "Velocity", "velocity", calibrationHelper.GetSpeedAbbreviation(), kinematics.RawVerticalVelocity, kinematics.RawHorizontalVelocity, kinematics.VerticalVelocity, kinematics.HorizontalVelocity);
+            DrawPlot(plotHorzAcceleration, "Acceleration", "acceleration", calibrationHelper.GetAccelerationAbbreviation(), kinematics.RawVerticalAcceleration, kinematics.RawHorizontalAcceleration, kinematics.VerticalAcceleration, kinematics.HorizontalAcceleration);
         }
 
         private void DrawPlotCutoffDW(List<FilteringResult> filteringResults)
         {
-            PlotModel model = new PlotModel("Residuals autocorrelation vs Cutoff frequency") { LegendSymbolLength = 24 };
-            model.Axes.Add(new LinearAxis(AxisPosition.Left, "Autocorrelation (normalized)"));
-            model.Axes.Add(new LinearAxis(AxisPosition.Bottom, "Cutoff frequency (Hz)"));
+            PlotModel model = new PlotModel("Residuals autocorrelation vs Cutoff frequency") 
+            { 
+                LegendSymbolLength = 24,
+                TitleFontSize = 12
+            };
+            model.Axes.Add(new LinearAxis(AxisPosition.Left, "Autocorrelation (norm.)")
+            {
+                IntervalLength = 20,
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dot
+            });
+            model.Axes.Add(new LinearAxis(AxisPosition.Bottom, "Cutoff frequency (Hz)")
+            {
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dot
+            });
 
             LineSeries serie = new LineSeries();
-            InitializeSeries(serie, false);
+            InitializeSeries(serie, OxyColors.SteelBlue, false);
 
             foreach (FilteringResult r in filteringResults)
                 serie.Points.Add(new DataPoint(r.CutoffFrequency, r.DurbinWatson));
 
             model.Series.Add(serie);
-            plotCoordinates.Model = model;
-            plotCoordinates.BackColor = Color.White;
+            plotDurbinWatson.Model = model;
+            plotDurbinWatson.BackColor = Color.White;
         }
 
-        private void DrawPlotCoordinates(TrajectoryKinematics kinematics)
+        /*private void DrawPlot(Plot plot, string title, string serieTitle, double[] raw, double[] filtered)
         {
-            PlotModel model = new PlotModel("Y Position") { LegendSymbolLength = 24 };
-            model.Axes.Add(new LinearAxis(AxisPosition.Left, "Y pos (m)"));
+            PlotModel model = new PlotModel(title) { LegendSymbolLength = 24 };
+            model.Axes.Add(new LinearAxis(AxisPosition.Left, string.Format("{0} (m/s)", serieTitle))
+            {
+                IntervalLength = 20
+            });
             model.Axes.Add(new LinearAxis(AxisPosition.Bottom, "Time (frames)"));
 
-            LineSeries serieRaw = new LineSeries("raw pos");
-            LineSeries serie = new LineSeries("pos");
+            LineSeries serieRaw = new LineSeries("raw"); 
+            LineSeries serie = new LineSeries("filtered");
             InitializeSeries(serieRaw, true);
             InitializeSeries(serie, false);
 
             long time = 0;
-            for (int i = 0; i < kinematics.Length; i++)
+            for (int i = 0; i < raw.Length; i++)
             {
-                serieRaw.Points.Add(new DataPoint((double)time, kinematics.RawCoordinates(i).Y));
-                serie.Points.Add(new DataPoint((double)time, kinematics.Coordinates(i).Y));
-                time++;
-            }
-            
-            model.Series.Add(serieRaw);
-            model.Series.Add(serie);
-            plotCoordinates.Model = model;
-            plotCoordinates.BackColor = Color.White;
-        }
-
-        private void DrawPlotVelocity(TrajectoryKinematics kinematics)
-        {
-            PlotModel model = new PlotModel("Y Velocity") { LegendSymbolLength = 24 };
-            model.Axes.Add(new LinearAxis(AxisPosition.Left, "Velocity (m/s)"));
-            model.Axes.Add(new LinearAxis(AxisPosition.Bottom, "Time (frames)"));
-
-            LineSeries serieRaw = new LineSeries("raw Y velocity"); 
-            LineSeries serie = new LineSeries("Y Velocity");
-            InitializeSeries(serieRaw, true);
-            InitializeSeries(serie, false);
-
-            long time = 0;
-            for (int i = 0; i < kinematics.Length; i++)
-            {
-                double raw = kinematics.RawVerticalVelocity[i];
-                double v = kinematics.VerticalVelocity[i];
-                if (!double.IsNaN(v))
+                double r = raw[i];
+                double f = filtered[i];
+                if (!double.IsNaN(r))
                 {
-                    serie.Points.Add(new DataPoint((double)time, v));
-                    serieRaw.Points.Add(new DataPoint((double)time, raw));
+                    serieRaw.Points.Add(new DataPoint((double)time, r));
+                    serie.Points.Add(new DataPoint((double)time, f));
                 }
                 time++;
             }
 
             model.Series.Add(serieRaw);
             model.Series.Add(serie);
-            plotVelocity.Model = model;
-            plotVelocity.BackColor = Color.White;
-        }
+            plot.Model = model;
+            plot.BackColor = Color.White;
+        }*/
 
-        private void DrawPlotAcceleration(TrajectoryKinematics kinematics)
+        private void DrawPlot(Plot plot, string title, string serieTitle, string abbreviation, double[] rawVert, double[] rawHorz, double[] filteredVert, double[] filteredHorz)
         {
-            PlotModel model = new PlotModel("Y Acceleration") { LegendSymbolLength = 24 };
-            //LinearAxis yAxis = new LinearAxis(AxisPosition.Left, -35, 5, "Acceleration (m/s²)")
-            LinearAxis yAxis = new LinearAxis(AxisPosition.Left, "Acceleration (m/s²)")
-            {
-                IntervalLength = 20,
-                //ExtraGridlines = new[] { -9.81 }
+            PlotModel model = new PlotModel(title) 
+            { 
+                LegendSymbolLength = 24,
+                TitleFontSize = 12
             };
 
-            model.Axes.Add(yAxis);
-            model.Axes.Add(new LinearAxis(AxisPosition.Bottom, "Time (frames)"));
+            model.Axes.Add(new LinearAxis(AxisPosition.Left, string.Format("{0} ({1})", serieTitle, abbreviation))
+            {
+                IntervalLength = 20,
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dot
+            });
 
-            LineSeries serieRaw = new LineSeries("Raw Acceleration");
-            LineSeries serie = new LineSeries("Filtered Acceleration");
-            InitializeSeries(serieRaw, true);
-            InitializeSeries(serie, false);
+            model.Axes.Add(new LinearAxis(AxisPosition.Bottom, "Time (frames)")
+            {
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dot
+            });
+
+            LineSeries serieRawHorz = new LineSeries("raw x");
+            LineSeries serieRawVert = new LineSeries("raw y");
+            LineSeries serieHorz = new LineSeries("filtered x");
+            LineSeries serieVert = new LineSeries("filtered y");
+            InitializeSeries(serieRawHorz, OxyColors.DarkGray, false);
+            InitializeSeries(serieRawVert, OxyColors.DarkGray, false);
+            InitializeSeries(serieHorz, OxyColors.Green, true);
+            InitializeSeries(serieVert, OxyColors.Tomato, true);
 
             long time = 0;
-            for (int i = 0; i < kinematics.Length; i++)
+            for (int i = 0; i < rawVert.Length; i++)
             {
-                double raw = kinematics.RawVerticalAcceleration[i];
-                double v = kinematics.VerticalAcceleration[i];
-                if (!double.IsNaN(v))
+                double rv = rawVert[i];
+                double rh = rawHorz[i];
+                double fv = filteredVert[i];
+                double fh = filteredHorz[i];
+                if (!double.IsNaN(rv))
                 {
-                    serie.Points.Add(new DataPoint((double)time, v));
-                    serieRaw.Points.Add(new DataPoint((double)time, raw));
+                    serieRawVert.Points.Add(new DataPoint((double)time, rv));
+                    serieRawHorz.Points.Add(new DataPoint((double)time, rh));
+                    serieVert.Points.Add(new DataPoint((double)time, fv));
+                    serieHorz.Points.Add(new DataPoint((double)time, fh));
                 }
                 time++;
             }
 
-            model.Series.Add(serieRaw);
-            model.Series.Add(serie);
-            plotAcceleration.Model = model;
-            plotAcceleration.BackColor = Color.White;
+            model.Series.Add(serieRawHorz);
+            model.Series.Add(serieRawVert);
+            model.Series.Add(serieHorz);
+            model.Series.Add(serieVert);
+            
+            plot.Model = model;
+            plot.BackColor = Color.White;
         }
 
-        private void InitializeSeries(LineSeries series, bool raw)
+        private void InitializeSeries(LineSeries series, OxyColor color, bool smooth)
         {
-            series.Color = raw ? OxyColors.DarkGray : OxyColors.Tomato;
+            series.Color = color;
             series.MarkerType = MarkerType.None;
-            series.Smooth = !raw;
+            series.Smooth = smooth;
         }
     }
 }

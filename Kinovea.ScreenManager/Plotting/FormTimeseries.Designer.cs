@@ -28,44 +28,45 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.plotVelocity = new OxyPlot.WindowsForms.Plot();
-            this.plotAcceleration = new OxyPlot.WindowsForms.Plot();
+            this.plotHorzVelocity = new OxyPlot.WindowsForms.Plot();
+            this.plotHorzAcceleration = new OxyPlot.WindowsForms.Plot();
             this.plotCoordinates = new OxyPlot.WindowsForms.Plot();
+            this.plotDurbinWatson = new OxyPlot.WindowsForms.Plot();
             this.SuspendLayout();
             // 
-            // plotVelocity
+            // plotHorzVelocity
             // 
-            this.plotVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.plotHorzVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotVelocity.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.plotVelocity.KeyboardPanHorizontalStep = 0.1D;
-            this.plotVelocity.KeyboardPanVerticalStep = 0.1D;
-            this.plotVelocity.Location = new System.Drawing.Point(12, 268);
-            this.plotVelocity.Name = "plotVelocity";
-            this.plotVelocity.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotVelocity.Size = new System.Drawing.Size(648, 250);
-            this.plotVelocity.TabIndex = 0;
-            this.plotVelocity.Text = "plot1";
-            this.plotVelocity.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotVelocity.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotVelocity.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotHorzVelocity.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.plotHorzVelocity.KeyboardPanHorizontalStep = 0.1D;
+            this.plotHorzVelocity.KeyboardPanVerticalStep = 0.1D;
+            this.plotHorzVelocity.Location = new System.Drawing.Point(12, 276);
+            this.plotHorzVelocity.Name = "plotHorzVelocity";
+            this.plotHorzVelocity.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotHorzVelocity.Size = new System.Drawing.Size(710, 218);
+            this.plotHorzVelocity.TabIndex = 0;
+            this.plotHorzVelocity.Text = "plot1";
+            this.plotHorzVelocity.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotHorzVelocity.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotHorzVelocity.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
-            // plotAcceleration
+            // plotHorzAcceleration
             // 
-            this.plotAcceleration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.plotHorzAcceleration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotAcceleration.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.plotAcceleration.KeyboardPanHorizontalStep = 0.1D;
-            this.plotAcceleration.KeyboardPanVerticalStep = 0.1D;
-            this.plotAcceleration.Location = new System.Drawing.Point(12, 524);
-            this.plotAcceleration.Name = "plotAcceleration";
-            this.plotAcceleration.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotAcceleration.Size = new System.Drawing.Size(648, 250);
-            this.plotAcceleration.TabIndex = 1;
-            this.plotAcceleration.Text = "plot1";
-            this.plotAcceleration.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotAcceleration.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotAcceleration.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotHorzAcceleration.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.plotHorzAcceleration.KeyboardPanHorizontalStep = 0.1D;
+            this.plotHorzAcceleration.KeyboardPanVerticalStep = 0.1D;
+            this.plotHorzAcceleration.Location = new System.Drawing.Point(12, 500);
+            this.plotHorzAcceleration.Name = "plotHorzAcceleration";
+            this.plotHorzAcceleration.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotHorzAcceleration.Size = new System.Drawing.Size(710, 250);
+            this.plotHorzAcceleration.TabIndex = 1;
+            this.plotHorzAcceleration.Text = "plot1";
+            this.plotHorzAcceleration.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotHorzAcceleration.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotHorzAcceleration.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // plotCoordinates
             // 
@@ -74,25 +75,43 @@
             this.plotCoordinates.BackColor = System.Drawing.Color.WhiteSmoke;
             this.plotCoordinates.KeyboardPanHorizontalStep = 0.1D;
             this.plotCoordinates.KeyboardPanVerticalStep = 0.1D;
-            this.plotCoordinates.Location = new System.Drawing.Point(12, 12);
+            this.plotCoordinates.Location = new System.Drawing.Point(372, 12);
             this.plotCoordinates.Name = "plotCoordinates";
             this.plotCoordinates.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotCoordinates.Size = new System.Drawing.Size(648, 250);
+            this.plotCoordinates.Size = new System.Drawing.Size(350, 258);
             this.plotCoordinates.TabIndex = 2;
             this.plotCoordinates.Text = "plot1";
             this.plotCoordinates.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotCoordinates.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotCoordinates.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
+            // plotDurbinWatson
+            // 
+            this.plotDurbinWatson.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotDurbinWatson.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.plotDurbinWatson.KeyboardPanHorizontalStep = 0.1D;
+            this.plotDurbinWatson.KeyboardPanVerticalStep = 0.1D;
+            this.plotDurbinWatson.Location = new System.Drawing.Point(12, 12);
+            this.plotDurbinWatson.Name = "plotDurbinWatson";
+            this.plotDurbinWatson.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotDurbinWatson.Size = new System.Drawing.Size(350, 258);
+            this.plotDurbinWatson.TabIndex = 4;
+            this.plotDurbinWatson.Text = "plot1";
+            this.plotDurbinWatson.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotDurbinWatson.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotDurbinWatson.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
             // FormTimeseries
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(672, 785);
+            this.ClientSize = new System.Drawing.Size(734, 762);
+            this.Controls.Add(this.plotDurbinWatson);
             this.Controls.Add(this.plotCoordinates);
-            this.Controls.Add(this.plotAcceleration);
-            this.Controls.Add(this.plotVelocity);
+            this.Controls.Add(this.plotHorzAcceleration);
+            this.Controls.Add(this.plotHorzVelocity);
             this.Name = "FormTimeseries";
             this.Text = "FormTimeseries";
             this.ResumeLayout(false);
@@ -101,8 +120,9 @@
 
         #endregion
 
-        private OxyPlot.WindowsForms.Plot plotVelocity;
-        private OxyPlot.WindowsForms.Plot plotAcceleration;
+        private OxyPlot.WindowsForms.Plot plotHorzVelocity;
+        private OxyPlot.WindowsForms.Plot plotHorzAcceleration;
         private OxyPlot.WindowsForms.Plot plotCoordinates;
+        private OxyPlot.WindowsForms.Plot plotDurbinWatson;
     }
 }
