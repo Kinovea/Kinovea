@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
     
     public delegate void PropertyPagePrompter(IntPtr windowHandle);
     public delegate long TimeStampMapper(long inputTimestamp, bool relative);
-    public delegate string TimeCodeBuilder(long timestamp, TimecodeFormat timeCodeFormat, bool synched);
+    public delegate string TimeCodeBuilder(long timestamp, bool duration, TimecodeFormat timeCodeFormat, bool synched);
     public delegate void ClosestFrameAction(Point mouse, List<AbstractTrackPoint> positions, int pixelTotalDistance, bool TwoDimensionsOnly);
     public delegate object BindReader(string sourceProperty, Type targetType);
     public delegate void BindWriter(string targetProperty, object value);

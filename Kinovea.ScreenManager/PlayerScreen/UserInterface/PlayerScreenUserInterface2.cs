@@ -595,6 +595,7 @@ namespace Kinovea.ScreenManager
             }
             
             // Reupdate back the locals as the reader uses more precise values.
+            m_iCurrentPosition = m_iCurrentPosition + (m_FrameServer.VideoReader.WorkingZone.Start - m_iSelStart);
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
             m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
             m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
@@ -1275,7 +1276,7 @@ namespace Kinovea.ScreenManager
                 DockKeyframePanel(true);
             }
         }
-        private string TimeStampsToTimecode(long _iTimeStamp, TimecodeFormat _timeCodeFormat, bool _bSynched)
+        private string TimeStampsToTimecode(long timestamps, bool isDuration, TimecodeFormat format, bool isSynched)
         {
             //-------------------------
             // Input    : TimeStamp (might be a duration. If starting ts isn't 0, it should already be shifted.)
@@ -1285,55 +1286,60 @@ namespace Kinovea.ScreenManager
             if(!m_FrameServer.Loaded)
                 return "0";
 
-            TimecodeFormat tcf = _timeCodeFormat == TimecodeFormat.Unknown ? PreferencesManager.PlayerPreferences.TimecodeFormat : _timeCodeFormat;
-            
-            long iTimeStamp = _bSynched ? _iTimeStamp - m_iSyncPosition : _iTimeStamp;
+            TimecodeFormat tcf = format == TimecodeFormat.Unknown ? PreferencesManager.PlayerPreferences.TimecodeFormat : format;
+
+            long actualTimestamps = timestamps;
+            if (isDuration)
+                actualTimestamps = timestamps + m_FrameServer.Metadata.AverageTimeStampsPerFrame;
+            else if (isSynched)
+                actualTimestamps = timestamps - m_iSyncPosition;
             
             // timestamp to milliseconds. (Needed for most formats)
-            double fSeconds = (double)iTimeStamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-            double fMilliseconds = (fSeconds * 1000) / m_fHighSpeedFactor;
-            bool bShowThousandth = m_fHighSpeedFactor *  m_FrameServer.VideoReader.Info.FramesPerSeconds >= 100;
-            
+            double seconds = (double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+            double milliseconds = (seconds * 1000) / m_fHighSpeedFactor;
+            bool showThousandth = (m_fHighSpeedFactor * m_FrameServer.VideoReader.Info.FramesPerSeconds) >= 100;
+
+            string frameString = "0";
+            if (isDuration && m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
+            {
+                frameString = String.Format("{0}", (int)((double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame));
+            }
+            else if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
+            {
+                frameString = String.Format("{0}", (int)((double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame) + 1);
+            }
+
             string outputTimeCode;
             switch (tcf)
             {
                 case TimecodeFormat.ClassicTime:
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(fMilliseconds, bShowThousandth, true);
+                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);
                     break;
                 case TimecodeFormat.Frames:
-                    outputTimeCode = String.Format("{0}", (int)((double)iTimeStamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame) + 1);
+                    outputTimeCode = frameString;
                     break;
                 case TimecodeFormat.Milliseconds:
-                    outputTimeCode = String.Format("{0}", (int)Math.Round(fMilliseconds));
+                    outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds));
                     break;
                 case TimecodeFormat.TenThousandthOfHours:
                     // 1 Ten Thousandth of Hour = 360 ms.
-                    double fTth = fMilliseconds / 360.0;
+                    double fTth = milliseconds / 360.0;
                     outputTimeCode = String.Format("{0}:{1:00}", (int)fTth, Math.Floor((fTth - (int)fTth)*100));
                     break;
                 case TimecodeFormat.HundredthOfMinutes:
                     // 1 Hundredth of minute = 600 ms.
-                    double fCtm = fMilliseconds / 600.0;
+                    double fCtm = milliseconds / 600.0;
                     outputTimeCode = String.Format("{0}:{1:00}", (int)fCtm, Math.Floor((fCtm - (int)fCtm) * 100));
                     break;
                 case TimecodeFormat.TimeAndFrames:
-                    String timeString = TimeHelper.MillisecondsToTimecode(fMilliseconds, bShowThousandth, true);
-                    String frameString;
-                    if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
-                    {
-                        frameString = String.Format("{0}", (int)((double)iTimeStamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame) + 1);
-                    }
-                    else
-                    {
-                        frameString = String.Format("0");
-                    }
+                    String timeString = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);
                     outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
                     break;
                 case TimecodeFormat.Timestamps:
-                    outputTimeCode = String.Format("{0}", (int)iTimeStamp);
+                    outputTimeCode = String.Format("{0}", (int)actualTimestamps);
                     break;
                 default :
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(fMilliseconds, bShowThousandth, true);
+                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);
                     break;
             }
 
@@ -1733,8 +1739,10 @@ namespace Kinovea.ScreenManager
                 duration = m_iSelDuration;
             }
             
-            lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(start, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
-            lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(duration, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+            lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(start, false, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+
+            duration -= m_FrameServer.Metadata.AverageTimeStampsPerFrame;
+            lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(duration, true, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
         }
         private void UpdateSelectionDataFromControl()
         {
@@ -1818,7 +1826,7 @@ namespace Kinovea.ScreenManager
         {
             // Note: among other places, this is run inside the playloop.
             // Position is relative to working zone.
-            string timecode = TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched);
+            string timecode = TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, false, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched);
             lblTimeCode.Text = string.Format("{0} : {1}", ScreenManagerLang.lblTimeCode_Text, timecode);
         }
         private void UpdatePositionUI()
@@ -3454,7 +3462,7 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < thumbnails.Count; i++)
             {
                 KeyframeBox tb = thumbnails[i];
-                m_FrameServer.Metadata[i].TimeCode = TimeStampsToTimecode(m_FrameServer.Metadata[i].Position - m_iSelStart, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+                m_FrameServer.Metadata[i].TimeCode = TimeStampsToTimecode(m_FrameServer.Metadata[i].Position - m_iSelStart, false, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
                     
                 if (m_FrameServer.Metadata[i].Position >= m_iSelStart && m_FrameServer.Metadata[i].Position <= m_iSelEnd)
                 {
@@ -3549,7 +3557,7 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.CurrentImage == null)
                 return;
 
-            Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched), m_FrameServer.CurrentImage, m_FrameServer.Metadata);
+            Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, false, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched), m_FrameServer.CurrentImage, m_FrameServer.Metadata);
             
             if (_iPosition != m_iCurrentPosition)
             {
@@ -4659,8 +4667,8 @@ namespace Kinovea.ScreenManager
                 tcf = _timeCodeFormat;
             
             // Timecode string (Not relative to sync position)
-            string suffix = TimeStampsToTimecode(_position - m_iSelStart, tcf, false);
-            string maxSuffix = TimeStampsToTimecode(m_iSelEnd - m_iSelStart, tcf, false);
+            string suffix = TimeStampsToTimecode(_position - m_iSelStart, false, tcf, false);
+            string maxSuffix = TimeStampsToTimecode(m_iSelEnd - m_iSelStart, false, tcf, false);
 
             switch (tcf)
             {

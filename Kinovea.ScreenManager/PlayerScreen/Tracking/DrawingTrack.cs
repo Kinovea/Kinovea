@@ -322,7 +322,7 @@ namespace Kinovea.ScreenManager
             mnuAnalysis.Click += (s, e) =>
             {
                 // instanciate form.
-                FormTimeseries fts = new FormTimeseries(trajectoryKinematics);
+                FormTimeseries fts = new FormTimeseries(trajectoryKinematics, parentMetadata.CalibrationHelper);
                 FormsHelper.MakeTopmost(fts);
                 fts.Show();
             };
@@ -1196,7 +1196,7 @@ namespace Kinovea.ScreenManager
                     xmlWriter.WriteStartElement("TrackPoint");
                     
                     PointF p = parentMetadata.CalibrationHelper.GetPoint(tp.Point);
-                    string userT = parentMetadata.TimeStampsToTimecode(tp.T, TimecodeFormat.Unknown, false);
+                    string userT = parentMetadata.TimeStampsToTimecode(tp.T, false, TimecodeFormat.Unknown, false);
                     
                     xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
                     xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
