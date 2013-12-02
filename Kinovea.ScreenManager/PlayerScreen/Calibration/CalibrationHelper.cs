@@ -82,7 +82,11 @@ namespace Kinovea.ScreenManager
         {
             // Frames per second, as in real action reference. (takes high speed camera into account.)
             get { return framesPerSecond; }
-            set { framesPerSecond = value; }
+            set 
+            {
+                framesPerSecond = value;
+                AfterCalibrationChanged();
+            }
         }
         
         public CalibratorType CalibratorType

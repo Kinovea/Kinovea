@@ -114,18 +114,21 @@ namespace Kinovea.ScreenManager
             if(m_Metadata != null)
                 m_Metadata.Reset();
         }
-        public void SetupMetadata()
+        public void SetupMetadata(bool init)
         {
             // Setup Metadata global infos in case we want to flush it to a file (or mux).
             
             if(m_Metadata == null || m_VideoReader == null)
                 return;
-            
-            m_Metadata.ImageSize = m_VideoReader.Info.AspectRatioSize;
-            m_Metadata.AverageTimeStampsPerFrame = m_VideoReader.Info.AverageTimeStampsPerFrame;
-            m_Metadata.CalibrationHelper.FramesPerSecond = m_VideoReader.Info.FramesPerSeconds;
-            m_Metadata.FirstTimeStamp = m_VideoReader.Info.FirstTimeStamp;
-            
+
+            if (init)
+            {
+                m_Metadata.ImageSize = m_VideoReader.Info.AspectRatioSize;
+                m_Metadata.AverageTimeStampsPerFrame = m_VideoReader.Info.AverageTimeStampsPerFrame;
+                m_Metadata.CalibrationHelper.FramesPerSecond = m_VideoReader.Info.FramesPerSeconds;
+                m_Metadata.FirstTimeStamp = m_VideoReader.Info.FirstTimeStamp;
+            }
+
             m_Metadata.PostSetup();
             
             log.Debug("Setup metadata.");
