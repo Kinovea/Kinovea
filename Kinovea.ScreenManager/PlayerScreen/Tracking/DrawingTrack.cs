@@ -438,7 +438,7 @@ namespace Kinovea.ScreenManager
                     blockWindow.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 5, positions[currentPoint].Point);
 
                 TrackerParameters newParams = new TrackerParameters(
-                    old.SimilarityThreshold, old.TemplateUpdateThreshold, searchWindow.Rectangle.Size, blockWindow.Rectangle.Size, old.ResetOnMove);
+                    old.SimilarityThreshold, old.TemplateUpdateThreshold, old.RefinementNeighborhood, searchWindow.Rectangle.Size, blockWindow.Rectangle.Size, old.ResetOnMove);
                 
                 tracker.Parameters = newParams;
                 UpdateBoundingBoxes();
@@ -638,6 +638,10 @@ namespace Kinovea.ScreenManager
             {
                 tracker.Draw(canvas, positions[currentPoint], transformer, styleHelper.Color, opacity);
             }
+            else if (trackStatus == TrackStatus.Interactive)
+            {
+                tracker.Draw(canvas, positions[currentPoint], transformer, styleHelper.Color, opacity);
+            }
             else if (trackStatus == TrackStatus.Configuration)
             {
                 Point location = transformer.Transform(positions[currentPoint].Point);
@@ -647,7 +651,7 @@ namespace Kinovea.ScreenManager
 
                 // Dim background.
                 GraphicsPath backgroundPath = new GraphicsPath();
-                backgroundPath.AddRectangle(canvas.ClipBounds); 
+                backgroundPath.AddRectangle(canvas.ClipBounds);
                 GraphicsPath searchBoxPath = new GraphicsPath();
                 searchBoxPath.AddRectangle(searchBox);
                 backgroundPath.AddPath(searchBoxPath, false);
@@ -1097,7 +1101,7 @@ namespace Kinovea.ScreenManager
             // The user moved a point that had been previously placed.
             // We need to reconstruct tracking data stored in the point, for later tracking.
             // The coordinate of the point have already been updated during the mouse move.
-            if (positions.Count < 2 || currentPoint < 0)
+            if (positions.Count < 1 || currentPoint < 0)
                 return;
             
             AbstractTrackPoint current = positions[currentPoint];
@@ -1123,7 +1127,15 @@ namespace Kinovea.ScreenManager
         }
         private TrackerParameters GetTrackerParameters(Size size)
         {
-            return new TrackerParameters(new TrackingProfile(), size);
+            double similarityThreshold = 0.5;
+            double templateUpdateThreshold = 0.8;
+            //double templateUpdateThreshold = 1.0;
+            int refinementNeighborhood = 1;
+            Size searchWindow = new Size((int)(size.Width * 0.2), (int)(size.Height * 0.2));
+            Size blockWindow = new Size((int)(size.Width * 0.05), (int)(size.Height * 0.05));
+
+            return new TrackerParameters(similarityThreshold, templateUpdateThreshold, refinementNeighborhood, searchWindow, blockWindow, false);
+            //return new TrackerParameters(new TrackingProfile(), size);
         }
         #endregion
         
