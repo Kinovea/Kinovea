@@ -21,14 +21,19 @@ namespace Kinovea.ScreenManager
             
             this.Text = "Data analysis";
 
-            DrawPlotCutoffDW(kinematics.Ys);
+            DrawPlotCutoffDW(kinematics.Xs, kinematics.Ys);
             DrawPlot(plotCoordinates, "Position", "pos", calibrationHelper.GetLengthAbbreviation(), kinematics.RawYs, kinematics.RawXs, kinematics.Ys[kinematics.YCutoffIndex].Data, kinematics.Xs[kinematics.XCutoffIndex].Data);
             DrawPlot(plotHorzVelocity, "Velocity", "velocity", calibrationHelper.GetSpeedAbbreviation(), kinematics.RawVerticalVelocity, kinematics.RawHorizontalVelocity, kinematics.VerticalVelocity, kinematics.HorizontalVelocity);
-            DrawPlot(plotHorzAcceleration, "Acceleration", "acceleration", calibrationHelper.GetAccelerationAbbreviation(), kinematics.RawVerticalAcceleration, kinematics.RawHorizontalAcceleration, kinematics.VerticalAcceleration, kinematics.HorizontalAcceleration);
+            //DrawPlot(plotHorzAcceleration, "Acceleration", "acceleration", calibrationHelper.GetAccelerationAbbreviation(), kinematics.RawVerticalAcceleration, kinematics.RawHorizontalAcceleration, kinematics.VerticalAcceleration, kinematics.HorizontalAcceleration);
+            DrawPlot(plotHorzAcceleration, "Acceleration", "acceleration", calibrationHelper.GetAccelerationAbbreviation(), null, null, kinematics.VerticalAcceleration, kinematics.HorizontalAcceleration);
+            //DrawPlot(plotHorzAcceleration, "Acceleration", "acceleration", calibrationHelper.GetAccelerationAbbreviation(), null, null, null, kinematics.HorizontalAcceleration);
         }
 
-        private void DrawPlotCutoffDW(List<FilteringResult> filteringResults)
+        private void DrawPlotCutoffDW(List<FilteringResult> xs, List<FilteringResult> ys)
         {
+            if (xs == null || ys == null)
+                return;
+
             PlotModel model = new PlotModel("Residuals autocorrelation vs Cutoff frequency") 
             { 
                 LegendSymbolLength = 24,
@@ -46,54 +51,40 @@ namespace Kinovea.ScreenManager
                 MinorGridlineStyle = LineStyle.Dot
             });
 
-            LineSeries serie = new LineSeries();
-            InitializeSeries(serie, OxyColors.SteelBlue, false);
+            LineSeries serieX = new LineSeries();
+            InitializeSeries(serieX, OxyColors.Green, false);
+            LineSeries serieY = new LineSeries();
+            InitializeSeries(serieY, OxyColors.Tomato, false);
 
-            foreach (FilteringResult r in filteringResults)
-                serie.Points.Add(new DataPoint(r.CutoffFrequency, r.DurbinWatson));
+            foreach (FilteringResult r in xs)
+                serieX.Points.Add(new DataPoint(r.CutoffFrequency, r.DurbinWatson));
 
-            model.Series.Add(serie);
+            foreach (FilteringResult r in ys)
+                serieY.Points.Add(new DataPoint(r.CutoffFrequency, r.DurbinWatson));
+
+            model.Series.Add(serieX);
+            model.Series.Add(serieY);
             plotDurbinWatson.Model = model;
             plotDurbinWatson.BackColor = Color.White;
         }
 
-        /*private void DrawPlot(Plot plot, string title, string serieTitle, double[] raw, double[] filtered)
-        {
-            PlotModel model = new PlotModel(title) { LegendSymbolLength = 24 };
-            model.Axes.Add(new LinearAxis(AxisPosition.Left, string.Format("{0} (m/s)", serieTitle))
-            {
-                IntervalLength = 20
-            });
-            model.Axes.Add(new LinearAxis(AxisPosition.Bottom, "Time (frames)"));
-
-            LineSeries serieRaw = new LineSeries("raw"); 
-            LineSeries serie = new LineSeries("filtered");
-            InitializeSeries(serieRaw, true);
-            InitializeSeries(serie, false);
-
-            long time = 0;
-            for (int i = 0; i < raw.Length; i++)
-            {
-                double r = raw[i];
-                double f = filtered[i];
-                if (!double.IsNaN(r))
-                {
-                    serieRaw.Points.Add(new DataPoint((double)time, r));
-                    serie.Points.Add(new DataPoint((double)time, f));
-                }
-                time++;
-            }
-
-            model.Series.Add(serieRaw);
-            model.Series.Add(serie);
-            plot.Model = model;
-            plot.BackColor = Color.White;
-        }*/
-
         private void DrawPlot(Plot plot, string title, string serieTitle, string abbreviation, double[] rawVert, double[] rawHorz, double[] filteredVert, double[] filteredHorz)
         {
-            PlotModel model = new PlotModel(title) 
-            { 
+            PlotModel model = CreatePlotModel(title, serieTitle, abbreviation);
+            
+            AddSeries(rawVert, "raw y", OxyColors.DarkGray, model);
+            AddSeries(rawHorz, "raw x", OxyColors.DarkGray, model);
+            AddSeries(filteredVert, "filtered y", OxyColors.Tomato, model);
+            AddSeries(filteredHorz, "filtered x", OxyColors.Green, model);
+                                   
+            plot.Model = model;
+            plot.BackColor = Color.White;
+        }
+
+        private PlotModel CreatePlotModel(string title, string serieTitle, string abbreviation)
+        {
+            PlotModel model = new PlotModel(title)
+            {
                 LegendSymbolLength = 24,
                 TitleFontSize = 12
             };
@@ -111,39 +102,27 @@ namespace Kinovea.ScreenManager
                 MinorGridlineStyle = LineStyle.Dot
             });
 
-            LineSeries serieRawHorz = new LineSeries("raw x");
-            LineSeries serieRawVert = new LineSeries("raw y");
-            LineSeries serieHorz = new LineSeries("filtered x");
-            LineSeries serieVert = new LineSeries("filtered y");
-            InitializeSeries(serieRawHorz, OxyColors.DarkGray, false);
-            InitializeSeries(serieRawVert, OxyColors.DarkGray, false);
-            InitializeSeries(serieHorz, OxyColors.Green, true);
-            InitializeSeries(serieVert, OxyColors.Tomato, true);
+            return model;
+        }
+        
+        private void AddSeries(double[] data, string name, OxyColor color, PlotModel model)
+        {
+            if (data == null)
+                return;
 
+            LineSeries series = new LineSeries(name);
+            InitializeSeries(series, color, false);
             long time = 0;
-            for (int i = 0; i < rawVert.Length; i++)
+            for (int i = 0; i < data.Length; i++)
             {
-                double rv = rawVert[i];
-                double rh = rawHorz[i];
-                double fv = filteredVert[i];
-                double fh = filteredHorz[i];
-                if (!double.IsNaN(rv))
-                {
-                    serieRawVert.Points.Add(new DataPoint((double)time, rv));
-                    serieRawHorz.Points.Add(new DataPoint((double)time, rh));
-                    serieVert.Points.Add(new DataPoint((double)time, fv));
-                    serieHorz.Points.Add(new DataPoint((double)time, fh));
-                }
+                double value = data[i];
+                if (!double.IsNaN(value))
+                    series.Points.Add(new DataPoint((double)time, value));
+                
                 time++;
             }
 
-            model.Series.Add(serieRawHorz);
-            model.Series.Add(serieRawVert);
-            model.Series.Add(serieHorz);
-            model.Series.Add(serieVert);
-            
-            plot.Model = model;
-            plot.BackColor = Color.White;
+            model.Series.Add(series);
         }
 
         private void InitializeSeries(LineSeries series, OxyColor color, bool smooth)
