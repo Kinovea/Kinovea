@@ -189,9 +189,9 @@ namespace Kinovea.ScreenManager
             {
                 SizeF textSize = g.MeasureString(text, f);
                 
-                int width = value < 10 ? (int)textSize.Height : (int)textSize.Width;
-                int height = (int)textSize.Height;
-                background.Rectangle = new Rectangle(background.Rectangle.Location, new Size(width, height));
+                float width = value < 10 ? textSize.Height : textSize.Width;
+                float height = textSize.Height;
+                background.Rectangle = new RectangleF(background.Rectangle.Location, new SizeF(width, height));
             }
         }
         #endregion

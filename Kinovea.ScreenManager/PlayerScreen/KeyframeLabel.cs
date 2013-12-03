@@ -137,9 +137,9 @@ namespace Kinovea.ScreenManager
         }
         public void SetLabel(PointF _point)
         {
-            m_Background.CenterOn(_point.ToPoint());
+            m_Background.CenterOn(_point);
         }
-        public void MoveLabel(int dx, int dy)
+        public void MoveLabel(float dx, float dy)
         {
             m_Background.Move(dx, dy);
         }
@@ -152,7 +152,7 @@ namespace Kinovea.ScreenManager
             using(Font f = m_StyleHelper.GetFont(1F))
             {
                 SizeF textSize = g.MeasureString(m_Text, f);
-                m_Background.Rectangle = new Rectangle(m_Background.Rectangle.Location, new Size((int)textSize.Width, (int)textSize.Height));
+                m_Background.Rectangle = new RectangleF(m_Background.Rectangle.Location, textSize);
             }
         }
         public void WriteXml(XmlWriter _xmlWriter)
