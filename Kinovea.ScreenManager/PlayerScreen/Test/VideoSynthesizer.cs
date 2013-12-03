@@ -9,6 +9,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using System.Globalization;
+using System.Drawing.Drawing2D;
 
 namespace Kinovea.ScreenManager
 {
@@ -27,16 +28,14 @@ namespace Kinovea.ScreenManager
             int intervalMilliseconds = (int)(1000 / fps);
             Size frameSize = new Size(width, height);
 
-            Random random = new Random();
-
             VideoRecorder recorder = new VideoRecorder();
             SaveResult result = recorder.Initialize(filepath, intervalMilliseconds, frameSize);
 
             if (result != SaveResult.Success)
                 return;
 
-            int x = 0;
-            int y = 500;
+            double a = 1000;
+
             int frameCount = (int)(durationSeconds * 1000 / intervalMilliseconds);
             List<Bitmap> frames = new List<Bitmap>();
             for (int i = 0; i < frameCount; i++)
@@ -44,13 +43,9 @@ namespace Kinovea.ScreenManager
                 Bitmap bmp = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
                 Graphics g = Graphics.FromImage(bmp);
 
-                x += (int)(o.SpeedX * ((double)intervalMilliseconds / 1000));
-                y += (int)(o.SpeedY * ((double)intervalMilliseconds / 1000));
-                double rndX = random.NextDouble() * o.NoiseX * 2 - o.NoiseX;
-                double rndY = random.NextDouble() * o.NoiseY * 2 - o.NoiseY;
-                PointF position = new PointF((float)(x + rndX), (float)(y + rndY));
-
-                DrawImage(g, position, i, width, height, durationSeconds, fps, o);
+                double t = GetTime(i, fps);
+                PointF point = GetPosition(t, a);
+                DrawImage(g, point, i, t, a, width, height, durationSeconds, fps, o);
 
                 frames.Add(bmp);
                 recorder.EnqueueFrame(bmp);
@@ -64,8 +59,13 @@ namespace Kinovea.ScreenManager
                 frame.Dispose();
         }
 
-        private void DrawImage(Graphics g, PointF location, int frame, int width, int height, double duration, double fps, MovingObject o)
+        private void DrawImage(Graphics g, PointF location, int frame, double t, double a, int width, int height, double duration, double fps, MovingObject o)
         {
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.PixelOffsetMode = PixelOffsetMode.Half;
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            g.SmoothingMode = SmoothingMode.HighQuality;
+
             g.FillRectangle(Brushes.White, g.ClipBounds);
             Font f = new Font("Consolas", 16, FontStyle.Regular);
 
@@ -75,21 +75,60 @@ namespace Kinovea.ScreenManager
             g.DrawString(string.Format(CultureInfo.InvariantCulture, "Framerate (Hz)     : {0:0.000}", fps), f, Brushes.Black, new PointF(10, 50));
 
             g.DrawString(string.Format(CultureInfo.InvariantCulture, "Moving object      :"), f, Brushes.Black, new PointF(10, 70));
-            g.DrawString(string.Format(CultureInfo.InvariantCulture, "\tradius (px)    : {0}", o.Radius), f, Brushes.Black, new PointF(10, 90));
-            g.DrawString(string.Format(CultureInfo.InvariantCulture, "\tspeed x (px/s) : {0:0.000}", o.SpeedX), f, Brushes.Black, new PointF(10, 110));
-            g.DrawString(string.Format(CultureInfo.InvariantCulture, "\tspeed y (px/s) : {0:0.000}", o.SpeedY), f, Brushes.Black, new PointF(10, 130));
-            g.DrawString(string.Format(CultureInfo.InvariantCulture, "\tnoise x (px)   : ±{0:0.000}", o.NoiseX), f, Brushes.Black, new PointF(10, 150));
-            g.DrawString(string.Format(CultureInfo.InvariantCulture, "\tnoise y (px)   : ±{0:0.000}", o.NoiseY), f, Brushes.Black, new PointF(10, 170));
+            //g.DrawString(string.Format(CultureInfo.InvariantCulture, "\tradius (px)    : {0}", o.Radius), f, Brushes.Black, new PointF(10, 90));
+            g.DrawString(string.Format(CultureInfo.InvariantCulture, "\tx (px)         : {0:0.000} (fixed)", location.X), f, Brushes.Black, new PointF(10, 110));
+            g.DrawString(string.Format(CultureInfo.InvariantCulture, "\ty (px)         : {0:0.000} (500 + 0.5 * a * t²)", location.Y), f, Brushes.Black, new PointF(10, 130));
+            g.DrawString(string.Format(CultureInfo.InvariantCulture, "\ta (px/s²)      : {0}", a), f, Brushes.Black, new PointF(10, 150));
+            g.DrawString(string.Format(CultureInfo.InvariantCulture, "\tt (s)          : {0:0.000} (frame number / framerate)", t), f, Brushes.Black, new PointF(10, 170));
             f.Dispose();
 
             Font f2 = new Font("Consolas", 20, FontStyle.Regular);
-            g.DrawString(string.Format(CultureInfo.InvariantCulture, "Frame number : {0}", frame), f2, Brushes.Black, new PointF(10, 200));
+            g.DrawString(string.Format(CultureInfo.InvariantCulture, "Frame number : {0}", frame), f2, Brushes.Black, new PointF(10, 220));
             f2.Dispose();
 
+            g.DrawLine(Pens.Black, 0, 270, 1000, 270);
+
             // Object
-            g.FillEllipse(Brushes.Black, location.X, location.Y, o.Radius * 2, o.Radius * 2);
+            //g.FillEllipse(Brushes.Black, new RectangleF(location.X - o.Radius, location.Y - o.Radius, o.Radius * 2, o.Radius * 2));
+            g.DrawRectangle(Pens.Black, location.X, location.Y, 1, 1);
         }
 
+        /// <summary>
+        /// Returns the time to be used for motion computation.
+        /// This is where systematic errors or rolling shutter may happen.
+        /// The time coordinate at object location may not always be the same as the corresponding frame time.
+        /// </summary>
+        private double GetTime(int frame, double fps)
+        {
+            double t = (double)frame / fps;
+            return t;
+        }
 
+        /// <summary>
+        /// Returns the coordinates based on time in seconds.
+        /// </summary>
+        private PointF GetPosition(double t, double a)
+        {
+            PointF center = new PointF(500, 500);
+            float x = center.X;
+            float signal = (float)(0.5 * a * t * t);
+            float noise = 0;
+            float y = center.Y + signal + noise;
+
+            return new PointF(x, y);
+        }
+
+        private PointF GetOscillating(double t)
+        {
+            float factor = 40;
+            PointF center = new PointF(500, 500);
+            float x = center.X;
+            float signal = (float)(factor * Math.Sin(4 * Math.PI * t));
+            //float noise = (float)((factor/100) * Math.Sin(40 * Math.PI * t));
+            float noise = 0;
+            float y = center.Y + signal + noise;
+
+            return new PointF(x, y);
+        }
     }
 }
