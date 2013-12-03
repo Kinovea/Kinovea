@@ -176,7 +176,7 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {	
             // Invisible handler to change font size.
-            int wantedHeight = (int)point.Y - background.Rectangle.Location.Y;
+            int wantedHeight = (int)(point.Y - background.Rectangle.Location.Y);
             styleHelper.ForceFontSize(wantedHeight, text);
             style.ReadValue();
             UpdateLabelRectangle();
@@ -278,7 +278,7 @@ namespace Kinovea.ScreenManager
             using(Font f = styleHelper.GetFont(1F))
             {
                 SizeF textSize = g.MeasureString(text, f);
-                background.Rectangle = new Rectangle(background.Rectangle.Location, new Size((int)textSize.Width, (int)textSize.Height));
+                background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
                 
                 // Also update the edit box size. (Use a fixed font though).
                 // The extra space is to account for blank new lines.

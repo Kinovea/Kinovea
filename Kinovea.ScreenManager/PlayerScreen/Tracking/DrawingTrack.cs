@@ -406,7 +406,7 @@ namespace Kinovea.ScreenManager
         {
             if (trackStatus == TrackStatus.Interactive && movingHandler > 1)
             {
-                MoveLabelTo((int)dx, (int)dy, movingHandler);
+                MoveLabelTo(dx, dy, movingHandler);
                 return;
             }
 
@@ -906,7 +906,7 @@ namespace Kinovea.ScreenManager
                     ShowClosestFrame(new Point((int)dx, (int)dy), positions, totalDistance, false);
             }
         }
-        private void MoveLabelTo(int dx, int dy, int labelNumber)
+        private void MoveLabelTo(float dx, float dy, int labelNumber)
         {
             // _iLabelNumber coding: 2 = main label, 3+ = keyframes labels.
             
