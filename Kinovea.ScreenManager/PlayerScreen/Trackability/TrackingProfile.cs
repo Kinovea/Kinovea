@@ -18,7 +18,7 @@ namespace Kinovea.ScreenManager
         public readonly bool ResetOnMove;
 
         public TrackingProfile() :
-            this("default", 0.5, 0.8, new Size(20, 20), new Size(5, 5), TrackerParameterUnit.Percentage, TrackerParameterUnit.Percentage, true)
+            this("default", 0.5, 0.8, new Size(20, 20), new Size(5, 5), TrackerParameterUnit.Percentage, TrackerParameterUnit.Percentage, false)
         {            
         }
 
