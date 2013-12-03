@@ -225,7 +225,14 @@ namespace Kinovea.ScreenManager
         {
             return UnitHelper.ConvertAcceleration(a, lengthUnit, accelerationUnit);
         }
-        
+
+        public float ConvertAccelerationFromVelocity(float a)
+        {
+            // Passed acceleration is expressed in units configured for velocity.
+            float magnitude = UnitHelper.ConvertForLengthUnit(a, speedUnit, lengthUnit);
+            return UnitHelper.ConvertAcceleration(magnitude, lengthUnit, accelerationUnit);
+        }
+
         public float ConvertAngle(float radians)
         {
             return angleUnit == AngleUnit.Radian ? radians : (float)(radians * MathHelper.RadiansToDegrees);

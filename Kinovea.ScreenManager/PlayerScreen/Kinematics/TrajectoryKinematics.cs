@@ -49,18 +49,18 @@ namespace Kinovea.ScreenManager
         public double[] TotalDistance { get; set; }
 
         public double[] RawSpeed { get; private set; }
-        public double[] Speed { get; private set; }
+        public double[] Speed { get; set; }
         public double[] RawVerticalVelocity { get; private set; }
-        public double[] VerticalVelocity { get; private set; }
+        public double[] VerticalVelocity { get; set; }
         public double[] RawHorizontalVelocity { get; private set; }
-        public double[] HorizontalVelocity { get; private set; }
+        public double[] HorizontalVelocity { get; set; }
 
         public double[] RawAcceleration { get; private set; }
-        public double[] Acceleration { get; private set; }
+        public double[] Acceleration { get; set; }
         public double[] RawVerticalAcceleration { get; private set; }
-        public double[] VerticalAcceleration { get; private set; }
+        public double[] VerticalAcceleration { get; set; }
         public double[] RawHorizontalAcceleration { get; private set; }
-        public double[] HorizontalAcceleration { get; private set; }
+        public double[] HorizontalAcceleration { get; set; }
 
         //-----------------------------------
         // Best fit circle angular kinematics
