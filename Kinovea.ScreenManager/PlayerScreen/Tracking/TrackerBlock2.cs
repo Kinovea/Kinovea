@@ -56,6 +56,7 @@ namespace Kinovea.ScreenManager
         // Options - initialize in the constructor.
         private double similarityTreshold = 0.0f;		// Discard candidate block with lower similarity.
         private double templateUpdateThreshold = 1.0f;	// Only update the template if that dissimilar.
+        private int refinementNeighborhood = 1;
         private Size blockWindow = new Size(20, 20);
         private Size searchWindow = new Size(100, 100);
         private TrackerParameters parameters;
@@ -84,7 +85,8 @@ namespace Kinovea.ScreenManager
             //---------------------------------------------------------------------
             TrackPointBlock lastTrackPoint = (TrackPointBlock)previousPoints[previousPoints.Count - 1];
             PointF lastPoint = lastTrackPoint.Point;
-            
+            PointF subpixel = new PointF(lastPoint.X - (int)lastPoint.X, lastPoint.Y - (int)lastPoint.Y);
+
             bool matched = false;
             currentPoint = null;
             
@@ -128,17 +130,22 @@ namespace Kinovea.ScreenManager
                 // Find max
                 double bestScore = 0;
                 PointF bestCandidate = new PointF(-1,-1);
-                Point p1 = new Point(0,0);
-                Point p2 = new Point(0,0);
-                double fMin = 0;
-                double fMax = 0;
+                Point minLoc = Point.Empty;
+                Point maxLoc = Point.Empty;
+                double min = 0;
+                double max = 0;
+                CvInvoke.cvMinMaxLoc(similarityMap.Ptr, ref min, ref max, ref minLoc, ref maxLoc, IntPtr.Zero);
                 
-                CvInvoke.cvMinMaxLoc(similarityMap.Ptr, ref fMin, ref fMax, ref p1, ref p2, IntPtr.Zero);
-                
-                if(fMax > similarityTreshold)
+                if(max > similarityTreshold)
                 {
-                    bestCandidate = new PointF(searchZone.Left + p2.X + tpl.Width / 2, searchZone.Top + p2.Y + tpl.Height / 2);
-                    bestScore = fMax;
+                    PointF loc = RefineLocation(similarityMap.Data, maxLoc, parameters.RefinementNeighborhood);
+                    
+                    // The template matching was done on a template aligned with the integer part of the actual position.
+                    // We reinject the floating point part of the orginal positon into the result.
+                    loc = loc.Translate(subpixel.X, subpixel.Y);
+
+                    bestCandidate = new PointF(searchZone.Left + loc.X + tpl.Width / 2, searchZone.Top + loc.Y + tpl.Height / 2);
+                    bestScore = max;
                 }
             
                 #region Monitoring
@@ -149,8 +156,8 @@ namespace Kinovea.ScreenManager
                     CvInvoke.cvNormalize(similarityMap.Ptr, mapNormalized.Ptr, 0, 255, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
             
                     Bitmap bmpMap = mapNormalized.ToBitmap();
-                    
-                    string tplDirectory = @"C:\Documents and Settings\Administrateur\Mes documents\Dev  Prog\Videa\Video Testing\Tracking\Template Update";
+
+                    string tplDirectory = @"C:\Users\Joan\Videos\Kinovea\Video Testing\Tracking\simimap";
                     bmpMap.Save(tplDirectory + String.Format(@"\simiMap-{0:000}-{1:0.00}.bmp", previousPoints.Count, bestScore));
                 }
                 #endregion
@@ -221,8 +228,8 @@ namespace Kinovea.ScreenManager
                 int imageWidthInBytes = currentImage.Width * pixelSize;
                 int imgOffset = imgStride - (currentImage.Width * pixelSize) + imageWidthInBytes - templateWidthInBytes;
                 
-                int startY = (int)(p.Y - (blockWindow.Height / 2));
-                int startX = (int)(p.X - (blockWindow.Width / 2));
+                int startY = (int)(p.Y - (blockWindow.Height / 2.0));
+                int startX = (int)(p.X - (blockWindow.Width / 2.0));
                 
                 if(startX < 0) 
                     startX = 0;
@@ -263,7 +270,7 @@ namespace Kinovea.ScreenManager
             if(monitoring && updateWithCurrentImage)
             {
                 // Save current template to file, to visually monitor the drift.
-                string tplDirectory = @"C:\Documents and Settings\Administrateur\Mes documents\Dev  Prog\Videa\Video Testing\Tracking\Template Update";
+                string tplDirectory = @"C:\Users\Joan\Videos\Kinovea\Video Testing\Tracking\simimap";
                 if(previousPoints.Count <= 1)
                 {
                     // Clean up folder.
@@ -304,17 +311,25 @@ namespace Kinovea.ScreenManager
                 canvas.DrawRectangle(pen, search);
                 canvas.DrawRectangle(pen, p.Box(transformer.Transform(blockWindow)));
 
-                /*if (point is TrackPointBlock)
-                {
-                    TrackPointBlock tpb = (TrackPointBlock)point;
-                    string score = string.Format("{0:0.000} ({1})", tpb.Similarity, tpb.TemplateAge);
-                    Font f = new Font("Arial", 16, FontStyle.Bold);
-                    Brush b = tpb.Similarity > parameters.TemplateUpdateThreshold ? Brushes.Green : Brushes.Red;
-                    canvas.DrawString(score, f, b, search.Location.Translate(0, -25));
-                    f.Dispose();
-                }*/
+                DrawDebugInfo(canvas, point, search);
             }
         }
+
+        private void DrawDebugInfo(Graphics canvas, AbstractTrackPoint point, RectangleF search)
+        {
+            TrackPointBlock tpb = point as TrackPointBlock;
+            
+            if (tpb == null)
+                return;
+            
+            Font f = new Font("Consolas", 8, FontStyle.Bold);
+            string text = string.Format("simi:{0:0.000}, age:{1}, pos:{2:0.000}×{3:0.000}", tpb.Similarity, tpb.TemplateAge, tpb.Point.X, tpb.Point.Y);
+            Brush b = tpb.Similarity > parameters.TemplateUpdateThreshold ? Brushes.Green : Brushes.Red;
+            canvas.DrawString(text, f, b, search.Location.Translate(0, -25));
+
+            f.Dispose();
+        }
+
         public override RectangleF GetEditRectangle(PointF position)
         {
             return position.Box(searchWindow);
@@ -325,11 +340,44 @@ namespace Kinovea.ScreenManager
         {
             similarityTreshold = parameters.SimilarityThreshold;
             templateUpdateThreshold = parameters.TemplateUpdateThreshold;
+            refinementNeighborhood = parameters.RefinementNeighborhood;
             searchWindow = parameters.SearchWindow;
             blockWindow = parameters.BlockWindow;
 
             if (!blockWindow.FitsIn(searchWindow))
                 searchWindow = blockWindow;
+        }
+
+        /// <summary>
+        /// Computes the center of mass of the similarity scores in the vicinity of the best candidate.
+        /// This allows to find a floating point location for the best match.
+        /// </summary>
+        private PointF RefineLocation(float[,,] data, Point loc, int neighborhood)
+        {
+            // The best candidate location is expanded by "neighborhood" pixels in each direction.
+            float numX = 0;
+            float numY = 0;
+            float den = 0;
+            for (int i = loc.X - neighborhood; i <= loc.X + neighborhood; i++)
+            {
+                if (i < 0 || i > data.GetUpperBound(1))
+                    continue;
+
+                for (int j = loc.Y - neighborhood; j <= loc.Y + neighborhood; j++)
+                {
+                    if (j < 0 || j > data.GetUpperBound(0))
+                        continue;
+
+                    float value = data[j, i, 0];
+                    numX += (i * value);
+                    numY += (j * value);
+                    den += value;
+                }
+            }
+
+            float x = numX / den;
+            float y = numY / den;
+            return new PointF(x, y);
         }
     }
 }

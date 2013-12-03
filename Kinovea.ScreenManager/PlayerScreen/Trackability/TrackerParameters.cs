@@ -31,14 +31,31 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackerParameters
     {
+        /// <summary>
+        /// The similarity value above which we consider a match.
+        /// Default: 0.5.
+        /// </summary>
         public double SimilarityThreshold
         {
             get { return similarityThreshold; }
         }
 
+        /// <summary>
+        /// The similarity value under which we will update the reference template with the current template.
+        /// Above this value the template is not considered very different so we keep the reference one for next matching.
+        /// Default: 0.8.
+        /// </summary>
         public double TemplateUpdateThreshold
         {
             get { return templateUpdateThreshold; }
+        }
+
+        /// <summary>
+        /// Number of surrounding pixels taken into account in each direction to refine the location of best match.
+        /// </summary>
+        public int RefinementNeighborhood
+        {
+            get { return refinementNeighborhood; }
         }
 
         public Size SearchWindow
@@ -69,21 +86,18 @@ namespace Kinovea.ScreenManager
             }
         }
 
-
-        private double similarityThreshold = 0.50f;
-        
-        // If simi is better than this, we keep the same template, to avoid the template update drift.
-        // When using CCORR : 0.90 or 0.95.
-        // When using CCOEFF : 0.80
-        private double templateUpdateThreshold = 0.80f;
+        private double similarityThreshold = 0.5;
+        private double templateUpdateThreshold = 0.8; // using CCORR : 0.90 or 0.95, when using CCOEFF : 0.80.
+        private int refinementNeighborhood = 1;
         private Size searchWindow;
         private Size blockWindow;
         private bool resetOnMove = true;
 
-        public TrackerParameters(double similarityThreshold, double templateUpdateThreshold, Size searchWindow, Size blockWindow, bool resetOnMove)
+        public TrackerParameters(double similarityThreshold, double templateUpdateThreshold, int refinementNeighborhood, Size searchWindow, Size blockWindow, bool resetOnMove)
         {
             this.similarityThreshold = similarityThreshold;
             this.templateUpdateThreshold = templateUpdateThreshold;
+            this.refinementNeighborhood = refinementNeighborhood;
             this.searchWindow = searchWindow;
             this.blockWindow = blockWindow;
             this.resetOnMove = resetOnMove;
@@ -109,6 +123,7 @@ namespace Kinovea.ScreenManager
         {
             w.WriteElementString("SimilarityThreshold", String.Format(CultureInfo.InvariantCulture, "{0}", similarityThreshold));
             w.WriteElementString("TemplateUpdateThreshold", String.Format(CultureInfo.InvariantCulture, "{0}", templateUpdateThreshold));
+            w.WriteElementString("RefinementNeighborhood", String.Format(CultureInfo.InvariantCulture, "{0}", refinementNeighborhood));
             w.WriteElementString("SearchWindow", String.Format(CultureInfo.InvariantCulture, "{0};{1}", searchWindow.Width, searchWindow.Height));
             w.WriteElementString("BlockWindow", String.Format(CultureInfo.InvariantCulture, "{0};{1}", blockWindow.Width, blockWindow.Height));
         }
@@ -118,6 +133,7 @@ namespace Kinovea.ScreenManager
             TrackingProfile classic = new TrackingProfile();
             double similarityThreshold = classic.SimilarityThreshold;
             double updateThreshold = classic.TemplateUpdateThreshold;
+            int refinementNeighborhood = 1;
             Size searchWindow = classic.SearchWindow;
             Size blockWindow = classic.BlockWindow;
             
@@ -133,6 +149,9 @@ namespace Kinovea.ScreenManager
                     case "TemplateUpdateThreshold":
                         updateThreshold = r.ReadElementContentAsDouble();
                         break;
+                    case "RefinementNeighborhood":
+                        refinementNeighborhood = r.ReadElementContentAsInt();
+                        break;
                     case "SearchWindow":
                         searchWindow = XmlHelper.ParseSize(r.ReadElementContentAsString());
                         break;
@@ -147,7 +166,7 @@ namespace Kinovea.ScreenManager
             
             r.ReadEndElement();
 
-            TrackerParameters parameters = new TrackerParameters(similarityThreshold, updateThreshold, searchWindow, blockWindow, false);
+            TrackerParameters parameters = new TrackerParameters(similarityThreshold, updateThreshold, refinementNeighborhood, searchWindow, blockWindow, false);
             return parameters;
         }
     }
