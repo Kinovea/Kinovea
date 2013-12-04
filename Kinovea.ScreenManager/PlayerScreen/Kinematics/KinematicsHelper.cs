@@ -92,10 +92,10 @@ namespace Kinovea.ScreenManager
             ButterworthFilter filter = new ButterworthFilter();
             int bestCutoffIndex;
 
-            kinematics.Xs = filter.FilterSamples(kinematics.RawXs, framerate, 100, out bestCutoffIndex);
+            kinematics.FilterResultXs = filter.FilterSamples(kinematics.RawXs, framerate, 100, out bestCutoffIndex);
             kinematics.XCutoffIndex = bestCutoffIndex;
 
-            kinematics.Ys = filter.FilterSamples(kinematics.RawYs, framerate, 100, out bestCutoffIndex);
+            kinematics.FilterResultYs = filter.FilterSamples(kinematics.RawYs, framerate, 100, out bestCutoffIndex);
             kinematics.YCutoffIndex = bestCutoffIndex;
         }
 
@@ -222,15 +222,12 @@ namespace Kinovea.ScreenManager
                 float t24 = calibrationHelper.GetTime(2);
                 float t13 = calibrationHelper.GetTime(2);
 
-                //kinematics.Acceleration[i] = calibrationHelper.ConvertAcceleration(GetAcceleration(p0, p2, p4, t02, t24, t13, Component.Magnitude));
                 double acceleration = (kinematics.Speed[i + 1] - kinematics.Speed[i - 1]) / t13;
                 kinematics.Acceleration[i] = calibrationHelper.ConvertAccelerationFromVelocity((float)acceleration);
                 
-                //kinematics.HorizontalAcceleration[i] = calibrationHelper.ConvertAcceleration(GetAcceleration(p0, p2, p4, t02, t24, t13, Component.Horizontal));
                 double horizontalAcceleration = (kinematics.HorizontalVelocity[i + 1] - kinematics.HorizontalVelocity[i - 1]) / t13;
                 kinematics.HorizontalAcceleration[i] = calibrationHelper.ConvertAccelerationFromVelocity((float)horizontalAcceleration);
 
-                //kinematics.VerticalAcceleration[i] = calibrationHelper.ConvertAcceleration(GetAcceleration(p0, p2, p4, t02, t24, t13, Component.Vertical));
                 double verticalAcceleration = (kinematics.VerticalVelocity[i + 1] - kinematics.VerticalVelocity[i - 1]) / t13;
                 kinematics.VerticalAcceleration[i] = calibrationHelper.ConvertAccelerationFromVelocity((float)verticalAcceleration);
             }

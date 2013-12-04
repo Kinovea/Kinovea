@@ -20,12 +20,38 @@ namespace Kinovea.ScreenManager
         /// Raw coordinates.
         /// </summary>
         public double[] RawXs { get; private set; }
+        
+        /// <summary>
+        /// Raw coordinates.
+        /// </summary>
         public double[] RawYs { get; private set; }
+
+        /// <summary>
+        /// Filtered coordinates at the currently selected cutoff frequency.
+        /// </summary>
+        public double[] Xs 
+        { 
+            get 
+            {
+                return XCutoffIndex < 0 ? RawXs : FilterResultXs[XCutoffIndex].Data;
+            }
+        }
+
+        /// <summary>
+        /// Filtered coordinates at the currently selected cutoff frequency.
+        /// </summary>
+        public double[] Ys
+        {
+            get
+            {
+                return YCutoffIndex < 0 ? RawYs : FilterResultYs[YCutoffIndex].Data;
+            }
+        }
 
         /// <summary>
         /// Filtered X coordinates time series at various cutoff frequencies.
         /// </summary>
-        public List<FilteringResult> Xs { get; set; }
+        public List<FilteringResult> FilterResultXs { get; set; }
 
         /// <summary>
         /// Best-guess cutoff frequency index for Xs series.
@@ -35,7 +61,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Filtered time series at various cutoff frequencies.
         /// </summary>
-        public List<FilteringResult> Ys { get; set; }
+        public List<FilteringResult> FilterResultYs { get; set; }
 
         /// <summary>
         /// Best-guess cutoff frequency index for Ys series.
@@ -78,6 +104,9 @@ namespace Kinovea.ScreenManager
 
         public void Initialize(int samples)
         {
+            XCutoffIndex = -1;
+            YCutoffIndex = -1;
+
             Length = samples;
 
             RawXs = new double[samples];
@@ -116,7 +145,10 @@ namespace Kinovea.ScreenManager
 
         public PointF Coordinates(int index)
         {
-            return new PointF((float)Xs[XCutoffIndex].Data[index], (float)Ys[YCutoffIndex].Data[index]);
+            if (XCutoffIndex < 0 || YCutoffIndex < 0)
+                return RawCoordinates(index);
+            else
+                return new PointF((float)FilterResultXs[XCutoffIndex].Data[index], (float)FilterResultYs[YCutoffIndex].Data[index]);
         }
 
         public void ForceRawSeries()
