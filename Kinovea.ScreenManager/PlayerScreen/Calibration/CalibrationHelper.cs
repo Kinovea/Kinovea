@@ -82,7 +82,11 @@ namespace Kinovea.ScreenManager
         {
             // Frames per second, as in real action reference. (takes high speed camera into account.)
             get { return framesPerSecond; }
-            set { framesPerSecond = value; }
+            set 
+            {
+                framesPerSecond = value;
+                AfterCalibrationChanged();
+            }
         }
         
         public CalibratorType CalibratorType
@@ -92,6 +96,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
+        private bool initialized;
         private CalibratorType calibratorType = CalibratorType.Line;
         private ICalibrator calibrator;
         private CalibrationLine calibrationLine = new CalibrationLine();
@@ -124,6 +129,8 @@ namespace Kinovea.ScreenManager
         {
             this.imageSize = imageSize;
             SetOrigin(imageSize.Center());
+            initialized = true;
+            ComputeBoundingRectangle();
         }
         
         /// <summary>
@@ -221,7 +228,14 @@ namespace Kinovea.ScreenManager
         {
             return UnitHelper.ConvertAcceleration(a, lengthUnit, accelerationUnit);
         }
-        
+
+        public float ConvertAccelerationFromVelocity(float a)
+        {
+            // Passed acceleration is expressed in units configured for velocity.
+            float magnitude = UnitHelper.ConvertForLengthUnit(a, speedUnit, lengthUnit);
+            return UnitHelper.ConvertAcceleration(magnitude, lengthUnit, accelerationUnit);
+        }
+
         public float ConvertAngle(float radians)
         {
             return angleUnit == AngleUnit.Radian ? radians : (float)(radians * MathHelper.RadiansToDegrees);
@@ -393,6 +407,8 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
+
+            AfterCalibrationChanged();
         }
         #endregion
 
@@ -409,6 +425,9 @@ namespace Kinovea.ScreenManager
             // Tries to find a rectangle in real world coordinates corresponding to the image corners.
             // This is used by coordinate systems to find a good filling of the image plane for drawing the grid.
             // The result is given back in real world coordinates.
+
+            if (!initialized)
+                return;
 
             if (calibratorType == CalibratorType.Line)
             {

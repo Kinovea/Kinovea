@@ -16,10 +16,6 @@ namespace Kinovea.ScreenManager
         public MovingObject()
         {
            this.Radius = 5;
-           this.SpeedX = 1000;
-           this.SpeedY = 0;
-           this.NoiseX = 1;
-           this.NoiseY = 1;
         }
     }
 }

@@ -92,10 +92,10 @@ namespace Kinovea.ScreenManager
             ButterworthFilter filter = new ButterworthFilter();
             int bestCutoffIndex;
 
-            kinematics.Xs = filter.FilterSamples(kinematics.RawXs, framerate, 100, out bestCutoffIndex);
+            kinematics.FilterResultXs = filter.FilterSamples(kinematics.RawXs, framerate, 100, out bestCutoffIndex);
             kinematics.XCutoffIndex = bestCutoffIndex;
 
-            kinematics.Ys = filter.FilterSamples(kinematics.RawYs, framerate, 100, out bestCutoffIndex);
+            kinematics.FilterResultYs = filter.FilterSamples(kinematics.RawYs, framerate, 100, out bestCutoffIndex);
             kinematics.YCutoffIndex = bestCutoffIndex;
         }
 
@@ -171,6 +171,12 @@ namespace Kinovea.ScreenManager
             }
 
             PadVelocities(kinematics);
+
+            double constantVelocitySpan = 40;
+            MovingAverage filter = new MovingAverage();
+            kinematics.Speed = filter.FilterSamples(kinematics.Speed, calibrationHelper.FramesPerSecond, constantVelocitySpan, 1);
+            kinematics.HorizontalVelocity = filter.FilterSamples(kinematics.HorizontalVelocity, calibrationHelper.FramesPerSecond, constantVelocitySpan, 1);
+            kinematics.VerticalVelocity = filter.FilterSamples(kinematics.VerticalVelocity, calibrationHelper.FramesPerSecond, constantVelocitySpan, 1);
         }
 
         private void ComputeRawAccelerations(TrajectoryKinematics kinematics, CalibrationHelper calibrationHelper)
@@ -206,6 +212,7 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            // First pass: average speed over 2t centered on each data point.
             for (int i = 2; i < kinematics.Length - 2; i++)
             {
                 PointF p0 = kinematics.Coordinates(i - 2);
@@ -215,12 +222,23 @@ namespace Kinovea.ScreenManager
                 float t24 = calibrationHelper.GetTime(2);
                 float t13 = calibrationHelper.GetTime(2);
 
-                kinematics.Acceleration[i] = calibrationHelper.ConvertAcceleration(GetAcceleration(p0, p2, p4, t02, t24, t13, Component.Magnitude));
-                kinematics.HorizontalAcceleration[i] = calibrationHelper.ConvertAcceleration(GetAcceleration(p0, p2, p4, t02, t24, t13, Component.Horizontal));
-                kinematics.VerticalAcceleration[i] = calibrationHelper.ConvertAcceleration(GetAcceleration(p0, p2, p4, t02, t24, t13, Component.Vertical));
+                double acceleration = (kinematics.Speed[i + 1] - kinematics.Speed[i - 1]) / t13;
+                kinematics.Acceleration[i] = calibrationHelper.ConvertAccelerationFromVelocity((float)acceleration);
+                
+                double horizontalAcceleration = (kinematics.HorizontalVelocity[i + 1] - kinematics.HorizontalVelocity[i - 1]) / t13;
+                kinematics.HorizontalAcceleration[i] = calibrationHelper.ConvertAccelerationFromVelocity((float)horizontalAcceleration);
+
+                double verticalAcceleration = (kinematics.VerticalVelocity[i + 1] - kinematics.VerticalVelocity[i - 1]) / t13;
+                kinematics.VerticalAcceleration[i] = calibrationHelper.ConvertAccelerationFromVelocity((float)verticalAcceleration);
             }
 
             PadAccelerations(kinematics);
+
+            double constantAccelerationSpan = 50;
+            MovingAverage filter = new MovingAverage();
+            kinematics.Acceleration = filter.FilterSamples(kinematics.Acceleration, calibrationHelper.FramesPerSecond, constantAccelerationSpan, 2);
+            kinematics.HorizontalAcceleration = filter.FilterSamples(kinematics.HorizontalAcceleration, calibrationHelper.FramesPerSecond, constantAccelerationSpan, 2);
+            kinematics.VerticalAcceleration = filter.FilterSamples(kinematics.VerticalAcceleration, calibrationHelper.FramesPerSecond, constantAccelerationSpan, 2);
         }
 
         private void ComputeRotationCircle(TrajectoryKinematics kinematics, CalibrationHelper calibrationHelper)
@@ -336,11 +354,8 @@ namespace Kinovea.ScreenManager
         }
 
         #region Low level
-        /// <summary>
-        /// Computes instantaneous velocity between points a and b.
-        /// t : time span between a and b.
-        /// </summary>
-        private float GetSpeed(PointF a, PointF b, float t, Component component)
+        
+        private float GetDistance(PointF a, PointF b, Component component)
         {
             float d = 0;
             switch (component)
@@ -356,6 +371,16 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
+            return d;
+        }
+        
+        /// <summary>
+        /// Computes instantaneous velocity between points a and b.
+        /// t : time span between a and b.
+        /// </summary>
+        private float GetSpeed(PointF a, PointF b, float t, Component component)
+        {
+            float d = GetDistance(a, b, component);
             return d / t;
         }
 
@@ -368,7 +393,9 @@ namespace Kinovea.ScreenManager
         {
             float v02 = GetSpeed(p0, p2, t02, component);
             float v24 = GetSpeed(p2, p4, t24, component);
-            return (v24 - v02) / t13;
+            float a = (v24 - v02) / t13;
+            
+            return a;
         }
 
         /// <summary>

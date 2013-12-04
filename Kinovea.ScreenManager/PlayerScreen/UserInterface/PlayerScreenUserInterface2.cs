@@ -471,7 +471,7 @@ namespace Kinovea.ScreenManager
             SetupPrimarySelectionPanel();
             
             // Other various infos.
-            m_FrameServer.SetupMetadata();
+            m_FrameServer.SetupMetadata(true);
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
             m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
             
@@ -575,7 +575,8 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
             ActivateKeyframe(m_iCurrentPosition);
 
-            m_FrameServer.SetupMetadata();
+            m_fHighSpeedFactor = m_FrameServer.Metadata.CalibrationHelper.FramesPerSecond / m_FrameServer.VideoReader.Info.FramesPerSeconds;
+            m_FrameServer.SetupMetadata(false);
             m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
             
             DoInvalidate();
