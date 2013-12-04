@@ -96,6 +96,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
+        private bool initialized;
         private CalibratorType calibratorType = CalibratorType.Line;
         private ICalibrator calibrator;
         private CalibrationLine calibrationLine = new CalibrationLine();
@@ -128,6 +129,8 @@ namespace Kinovea.ScreenManager
         {
             this.imageSize = imageSize;
             SetOrigin(imageSize.Center());
+            initialized = true;
+            ComputeBoundingRectangle();
         }
         
         /// <summary>
@@ -404,6 +407,8 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
+
+            AfterCalibrationChanged();
         }
         #endregion
 
@@ -420,6 +425,9 @@ namespace Kinovea.ScreenManager
             // Tries to find a rectangle in real world coordinates corresponding to the image corners.
             // This is used by coordinate systems to find a good filling of the image plane for drawing the grid.
             // The result is given back in real world coordinates.
+
+            if (!initialized)
+                return;
 
             if (calibratorType == CalibratorType.Line)
             {
