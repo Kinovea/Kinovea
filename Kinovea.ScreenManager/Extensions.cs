@@ -141,6 +141,10 @@ namespace Kinovea.ScreenManager
         {
             return new PointF(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
         }
+        public static RectangleF Translate(this RectangleF r, float dx, float dy)
+        {
+            return new RectangleF(r.X + dx, r.Y + dy, r.Width, r.Height);
+        }
         public static RectangleF CenteredScale(this RectangleF rect, float scale)
         {
             // Returns a rectangle centered on the same point but scaled in both dimensions by given factor.

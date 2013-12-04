@@ -265,6 +265,7 @@
     <Compile Include="Delegates.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="PlayerScreen\Kinematics\Component.cs" />
+    <Compile Include="PlayerScreen\Kinematics\MovingAverage.cs" />
     <Compile Include="PlayerScreen\Test\MovingObject.cs" />
     <Compile Include="PlayerScreen\Test\VideoSynthesizer.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackerParameterUnit.cs" />

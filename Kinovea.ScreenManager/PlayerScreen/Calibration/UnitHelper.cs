@@ -237,6 +237,9 @@ namespace Kinovea.ScreenManager
             return result;
         }
 
+        /// <summary>
+        /// Takes an angular acceleration in radians per second squared and returns it in angular acceleration unit.
+        /// </summary>
         public static float ConvertAngularAcceleration(float radiansPerSecondSquared, AngularAccelerationUnit unit)
         {
             float result = 0;
@@ -252,6 +255,49 @@ namespace Kinovea.ScreenManager
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Takes a value in speed unit and returns it in length unit.
+        /// </summary>
+        public static float ConvertForLengthUnit(float v, SpeedUnit speedUnits, LengthUnit lengthUnit)
+        {
+            // Convert from one length unit to another, source unit is extracted from velocity unit.
+            // first convert into meters, then from meters to output.
+            if (speedUnits == SpeedUnit.PixelsPerSecond)
+                return v;
+
+            float metersPerSecond = GetMeters(v, speedUnits);
+
+            double result = 0;
+            switch (lengthUnit)
+            {
+                case LengthUnit.Centimeters:
+                    result = metersPerSecond / centimeterToMeters;
+                    break;
+                case LengthUnit.Feet:
+                    result = metersPerSecond / footToMeters;
+                    break;
+                case LengthUnit.Inches:
+                    result = metersPerSecond / inchToMeters;
+                    break;
+                case LengthUnit.Meters:
+                    result = metersPerSecond;
+                    break;
+                case LengthUnit.Millimeters:
+                    result = metersPerSecond / millimeterToMeters;
+                    break;
+                case LengthUnit.Yards:
+                    result = metersPerSecond / yardToMeters;
+                    break;
+                case LengthUnit.Percentage:
+                case LengthUnit.Pixels:
+                default:
+                    result = v;
+                    break;
+            }
+
+            return (float)result;
         }
 
         private static float ConvertLengthForSpeedUnit(float length, LengthUnit lengthUnit, SpeedUnit speedUnits)
@@ -284,7 +330,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case SpeedUnit.PixelsPerSecond:
                 default:
-                    result = 0;
+                    result = length;
                     break;
             }
 
@@ -343,6 +389,35 @@ namespace Kinovea.ScreenManager
                     break;
                 case LengthUnit.Yards:
                     meters = length * yardToMeters;
+                    break;
+            }
+
+            return (float)meters;
+        }
+
+        private static float GetMeters(float speed, SpeedUnit unit)
+        {
+            double meters = 0;
+
+            switch (unit)
+            {
+                case SpeedUnit.MetersPerSecond:
+                    meters = speed;
+                    break;
+                case SpeedUnit.KilometersPerHour:
+                    meters = speed * kilometerToMeters;
+                    break;
+                case SpeedUnit.FeetPerSecond:
+                    meters = speed * footToMeters;
+                    break;
+                case SpeedUnit.MilesPerHour:
+                    meters = speed * mileToMeters;
+                    break;
+                case SpeedUnit.Knots:
+                    meters = speed * nauticalMileToMeters;
+                    break;
+                case SpeedUnit.PixelsPerSecond:
+                    meters = speed;
                     break;
             }
 

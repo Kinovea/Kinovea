@@ -837,6 +837,9 @@ namespace Kinovea.ScreenManager
                     case "FirstTimeStamp":
                         inputFirstTimeStamp = r.ReadElementContentAsLong();
                         break;
+                    case "CaptureFramerate":
+                        calibrationHelper.FramesPerSecond = r.ReadElementContentAsDouble();
+                        break;
                     case "SelectionStart":
                         inputSelectionStart = r.ReadElementContentAsLong();
                         break;
@@ -1274,6 +1277,7 @@ namespace Kinovea.ScreenManager
             
             w.WriteElementString("ImageSize", imageSize.Width + ";" + imageSize.Height);
             w.WriteElementString("AverageTimeStampsPerFrame", averageTimeStampsPerFrame.ToString());
+            w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", calibrationHelper.FramesPerSecond));
             w.WriteElementString("FirstTimeStamp", firstTimeStamp.ToString());
             w.WriteElementString("SelectionStart", selectionStart.ToString());
             

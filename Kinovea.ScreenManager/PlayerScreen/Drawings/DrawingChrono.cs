@@ -211,7 +211,7 @@ namespace Kinovea.ScreenManager
             SizeF totalSize = _canvas.MeasureString(" " + m_Timecode + " ", f);
             SizeF textSize = _canvas.MeasureString(m_Timecode, f);
             f.Dispose();
-            m_MainBackground.Rectangle = new Rectangle(m_MainBackground.Rectangle.Location, new Size((int)totalSize.Width, (int)totalSize.Height));
+            m_MainBackground.Rectangle = new RectangleF(m_MainBackground.Rectangle.Location, totalSize);
             
             using (SolidBrush brushBack = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor * 128)))
             using (SolidBrush brushText = m_StyleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
@@ -256,7 +256,7 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             // Invisible handler to change font size.
-            int wantedHeight = (int)point.Y - m_MainBackground.Rectangle.Location.Y;
+            int wantedHeight = (int)(point.Y - m_MainBackground.Rectangle.Location.Y);
             m_StyleHelper.ForceFontSize(wantedHeight, m_Timecode);
             m_Style.ReadValue();
             UpdateLabelRectangle();
@@ -478,11 +478,10 @@ namespace Kinovea.ScreenManager
             using(Graphics g = but.CreateGraphics())
             {
                 SizeF size = g.MeasureString(m_Label, f);
-                m_lblBackground.Rectangle = new Rectangle(m_MainBackground.X,
-                                                          m_MainBackground.Y - (int)m_lblBackground.Rectangle.Height,
-                                                          (int)size.Width + 11,
-                                                          (int)size.Height);
-                
+                m_lblBackground.Rectangle = new RectangleF(m_MainBackground.X,
+                                                          m_MainBackground.Y - m_lblBackground.Rectangle.Height,
+                                                          size.Width + 11,
+                                                          size.Height);
             }
         }
         private string GetTimecode(long _iTimestamp)
