@@ -21,8 +21,8 @@ namespace Kinovea.ScreenManager
             
             this.Text = "Data analysis";
 
-            DrawPlotCutoffDW(kinematics.Xs, kinematics.Ys);
-            DrawPlot(plotCoordinates, "Position", "pos", calibrationHelper.GetLengthAbbreviation(), kinematics.RawYs, kinematics.RawXs, kinematics.Ys[kinematics.YCutoffIndex].Data, kinematics.Xs[kinematics.XCutoffIndex].Data);
+            DrawPlotCutoffDW(kinematics.FilterResultXs, kinematics.FilterResultYs);
+            DrawPlot(plotCoordinates, "Position", "pos", calibrationHelper.GetLengthAbbreviation(), kinematics.RawYs, kinematics.RawXs, kinematics.Ys, kinematics.Xs);
             DrawPlot(plotHorzVelocity, "Velocity", "velocity", calibrationHelper.GetSpeedAbbreviation(), kinematics.RawVerticalVelocity, kinematics.RawHorizontalVelocity, kinematics.VerticalVelocity, kinematics.HorizontalVelocity);
             //DrawPlot(plotHorzAcceleration, "Acceleration", "acceleration", calibrationHelper.GetAccelerationAbbreviation(), kinematics.RawVerticalAcceleration, kinematics.RawHorizontalAcceleration, kinematics.VerticalAcceleration, kinematics.HorizontalAcceleration);
             DrawPlot(plotHorzAcceleration, "Acceleration", "acceleration", calibrationHelper.GetAccelerationAbbreviation(), null, null, kinematics.VerticalAcceleration, kinematics.HorizontalAcceleration);
@@ -32,7 +32,10 @@ namespace Kinovea.ScreenManager
         private void DrawPlotCutoffDW(List<FilteringResult> xs, List<FilteringResult> ys)
         {
             if (xs == null || ys == null)
+            {
+                plotDurbinWatson.Visible = false;
                 return;
+            }
 
             PlotModel model = new PlotModel("Residuals autocorrelation vs Cutoff frequency") 
             { 
