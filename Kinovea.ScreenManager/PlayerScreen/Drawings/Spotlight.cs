@@ -220,7 +220,10 @@ namespace Kinovea.ScreenManager
                 xmlReader.ReadOuterXml();
                 return;                
             }
-            
+
+            if (xmlReader.MoveToAttribute("id"))
+                id = new Guid(xmlReader.ReadContentAsString());
+
             xmlReader.ReadStartElement();
             
             while(xmlReader.NodeType == XmlNodeType.Element)
@@ -245,6 +248,7 @@ namespace Kinovea.ScreenManager
             }
             
             xmlReader.ReadEndElement();
+            SignalTrackablePointMoved();
         }
         public void WriteXml(XmlWriter xmlWriter)
         {

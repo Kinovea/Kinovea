@@ -3947,6 +3947,7 @@ namespace Kinovea.ScreenManager
             CheckCustomDecodingSize(true);
             ShowNextFrame(m_iCurrentPosition, true);
             ToggleTrackingCommand.Execute(drawing);
+            RefreshImage();
         }
         private void mnuDeleteDrawing_Click(object sender, EventArgs e)
         {

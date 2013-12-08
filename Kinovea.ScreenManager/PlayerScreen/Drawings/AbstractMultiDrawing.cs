@@ -5,6 +5,7 @@ Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.p
 */
 #endregion
 using System;
+using System.Collections.Generic;
 
 namespace Kinovea.ScreenManager
 {

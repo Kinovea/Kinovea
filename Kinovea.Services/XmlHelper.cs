@@ -234,5 +234,11 @@ namespace Kinovea.Services
 
             return rectangle;
         }
+    
+        public static string WritePointF(PointF point)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0};{1}", point.X, point.Y);
+        }
+    
     }
 }

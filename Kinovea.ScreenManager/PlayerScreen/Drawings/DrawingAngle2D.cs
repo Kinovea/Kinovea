@@ -52,12 +52,13 @@ namespace Kinovea.ScreenManager
         public override int ContentHash
         {
             get 
-            { 
-                int hash = points["o"].GetHashCode();
-                hash ^= points["a"].GetHashCode();
-                hash ^= points["b"].GetHashCode();
+            {
+                int hash = 0;
+                
+                // The hash of positions will be taken into by trackability manager.
                 hash ^= styleHelper.ContentHash;
                 hash ^= infosFading.ContentHash;
+                
                 return hash; 
             }
         } 
@@ -92,7 +93,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private Guid id = Guid.NewGuid();
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         
@@ -262,6 +262,9 @@ namespace Kinovea.ScreenManager
         #region KVA Serialization
         private void ReadXml(XmlReader xmlReader, PointF scale)
         {
+            if (xmlReader.MoveToAttribute("id"))
+                id = new Guid(xmlReader.ReadContentAsString());
+
             xmlReader.ReadStartElement();
             
             while(xmlReader.NodeType == XmlNodeType.Element)
@@ -297,13 +300,14 @@ namespace Kinovea.ScreenManager
             points["a"] = points["a"].Scale(scale.X, scale.Y);
             points["b"] = points["b"].Scale(scale.X, scale.Y);
             ComputeValues();
+            SignalAllTrackablePointsMoved();
         }
         public void WriteXml(XmlWriter xmlWriter)
         {
             xmlWriter.WriteElementString("PointO", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["o"].X, points["o"].Y));
             xmlWriter.WriteElementString("PointA", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["a"].X, points["a"].Y));
             xmlWriter.WriteElementString("PointB", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["b"].X, points["b"].Y));
-            
+
             xmlWriter.WriteStartElement("DrawingStyle");
             style.WriteXml(xmlWriter);
             xmlWriter.WriteEndElement();
@@ -316,7 +320,7 @@ namespace Kinovea.ScreenManager
             xmlWriter.WriteStartElement("Measure");        	
             int angle = (int)Math.Floor(-angleHelper.CalibratedAngle.Sweep);
             xmlWriter.WriteAttributeString("UserAngle", angle.ToString());
-            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();      	
         }
         #endregion
         
@@ -328,10 +332,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ITrackable implementation and support.
-        public Guid ID
-        {
-            get { return id; }
-        }
         public TrackingProfile CustomTrackingProfile
         {
             get { return null; }

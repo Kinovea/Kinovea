@@ -102,7 +102,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private Guid id = Guid.NewGuid();
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool showAxis = true;
         private bool showGrid = true;
@@ -285,10 +284,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ITrackable implementation and support.
-        public Guid ID
-        {
-            get { return id; }
-        }
         public TrackingProfile CustomTrackingProfile
         {
             get { return null; }
@@ -355,6 +350,9 @@ namespace Kinovea.ScreenManager
         }
         public void ReadXml(XmlReader r)
         {
+            if (r.MoveToAttribute("id"))
+                id = new Guid(r.ReadContentAsString());
+
             r.ReadStartElement();
             
             while(r.NodeType == XmlNodeType.Element)

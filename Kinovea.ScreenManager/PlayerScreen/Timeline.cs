@@ -79,5 +79,21 @@ namespace Kinovea.ScreenManager
             
             frames.Clear();
         }
+   
+        public IEnumerable<T> Enumerate()
+        {
+            foreach (KeyValuePair<long, T> pair in frames)
+                yield return pair.Value;
+        }
+   
+        public int Count 
+        {
+            get { return frames.Count; }
+        }
+
+        public T First
+        {
+            get { return frames.Values[0]; }
+        }
     }
 }

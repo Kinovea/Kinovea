@@ -21,6 +21,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using Kinovea.Video;
+using System.Xml;
+using System.Collections.Generic;
+using System.Globalization;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -31,10 +35,29 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackablePoint
     {
+        #region Properties
         public PointF CurrentValue
         {
             get { return currentValue; }
         }
+        public int ContentHash
+        {
+            get
+            {
+                int hash = 0;
+                hash ^= trackerParameters.ContentHash;
+                hash ^= nonTrackingValue.GetHashCode();
+                foreach (TrackFrame frame in trackTimeline.Enumerate())
+                    hash ^= frame.ContentHash;
+
+                return hash;
+            }
+        }
+        public bool Empty
+        {
+            get { return trackTimeline.Count == 0; }
+        }
+        #endregion
         
         private bool isTracking;
         private PointF currentValue;
@@ -58,17 +81,15 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void SetUserValue(PointF value)
         {
-            // For simplicity we consider this a change of target and invalidate all existing data.
-            // A more clever technique would be to test for similarity with the second closest patch and invalidate more or less 
-            // data depending on whether it's a change of target or just adjustment.
-            
             // The context should have been set at Track() time when we landed on the video frame.
             currentValue = value;
-            nonTrackingValue = value;
-            
-            if(!isTracking)
-                return;
 
+            if (!isTracking)
+            {
+                nonTrackingValue = value;
+                return;
+            }
+            
             if (trackerParameters.ResetOnMove)
                 ClearTimeline();
             
@@ -87,13 +108,22 @@ namespace Kinovea.ScreenManager
                 return;
             
             TrackFrame closestFrame = trackTimeline.ClosestFrom(context.Time);
-            
-            if(closestFrame == null)
-                throw new InvalidOperationException("Tracking called before the trackable point was initialized.");
+
+            if (closestFrame == null)
+            {
+                currentValue = nonTrackingValue;
+                trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.Manual));
+                return;
+            }
             
             if(closestFrame.Time == context.Time)
             {
                 currentValue = closestFrame.Location;
+                
+                // We may not have the template if the timeline was imported from KVA.
+                if (closestFrame.Template == null)
+                    trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, closestFrame.PositionningSource));
+
                 return;
             }
             
@@ -134,19 +164,87 @@ namespace Kinovea.ScreenManager
             this.isTracking = isTracking;
             
             if(!isTracking)
-            {
-                nonTrackingValue = currentValue;
-            }
-            else
-            {
-                //SetTemplateAndSearchWindowSizes();
-                
                 currentValue = nonTrackingValue;
-                ClearTimeline();
-                trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.Manual)); 
-            }
+            else if (context != null)
+                Track(context);
         }
-        
+
+        public void WriteXml(XmlWriter w)
+        {
+            w.WriteStartElement("TrackerParameters");
+            trackerParameters.WriteXml(w);
+            w.WriteEndElement();
+
+            w.WriteElementString("NonTrackingValue", XmlHelper.WritePointF(nonTrackingValue));
+            w.WriteElementString("CurrentValue", XmlHelper.WritePointF(currentValue));
+
+            w.WriteStartElement("Timeline");
+            foreach (TrackFrame frame in trackTimeline.Enumerate())
+            {
+                w.WriteStartElement("Frame");
+                w.WriteAttributeString("time", frame.Time.ToString());
+                w.WriteAttributeString("location", XmlHelper.WritePointF(frame.Location));
+                w.WriteAttributeString("source", frame.PositionningSource.ToString());
+                w.WriteEndElement();
+            }
+            w.WriteEndElement();
+        }
+
+        public TrackablePoint(XmlReader r)
+        {
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "TrackerParameters":
+                        trackerParameters = TrackerParameters.ReadXml(r);
+                        break;
+                    case "NonTrackingValue":
+                        nonTrackingValue = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    case "CurrentValue":
+                        currentValue = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    case "Timeline":
+                        ParseTimeline(r);
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        break;
+                }
+            }
+
+            r.ReadEndElement();
+        }
+
+        private void ParseTimeline(XmlReader r)
+        {
+            trackTimeline.Clear();
+            
+            bool isEmpty = r.IsEmptyElement;
+
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "Frame":
+                        TrackFrame frame = new TrackFrame(r);
+                        trackTimeline.Insert(frame.Time, frame);
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        break;
+                }
+            }
+
+            if (!isEmpty)
+                r.ReadEndElement();
+        }
+
         private TrackFrame CreateTrackFrame(PointF location, PositionningSource positionningSource)
         {
             Rectangle region = location.Box(trackerParameters.BlockWindow).ToRectangle();
@@ -156,7 +254,11 @@ namespace Kinovea.ScreenManager
 
         private void ClearTimeline()
         {
-            trackTimeline.Clear((frame) => frame.Template.Dispose());
+            trackTimeline.Clear((frame) => 
+            {
+                if (frame.Template != null)
+                    frame.Template.Dispose();
+            });
         }
         
     }

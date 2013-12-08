@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static TrackResult Track(Size searchWindow, TrackFrame reference, Bitmap image)
         {
-            if(image == null)
+            if(image == null || reference.Template == null)
                 throw new ArgumentException("image");
 
             Rectangle searchZone = reference.Location.Box(searchWindow).ToRectangle();
