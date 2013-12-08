@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.Drawing;
 
 using Kinovea.Video;
+using System.Xml;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -33,25 +35,75 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class DrawingTracker
     {
-        public bool IsTracking 
-        { 
+        #region Properties
+        public bool IsTracking
+        {
             get { return isTracking; }
         }
+
+        public Guid ID
+        {
+            get { return drawingId; }
+        }
+
+        public bool Assigned
+        {
+            get { return assigned; }
+        }
+        public int ContentHash
+        {
+            get
+            {
+                int hash = 0;
+                hash ^= isTracking.GetHashCode();
+                foreach (TrackablePoint point in trackablePoints.Values)
+                    hash ^= point.ContentHash;
+
+                return hash;
+            }
+        }
+        public bool Empty
+        {
+            get 
+            {
+                foreach (TrackablePoint point in trackablePoints.Values)
+                    if (!point.Empty)
+                        return false;
+
+                return true;
+            }
+        }
+        #endregion
         
         private ITrackable drawing;
+        private Guid drawingId;
         private bool isTracking;
+        private bool assigned;
         private TrackerParameters parameters;
         private Dictionary<string, TrackablePoint> trackablePoints = new Dictionary<string, TrackablePoint>();
         
         public DrawingTracker(ITrackable drawing, TrackingContext context, TrackerParameters parameters)
         {
             this.drawing = drawing;
+            this.drawingId = drawing.ID;
             this.parameters = parameters;
-            
+           
             foreach(KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
                 trackablePoints.Add(pair.Key, new TrackablePoint(context, parameters, pair.Value));
             
             drawing.TrackablePointMoved += drawing_TrackablePointMoved;
+            assigned = true;
+        }
+
+        public void Assign(ITrackable drawing)
+        {
+            if (drawing.ID != drawingId)
+                return;
+
+            this.drawing = drawing;
+            this.drawing.TrackablePointMoved += drawing_TrackablePointMoved;
+            AfterToggleTracking();
+            assigned = true;
         }
   
         public void Track(TrackingContext context)
@@ -70,13 +122,13 @@ namespace Kinovea.ScreenManager
         public void ToggleTracking()
         {
             isTracking = !isTracking;
-            
+            AfterToggleTracking();
+        }
+
+        private void AfterToggleTracking()
+        {
             foreach(KeyValuePair<string, TrackablePoint> pair in trackablePoints)
-            {
                 pair.Value.SetTracking(isTracking);
-                if(!isTracking)
-                    drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue);
-            }
             
             drawing.SetTracking(isTracking);
         }
@@ -92,7 +144,8 @@ namespace Kinovea.ScreenManager
             foreach (TrackablePoint trackablePoint in trackablePoints.Values)
                 trackablePoint.Reset();
                         
-            drawing.TrackablePointMoved -= drawing_TrackablePointMoved;
+            if (drawing != null)
+                drawing.TrackablePointMoved -= drawing_TrackablePointMoved;
         }
         
         private void drawing_TrackablePointMoved(object sender, TrackablePointMovedEventArgs e)
@@ -101,6 +154,59 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             trackablePoints[e.PointName].SetUserValue(e.Position);
+        }
+
+        public void WriteXml(XmlWriter w)
+        {
+            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+            {
+                w.WriteStartElement("TrackablePoint");
+                w.WriteAttributeString("key", pair.Key.ToString());
+                pair.Value.WriteXml(w);
+                w.WriteEndElement();
+            }
+        }
+
+        public DrawingTracker(XmlReader r)
+        {
+            bool isEmpty = r.IsEmptyElement;
+
+            if (r.MoveToAttribute("id"))
+                drawingId = new Guid(r.ReadContentAsString());
+
+            if (r.MoveToAttribute("tracking"))
+                isTracking = XmlHelper.ParseBoolean(r.ReadContentAsString());
+
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "TrackablePoint":
+                        ParseTrackablePoint(r);
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        break;
+                }
+            }
+
+            if (!isEmpty)
+                r.ReadEndElement();
+        }
+
+        private void ParseTrackablePoint(XmlReader r)
+        {
+            string key = "";
+            
+            bool isEmpty = r.IsEmptyElement;
+
+            if (r.MoveToAttribute("key"))
+                key = r.ReadContentAsString();
+
+            TrackablePoint point = new TrackablePoint(r);
+            trackablePoints.Add(key, point);
         }
     }
 }

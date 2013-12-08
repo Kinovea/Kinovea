@@ -117,7 +117,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private Guid id = Guid.NewGuid();
         private bool tracking;
         private GenericPosture m_GenericPosture;
         private List<AngleHelper> m_Angles = new List<AngleHelper>();
@@ -275,6 +274,9 @@ namespace Kinovea.ScreenManager
             // The id must be read before the point list.
             Guid toolId;
 
+            if (_xmlReader.MoveToAttribute("id"))
+                id = new Guid(_xmlReader.ReadContentAsString());
+
             _xmlReader.ReadStartElement();
             while (_xmlReader.NodeType == XmlNodeType.Element)
             {
@@ -305,6 +307,7 @@ namespace Kinovea.ScreenManager
             }
             
             _xmlReader.ReadEndElement();
+            SignalAllTrackablePointsMoved();
         }
         private void ParsePointList(XmlReader _xmlReader, PointF _scale)
         {
@@ -389,10 +392,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ITrackable implementation and support.
-        public Guid ID
-        {
-            get { return id; }
-        }
         public TrackingProfile CustomTrackingProfile
         {
             get { return m_GenericPosture.CustomTrackingProfile; }

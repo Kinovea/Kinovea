@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Linq;
 
 using Kinovea.Video;
+using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
@@ -32,16 +33,31 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackabilityManager
     {
+        #region Properties
         public bool Tracking
         {
             get { return trackers.Values.Any((tracker) => tracker.IsTracking); }
         }
-        
+        public int ContentHash
+        {
+            get 
+            {
+                int hash = 0;
+                foreach (DrawingTracker tracker in trackers.Values)
+                    hash ^= tracker.ContentHash;
+
+                return hash;
+            }
+        }
+        #endregion
+
+        #region Properties
         private Dictionary<Guid, DrawingTracker> trackers = new Dictionary<Guid, DrawingTracker>();
         private TrackingProfileManager trackingProfileManager = new TrackingProfileManager();
         private Size imageSize;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+        #endregion
+
         public void Initialize(Size imageSize)
         {
             this.imageSize = imageSize;
@@ -58,7 +74,25 @@ namespace Kinovea.ScreenManager
             TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
             trackers.Add(drawing.ID, new DrawingTracker(drawing, context, parameters));
         }
+
+        public void Assign(ITrackable drawing)
+        {
+            if (trackers.ContainsKey(drawing.ID) && !trackers[drawing.ID].Assigned)
+                trackers[drawing.ID].Assign(drawing);
+        }
         
+        public void CleanUnassigned()
+        {
+            foreach (KeyValuePair<Guid, DrawingTracker> pair in trackers)
+            {
+                if (pair.Value.Assigned)
+                    continue;
+
+                pair.Value.Dispose();
+                trackers.Remove(pair.Key);
+            }
+        }
+
         public void Clear()
         {
             foreach(DrawingTracker tracker in trackers.Values)
@@ -124,6 +158,58 @@ namespace Kinovea.ScreenManager
             }
             
             return contains;
+        }
+
+        public void WriteXml(XmlWriter w)
+        {
+            foreach (DrawingTracker tracker in trackers.Values)
+            {
+                if (tracker.Empty)
+                    continue;
+
+                w.WriteStartElement("TrackableDrawing");
+                w.WriteAttributeString("id", tracker.ID.ToString());
+                w.WriteAttributeString("tracking", tracker.IsTracking.ToString().ToLower());
+                tracker.WriteXml(w);
+                w.WriteEndElement();
+            }
+        }
+
+        public void ReadXml(XmlReader r)
+        {
+            bool isEmpty = r.IsEmptyElement;
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "TrackableDrawing":
+                        DrawingTracker tracker = new DrawingTracker(r);
+                        if (trackers.ContainsKey(tracker.ID))
+                        {
+                            trackers[tracker.ID].Dispose();
+                            trackers[tracker.ID] = tracker;
+                        }
+                        else
+                        {
+                            trackers.Add(tracker.ID, tracker);
+                        }
+
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        break;
+                }
+            }
+
+            if (!isEmpty)
+                r.ReadEndElement();
+        }     
+
+        private void ParseTrackableDrawing(XmlReader r)
+        {
+            
         }
     }
 }

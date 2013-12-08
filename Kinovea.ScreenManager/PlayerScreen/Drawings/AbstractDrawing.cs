@@ -33,8 +33,15 @@ namespace Kinovea.ScreenManager
     /// All drawings must implement rendering and manipulation methods.
     /// </summary>
     public abstract class AbstractDrawing
-    {   
-        #region Properties
+    {
+        #region Concrete properties
+        public Guid ID
+        {
+            get { return id; }
+        }
+        #endregion
+
+        #region Abstract properties
         /// <summary>
         /// Gets or set the fading object for this drawing. 
         /// This is used in opacity calculation for Persistence.
@@ -77,8 +84,12 @@ namespace Kinovea.ScreenManager
             get;
         }
         #endregion
-        
-        #region Abstract Methods
+
+        #region Concrete members
+        protected Guid id = Guid.NewGuid();
+        #endregion
+
+        #region Abstract methods
         /// <summary>
         /// Draw this drawing on the provided canvas.
         /// </summary>

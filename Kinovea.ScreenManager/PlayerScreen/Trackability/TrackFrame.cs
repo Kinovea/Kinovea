@@ -20,6 +20,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Xml;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -28,25 +30,38 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackFrame
     {
+        #region Properties
         public long Time
         {
             get { return time; }
         }
-        
+
         public PointF Location
         {
             get { return location; }
         }
-        
+
         public Bitmap Template
         {
             get { return template; }
         }
-        
+
         public PositionningSource PositionningSource
         {
             get { return positionningSource; }
         }
+        public int ContentHash
+        {
+            get
+            {
+                int hash = 0;
+                hash ^= time.GetHashCode();
+                hash ^= location.GetHashCode();
+                hash ^= positionningSource.GetHashCode();
+                return hash;
+            }
+        }
+        #endregion
 
         private long time;
         private PointF location;
@@ -60,7 +75,33 @@ namespace Kinovea.ScreenManager
             this.template = template;
             this.positionningSource = positionningSource;
         }
-        
+
+        public TrackFrame(XmlReader r)
+        {
+            bool isEmpty = r.IsEmptyElement;
+
+            long time = 0;
+            PositionningSource source = PositionningSource.Manual;
+            PointF location = PointF.Empty;
+
+            if (r.MoveToAttribute("time"))
+                time = r.ReadContentAsLong();
+
+            if (r.MoveToAttribute("source"))
+                source = (PositionningSource)Enum.Parse(typeof(PositionningSource), r.ReadContentAsString());
+
+            if (r.MoveToAttribute("location"))
+                location = XmlHelper.ParsePointF(r.ReadContentAsString());
+
+            r.ReadStartElement();
+
+            if (!isEmpty)
+                r.ReadEndElement();
+
+            this.time = time;
+            this.location = location;
+            this.positionningSource = source;
+        }
         
     }
 }

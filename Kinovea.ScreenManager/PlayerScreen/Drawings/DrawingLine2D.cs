@@ -54,9 +54,8 @@ namespace Kinovea.ScreenManager
         public override int ContentHash
         {
             get 
-            { 
-                int iHash = points["a"].GetHashCode();
-                iHash ^= points["b"].GetHashCode();
+            {
+                int iHash = 0;
                 iHash ^= m_StyleHelper.ContentHash;
                 iHash ^= ShowMeasurableInfo.GetHashCode();
                 iHash ^= m_InfosFading.ContentHash;
@@ -99,7 +98,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private Guid id = Guid.NewGuid();
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         
@@ -245,6 +243,9 @@ namespace Kinovea.ScreenManager
         #region KVA Serialization
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
+            if (_xmlReader.MoveToAttribute("id"))
+                id = new Guid(_xmlReader.ReadContentAsString());
+
             _xmlReader.ReadStartElement();
             
             while(_xmlReader.NodeType == XmlNodeType.Element)
@@ -283,6 +284,7 @@ namespace Kinovea.ScreenManager
             _xmlReader.ReadEndElement();
             
             m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
+            SignalAllTrackablePointsMoved();
         }
         public void WriteXml(XmlWriter _xmlWriter)
         {
@@ -327,10 +329,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ITrackable implementation and support.
-        public Guid ID
-        {
-            get { return id; }
-        }
         public TrackingProfile CustomTrackingProfile
         {
             get { return null; }

@@ -61,10 +61,10 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                int currentHash = GetKeyframesContentHash() ^ GetExtraDrawingsContentHash();
-
-                log.DebugFormat("IsDirty. Content hashes = reference:{0}, current:{1}.",referenceHash, currentHash);
-                return currentHash != referenceHash;
+                int currentHash = GetCurrentHash();
+                bool dirty = currentHash != referenceHash;
+                log.DebugFormat("Dirty:{0}, reference hash:{1}, current:{2}.", dirty.ToString(), referenceHash, currentHash);
+                return dirty;
             }
         }
         public string GlobalTitle
@@ -327,6 +327,20 @@ namespace Kinovea.ScreenManager
                 if (drawing is DrawingSVG)
                     yield return (DrawingSVG)drawing;
         }
+        public IEnumerable<ITrackable> TrackableDrawings()
+        {
+            foreach (AbstractDrawing drawing in extraDrawings)
+            {
+                if (drawing is ITrackable)
+                    yield return (ITrackable)drawing;
+
+                // TODO: multi drawings.
+            }
+
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is ITrackable)
+                    yield return (ITrackable)drawing;
+        }
         #endregion
         
         #region Add/Delete drawings
@@ -549,7 +563,7 @@ namespace Kinovea.ScreenManager
         }
         public void CleanupHash()
         {
-            referenceHash = GetKeyframesContentHash() ^ GetExtraDrawingsContentHash();
+            referenceHash = GetCurrentHash();
             log.Debug(String.Format("Metadata content hash reset:{0}.", referenceHash));
         }
         public List<Bitmap> GetFullImages()
@@ -864,6 +878,9 @@ namespace Kinovea.ScreenManager
                     case "CoordinateSystem":
                         ParseCoordinateSystem(r);
                         break;
+                    case "Trackability":
+                        ParseTrackability(r);
+                        break;
                     default:
                         // We still need to properly skip the unparsed nodes.
                         string unparsed = r.ReadOuterXml();
@@ -873,6 +890,8 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
+
+            AssignTrackers();
         }
         private void ParseKeyframes(XmlReader r)
         {
@@ -1103,6 +1122,10 @@ namespace Kinovea.ScreenManager
         {
             drawingCoordinateSystem.ReadXml(_xmlReader);
         }
+        private void ParseTrackability(XmlReader r)
+        {
+            trackabilityManager.ReadXml(r);
+        }
         private PointF GetScaling()
         {
             PointF scaling = new PointF(1.0f, 1.0f);
@@ -1112,6 +1135,13 @@ namespace Kinovea.ScreenManager
                 scaling.Y = (float)imageSize.Height / (float)inputImageSize.Height;    
             }
             return scaling;       
+        }
+        private void AssignTrackers()
+        {
+            foreach (ITrackable drawing in TrackableDrawings())
+                trackabilityManager.Assign(drawing);
+
+            trackabilityManager.CleanUnassigned();
         }
         #endregion
         
@@ -1191,8 +1221,27 @@ namespace Kinovea.ScreenManager
             WriteSpotlights(w);
             WriteAutoNumbers(w);
             WriteCoordinateSystem(w);
+            WriteTrackablePoints(w);
             
             w.WriteEndElement();
+        }
+        private void WriteGeneralInformation(XmlWriter w)
+        {
+            w.WriteElementString("FormatVersion", "2.0");
+            w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
+            w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(fullPath));
+            
+            if(!string.IsNullOrEmpty(globalTitle))
+                w.WriteElementString("GlobalTitle", globalTitle);
+            
+            w.WriteElementString("ImageSize", imageSize.Width + ";" + imageSize.Height);
+            w.WriteElementString("AverageTimeStampsPerFrame", averageTimeStampsPerFrame.ToString());
+            w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", calibrationHelper.FramesPerSecond));
+            w.WriteElementString("FirstTimeStamp", firstTimeStamp.ToString());
+            w.WriteElementString("SelectionStart", selectionStart.ToString());
+            
+            // Calibration
+            WriteCalibrationHelp(w);
         }
         private void WriteChronos(XmlWriter w)
         {
@@ -1263,31 +1312,20 @@ namespace Kinovea.ScreenManager
         private void WriteCoordinateSystem(XmlWriter w)
         {
             w.WriteStartElement("CoordinateSystem");
+            w.WriteAttributeString("id", drawingCoordinateSystem.ID.ToString());
             drawingCoordinateSystem.WriteXml(w);
             w.WriteEndElement();
         } 
-        private void WriteGeneralInformation(XmlWriter w)
-        {
-            w.WriteElementString("FormatVersion", "2.0");
-            w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
-            w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(fullPath));
-            
-            if(!string.IsNullOrEmpty(globalTitle))
-                w.WriteElementString("GlobalTitle", globalTitle);
-            
-            w.WriteElementString("ImageSize", imageSize.Width + ";" + imageSize.Height);
-            w.WriteElementString("AverageTimeStampsPerFrame", averageTimeStampsPerFrame.ToString());
-            w.WriteElementString("CaptureFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", calibrationHelper.FramesPerSecond));
-            w.WriteElementString("FirstTimeStamp", firstTimeStamp.ToString());
-            w.WriteElementString("SelectionStart", selectionStart.ToString());
-            
-            // Calibration
-            WriteCalibrationHelp(w);
-        }
         private void WriteCalibrationHelp(XmlWriter w)
         {
             w.WriteStartElement("Calibration");
             CalibrationHelper.WriteXml(w);
+            w.WriteEndElement();
+        }
+        private void WriteTrackablePoints(XmlWriter w)
+        {
+            w.WriteStartElement("Trackability");
+            trackabilityManager.WriteXml(w);
             w.WriteEndElement();
         }
         #endregion
@@ -1318,6 +1356,11 @@ namespace Kinovea.ScreenManager
             }
         }
    
+        private int GetCurrentHash()
+        {
+            return GetKeyframesContentHash() ^ GetExtraDrawingsContentHash() ^ trackabilityManager.ContentHash;
+        }
+
         #region Lower level Helpers
         public long DoRemapTimestamp(long _iInputTimestamp, bool bRelative)
         {

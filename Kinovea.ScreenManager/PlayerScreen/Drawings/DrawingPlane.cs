@@ -57,11 +57,12 @@ namespace Kinovea.ScreenManager
         public override int ContentHash
         {
             get 
-            { 
-                int iHash = quadImage.A.GetHashCode();
+            {
+                int iHash = 0;
+                /*quadImage.A.GetHashCode();
                 iHash ^= quadImage.B.GetHashCode();
                 iHash ^= quadImage.C.GetHashCode();
-                iHash ^= quadImage.D.GetHashCode();
+                iHash ^= quadImage.D.GetHashCode();*/
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= infosFading.ContentHash;
                 return iHash;
@@ -112,7 +113,6 @@ namespace Kinovea.ScreenManager
         private bool inPerspective;
         private bool planeIsConvex = true;
         
-        private Guid id = Guid.NewGuid();
         private bool tracking;
         
         private InfosFading infosFading;
@@ -285,6 +285,9 @@ namespace Kinovea.ScreenManager
         #region KVA Serialization
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
+            if (_xmlReader.MoveToAttribute("id"))
+                id = new Guid(_xmlReader.ReadContentAsString());
+
             _xmlReader.ReadStartElement();
             
             Reset();
@@ -337,6 +340,8 @@ namespace Kinovea.ScreenManager
                 inPerspective = true;
                 
             initialized = true;
+
+            SignalAllTrackablePointsMoved();
         }
         private PointF ReadPoint(XmlReader reader, PointF scale)
         {
@@ -395,10 +400,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ITrackable implementation and support.
-        public Guid ID
-        {
-            get { return id; }
-        }
         public TrackingProfile CustomTrackingProfile
         {
             get { return null; }

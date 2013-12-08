@@ -222,6 +222,7 @@ namespace Kinovea.ScreenManager
             foreach(Spotlight spot in spotlights)
             {
                 w.WriteStartElement("Spotlight");
+                w.WriteAttributeString("id", spot.ID.ToString());
                 spot.WriteXml(w);
                 w.WriteEndElement();
             }
