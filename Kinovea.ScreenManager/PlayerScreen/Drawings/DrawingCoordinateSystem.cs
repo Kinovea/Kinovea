@@ -194,6 +194,7 @@ namespace Kinovea.ScreenManager
             x = -stepWidth;
             while (x >= bounds.Left)
             {
+                p.DashStyle = DashStyle.Dash;
                 DrawLine(canvas, transformer, p, new PointF(x, top), new PointF(x, bottom));
                 DrawStepTextForPlane(canvas, transformer, new PointF(x, 0), TextAlignment.Bottom, x, brushFill, fontBrush, font);
                 x -= stepWidth;
@@ -212,6 +213,7 @@ namespace Kinovea.ScreenManager
             y = stepHeight;
             while (y <= top)
             {
+                p.DashStyle = DashStyle.Dash;
                 DrawLine(canvas, transformer, p, new PointF(bounds.Left, y), new PointF(bounds.Right, y));
                 DrawStepTextForPlane(canvas, transformer, new PointF(0, y), TextAlignment.Left, y, brushFill, fontBrush, font);
                 y += stepHeight;
