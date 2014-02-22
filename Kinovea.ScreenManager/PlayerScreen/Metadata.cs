@@ -726,13 +726,10 @@ namespace Kinovea.ScreenManager
             settings.CloseInput = true;
 
             XmlReader reader = null;
-            if(_bIsFile)
-                reader = XmlReader.Create(kva, settings);
-            else
-               reader = XmlReader.Create(new StringReader(kva), settings);
             
             try
             {
+                reader = _bIsFile ? XmlReader.Create(kva, settings) : XmlReader.Create(new StringReader(kva), settings);
                 ReadXml(reader);
             }
             catch(Exception e)
@@ -756,10 +753,19 @@ namespace Kinovea.ScreenManager
             string result = _kva;
             
             XmlDocument kvaDoc = new XmlDocument();
-            if(_bIsFile)
-                kvaDoc.Load(_kva);
-            else
-                kvaDoc.LoadXml(_kva);
+            try
+            {
+                if (_bIsFile)
+                    kvaDoc.Load(_kva);
+                else
+                    kvaDoc.LoadXml(_kva);
+            }
+            catch(Exception e)
+            {
+                log.ErrorFormat("The file couldn't be loaded. No conversion or reading will be attempted.");
+                log.Error(e.Message);
+                return result;
+            }
             
             string tempFile = Software.SettingsDirectory + "\\temp.kva";
             XmlWriterSettings settings = new XmlWriterSettings();
