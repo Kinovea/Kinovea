@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             m_StylePreset = ToolManager.GenericPosture.m_StylePreset.Clone();
             

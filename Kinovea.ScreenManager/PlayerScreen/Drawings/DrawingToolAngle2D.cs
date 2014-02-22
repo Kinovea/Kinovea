@@ -75,10 +75,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            Point a = new Point(_Origin.X, _Origin.Y - 50);
-            Point b = new Point(_Origin.X + 50, _Origin.Y);
+            int length = transformer.Untransform(50);
+            Point a = new Point(_Origin.X, _Origin.Y - length);
+            Point b = new Point(_Origin.X + length, _Origin.Y);
             return new DrawingAngle2D(_Origin, a, b, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
         }
         public override Cursor GetCursor(double _fStretchFactor)

@@ -216,7 +216,7 @@ namespace Kinovea.ScreenManager
         
         private void AddDrawing(Point imagePoint, int keyframeIndex, int timestampPerFrame, ImageToViewportTransformer transformer)
         {
-            AbstractDrawing drawing = screenToolManager.ActiveTool.GetNewDrawing(imagePoint, keyframeIndex, timestampPerFrame);
+            AbstractDrawing drawing = screenToolManager.ActiveTool.GetNewDrawing(imagePoint, keyframeIndex, timestampPerFrame, transformer);
             metadata.AddDrawing(drawing, keyframeIndex);
             
             // Special cases

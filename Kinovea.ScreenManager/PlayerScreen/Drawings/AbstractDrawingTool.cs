@@ -91,9 +91,8 @@ namespace Kinovea.ScreenManager
     	/// </summary>
     	/// <param name="_Origin">The image coordinates the drawing should be initialized with</param>
     	/// <param name="_iTimestamp">The time position where the drawing is added</param>
-    	/// <param name="_AverageTimeStampsPerFrame"></param>
     	/// <returns>A new drawing object</returns>
-    	public abstract AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame);
+    	public abstract AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer);
 
     	/// <summary>
     	/// Retrieve the cursor we should dispaly when this tool is the active tool.

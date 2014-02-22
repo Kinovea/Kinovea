@@ -124,7 +124,7 @@ namespace Kinovea.ScreenManager
             double opacity = infosFading.GetOpacityFactor(timeStamp);
             if(tracking || opacity > 0)
             {
-                if(IsPointOnHandler(point))
+                if(IsPointOnHandler(point, transformer))
                     result = 1;
                 else if (IsPointInObject(point))
                     result = 0;
@@ -193,13 +193,14 @@ namespace Kinovea.ScreenManager
             }
             return hit;
         }
-        private bool IsPointOnHandler(Point point)
+        private bool IsPointOnHandler(Point point, IImageToViewportTransformer transformer)
         {
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
             {
                 areaPath.AddArc(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2, 0, 360);
-                using(Pen areaPen = new Pen(Color.Black, 10))
+                int expander = transformer.Untransform(10);
+                using(Pen areaPen = new Pen(Color.Black, expander))
                 {
                     areaPath.Widen(areaPen);
                 }

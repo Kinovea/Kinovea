@@ -113,7 +113,6 @@ namespace Kinovea.ScreenManager
             points.Add("o", o);
             points.Add("a", a);
             points.Add("b", b);
-            ComputeValues();
 
             // Decoration and binding to mini editors.
             styleHelper.Bicolor = new Bicolor(Color.Empty);
@@ -148,8 +147,7 @@ namespace Kinovea.ScreenManager
             if (opacityFactor <= 0)
                 return;
             
-            if(CalibrationHelper != null && CalibrationHelper.CalibratorType == CalibratorType.Plane)
-                ComputeValues();
+            ComputeValues(transformer);
             
             Point pointO = transformer.Transform(points["o"]);
             Point pointA = transformer.Transform(points["a"]);
@@ -246,15 +244,12 @@ namespace Kinovea.ScreenManager
                 default:
                     break;
             }
-
-            ComputeValues();
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
             points["o"] = points["o"].Translate(dx, dy);
             points["a"] = points["a"].Translate(dx, dy);
             points["b"] = points["b"].Translate(dx, dy);
-            ComputeValues();
             SignalAllTrackablePointsMoved();
         }
         #endregion
@@ -299,7 +294,6 @@ namespace Kinovea.ScreenManager
             points["o"] = points["o"].Scale(scale.X, scale.Y);
             points["a"] = points["a"].Scale(scale.X, scale.Y);
             points["b"] = points["b"].Scale(scale.X, scale.Y);
-            ComputeValues();
             SignalAllTrackablePointsMoved();
         }
         public void WriteXml(XmlWriter xmlWriter)
@@ -350,7 +344,6 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
-            ComputeValues();
         }
         private void SignalAllTrackablePointsMoved()
         {
@@ -375,7 +368,6 @@ namespace Kinovea.ScreenManager
             PointF temp = points["a"];
             points["a"] = points["b"];
             points["b"] = temp;
-            ComputeValues();
             SignalAllTrackablePointsMoved();
             CallInvalidateFromMenu(sender);
         }
@@ -386,25 +378,24 @@ namespace Kinovea.ScreenManager
         {
             style.Bind(styleHelper, "Bicolor", "line color");
         }
-        private void ComputeValues()
+        private void ComputeValues(IImageToViewportTransformer transformer)
         {
-            FixIfNull();
-            angleHelper.Update(points["o"], points["a"], points["b"], 0, Color.Transparent, CalibrationHelper);
+            FixIfNull(transformer);
+            angleHelper.Update(points["o"], points["a"], points["b"], 0, Color.Transparent, CalibrationHelper, transformer);
         }
-        private void FixIfNull()
+        private void FixIfNull(IImageToViewportTransformer transformer)
         {
+            int length = transformer.Untransform(50);
             if (points["a"] == points["o"])
-                points["a"] = points["o"].Translate(50, 0);
+                points["a"] = points["o"].Translate(length, 0);
 
             if (points["b"] == points["o"])
-                points["b"] = points["o"].Translate(0, -50);
+                points["b"] = points["o"].Translate(0, -length);
         }
         private bool IsPointInObject(Point _point)
         {
             return angleHelper.Hit(_point);
         }
         #endregion
-    }
-
-       
+    } 
 }
