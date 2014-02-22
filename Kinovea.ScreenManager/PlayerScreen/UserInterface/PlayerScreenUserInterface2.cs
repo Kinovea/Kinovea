@@ -2119,8 +2119,6 @@ namespace Kinovea.ScreenManager
             {
                 ResizeUpdate(true);
             }
-                        
-            log.DebugFormat("CheckCustomDecodingSize. was:{0}, is:{1}", wasCustomDecodingSize, m_bEnableCustomDecodingSize);
         }
         #endregion
         
@@ -2606,7 +2604,7 @@ namespace Kinovea.ScreenManager
             else if (m_ActiveTool == ToolManager.Chrono)
             {
                 // Add a Chrono.
-                DrawingChrono chrono = (DrawingChrono)m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+                DrawingChrono chrono = (DrawingChrono)m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
                 m_FrameServer.Metadata.AddChrono(chrono);
                 m_ActiveTool = m_PointerTool;
             }
@@ -2638,7 +2636,7 @@ namespace Kinovea.ScreenManager
             
             if (m_ActiveTool != ToolManager.Label)
             {
-                AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+                AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
                 
                 if(DrawingAdded != null)
                     DrawingAdded(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));
@@ -2665,7 +2663,7 @@ namespace Kinovea.ScreenManager
                 // If we are not on an existing textbox : create new DrawingText.
                 if (!bEdit)
                 {
-                    AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+                    AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
                     
                     if(DrawingAdded != null)
                         DrawingAdded(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));

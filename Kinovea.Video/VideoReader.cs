@@ -176,7 +176,6 @@ namespace Kinovea.Video
                 long target = currentTimestamp + (Info.AverageTimeStampsPerFrame * _frames);
                 if(target < 0)
                     target = 0;
-                log.Debug("MoveBy -> MoveTo");
                 return MoveTo(target);
             }
         }
