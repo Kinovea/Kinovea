@@ -230,20 +230,20 @@ namespace Kinovea.ScreenManager
                             result = i+1;
                         break;
                     case HandleType.Segment:
-                        if(reference < m_GenericPosture.Segments.Count && IsPointOnSegment(m_GenericPosture.Segments[reference], point))
+                        if(reference < m_GenericPosture.Segments.Count && IsPointOnSegment(m_GenericPosture.Segments[reference], point, transformer))
                         {
                             m_GenericPosture.Handles[i].GrabPoint = point;
                             result = i+1;
                         }
                         break;
                     case HandleType.Ellipse:
-                        if(reference < m_GenericPosture.Ellipses.Count && IsPointOnEllipseArc(m_GenericPosture.Ellipses[reference], point))
+                        if (reference < m_GenericPosture.Ellipses.Count && IsPointOnEllipseArc(m_GenericPosture.Ellipses[reference], point, transformer))
                             result = i+1;
                         break;
                 }
             }
             
-            if(result == -1 && IsPointInObject(point))
+            if(result == -1 && IsPointInObject(point, transformer))
                 result = 0;
 
             return result;
@@ -252,7 +252,6 @@ namespace Kinovea.ScreenManager
         {
             int index = handle - 1;
             GenericPostureConstraintEngine.MoveHandle(m_GenericPosture, CalibrationHelper, index, point, modifiers);
-            UpdateAngles();
             SignalTrackablePointMoved(index);
         }
         public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
@@ -260,7 +259,6 @@ namespace Kinovea.ScreenManager
             for(int i = 0;i<m_GenericPosture.Points.Count;i++)
                 m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Translate(dx, dy);
             
-            UpdateAngles();
             SignalAllTrackablePointsMoved();
         }
         #endregion
@@ -387,7 +385,6 @@ namespace Kinovea.ScreenManager
             for(int i = 0; i<m_GenericPosture.Angles.Count;i++)
                 m_GenericPosture.Angles[i].Radius = (int)(m_GenericPosture.Angles[i].Radius * ratio);
                 
-            UpdateAngles();
         }
         #endregion
         
@@ -407,7 +404,6 @@ namespace Kinovea.ScreenManager
         public void SetTrackablePointValue(string name, PointF value)
         {
             m_GenericPosture.SetTrackablePointValue(name, value, CalibrationHelper);
-            UpdateAngles();
         }
         private void SignalAllTrackablePointsMoved()
         {
@@ -428,14 +424,12 @@ namespace Kinovea.ScreenManager
         private void menuFlipHorizontal_Click(object sender, EventArgs e)
         {
             m_GenericPosture.FlipHorizontal();
-            UpdateAngles();
             SignalAllTrackablePointsMoved();
             CallInvalidateFromMenu(sender);
         }
         private void menuFlipVertical_Click(object sender, EventArgs e)
         {
             m_GenericPosture.FlipVertical();
-            UpdateAngles();
             SignalAllTrackablePointsMoved();
             CallInvalidateFromMenu(sender);
         }
@@ -552,10 +546,9 @@ namespace Kinovea.ScreenManager
                     continue;
                 
                 AngleHelper angle = m_Angles[i];
-                
-                if(CalibrationHelper != null && CalibrationHelper.CalibratorType == CalibratorType.Plane)
-                    UpdateAngles();
-                
+
+                UpdateAngles(transformer);
+                    
                 brushFill.Color = angle.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, angle.Color);
                 
                 canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
@@ -732,10 +725,8 @@ namespace Kinovea.ScreenManager
         {
             for(int i=0;i<m_GenericPosture.Angles.Count;i++)
                 m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40, m_GenericPosture.Angles[i].Tenth, m_GenericPosture.Angles[i].Symbol));
-
-            UpdateAngles();
         }
-        private void UpdateAngles()
+        private void UpdateAngles(IImageToViewportTransformer transformer)
         {
             for(int i = 0; i<m_Angles.Count;i++)
             {
@@ -744,7 +735,7 @@ namespace Kinovea.ScreenManager
                 PointF leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
                 int radius = m_GenericPosture.Angles[i].Radius;
                 Color color = m_GenericPosture.Angles[i].Color;
-                m_Angles[i].Update(origin, leg1, leg2, radius, color, CalibrationHelper);
+                m_Angles[i].Update(origin, leg1, leg2, radius, color, CalibrationHelper, transformer);
             }
         }
         private DashStyle Convert(SegmentLineStyle style)
@@ -788,7 +779,7 @@ namespace Kinovea.ScreenManager
             
             return result;
         }
-        private bool IsPointInObject(Point _point)
+        private bool IsPointInObject(Point _point, IImageToViewportTransformer transformer)
         {
             // Angles, hit zones, segments.
             
@@ -825,7 +816,7 @@ namespace Kinovea.ScreenManager
             
             foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
             {
-                hit = IsPointOnSegment(segment, _point);
+                hit = IsPointOnSegment(segment, _point, transformer);
                 if(hit)
                     break;
             }
@@ -859,7 +850,7 @@ namespace Kinovea.ScreenManager
             
             return hit;
         }
-        private bool IsPointOnSegment(GenericPostureSegment _segment, Point _point)
+        private bool IsPointOnSegment(GenericPostureSegment _segment, Point _point, IImageToViewportTransformer transformer)
         {
             bool hit = false;
             
@@ -872,7 +863,8 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath segmentPath = new GraphicsPath())
             {
                 segmentPath.AddLine(start, end);
-                using(Pen p = new Pen(Color.Black, 7))
+                int expander = transformer.Untransform(7);
+                using(Pen p = new Pen(Color.Black, expander))
                 {
                     segmentPath.Widen(p);
                 }
@@ -900,7 +892,7 @@ namespace Kinovea.ScreenManager
             
             return hit;
         }
-        private bool IsPointOnEllipseArc(GenericPostureEllipse _ellipse, Point _point)
+        private bool IsPointOnEllipseArc(GenericPostureEllipse _ellipse, Point _point, IImageToViewportTransformer transformer)
         {
             bool hit = false;
             
@@ -909,7 +901,8 @@ namespace Kinovea.ScreenManager
                 PointF center = _ellipse.Center >= 0 ? m_GenericPosture.Points[_ellipse.Center] : GetUntransformedComputedPoint(_ellipse.Center);
                 
                 path.AddArc(center.Box(_ellipse.Radius), 0, 360);
-                using(Pen p = new Pen(Color.Black, 7))
+                int expander = transformer.Untransform(7);
+                using(Pen p = new Pen(Color.Black, expander))
                 {
                     path.Widen(p);
                 }

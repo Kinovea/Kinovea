@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager
         {
             int result = -1;
             double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
-            if (opacity > 0 && IsPointInObject(point))
+            if (opacity > 0 && IsPointInObject(point, transformer))
                 result = 0;
                 
             return result;
@@ -245,7 +245,7 @@ namespace Kinovea.ScreenManager
             
             pointList.Add(newPoint);
         }
-        private bool IsPointInObject(Point point)
+        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
         {
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
@@ -255,7 +255,8 @@ namespace Kinovea.ScreenManager
                 RectangleF bounds = areaPath.GetBounds();
                 if(!bounds.IsEmpty)
                 {
-                    using(Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7))
+                    int expander = transformer.Untransform(7);
+                    using(Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + expander))
                     {
                         areaPen.StartCap = LineCap.Round;
                         areaPen.EndCap = LineCap.Round;

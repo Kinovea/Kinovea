@@ -202,6 +202,12 @@ namespace Kinovea.ScreenManager
 
             return new PointF((float)unzoomedX, (float)unzoomedY);	
         }
+
+        public SizeF Untransform(SizeF size)
+        {
+            double scale = stretch * zoom;
+            return new SizeF((float)(size.Width / scale), (float)(size.Height / scale));
+        }
         
         public int Untransform(int v)
         {

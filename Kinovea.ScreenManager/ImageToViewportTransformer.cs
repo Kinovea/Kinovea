@@ -103,6 +103,11 @@ namespace Kinovea.ScreenManager
             double unscale = 1.0 / scale;
             return new PointF((float)(p.X * unscale), (float)(p.Y * unscale));
         }
+        public SizeF Untransform(SizeF size)
+        {
+            double unscale = 1.0 / scale;
+            return new SizeF((float)(size.Width * unscale), (float)(size.Height * unscale));
+        }
         public int Untransform(int distance)
         {
             return (int)(distance / scale);

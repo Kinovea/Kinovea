@@ -36,7 +36,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        //private Rectangle m_Rectangle;
         private RectangleF m_Rectangle;
         #endregion
 
@@ -85,15 +84,19 @@ namespace Kinovea.ScreenManager
         public int HitTest(Point point, bool hiddenHandle, IImageToViewportTransformer transformer)
         {
             int result = -1;
+
+            SizeF size = transformer.Untransform(m_Rectangle.Size);
+            RectangleF hitArea = new RectangleF(m_Rectangle.Location, size);
+
             if (hiddenHandle)
             {
-                int boxSide = transformer.Untransform(10);
-                PointF bottomRight = new PointF(m_Rectangle.Right, m_Rectangle.Bottom);
+                int boxSide = (int)(size.Width / 2);
+                PointF bottomRight = new PointF(hitArea.Right, hitArea.Bottom);
                 if (bottomRight.Box(boxSide).Contains(point))
                     result = 1;
             }
 
-            if (result < 0 && m_Rectangle.Contains(point))
+            if (result < 0 && hitArea.Contains(point))
                 result = 0;
 
             return result;

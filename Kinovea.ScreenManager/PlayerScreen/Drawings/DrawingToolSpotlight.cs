@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             return null;
         }

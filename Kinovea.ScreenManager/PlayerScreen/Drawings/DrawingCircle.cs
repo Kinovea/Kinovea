@@ -142,7 +142,7 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
-            center.Translate(dx, dy);
+            center = center.Translate(dx, dy);
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
@@ -151,9 +151,9 @@ namespace Kinovea.ScreenManager
             double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
             if (opacity > 0)
             {
-                if (m_bSelected && IsPointOnHandler(point))
+                if (m_bSelected && IsPointOnHandler(point, transformer))
                     result = 1;
-                else if (IsPointInObject(point))
+                else if (IsPointInObject(point, transformer))
                     result = 0;
             }
             return result;
@@ -219,12 +219,13 @@ namespace Kinovea.ScreenManager
             m_Style.Bind(m_StyleHelper, "Color", "color");
             m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
         }
-        private bool IsPointInObject(Point point)
+        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
         {
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddEllipse(center.Box(radius + 10));
+                int expander = transformer.Untransform(10);
+                areaPath.AddEllipse(center.Box(radius + expander));
                 using(Region r = new Region(areaPath))
                 {
                     hit = r.IsVisible(point);
@@ -232,7 +233,7 @@ namespace Kinovea.ScreenManager
             }
             return hit;
         }
-        private bool IsPointOnHandler(Point point)
+        private bool IsPointOnHandler(Point point, IImageToViewportTransformer transformer)
         {
             if(radius < 0)
                 return false;
@@ -242,8 +243,8 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath areaPath = new GraphicsPath())
             {
                 areaPath.AddArc(center.Box(radius + 5), 25, 40);
-                
-                using(Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 10))
+                int expander = transformer.Untransform(10);
+                using(Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + expander))
                 {
                     areaPath.Widen(areaPen);
                 }

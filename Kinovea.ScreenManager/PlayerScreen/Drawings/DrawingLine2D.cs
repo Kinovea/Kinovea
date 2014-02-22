@@ -196,7 +196,7 @@ namespace Kinovea.ScreenManager
                     result = 1;
                 else if (points["b"].Box(boxSide).Contains(point))
                     result = 2;
-                else if (IsPointInObject(point))
+                else if (IsPointInObject(point, transformer))
                     result = 0;
             }
             
@@ -410,18 +410,20 @@ namespace Kinovea.ScreenManager
             m_Style.Bind(m_StyleHelper, "LineSize", "line size");
             m_Style.Bind(m_StyleHelper, "LineEnding", "arrows");
         }
-        private bool IsPointInObject(Point _point)
+        private bool IsPointInObject(Point _point, IImageToViewportTransformer transformer)
         {
             bool hit = false;
-            
+
+            int expanding = transformer.Untransform(7);
+
             using(GraphicsPath areaPath = new GraphicsPath())
             {
                 if(points["a"] == points["b"])
                     areaPath.AddLine(points["a"].X, points["a"].Y, points["a"].X + 2, points["a"].Y + 2);
                 else
                     areaPath.AddLine(points["a"], points["b"]);
-            
-                using(Pen areaPen = new Pen(Color.Black, 7))
+
+                using (Pen areaPen = new Pen(Color.Black, expanding))
                 {
                     areaPath.Widen(areaPen);
                 }
