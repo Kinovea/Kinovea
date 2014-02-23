@@ -506,14 +506,14 @@ namespace Kinovea.ScreenManager
             if (rectangleTarget.Contains(point))
                 return 1;
 
-            result = HitTestTrajectory(point);
+            result = HitTestTrajectory(point, transformer);
             
             if (result == 0)
                 MoveCursor(point.X, point.Y);
 
             return result;
         }
-        private int HitTestTrajectory(Point point)
+        private int HitTestTrajectory(Point point, IImageToViewportTransformer transformer)
         {
             // 0: track. -1: not on track.
             int result = -1;
@@ -535,7 +535,8 @@ namespace Kinovea.ScreenManager
                     RectangleF bounds = areaPath.GetBounds();
                     if (!bounds.IsEmpty)
                     {
-                        using (Pen tempPen = new Pen(Color.Black, styleHelper.LineSize + 7))
+                        int expander = transformer.Untransform(7);
+                        using (Pen tempPen = new Pen(Color.Black, styleHelper.LineSize + expander))
                         {
                             areaPath.Widen(tempPen);
                         }
@@ -638,10 +639,10 @@ namespace Kinovea.ScreenManager
             {
                 tracker.Draw(canvas, positions[currentPoint], transformer, styleHelper.Color, opacity);
             }
-            else if (trackStatus == TrackStatus.Interactive)
+            /*else if (trackStatus == TrackStatus.Interactive)
             {
                 tracker.Draw(canvas, positions[currentPoint], transformer, styleHelper.Color, opacity);
-            }
+            }*/
             else if (trackStatus == TrackStatus.Configuration)
             {
                 Point location = transformer.Transform(positions[currentPoint].Point);

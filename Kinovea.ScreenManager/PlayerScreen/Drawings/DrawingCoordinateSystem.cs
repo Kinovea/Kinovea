@@ -261,7 +261,7 @@ namespace Kinovea.ScreenManager
             {
                 if(IsPointOnHorizontalAxis(point, transformer))
                     result = 2;
-                else if(IsPointOnVerticalAxis(point))
+                else if(IsPointOnVerticalAxis(point, transformer))
                     result = 3;
             }
             
@@ -415,23 +415,24 @@ namespace Kinovea.ScreenManager
             RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
             PointF a = CalibrationHelper.GetImagePoint(new PointF(bounds.X, 0));
             PointF b = CalibrationHelper.GetImagePoint(new PointF(bounds.X + bounds.Width, 0));
-            return IsPointOnLine(p, a, b);
+            return IsPointOnLine(p, a, b, transformer);
         }
-        private bool IsPointOnVerticalAxis(Point p)
+        private bool IsPointOnVerticalAxis(Point p, IImageToViewportTransformer transformer)
         {
             RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
             PointF a = CalibrationHelper.GetImagePoint(new PointF(0, bounds.Y));
             PointF b = CalibrationHelper.GetImagePoint(new PointF(0, bounds.Y - bounds.Height));
-            return IsPointOnLine(p, a, b);
+            return IsPointOnLine(p, a, b, transformer);
         }
-        private bool IsPointOnLine(Point p, PointF a, PointF b)
+        private bool IsPointOnLine(Point p, PointF a, PointF b, IImageToViewportTransformer transformer)
         {
             if (a == b)
                 return false;
 
             bool hit = false;
+            int expander = transformer.Untransform(10);
             using (GraphicsPath path = new GraphicsPath())
-            using (Pen pen = new Pen(Color.Black, 10))
+            using (Pen pen = new Pen(Color.Black, expander))
             {
                 path.AddLine(a, b);
                 path.Widen(pen);
@@ -441,9 +442,6 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            //int widenRadius = 5;
-            //Rectangle axis = new Rectangle(0, points["0"].Y - widenRadius, imageSize.Width, widenRadius * 2);
-            //return axis.Contains(p);
             return hit;
         }
         private void MoveHorizontalAxis(PointF p)
