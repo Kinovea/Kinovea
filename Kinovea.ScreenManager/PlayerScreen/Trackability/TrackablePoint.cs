@@ -115,15 +115,18 @@ namespace Kinovea.ScreenManager
                 trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.Manual));
                 return;
             }
-            
+
+            if (closestFrame.Template == null)
+            {
+                // We may not have the template if the timeline was imported from KVA.
+                trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, closestFrame.PositionningSource));
+                currentValue = closestFrame.Location;
+                return;
+            }
+
             if(closestFrame.Time == context.Time)
             {
                 currentValue = closestFrame.Location;
-                
-                // We may not have the template if the timeline was imported from KVA.
-                if (closestFrame.Template == null)
-                    trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, closestFrame.PositionningSource));
-
                 return;
             }
             
