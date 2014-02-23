@@ -1792,6 +1792,9 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.Loaded)
             {
                 OnPoke();
+                
+                m_iCurrentPosition = trkFrame.Position;
+
                 StopPlaying();
                 m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 
