@@ -75,16 +75,24 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Construction
-        public KeyframeLabel() : this(Point.Empty, Color.Black){}
-        public KeyframeLabel(PointF attachPoint, Color color)
+        public KeyframeLabel() : this(Point.Empty, Color.Black, null){}
+        public KeyframeLabel(PointF attachPoint, Color color, IImageToViewportTransformer transformer)
         {
             this.attachLocation = attachPoint;
-            m_Background.Rectangle = new Rectangle(attachPoint.Translate(-20, -50).ToPoint(), Size.Empty);
+            int tx = -20;
+            int ty = -50;
+            if (transformer != null)
+            {
+                tx = transformer.Untransform(-20);
+                ty = transformer.Untransform(-50);
+            }
+
+            m_Background.Rectangle = new Rectangle(attachPoint.Translate(tx, ty).ToPoint(), Size.Empty);
             m_StyleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
             m_StyleHelper.Bicolor = new Bicolor(Color.FromArgb(160, color));
         }
         public KeyframeLabel(XmlReader _xmlReader, PointF _scale)
-            : this(Point.Empty, Color.Black)
+            : this(Point.Empty, Color.Black, null)
         {
             ReadXml(_xmlReader, _scale);
         }
@@ -109,17 +117,18 @@ namespace Kinovea.ScreenManager
             using(Font f = m_StyleHelper.GetFont((float)_transformer.Scale))
             using(SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor*255)))
             {
+                SizeF textSize = _canvas.MeasureString(m_Text, f);
+                Point location = _transformer.Transform(m_Background.Rectangle.Location);
+                Size size = new Size((int)textSize.Width, (int)textSize.Height);
+
+                SizeF untransformed = _transformer.Untransform(textSize);
+                m_Background.Rectangle = new RectangleF(m_Background.Rectangle.Location, untransformed);
                 
-                // Small dot and connector. 
                 Point attch = _transformer.Transform(attachLocation);
                 Point center = _transformer.Transform(m_Background.Center);
                 _canvas.FillEllipse(fillBrush, attch.Box(2));
                 _canvas.DrawLine(p, attch, center);
                 
-                // Background and text.
-                SizeF textSize = _canvas.MeasureString(m_Text, f);
-                Point location = _transformer.Transform(m_Background.Rectangle.Location);
-                Size size = new Size((int)textSize.Width, (int)textSize.Height);
                 Rectangle rect = new Rectangle(location, size);
                 RoundedRectangle.Draw(_canvas, rect, fillBrush, f.Height/4, false, false, null);
                 _canvas.DrawString(m_Text, f, fontBrush, rect.Location);

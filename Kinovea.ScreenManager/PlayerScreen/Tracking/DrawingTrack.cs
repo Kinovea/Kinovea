@@ -501,9 +501,7 @@ namespace Kinovea.ScreenManager
             if (result >= 0)
                 return result;
 
-            int boxSide = transformer.Untransform(defaultCrossRadius + 3);
-            Rectangle rectangleTarget = positions[currentPoint].Box(boxSide);
-            if (rectangleTarget.Contains(point))
+            if (HitTester.HitTest(positions[currentPoint].Point, point, transformer))
                 return 1;
 
             result = HitTestTrajectory(point, transformer);
@@ -522,28 +520,19 @@ namespace Kinovea.ScreenManager
             {
                 int iStart = GetFirstVisiblePoint();
                 int iEnd = GetLastVisiblePoint();
-
-                // Create path which contains wide line for easy mouse selection
                 int iTotalVisiblePoints = iEnd - iStart;
                 Point[] points = new Point[iTotalVisiblePoints];
                 for (int i = iStart; i < iEnd; i++)
                     points[i - iStart] = positions[i].Point.ToPoint();
 
-                using (GraphicsPath areaPath = new GraphicsPath())
+                using (GraphicsPath path = new GraphicsPath())
                 {
-                    areaPath.AddCurve(points, 0.5f);
-                    RectangleF bounds = areaPath.GetBounds();
+                    path.AddCurve(points, 0.5f);
+                    RectangleF bounds = path.GetBounds();
                     if (!bounds.IsEmpty)
                     {
-                        int expander = transformer.Untransform(7);
-                        using (Pen tempPen = new Pen(Color.Black, styleHelper.LineSize + expander))
-                        {
-                            areaPath.Widen(tempPen);
-                        }
-                        using (Region areaRegion = new Region(areaPath))
-                        {
-                            result = areaRegion.IsVisible(point) ? 0 : -1;
-                        }
+                        bool hit = HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);
+                        result = hit ? 0 : -1;
                     }
                 }
             }

@@ -85,12 +85,14 @@ namespace Kinovea.ScreenManager
         {
             int result = -1;
 
-            SizeF size = transformer.Untransform(m_Rectangle.Size);
-            RectangleF hitArea = new RectangleF(m_Rectangle.Location, size);
+            /*SizeF size = transformer.Untransform(m_Rectangle.Size);
+            RectangleF hitArea = new RectangleF(m_Rectangle.Location, size);*/
+            SizeF size = m_Rectangle.Size;
+            RectangleF hitArea = m_Rectangle;
 
             if (hiddenHandle)
             {
-                int boxSide = (int)(size.Width / 2);
+                int boxSide = (int)(size.Width / 4);
                 PointF bottomRight = new PointF(hitArea.Right, hitArea.Bottom);
                 if (bottomRight.Box(boxSide).Contains(point))
                     result = 1;

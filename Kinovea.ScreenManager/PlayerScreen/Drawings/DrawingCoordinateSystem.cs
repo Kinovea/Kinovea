@@ -252,9 +252,8 @@ namespace Kinovea.ScreenManager
                 return -1;
             
             int result = -1;
-            int boxSide = transformer.Untransform(10);
             
-            if (points["0"].Box(boxSide).Contains(point))
+            if (HitTester.HitTest(points["0"], point, transformer))
                 return 1;
             
             if(showGrid || showGraduations || showAxis)
@@ -353,7 +352,7 @@ namespace Kinovea.ScreenManager
         public void ReadXml(XmlReader r)
         {
             if (r.MoveToAttribute("id"))
-                id = new Guid(r.ReadContentAsString());
+                identifier = new Guid(r.ReadContentAsString());
 
             r.ReadStartElement();
             
@@ -429,20 +428,11 @@ namespace Kinovea.ScreenManager
             if (a == b)
                 return false;
 
-            bool hit = false;
-            int expander = transformer.Untransform(10);
             using (GraphicsPath path = new GraphicsPath())
-            using (Pen pen = new Pen(Color.Black, expander))
             {
                 path.AddLine(a, b);
-                path.Widen(pen);
-                using (Region r = new Region(path))
-                {
-                    hit = r.IsVisible(p);
-                }
+                return HitTester.HitTest(path, p, 1, false, transformer);
             }
-
-            return hit;
         }
         private void MoveHorizontalAxis(PointF p)
         {

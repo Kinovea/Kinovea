@@ -157,8 +157,10 @@ namespace Kinovea.ScreenManager
                 SizeF textSize = canvas.MeasureString(text, fontText);
                 Point bgLocation = transformer.Transform(background.Rectangle.Location);
                 Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
+
+                SizeF untransformed = transformer.Untransform(textSize);
+                background.Rectangle = new RectangleF(background.Rectangle.Location, untransformed);
                 
-                //Rectangle rect = _transformer.Transform(m_Background.Rectangle);
                 Rectangle rect = new Rectangle(bgLocation, bgSize);
                 RoundedRectangle.Draw(canvas, rect, brushBack, fontText.Height/4, false, false, null);
                 canvas.DrawString(text, fontText, brushText, rect.Location);

@@ -209,8 +209,6 @@ namespace Kinovea.ScreenManager
             if (!tracking && m_InfosFading.GetOpacityFactor(currentTimestamp) <= 0)
                return -1;
             
-            int boxSide = transformer.Untransform(10);
-
             for(int i = 0; i<m_GenericPosture.Handles.Count;i++)
             {
                 if(result >= 0)
@@ -226,7 +224,7 @@ namespace Kinovea.ScreenManager
                 switch(m_GenericPosture.Handles[i].Type)
                 {
                     case HandleType.Point:
-                        if(reference < m_GenericPosture.Points.Count && m_GenericPosture.Points[reference].Box(boxSide).Contains(point))
+                        if(reference < m_GenericPosture.Points.Count && HitTester.HitTest(m_GenericPosture.Points[reference], point, transformer))
                             result = i+1;
                         break;
                     case HandleType.Segment:
@@ -273,7 +271,7 @@ namespace Kinovea.ScreenManager
             Guid toolId;
 
             if (_xmlReader.MoveToAttribute("id"))
-                id = new Guid(_xmlReader.ReadContentAsString());
+                identifier = new Guid(_xmlReader.ReadContentAsString());
 
             _xmlReader.ReadStartElement();
             while (_xmlReader.NodeType == XmlNodeType.Element)
@@ -806,7 +804,7 @@ namespace Kinovea.ScreenManager
             
             foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
             {
-                hit = IsPointInsideEllipse(ellipse, _point);
+                hit = IsPointInsideEllipse(ellipse, _point, transformer);
                 if(hit)
                     break;
             }
@@ -832,14 +830,14 @@ namespace Kinovea.ScreenManager
                 case HitZoneType.Polygon:
                 {
                     GenericPostureHitZonePolygon hitPolygon = _hitZone as GenericPostureHitZonePolygon;
-                    using (GraphicsPath gp = new GraphicsPath())
+                    using (GraphicsPath path = new GraphicsPath())
                     {
                         List<PointF> points = new List<PointF>();
                         foreach(int pointRef in hitPolygon.Points)
                             points.Add(m_GenericPosture.Points[pointRef]);
     
-                        gp.AddPolygon(points.ToArray());
-                        using (Region region = new Region(gp))
+                        path.AddPolygon(points.ToArray());
+                        using (Region region = new Region(path))
                         {
                             hit = region.IsVisible(_point);
                         }
@@ -852,66 +850,35 @@ namespace Kinovea.ScreenManager
         }
         private bool IsPointOnSegment(GenericPostureSegment _segment, Point _point, IImageToViewportTransformer transformer)
         {
-            bool hit = false;
-            
             PointF start = _segment.Start >= 0 ? m_GenericPosture.Points[_segment.Start] : GetUntransformedComputedPoint(_segment.Start);
             PointF end = _segment.End >= 0 ? m_GenericPosture.Points[_segment.End] : GetUntransformedComputedPoint(_segment.End);
             
             if(start == end)
                 return false;
             
-            using(GraphicsPath segmentPath = new GraphicsPath())
+            using(GraphicsPath path = new GraphicsPath())
             {
-                segmentPath.AddLine(start, end);
-                int expander = transformer.Untransform(7);
-                using(Pen p = new Pen(Color.Black, expander))
-                {
-                    segmentPath.Widen(p);
-                }
-                using(Region region = new Region(segmentPath))
-                {
-                     hit = region.IsVisible(_point);
-                }
+                path.AddLine(start, end);
+                return HitTester.HitTest(path, _point, _segment.Width, false, transformer);
             }
-            
-            return hit;
         }
-        private bool IsPointInsideEllipse(GenericPostureEllipse _ellipse, Point _point)
+        private bool IsPointInsideEllipse(GenericPostureEllipse _ellipse, Point _point, IImageToViewportTransformer transformer)
         {
-            bool hit = false;
-            
             using(GraphicsPath path = new GraphicsPath())
             {
                 PointF center = _ellipse.Center >= 0 ? m_GenericPosture.Points[_ellipse.Center] : GetUntransformedComputedPoint(_ellipse.Center);
                 path.AddEllipse(center.Box(_ellipse.Radius));
-                using(Region region = new Region(path))
-                {
-                     hit = region.IsVisible(_point);
-                }
+                return HitTester.HitTest(path, _point, 0, true, transformer);
             }
-            
-            return hit;
         }
         private bool IsPointOnEllipseArc(GenericPostureEllipse _ellipse, Point _point, IImageToViewportTransformer transformer)
         {
-            bool hit = false;
-            
             using(GraphicsPath path = new GraphicsPath())
             {
                 PointF center = _ellipse.Center >= 0 ? m_GenericPosture.Points[_ellipse.Center] : GetUntransformedComputedPoint(_ellipse.Center);
-                
                 path.AddArc(center.Box(_ellipse.Radius), 0, 360);
-                int expander = transformer.Untransform(7);
-                using(Pen p = new Pen(Color.Black, expander))
-                {
-                    path.Widen(p);
-                }
-                using(Region region = new Region(path))
-                {
-                    hit = region.IsVisible(_point);
-                }
+                return HitTester.HitTest(path, _point, _ellipse.Width, false, transformer);
             }
-            return hit;
         }
         #endregion
     }

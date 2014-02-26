@@ -96,10 +96,11 @@ namespace Kinovea.ScreenManager
                 string text = value.ToString();
                 penContour.Width = 2;
                 SizeF textSize = _canvas.MeasureString(text, f);
-                Point bgLocation = _transformer.Transform(background.Rectangle.Location);              
+                Point bgLocation = _transformer.Transform(background.Rectangle.Location);
+                SizeF untransformed = _transformer.Untransform(textSize);
+                background.Rectangle = new RectangleF(background.Rectangle.Location, untransformed);
                 
                 Size bgSize;
-                
                 if(value < 10)
                 {
                     bgSize = new Size((int)textSize.Height, (int)textSize.Height);

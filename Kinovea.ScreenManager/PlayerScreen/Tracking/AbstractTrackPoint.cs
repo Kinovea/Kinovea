@@ -91,10 +91,6 @@ namespace Kinovea.ScreenManager
                 // will default to {0,0,0}.
             }
         }
-        public Rectangle Box(int radius)
-        {
-            return new PointF(X,Y).Box(radius);
-        }
         #endregion
     }
 }

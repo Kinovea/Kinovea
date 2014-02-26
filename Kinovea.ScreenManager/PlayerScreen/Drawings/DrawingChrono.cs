@@ -206,18 +206,29 @@ namespace Kinovea.ScreenManager
 
             m_Timecode = GetTimecode(_iCurrentTimestamp);
 
-            // Update unscaled backround size according to timecode text. Needed for hit testing.
-            Font f = m_StyleHelper.GetFont(1F);
-            SizeF totalSize = _canvas.MeasureString(" " + m_Timecode + " ", f);
-            SizeF textSize = _canvas.MeasureString(m_Timecode, f);
-            f.Dispose();
-            m_MainBackground.Rectangle = new RectangleF(m_MainBackground.Rectangle.Location, totalSize);
-            
+            string text = " " + m_Timecode + " ";
+
             using (SolidBrush brushBack = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor * 128)))
             using (SolidBrush brushText = m_StyleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
             using (Font fontText = m_StyleHelper.GetFont((float)_transformer.Scale))
             {
-                Rectangle rect = _transformer.Transform(m_MainBackground.Rectangle);
+                SizeF textSize = _canvas.MeasureString(text, fontText);
+                Point bgLocation = _transformer.Transform(m_MainBackground.Rectangle.Location);
+                Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
+
+                SizeF untransformed = _transformer.Untransform(textSize);
+                m_MainBackground.Rectangle = new RectangleF(m_MainBackground.Rectangle.Location, untransformed);
+
+                Rectangle rect = new Rectangle(bgLocation, bgSize);
+                RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height / 4, false, false, null);
+                _canvas.DrawString(text, fontText, brushText, rect.Location);
+
+                /*
+                //Rectangle rect = _transformer.Transform(m_MainBackground.Rectangle);
+                SizeF displayTextSize = _canvas.MeasureString(" " + m_Timecode + " ", fontText);
+                Size bgSize = displayTextSize.ToSize();
+                Point bgLocation = _transformer.Transform(m_MainBackground.Rectangle.Location);
+                Rectangle rect = new Rectangle(bgLocation, bgSize);
                 RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height/4, false, false, null);
 
                 int margin = (int)((totalSize.Width - textSize.Width) / 2);
@@ -233,7 +244,7 @@ namespace Kinovea.ScreenManager
                         RoundedRectangle.Draw(_canvas, lblRect, brushBack, fontLabel.Height/3, true, false, null);
                         _canvas.DrawString(m_Label, fontLabel, brushText, lblRect.Location);
                     }
-                }
+                }*/
             }
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)

@@ -158,12 +158,12 @@ namespace Kinovea.ScreenManager
             
             try
             {
-                using (GraphicsPath gp = new GraphicsPath())
+                using (GraphicsPath path = new GraphicsPath())
                 {
-                    gp.AddPie(BoundingBox, angle.Start, angle.Sweep);
+                    path.AddPie(BoundingBox, angle.Start, angle.Sweep);
                     if(hitRegion != null)
                         hitRegion.Dispose();
-                    hitRegion = new Region(gp);
+                    hitRegion = new Region(path);
                 }
             }
             catch(Exception)

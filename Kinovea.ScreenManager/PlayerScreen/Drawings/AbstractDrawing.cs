@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
         #region Concrete properties
         public Guid ID
         {
-            get { return id; }
+            get { return identifier; }
         }
         #endregion
 
@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Concrete members
-        protected Guid id = Guid.NewGuid();
+        protected Guid identifier = Guid.NewGuid();
         #endregion
 
         #region Abstract methods

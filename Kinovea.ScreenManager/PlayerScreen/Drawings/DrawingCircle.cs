@@ -224,12 +224,8 @@ namespace Kinovea.ScreenManager
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                int expander = transformer.Untransform(10);
-                areaPath.AddEllipse(center.Box(radius + expander));
-                using(Region r = new Region(areaPath))
-                {
-                    hit = r.IsVisible(point);
-                }
+                areaPath.AddEllipse(center.Box(radius + m_StyleHelper.LineSize));
+                hit = HitTester.HitTest(areaPath, point, 0, true, transformer);
             }
             return hit;
         }
@@ -238,23 +234,11 @@ namespace Kinovea.ScreenManager
             if(radius < 0)
                 return false;
             
-            bool hit = false;
-            
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddArc(center.Box(radius + 5), 25, 40);
-                int expander = transformer.Untransform(10);
-                using(Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + expander))
-                {
-                    areaPath.Widen(areaPen);
-                }
-                using(Region r = new Region(areaPath))
-                {
-                    hit = r.IsVisible(point);
-                }
+                areaPath.AddArc(center.Box(radius), 25, 40);
+                return HitTester.HitTest(areaPath, point, m_StyleHelper.LineSize, false, transformer);
             }
-            
-            return hit;
         }
         #endregion
     }

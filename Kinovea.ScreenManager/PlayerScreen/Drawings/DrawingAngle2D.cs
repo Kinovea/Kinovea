@@ -200,15 +200,14 @@ namespace Kinovea.ScreenManager
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
-            int boxSide = transformer.Untransform(10);
             
             if (tracking || infosFading.GetOpacityFactor(currentTimestamp) > 0)
             {
-                if (points["o"].Box(boxSide).Contains(point))
+                if (HitTester.HitTest(points["o"], point, transformer))
                     result = 1;
-                else if (points["a"].Box(boxSide).Contains(point))
+                else if (HitTester.HitTest(points["a"], point, transformer))
                     result = 2;
-                else if (points["b"].Box(boxSide).Contains(point))
+                else if (HitTester.HitTest(points["b"], point, transformer))
                     result = 3;
                 else if (IsPointInObject(point))
                     result = 0;
@@ -258,7 +257,7 @@ namespace Kinovea.ScreenManager
         private void ReadXml(XmlReader xmlReader, PointF scale)
         {
             if (xmlReader.MoveToAttribute("id"))
-                id = new Guid(xmlReader.ReadContentAsString());
+                identifier = new Guid(xmlReader.ReadContentAsString());
 
             xmlReader.ReadStartElement();
             

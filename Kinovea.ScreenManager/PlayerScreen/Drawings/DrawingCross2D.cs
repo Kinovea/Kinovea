@@ -112,10 +112,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingCross2D(Point _center, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingCross2D(Point _center, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset, IImageToViewportTransformer transformer)
         {
             points["0"] = _center;
-            m_LabelCoordinates = new KeyframeLabel(points["0"], Color.Black);
+            m_LabelCoordinates = new KeyframeLabel(points["0"], Color.Black, transformer);
             
             // Decoration & binding with editors
             m_StyleHelper.Color = Color.CornflowerBlue;
@@ -132,7 +132,7 @@ namespace Kinovea.ScreenManager
             mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
         public DrawingCross2D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(Point.Empty,0,0, ToolManager.CrossMark.StylePreset.Clone())
+            : this(Point.Empty,0,0, ToolManager.CrossMark.StylePreset.Clone(), null)
         {
             ReadXml(_xmlReader, _scale);
         }
@@ -184,11 +184,9 @@ namespace Kinovea.ScreenManager
             double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
             if (tracking || opacity > 0)
             {
-                int boxSide = transformer.Untransform(m_iDefaultRadius + 10);
-                
                 if(ShowMeasurableInfo && m_LabelCoordinates.HitTest(point, transformer))
                     result = 1;
-                else if (points["0"].Box(boxSide).Contains(point))
+                else if (HitTester.HitTest(points["0"], point, transformer))
                     result = 0;
             }
             
@@ -200,7 +198,7 @@ namespace Kinovea.ScreenManager
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
             if (_xmlReader.MoveToAttribute("id"))
-                id = new Guid(_xmlReader.ReadContentAsString());
+                identifier = new Guid(_xmlReader.ReadContentAsString());
 
             _xmlReader.ReadStartElement();
             
