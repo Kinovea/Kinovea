@@ -206,7 +206,7 @@ namespace Kinovea.ScreenManager
 
             m_Timecode = GetTimecode(_iCurrentTimestamp);
 
-            string text = " " + m_Timecode + " ";
+            string text = m_Timecode;
 
             using (SolidBrush brushBack = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor * 128)))
             using (SolidBrush brushText = m_StyleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
@@ -223,28 +223,17 @@ namespace Kinovea.ScreenManager
                 RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height / 4, false, false, null);
                 _canvas.DrawString(text, fontText, brushText, rect.Location);
 
-                /*
-                //Rectangle rect = _transformer.Transform(m_MainBackground.Rectangle);
-                SizeF displayTextSize = _canvas.MeasureString(" " + m_Timecode + " ", fontText);
-                Size bgSize = displayTextSize.ToSize();
-                Point bgLocation = _transformer.Transform(m_MainBackground.Rectangle.Location);
-                Rectangle rect = new Rectangle(bgLocation, bgSize);
-                RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height/4, false, false, null);
-
-                int margin = (int)((totalSize.Width - textSize.Width) / 2);
-                Point textLocation = new Point(rect.X + margin, rect.Y);
-                _canvas.DrawString(m_Timecode, fontText, brushText, textLocation);
-
+                
                 if (m_bShowLabel && m_Label.Length > 0)
                 {
                     using (Font fontLabel = m_StyleHelper.GetFont((float)_transformer.Scale * 0.5f))
                     {
-                        SizeF lblTextSize = _canvas.MeasureString(m_Label, fontLabel);
+                        SizeF lblTextSize = _canvas.MeasureString(m_Label, fontLabel); 
                         Rectangle lblRect = new Rectangle(rect.Location.X, rect.Location.Y - (int)lblTextSize.Height, (int)lblTextSize.Width, (int)lblTextSize.Height);
                         RoundedRectangle.Draw(_canvas, lblRect, brushBack, fontLabel.Height/3, true, false, null);
                         _canvas.DrawString(m_Label, fontLabel, brushText, lblRect.Location);
                     }
-                }*/
+                }
             }
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
