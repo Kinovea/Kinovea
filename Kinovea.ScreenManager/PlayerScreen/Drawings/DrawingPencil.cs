@@ -247,33 +247,15 @@ namespace Kinovea.ScreenManager
         }
         private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
         {
-            bool hit = false;
-            using(GraphicsPath areaPath = new GraphicsPath())
+            using(GraphicsPath path = new GraphicsPath())
             {
-                areaPath.AddCurve(pointList.ToArray(), 0.5f);
-            
-                RectangleF bounds = areaPath.GetBounds();
-                if(!bounds.IsEmpty)
-                {
-                    int expander = transformer.Untransform(7);
-                    using(Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + expander))
-                    {
-                        areaPen.StartCap = LineCap.Round;
-                        areaPen.EndCap = LineCap.Round;
-                        areaPen.LineJoin = LineJoin.Round;
-                        areaPath.Widen(areaPen);
-                    }
-                    using(Region areaRegion = new Region(areaPath))
-                    {
-                        hit = areaRegion.IsVisible(point);
-                    }
-                }
-                else
-                {
-                    hit = false;
-                }
+                path.AddCurve(pointList.ToArray(), 0.5f);
+                RectangleF bounds = path.GetBounds();
+                if (bounds.IsEmpty)
+                    return false;
+
+                return HitTester.HitTest(path, point, m_StyleHelper.LineSize, false, transformer);
             }
-            return hit;
         }
         #endregion
     }

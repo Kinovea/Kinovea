@@ -115,11 +115,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingLine2D(Point _start, Point _end, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingLine2D(Point _start, Point _end, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset, IImageToViewportTransformer transformer)
         {
             points["a"] = _start;
             points["b"] = _end;
-            m_LabelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black);
+            m_LabelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black, transformer);
             
             // Decoration
             m_StyleHelper.Color = Color.DarkSlateGray;
@@ -140,7 +140,7 @@ namespace Kinovea.ScreenManager
             mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingLine2D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(Point.Empty, Point.Empty, 0, 0, ToolManager.Line.StylePreset.Clone())
+            : this(Point.Empty, Point.Empty, 0, 0, ToolManager.Line.StylePreset.Clone(), null)
         {
             ReadXml(_xmlReader, _scale);
         }
@@ -186,15 +186,14 @@ namespace Kinovea.ScreenManager
         {
             int result = -1;
             double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
-            int boxSide = transformer.Untransform(6);
             
             if (tracking || opacity > 0)
             {
                 if(ShowMeasurableInfo && m_LabelMeasure.HitTest(point, transformer))
                     result = 3;
-                else if (points["a"].Box(boxSide).Contains(point))
+                else if (HitTester.HitTest(points["a"], point, transformer))
                     result = 1;
-                else if (points["b"].Box(boxSide).Contains(point))
+                else if (HitTester.HitTest(points["b"], point, transformer))
                     result = 2;
                 else if (IsPointInObject(point, transformer))
                     result = 0;
@@ -244,7 +243,7 @@ namespace Kinovea.ScreenManager
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
             if (_xmlReader.MoveToAttribute("id"))
-                id = new Guid(_xmlReader.ReadContentAsString());
+                identifier = new Guid(_xmlReader.ReadContentAsString());
 
             _xmlReader.ReadStartElement();
             
@@ -410,12 +409,8 @@ namespace Kinovea.ScreenManager
             m_Style.Bind(m_StyleHelper, "LineSize", "line size");
             m_Style.Bind(m_StyleHelper, "LineEnding", "arrows");
         }
-        private bool IsPointInObject(Point _point, IImageToViewportTransformer transformer)
+        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
         {
-            bool hit = false;
-
-            int expanding = transformer.Untransform(7);
-
             using(GraphicsPath areaPath = new GraphicsPath())
             {
                 if(points["a"] == points["b"])
@@ -423,17 +418,8 @@ namespace Kinovea.ScreenManager
                 else
                     areaPath.AddLine(points["a"], points["b"]);
 
-                using (Pen areaPen = new Pen(Color.Black, expanding))
-                {
-                    areaPath.Widen(areaPen);
-                }
-                using(Region r = new Region(areaPath))
-                {
-                    hit = r.IsVisible(_point);
-                }
+                return HitTester.HitTest(areaPath, point, m_StyleHelper.LineSize, false, transformer);
             }
-            
-            return hit;
         }
         private Point GetMiddlePoint()
         {

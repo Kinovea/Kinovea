@@ -126,7 +126,7 @@ namespace Kinovea.ScreenManager
             {
                 if(IsPointOnHandler(point, transformer))
                     result = 1;
-                else if (IsPointInObject(point))
+                else if (IsPointInObject(point, transformer))
                     result = 0;
             }
             return result;
@@ -180,36 +180,21 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Private methods
-        private bool IsPointInObject(Point point)
+        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
         {
-            bool hit = false;
-            using(GraphicsPath areaPath = new GraphicsPath())
+            using(GraphicsPath path = new GraphicsPath())
             {
-                areaPath.AddEllipse(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2);
-                using(Region areaRegion = new Region(areaPath))
-                {
-                    hit = areaRegion.IsVisible(point);
-                }
+                path.AddEllipse(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2);
+                return HitTester.HitTest(path, point, 0, true, transformer);
             }
-            return hit;
         }
         private bool IsPointOnHandler(Point point, IImageToViewportTransformer transformer)
         {
-            bool hit = false;
-            using(GraphicsPath areaPath = new GraphicsPath())
+            using(GraphicsPath path = new GraphicsPath())
             {
-                areaPath.AddArc(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2, 0, 360);
-                int expander = transformer.Untransform(10);
-                using(Pen areaPen = new Pen(Color.Black, expander))
-                {
-                    areaPath.Widen(areaPen);
-                }
-                using(Region r = new Region(areaPath))
-                {
-                    hit = r.IsVisible(point);
-                }
+                path.AddArc(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2, 0, 360);
+                return HitTester.HitTest(path, point, 2, false, transformer);
             }
-            return hit;
         }
         #endregion
         

@@ -49,15 +49,13 @@ namespace Kinovea.ScreenManager
             Point botRight = new Point(rectangle.Right, rectangle.Bottom);
             Point botLeft = new Point(rectangle.Left, rectangle.Bottom);
 
-            int boxSide = transformer.Untransform(6);
-
-            if (topLeft.Box(boxSide).Contains(point))
+            if (HitTester.HitTest(topLeft, point, transformer))
                 result = 1;
-            else if (topRight.Box(boxSide).Contains(point))
+            else if (HitTester.HitTest(topRight, point, transformer))
                 result = 2;
-            else if (botRight.Box(boxSide).Contains(point))
+            else if (HitTester.HitTest(botRight, point, transformer))
                 result = 3;
-            else if (botLeft.Box(boxSide).Contains(point))
+            else if (HitTester.HitTest(botLeft, point, transformer))
                 result = 4;
             else if (rectangle.Contains(point))
                 result = 0;

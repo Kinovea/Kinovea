@@ -225,11 +225,9 @@ namespace Kinovea.ScreenManager
             if(infosFading.GetOpacityFactor(currentTimestamp) <= 0)
                 return -1;
             
-            int boxSide = transformer.Untransform(6);
-            
             for(int i = 0; i < 4; i++)
             {
-                if(quadImage[i].Box(boxSide).Contains(point))
+                if(HitTester.HitTest(quadImage[i], point, transformer))
                     return i+1;
             }
             
@@ -286,7 +284,7 @@ namespace Kinovea.ScreenManager
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
             if (_xmlReader.MoveToAttribute("id"))
-                id = new Guid(_xmlReader.ReadContentAsString());
+                identifier = new Guid(_xmlReader.ReadContentAsString());
 
             _xmlReader.ReadStartElement();
             
