@@ -1198,7 +1198,7 @@ namespace Kinovea.ScreenManager
                     xmlWriter.WriteStartElement("TrackPoint");
                     
                     PointF p = parentMetadata.CalibrationHelper.GetPoint(tp.Point);
-                    string userT = parentMetadata.TimeStampsToTimecode(tp.T, false, TimecodeFormat.Unknown, false);
+                    string userT = parentMetadata.TimeStampsToTimecode(tp.T, TimeType.Time, TimecodeFormat.Unknown, false);
                     
                     xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
                     xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));

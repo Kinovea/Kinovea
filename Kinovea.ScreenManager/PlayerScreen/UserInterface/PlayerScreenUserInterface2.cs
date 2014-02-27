@@ -1277,7 +1277,7 @@ namespace Kinovea.ScreenManager
                 DockKeyframePanel(true);
             }
         }
-        private string TimeStampsToTimecode(long timestamps, bool isDuration, TimecodeFormat format, bool isSynched)
+        private string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool isSynched)
         {
             //-------------------------
             // Input    : TimeStamp (might be a duration. If starting ts isn't 0, it should already be shifted.)
@@ -1290,10 +1290,19 @@ namespace Kinovea.ScreenManager
             TimecodeFormat tcf = format == TimecodeFormat.Unknown ? PreferencesManager.PlayerPreferences.TimecodeFormat : format;
 
             long actualTimestamps = timestamps;
-            if (isDuration)
-                actualTimestamps = timestamps + m_FrameServer.Metadata.AverageTimeStampsPerFrame;
-            else if (isSynched)
-                actualTimestamps = timestamps - m_iSyncPosition;
+            switch(type)
+            {
+                case TimeType.Time:
+                    actualTimestamps = isSynched ? timestamps - m_iSyncPosition : timestamps;
+                    break;
+                case TimeType.TotalDuration:
+                    actualTimestamps = timestamps + m_FrameServer.Metadata.AverageTimeStampsPerFrame;
+                    break;
+                case TimeType.Duration:
+                default:
+                    actualTimestamps = timestamps;
+                    break;
+            }
             
             // timestamp to milliseconds. (Needed for most formats)
             double seconds = (double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
@@ -1301,14 +1310,10 @@ namespace Kinovea.ScreenManager
             bool showThousandth = (m_fHighSpeedFactor * m_FrameServer.VideoReader.Info.FramesPerSeconds) >= 100;
 
             string frameString = "0";
-            if (isDuration && m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
-            {
+            if (type == TimeType.TotalDuration && m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
                 frameString = String.Format("{0}", (int)((double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame));
-            }
             else if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
-            {
                 frameString = String.Format("{0}", (int)((double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame) + 1);
-            }
 
             string outputTimeCode;
             switch (tcf)
@@ -1740,10 +1745,10 @@ namespace Kinovea.ScreenManager
                 duration = m_iSelDuration;
             }
             
-            lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(start, false, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+            lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(start, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
 
             duration -= m_FrameServer.Metadata.AverageTimeStampsPerFrame;
-            lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(duration, true, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+            lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(duration, TimeType.TotalDuration, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
         }
         private void UpdateSelectionDataFromControl()
         {
@@ -1830,7 +1835,7 @@ namespace Kinovea.ScreenManager
         {
             // Note: among other places, this is run inside the playloop.
             // Position is relative to working zone.
-            string timecode = TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, false, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched);
+            string timecode = TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched);
             lblTimeCode.Text = string.Format("{0} : {1}", ScreenManagerLang.lblTimeCode_Text, timecode);
         }
         private void UpdatePositionUI()
@@ -3464,7 +3469,7 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < thumbnails.Count; i++)
             {
                 KeyframeBox tb = thumbnails[i];
-                m_FrameServer.Metadata[i].TimeCode = TimeStampsToTimecode(m_FrameServer.Metadata[i].Position - m_iSelStart, false, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+                m_FrameServer.Metadata[i].TimeCode = TimeStampsToTimecode(m_FrameServer.Metadata[i].Position - m_iSelStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
                     
                 if (m_FrameServer.Metadata[i].Position >= m_iSelStart && m_FrameServer.Metadata[i].Position <= m_iSelEnd)
                 {
@@ -3559,7 +3564,7 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.CurrentImage == null)
                 return;
 
-            Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, false, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched), m_FrameServer.CurrentImage, m_FrameServer.Metadata);
+            Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched), m_FrameServer.CurrentImage, m_FrameServer.Metadata);
             
             if (_iPosition != m_iCurrentPosition)
             {
@@ -4670,8 +4675,8 @@ namespace Kinovea.ScreenManager
                 tcf = _timeCodeFormat;
             
             // Timecode string (Not relative to sync position)
-            string suffix = TimeStampsToTimecode(_position - m_iSelStart, false, tcf, false);
-            string maxSuffix = TimeStampsToTimecode(m_iSelEnd - m_iSelStart, false, tcf, false);
+            string suffix = TimeStampsToTimecode(_position - m_iSelStart, TimeType.Time, tcf, false);
+            string maxSuffix = TimeStampsToTimecode(m_iSelEnd - m_iSelStart, TimeType.Time, tcf, false);
 
             switch (tcf)
             {

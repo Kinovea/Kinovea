@@ -269,6 +269,7 @@
     <Compile Include="PlayerScreen\Kinematics\MovingAverage.cs" />
     <Compile Include="PlayerScreen\Test\MovingObject.cs" />
     <Compile Include="PlayerScreen\Test\VideoSynthesizer.cs" />
+    <Compile Include="PlayerScreen\TimeType.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackerParameterUnit.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackingProfile.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackingProfileManager.cs" />
