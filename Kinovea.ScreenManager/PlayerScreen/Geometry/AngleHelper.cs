@@ -59,11 +59,12 @@ namespace Kinovea.ScreenManager
             
             if(calibration != null && calibration.CalibratorType == CalibratorType.Plane)
             {
+                // FIXME: use a single method to compute angles. Currently we have one method here and another in GeometryHelper.
                 PointF calibratedO = calibration.GetPoint(o);
                 PointF calibratedA = calibration.GetPoint(a);
                 PointF calibratedB = calibration.GetPoint(b);
-                
-                CalibratedAngle = ComputeAngle(calibratedO, calibratedA, calibratedB);
+
+                CalibratedAngle = ComputeAngle(calibratedO, calibratedB, calibratedA);
             }
             else
             {
