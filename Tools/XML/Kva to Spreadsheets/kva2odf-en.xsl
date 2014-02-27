@@ -234,7 +234,7 @@
     <table:table-cell table:style-name="keyimages-title" table:number-columns-spanned="3"><text:p>Lines</text:p></table:table-cell>
   </table:table-row>
   <table:table-row>
-    <table:table-cell table:style-name="header"><text:p>Length (<xsl:value-of select="../CalibrationHelp/LengthUnit/@UserUnitLength"/>)</text:p></table:table-cell>
+    <table:table-cell table:style-name="header"><text:p>Length (<xsl:value-of select="../Calibration/Unit/@Abbreviation"/>)</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Time</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Key Image</text:p></table:table-cell>
   </table:table-row>
@@ -262,7 +262,7 @@
     <table:table-cell table:style-name="keyimages-title" table:number-columns-spanned="3"><text:p>Angles</text:p></table:table-cell>
   </table:table-row>
   <table:table-row>
-    <table:table-cell table:style-name="header"><text:p>Value</text:p></table:table-cell>
+    <table:table-cell table:style-name="header"><text:p>Value (°)</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Time</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Key Image</text:p></table:table-cell>
   </table:table-row>
