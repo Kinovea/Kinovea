@@ -182,12 +182,12 @@ namespace Kinovea.ScreenManager
         }
         public long FirstTimeStamp
         {
-            //get { return m_iFirstTimeStamp; }
+            get { return firstTimeStamp; }
             set { firstTimeStamp = value; }
         }
         public long SelectionStart
         {
-            //get { return m_iSelectionStart; }
+            get { return selectionStart; }
             set { selectionStart = value; }
         }         
         public CalibrationHelper CalibrationHelper 
