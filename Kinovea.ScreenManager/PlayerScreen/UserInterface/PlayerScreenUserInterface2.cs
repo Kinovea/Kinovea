@@ -466,6 +466,7 @@ namespace Kinovea.ScreenManager
             
             // Other various infos.
             m_FrameServer.SetupMetadata(true);
+            m_FrameServer.Metadata.SelectionStart = m_iSelStart;
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
             m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
             
