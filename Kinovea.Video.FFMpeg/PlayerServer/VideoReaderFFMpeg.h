@@ -174,6 +174,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		VideoDecodingMode m_DecodingMode;
 		bool m_bIsLoaded;
 		bool m_bIsVeryShort;
+		bool m_bFirstFrameRead;
 		VideoInfo m_VideoInfo;
 		VideoSection m_WorkingZone;
 		Object^ m_Locker;

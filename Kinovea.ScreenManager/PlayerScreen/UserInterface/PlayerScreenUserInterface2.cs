@@ -460,12 +460,6 @@ namespace Kinovea.ScreenManager
             if(!m_FrameServer.VideoReader.CanChangeWorkingZone)
                 EnableDisableWorkingZoneControls(false);
 
-            //m_iCurrentPosition = m_iSelStart;
-            // FIXME: This should be the responsibility of the reader.
-            //m_FrameServer.VideoReader.Infos.iFirstTimeStamp = m_iCurrentPosition;
-            //m_iStartingPosition = m_iCurrentPosition;
-            //m_iTotalDuration = m_iSelDuration;
-            
             // Update the control.
             // FIXME - already done in ImportSelectionToMemory ?
             SetupPrimarySelectionPanel();
