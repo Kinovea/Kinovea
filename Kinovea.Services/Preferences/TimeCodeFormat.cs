@@ -30,6 +30,7 @@ namespace Kinovea.Services
         TenThousandthOfHours,
         HundredthOfMinutes,
         TimeAndFrames,
+        Normalized,
         Timestamps,
         Unknown,
         NumberOfTimeCodeFormats

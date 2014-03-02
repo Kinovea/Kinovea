@@ -112,6 +112,8 @@ namespace Kinovea.Root
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
+            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Normalized);
+            cmbTimeCodeFormat.Items.Add("Normalized");
             //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps);	// Debug purposes.
             
             // Combo Speed units (MUST be filled in the order of the enum)
