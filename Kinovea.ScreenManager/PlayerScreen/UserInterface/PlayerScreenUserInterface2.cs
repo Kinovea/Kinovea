@@ -1332,6 +1332,14 @@ namespace Kinovea.ScreenManager
                     String timeString = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);
                     outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
                     break;
+                case TimecodeFormat.Normalized:
+                    long duration = m_FrameServer.VideoReader.Info.DurationTimeStamps - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+                    double totalFrames = (double)duration / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+                    int magnitude = (int)Math.Ceiling(Math.Log10(totalFrames));
+                    string outputFormat = string.Format("{{0:0.{0}}}", new string('0', magnitude));
+                    double normalized = (double)actualTimestamps / duration;
+                    outputTimeCode = String.Format(outputFormat, normalized);
+                    break;
                 case TimecodeFormat.Timestamps:
                     outputTimeCode = String.Format("{0}", (int)actualTimestamps);
                     break;
