@@ -1290,9 +1290,6 @@ namespace Kinovea.ScreenManager
                 case TimeType.Time:
                     actualTimestamps = isSynched ? timestamps - m_iSyncPosition : timestamps;
                     break;
-                case TimeType.TotalDuration:
-                    actualTimestamps = timestamps + m_FrameServer.Metadata.AverageTimeStampsPerFrame;
-                    break;
                 case TimeType.Duration:
                 default:
                     actualTimestamps = timestamps;
@@ -1304,11 +1301,10 @@ namespace Kinovea.ScreenManager
             double milliseconds = (seconds * 1000) / m_fHighSpeedFactor;
             bool showThousandth = (m_fHighSpeedFactor * m_FrameServer.VideoReader.Info.FramesPerSeconds) >= 100;
 
-            string frameString = "0";
-            if (type == TimeType.TotalDuration && m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
-                frameString = String.Format("{0}", (int)((double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame));
-            else if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
-                frameString = String.Format("{0}", (int)((double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame) + 1);
+            int frames = 1;
+            if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
+                frames = (int)((double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame) + 1;
+            string frameString = String.Format("{0}", frames);
 
             string outputTimeCode;
             switch (tcf)
@@ -1743,7 +1739,7 @@ namespace Kinovea.ScreenManager
             lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(start, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
 
             duration -= m_FrameServer.Metadata.AverageTimeStampsPerFrame;
-            lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(duration, TimeType.TotalDuration, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+            lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(duration, TimeType.Duration, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
         }
         private void UpdateSelectionDataFromControl()
         {
