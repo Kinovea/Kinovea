@@ -311,7 +311,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawRectangle(pen, search);
                 canvas.DrawRectangle(pen, p.Box(transformer.Transform(blockWindow)));
 
-                DrawDebugInfo(canvas, point, search);
+                //DrawDebugInfo(canvas, point, search);
             }
         }
 
