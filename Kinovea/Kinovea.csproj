@@ -234,6 +234,7 @@
     <EmbeddedResource Include="Languages\RootLang.ja.resx" />
     <EmbeddedResource Include="Languages\RootLang.ko.resx" />
     <EmbeddedResource Include="Languages\RootLang.lt.resx" />
+    <EmbeddedResource Include="Languages\RootLang.mk.resx" />
     <EmbeddedResource Include="Languages\RootLang.nl.resx" />
     <EmbeddedResource Include="Languages\RootLang.no.resx" />
     <EmbeddedResource Include="Languages\RootLang.resx">
