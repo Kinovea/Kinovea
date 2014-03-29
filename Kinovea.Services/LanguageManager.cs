@@ -136,6 +136,10 @@ namespace Kinovea.Services
         {
             get { return languages["ja"]; }
         }
+        public static string Macedonian
+        {
+            get { return languages["mk"]; }
+        }
         #endregion
         
         private static Dictionary<string, string> languages = null;
@@ -158,6 +162,7 @@ namespace Kinovea.Services
             languages.Add("nl", "Nederlands");
             languages.Add("ja", "日本語");
             languages.Add("no", "Norsk");
+            languages.Add("mk", "македонски");
             languages.Add("pl", "Polski");
             languages.Add("pt", "Português");
             languages.Add("ro", "Română");
