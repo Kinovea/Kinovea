@@ -231,6 +231,7 @@
     <EmbeddedResource Include="Languages\RootLang.fr.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.ja.resx" />
     <EmbeddedResource Include="Languages\RootLang.ko.resx" />
     <EmbeddedResource Include="Languages\RootLang.lt.resx" />
     <EmbeddedResource Include="Languages\RootLang.nl.resx" />

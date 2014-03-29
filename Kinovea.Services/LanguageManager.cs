@@ -132,6 +132,10 @@ namespace Kinovea.Services
         {
             get { return languages["sr-Cyrl-CS"]; }
         }
+        public static string Japanese
+        {
+            get { return languages["ja"]; }
+        }
         #endregion
         
         private static Dictionary<string, string> languages = null;
@@ -152,6 +156,7 @@ namespace Kinovea.Services
             languages.Add("it", "Italiano");
             languages.Add("lt", "Lietuvių");
             languages.Add("nl", "Nederlands");
+            languages.Add("ja", "日本語");
             languages.Add("no", "Norsk");
             languages.Add("pl", "Polski");
             languages.Add("pt", "Português");
