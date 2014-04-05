@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>Göm miniatyrer</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>Visa miniatyrer</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Växla videopositionerna</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Synkronisera videona med aktuella bilder</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Gå till början för båda videona</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Hoppa till slutet av båda videona</value></data>
@@ -132,8 +129,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Hela banan</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Bansnittet kring nuvarande bild</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Etikett följer banan</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Koordinatsystemets ursprung</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Rörelse höger till vänster</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Verklig storlek av segmentet :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrera Längd</value></data>
    
@@ -172,19 +167,14 @@
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Spara metod</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Spara endast nyckelbildernas data.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Kombinera video och nyckelbilds data i en fil.</value></data>
-   
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Måla nyckelbildernas grafik permanent på videon.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Spara endast video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Spara video eller nyckelbilds data...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Spara nyckelbilds data</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG bilder (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG bilder (*.png)|*.png|Bitmap bilder (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Spara bildsekvens</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Spara Video</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Bestäm koordinatsystemets ursprung</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Kan inte koppla till videoenhet</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Hittar ingen enhet att koppla upp.\nKontrollera att enheten är rätt kopplad till datorn.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Skriv över fil</value></data>
@@ -255,7 +245,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>Lås arbetszonens gränser</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Lås upp arbetszonens gränser</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Rutverk med perspektiv</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>Ljusstyrka...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfigurera</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Nedräknings Läge</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Ta bort stoppur</value></data>
@@ -263,7 +252,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Starta stoppur</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stoppa stoppur</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Stäng detta fönster</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Färger...</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Färg</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Färg och storlek</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Synlighet...</value></data>
@@ -281,7 +269,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Bandata till simpel text</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>Liqvidera</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Bildformat</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Automatisk Igenkänning</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Bildförhållande 4:3</value></data>
@@ -296,11 +283,6 @@
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Ladda data för nyckelbild</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Zooma x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>Zooma x1.5</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>Zooma x1.75</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>Zooma x2</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>Zooma x2.25</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>Zooma x2.5</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Byt till direkt zoom</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Stäng förstoringsglas</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Spegelvänd</value></data>
@@ -313,8 +295,6 @@
    
    <data name="mnuSendPic" xml:space="preserve"><value>Sänd bilden till andra videon</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Höghastighetskamera...</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Placera arbetszonens sista bild som nuvarande bild</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Placera arbetszonens första bild som nuvarande bild</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Skärp...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Visa Koordinater</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Visa längd</value></data>
@@ -332,22 +312,9 @@
    
    
    
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Ett okänt fel uppstod.</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – uppspelningsfel.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Senaste använda färger:</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Fel: Kunde inte spara filen : kodning stöds ej.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Fel: Kan inte spara filen : problem vid initieringen av enkodern.</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - Sparar felet</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Fel: Kan inte spara filen : Kan inte skriva till filen.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Fel: Kan inte spara filen : något fel inträffade under kodningsprocessen.</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Fel: Kan inte spara filen : okänt fel.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tomt</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassisk (t:mm:ss:hundradelar)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Bildnummer</value></data>
-   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Totala millisekunder</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundradelsminut</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tiotusendelstimme</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pausa</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zooma : {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Frånkopplad</value></data>
@@ -404,8 +371,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Översikt...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertera...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisk kontrast...</value></data>
-   
-   
    
    
    

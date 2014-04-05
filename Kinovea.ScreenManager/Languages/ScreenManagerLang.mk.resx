@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>Сокриј сликички</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>Прикажи сликички</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Инверзна видео позиција</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Синхронизирај го видеото на актуалната рамка</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Врати се на почетокот кај двете видеа</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Префрли се на крајот од двете видеа</value></data>
@@ -132,8 +129,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Заврши го патот</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Дел од патот околу актуелната слика</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Означи го следењето на патот</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>auie</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Движење од десно во лево</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Оригинална големина на сегментот:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Калибрација на линијата</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Калибрација на рамнината</value></data>
@@ -172,19 +167,14 @@
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Зачувај метод</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Зачувај ја само анализата</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Ќе биде зачуван само описот на цртежите и други предмети од анализата. #Датотеката ќе може да биде внесена во видеото подоцна.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Зачувај го видеото со прилагодлива анализа</value></data>
-   <data name="dlgSaveAnalysisOrVideo_HintMuxed" xml:space="preserve"><value>auie</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Зачувај го видеото со постојана анализа применета на видеото</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Анализата на предметите ќе биде видлива на сите плеери но нема да може да се модифицира. # Дополнително прикачените клучни слики нема да бидат зачувани.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Зачувај го само видеото</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Зачувај го видеото</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Зачувај ги податоците од клучните слики</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG слики (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG слики (*.png)|*.png|Bitmap слики (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Зачувај секвенца</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Зачувај Видео</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Прилагоди го почетокот на координатниот систем</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Не може да се поврзе со видео уредот</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Не може да се најде уред за да се конектира на. \n Ве молам осигурајте се дека уредот е правилно поврзан со компјутерот.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Датотека презапиши</value></data>
@@ -255,7 +245,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>Заклучи ги границите на работната зона</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Отклучи ги границите на работната зона</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Перспектива на координатната мрежа</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>Осветленост</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Конфигурира</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Режим на одбројување</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Избриши стоперица</value></data>
@@ -263,7 +252,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Стартувај стоперица</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Стопирај стоперица</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Затвори го овој екран</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Бои:</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Боја</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Боја и Величина:</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Постојаност...</value></data>
@@ -281,7 +269,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Траекториите во едноставен текст</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>Течно</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Формат на сликата</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Автоматско пронаоѓање</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Сила 4:3</value></data>
@@ -296,11 +283,6 @@
    <data name="mnuFlipVertically" xml:space="preserve"><value>Преврти вертикално</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Вчитај податок за клучните слики</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Зум x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>auie</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>aiue</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>auie</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>auie</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>auie</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Промени во директен зум</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Затвори ја лупата</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Огледало</value></data>
@@ -313,8 +295,6 @@
    <data name="mnuCalibrate" xml:space="preserve"><value>Калибрирај...</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Прати ја сликата на друго видео</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Камера со голема брзина</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Постави го последниот фрејм од работната зона како моментален фрејм</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Постави го првиот фрејм од работната зона како моментален фрејм</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Изострување...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Прикажи координати</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Прикажи мерка</value></data>
@@ -332,22 +312,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Координатна мрежа</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Дебели означувачи</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Скриј</value></data>
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Се случи непозната грешка.</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Киновеа – грешка при репродукција.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Неодамна користени бои:</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Проблем: Не може да се зачува датотеката : не поддржано кодирање.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Проблем: Не може да се зачува датотеката : проблем при иницирање на кодирањето.</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Киновеа – грешка при зачувување.</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Проблем: не може да се зачува датотеката : не може да се пишува во датотеката.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Проблем: не може да се зачува датотеката: се случија некои грешки при кодирањето.</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Проблем: не може да се зачува датотеката : непозната грешка.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Празно</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Бафер: {0}%</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Класично (ч:мм:сек:стотинки)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Број на фрејмови</value></data>
-   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Вкупно милисекунди</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Стоти дел од минутата</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет илјадити дел од часот</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Пауза</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Зум: {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Исклучено</value></data>
@@ -404,8 +371,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Преглед...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Обратно...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Автоматско прилагодување на контрастот...</value></data>
-   
-   
    
    
    

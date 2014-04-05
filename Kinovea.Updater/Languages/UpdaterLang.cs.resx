@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Aktualizace softwaru</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Nová verze je k dispozici!</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Zvolte prosím cílové umístění instalačního souboru.</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Vyberte složku pro umístění</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Stávající verze:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Stáhnout</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Stahování nové verze…</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Velikost souboru:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Při kontrole vyhledávání nové verze se objevila chyba. Zabezpečte internetové připojení.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Změňte Log:</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>Ukončit</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - vyhledávání nové verze.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Vaše verze je aktualizována!</value></data>
+   
+   
    
    
    

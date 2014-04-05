@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>サムネイルを隠す</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>サムネイルを表示</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>ビデオポジション反転</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>現在のフレームをビデオと同期</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>両方のビデオの最初に戻る</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>両方のビデオの最後へ移動</value></data>
@@ -132,8 +129,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>完全な軌道</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>現在のイメージ周囲の軌道</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>ラベル付き軌道</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Coordinates system origin</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>左右のモーション</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>セグメントの実際のサイズ:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>ライン較正</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>平面較正</value></data>
@@ -172,19 +167,14 @@
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>メソッドを保存</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>分析結果のみを保存</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>ドローイングと分析された対象の内容のみを保存。#ファイルはのちにビデオにインポートできます。</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>変更可能な分析結果とビデオを保存</value></data>
-   <data name="dlgSaveAnalysisOrVideo_HintMuxed" xml:space="preserve"><value>auie</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>分析結果をビデオに永続的に付与して保存</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>分析対象はすべてのプレーヤーで参照できますが、変更できません。#キーイメージに取り付けられたコメントは保存されません。</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>ビデオのみ保存</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>ビデオの保存</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>キーイメージデータの保存</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG 画像 (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG 画像 (*.png)|*.png|Bitmap 画像 (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>シーケンスの保存</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv;</value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>ビデオを保存</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Set coordinates system origin</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>ビデオデバイスと接続できません</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>接続可能デバイスが検出されません。\nデバイスが正しくコンピューターに接続されていることを確認して下さい。</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>ファイル上書き</value></data>
@@ -255,7 +245,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>作業範囲を固定</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>作業範囲の固定解除</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>パースペクティブグリッド</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>明るさ…</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>設定</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>カウントダウンモード</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>ストップウォッチを削除</value></data>
@@ -263,7 +252,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>ストップウォッチをスタートする</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>ストップウォッチを止める</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>このスクリーンを閉じる</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>色…</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>色</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>色とサイズ…</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>継続時間…</value></data>
@@ -281,7 +269,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>シンプルテキストへの変換</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>Fluidify</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>イメージフォーマット</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>自動検出</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>4:3に変換</value></data>
@@ -296,11 +283,6 @@
    <data name="mnuFlipVertically" xml:space="preserve"><value>垂直に反転</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>キーイメージデータを開く…</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>ズーム x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>ズーム x1.5</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>ズーム x1.75</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>ズーム x2</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>ズーム x2.25</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>ズーム x2.5</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>ダイレクトズームに切替え</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>拡大を終了</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>鏡</value></data>
@@ -313,8 +295,6 @@
    <data name="mnuCalibrate" xml:space="preserve"><value>較正…</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>イメージを他のビデオに送る</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>ハイスピードカメラ…</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>作業範囲の最後のフレームを現在のフレームにセット</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>作業範囲の最初のフレームを現在のフレームにセット</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>鮮明化…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>座標を表示</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>計測値を表示</value></data>
@@ -332,22 +312,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>グリッド</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>目盛り</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>隠す</value></data>
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>不明なエラーの発生</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - 再生エラー。</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>最近使用されたカラー:</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>エラー: ファイルを保存できませんでした : サポートされていないエンコーディング。</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>エラー: ファイルを保存できませんでした : 初期エンコーディングで問題発生。</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - 保存中のエラー。</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>エラー: ファイルを保存できませんでした : ファイルへの書き込みができませんでした。</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>エラー: ファイルを保存できませんでした : エンコーディング中に問題が発生。</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>エラー: ファイルを保存できませんでした : 不明なエラー。</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>空</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>バッファ: {0}%</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>クラシック (h:mm:ss:hundredth)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>フレーム数</value></data>
-   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>合計ミリ秒</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>1/100分</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>1/10,000時間</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>一時停止</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>ズーム: {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>接続解除</value></data>
@@ -404,8 +371,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>概要…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>逆再生…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>オートコントラスト…</value></data>
-   
-   
    
    
    

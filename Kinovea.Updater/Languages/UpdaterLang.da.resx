@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Ændret</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Ny version tilgængelig!</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Vælg katalog til installationsfil.</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Vælg destinationskatalog</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Nuværende version:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Hent</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Hent ny version</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Filstørrelse:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Der opstod en fejl under søgning efter ny version. Venligst, kontroller at internetforbindelsen er i orden.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Ændringslog:</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>Afslut</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - kikker efter ny version.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Du har nyeste version.</value></data>
+   
+   
    
    
    

@@ -61,33 +61,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Hide Thumbnails.
-        /// </summary>
-        internal static string btnHideThumbView {
-            get {
-                return ResourceManager.GetString("btnHideThumbView", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Show Thumbnails.
-        /// </summary>
-        internal static string btnShowThumbView {
-            get {
-                return ResourceManager.GetString("btnShowThumbView", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Invert Video Positions.
-        /// </summary>
-        internal static string btnSwap_ToolTip {
-            get {
-                return ResourceManager.GetString("btnSwap_ToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Synchronize Videos on the Current Frames.
         /// </summary>
         internal static string btnSync_ToolTip {
@@ -484,15 +457,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Right-to-left motion.
-        /// </summary>
-        internal static string dlgConfigureMosaic_cbRightToLeft {
-            get {
-                return ResourceManager.GetString("dlgConfigureMosaic_cbRightToLeft", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Opacity: {0:0}%.
         /// </summary>
         internal static string dlgConfigureOpacity_lblValue {
@@ -660,15 +624,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgConfigureTrajectory_RadioLabel {
             get {
                 return ResourceManager.GetString("dlgConfigureTrajectory_RadioLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Coordinates system origin.
-        /// </summary>
-        internal static string dlgConfigureTrajectory_SetOrigin {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_SetOrigin", resourceCulture);
             }
         }
         
@@ -1006,15 +961,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à When opened in Kinovea, the drawings and other analysis objects will still be modifiable.#When opened in other players, the drawings and analysis objects will not be visible..
-        /// </summary>
-        internal static string dlgSaveAnalysisOrVideo_HintMuxed {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_HintMuxed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Save only the analysis.
         /// </summary>
         internal static string dlgSaveAnalysisOrVideo_RadioAnalysis {
@@ -1029,24 +975,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgSaveAnalysisOrVideo_RadioBlended {
             get {
                 return ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioBlended", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save video with analysis modifiable.
-        /// </summary>
-        internal static string dlgSaveAnalysisOrVideo_RadioMuxed {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioMuxed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save video only..
-        /// </summary>
-        internal static string dlgSaveAnalysisOrVideo_RadioVideo {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioVideo", resourceCulture);
             }
         }
         
@@ -1096,29 +1024,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Matroska (*.mkv)|*.mkv; .
-        /// </summary>
-        internal static string dlgSaveVideoFilterMuxed {
-            get {
-                return ResourceManager.GetString("dlgSaveVideoFilterMuxed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Save Video.
         /// </summary>
         internal static string dlgSaveVideoTitle {
             get {
                 return ResourceManager.GetString("dlgSaveVideoTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Set coordinates system origin.
-        /// </summary>
-        internal static string dlgSetTrajectoryOrigin_Title {
-            get {
-                return ResourceManager.GetString("dlgSetTrajectoryOrigin_Title", resourceCulture);
             }
         }
         
@@ -1744,15 +1654,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Brightness....
-        /// </summary>
-        internal static string mnuBrightness {
-            get {
-                return ResourceManager.GetString("mnuBrightness", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Calibrate....
         /// </summary>
         internal static string mnuCalibrate {
@@ -1821,15 +1722,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string mnuCloseScreen {
             get {
                 return ResourceManager.GetString("mnuCloseScreen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Colors....
-        /// </summary>
-        internal static string mnuColors {
-            get {
-                return ResourceManager.GetString("mnuColors", resourceCulture);
             }
         }
         
@@ -2023,15 +1915,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Fluidify.
-        /// </summary>
-        internal static string mnuFluidify {
-            get {
-                return ResourceManager.GetString("mnuFluidify", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Image Format.
         /// </summary>
         internal static string mnuFormat {
@@ -2140,51 +2023,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Zoom x1.5.
-        /// </summary>
-        internal static string mnuMagnifier150 {
-            get {
-                return ResourceManager.GetString("mnuMagnifier150", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Zoom x1.75.
-        /// </summary>
-        internal static string mnuMagnifier175 {
-            get {
-                return ResourceManager.GetString("mnuMagnifier175", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Zoom x2.
-        /// </summary>
-        internal static string mnuMagnifier200 {
-            get {
-                return ResourceManager.GetString("mnuMagnifier200", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Zoom x2.25.
-        /// </summary>
-        internal static string mnuMagnifier225 {
-            get {
-                return ResourceManager.GetString("mnuMagnifier225", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Zoom x2.5.
-        /// </summary>
-        internal static string mnuMagnifier250 {
-            get {
-                return ResourceManager.GetString("mnuMagnifier250", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Switch to Direct Zoom.
         /// </summary>
         internal static string mnuMagnifierDirect {
@@ -2289,24 +2127,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string mnuSetCaptureSpeed {
             get {
                 return ResourceManager.GetString("mnuSetCaptureSpeed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Set the Last Frame of Working Zone to the Current Frame.
-        /// </summary>
-        internal static string mnuSetSelectionEnd {
-            get {
-                return ResourceManager.GetString("mnuSetSelectionEnd", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Set the First Frame of Working Zone to the Current Frame.
-        /// </summary>
-        internal static string mnuSetSelectionStart {
-            get {
-                return ResourceManager.GetString("mnuSetSelectionStart", resourceCulture);
             }
         }
         
@@ -2446,83 +2266,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à An Unknown Error Occurred..
-        /// </summary>
-        internal static string PlayMovie_AccessViolation {
-            get {
-                return ResourceManager.GetString("PlayMovie_AccessViolation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Kinovea - Playing Error..
-        /// </summary>
-        internal static string PlayMovie_Error {
-            get {
-                return ResourceManager.GetString("PlayMovie_Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Recently used colors:.
         /// </summary>
         internal static string RecentlyUsedColors {
             get {
                 return ResourceManager.GetString("RecentlyUsedColors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : unsupported encoding..
-        /// </summary>
-        internal static string SaveMovie_CodecNotFound {
-            get {
-                return ResourceManager.GetString("SaveMovie_CodecNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : problem while initializing encoder..
-        /// </summary>
-        internal static string SaveMovie_CodecNotOpened {
-            get {
-                return ResourceManager.GetString("SaveMovie_CodecNotOpened", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Kinovea - Saving error..
-        /// </summary>
-        internal static string SaveMovie_Error {
-            get {
-                return ResourceManager.GetString("SaveMovie_Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : Unable to write to the file..
-        /// </summary>
-        internal static string SaveMovie_FileNotOpened {
-            get {
-                return ResourceManager.GetString("SaveMovie_FileNotOpened", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : some error happened during encoding process..
-        /// </summary>
-        internal static string SaveMovie_TranscodeNotFinished {
-            get {
-                return ResourceManager.GetString("SaveMovie_TranscodeNotFinished", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : unknown error..
-        /// </summary>
-        internal static string SaveMovie_UnknownError {
-            get {
-                return ResourceManager.GetString("SaveMovie_UnknownError", resourceCulture);
             }
         }
         
@@ -2541,51 +2289,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string statusEmptyScreen {
             get {
                 return ResourceManager.GetString("statusEmptyScreen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Classic (h:mm:ss:hundredth).
-        /// </summary>
-        internal static string TimeCodeFormat_Classic {
-            get {
-                return ResourceManager.GetString("TimeCodeFormat_Classic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Frames Numbers.
-        /// </summary>
-        internal static string TimeCodeFormat_Frames {
-            get {
-                return ResourceManager.GetString("TimeCodeFormat_Frames", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Hundredth of a minute.
-        /// </summary>
-        internal static string TimeCodeFormat_HundredthOfMinutes {
-            get {
-                return ResourceManager.GetString("TimeCodeFormat_HundredthOfMinutes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Total milliseconds.
-        /// </summary>
-        internal static string TimeCodeFormat_Milliseconds {
-            get {
-                return ResourceManager.GetString("TimeCodeFormat_Milliseconds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Ten thousandth of an hour.
-        /// </summary>
-        internal static string TimeCodeFormat_TenThousandthOfHours {
-            get {
-                return ResourceManager.GetString("TimeCodeFormat_TenThousandthOfHours", resourceCulture);
             }
         }
         

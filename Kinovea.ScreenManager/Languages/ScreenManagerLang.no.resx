@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>Skjul ikoner</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>Vis ikoner</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Inverter video posisjoner</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Synkroniser videoer etter aktivt bilde</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Tilbake til start for begge videoer</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Gå til slutten av begge videoer</value></data>
@@ -132,8 +129,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Fullstendig bane</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Deler av bane rundt aktuelt bilde</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Beskrivelse følger banen</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Koordinater ved startsted</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Høyre-til-venstre bevegelse</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Reell størrelse på segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrere måling</value></data>
    
@@ -172,19 +167,14 @@
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Lagre metode</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Lagre bare nøkkelbilde data</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Kombiner video og nøkkelbilder I filen.</value></data>
-   
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Lagre tegninger permanent på video</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Lagre kun video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Lagre video eller nøkkelbilde data</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Lagre nøkkelbilde data</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Lagre sekvens</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Lagre video</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Sett koordinatene til systemstart</value></data>
    
    
    
@@ -255,7 +245,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>Lås arbeidssonegrensene</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Åpne arbeidssonegrensene</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektiv Rutenett</value></data>
-   
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfigurer</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Nedtellingsmodus</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Slett stoppeklokke</value></data>
@@ -263,7 +252,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Start stoppeklokke</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stop stoppeklokke</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Lukk vindu</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Farger...</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Farge</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Farge og størrelse...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Likevekt</value></data>
@@ -281,7 +269,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Overføring til enkel tekst</value></data>
-   
    <data name="mnuFormat" xml:space="preserve"><value>Bildeformat</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Automatisk valg</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Bruk 4:3</value></data>
@@ -296,11 +283,6 @@
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Last inn nøkkelbilde data...</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>Zoom x2.25</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>Zoom x2.5</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Bytt til direkte zoom</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Lukk forstørrelsesglass</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Speil</value></data>
@@ -313,8 +295,6 @@
    
    
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Sett original fart</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>La siste arbeidsbilde I arbeidssonen være det aktuelle bildet</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>La første arbeidsbilde I arbeidssonen være det aktuelle bildet</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Skarp opp</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
@@ -332,22 +312,9 @@
    
    
    
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Det oppstod en ukjent feil.</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – avspillingsfeil</value></data>
    
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Advarsel: Kan ikke lagre fil : koding ikke støttet</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Advarsel: Kan ikke lagre fil : Problemer med å starte koding</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea – Lagringsfeil</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Advarsel: Kan ikke lagre fil : kan ikke skrive til fil.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Advarsel: Kan ikke lagre fil : det skjedde en kodefeil under lagring.</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Advarsel: Kan ikke lagre fil : ukjent feil</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tomt</value></data>
    
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassisk (h:mm:ss:hundredelssekund)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Bildenummer</value></data>
-   
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundredels minutt</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Titusendedels time</value></data>
    
    
    
@@ -404,8 +371,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
-   
-   
    
    
    

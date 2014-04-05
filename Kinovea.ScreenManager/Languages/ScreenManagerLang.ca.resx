@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>Amagar les miniatures</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>Mostrar les miniatures</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Invertir les posicions dels vídeos</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Sincronitzar els videos en el fotograma actual</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Anar a l'inici dels dos vídeos</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Anar al final dels dos vídeos</value></data>
@@ -132,8 +129,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Trajectòria completada</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Secció de trajectòria al voltant de l'imatge actual</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Etiqueta seguint la trajectòria</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Origen del sistema de coordenades</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Moviment de dreta a esquerra</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Mesura real del segment</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Calibració lineal</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Calibració del pla</value></data>
@@ -172,19 +167,14 @@
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Mètode d'enregistrament</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Desar només l'anàlisi</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Només es desaran les descripcions dels dibuixos i altres objectes de l'anàlisi.# L'arxiu pot ser importat en un vídeo posteriorment</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Desar el vídeo amb l'anàlisi modificable</value></data>
-   <data name="dlgSaveAnalysisOrVideo_HintMuxed" xml:space="preserve"><value>Quan s'obri en Kinovea, els dibuixos i els altres objectes de l'anàlisi encara seran modificables.#Quan s'obri en altres reproductors, els dibuixos i altres objectes de l'anàlisi no seran visibles.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Desar un vídeo amb l'anàlisi incrustat permanentment</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Els objectes de l'anàlisi seran visibles en tots els reproductors però no seran modificables.# Els comentaris de les imatges clau no es desaran.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Desar només el vídeo.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Desar el vídeo...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Desar les dades de les imatges clau</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>Imatges JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Imatges PNG (*.png)|*.png|Imatges Bitmap (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Desar la seqüència d'imatges</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Desar el vídeo</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Especificar l'origen de coordenades</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>No s'ha pogut connectar al dispositiu de vídeo</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>No s'ha trobat cap dispositiu al qual connectar. Si us plau, asseguri's de que el dispositiu està degudament endollat. </value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobreescriure l'arixiu</value></data>
@@ -255,7 +245,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>Bloqueja els límits de la zona de treball</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Desbloqueja els límits de la zona de treball</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Graella de perspectiva</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>Lluminositat</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configurar</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Mode de compte enrere</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Esborra el Cronòmetre</value></data>
@@ -263,7 +252,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Inicia el Cronòmetre</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Atura el Cronòmetre</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Tanca aquesta finestra</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Colors...</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Color</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Color i Mida...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistència...</value></data>
@@ -281,7 +269,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Trajectòries a text simple</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>Fer fluid</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Format d'imatge</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Detecció automàtica</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Forçar 4:3</value></data>
@@ -296,11 +283,6 @@
    <data name="mnuFlipVertically" xml:space="preserve"><value>Reflexa verticalment</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Carregar dades de imatges clau...</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>Zoom x2.25</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>Zoom x2.5</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Passar a zoom directe</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Sortir del mode lupa</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Mirall</value></data>
@@ -313,8 +295,6 @@
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar...</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Enviar l'imatge a l'altre vídeo</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Càmera d'alta velocitat...</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Estableix l'últim fotograma de la zona de treball coma fotograma actual</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Estableix el primer fotograma de la zona de treball coma fotograma actual</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Ressalta els contorns</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Mostrar coordenades</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar mesura</value></data>
@@ -332,22 +312,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Graella</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Graduacions</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Amagar</value></data>
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Hi ha hagut un error desconegut</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – Error de reproducció</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Colors emprats recentment:</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Error: Impossible desar l'arxiu: codificació no suportada</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Error: Impossible desar l'arxiu: problema mentre s'inicialitzava l'encoder</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea – Error en desar.</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Error: Impossible desar l'arxiu: No s'ha pogut escriure a l'arxiu.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Error: Impossible desar l'arxiu: Hi ha hagut algun error durant el procés de codificació</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Error: Impossible desar l'arxiu: error desconegut</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Buit</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Memòria Cau : {0}%</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clàssic (h:mm:ss:centèsimes)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de fotogrames</value></data>
-   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total en milisegons</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centèsimes de minut</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deumil·lèsimes d'hora</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pausa</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zoom: {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Desconnectat</value></data>
@@ -404,8 +371,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resum...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverteix</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast Automàtic</value></data>
-   
-   
    
    
    

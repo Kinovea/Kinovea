@@ -105,14 +105,11 @@
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forçar 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Detecció automàtica</value></data>
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Canviar a Mode d'Anàlisis</value></data>
-   <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Colors</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistència</value></data>
-   <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Graella</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Nombre d'arxius a l'historial</value></data>
    <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Format d'imatge per defecte</value></data>
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Idioma</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>I</value></data>
-   <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Graella en prespectiva</value></data>
    <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Format dels marcadors temporals</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La zona de treball ocuparà enys de {0} MB de memòria</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La zona de treball és de menys de {0} segons</value></data>
@@ -155,6 +152,10 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deumilèssimes d'hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Marques de temps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classic + Número de fotogrames</value></data>
+   
+   
+   
+   
    
    
    

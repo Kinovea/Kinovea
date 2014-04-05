@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>Önizleme imajlarını gizle</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>Önizleme imajlarını göster</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Video Konumlarını Ters Çevir</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Geçerli Karelerdeki Videoları Senkronize Et</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Her İki Video için Başlangıca Geri Dön</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Her İki Video için Sona Atla</value></data>
@@ -132,8 +129,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Yolu Tamamla</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Geçerli imajın etrafındaki yol kesiti</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Yolu takip eden etiket</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Sistem orijini koordinatları</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Sağdan sola hareket</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmentin gerçek büyüklüğü :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Ölçümü Kalibre Et</value></data>
    
@@ -172,19 +167,14 @@
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Kaydetme Yöntemi</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Sadece anahtar imaj verisini kaydet.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Video ve anahtar imaj verisini dosyada birleştir.</value></data>
-   
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Anahtar imaj verisini video üzerine kalıcı olarak kaydet.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Sadece videoyu kaydet.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Video veya Anahtar İmaj Verisini Kaydet...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Anahtar İmaj Verisini Kaydet</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG İmajları (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG İmajları (*.png)|*.png|Bitmap İmajları (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Sekans Kaydet</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Video Kaydet</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Koordinatları sistem orijini olarak ayarla</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Video aygıtına bağlanamıyor</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Bağlanacak bir aygıt bulunamadı.\nLütfen aygıtın bilgisayara uygun şekilde bağlı olduğundan emin olun.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Dosyanın üzerine yaz</value></data>
@@ -255,7 +245,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>Çalışma Alanı Sınırlarını Kilitle</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Çalışma Alanı Sınırlarının Kilidini Aç</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektif Izgarası</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>Parlaklık...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Ayarla</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Geriye doğru sayma Modu</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Kronometreyi Sil</value></data>
@@ -263,7 +252,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Kronometreyi Başlat</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Kronometreyi Durdur</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Bu Ekranı Kapa</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Renkler...</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Renk</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Renk ve Büyüklük...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Kalıcılık...</value></data>
@@ -281,7 +269,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>İzleme yollarından basit metine</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>Sıvılaştır</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>İmaj Formatı</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Otomatik Bulma</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>4:3'ü Zorla</value></data>
@@ -296,11 +283,6 @@
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Anahtar İmaj Verisini Yükle...</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Yaklaştır x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>Yaklaştır x1.5</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>Yaklaştır x1.75</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>Yaklaştır x2</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>Yaklaştır x2.25</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>Yaklaştır x2.5</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Direkt Yakınlaşmaya Geç</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Büyüteci Kapat</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Ayna</value></data>
@@ -313,8 +295,6 @@
    
    <data name="mnuSendPic" xml:space="preserve"><value>İmajı diğer videoya gönder</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Yüksek-hızlı kamera...</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Çalışma Alanının İlk Karesini Geçerli Kareye Denkleştir</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Çalışma Alanının Son Karesini Geçerli Kareye Denkleştir</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Keskinleştir...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Koordinatları göster</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Ölçümü Göster</value></data>
@@ -332,22 +312,9 @@
    
    
    
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Bilinmeyen bir Hata Meydana Geldi.</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Oynatma Hatası.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Yeni kullanılmış renkler:</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Hata: Dosya kaydedilemiyor : desteklenmeyen kodlama.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Hata: Dosya kaydedilemiyor : kodlayıcıyı başlatırken problem oluştu.</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - Kaydetme hatası.</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Hata: Dosya kaydedilemiyor : Dosya üzerine yazılamıyor.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Hata: Dosya kaydedilemiyor : kodlama sırasında bir hata meydana geldi.</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Hata: Dosya kaydedilemiyor : bilinmeyen hata.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Boş</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Tampon bellek: {0}%</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klasik (h:mm:ss:yüzdesi)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kare Sayıları</value></data>
-   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Toplam milisaniye</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Bir dakikanın yüzdesi</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin onbindesi</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Duraklat</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Yaklaştır: {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Bağlantı koptu</value></data>
@@ -404,8 +371,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Göz Atma...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Geri...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Oto Kontrast...</value></data>
-   
-   
    
    
    

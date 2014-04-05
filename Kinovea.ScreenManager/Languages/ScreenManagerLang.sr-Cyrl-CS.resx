@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>Сакриј сличице</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>Прикажи сличице</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Обрни видео позиције </value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Синхронизуј видео на тренутном оквиру</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Назад на почетак за оба видео записа</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Пребаци се на крај за оба виде записа</value></data>
@@ -132,8 +129,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Заврши путању</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Део пута око тренутне слике</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Ознака која прати пут</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Порекло координатног система</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Кретање здесна налево </value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Реална величина сегмента:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Линија калибрације</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Равна калабрација</value></data>
@@ -172,19 +167,14 @@
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Метода за чување</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Сачувај само анализу</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Само опис цртежа и анализа осталих објеката биће сачувани.#Датотека се касније може укључити у видео запис.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Сачувајте видео са анализом која се може модификовати</value></data>
-   <data name="dlgSaveAnalysisOrVideo_HintMuxed" xml:space="preserve"><value>auie</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Сачувајте видео запис са анализом која је трајно примењена на видео запису</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Анализирани објекти ће бити видљив у свим програмима за репродукцију , али се не може модификовати. # Додатни коментари везани за кључне слике нец́е бити сачувани.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>y</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Сачувај видео ...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Сачувај податке кључне слике</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG slike (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG slike (*.png)|*.png|Bitmap slike (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Редослед чувања</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Сачувај видео</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Означи порекло координатног система</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Није могуц́е повезивање са видео уређајем</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Ни један уређај за прикључивање није пронађен.\нМолимо уверите се да је уређај исправно прикључен за рачунар.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Замена датотека</value></data>
@@ -255,7 +245,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>Закључајте границе радне зоне</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Откључајте границе радне зоне</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Перспектива координантне мреже</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>Светлина...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Конфигуриши</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Режим одбројавања</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Обриши штоперицу</value></data>
@@ -263,7 +252,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Покрени штоперицу</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Заустави штоперицу</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Затвори овај екран</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Боје...</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Боја</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Боја и величина...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Постојаност...</value></data>
@@ -281,7 +269,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Путање до једноставног текста</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>Претворити у течност</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Графички формат</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Аутоматско откривање</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Сила 4:3</value></data>
@@ -296,11 +283,6 @@
    <data name="mnuFlipVertically" xml:space="preserve"><value>Окрени вертикално</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Учитај податке кључних слика...</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Увеличај x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>Zoom</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>Zoom</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Аутоматски пребаци на зумирање</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Затвори лупу</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Огледало</value></data>
@@ -313,8 +295,6 @@
    <data name="mnuCalibrate" xml:space="preserve"><value>Калибриши...</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Пошаљите слику другом видео запису</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Брза камера...</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Поставите последњи кадар радне зоне у садашњи оквир</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Поставите први кадар радне зоне у садашњи оквир</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Изоштравање...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Прикажи координате</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Прикажи меру</value></data>
@@ -332,22 +312,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Координатна мрежа</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Степеновање</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Сакрити</value></data>
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Јавила се непозната грешка.</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - грешка у репродуковању. </value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Недавно коришћење боје :</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Грешка: Није могуће сачувати датотеку : кодирање није подржано.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Грешка: Није могуће сачувати датотеку : проблем у иницијализацији кодирања.</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - грешка при памћењу.</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Грешка: Није могуће сачувати датотеку : Писање у датотеци није могуће.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Грешка: Није могуће сачувати датотеку : нека грешка се догодила током процеса кодирања .</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Грешка: Није могуће сачувати датотеку : непозната грешка.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Празно</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>бафер: {0}%</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Стандардно (h:mm:ss:stotinka) </value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Бројеви оквира</value></data>
-   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Укупно милисекунди</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Стоти део минуте</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет хиљадити део сата</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Паузирај</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Зумирај: {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Прекинуто</value></data>
@@ -404,8 +371,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Преглед...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Инверзија...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Аутоматско подешавање контраста...</value></data>
-   
-   
    
    
    
