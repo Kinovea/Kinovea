@@ -162,7 +162,7 @@ namespace Kinovea.Services
             languages.Add("nl", "Nederlands");
             languages.Add("ja", "日本語");
             languages.Add("no", "Norsk");
-            languages.Add("mk", "македонски");
+            languages.Add("mk", "Македонски");
             languages.Add("pl", "Polski");
             languages.Add("pt", "Português");
             languages.Add("ro", "Română");
