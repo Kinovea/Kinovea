@@ -223,7 +223,7 @@
    <data name="Generic_Image" xml:space="preserve"><value>Слика</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Видео</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Зачувај Слика</value></data>
-   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Клунчните слики биле модифицирани. Дали сакате да се зачуваат податоците од клучните слики пред затворање?</value></data>
+   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Клучните слики се модифицирани. Дали сакате да се зачуваат податоците од клучните слики пред затворање?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Податотоците од клучните слики не се зачувани</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Одложен екран {0:0} с</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Заеднички контроли:</value></data>
@@ -273,7 +273,7 @@
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Ибриши го патот после оваа точка</value></data>
    <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Избриши ги сите патеки</value></data>
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Два екрани за снимање</value></data>
-   <data name="mnuTwoMixed" xml:space="preserve"><value>екран</value></data>
+   <data name="mnuTwoMixed" xml:space="preserve"><value>Еден екран за снимање и еден екран за репродукција</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Два екрани за репродукција</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>Само границите</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Експорт во табеларен приказ</value></data>
@@ -297,7 +297,7 @@
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Вчитај податок за клучните слики</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Зум x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>auie</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>auie</value></data>
+   <data name="mnuMagnifier175" xml:space="preserve"><value>aiue</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>auie</value></data>
    <data name="mnuMagnifier225" xml:space="preserve"><value>auie</value></data>
    <data name="mnuMagnifier250" xml:space="preserve"><value>auie</value></data>
