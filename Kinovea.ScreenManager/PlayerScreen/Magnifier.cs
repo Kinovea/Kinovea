@@ -61,7 +61,6 @@ namespace Kinovea.ScreenManager
         #region Members
         private Guid id = Guid.NewGuid();
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
-    	
         private BoundingBox m_source = new BoundingBox();   // Wrapper for the region of interest in the original image.
         private Rectangle m_insert;                         // The location and size of the insert window, where we paint the region of interest magnified.
         private MagnifierMode m_mode;
@@ -98,9 +97,9 @@ namespace Kinovea.ScreenManager
             
             Rectangle src;
             if(_bMirrored)
-            	src = new Rectangle(_bitmap.Width - scaledSource.Left, scaledSource.Top, -scaledSource.Width, scaledSource.Height);
+                src = new Rectangle(_bitmap.Width - scaledSource.Left, scaledSource.Top, -scaledSource.Width, scaledSource.Height);
             else
-            	src = scaledSource;
+                src = scaledSource;
             
             _canvas.DrawImage(_bitmap, _transformer.Transform(m_insert), src, GraphicsUnit.Pixel);
             _canvas.DrawRectangle(Pens.White, _transformer.Transform(m_insert));
@@ -219,7 +218,7 @@ namespace Kinovea.ScreenManager
     public enum MagnifierMode
     {
         None,
-        Direct, 		// When the mouse move makes the magnifier move (Initial mode).
-        Indirect    	// When the user has to click to change the boundaries of the magnifier.
+        Direct, // When the mouse move makes the magnifier move (Initial mode).
+        Indirect // When the user has to click to change the boundaries of the magnifier.
     }
 }

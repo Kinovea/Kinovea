@@ -114,7 +114,7 @@ namespace Kinovea.Root
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
             //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Normalized);
             //cmbTimeCodeFormat.Items.Add("Normalized");
-            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps);	// Debug purposes.
+            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps); // Debug purposes.
             
             // Combo Speed units (MUST be filled in the order of the enum)
             //lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
@@ -123,7 +123,7 @@ namespace Kinovea.Root
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.KilometersPerHour)));
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.FeetPerSecond)));
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.MilesPerHour)));
-            //cmbSpeedUnit.Items.Add(RootLang.dlgPreferences_Speed_Knots);		// Is this useful at all ?
+            //cmbSpeedUnit.Items.Add(RootLang.dlgPreferences_Speed_Knots); // Is this useful at all ?
 
             //lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
             lblAccelerationUnit.Text = "Acceleration:";

@@ -35,27 +35,27 @@ namespace Kinovea.ScreenManager
         {
             string kvaString = metadata.ToXmlString();
             XmlDocument kvaDoc = new XmlDocument();
-			kvaDoc.LoadXml(kvaString);
-			
-			string stylesheet = Application.StartupPath + "\\xslt\\kva2txt-en.xsl";
-			XslCompiledTransform xslt = new XslCompiledTransform();
-			xslt.Load(stylesheet);
-			
-			try
-			{
-			    using(StreamWriter sw = new StreamWriter(path))
-        		{
-		           	xslt.Transform(kvaDoc, null, sw);
-				}
-			}
-			catch(Exception ex)
-			{
-				log.Error("Exception thrown during export to MSXML.");
+            kvaDoc.LoadXml(kvaString);
+            
+            string stylesheet = Application.StartupPath + "\\xslt\\kva2txt-en.xsl";
+            XslCompiledTransform xslt = new XslCompiledTransform();
+            xslt.Load(stylesheet);
+            
+            try
+            {
+                using(StreamWriter sw = new StreamWriter(path))
+                {
+                    xslt.Transform(kvaDoc, null, sw);
+                }
+            }
+            catch(Exception ex)
+            {
+                log.Error("Exception thrown during export to MSXML.");
                 log.Error(ex.Message);
                 log.Error(ex.Source);
                 log.Error(ex.StackTrace);
-			}
-			
+            }
+            
         }
     }
 }

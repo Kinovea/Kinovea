@@ -47,9 +47,9 @@ namespace Kinovea.FileBrowser
     public partial class FileBrowserUserInterface : KinoveaControl
     {
         #region Members
-        private CShItem currentExptreeItem;	  // Current item in exptree tab.
-        private CShItem currentShortcutItem;	  // Current item in shortcuts tab.
-        private bool expanding;                // True if the exptree is currently auto expanding. To avoid reentry.
+        private CShItem currentExptreeItem; // Current item in exptree tab.
+        private CShItem currentShortcutItem; // Current item in shortcuts tab.
+        private bool expanding; // True if the exptree is currently auto expanding. To avoid reentry.
         private bool initializing = true;
         private ContextMenuStrip  popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
@@ -251,7 +251,7 @@ namespace Kinovea.FileBrowser
             ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
             ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
             ttTabs.SetToolTip(btnDeleteShortcut, FileBrowserLang.mnuDeleteShortcut);
-        }		
+        }
         public void ReloadShortcuts()
         {
             ArrayList shortcuts = GetShortcuts();
@@ -391,7 +391,7 @@ namespace Kinovea.FileBrowser
                 CommandManager cm = CommandManager.Instance();
                 cm.LaunchUndoableCommand(cds);
                 break;
-            }	
+            }
         }
         #endregion
         
@@ -401,7 +401,7 @@ namespace Kinovea.FileBrowser
             currentShortcutItem = item;
             if (initializing)
                 return;
-            	
+    
             // The operation that will trigger the thumbnail refresh MUST only be called at the end. 
             // Otherwise the other threads take precedence and the thumbnails are not 
             // shown progressively but all at once, when other operations are over.

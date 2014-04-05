@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
         private double[,] mapMatrix;
         private double[,] unmapMatrix;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		   
+
         public void Update(QuadrilateralF plane, QuadrilateralF image)
         {
            double[,] squareToInput = MapSquareToQuad(plane);

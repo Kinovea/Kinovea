@@ -12,7 +12,7 @@ namespace Kinovea.Root
     {
         public string FriendlyName
         {
-        	get { return RootLang.CommandToggleFileExplorer_FriendlyName; }
+            get { return RootLang.CommandToggleFileExplorer_FriendlyName; }
         }
 
         #region Members

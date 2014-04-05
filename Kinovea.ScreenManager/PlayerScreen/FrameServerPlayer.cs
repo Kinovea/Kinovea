@@ -138,7 +138,7 @@ namespace Kinovea.ScreenManager
             // Draw the current image on canvas according to conf.
             // This is called back from screen paint method.
         }
-        public void Save(double _fPlaybackFrameInterval, double _fSlowmotionPercentage, ImageRetriever _DelegateOutputBitmap)	
+        public void Save(double _fPlaybackFrameInterval, double _fSlowmotionPercentage, ImageRetriever _DelegateOutputBitmap)
         {
             // Let the user select what he wants to save exactly.
             formVideoExport fve = new formVideoExport(m_VideoReader.FilePath, m_Metadata, _fSlowmotionPercentage);
@@ -264,7 +264,7 @@ namespace Kinovea.ScreenManager
                     long regularFramesTotal = m_VideoReader.EstimatedFrames - m_Metadata.Count;
                     long keyframesTotal = m_Metadata.Count * settings.KeyframeDuplication;
                     settings.EstimatedTotal = regularFramesTotal + keyframesTotal;
-                }		
+                }
                 
                 log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputFrameInterval, settings.Duplication, settings.KeyframeDuplication);
                 

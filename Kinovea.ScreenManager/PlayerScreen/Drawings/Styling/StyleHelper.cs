@@ -27,7 +27,7 @@ using System.Globalization;
 using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
-{	
+{
     /// <summary>
     /// A class to encapsulate the various styling primitive a drawing may need for rendering, 
     /// and provide some utility functions to get a Pen, Brush, Font or Color object according to client opacity or zoom.
@@ -160,7 +160,7 @@ namespace Kinovea.ScreenManager
         /// <returns>Pen object initialized with the current value of color and width = 1.0</returns>
         public Pen GetPen(int alpha)
         {
-            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;			
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
             
             return NormalPen(new Pen(c, 1.0f));
         }
@@ -220,7 +220,7 @@ namespace Kinovea.ScreenManager
         #region Font property
         public Font GetFont(float stretchFactor)
         {
-            float fFontSize = GetRescaledFontSize(stretchFactor);			
+            float fFontSize = GetRescaledFontSize(stretchFactor);
             return new Font(font.Name, fFontSize, font.Style);
         }
         public Font GetFontDefaultSize(int fontSize)
@@ -252,7 +252,7 @@ namespace Kinovea.ScreenManager
                 {
                     smallestDiff = diff;
                     bestCandidate = size;
-                }	
+                }
             }
             
             g.Dispose();
@@ -314,7 +314,7 @@ namespace Kinovea.ScreenManager
                             color = (Color)value;
                             imported = true;
                         }
-                        break;	
+                        break;
                     }
                 case "LineSize":
                     {
@@ -366,7 +366,7 @@ namespace Kinovea.ScreenManager
                             bicolor.Background = (Color)value;
                             imported = true;
                         }
-                        break;	
+                        break;
                     }
                 case "GridDivisions":
                     {
@@ -411,7 +411,7 @@ namespace Kinovea.ScreenManager
                             result = color;
                             converted = true;
                         }
-                        break;	
+                        break;
                     }
                 case "LineSize":
                     {
@@ -456,7 +456,7 @@ namespace Kinovea.ScreenManager
                             result = bicolor.Background;
                             converted = true;
                         }
-                        break;	
+                        break;
                     }
                 case "GridDivisions":
                     {
@@ -471,7 +471,7 @@ namespace Kinovea.ScreenManager
                     {
                         log.DebugFormat("Unknown source property \"{0}\"." , sourceProperty);
                         break;
-                    }	
+                    }
             }
             
             if(!converted)
@@ -594,7 +594,7 @@ namespace Kinovea.ScreenManager
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
             return destinationType == typeof(string) ? true : base.CanConvertTo(context, destinationType);
-        }	
+        }
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             if(!(value is string))
@@ -723,6 +723,6 @@ namespace Kinovea.ScreenManager
                 
             return result;
         }
-    }	
+    }
         
 }

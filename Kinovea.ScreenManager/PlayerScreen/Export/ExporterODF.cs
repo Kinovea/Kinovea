@@ -38,130 +38,130 @@ namespace Kinovea.ScreenManager
         {
             string kvaString = metadata.ToXmlString();
             XmlDocument kvaDoc = new XmlDocument();
-			kvaDoc.LoadXml(kvaString);
-			
-			string stylesheet = Application.StartupPath + "\\xslt\\kva2odf-en.xsl";
+            kvaDoc.LoadXml(kvaString);
+            
+            string stylesheet = Application.StartupPath + "\\xslt\\kva2odf-en.xsl";
             XslCompiledTransform xslt = new XslCompiledTransform();
             xslt.Load(stylesheet);
-    		
+            
             XmlWriterSettings settings = new XmlWriterSettings();
-			settings.Indent = true;
-			
-			try
-			{
-	            using (ZipOutputStream zos = new ZipOutputStream(File.Create(path)))
-	            using (MemoryStream ms = new MemoryStream())
-			    using (XmlWriter xw = XmlWriter.Create(ms, settings))
-	            {
-					zos.UseZip64 = UseZip64.Dynamic;
-			    
-					xslt.Transform(kvaDoc, xw);
-				
+            settings.Indent = true;
+            
+            try
+            {
+                using (ZipOutputStream zos = new ZipOutputStream(File.Create(path)))
+                using (MemoryStream ms = new MemoryStream())
+                using (XmlWriter xw = XmlWriter.Create(ms, settings))
+                {
+                    zos.UseZip64 = UseZip64.Dynamic;
+                
+                    xslt.Transform(kvaDoc, xw);
+                
                     AddODFZipFile(zos, "content.xml", ms.ToArray());
-				
+                
                     AddODFZipFile(zos, "meta.xml", GetODFMeta());
                     AddODFZipFile(zos, "settings.xml", GetODFSettings());
                     AddODFZipFile(zos, "styles.xml", GetODFStyles());
                     
                     AddODFZipFile(zos, "META-INF/manifest.xml", GetODFManifest());
-	            }
-			}
-			catch(Exception ex)
-			{
+                }
+            }
+            catch(Exception ex)
+            {
                 log.Error("Exception thrown during export to ODF.");
                 log.Error(ex.Message);
                 log.Error(ex.Source);
                 log.Error(ex.StackTrace);
-			}
+            }
         }
         
         private byte[] GetODFMeta()
-    	{
-    		return GetMinimalODF("office:document-meta");
-    	}
-    	private byte[] GetODFStyles()
-    	{
-    		return GetMinimalODF("office:document-styles");
-    	}
-    	private byte[] GetODFSettings()
-    	{
-    		return GetMinimalODF("office:document-settings");
-    	}
-    	private byte[] GetMinimalODF(string _element)
-    	{
-    		// Return the minimal xml data for required files in a byte array so in can be written to zip.
-    		// A bit trickier than necessary because .NET StringWriter is UTF-16 and we want UTF-8.
-    		
-    		MemoryStream ms = new MemoryStream();
-			XmlTextWriter xmlw = new XmlTextWriter(ms, new System.Text.UTF8Encoding());
-			xmlw.Formatting = Formatting.Indented; 
-	            
-			xmlw.WriteStartDocument();
-			xmlw.WriteStartElement(_element);
-			xmlw.WriteAttributeString("xmlns", "office", null, "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
-			
-			xmlw.WriteStartAttribute("office:version");
+        {
+            return GetMinimalODF("office:document-meta");
+        }
+        private byte[] GetODFStyles()
+        {
+            return GetMinimalODF("office:document-styles");
+        }
+        private byte[] GetODFSettings()
+        {
+            return GetMinimalODF("office:document-settings");
+        }
+        private byte[] GetMinimalODF(string _element)
+        {
+            // Return the minimal xml data for required files in a byte array so in can be written to zip.
+            // A bit trickier than necessary because .NET StringWriter is UTF-16 and we want UTF-8.
+            
+            MemoryStream ms = new MemoryStream();
+            XmlTextWriter xmlw = new XmlTextWriter(ms, new System.Text.UTF8Encoding());
+            xmlw.Formatting = Formatting.Indented; 
+                
+            xmlw.WriteStartDocument();
+            xmlw.WriteStartElement(_element);
+            xmlw.WriteAttributeString("xmlns", "office", null, "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
+            
+            xmlw.WriteStartAttribute("office:version");
             xmlw.WriteString("1.1"); 
             xmlw.WriteEndAttribute();
-				 
-			xmlw.WriteEndElement();
-        	xmlw.Flush();
-        	xmlw.Close();
-        	
-        	return ms.ToArray();
-    	}
-    	private byte[] GetODFManifest()
-    	{
-    		MemoryStream ms = new MemoryStream();
-			XmlTextWriter xmlw = new XmlTextWriter(ms, new System.Text.UTF8Encoding());
-			xmlw.Formatting = Formatting.Indented; 
-	            
-			xmlw.WriteStartDocument();
-			xmlw.WriteStartElement("manifest:manifest");
-			xmlw.WriteAttributeString("xmlns", "manifest", null, "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0");
-			
-			// Manifest itself
-			xmlw.WriteStartElement("manifest:file-entry");
-			xmlw.WriteStartAttribute("manifest:media-type");
-			xmlw.WriteString("application/vnd.oasis.opendocument.spreadsheet");
-			xmlw.WriteEndAttribute();
-			xmlw.WriteStartAttribute("manifest:full-path");
-			xmlw.WriteString("/");
-			xmlw.WriteEndAttribute();
-			xmlw.WriteEndElement();
-			
-			// Minimal set of files.
-			OutputODFManifestEntry(xmlw, "content.xml");
-			OutputODFManifestEntry(xmlw, "styles.xml");
-			OutputODFManifestEntry(xmlw, "meta.xml");
-			OutputODFManifestEntry(xmlw, "settings.xml");
-			
-			xmlw.WriteEndElement();
-        	xmlw.Flush();
-        	xmlw.Close();
-        	
-        	return ms.ToArray();	
-    	}
-    	private void OutputODFManifestEntry(XmlTextWriter _xmlw, string _file)
-    	{
-    		_xmlw.WriteStartElement("manifest:file-entry");
-			_xmlw.WriteStartAttribute("manifest:media-type");
-			_xmlw.WriteString("text/xml");
-			_xmlw.WriteEndAttribute();
-			_xmlw.WriteStartAttribute("manifest:full-path");
-			_xmlw.WriteString(_file);
-			_xmlw.WriteEndAttribute();
-			_xmlw.WriteEndElement();
-    	}
-    	private void AddODFZipFile(ZipOutputStream _zos, string _file, byte[] _data)
-    	{
-    		ZipEntry entry = new ZipEntry(_file);
-			
-			entry.DateTime = DateTime.Now;
-			entry.Size = _data.Length; 
+                 
+            xmlw.WriteEndElement();
+            xmlw.Flush();
+            xmlw.Close();
+            
+            return ms.ToArray();
+        }
+        private byte[] GetODFManifest()
+        {
+            MemoryStream ms = new MemoryStream();
+            XmlTextWriter xmlw = new XmlTextWriter(ms, new System.Text.UTF8Encoding());
+            xmlw.Formatting = Formatting.Indented; 
+                
+            xmlw.WriteStartDocument();
+            xmlw.WriteStartElement("manifest:manifest");
+            xmlw.WriteAttributeString("xmlns", "manifest", null, "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0");
+            
+            // Manifest itself
+            xmlw.WriteStartElement("manifest:file-entry");
+            xmlw.WriteStartAttribute("manifest:media-type");
+            xmlw.WriteString("application/vnd.oasis.opendocument.spreadsheet");
+            xmlw.WriteEndAttribute();
+            xmlw.WriteStartAttribute("manifest:full-path");
+            xmlw.WriteString("/");
+            xmlw.WriteEndAttribute();
+            xmlw.WriteEndElement();
+            
+            // Minimal set of files.
+            OutputODFManifestEntry(xmlw, "content.xml");
+            OutputODFManifestEntry(xmlw, "styles.xml");
+            OutputODFManifestEntry(xmlw, "meta.xml");
+            OutputODFManifestEntry(xmlw, "settings.xml");
+            
+            xmlw.WriteEndElement();
+            xmlw.Flush();
+            xmlw.Close();
+            
+            return ms.ToArray();	
+        }
+        private void OutputODFManifestEntry(XmlTextWriter _xmlw, string _file)
+        {
+            _xmlw.WriteStartElement("manifest:file-entry");
+            _xmlw.WriteStartAttribute("manifest:media-type");
+            _xmlw.WriteString("text/xml");
+            _xmlw.WriteEndAttribute();
+            _xmlw.WriteStartAttribute("manifest:full-path");
+            _xmlw.WriteString(_file);
+            _xmlw.WriteEndAttribute();
+            _xmlw.WriteEndElement();
+        }
+        private void AddODFZipFile(ZipOutputStream _zos, string _file, byte[] _data)
+        {
+            ZipEntry entry = new ZipEntry(_file);
+            
+            entry.DateTime = DateTime.Now;
+            entry.Size = _data.Length; 
 
-			_zos.PutNextEntry(entry);
-			_zos.Write(_data, 0, _data.Length);
-    	}
+            _zos.PutNextEntry(entry);
+            _zos.Write(_data, 0, _data.Length);
+        }
     }
 }

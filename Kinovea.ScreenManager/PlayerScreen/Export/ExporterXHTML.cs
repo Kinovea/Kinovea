@@ -35,31 +35,31 @@ namespace Kinovea.ScreenManager
         {
             string kvaString = metadata.ToXmlString();
             XmlDocument kvaDoc = new XmlDocument();
-			kvaDoc.LoadXml(kvaString);
-			
-			string stylesheet = Application.StartupPath + "\\xslt\\kva2xhtml-en.xsl";
+            kvaDoc.LoadXml(kvaString);
+            
+            string stylesheet = Application.StartupPath + "\\xslt\\kva2xhtml-en.xsl";
             XslCompiledTransform xslt = new XslCompiledTransform();
             xslt.Load(stylesheet);
             
-			XmlWriterSettings settings = new XmlWriterSettings();
-			settings.Indent = true;
-			settings.OmitXmlDeclaration = true;
-			
-			try
-			{
-			    using (XmlWriter xw = XmlWriter.Create(path, settings))
-			    {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.OmitXmlDeclaration = true;
+            
+            try
+            {
+                using (XmlWriter xw = XmlWriter.Create(path, settings))
+                {
                     xslt.Transform(kvaDoc, xw);
-    		    }
-			}
-			catch(Exception ex)
-			{
-				log.Error("Exception thrown during export to XHTML.");
+                }
+            }
+            catch(Exception ex)
+            {
+                log.Error("Exception thrown during export to XHTML.");
                 log.Error(ex.Message);
                 log.Error(ex.Source);
                 log.Error(ex.StackTrace);
-			}
-			
+            }
+            
         }
     }
 }
