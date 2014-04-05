@@ -26,22 +26,22 @@ using Kinovea.Services;
 
 namespace Kinovea.Root
 {
-	/// <summary>
-	/// IPreferencePanel.
-	/// The interface all Preference panels must implement.
-	/// 
-	/// Note:
-	/// A page must not directly change the Properties of PreferenceManager.
-	/// You must create temporary variables for each preference, and then only 
-	/// commit them to the PreferenceManager in the CommitChanges() method.
-	/// </summary>
-	public interface IPreferencePanel
-	{
-		string Description { get; }
-		Bitmap Icon { get; }
-		bool Visible { get; set; }
-		Point Location { get; set; }
-		
-		void CommitChanges();
-	}
+    /// <summary>
+    /// IPreferencePanel.
+    /// The interface all Preference panels must implement.
+    /// 
+    /// Note:
+    /// A page must not directly change the Properties of PreferenceManager.
+    /// You must create temporary variables for each preference, and then only 
+    /// commit them to the PreferenceManager in the CommitChanges() method.
+    /// </summary>
+    public interface IPreferencePanel
+    {
+        string Description { get; }
+        Bitmap Icon { get; }
+        bool Visible { get; set; }
+        Point Location { get; set; }
+        
+        void CommitChanges();
+    }
 }

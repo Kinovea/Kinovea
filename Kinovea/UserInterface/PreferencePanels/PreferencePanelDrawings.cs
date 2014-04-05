@@ -111,7 +111,7 @@ namespace Kinovea.Root
         }
         private void chkAlwaysVisible_CheckedChanged(object sender, EventArgs e)
         {
-            defaultFading.AlwaysVisible = chkAlwaysVisible.Checked;	
+            defaultFading.AlwaysVisible = chkAlwaysVisible.Checked;
         }
         #endregion
         #endregion

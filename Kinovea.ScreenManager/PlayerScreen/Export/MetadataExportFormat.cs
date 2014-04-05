@@ -23,10 +23,10 @@ using System;
 namespace Kinovea.ScreenManager
 {
     public enum MetadataExportFormat
-	{
-		ODF,
-		MSXML,
-		XHTML,
-		TrajectoryText
-	}
+    {
+        ODF,
+        MSXML,
+        XHTML,
+        TrajectoryText
+    }
 }

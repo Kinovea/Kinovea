@@ -125,7 +125,7 @@ namespace Kinovea.ScreenManager
             SavePresets(Software.ColorProfileDirectory + "current.xml");
         }
         public static void SavePresets(string _file)
-        {			
+        {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.CloseOutput = true;

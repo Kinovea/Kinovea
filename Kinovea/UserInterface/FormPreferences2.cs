@@ -153,7 +153,7 @@ namespace Kinovea.Root
             for(int i=0;i<pages.Count;i++)
             {
                 bool selected = (i == pageToDisplay);
-                buttons[i].SetSelected(selected);	
+                buttons[i].SetSelected(selected);
                 pages[i].Visible = selected;
             }
         }

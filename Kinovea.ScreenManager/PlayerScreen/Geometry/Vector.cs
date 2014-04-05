@@ -90,9 +90,9 @@ namespace Kinovea.ScreenManager
             return X * v.X + Y * v.Y;
         }
         public float Norm()
-	    {
+        {
             return (float)Math.Sqrt((double)Squared());
-	    }
+        }
         public float Squared()
         {
             return X*X + Y*Y;

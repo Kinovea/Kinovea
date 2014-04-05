@@ -40,7 +40,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override bool Full
         {
-            get { return frameServer.Loaded; }	
+            get { return frameServer.Loaded; }
         }
         public override UserControl UI
         {

@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
         public long Timestamp
         {
             get { return m_iTimestamp; }
-            set { m_iTimestamp = value; }	
+            set { m_iTimestamp = value; }
         }
         public int AttachIndex
         {
@@ -67,9 +67,9 @@ namespace Kinovea.ScreenManager
         #region Members
         private string m_Text = "Label";
         private RoundedRectangle m_Background = new RoundedRectangle();
-        private long m_iTimestamp;                 					// Absolute time.
-        private int m_iAttachIndex;									// The index of the reference point in the track points list.
-        private PointF attachLocation;			                    // The point we are attached to (image coordinates).
+        private long m_iTimestamp; // Absolute time.
+        private int m_iAttachIndex; // The index of the reference point in the track points list.
+        private PointF attachLocation; // The point we are attached to (image coordinates).
         private StyleHelper m_StyleHelper = new StyleHelper();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion

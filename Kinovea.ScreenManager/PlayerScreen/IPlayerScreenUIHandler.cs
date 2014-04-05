@@ -23,18 +23,18 @@ using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// IPlayerScreenUIHandler.
-	/// Methods implemented by IPlayerScreenUIHandler can be accessed by the UI without knowing 
-	/// about the rest of the PlayerScreen. 
-	/// </summary>
-	public interface IPlayerScreenUIHandler : IScreenUIHandler
-	{
-		void PlayerScreenUI_SpeedChanged(bool _bIntervalOnly);
-		void PlayerScreenUI_PauseAsked();
-		void PlayerScreenUI_SelectionChanged(bool _bInitialization);
-		void PlayerScreenUI_ImageChanged(Bitmap _image);
-		void PlayerScreenUI_SendImage(Bitmap _image);
-		void PlayerScreenUI_Reset();
-	}
+    /// <summary>
+    /// IPlayerScreenUIHandler.
+    /// Methods implemented by IPlayerScreenUIHandler can be accessed by the UI without knowing 
+    /// about the rest of the PlayerScreen. 
+    /// </summary>
+    public interface IPlayerScreenUIHandler : IScreenUIHandler
+    {
+        void PlayerScreenUI_SpeedChanged(bool _bIntervalOnly);
+        void PlayerScreenUI_PauseAsked();
+        void PlayerScreenUI_SelectionChanged(bool _bInitialization);
+        void PlayerScreenUI_ImageChanged(Bitmap _image);
+        void PlayerScreenUI_SendImage(Bitmap _image);
+        void PlayerScreenUI_Reset();
+    }
 }

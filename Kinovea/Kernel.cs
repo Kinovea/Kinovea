@@ -328,7 +328,7 @@ namespace Kinovea.Root
                 mnuLanguages, 
                 mnuTimecode, 
                 new ToolStripSeparator(), 
-                mnuPreferences});                     						
+                mnuPreferences});
             #endregion
 
             #region Help
@@ -589,7 +589,7 @@ namespace Kinovea.Root
         {
             PreferencesManager.PlayerPreferences.TimecodeFormat = _timecode;
             RefreshUICulture();
-            PreferencesManager.Save();	
+            PreferencesManager.Save();
         }
         #endregion
 
