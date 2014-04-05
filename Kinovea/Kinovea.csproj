@@ -318,9 +318,9 @@
       <Link>avdevice-55.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFmpeg\bin\avfilter-3.dll">
+    <None Include="..\Refs\FFmpeg\bin\avfilter-4.dll">
       <Visible>False</Visible>
-      <Link>avfilter-3.dll</Link>
+      <Link>avfilter-4.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\FFmpeg\bin\avformat-55.dll">
