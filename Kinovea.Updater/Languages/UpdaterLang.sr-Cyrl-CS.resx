@@ -70,10 +70,8 @@
    
    <data name="Updater_Behind" xml:space="preserve"><value>Нова верзија је доступна!</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Молимо изаберите жељени директоријум за датотеку са инсталатором .</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Изаберите одредишну фасциклу.</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Тренутна верзија:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Преузети</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Преузимање нове верзије ...</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Величина датотеке:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Дошло је до грешке приликом провере ажурирања. Молимо вас да осигурате да Интернет веза буде доступна.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Евиденција промена:</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>Одустани</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Провера за нову верзију.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Ваша верзија је најновија !</value></data>
+   
+   
    
    
    

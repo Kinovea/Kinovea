@@ -105,14 +105,11 @@
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Applica 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Rilevazione automatica </value></data>
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Passa a Modalita' Analisi </value></data>
-   <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Colori</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistenza</value></data>
-   <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Griglia :</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Numero di Files nella cronologia :</value></data>
    <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Formato immagine preimpostato</value></data>
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Lingua :</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>E</value></data>
-   <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Griglia in prospettiva</value></data>
    <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Formato dei contatori di tempo</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La Zona Lavoro occupa meno di {0} MB di Memoria.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La Zona Lavoro e' minore di {0} secondi.</value></data>
@@ -155,6 +152,10 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Decimillesimi d'ora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Timbro-orario (Time Stamps)</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classico + num. fotogramma</value></data>
+   
+   
+   
+   
    
    
    

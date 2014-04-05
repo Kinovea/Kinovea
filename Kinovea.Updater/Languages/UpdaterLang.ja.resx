@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>ソフトウェアアップデート…</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>最新バージョンにアップデートできます!</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>インストーラーファイルのターゲットディレクトリを選択してください。</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>保存先フォルダを選択してください。</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>現在のバージョン:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>ダウンロード</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>最新バージョンをダウンロード中…</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>ファイルサイズ:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>アップデート確認中にエラーが発生しました。インターネット回線に接続されているか確認して下さい。</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>ログ変更:</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>終了</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - 最新バージョンの確認。</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>このバージョンは最新バージョンです!</value></data>
+   
+   
    
    
    

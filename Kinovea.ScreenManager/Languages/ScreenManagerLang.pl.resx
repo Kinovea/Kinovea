@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   
-   
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Odwróć pozycję wideo</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Synchronizuj wideo na bieżącej klatce</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Idź do Początku obu plików wideo</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Skocz na Koniec obu plików wideo</value></data>
@@ -141,8 +138,6 @@
    
    
    
-   
-   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0} setnych sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0:0.00} sekund.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Zapisz wideo</value></data>
@@ -172,19 +167,14 @@
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Metoda zapisu</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Zapisz tylko kluczowe dane obrazów.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Zapisz dane wideo i kluczowych obrazów do jednego pliku</value></data>
    
    
-   
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Zapisz tylko wideo.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Zapisz dane wideo albo kluczowych obrazów</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Zapisz dane kluczowych obrazów</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>Obrazy JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Obrazy PNG (*.png)|*.png|Bitmapy (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Zapisz sekwencję</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Zapisz wideo</value></data>
-   
    
    
    
@@ -255,7 +245,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>Zablokuj granice obszaru roboczego</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Odblokuj granice obszaru roboczego</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Widok 3D</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>Jasność...</value></data>
    
    
    
@@ -263,7 +252,6 @@
    
    
    <data name="mnuCloseScreen" xml:space="preserve"><value>Zamknij ten ekran</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Kolory...</value></data>
    
    
    
@@ -281,7 +269,6 @@
    
    
    
-   <data name="mnuFluidify" xml:space="preserve"><value>Płynność</value></data>
    
    
    
@@ -298,11 +285,6 @@
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    
    
-   
-   
-   
-   
-   
    <data name="mnuMirror" xml:space="preserve"><value>Lustrzanie</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Pojedynczy zrzut ekranu</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Jeden ekran odtwarzania</value></data>
@@ -313,8 +295,6 @@
    
    
    
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Ustaw aktualną klatkę jako ostatnią klatkę obszaru roboczego</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Ustaw aktualną klatkę jako pierwszą klatkę obszaru roboczego</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Wyostrz...</value></data>
    
    
@@ -332,22 +312,9 @@
    
    
    
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Wystąpił nieznany błąd</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - błąd odtwarzania</value></data>
    
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Błąd podczas próby zapisania pliku : nieobsługiwany koder</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Błąd podczas próby zapisania pliku : problem podczas inicjalizacji kodera</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - błąd zapisu</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Błąd podczas próby zapisania pliku : nie można zapisać danych do pliku</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Błąd podczas próby zapisania pliku : wystąpiły błędy w procesie kodowania</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Błąd podczas próby zapisania pliku : nieznany błąd</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Pusty</value></data>
    
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klasyczny (h:mm:ss:setne)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Liczba klatek</value></data>
-   
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Setna część minuty</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dziesięciotysięczna część godziny</value></data>
    
    
    
@@ -404,8 +371,6 @@
    
    
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Kontrast...</value></data>
-   
-   
    
    
    

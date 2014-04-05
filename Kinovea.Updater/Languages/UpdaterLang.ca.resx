@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Actualització de programari</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Hi ha disponible una nova versió</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Siusplau, escolliu un directori on desar l'arxiu d'instal·lació</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Escolliu el directori de destí</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versió actual:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Descarregar</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Descarregant la nova versió</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Mida de l'arxiu:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>S'ha produït un error mentre es comprovaven les actualitzacions. Siusplau assegureu-vos de que estu connectats a Internet</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Llista de canvis</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>Sortir</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Comprovant si hi ha una nova versió</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>La vostre versió està actualitzada</value></data>
+   
+   
    
    
    

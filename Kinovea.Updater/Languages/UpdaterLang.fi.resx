@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Ohjelmistopäivitys...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Uusi versio on saatavilla!</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Valitse asennustiedoston kohdehakemisto.</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Valitse päätehakemisto-</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Nykyinen versio:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Lataa</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Ladataan uutta versiota...</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Tiedoston koko:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Haettaessa päivityksiä tapahtui virhe. Tarkista internetyhteytesi.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Muutosloki:</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>Lopeta</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea – etsitään uudempaa versiota.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Ohjelmaversiosi on ajan tasalla!</value></data>
+   
+   
    
    
    

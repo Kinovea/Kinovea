@@ -394,29 +394,11 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Colors.
-        /// </summary>
-        internal static string dlgPreferences_GroupColors {
-            get {
-                return ResourceManager.GetString("dlgPreferences_GroupColors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Persistence.
         /// </summary>
         internal static string dlgPreferences_grpPersistence {
             get {
                 return ResourceManager.GetString("dlgPreferences_grpPersistence", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Grid:.
-        /// </summary>
-        internal static string dlgPreferences_LabelGrid {
-            get {
-                return ResourceManager.GetString("dlgPreferences_LabelGrid", resourceCulture);
             }
         }
         
@@ -453,15 +435,6 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_LabelLogic {
             get {
                 return ResourceManager.GetString("dlgPreferences_LabelLogic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Perspective Grid:.
-        /// </summary>
-        internal static string dlgPreferences_LabelPlane3D {
-            get {
-                return ResourceManager.GetString("dlgPreferences_LabelPlane3D", resourceCulture);
             }
         }
         

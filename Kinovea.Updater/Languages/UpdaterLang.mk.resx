@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Ажурирање на софтверот...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Достапна е нова верзија!</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Ве молиме одберете целен директориум за инсталираната датотека.</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Доберете одредиште на папката</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Актуелна верзија :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Превземи</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Превземање нова верзија...</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Големина на датотеката :</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Дојде до грешка при ажурирањето. Ве молиме да се осигурате дека интернет конекцијата е достапна.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Промени дневник :</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>Напушти</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Киновеа – Проверка на нова верзија.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Вашата верзија е најнова !</value></data>
+   
+   
    
    
    
