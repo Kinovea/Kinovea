@@ -219,8 +219,8 @@ namespace Kinovea.ScreenManager
         
         // Hardwired parameters.
         private const int defaultCrossRadius = 4;
-        private const int allowedFramesOver = 12;  	// Number of frames over which the global fading spans (after end point).
-        private const int focusFadingFrames = 30;	// Number of frames of the focus section. 
+        private const int allowedFramesOver = 12;      // Number of frames over which the global fading spans (after end point).
+        private const int focusFadingFrames = 30;    // Number of frames of the focus section. 
        
         // Internal data.
         private List<AbstractTrackPoint> positions = new List<AbstractTrackPoint>();
@@ -229,9 +229,9 @@ namespace Kinovea.ScreenManager
         private KinematicsHelper kinematicsHelper = new KinematicsHelper();
         private IImageToViewportTransformer transformer;
         
-        private long beginTimeStamp;     			// absolute.
-        private long endTimeStamp = long.MaxValue; 	// absolute.
-        private int totalDistance;       			// This is used to normalize timestamps to a par scale with distances.
+        private long beginTimeStamp;                 // absolute.
+        private long endTimeStamp = long.MaxValue;     // absolute.
+        private int totalDistance;                   // This is used to normalize timestamps to a par scale with distances.
         private int currentPoint;
 
         // Decoration
@@ -240,10 +240,10 @@ namespace Kinovea.ScreenManager
         private KeyframeLabel mainLabel = new KeyframeLabel();
         private string mainLabelText = "Label";
         private InfosFading infosFading = new InfosFading(long.MaxValue, 1);
-        private const int baseAlpha = 224;				// alpha of track in most cases.
-        private const int afterCurrentAlpha = 64;		// alpha of track after the current point when in normal mode.
-        private const int editModeAlpha = 128;			// alpha of track when in Edit mode.
-        private const int labelFollowsTrackAlpha = 80;	// alpha of track when in LabelFollows view.
+        private const int baseAlpha = 224;                // alpha of track in most cases.
+        private const int afterCurrentAlpha = 64;        // alpha of track after the current point when in normal mode.
+        private const int editModeAlpha = 128;            // alpha of track when in Edit mode.
+        private const int labelFollowsTrackAlpha = 80;    // alpha of track when in LabelFollows view.
 
         // Configuration
         private BoundingBox searchWindow = new BoundingBox(10);
@@ -365,14 +365,14 @@ namespace Kinovea.ScreenManager
             {
                 // Key Images titles.
                 if (trackStatus == TrackStatus.Interactive && trackView != TrackView.Label)
-                    DrawKeyframesTitles(canvas, opacityFactor, transformer);	
+                    DrawKeyframesTitles(canvas, opacityFactor, transformer);
                 
                 // Track.
                 int first = GetFirstVisiblePoint();
                 int last = GetLastVisiblePoint();
                 if (trackStatus == TrackStatus.Interactive && trackView == TrackView.Complete)
                 {
-                    DrawTrajectory(canvas, first, currentPoint, true, opacityFactor, transformer);	
+                    DrawTrajectory(canvas, first, currentPoint, true, opacityFactor, transformer);
                     DrawTrajectory(canvas, currentPoint, last, false, opacityFactor, transformer);
                 }
                 else
@@ -419,8 +419,6 @@ namespace Kinovea.ScreenManager
                     UpdateBoundingBoxes();
                 return;
             }
-
-            
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
@@ -754,7 +752,7 @@ namespace Kinovea.ScreenManager
                 }
                 else if(trackView == TrackView.Focus)
                 {
-                    alpha = (int)(fadingFactor * baseAlpha);		
+                    alpha = (int)(fadingFactor * baseAlpha);
                 }
                 else if(trackView == TrackView.Label)
                 {
@@ -865,7 +863,7 @@ namespace Kinovea.ScreenManager
                 case TrackExtraData.None:
                 default:
                     break;
-            }	
+            }    
             return displayText;
 
             //float tangentialVelocity = trajectoryPoints[index].TangentialVelocity;
@@ -909,7 +907,7 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    // Move the specified label by specified amount.    
+                    // Move the specified label by specified amount.
                     int iLabel = labelNumber - 3;
                     keyframesLabels[iLabel].MoveLabel(dx, dy);
                 }
@@ -936,7 +934,7 @@ namespace Kinovea.ScreenManager
                 {
                     if (mainLabel.HitTest(point, transformer))
                         hitResult = 2;
-                }	
+                }
                 
                 for (int i = 0; i < keyframesLabels.Count; i++)
                 {
@@ -1179,7 +1177,7 @@ namespace Kinovea.ScreenManager
                 {
                     xmlWriter.WriteStartElement("KeyframeLabel");
                     kfl.WriteXml(xmlWriter);
-                    xmlWriter.WriteEndElement();    
+                    xmlWriter.WriteEndElement();
                 }
 
                 xmlWriter.WriteEndElement();
@@ -1209,7 +1207,7 @@ namespace Kinovea.ScreenManager
                     tp.WriteXml(xmlWriter);
                     
                     xmlWriter.WriteEndElement();
-                }	
+                }
             }
             xmlWriter.WriteEndElement();
         }
@@ -1550,7 +1548,7 @@ namespace Kinovea.ScreenManager
         }
         private void mainStyle_ValueChanged(object sender, EventArgs e)
         {
-            mainLabel.BackColor = styleHelper.Color;	
+            mainLabel.BackColor = styleHelper.Color;
         }
         private void BindStyle()
         {
