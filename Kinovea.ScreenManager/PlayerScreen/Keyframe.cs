@@ -37,78 +37,55 @@ namespace Kinovea.ScreenManager
         #region Properties
         public long Position
         {
-            get { return m_Position; }
-            set { m_Position = value;}
+            get { return position; }
+            set { position = value;}
         }
         public Bitmap Thumbnail
         {
-            get { return m_Thumbnail; }
-            //set { m_Thumbnail = value; }
+            get { return thumbnail; }
         }
         public Bitmap DisabledThumbnail
         {
-            get { return m_DisabledThumbnail; }
-            set { m_DisabledThumbnail = value; }
+            get { return disabledThumbnail; }
         }
         public List<AbstractDrawing> Drawings
         {
-            get { return m_Drawings; }
-            set { m_Drawings = value;}
+            get { return drawings; }
         }
         public Bitmap FullFrame
         {
-            get { return m_FullFrame; }
-            set { m_FullFrame = value; }
+            get { return fullFrame; }
         }
-        public string CommentRtf
+        public string Comments
         {
-            get { return m_CommentRtf; }
-            set { m_CommentRtf = value; }
+            get { return comments; }
+            set { comments = value; }
         }
+
         /// <summary>
-        /// The title of a keyframe is dynamic.
-        /// It is the timecode until the user actually manually changes it.
+        /// The title of a keyframe is set to the timecode until the user manually set it.
         /// </summary>
-        public String Title
+        public string Title
         {
             get 
-            { 
-                if(m_Title != null)
-                {
-                    if(m_Title.Length > 0)
-                    {
-                        return m_Title;
-                    }
-                    else 
-                    {
-                        return m_Timecode;
-                    }
-                }
-                else
-                {
-                    return m_Timecode;
-                }
+            {
+                return string.IsNullOrEmpty(title) ? timecode : title;
             }
             set 
             { 
-                m_Title = value;
-                m_ParentMetadata.UpdateTrajectoriesForKeyframes();
+                title = value;
+                metadata.UpdateTrajectoriesForKeyframes();
             }
         }
-        public String TimeCode
+        public string TimeCode
         {
-            get { return m_Timecode; }
-            set { m_Timecode = value; }
+            get { return timecode; }
+            set { timecode = value; }
         }
         public bool Disabled
         {
-            get { return m_bDisabled; }
-            set { m_bDisabled = value; }
-        }
-        public Metadata ParentMetadata
-        {
-            get { return m_ParentMetadata; }    // unused.
-            set { m_ParentMetadata = value; }
+            get { return disabled; }
+            set { disabled = value; }
         }
         public int ContentHash
         {
@@ -117,75 +94,74 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private long m_Position = -1;            // Position is absolute in all timestamps.
-        private string  m_Title = "";
-        private string m_Timecode = "";
-        private string m_CommentRtf;
-        private Bitmap m_Thumbnail;
-        private Bitmap m_DisabledThumbnail;
-        private List<AbstractDrawing> m_Drawings = new List<AbstractDrawing>();
-        private Bitmap m_FullFrame;
-        private bool m_bDisabled;
-        private Metadata m_ParentMetadata;
+        private long position = -1;            // Position is absolute in all timestamps.
+        private string  title = "";
+        private string timecode = "";
+        private string comments;
+        private Bitmap thumbnail;
+        private Bitmap disabledThumbnail;
+        private List<AbstractDrawing> drawings = new List<AbstractDrawing>();
+        private Bitmap fullFrame;
+        private bool disabled;
+        private Metadata metadata;
         #endregion
 
         #region Constructor
-        public Keyframe(Metadata _ParentMetadata)
+        public Keyframe(Metadata metadata)
         {
             // Used only during parsing to hold dummy Keyframe while it is loaded.
             // Must be followed by a call to PostImportMetadata()
-            m_ParentMetadata = _ParentMetadata;
+            this.metadata = metadata;
         }
-        public Keyframe(long _position, string _timecode, Bitmap _image, Metadata _ParentMetadata)
+        public Keyframe(long position, string timecode, Bitmap image, Metadata metadata)
         {
             // Title is a variable default.
-            // as long as it's null, it takes the value of timecode.
-            // which is updated when selection change.
+            // as long as it's null, it takes the value of timecode (which is updated when selection change).
             // as soon as the user put value in title, we use it instead.
-            m_Position = _position;
-            m_Timecode = _timecode;
-            m_Thumbnail = new Bitmap(_image, 100, 75);
-            m_FullFrame = ImageHelper.ConvertToJPG(_image, 90);
-            m_ParentMetadata = _ParentMetadata;
+            this.position = position;
+            this.timecode = timecode;
+            this.thumbnail = new Bitmap(image, 100, 75);
+            this.fullFrame = ImageHelper.ConvertToJPG(image, 90);
+            this.metadata = metadata;
         }
         #endregion
 
         #region Public Interface
-        public void ImportImage(Bitmap _image)
+        public void ImportImage(Bitmap image)
         {
-            m_Thumbnail = new Bitmap(_image, 100, 75);
-            m_FullFrame = ImageHelper.ConvertToJPG(_image, 90);
+            this.thumbnail = new Bitmap(image, 100, 75);
+            this.fullFrame = ImageHelper.ConvertToJPG(image, 90);
         }
         public void GenerateDisabledThumbnail()
         {
-            m_DisabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(m_Thumbnail);
+            disabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(thumbnail);
         }
-        public void AddDrawing(AbstractDrawing obj)
+        public void AddDrawing(AbstractDrawing drawing)
         {
             // insert to the top of z-order except for grids.
-            if(obj is DrawingPlane)
-                m_Drawings.Add(obj);
+            if(drawing is DrawingPlane)
+                drawings.Add(drawing);
             else
-                m_Drawings.Insert(0, obj);
+                drawings.Insert(0, drawing);
         }
         public void WriteXml(XmlWriter w)
         {
             w.WriteStartElement("Position");
-            string userTime = m_ParentMetadata.TimeCodeBuilder(m_Position - m_ParentMetadata.SelectionStart, TimeType.Time, TimecodeFormat.Unknown, false);
+            string userTime = metadata.TimeCodeBuilder(position - metadata.SelectionStart, TimeType.Time, TimecodeFormat.Unknown, false);
             w.WriteAttributeString("UserTime", userTime);
-            w.WriteString(m_Position.ToString());
+            w.WriteString(position.ToString());
             w.WriteEndElement();
             
             if(!string.IsNullOrEmpty(Title))
                 w.WriteElementString("Title", Title);
             
-            if(!string.IsNullOrEmpty(m_CommentRtf))
-                w.WriteElementString("Comment", m_CommentRtf);
+            if(!string.IsNullOrEmpty(comments))
+                w.WriteElementString("Comment", comments);
             
-            if (m_Drawings.Count > 0)
+            if (drawings.Count > 0)
             {
                 w.WriteStartElement("Drawings");
-                foreach (AbstractDrawing drawing in m_Drawings)
+                foreach (AbstractDrawing drawing in drawings)
                 {
                     IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
                     if(serializableDrawing != null)
@@ -214,32 +190,28 @@ namespace Kinovea.ScreenManager
         public int CompareTo(object obj)
         {
             if(obj is Keyframe)
-            {
-                return this.m_Position.CompareTo(((Keyframe)obj).m_Position);
-            }
+                return this.position.CompareTo(((Keyframe)obj).position);
             else
-            {
                 throw new ArgumentException("Impossible comparison");
-            }
         }
         #endregion
 
         #region LowerLevel Helpers
         private int GetContentHash()
         {
-            int iHashCode = 0;
-            foreach (AbstractDrawing drawing in m_Drawings)
-                iHashCode ^= drawing.ContentHash;
+            int hash = 0;
+            foreach (AbstractDrawing drawing in drawings)
+                hash ^= drawing.ContentHash;
 
-            if(m_CommentRtf != null)
-                iHashCode ^= m_CommentRtf.GetHashCode();
+            if(comments != null)
+                hash ^= comments.GetHashCode();
             
-            if(m_Title != null)
-                iHashCode ^= m_Title.GetHashCode();
+            if(title != null)
+                hash ^= title.GetHashCode();
             
-            iHashCode ^= m_Timecode.GetHashCode();
+            hash ^= timecode.GetHashCode();
 
-            return iHashCode;
+            return hash;
         }
         #endregion
     }
