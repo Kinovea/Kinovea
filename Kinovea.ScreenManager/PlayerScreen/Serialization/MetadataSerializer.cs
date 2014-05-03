@@ -242,7 +242,7 @@ namespace Kinovea.ScreenManager
                         keyframe.Title = r.ReadElementContentAsString();
                         break;
                     case "Comment":
-                        keyframe.CommentRtf = r.ReadElementContentAsString();
+                        keyframe.Comments = r.ReadElementContentAsString();
                         break;
                     case "Drawings":
                         ParseDrawings(r, keyframe);

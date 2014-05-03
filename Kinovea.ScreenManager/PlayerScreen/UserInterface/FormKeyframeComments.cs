@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
             // Update
             txtTitle.Text = m_Keyframe.Title;
             rtbComment.Clear();
-            rtbComment.Rtf = m_Keyframe.CommentRtf;
+            rtbComment.Rtf = m_Keyframe.Comments;
         }
         private void SaveInfos()
         {
@@ -173,7 +173,7 @@ namespace Kinovea.ScreenManager
             log.Debug("Saving comment and title");
             if (m_Keyframe != null)
             {
-                m_Keyframe.CommentRtf = rtbComment.Rtf;
+                m_Keyframe.Comments = rtbComment.Rtf;
     
                 if(m_Keyframe.Title != txtTitle.Text)
                 {
