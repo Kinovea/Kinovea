@@ -27,28 +27,21 @@ using System.Xml.Xsl;
 
 namespace Kinovea.ScreenManager
 {
-    public class ExporterMSXML
+    public class ExporterTrajectoryText
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
-        public void Export(string path, Metadata metadata)
+
+        public void Export(string path, XmlDocument kva)
         {
-            string kvaString = metadata.ToXmlString();
-            XmlDocument kvaDoc = new XmlDocument();
-            kvaDoc.LoadXml(kvaString);
-            
-            string stylesheet = Application.StartupPath + "\\xslt\\kva2msxml-en.xsl";
+            string stylesheet = Application.StartupPath + "\\xslt\\kva2txt-en.xsl";
             XslCompiledTransform xslt = new XslCompiledTransform();
             xslt.Load(stylesheet);
             
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            
             try
             {
-                using (XmlWriter xw = XmlWriter.Create(path, settings))
+                using(StreamWriter sw = new StreamWriter(path))
                 {
-                    xslt.Transform(kvaDoc, xw);
+                    xslt.Transform(kva, null, sw);
                 }
             }
             catch(Exception ex)

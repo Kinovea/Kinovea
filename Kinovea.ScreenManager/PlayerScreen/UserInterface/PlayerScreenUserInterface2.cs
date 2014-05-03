@@ -485,8 +485,11 @@ namespace Kinovea.ScreenManager
             // Check for startup kva
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
             string startupFile = folder + "\\playback.kva";
-            if(File.Exists(startupFile))
-                m_FrameServer.Metadata.Load(startupFile, true);
+            if (File.Exists(startupFile))
+            {
+                MetadataSerializer s = new MetadataSerializer();
+                s.Load(m_FrameServer.Metadata, startupFile, true);
+            }
             
             if (m_FrameServer.Metadata.HasData)
             {
@@ -974,9 +977,12 @@ namespace Kinovea.ScreenManager
             // Complete path of hypothetical Analysis.
             string kvaFile = Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath);
             kvaFile = kvaFile + "\\" + Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + ".kva";
-            
+
             if (File.Exists(kvaFile))
-                m_FrameServer.Metadata.Load(kvaFile, true);
+            {
+                MetadataSerializer s = new MetadataSerializer();
+                s.Load(m_FrameServer.Metadata, kvaFile, true);
+            }
         }
         private void UpdateFilenameLabel()
         {
@@ -1320,13 +1326,13 @@ namespace Kinovea.ScreenManager
                     break;
                 case TimecodeFormat.TenThousandthOfHours:
                     // 1 Ten Thousandth of Hour = 360 ms.
-                    double fTth = milliseconds / 360.0;
-                    outputTimeCode = String.Format("{0}:{1:00}", (int)fTth, Math.Floor((fTth - (int)fTth)*100));
+                    double inTenThousandsOfAnHour = milliseconds / 360.0;
+                    outputTimeCode = String.Format("{0}:{1:00}", (int)inTenThousandsOfAnHour, Math.Floor((inTenThousandsOfAnHour - (int)inTenThousandsOfAnHour)*100));
                     break;
                 case TimecodeFormat.HundredthOfMinutes:
                     // 1 Hundredth of minute = 600 ms.
-                    double fCtm = milliseconds / 600.0;
-                    outputTimeCode = String.Format("{0}:{1:00}", (int)fCtm, Math.Floor((fCtm - (int)fCtm) * 100));
+                    double inHundredsOfAMinute = milliseconds / 600.0;
+                    outputTimeCode = String.Format("{0}:{1:00}", (int)inHundredsOfAMinute, Math.Floor((inHundredsOfAMinute - (int)inHundredsOfAMinute) * 100));
                     break;
                 case TimecodeFormat.TimeAndFrames:
                     String timeString = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);

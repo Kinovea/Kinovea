@@ -111,15 +111,15 @@ namespace Kinovea.ScreenManager
         private void UpdateLabels()
         {
             // Frequency
-            double fInterval = (double)trkInterval.Value / 1000;
-            if (fInterval < 1)
+            double interval = (double)trkInterval.Value / 1000;
+            if (interval < 1)
             {
-                int iHundredth = (int)(fInterval * 100);
+                int iHundredth = (int)(interval * 100);
                 lblInfosFrequency.Text = String.Format(ScreenManagerLang.dlgDiapoExport_LabelFrequencyHundredth, iHundredth);
             }
             else
             {
-                lblInfosFrequency.Text = String.Format(ScreenManagerLang.dlgDiapoExport_LabelFrequencySeconds, fInterval);
+                lblInfosFrequency.Text = String.Format(ScreenManagerLang.dlgDiapoExport_LabelFrequencySeconds, interval);
             }
         }
         #endregion

@@ -159,11 +159,9 @@ namespace Kinovea.Video.SVG
             float ratioWidth = (float)originalSize.Width / maxSize.Width;
             float ratioHeight = (float)originalSize.Height / maxSize.Height;
             float ratio = Math.Max(ratioWidth, ratioHeight);
+            Size size = new Size((int)(originalSize.Width / ratio), (int)(originalSize.Height / ratio));
 
-            int width = (int)(originalSize.Width / ratio);
-            int height = (int)(originalSize.Height / ratio);
-
-            return new Size(width, height);
+            return size;
         }
     }
 }

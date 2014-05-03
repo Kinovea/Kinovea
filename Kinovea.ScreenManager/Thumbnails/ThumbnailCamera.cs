@@ -220,14 +220,9 @@ namespace Kinovea.ScreenManager
             }
             
             int imageMargin = 30;
-            int containerWidth = this.Width - imageMargin;
-            int containerHeight = this.Height - lblAlias.Height - imageMargin;
-            
-            float widthRatio = (float)Image.Width / containerWidth;
-            float heightRatio = (float)Image.Height / containerHeight;
-            float ratio = Math.Max(widthRatio, heightRatio);
-            picBox.Width = (int)(Image.Width / ratio);
-            picBox.Height = (int)(Image.Height / ratio);
+            Size containerSize = new Size(this.Width - imageMargin, this.Height - lblAlias.Height - imageMargin);
+            Rectangle ratioStretched = UIHelper.RatioStretch(Image.Size, containerSize);
+            picBox.Size = ratioStretched.Size;
             
             picBox.Left = (this.Width - picBox.Width)/2;
             picBox.Top = (this.Height - lblAlias.Height - picBox.Height)/2;
