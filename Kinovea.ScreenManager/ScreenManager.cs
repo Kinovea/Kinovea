@@ -1654,7 +1654,8 @@ namespace Kinovea.ScreenManager
             if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
                 return;
 
-            ((PlayerScreen)activeScreen).FrameServer.Metadata.Load(openFileDialog.FileName, true);
+            MetadataSerializer s = new MetadataSerializer();
+            s.Load(((PlayerScreen)activeScreen).FrameServer.Metadata, openFileDialog.FileName, true);
             ((PlayerScreen)activeScreen).view.PostImportMetadata();
         }
         private void mnuExportODF_OnClick(object sender, EventArgs e)
@@ -1693,7 +1694,7 @@ namespace Kinovea.ScreenManager
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;
 
-            player.FrameServer.Metadata.Export(saveFileDialog.FileName, format);  
+            MetadataExporter.Export(player.FrameServer.Metadata, saveFileDialog.FileName, format);
         }
         #endregion
 
@@ -3006,7 +3007,8 @@ namespace Kinovea.ScreenManager
                 {
                     state.Loaded = true;
                     state.FilePath = ((PlayerScreen)screen).FilePath;
-                    state.MetadataString = ((PlayerScreen)screen).FrameServer.Metadata.ToXmlString();
+                    MetadataSerializer s = new MetadataSerializer();
+                    state.MetadataString = s.SaveToString(((PlayerScreen)screen).FrameServer.Metadata);
                 }
                 else
                 {
@@ -3380,7 +3382,8 @@ namespace Kinovea.ScreenManager
                 PlayerScreen ps = activeScreen as PlayerScreen;
                 if(ps != null)
                 {
-                    ps.FrameServer.Metadata.Load(oldScreen.MetadataString, false);
+                    MetadataSerializer s = new MetadataSerializer();
+                    s.Load(ps.FrameServer.Metadata, oldScreen.MetadataString, false);
                     ps.view.PostImportMetadata();
                 }
             }

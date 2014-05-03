@@ -581,8 +581,11 @@ namespace Kinovea.ScreenManager
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
             string startupFile = folder + "\\capture.kva";
-            if(File.Exists(startupFile))
-                metadata.Load(startupFile, true);
+            if (File.Exists(startupFile))
+            {
+                MetadataSerializer serializer = new MetadataSerializer();
+                serializer.Load(metadata, startupFile, true);
+            }
                 
             if(metadata.Count > 1)
                 metadata.Keyframes.RemoveRange(1, metadata.Keyframes.Count - 1);

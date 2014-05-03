@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
         #region Delegates
         // To ask the UI to display the frame closest to selected pos.
         // used when moving the target in direct interactive mode.
-        public ClosestFrameAction ShowClosestFrame;     
+        public ClosestFrameDisplayer ShowClosestFrame;     
         #endregion
 
         #region Properties
@@ -1196,7 +1196,7 @@ namespace Kinovea.ScreenManager
                     xmlWriter.WriteStartElement("TrackPoint");
                     
                     PointF p = parentMetadata.CalibrationHelper.GetPoint(tp.Point);
-                    string userT = parentMetadata.TimeStampsToTimecode(tp.T, TimeType.Time, TimecodeFormat.Unknown, false);
+                    string userT = parentMetadata.TimeCodeBuilder(tp.T, TimeType.Time, TimecodeFormat.Unknown, false);
                     
                     xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
                     xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));

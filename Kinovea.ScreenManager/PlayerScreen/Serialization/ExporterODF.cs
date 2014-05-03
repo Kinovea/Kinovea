@@ -34,12 +34,8 @@ namespace Kinovea.ScreenManager
     { 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public void Export(string path, Metadata metadata)
+        public void Export(string path, XmlDocument kva)
         {
-            string kvaString = metadata.ToXmlString();
-            XmlDocument kvaDoc = new XmlDocument();
-            kvaDoc.LoadXml(kvaString);
-            
             string stylesheet = Application.StartupPath + "\\xslt\\kva2odf-en.xsl";
             XslCompiledTransform xslt = new XslCompiledTransform();
             xslt.Load(stylesheet);
@@ -55,7 +51,7 @@ namespace Kinovea.ScreenManager
                 {
                     zos.UseZip64 = UseZip64.Dynamic;
                 
-                    xslt.Transform(kvaDoc, xw);
+                    xslt.Transform(kva, xw);
                 
                     AddODFZipFile(zos, "content.xml", ms.ToArray());
                 

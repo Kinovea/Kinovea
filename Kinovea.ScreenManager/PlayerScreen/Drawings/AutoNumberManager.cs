@@ -103,7 +103,6 @@ namespace Kinovea.ScreenManager
             ReadXml(xmlReader, scale, remapTimestampCallback, averageTimeStampsPerFrame);
         }
         
-        
         #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
@@ -173,6 +172,8 @@ namespace Kinovea.ScreenManager
         }
         public void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, long averageTimeStampsPerFrame)
         {
+            Clear();
+
             xmlReader.ReadStartElement();
             
             while(xmlReader.NodeType == XmlNodeType.Element)
