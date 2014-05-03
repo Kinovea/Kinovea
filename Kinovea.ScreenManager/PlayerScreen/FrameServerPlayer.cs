@@ -44,61 +44,62 @@ namespace Kinovea.ScreenManager
         #region Properties
         public VideoReader VideoReader
         {
-            get { return m_VideoReader; }
-            set { m_VideoReader = value; }
+            get { return videoReader; }
         }
         public Metadata Metadata
         {
-            get { return m_Metadata; }
-            set { m_Metadata = value; }
+            get { return metadata; }
+            set { metadata = value; }
         }
         public CoordinateSystem CoordinateSystem
         {
-            get { return m_Metadata.CoordinateSystem; }
+            get { return metadata.CoordinateSystem; }
         }
         public bool Loaded
         {
-            get { return m_VideoReader != null && m_VideoReader.Loaded; }
+            get { return videoReader != null && videoReader.Loaded; }
         }
-        public Bitmap CurrentImage {
-            get { 
-                if(m_VideoReader == null || !m_VideoReader.Loaded || m_VideoReader.Current == null)
+        public Bitmap CurrentImage 
+        {
+            get 
+            { 
+                if(videoReader == null || !videoReader.Loaded || videoReader.Current == null)
                     return null;
                 else
-                    return m_VideoReader.Current.Image;
+                    return videoReader.Current.Image;
             }
         }
         #endregion
         
         #region Members
-        private VideoReader m_VideoReader;
-        private Metadata m_Metadata;
-        private formProgressBar m_FormProgressBar;
-        private BackgroundWorker m_BgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
-        private SaveResult m_SaveResult;
-        private bool m_SavingMetada;
+        private VideoReader videoReader;
+        private Metadata metadata;
+        private formProgressBar formProgressBar;
+        private BackgroundWorker bgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
+        private SaveResult saveResult;
+        private bool savingMetada;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
         public FrameServerPlayer()
         {
-            m_BgWorkerSave.ProgressChanged += bgWorkerSave_ProgressChanged;
-            m_BgWorkerSave.RunWorkerCompleted += bgWorkerSave_RunWorkerCompleted;
-            m_BgWorkerSave.DoWork += bgWorkerSave_DoWork;
+            bgWorkerSave.ProgressChanged += bgWorkerSave_ProgressChanged;
+            bgWorkerSave.RunWorkerCompleted += bgWorkerSave_RunWorkerCompleted;
+            bgWorkerSave.DoWork += bgWorkerSave_DoWork;
         }
         #endregion
         
         #region Public
-        public OpenVideoResult Load(string _FilePath)
+        public OpenVideoResult Load(string filePath)
         {
             // Instanciate appropriate video reader class depending on extension.
-            string extension = Path.GetExtension(_FilePath);
-            m_VideoReader = VideoTypeManager.GetVideoReader(extension);
-            if(m_VideoReader != null)
+            string extension = Path.GetExtension(filePath);
+            videoReader = VideoTypeManager.GetVideoReader(extension);
+            if(videoReader != null)
             {
-                m_VideoReader.Options = new VideoOptions(PreferencesManager.PlayerPreferences.AspectRatio, PreferencesManager.PlayerPreferences.DeinterlaceByDefault);
-                return m_VideoReader.Open(_FilePath);
+                videoReader.Options = new VideoOptions(PreferencesManager.PlayerPreferences.AspectRatio, PreferencesManager.PlayerPreferences.DeinterlaceByDefault);
+                return videoReader.Open(filePath);
             }
             else
             {
@@ -108,55 +109,55 @@ namespace Kinovea.ScreenManager
         public void Unload()
         {
             // Prepare the FrameServer for a new video by resetting everything.
-            if(m_VideoReader != null && m_VideoReader.Loaded)
-                m_VideoReader.Close();
+            if(videoReader != null && videoReader.Loaded)
+                videoReader.Close();
             
-            if(m_Metadata != null)
-                m_Metadata.Reset();
+            if(metadata != null)
+                metadata.Reset();
         }
         public void SetupMetadata(bool init)
         {
             // Setup Metadata global infos in case we want to flush it to a file (or mux).
             
-            if(m_Metadata == null || m_VideoReader == null)
+            if(metadata == null || videoReader == null)
                 return;
 
             if (init)
             {
-                m_Metadata.ImageSize = m_VideoReader.Info.AspectRatioSize;
-                m_Metadata.AverageTimeStampsPerFrame = m_VideoReader.Info.AverageTimeStampsPerFrame;
-                m_Metadata.CalibrationHelper.FramesPerSecond = m_VideoReader.Info.FramesPerSeconds;
-                m_Metadata.FirstTimeStamp = m_VideoReader.Info.FirstTimeStamp;
+                metadata.ImageSize = videoReader.Info.AspectRatioSize;
+                metadata.AverageTimeStampsPerFrame = videoReader.Info.AverageTimeStampsPerFrame;
+                metadata.CalibrationHelper.FramesPerSecond = videoReader.Info.FramesPerSeconds;
+                metadata.FirstTimeStamp = videoReader.Info.FirstTimeStamp;
             }
 
-            m_Metadata.PostSetup();
+            metadata.PostSetup();
             
             log.Debug("Setup metadata.");
         }
-        public override void Draw(Graphics _canvas)
+        public override void Draw(Graphics canvas)
         {
             // Draw the current image on canvas according to conf.
             // This is called back from screen paint method.
         }
-        public void Save(double _fPlaybackFrameInterval, double _fSlowmotionPercentage, ImageRetriever _DelegateOutputBitmap)
+        public void Save(double playbackFrameInterval, double slowmotionPercentage, ImageRetriever imageRetriever)
         {
             // Let the user select what he wants to save exactly.
-            formVideoExport fve = new formVideoExport(m_VideoReader.FilePath, m_Metadata, _fSlowmotionPercentage);
+            formVideoExport fve = new formVideoExport(videoReader.FilePath, metadata, slowmotionPercentage);
             if(fve.Spawn() == DialogResult.OK)
             {
                 if(fve.SaveAnalysis)
                 {
                     MetadataSerializer serializer = new MetadataSerializer();
-                    serializer.SaveToFile(m_Metadata, fve.Filename);
+                    serializer.SaveToFile(metadata, fve.Filename);
                 }
                 else
                 {
                     DoSave(fve.Filename,
-                            fve.UseSlowMotion ? _fPlaybackFrameInterval : m_VideoReader.Info.FrameIntervalMilliseconds,
+                            fve.UseSlowMotion ? playbackFrameInterval : videoReader.Info.FrameIntervalMilliseconds,
                             fve.BlendDrawings,
                             false,
                             false,
-                            _DelegateOutputBitmap);
+                            imageRetriever);
 
                     PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(fve.Filename);
                     PreferencesManager.Save();
@@ -166,10 +167,10 @@ namespace Kinovea.ScreenManager
             // Release configuration form.
             fve.Dispose();
         }
-        public void SaveDiaporama(ImageRetriever _DelegateOutputBitmap, bool _diapo)
+        public void SaveDiaporama(ImageRetriever imageRetriever, bool diapo)
         {
             // Let the user configure the diaporama export.
-            using(formDiapoExport fde = new formDiapoExport(_diapo))
+            using(formDiapoExport fde = new formDiapoExport(diapo))
             {
                 if(fde.ShowDialog() == DialogResult.OK)
                 {
@@ -178,16 +179,16 @@ namespace Kinovea.ScreenManager
                             true, 
                             fde.PausedVideo ? false : true,
                             fde.PausedVideo,
-                            _DelegateOutputBitmap);
+                            imageRetriever);
                 }
             }
         }
         public void AfterSave()
         {
-            if(m_SavingMetada)
+            if(savingMetada)
             {
                 Metadata.CleanupHash();
-                m_SavingMetada = false;
+                savingMetada = false;
             }
 
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
@@ -195,21 +196,21 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Saving processing
-        private void DoSave(string _FilePath, double _frameInterval, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, ImageRetriever _DelegateOutputBitmap)
+        private void DoSave(string filePath, double frameInterval, bool flushDrawings, bool keyframesOnly, bool pausedVideo, ImageRetriever imageRetriever)
         {
             SavingSettings s = new SavingSettings();
-            s.Section = m_VideoReader.WorkingZone;
-            s.File = _FilePath;
-            s.InputFrameInterval = _frameInterval;
-            s.FlushDrawings = _bFlushDrawings;
-            s.KeyframesOnly = _bKeyframesOnly;
-            s.PausedVideo = _bPausedVideo;
-            s.ImageRetriever = _DelegateOutputBitmap;
+            s.Section = videoReader.WorkingZone;
+            s.File = filePath;
+            s.InputFrameInterval = frameInterval;
+            s.FlushDrawings = flushDrawings;
+            s.KeyframesOnly = keyframesOnly;
+            s.PausedVideo = pausedVideo;
+            s.ImageRetriever = imageRetriever;
             
-            m_FormProgressBar = new formProgressBar(true);
-            m_FormProgressBar.Cancel = Cancel_Asked;
-            m_BgWorkerSave.RunWorkerAsync(s);
-            m_FormProgressBar.ShowDialog();
+            formProgressBar = new formProgressBar(true);
+            formProgressBar.Cancel = Cancel_Asked;
+            bgWorkerSave.RunWorkerAsync(s);
+            formProgressBar.ShowDialog();
         }
         
         #region Background worker event handlers
@@ -220,7 +221,7 @@ namespace Kinovea.ScreenManager
 
             if(!(e.Argument is SavingSettings))
             {
-                m_SaveResult = SaveResult.UnknownError;
+                saveResult = SaveResult.UnknownError;
                 e.Result = 0;
                 return;
             }
@@ -229,7 +230,7 @@ namespace Kinovea.ScreenManager
             
             if(settings.ImageRetriever == null || settings.InputFrameInterval < 0 || bgWorker == null)
             {
-                m_SaveResult = SaveResult.UnknownError;
+                saveResult = SaveResult.UnknownError;
                 e.Result = 0;
                 return;
             }
@@ -250,35 +251,35 @@ namespace Kinovea.ScreenManager
                     settings.KeyframeDuplication = settings.Duplication;
                     settings.OutputFrameInterval = settings.InputFrameInterval / settings.Duplication;
                     if(settings.KeyframesOnly)
-                        settings.EstimatedTotal = m_Metadata.Count * settings.Duplication;
+                        settings.EstimatedTotal = metadata.Count * settings.Duplication;
                     else
-                        settings.EstimatedTotal = m_VideoReader.EstimatedFrames * settings.Duplication;
+                        settings.EstimatedTotal = videoReader.EstimatedFrames * settings.Duplication;
                 }
                 else
                 {
                     // For paused video, slow motion is not supported.
                     // InputFrameInterval will have been set to a multiple of the original frame interval.
                     settings.Duplication = 1;
-                    settings.KeyframeDuplication = (int)(settings.InputFrameInterval / m_VideoReader.Info.FrameIntervalMilliseconds);
-                    settings.OutputFrameInterval = m_VideoReader.Info.FrameIntervalMilliseconds;
+                    settings.KeyframeDuplication = (int)(settings.InputFrameInterval / videoReader.Info.FrameIntervalMilliseconds);
+                    settings.OutputFrameInterval = videoReader.Info.FrameIntervalMilliseconds;
                     
-                    long regularFramesTotal = m_VideoReader.EstimatedFrames - m_Metadata.Count;
-                    long keyframesTotal = m_Metadata.Count * settings.KeyframeDuplication;
+                    long regularFramesTotal = videoReader.EstimatedFrames - metadata.Count;
+                    long keyframesTotal = metadata.Count * settings.KeyframeDuplication;
                     settings.EstimatedTotal = regularFramesTotal + keyframesTotal;
                 }
                 
                 log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputFrameInterval, settings.Duplication, settings.KeyframeDuplication);
                 
-                m_VideoReader.BeforeFrameEnumeration();
+                videoReader.BeforeFrameEnumeration();
                 IEnumerable<Bitmap> images = FrameEnumerator(settings);
 
                 VideoFileWriter w = new VideoFileWriter();
-                m_SaveResult = w.Save(settings, m_VideoReader.Info, images, bgWorker);
-                m_VideoReader.AfterFrameEnumeration();
+                saveResult = w.Save(settings, videoReader.Info, images, bgWorker);
+                videoReader.AfterFrameEnumeration();
             }
             catch (Exception exp)
             {
-                m_SaveResult = SaveResult.UnknownError;
+                saveResult = SaveResult.UnknownError;
                 log.Error("Unknown error while saving video.");
                 log.Error(exp.StackTrace);
             }
@@ -291,13 +292,13 @@ namespace Kinovea.ScreenManager
         /// Return fully painted bitmaps ready for saving in the output.
         /// In case of early cancellation or error, the caller must dispose the bitmap to avoid a leak.
         /// </summary>
-        private IEnumerable<Bitmap> FrameEnumerator(SavingSettings _settings)
+        private IEnumerable<Bitmap> FrameEnumerator(SavingSettings settings)
         {
             // When we move to a full hierarchy of exporters classes,
             // each one will implement its own logic to transform the frames from
             // the working zone (or just the kf) to the final list of bitmaps to save.
             
-            foreach(VideoFrame vf in m_VideoReader.FrameEnumerator())
+            foreach(VideoFrame vf in videoReader.FrameEnumerator())
             {
                 if(vf == null)
                 {
@@ -309,11 +310,11 @@ namespace Kinovea.ScreenManager
                 long ts = vf.Timestamp;
                 
                 Graphics g = Graphics.FromImage(bmp);
-                long keyframeDistance = _settings.ImageRetriever(g, bmp, ts, _settings.FlushDrawings, _settings.KeyframesOnly);
+                long keyframeDistance = settings.ImageRetriever(g, bmp, ts, settings.FlushDrawings, settings.KeyframesOnly);
 
-                if(!_settings.KeyframesOnly || keyframeDistance == 0)
+                if(!settings.KeyframesOnly || keyframeDistance == 0)
                 {
-                    int duplication = _settings.PausedVideo && keyframeDistance == 0 ? _settings.KeyframeDuplication : _settings.Duplication;
+                    int duplication = settings.PausedVideo && keyframeDistance == 0 ? settings.KeyframeDuplication : settings.Duplication;
                     for(int i=0;i<duplication;i++)
                         yield return bmp;
                 }
@@ -328,23 +329,23 @@ namespace Kinovea.ScreenManager
             // Fix the int/long madness.
             int iMaximum = (int)(long)e.UserState;
             int iValue = (int)Math.Min((long)e.ProgressPercentage, iMaximum);
-            m_FormProgressBar.Update(iValue, iMaximum, true);
+            formProgressBar.Update(iValue, iMaximum, true);
         }
         private void bgWorkerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            m_FormProgressBar.Close();
-            m_FormProgressBar.Dispose();
+            formProgressBar.Close();
+            formProgressBar.Dispose();
             
-            if(m_SaveResult != SaveResult.Success)
-                ReportError(m_SaveResult);
+            if(saveResult != SaveResult.Success)
+                ReportError(saveResult);
             else
                 AfterSave();
         }
         #endregion
         
-        private void ReportError(SaveResult _err)
+        private void ReportError(SaveResult saveResult)
         {
-            switch(_err)
+            switch(saveResult)
             {
                 case SaveResult.Cancelled:
                     // No error message if the user cancelled herself.
@@ -371,10 +372,10 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
-        private void DisplayErrorMessage(string _err)
+        private void DisplayErrorMessage(string error)
         {
             MessageBox.Show(
-                _err.Replace("\\n", "\n"),
+                error.Replace("\\n", "\n"),
                 ScreenManagerLang.Error_SaveMovie_Title,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
@@ -382,8 +383,8 @@ namespace Kinovea.ScreenManager
         private void Cancel_Asked(object sender, EventArgs e)
         {
             // User cancelled from progress form.
-            m_BgWorkerSave.CancelAsync();
-            m_FormProgressBar.Dispose();
+            bgWorkerSave.CancelAsync();
+            formProgressBar.Dispose();
         }
         #endregion
     }
