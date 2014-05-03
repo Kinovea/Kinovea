@@ -31,46 +31,45 @@ namespace Kinovea.ScreenManager
     {
         #region Properties
         public Size RenderingSize {
-            get { return m_renderingSize;}
+            get { return renderingSize;}
         }
         public Point RenderingLocation {
-            get { return m_renderingLocation;}
+            get { return renderingLocation;}
         }
         public double Stretch {
-            get { return m_stretchFactor; }
+            get { return stretchFactor; }
         }
         public Size DecodingSize {
-            get { return m_decodingSize;}
+            get { return decodingSize;}
         }
         public bool MayDrawUnscaled {
-            get { return m_mayDrawUnscaled;}
+            get { return mayDrawUnscaled;}
         }
         public double RenderingZoomFactor {
-            get { return m_renderingZoomFactor; }
+            get { return renderingZoomFactor; }
         }
         #endregion
         
         #region Members
-        private Size m_renderingSize;               // Size of the surface we are going to draw on.
-        private Point m_renderingLocation;          // Location of the surface we are going to draw on relatively to the container.
-        private Size m_decodingSize;                // Size at which we will ask the VideoReader to provide its frames. (Not necessarily honored by the reader).
-        private double m_stretchFactor = 1.0;       // input/output. May be updated during the computation.
-        private bool m_mayDrawUnscaled;
-        private double m_renderingZoomFactor = 1.0; // factor to apply on the reference size to get the rendering size x zoom.
-                                                    // It will be used to locate the region of interest.
+        private Size renderingSize;               // Size of the surface we are going to draw on.
+        private Point renderingLocation;          // Location of the surface we are going to draw on relatively to the container.
+        private Size decodingSize;                // Size at which we will ask the VideoReader to provide its frames. (Not necessarily honored by the reader).
+        private double stretchFactor = 1.0;       // input/output. May be updated during the computation.
+        private bool mayDrawUnscaled;
+        private double renderingZoomFactor = 1.0; // factor to apply on the reference size to get the rendering size x zoom. It will be used to locate the region of interest.
         // Reference data.
-        private VideoReader m_reader;
+        private VideoReader reader;
         #endregion
         
-        public void Initialize(VideoReader _videoReader)
+        public void Initialize(VideoReader reader)
         {
-            m_reader = _videoReader;
+            this.reader = reader;
         }
         
         public void Manipulate(Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
         {
             // One of the constraint has changed, recompute the sizes.
-            Size aspectRatioSize = m_reader.Info.AspectRatioSize;
+            Size aspectRatioSize = reader.Info.AspectRatioSize;
             
             ComputeRenderingSize(aspectRatioSize, _containerSize, _stretchFactor, _fillContainer);
             ComputeDecodingSize(aspectRatioSize, _containerSize, _zoomFactor, _enableCustomDecodingSize, _scalable);
@@ -80,12 +79,11 @@ namespace Kinovea.ScreenManager
         {
             // Updates the following globals: m_stretchFactor, m_renderingSize, m_renderingLocation.
             
-            //log.DebugFormat("Input: zoom:{0:0.00}, stretch:{1:0.00}, container:{2}, fill:{3}, aspectRatioSize:{4}",
-            //               _zoomFactor, _stretchFactor, _containerSize, _fillContainer, aspectRatioSize);
+            //log.DebugFormat("Input: zoom:{0:0.00}, stretch:{1:0.00}, container:{2}, fill:{3}, aspectRatioSize:{4}", _zoomFactor, _stretchFactor, _containerSize, _fillContainer, aspectRatioSize);
             
-            m_stretchFactor = _stretchFactor;
+            stretchFactor = _stretchFactor;
             
-            Size stretchedSize = new Size((int)(_aspectRatioSize.Width * m_stretchFactor), (int)(_aspectRatioSize.Height * m_stretchFactor));
+            Size stretchedSize = new Size((int)(_aspectRatioSize.Width * stretchFactor), (int)(_aspectRatioSize.Height * stretchFactor));
             if(!stretchedSize.FitsIn(_containerSize) || _fillContainer)
             {
                 // What factor must be applied so that it fits in the container. 
@@ -96,30 +94,30 @@ namespace Kinovea.ScreenManager
                 // Stretch using the smaller factor, so that the other side fits in.
                 if(stretchWidth < stretchHeight)
                 {
-                    m_stretchFactor = stretchWidth;
-                    m_renderingSize = new Size(_containerSize.Width, (int)(_aspectRatioSize.Height * m_stretchFactor));
+                    stretchFactor = stretchWidth;
+                    renderingSize = new Size(_containerSize.Width, (int)(_aspectRatioSize.Height * stretchFactor));
                 }
                 else
                 {
-                    m_stretchFactor = stretchHeight;
-                    m_renderingSize = new Size((int)(_aspectRatioSize.Width * m_stretchFactor), _containerSize.Height);
+                    stretchFactor = stretchHeight;
+                    renderingSize = new Size((int)(_aspectRatioSize.Width * stretchFactor), _containerSize.Height);
                 }
             }
             else
             {
-                m_renderingSize = stretchedSize;
+                renderingSize = stretchedSize;
             }
             
-            m_renderingLocation = new Point((_containerSize.Width - m_renderingSize.Width) / 2, (_containerSize.Height - m_renderingSize.Height) / 2);
+            renderingLocation = new Point((_containerSize.Width - renderingSize.Width) / 2, (_containerSize.Height - renderingSize.Height) / 2);
         }
         private void ComputeDecodingSize(Size _aspectRatioSize, Size _containerSize, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
         {
-            // Updates the following globals: m_decodingSize, m_mayDrawUnscaled, m_renderingZoomFactor.
+            // Updates the following globals: decodingSize, mayDrawUnscaled, renderingZoomFactor.
             
             if(!_enableCustomDecodingSize)
             {
-                m_decodingSize = _aspectRatioSize;
-                m_mayDrawUnscaled = false;
+                decodingSize = _aspectRatioSize;
+                mayDrawUnscaled = false;
             }
             else
             {
@@ -129,15 +127,15 @@ namespace Kinovea.ScreenManager
                 // for example when we zoom into a video that is too big for the viewport.
                 if(_zoomFactor == 1.0)
                 {
-                    m_decodingSize = m_renderingSize;
-                    m_mayDrawUnscaled = true;
+                    decodingSize = renderingSize;
+                    mayDrawUnscaled = true;
                 }
                 else
                 {
                     // scaledSize is the size at which we would need to decode the image if we wanted to be able
                     // to draw the region of interest (zoom sub window) directly on the viewport without additional scaling.
-                    double scaleFactor = _zoomFactor * m_stretchFactor;
-                    Size scaledSize = new Size((int)(m_renderingSize.Width * _zoomFactor), (int)(m_renderingSize.Height * _zoomFactor));
+                    double scaleFactor = _zoomFactor * stretchFactor;
+                    Size scaledSize = new Size((int)(renderingSize.Width * _zoomFactor), (int)(renderingSize.Height * _zoomFactor));
                     
                     // We don't actually care if the scaled image fits in the container, but we use the container size as the
                     // upper boundary to what we allow the decoding size to be, in order not to put too much load on the decoder.
@@ -145,22 +143,21 @@ namespace Kinovea.ScreenManager
                     {
                         // Here we could also use _containerSize at right ratio. Will have to test perfs to know which is better.
                         // If in this branch, we cannot draw unscaled.
-                        m_decodingSize = _aspectRatioSize;
-                        m_mayDrawUnscaled = false;
+                        decodingSize = _aspectRatioSize;
+                        mayDrawUnscaled = false;
                         //log.DebugFormat("Will not decode at size larger than container or aspectRatioSize. {0}", scaledSize);
                     }
                     else
                     {
-                        m_decodingSize = scaledSize;
-                        m_mayDrawUnscaled = true;
+                        decodingSize = scaledSize;
+                        mayDrawUnscaled = true;
                         Size zoomSize = new Size((int)(scaledSize.Width / _zoomFactor), (int)(scaledSize.Height / _zoomFactor));
-                        //log.DebugFormat("Zoom will fit. Zoom window size should be:{0}, decoding size (scaled size):{1}, decoding zoom factor:{2}",
-                        //                zoomSize, scaledSize, m_renderingZoomFactor);
+                        //log.DebugFormat("Zoom will fit. Zoom window size should be:{0}, decoding size (scaled size):{1}, decoding zoom factor:{2}", zoomSize, scaledSize, m_renderingZoomFactor);
                     }
                 }
             }
             
-            m_renderingZoomFactor = (double)m_decodingSize.Width / _aspectRatioSize.Width;
+            renderingZoomFactor = (double)decodingSize.Width / _aspectRatioSize.Width;
             
             //log.DebugFormat("Output: stretch:{0:0.00}, renderingSize:{1}, scaleFactor:{2:0.00}, decodingSize:{3}, mayDrawUnscaled:{4}", 
             //                m_stretchFactor, m_renderingSize, _zoomFactor * m_stretchFactor, m_decodingSize, m_mayDrawUnscaled);

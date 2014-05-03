@@ -24,8 +24,8 @@ namespace Kinovea.ScreenManager
             get;
         }
         
-        public abstract void Add(object _item);
-        public abstract void Remove(object _item);
+        public abstract void Add(object item);
+        public abstract void Remove(object item);
         public abstract void Clear();
     }
 }

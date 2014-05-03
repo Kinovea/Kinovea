@@ -43,31 +43,31 @@ namespace Kinovea.ScreenManager
         
         #region Properties
         public MagnifierMode Mode {
-            get { return m_mode; }
-            set { m_mode = value; }
+            get { return mode; }
+            set { mode = value; }
         }
         public double MagnificationFactor {
-            get { return m_magnificationFactor; }
+            get { return magnificationFactor; }
             set { 
-                m_magnificationFactor = value;
+                magnificationFactor = value;
                 ResizeInsert();
             }
         }
         public Point Center {
-            get { return m_source.Rectangle.Center(); }
+            get { return source.Rectangle.Center(); }
         }
         #endregion
         
         #region Members
         private Guid id = Guid.NewGuid();
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
-        private BoundingBox m_source = new BoundingBox();   // Wrapper for the region of interest in the original image.
-        private Rectangle m_insert;                         // The location and size of the insert window, where we paint the region of interest magnified.
-        private MagnifierMode m_mode;
-        private Point m_sourceLastLocation;
-        private Point m_insertLastLocation;
-        private int m_hitHandle = -1;
-        private double m_magnificationFactor = MagnificationFactors[1];
+        private BoundingBox source = new BoundingBox();   // Wrapper for the region of interest in the original image.
+        private Rectangle insert;                         // The location and size of the insert window, where we paint the region of interest magnified.
+        private MagnifierMode mode;
+        private Point sourceLastLocation;
+        private Point insertLastLocation;
+        private int hitHandle = -1;
+        private double magnificationFactor = MagnificationFactors[1];
         #endregion
        
         #region Constructor
@@ -78,101 +78,102 @@ namespace Kinovea.ScreenManager
         #endregion
        
         #region Public interface
-        public void Draw(Bitmap _bitmap, Graphics _canvas, CoordinateSystem _transformer, bool _bMirrored, Size _originalSize)
+        public void Draw(Bitmap bitmap, Graphics canvas, CoordinateSystem transformer, bool mirrored, Size originalSize)
         {
-            if(m_mode == MagnifierMode.None)
+            if(mode == MagnifierMode.None)
                 return;
             
-            m_source.Draw(_canvas, _transformer.Transform(m_source.Rectangle), Pens.White, (SolidBrush)Brushes.White, 4);
-            DrawInsert(_bitmap, _canvas, _transformer, _bMirrored, _originalSize);
+            source.Draw(canvas, transformer.Transform(source.Rectangle), Pens.White, (SolidBrush)Brushes.White, 4);
+            DrawInsert(bitmap, canvas, transformer, mirrored, originalSize);
         }
-        private void DrawInsert(Bitmap _bitmap, Graphics _canvas, CoordinateSystem _transformer, bool _bMirrored, Size _originalSize)
+        private void DrawInsert(Bitmap bitmap, Graphics canvas, CoordinateSystem transformer, bool mirrored, Size originalSize)
         {
             // The bitmap passed in is the image decoded, so it might be at a different size than the original image size.
             // We also need to take mirroring into account (until it's included in the CoordinateSystem).
             
-            double scaleX = (double)_bitmap.Size.Width / _originalSize.Width;
-            double scaleY = (double)_bitmap.Size.Height / _originalSize.Height;
-            Rectangle scaledSource = m_source.Rectangle.Scale(scaleX, scaleY);
+            double scaleX = (double)bitmap.Size.Width / originalSize.Width;
+            double scaleY = (double)bitmap.Size.Height / originalSize.Height;
+            Rectangle scaledSource = source.Rectangle.Scale(scaleX, scaleY);
             
             Rectangle src;
-            if(_bMirrored)
-                src = new Rectangle(_bitmap.Width - scaledSource.Left, scaledSource.Top, -scaledSource.Width, scaledSource.Height);
+            if(mirrored)
+                src = new Rectangle(bitmap.Width - scaledSource.Left, scaledSource.Top, -scaledSource.Width, scaledSource.Height);
             else
                 src = scaledSource;
             
-            _canvas.DrawImage(_bitmap, _transformer.Transform(m_insert), src, GraphicsUnit.Pixel);
-            _canvas.DrawRectangle(Pens.White, _transformer.Transform(m_insert));
+            canvas.DrawImage(bitmap, transformer.Transform(insert), src, GraphicsUnit.Pixel);
+            canvas.DrawRectangle(Pens.White, transformer.Transform(insert));
         }
-        public void OnMouseUp(Point _location)
+        public void OnMouseUp(Point location)
         {
             if(Mode == MagnifierMode.Direct)
                 Mode = MagnifierMode.Indirect;
         }
-        public bool Move(Point _location)
+        public bool Move(Point location)
         {
             // Currently the magnifier does not use the same move/moveHandle mechanics as other drawings.
             // (Going through the pointer tool to keep track of last mouse location and calling move or moveHandle from there)
             // Hence, we keep the last location here and recompute the deltas locally.
-            if(m_mode == MagnifierMode.Direct || m_hitHandle == 0)
+            if(mode == MagnifierMode.Direct || hitHandle == 0)
             {
-                m_source.Move(_location.X - m_sourceLastLocation.X, _location.Y - m_sourceLastLocation.Y);
-                m_sourceLastLocation = _location;
-                points["0"] = m_source.Rectangle.Center();
+                source.Move(location.X - sourceLastLocation.X, location.Y - sourceLastLocation.Y);
+                sourceLastLocation = location;
+                points["0"] = source.Rectangle.Center();
                 SignalTrackablePointMoved();
             }
-            else if(m_hitHandle > 0 && m_hitHandle < 5)
+            else if(hitHandle > 0 && hitHandle < 5)
             {
-                m_source.MoveHandle(_location, m_hitHandle, Size.Empty, false);
-                points["0"] = m_source.Rectangle.Center();
+                source.MoveHandle(location, hitHandle, Size.Empty, false);
+                points["0"] = source.Rectangle.Center();
                 ResizeInsert();
                 SignalTrackablePointMoved();
             }
-            else if(m_hitHandle == 5)
+            else if(hitHandle == 5)
             {
-                m_insert = new Rectangle(m_insert.X + (_location.X - m_insertLastLocation.X), m_insert.Y + (_location.Y - m_insertLastLocation.Y), m_insert.Width, m_insert.Height);
-                m_insertLastLocation = _location;
+                insert = new Rectangle(insert.X + (location.X - insertLastLocation.X), insert.Y + (location.Y - insertLastLocation.Y), insert.Width, insert.Height);
+                insertLastLocation = location;
             }
+
             return false;
         }
         public bool OnMouseDown(Point location, CoordinateSystem transformer)
         {
-            if(m_mode != MagnifierMode.Indirect)
+            if(mode != MagnifierMode.Indirect)
                 return false;
 
-            m_hitHandle = HitTest(location, transformer);
+            hitHandle = HitTest(location, transformer);
             
-            if(m_hitHandle == 0)
-                m_sourceLastLocation = location;
-            else if(m_hitHandle == 5)
-                m_insertLastLocation = location;
+            if(hitHandle == 0)
+                sourceLastLocation = location;
+            else if(hitHandle == 5)
+                insertLastLocation = location;
 
-            return m_hitHandle >= 0;
+            return hitHandle >= 0;
         }
-        public bool IsOnObject(Point _location, CoordinateSystem transformer)
+        public bool IsOnObject(Point location, CoordinateSystem transformer)
         {
-            return HitTest(_location, transformer) >= 0;
+            return HitTest(location, transformer) >= 0;
         }
         public int HitTest(Point point, CoordinateSystem transformer)
         {
             int result = -1;
-            if(m_insert.Contains(point))
+            if(insert.Contains(point))
                 result = 5;
             else
-                result = m_source.HitTest(point, transformer);
+                result = source.HitTest(point, transformer);
 
             return result;
         }
         public void ResetData()
         {
             points["0"] = Point.Empty;
-            m_source.Rectangle = points["0"].Box(50);
-            m_insert = new Rectangle(10, 10, (int)(m_source.Rectangle.Width * m_magnificationFactor), (int)(m_source.Rectangle.Height * m_magnificationFactor));
+            source.Rectangle = points["0"].Box(50);
+            insert = new Rectangle(10, 10, (int)(source.Rectangle.Width * magnificationFactor), (int)(source.Rectangle.Height * magnificationFactor));
             
-            m_sourceLastLocation = points["0"].ToPoint();
-            m_insertLastLocation = points["0"].ToPoint();
+            sourceLastLocation = points["0"].ToPoint();
+            insertLastLocation = points["0"].ToPoint();
             
-            m_mode = MagnifierMode.None;
+            mode = MagnifierMode.None;
         }
         #endregion
         
@@ -198,7 +199,7 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
-            m_source.Rectangle = points[name].Box(m_source.Rectangle.Size).ToRectangle();
+            source.Rectangle = points[name].Box(source.Rectangle.Size).ToRectangle();
         }
         private void SignalTrackablePointMoved()
         {
@@ -211,7 +212,7 @@ namespace Kinovea.ScreenManager
         
         private void ResizeInsert()
         {
-            m_insert = new Rectangle(m_insert.Left, m_insert.Top, (int)(m_source.Rectangle.Width * m_magnificationFactor), (int)(m_source.Rectangle.Height * m_magnificationFactor));
+            insert = new Rectangle(insert.Left, insert.Top, (int)(source.Rectangle.Width * magnificationFactor), (int)(source.Rectangle.Height * magnificationFactor));
         }
     }
     

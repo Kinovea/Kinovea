@@ -54,20 +54,20 @@ namespace Kinovea.ScreenManager
                 foreach (PointF p in pointList)
                     hash ^= p.GetHashCode();
             
-                hash ^= m_StyleHelper.ContentHash;
-                hash ^= m_InfosFading.ContentHash;
+                hash ^= styleHelper.ContentHash;
+                hash ^= infosFading.ContentHash;
 
                 return hash;
             }
         } 
         public DrawingStyle DrawingStyle
         {
-            get { return m_Style;}
+            get { return style;}
         }
         public override InfosFading InfosFading
         {
-            get { return m_InfosFading; }
-            set { m_InfosFading = value; }
+            get { return infosFading; }
+            set { infosFading = value; }
         }
         public override DrawingCapabilities Caps
         {
@@ -81,58 +81,58 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private List<PointF> pointList = new List<PointF>();
-        private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style;
-        private InfosFading m_InfosFading;
+        private StyleHelper styleHelper = new StyleHelper();
+        private DrawingStyle style;
+        private InfosFading infosFading;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
-        public DrawingPencil(Point _origin, Point _second, long _iTimestamp, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingPencil(Point origin, Point second, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset)
         {
-            pointList.Add(_origin);
-            pointList.Add(_second);
-            m_InfosFading = new InfosFading(_iTimestamp, _AverageTimeStampsPerFrame);
+            pointList.Add(origin);
+            pointList.Add(second);
+            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             
-            m_StyleHelper.Color = Color.Black;
-            m_StyleHelper.LineSize = 1;
-            if(_preset != null)
+            styleHelper.Color = Color.Black;
+            styleHelper.LineSize = 1;
+            if(preset != null)
             {
-                m_Style = _preset.Clone();
+                style = preset.Clone();
                 BindStyle();
             }
         }
-        public DrawingPencil(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+        public DrawingPencil(XmlReader xmlReader, PointF scale, Metadata parent)
             : this(Point.Empty, Point.Empty, 0, 0, ToolManager.Pencil.StylePreset.Clone())
         {
-            ReadXml(_xmlReader, _scale);
+            ReadXml(xmlReader, scale);
         }
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            double fOpacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
             if(fOpacityFactor <= 0)
                 return;
             
-            using(Pen penLine = m_StyleHelper.GetPen(fOpacityFactor, _transformer.Scale))
+            using(Pen penLine = styleHelper.GetPen(fOpacityFactor, transformer.Scale))
             {
-                Point[] points = _transformer.Transform(pointList).ToArray();
-                _canvas.DrawCurve(penLine, points, 0.5f);
+                Point[] points = transformer.Transform(pointList).ToArray();
+                canvas.DrawCurve(penLine, points, 0.5f);
             }
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
         }
-        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
             pointList = pointList.Select(p => p.Translate(dx, dy)).ToList();
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
-            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             if (opacity > 0 && IsPointInObject(point, transformer))
                 result = 0;
                 
@@ -141,72 +141,72 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region KVA Serialization
-        private void ReadXml(XmlReader _xmlReader, PointF _scale)
+        private void ReadXml(XmlReader xmlReader, PointF scale)
         {
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "PointList":
-                        ParsePointList(_xmlReader, _scale);
+                        ParsePointList(xmlReader, scale);
                         break;
                     case "DrawingStyle":
-                        m_Style = new DrawingStyle(_xmlReader);
+                        style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
-                        m_InfosFading.ReadXml(_xmlReader);
+                        infosFading.ReadXml(xmlReader);
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
-        private void ParsePointList(XmlReader _xmlReader, PointF _scale)
+        private void ParsePointList(XmlReader xmlReader, PointF scale)
         {
             pointList.Clear();
             
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                if(_xmlReader.Name == "Point")
+                if(xmlReader.Name == "Point")
                 {
-                    PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
-                    PointF adapted = p.Scale(_scale.X, _scale.Y);
+                    PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                    PointF adapted = p.Scale(scale.X, scale.Y);
                     pointList.Add(adapted);
                 }
                 else
                 {
-                    string unparsed = _xmlReader.ReadOuterXml();
+                    string unparsed = xmlReader.ReadOuterXml();
                     log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter xmlWriter)
         {
-            _xmlWriter.WriteStartElement("PointList");
-            _xmlWriter.WriteAttributeString("Count", pointList.Count.ToString());
+            xmlWriter.WriteStartElement("PointList");
+            xmlWriter.WriteAttributeString("Count", pointList.Count.ToString());
             foreach (PointF p in pointList)
-                _xmlWriter.WriteElementString("Point", string.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
+                xmlWriter.WriteElementString("Point", string.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
 
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
             
-            _xmlWriter.WriteStartElement("DrawingStyle");
-            m_Style.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("DrawingStyle");
+            style.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement();
             
-            _xmlWriter.WriteStartElement("InfosFading");
-            m_InfosFading.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement(); 
+            xmlWriter.WriteStartElement("InfosFading");
+            infosFading.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement(); 
         }
         #endregion
         
@@ -220,8 +220,8 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            m_Style.Bind(m_StyleHelper, "Color", "color");
-            m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
+            style.Bind(styleHelper, "Color", "color");
+            style.Bind(styleHelper, "LineSize", "pen size");
         }
         private void AddPoint(PointF point, Keys modifiers)
         {
@@ -254,7 +254,7 @@ namespace Kinovea.ScreenManager
                 if (bounds.IsEmpty)
                     return false;
 
-                return HitTester.HitTest(path, point, m_StyleHelper.LineSize, false, transformer);
+                return HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);
             }
         }
         #endregion

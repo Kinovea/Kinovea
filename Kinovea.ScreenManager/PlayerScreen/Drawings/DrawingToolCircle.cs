@@ -51,34 +51,34 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingStyle StylePreset
         {
-            get { return m_StylePreset;}
-            set { m_StylePreset = value;}
+            get { return stylePreset;}
+            set { stylePreset = value;}
         }
         public override DrawingStyle DefaultStylePreset
         {
-            get { return m_DefaultStylePreset;}
+            get { return defaultStylePreset;}
         }
         #endregion
         
         #region Members
-        private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
-        private DrawingStyle m_StylePreset;
+        private DrawingStyle defaultStylePreset = new DrawingStyle();
+        private DrawingStyle stylePreset;
         #endregion
         
         public DrawingToolCircle()
         {
-            m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.CadetBlue));
-            m_DefaultStylePreset.Elements.Add("pen size", new StyleElementPenSize(3));
-            m_StylePreset = m_DefaultStylePreset.Clone();
+            defaultStylePreset.Elements.Add("color", new StyleElementColor(Color.CadetBlue));
+            defaultStylePreset.Elements.Add("pen size", new StyleElementPenSize(3));
+            stylePreset = defaultStylePreset.Clone();
         }
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             int radius = transformer.Untransform(25);
-            return new DrawingCircle(_Origin, radius, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+            return new DrawingCircle(origin, radius, timestamp, averageTimeStampsPerFrame, stylePreset);
         }
-        public override Cursor GetCursor(double _fStretchFactor)
+        public override Cursor GetCursor(double stretchFactor)
         {
             return Cursors.Cross;
         }

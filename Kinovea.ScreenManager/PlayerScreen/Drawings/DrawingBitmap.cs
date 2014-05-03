@@ -41,8 +41,8 @@ namespace Kinovea.ScreenManager
         } 
         public override InfosFading InfosFading
         {
-            get { return m_InfosFading; }
-            set { m_InfosFading = value; }
+            get { return infosFading; }
+            set { infosFading = value; }
         }
         public override DrawingCapabilities Caps
         {
@@ -55,116 +55,109 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private Bitmap m_Bitmap;
-        private BoundingBox m_BoundingBox = new BoundingBox();
-        private float m_fInitialScale = 1.0f;			            // The scale we apply upon loading to make sure the image fits the screen.
-        private int m_iOriginalWidth;
-        private int m_iOriginalHeight;
-        private Size m_videoSize;
-        private static readonly int m_snapMargin = 0;
+        private Bitmap bitmap;
+        private BoundingBox boundingBox = new BoundingBox();
+        private float initialScale = 1.0f;			            // The scale we apply upon loading to make sure the image fits the screen.
+        private int originalWidth;
+        private int originalHeight;
+        private Size videoSize;
+        private static readonly int snapMargin = 0;
         // Decoration
-        private InfosFading m_InfosFading;
-        private ColorMatrix m_FadingColorMatrix = new ColorMatrix();
-        private ImageAttributes m_FadingImgAttr = new ImageAttributes();
-        private Pen m_PenBoundingBox;
-        private SolidBrush m_BrushBoundingBox;
+        private InfosFading infosFading;
+        private ColorMatrix fadingColorMatrix = new ColorMatrix();
+        private ImageAttributes fadingImgAttr = new ImageAttributes();
+        private Pen penBoundingBox;
+        private SolidBrush brushBoundingBox;
         #endregion
 
         #region Constructors
-        public DrawingBitmap(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame, string _filename)
+        public DrawingBitmap(int width, int height, long timestamp, long averageTimeStampsPerFrame, string filename)
         {
-            m_Bitmap = new Bitmap(_filename);
+            bitmap = new Bitmap(filename);
 
-            if(m_Bitmap != null)
-            {
-                Initialize(_iWidth, _iHeight, _iTimestamp, _iAverageTimeStampsPerFrame);
-            }
+            if(bitmap != null)
+                Initialize(width, height, timestamp, averageTimeStampsPerFrame);
         }
-        public DrawingBitmap(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame, Bitmap _bmp)
+        public DrawingBitmap(int width, int height, long timestamp, long averageTimeStampsPerFrame, Bitmap bmp)
         {
-            m_Bitmap = AForge.Imaging.Image.Clone(_bmp);
+            bitmap = AForge.Imaging.Image.Clone(bmp);
 
-            if(m_Bitmap != null)
-            {
-                Initialize(_iWidth, _iHeight, _iTimestamp, _iAverageTimeStampsPerFrame);
-            }
+            if(bitmap != null)
+                Initialize(width, height, timestamp, averageTimeStampsPerFrame);
         }
-        private void Initialize(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame)
+        private void Initialize(int width, int height, long timestamp, long averageTimeStampsPerFrame)
         {
-            m_videoSize = new Size(_iWidth, _iHeight);
+            videoSize = new Size(width, height);
             
-            m_iOriginalWidth = m_Bitmap.Width;
-            m_iOriginalHeight  = m_Bitmap.Height;
+            originalWidth = bitmap.Width;
+            originalHeight  = bitmap.Height;
             
             // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
             // For bitmap drawing, we only do this if no upsizing is involved.
-            m_fInitialScale = (float) (((float)_iHeight * 0.75) / m_iOriginalHeight);
-            if(m_fInitialScale < 1.0)
+            initialScale = (float) (((float)height * 0.75) / originalHeight);
+            if(initialScale < 1.0)
             {
-                m_iOriginalWidth = (int) ((float)m_iOriginalWidth * m_fInitialScale);
-                m_iOriginalHeight = (int) ((float)m_iOriginalHeight * m_fInitialScale);
+                originalWidth = (int) ((float)originalWidth * initialScale);
+                originalHeight = (int) ((float)originalHeight * initialScale);
             }
             
-            m_BoundingBox.Rectangle = new Rectangle((_iWidth - m_iOriginalWidth) / 2, (_iHeight - m_iOriginalHeight) / 2, m_iOriginalWidth, m_iOriginalHeight);
+            boundingBox.Rectangle = new Rectangle((width - originalWidth) / 2, (height - originalHeight) / 2, originalWidth, originalHeight);
             
             // Fading
-            m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
-            m_InfosFading.UseDefault = false;
-            m_InfosFading.AlwaysVisible = true;            
+            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
+            infosFading.UseDefault = false;
+            infosFading.AlwaysVisible = true;            
             
             // This is used to set the opacity factor.
-            m_FadingColorMatrix.Matrix00 = 1.0f;
-            m_FadingColorMatrix.Matrix11 = 1.0f;
-            m_FadingColorMatrix.Matrix22 = 1.0f;
-            m_FadingColorMatrix.Matrix33 = 1.0f;	// Change alpha value here for fading. (i.e: 0.5f).
-            m_FadingColorMatrix.Matrix44 = 1.0f;
-            m_FadingImgAttr.SetColorMatrix(m_FadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+            fadingColorMatrix.Matrix00 = 1.0f;
+            fadingColorMatrix.Matrix11 = 1.0f;
+            fadingColorMatrix.Matrix22 = 1.0f;
+            fadingColorMatrix.Matrix33 = 1.0f;	// Change alpha value here for fading. (i.e: 0.5f).
+            fadingColorMatrix.Matrix44 = 1.0f;
+            fadingImgAttr.SetColorMatrix(fadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             
-            m_PenBoundingBox = new Pen(Color.White, 1);
-            m_PenBoundingBox.DashStyle = DashStyle.Dash;
-            m_BrushBoundingBox = new SolidBrush(m_PenBoundingBox.Color);        	
+            penBoundingBox = new Pen(Color.White, 1);
+            penBoundingBox.DashStyle = DashStyle.Dash;
+            brushBoundingBox = new SolidBrush(penBoundingBox.Color);        	
         }
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (fOpacityFactor <= 0)
+            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
+            if (opacityFactor <= 0)
                 return;
 
-            Rectangle rect = _transformer.Transform(m_BoundingBox.Rectangle);
-            
-            if (m_Bitmap != null)
-            {
-                m_FadingColorMatrix.Matrix33 = (float)fOpacityFactor;
-                m_FadingImgAttr.SetColorMatrix(m_FadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                _canvas.DrawImage(m_Bitmap, rect, 0, 0, m_Bitmap.Width, m_Bitmap.Height, GraphicsUnit.Pixel, m_FadingImgAttr);
+            Rectangle rect = transformer.Transform(boundingBox.Rectangle);
 
-                if (_bSelected)
-                {
-                    m_BoundingBox.Draw(_canvas, rect, m_PenBoundingBox, m_BrushBoundingBox, 4);
-                }
-                    
-            }
+            if (bitmap == null)
+                return;
+            
+            fadingColorMatrix.Matrix33 = (float)opacityFactor;
+            fadingImgAttr.SetColorMatrix(fadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+            canvas.DrawImage(bitmap, rect, 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, fadingImgAttr);
+
+            if (selected)
+                boundingBox.Draw(canvas, rect, penBoundingBox, brushBoundingBox, 4);
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
-            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             if (opacity > 0)
-                result = m_BoundingBox.HitTest(point, transformer);
+                result = boundingBox.HitTest(point, transformer);
             
             return result;
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
-            m_BoundingBox.MoveHandle(point.ToPoint(), handleNumber, new Size(m_iOriginalWidth, m_iOriginalHeight), true);
+            boundingBox.MoveHandle(point.ToPoint(), handleNumber, new Size(originalWidth, originalHeight), true);
         }
         public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
-            m_BoundingBox.MoveAndSnap((int)dx, (int)dy, m_videoSize, m_snapMargin);
+            boundingBox.MoveAndSnap((int)dx, (int)dy, videoSize, snapMargin);
         }
         #endregion
     }

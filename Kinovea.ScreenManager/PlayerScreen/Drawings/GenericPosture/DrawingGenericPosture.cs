@@ -47,35 +47,35 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override string DisplayName
         {
-            get {  return m_GenericPosture.Name; }
+            get {  return genericPosture.Name; }
         }
         public override int ContentHash
         {
             get 
             { 
                 int hash = 0;
-                foreach(PointF p in m_GenericPosture.Points)
+                foreach(PointF p in genericPosture.Points)
                     hash ^= p.GetHashCode();
                 
-                hash ^= m_StyleHelper.ContentHash;
-                hash ^= m_InfosFading.ContentHash;
+                hash ^= styleHelper.ContentHash;
+                hash ^= infosFading.ContentHash;
                 return hash;
             }
         } 
         public DrawingStyle DrawingStyle
         {
-          get { return m_Style; }
+          get { return style; }
         }
         public override InfosFading InfosFading
         {
-          get { return m_InfosFading; }
-          set { m_InfosFading = value; }
+          get { return infosFading; }
+          set { infosFading = value; }
         }
         public override DrawingCapabilities Caps
         {
             get 
             {
-                if(m_GenericPosture.Trackable)
+                if(genericPosture.Trackable)
                     return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading | DrawingCapabilities.Track;
                 else
                     return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading;
@@ -88,19 +88,19 @@ namespace Kinovea.ScreenManager
                 // Rebuild the menu each time to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 
-                if(m_GenericPosture.OptionGroups.Count > 0)
+                if(genericPosture.OptionGroups.Count > 0)
                 {
                     menuOptions.Text = "Options"; // TODO: translate.
                     contextMenu.Add(menuOptions);
                 }
                 
-                if((m_GenericPosture.Capabilities & GenericPostureCapabilities.FlipHorizontal) == GenericPostureCapabilities.FlipHorizontal)
+                if((genericPosture.Capabilities & GenericPostureCapabilities.FlipHorizontal) == GenericPostureCapabilities.FlipHorizontal)
                 {
                     menuFlipHorizontal.Text = ScreenManagerLang.mnuFlipHorizontally;
                     contextMenu.Add(menuFlipHorizontal);
                 }
 
-                if((m_GenericPosture.Capabilities & GenericPostureCapabilities.FlipVertical) == GenericPostureCapabilities.FlipVertical)
+                if((genericPosture.Capabilities & GenericPostureCapabilities.FlipVertical) == GenericPostureCapabilities.FlipVertical)
                 {
                     menuFlipVertical.Text = ScreenManagerLang.mnuFlipVertically;
                     contextMenu.Add(menuFlipVertical);
@@ -118,58 +118,58 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private bool tracking;
-        private GenericPosture m_GenericPosture;
-        private List<AngleHelper> m_Angles = new List<AngleHelper>();
+        private GenericPosture genericPosture;
+        private List<AngleHelper> angles = new List<AngleHelper>();
         
         private ToolStripMenuItem menuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem menuFlipHorizontal = new ToolStripMenuItem();
         private ToolStripMenuItem menuFlipVertical = new ToolStripMenuItem();
         
-        private DrawingStyle m_Style;
-        private StyleHelper m_StyleHelper = new StyleHelper();
-        private InfosFading m_InfosFading;
-        private const int m_iDefaultBackgroundAlpha = 92;
+        private DrawingStyle style;
+        private StyleHelper styleHelper = new StyleHelper();
+        private InfosFading infosFading;
+        private const int defaultBackgroundAlpha = 92;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
-        public DrawingGenericPosture(GenericPosture _posture, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _stylePreset)
+        public DrawingGenericPosture(GenericPosture posture, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
         {
-            m_GenericPosture = _posture;
-            if(m_GenericPosture != null)
+            this.genericPosture = posture;
+            if(genericPosture != null)
                 Init();
             
             // Decoration and binding to mini editors.
-            m_StyleHelper.Bicolor = new Bicolor(Color.Empty);
-            m_StyleHelper.Font = new Font("Arial", 12, FontStyle.Bold);
-            if (_stylePreset != null)
+            styleHelper.Bicolor = new Bicolor(Color.Empty);
+            styleHelper.Font = new Font("Arial", 12, FontStyle.Bold);
+            if (stylePreset != null)
             {
-                m_Style = _stylePreset.Clone();
+                style = stylePreset.Clone();
                 BindStyle();
             }
             
             // Fading
-            m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             
             menuFlipHorizontal.Click += menuFlipHorizontal_Click;
             menuFlipHorizontal.Image = Properties.Drawings.fliphorizontal;
             menuFlipVertical.Click += menuFlipVertical_Click;
             menuFlipVertical.Image = Properties.Drawings.flipvertical;
         }
-        public DrawingGenericPosture(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+        public DrawingGenericPosture(XmlReader xmlReader, PointF scale, Metadata parent)
             : this(null, 0, 0, ToolManager.GenericPosture.StylePreset.Clone())
         {
-            ReadXml(_xmlReader, _scale);
+            ReadXml(xmlReader, scale);
             
-            if(m_GenericPosture != null)
+            if(genericPosture != null)
                 Init();
             else 
-                m_GenericPosture = new GenericPosture("", true, false);
+                genericPosture = new GenericPosture("", true, false);
         }
         
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double opacity = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
         
             if(tracking)
                 opacity = 1.0;
@@ -177,65 +177,65 @@ namespace Kinovea.ScreenManager
             if (opacity <= 0)
                 return;
             
-            List<Point> points = _transformer.Transform(m_GenericPosture.Points);
+            List<Point> points = transformer.Transform(genericPosture.Points);
             
             int alpha = (int)(opacity * 255);
             alpha = Math.Max(0, Math.Min(255, alpha));
 
-            int alphaBackground = (int)(opacity*m_iDefaultBackgroundAlpha);
+            int alphaBackground = (int)(opacity*defaultBackgroundAlpha);
             alphaBackground = Math.Max(0, Math.Min(255, alphaBackground));
             
-            using(Pen penEdge = m_StyleHelper.GetBackgroundPen(alpha))
-            using(SolidBrush brushHandle = m_StyleHelper.GetBackgroundBrush(alpha))
-            using(SolidBrush brushFill = m_StyleHelper.GetBackgroundBrush(alphaBackground))
+            using(Pen penEdge = styleHelper.GetBackgroundPen(alpha))
+            using(SolidBrush brushHandle = styleHelper.GetBackgroundBrush(alpha))
+            using(SolidBrush brushFill = styleHelper.GetBackgroundBrush(alphaBackground))
             {
                 Color basePenEdgeColor = penEdge.Color;
                 Color baseBrushHandleColor = brushHandle.Color;
                 Color baseBrushFillColor = brushFill.Color;
                 
-                DrawComputedPoints(penEdge, basePenEdgeColor, brushHandle, baseBrushHandleColor, alpha, opacity, _canvas, _transformer);
-                DrawSegments(penEdge, basePenEdgeColor, alpha, _canvas, _transformer, points);
-                DrawEllipses(penEdge, basePenEdgeColor, alpha, _canvas, _transformer, points);
-                DrawHandles(brushHandle, baseBrushHandleColor, alpha, _canvas, _transformer, points);
-                DrawAngles(penEdge, basePenEdgeColor, brushFill, baseBrushFillColor, alpha, alphaBackground, opacity, _canvas, _transformer, points);
-                DrawDistances(brushFill, baseBrushFillColor, alphaBackground, opacity, _canvas, _transformer, points);
-                DrawPositions(brushFill, baseBrushFillColor, alphaBackground, opacity, _canvas, _transformer, points);
+                DrawComputedPoints(penEdge, basePenEdgeColor, brushHandle, baseBrushHandleColor, alpha, opacity, canvas, transformer);
+                DrawSegments(penEdge, basePenEdgeColor, alpha, canvas, transformer, points);
+                DrawEllipses(penEdge, basePenEdgeColor, alpha, canvas, transformer, points);
+                DrawHandles(brushHandle, baseBrushHandleColor, alpha, canvas, transformer, points);
+                DrawAngles(penEdge, basePenEdgeColor, brushFill, baseBrushFillColor, alpha, alphaBackground, opacity, canvas, transformer, points);
+                DrawDistances(brushFill, baseBrushFillColor, alphaBackground, opacity, canvas, transformer, points);
+                DrawPositions(brushFill, baseBrushFillColor, alphaBackground, opacity, canvas, transformer, points);
             }
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
-            if (!tracking && m_InfosFading.GetOpacityFactor(currentTimestamp) <= 0)
+            if (!tracking && infosFading.GetOpacityFactor(currentTimestamp) <= 0)
                return -1;
             
-            for(int i = 0; i<m_GenericPosture.Handles.Count;i++)
+            for(int i = 0; i<genericPosture.Handles.Count;i++)
             {
                 if(result >= 0)
                     break;
                 
-                if(!HasActiveOption(m_GenericPosture.Handles[i].OptionGroup))
+                if(!HasActiveOption(genericPosture.Handles[i].OptionGroup))
                     continue;
             
-                int reference = m_GenericPosture.Handles[i].Reference;
+                int reference = genericPosture.Handles[i].Reference;
                 if(reference < 0)
                     continue;
                 
-                switch(m_GenericPosture.Handles[i].Type)
+                switch(genericPosture.Handles[i].Type)
                 {
                     case HandleType.Point:
-                        if(reference < m_GenericPosture.Points.Count && HitTester.HitTest(m_GenericPosture.Points[reference], point, transformer))
+                        if(reference < genericPosture.Points.Count && HitTester.HitTest(genericPosture.Points[reference], point, transformer))
                             result = i+1;
                         break;
                     case HandleType.Segment:
-                        if(reference < m_GenericPosture.Segments.Count && IsPointOnSegment(m_GenericPosture.Segments[reference], point, transformer))
+                        if(reference < genericPosture.Segments.Count && IsPointOnSegment(genericPosture.Segments[reference], point, transformer))
                         {
-                            m_GenericPosture.Handles[i].GrabPoint = point;
+                            genericPosture.Handles[i].GrabPoint = point;
                             result = i+1;
                         }
                         break;
                     case HandleType.Ellipse:
-                        if (reference < m_GenericPosture.Ellipses.Count && IsPointOnEllipseArc(m_GenericPosture.Ellipses[reference], point, transformer))
+                        if (reference < genericPosture.Ellipses.Count && IsPointOnEllipseArc(genericPosture.Ellipses[reference], point, transformer))
                             result = i+1;
                         break;
                 }
@@ -249,20 +249,20 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(PointF point, int handle, Keys modifiers)
         {
             int index = handle - 1;
-            GenericPostureConstraintEngine.MoveHandle(m_GenericPosture, CalibrationHelper, index, point, modifiers);
+            GenericPostureConstraintEngine.MoveHandle(genericPosture, CalibrationHelper, index, point, modifiers);
             SignalTrackablePointMoved(index);
         }
         public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
-            for(int i = 0;i<m_GenericPosture.Points.Count;i++)
-                m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Translate(dx, dy);
+            for(int i = 0;i<genericPosture.Points.Count;i++)
+                genericPosture.Points[i] = genericPosture.Points[i].Translate(dx, dy);
             
             SignalAllTrackablePointsMoved();
         }
         #endregion
 
         #region KVA Serialization
-        private void ReadXml(XmlReader _xmlReader, PointF _scale)
+        private void ReadXml(XmlReader xmlReader, PointF scale)
         {
             // TODO: the ctor is initialized with the style preset of the Angle tool.
             // Create a real tool and reference it in the manager.
@@ -270,100 +270,100 @@ namespace Kinovea.ScreenManager
             // The id must be read before the point list.
             Guid toolId;
 
-            if (_xmlReader.MoveToAttribute("id"))
-                identifier = new Guid(_xmlReader.ReadContentAsString());
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
 
-            _xmlReader.ReadStartElement();
-            while (_xmlReader.NodeType == XmlNodeType.Element)
+            xmlReader.ReadStartElement();
+            while (xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch (_xmlReader.Name)
+                switch (xmlReader.Name)
                 {
                     case "ToolId":
-                        toolId = new Guid(_xmlReader.ReadElementContentAsString());
-                        m_GenericPosture = GenericPostureManager.Instanciate(toolId, true);
+                        toolId = new Guid(xmlReader.ReadElementContentAsString());
+                        genericPosture = GenericPostureManager.Instanciate(toolId, true);
                         break;
                     case "Positions":
-                        if(m_GenericPosture != null)
-                            ParsePointList(_xmlReader, _scale);
+                        if(genericPosture != null)
+                            ParsePointList(xmlReader, scale);
                         else
-                            _xmlReader.ReadOuterXml();
+                            xmlReader.ReadOuterXml();
                         break;
                    case "DrawingStyle":
-                        m_Style = new DrawingStyle(_xmlReader);
+                        style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
-                        m_InfosFading.ReadXml(_xmlReader);
+                        infosFading.ReadXml(xmlReader);
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
             SignalAllTrackablePointsMoved();
         }
-        private void ParsePointList(XmlReader _xmlReader, PointF _scale)
+        private void ParsePointList(XmlReader xmlReader, PointF scale)
         {
             List<PointF> points = new List<PointF>();
             
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                if(_xmlReader.Name == "Point")
+                if(xmlReader.Name == "Point")
                 {
-                    PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
-                    PointF adapted = new PointF(p.X * _scale.X, p.Y * _scale.Y);
+                    PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                    PointF adapted = new PointF(p.X * scale.X, p.Y * scale.Y);
                     points.Add(adapted);
                 }
                 else
                 {
-                    string unparsed = _xmlReader.ReadOuterXml();
+                    string unparsed = xmlReader.ReadOuterXml();
                     log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
             
-            if(points.Count == m_GenericPosture.Points.Count)
+            if(points.Count == genericPosture.Points.Count)
             {
-                for(int i = 0; i<m_GenericPosture.Points.Count; i++)
-                    m_GenericPosture.Points[i] = points[i];
+                for(int i = 0; i<genericPosture.Points.Count; i++)
+                    genericPosture.Points[i] = points[i];
             }
             else
             {
-                log.ErrorFormat("Number of points do not match. Tool expects {0}, read:{1}", m_GenericPosture.Points.Count, points.Count);
+                log.ErrorFormat("Number of points do not match. Tool expects {0}, read:{1}", genericPosture.Points.Count, points.Count);
             }
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter xmlWriter)
         {
-            if(m_GenericPosture.Id == Guid.Empty)
+            if(genericPosture.Id == Guid.Empty)
                 return;
             
-            _xmlWriter.WriteElementString("ToolId", m_GenericPosture.Id.ToString());
+            xmlWriter.WriteElementString("ToolId", genericPosture.Id.ToString());
             
-            _xmlWriter.WriteStartElement("Positions");
-            foreach (PointF p in m_GenericPosture.Points)
-                _xmlWriter.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("Positions");
+            foreach (PointF p in genericPosture.Points)
+                xmlWriter.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
+            xmlWriter.WriteEndElement();
             
-            _xmlWriter.WriteStartElement("DrawingStyle");
-            m_Style.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("DrawingStyle");
+            style.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement();
         
-            _xmlWriter.WriteStartElement("InfosFading");
-            m_InfosFading.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("InfosFading");
+            infosFading.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement();
         }
         #endregion
 
         #region IScalable implementation
         public void Scale(Size imageSize)
         {
-            if(m_GenericPosture.FromKVA)
+            if(genericPosture.FromKVA)
                 return;
             
             // The coordinates are defined in a reference image of 800x600 (could be inside the posture file).
@@ -374,14 +374,14 @@ namespace Kinovea.ScreenManager
             float ratioHeight = (float)imageSize.Height / referenceSize.Height;
             float ratio = Math.Min(ratioWidth, ratioHeight);
             
-            for(int i = 0; i < m_GenericPosture.Points.Count; i++)
-                m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Scale(ratio, ratio);
+            for(int i = 0; i < genericPosture.Points.Count; i++)
+                genericPosture.Points[i] = genericPosture.Points[i].Scale(ratio, ratio);
             
-            for(int i = 0; i < m_GenericPosture.Ellipses.Count; i++)
-                m_GenericPosture.Ellipses[i].Radius = (int)(m_GenericPosture.Ellipses[i].Radius * ratio);
+            for(int i = 0; i < genericPosture.Ellipses.Count; i++)
+                genericPosture.Ellipses[i].Radius = (int)(genericPosture.Ellipses[i].Radius * ratio);
             
-            for(int i = 0; i<m_GenericPosture.Angles.Count;i++)
-                m_GenericPosture.Angles[i].Radius = (int)(m_GenericPosture.Angles[i].Radius * ratio);
+            for(int i = 0; i<genericPosture.Angles.Count;i++)
+                genericPosture.Angles[i].Radius = (int)(genericPosture.Angles[i].Radius * ratio);
                 
         }
         #endregion
@@ -389,11 +389,11 @@ namespace Kinovea.ScreenManager
         #region ITrackable implementation and support.
         public TrackingProfile CustomTrackingProfile
         {
-            get { return m_GenericPosture.CustomTrackingProfile; }
+            get { return genericPosture.CustomTrackingProfile; }
         }
         public Dictionary<string, PointF> GetTrackablePoints()
         {
-            return m_GenericPosture.GetTrackablePoints();
+            return genericPosture.GetTrackablePoints();
         }
         public void SetTracking(bool tracking)
         {
@@ -401,33 +401,33 @@ namespace Kinovea.ScreenManager
         }
         public void SetTrackablePointValue(string name, PointF value)
         {
-            m_GenericPosture.SetTrackablePointValue(name, value, CalibrationHelper);
+            genericPosture.SetTrackablePointValue(name, value, CalibrationHelper);
         }
         private void SignalAllTrackablePointsMoved()
         {
             if(TrackablePointMoved == null)
                 return;
          
-            m_GenericPosture.SignalAllTrackablePointsMoved(TrackablePointMoved);
+            genericPosture.SignalAllTrackablePointsMoved(TrackablePointMoved);
         }
         private void SignalTrackablePointMoved(int handle)
         {
-            if (TrackablePointMoved == null || !m_GenericPosture.Handles[handle].Trackable)
+            if (TrackablePointMoved == null || !genericPosture.Handles[handle].Trackable)
                 return;
 
-            m_GenericPosture.SignalTrackablePointMoved(handle, TrackablePointMoved);
+            genericPosture.SignalTrackablePointMoved(handle, TrackablePointMoved);
         }
         #endregion
         
         private void menuFlipHorizontal_Click(object sender, EventArgs e)
         {
-            m_GenericPosture.FlipHorizontal();
+            genericPosture.FlipHorizontal();
             SignalAllTrackablePointsMoved();
             CallInvalidateFromMenu(sender);
         }
         private void menuFlipVertical_Click(object sender, EventArgs e)
         {
-            m_GenericPosture.FlipVertical();
+            genericPosture.FlipVertical();
             SignalAllTrackablePointsMoved();
             CallInvalidateFromMenu(sender);
         }
@@ -437,12 +437,12 @@ namespace Kinovea.ScreenManager
         {
             penEdge.Width = 2;
             
-            foreach(GenericPostureComputedPoint computedPoint in m_GenericPosture.ComputedPoints)
+            foreach(GenericPostureComputedPoint computedPoint in genericPosture.ComputedPoints)
             {
                 if(!HasActiveOption(computedPoint.OptionGroup))
                     continue;
                     
-                PointF p = computedPoint.ComputeLocation(m_GenericPosture);
+                PointF p = computedPoint.ComputeLocation(genericPosture);
                 PointF p2 = transformer.Transform(p);
                 
                 if (!string.IsNullOrEmpty(computedPoint.Symbol))
@@ -463,7 +463,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawSegments(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
-            foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
+            foreach(GenericPostureSegment segment in genericPosture.Segments)
             {
                 if(!HasActiveOption(segment.OptionGroup))
                     continue;
@@ -489,7 +489,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawEllipses(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
-            foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
+            foreach(GenericPostureEllipse ellipse in genericPosture.Ellipses)
             {
                 if(!HasActiveOption(ellipse.OptionGroup))
                     continue;
@@ -506,9 +506,9 @@ namespace Kinovea.ScreenManager
             
             penEdge.Color = basePenEdgeColor;
         }
-        private void DrawHandles(SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, Graphics canvas, IImageToViewportTransformer _transformer, List<Point> points)
+        private void DrawHandles(SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
-            foreach(GenericPostureHandle handle in m_GenericPosture.Handles)
+            foreach(GenericPostureHandle handle in genericPosture.Handles)
             {
                 if(!HasActiveOption(handle.OptionGroup))
                     continue;
@@ -520,8 +520,8 @@ namespace Kinovea.ScreenManager
 
                     /*Pen p = new Pen(handle.Color);
                     Point point = points[handle.Reference];
-                    Rectangle block = point.Box(_transformer.Transform(m_GenericPosture.CustomTrackingProfile.BlockWindow));
-                    Rectangle search = point.Box(_transformer.Transform(m_GenericPosture.CustomTrackingProfile.SearchWindow));
+                    Rectangle block = point.Box(_transformer.Transform(genericPosture.CustomTrackingProfile.BlockWindow));
+                    Rectangle search = point.Box(_transformer.Transform(genericPosture.CustomTrackingProfile.SearchWindow));
                     canvas.DrawRectangle(p, block);
                     canvas.DrawRectangle(p, search);*/
                 }
@@ -532,36 +532,36 @@ namespace Kinovea.ScreenManager
         private void DrawAngles(Pen penEdge, Color basePenEdgeColor, SolidBrush brushFill, Color baseBrushFillColor, int alpha, int alphaBackground, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
             List<Rectangle> boxes = new List<Rectangle>();
-            foreach(AngleHelper angle in m_Angles)
+            foreach(AngleHelper angle in angles)
                 boxes.Add(transformer.Transform(angle.BoundingBox));
             
             penEdge.Width = 2;
             penEdge.DashStyle = DashStyle.Solid;
             
-            for(int i = 0; i<m_Angles.Count; i++)
+            for(int i = 0; i<angles.Count; i++)
             {
-                if(!HasActiveOption(m_GenericPosture.Angles[i].OptionGroup))
+                if(!HasActiveOption(genericPosture.Angles[i].OptionGroup))
                     continue;
                 
-                AngleHelper angle = m_Angles[i];
+                AngleHelper angle = angles[i];
 
                 UpdateAngles(transformer);
                     
                 brushFill.Color = angle.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, angle.Color);
                 
-                canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
+                canvas.FillPie(brushFill, boxes[i], (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
                 
                 try
                 {
                     penEdge.Color = angle.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, angle.Color);
-                    canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
+                    canvas.DrawArc(penEdge, boxes[i], (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
                 }
                 catch(Exception e)
                 {
                     log.DebugFormat(e.ToString());
                 }
                 
-                DrawAngleText(canvas, opacity, transformer, m_Angles[i], brushFill);
+                DrawAngleText(canvas, opacity, transformer, angles[i], brushFill);
             }
             
             brushFill.Color = baseBrushFillColor;
@@ -570,13 +570,13 @@ namespace Kinovea.ScreenManager
         }
         private void DrawDistances(SolidBrush brushFill, Color baseBrushFillColor, int alphaBackground, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
-            foreach(GenericPostureDistance distance in m_GenericPosture.Distances)
+            foreach(GenericPostureDistance distance in genericPosture.Distances)
             {
                 if(!HasActiveOption(distance.OptionGroup))
                     continue;
                 
-                PointF untransformedA = distance.Point1 >= 0 ? m_GenericPosture.Points[distance.Point1] : GetUntransformedComputedPoint(distance.Point1);
-                PointF untransformedB = distance.Point2 >= 0 ? m_GenericPosture.Points[distance.Point2] : GetUntransformedComputedPoint(distance.Point2);
+                PointF untransformedA = distance.Point1 >= 0 ? genericPosture.Points[distance.Point1] : GetUntransformedComputedPoint(distance.Point1);
+                PointF untransformedB = distance.Point2 >= 0 ? genericPosture.Points[distance.Point2] : GetUntransformedComputedPoint(distance.Point2);
                 string label = CalibrationHelper.GetLengthText(untransformedA, untransformedB, true, true);
                 
                 if(!string.IsNullOrEmpty(distance.Symbol))
@@ -593,12 +593,12 @@ namespace Kinovea.ScreenManager
         }
         private void DrawPositions(SolidBrush brushFill, Color baseBrushFillColor, int alphaBackground, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
-            foreach(GenericPosturePosition position in m_GenericPosture.Positions)
+            foreach(GenericPosturePosition position in genericPosture.Positions)
             {
                 if(!HasActiveOption(position.OptionGroup))
                     continue;
                 
-                PointF untransformedP = position.Point >= 0 ? m_GenericPosture.Points[position.Point] : GetUntransformedComputedPoint(position.Point);
+                PointF untransformedP = position.Point >= 0 ? genericPosture.Points[position.Point] : GetUntransformedComputedPoint(position.Point);
                 string label = CalibrationHelper.GetPointText(untransformedP, true, true);
                 
                 if(!string.IsNullOrEmpty(position.Symbol))
@@ -612,7 +612,7 @@ namespace Kinovea.ScreenManager
             
             brushFill.Color = baseBrushFillColor;
         }
-        private void DrawAngleText(Graphics _canvas, double _opacity, IImageToViewportTransformer _transformer, AngleHelper angle, SolidBrush _brushFill)
+        private void DrawAngleText(Graphics canvas, double opacity, IImageToViewportTransformer transformer, AngleHelper angle, SolidBrush brushFill)
         {
             //-------------------------------------------------
             // FIXME: function duplicated. Move to AngleHelper.
@@ -631,20 +631,20 @@ namespace Kinovea.ScreenManager
             if(!string.IsNullOrEmpty(angle.Symbol))
                 label = string.Format("{0} = {1}", angle.Symbol, label);
             
-            SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_opacity * 255));
-            Font tempFont = m_StyleHelper.GetFont(Math.Max((float)_transformer.Scale, 1.0F));
-            SizeF labelSize = _canvas.MeasureString(label, tempFont);
+            SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacity * 255));
+            Font tempFont = styleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
+            SizeF labelSize = canvas.MeasureString(label, tempFont);
                 
             // Background
-            float shiftx = (float)(_transformer.Scale * angle.TextPosition.X);
-            float shifty = (float)(_transformer.Scale * angle.TextPosition.Y);
-            Point origin = _transformer.Transform(angle.Origin);
+            float shiftx = (float)(transformer.Scale * angle.TextPosition.X);
+            float shifty = (float)(transformer.Scale * angle.TextPosition.Y);
+            Point origin = transformer.Transform(angle.Origin);
             PointF textOrigin = new PointF(shiftx + origin.X - labelSize.Width / 2, shifty + origin.Y - labelSize.Height / 2);
             RectangleF backRectangle = new RectangleF(textOrigin, labelSize);
-            RoundedRectangle.Draw(_canvas, backRectangle, _brushFill, tempFont.Height/4, false, false, null);
+            RoundedRectangle.Draw(canvas, backRectangle, brushFill, tempFont.Height/4, false, false, null);
     
             // Text
-            _canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
+            canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
                 
             tempFont.Dispose();
             fontBrush.Dispose();
@@ -663,7 +663,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawTextOnBackground(PointF location, PointF offset, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brushFill)
         {
-            Font tempFont = m_StyleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
+            Font tempFont = styleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
             SizeF labelSize = canvas.MeasureString(label, tempFont);
             PointF textOrigin = new PointF(location.X - (labelSize.Width / 2) + offset.X, location.Y - (labelSize.Height / 2) + offset.Y);
             
@@ -681,7 +681,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawSimpleText(PointF location, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brush)
         {
-            Font tempFont = m_StyleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
+            Font tempFont = styleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
             SizeF labelSize = canvas.MeasureString(label, tempFont);
             PointF textOrigin = new PointF(location.X - labelSize.Width / 2, location.Y - labelSize.Height / 2);
             canvas.DrawString(label, tempFont, brush, textOrigin);
@@ -698,19 +698,19 @@ namespace Kinovea.ScreenManager
         private void InitOptionMenus()
         {
             // Options
-            if(m_GenericPosture == null || m_GenericPosture.OptionGroups == null || m_GenericPosture.OptionGroups.Count == 0)
+            if(genericPosture == null || genericPosture.OptionGroups == null || genericPosture.OptionGroups.Count == 0)
                 return;
             
-            foreach(string option in m_GenericPosture.OptionGroups.Keys)
+            foreach(string option in genericPosture.OptionGroups.Keys)
             {
                 ToolStripMenuItem menu = new ToolStripMenuItem();
                 menu.Text = option;
-                menu.Checked = m_GenericPosture.OptionGroups[option];
+                menu.Checked = genericPosture.OptionGroups[option];
                 
                 string closureOption = option;
                 menu.Click += (s, e) => {
-                    m_GenericPosture.OptionGroups[closureOption] = !m_GenericPosture.OptionGroups[closureOption];
-                    menu.Checked = m_GenericPosture.OptionGroups[closureOption];
+                    genericPosture.OptionGroups[closureOption] = !genericPosture.OptionGroups[closureOption];
+                    menu.Checked = genericPosture.OptionGroups[closureOption];
                     CallInvalidateFromMenu(s);
                 };
                 
@@ -721,19 +721,19 @@ namespace Kinovea.ScreenManager
         }
         private void InitAngles()
         {
-            for(int i=0;i<m_GenericPosture.Angles.Count;i++)
-                m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40, m_GenericPosture.Angles[i].Tenth, m_GenericPosture.Angles[i].Symbol));
+            for(int i=0;i<genericPosture.Angles.Count;i++)
+                angles.Add(new AngleHelper(genericPosture.Angles[i].Relative, 40, genericPosture.Angles[i].Tenth, genericPosture.Angles[i].Symbol));
         }
         private void UpdateAngles(IImageToViewportTransformer transformer)
         {
-            for(int i = 0; i<m_Angles.Count;i++)
+            for(int i = 0; i<angles.Count;i++)
             {
-                PointF origin = m_GenericPosture.Points[m_GenericPosture.Angles[i].Origin];
-                PointF leg1 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg1];
-                PointF leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
-                int radius = m_GenericPosture.Angles[i].Radius;
-                Color color = m_GenericPosture.Angles[i].Color;
-                m_Angles[i].Update(origin, leg1, leg2, radius, color, CalibrationHelper, transformer);
+                PointF origin = genericPosture.Points[genericPosture.Angles[i].Origin];
+                PointF leg1 = genericPosture.Points[genericPosture.Angles[i].Leg1];
+                PointF leg2 = genericPosture.Points[genericPosture.Angles[i].Leg2];
+                int radius = genericPosture.Angles[i].Radius;
+                Color color = genericPosture.Angles[i].Color;
+                angles[i].Update(origin, leg1, leg2, radius, color, CalibrationHelper, transformer);
             }
         }
         private DashStyle Convert(SegmentLineStyle style)
@@ -747,7 +747,7 @@ namespace Kinovea.ScreenManager
         }
         private void BindStyle()
         {
-          m_Style.Bind(m_StyleHelper, "Bicolor", "line color");
+          style.Bind(styleHelper, "Bicolor", "line color");
         }
         
         private bool HasActiveOption(string option)
@@ -755,15 +755,15 @@ namespace Kinovea.ScreenManager
             if(string.IsNullOrEmpty(option))
                 return true;
             
-            return m_GenericPosture.OptionGroups[option];
+            return genericPosture.OptionGroups[option];
         }
         private PointF GetComputedPoint(int index, IImageToViewportTransformer transformer)
         {
             PointF result = PointF.Empty;
             
             int computedPointIndex = - index - 1;
-            if(computedPointIndex < m_GenericPosture.ComputedPoints.Count)
-                result = m_GenericPosture.ComputedPoints[computedPointIndex].LastPoint;
+            if(computedPointIndex < genericPosture.ComputedPoints.Count)
+                result = genericPosture.ComputedPoints[computedPointIndex].LastPoint;
             
             return transformer.Transform(result);
         }
@@ -772,19 +772,19 @@ namespace Kinovea.ScreenManager
             PointF result = PointF.Empty;
             
             int computedPointIndex = - index - 1;
-            if(computedPointIndex < m_GenericPosture.ComputedPoints.Count)
-                result = m_GenericPosture.ComputedPoints[computedPointIndex].LastPoint;
+            if(computedPointIndex < genericPosture.ComputedPoints.Count)
+                result = genericPosture.ComputedPoints[computedPointIndex].LastPoint;
             
             return result;
         }
-        private bool IsPointInObject(Point _point, IImageToViewportTransformer transformer)
+        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
         {
             // Angles, hit zones, segments.
             
             bool hit = false;
-            foreach(AngleHelper angle in m_Angles)
+            foreach(AngleHelper angle in angles)
             {
-                hit = angle.Hit(_point);
+                hit = angle.Hit(point);
                 if(hit)
                     break;
             }
@@ -792,9 +792,9 @@ namespace Kinovea.ScreenManager
             if(hit)
                 return true;
             
-            foreach(GenericPostureAbstractHitZone hitZone in m_GenericPosture.HitZones)
+            foreach(GenericPostureAbstractHitZone hitZone in genericPosture.HitZones)
             {
-                hit = IsPointInHitZone(hitZone, _point);
+                hit = IsPointInHitZone(hitZone, point);
                 if(hit)
                     break;
             }
@@ -802,9 +802,9 @@ namespace Kinovea.ScreenManager
             if(hit)
                 return true;
             
-            foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
+            foreach(GenericPostureEllipse ellipse in genericPosture.Ellipses)
             {
-                hit = IsPointInsideEllipse(ellipse, _point, transformer);
+                hit = IsPointInsideEllipse(ellipse, point, transformer);
                 if(hit)
                     break;
             }
@@ -812,34 +812,34 @@ namespace Kinovea.ScreenManager
             if(hit)
                 return true;
             
-            foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
+            foreach(GenericPostureSegment segment in genericPosture.Segments)
             {
-                hit = IsPointOnSegment(segment, _point, transformer);
+                hit = IsPointOnSegment(segment, point, transformer);
                 if(hit)
                     break;
             }
             
             return hit;
         }
-        private bool IsPointInHitZone(GenericPostureAbstractHitZone _hitZone, Point _point)
+        private bool IsPointInHitZone(GenericPostureAbstractHitZone hitZone, Point point)
         {
             bool hit = false;
             
-            switch(_hitZone.Type)
+            switch(hitZone.Type)
             {
                 case HitZoneType.Polygon:
                 {
-                    GenericPostureHitZonePolygon hitPolygon = _hitZone as GenericPostureHitZonePolygon;
+                    GenericPostureHitZonePolygon hitPolygon = hitZone as GenericPostureHitZonePolygon;
                     using (GraphicsPath path = new GraphicsPath())
                     {
                         List<PointF> points = new List<PointF>();
                         foreach(int pointRef in hitPolygon.Points)
-                            points.Add(m_GenericPosture.Points[pointRef]);
+                            points.Add(genericPosture.Points[pointRef]);
     
                         path.AddPolygon(points.ToArray());
                         using (Region region = new Region(path))
                         {
-                            hit = region.IsVisible(_point);
+                            hit = region.IsVisible(point);
                         }
                     }
                     break;
@@ -848,10 +848,10 @@ namespace Kinovea.ScreenManager
             
             return hit;
         }
-        private bool IsPointOnSegment(GenericPostureSegment _segment, Point _point, IImageToViewportTransformer transformer)
+        private bool IsPointOnSegment(GenericPostureSegment segment, Point point, IImageToViewportTransformer transformer)
         {
-            PointF start = _segment.Start >= 0 ? m_GenericPosture.Points[_segment.Start] : GetUntransformedComputedPoint(_segment.Start);
-            PointF end = _segment.End >= 0 ? m_GenericPosture.Points[_segment.End] : GetUntransformedComputedPoint(_segment.End);
+            PointF start = segment.Start >= 0 ? genericPosture.Points[segment.Start] : GetUntransformedComputedPoint(segment.Start);
+            PointF end = segment.End >= 0 ? genericPosture.Points[segment.End] : GetUntransformedComputedPoint(segment.End);
             
             if(start == end)
                 return false;
@@ -859,25 +859,25 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath path = new GraphicsPath())
             {
                 path.AddLine(start, end);
-                return HitTester.HitTest(path, _point, _segment.Width, false, transformer);
+                return HitTester.HitTest(path, point, segment.Width, false, transformer);
             }
         }
-        private bool IsPointInsideEllipse(GenericPostureEllipse _ellipse, Point _point, IImageToViewportTransformer transformer)
+        private bool IsPointInsideEllipse(GenericPostureEllipse ellipse, Point point, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {
-                PointF center = _ellipse.Center >= 0 ? m_GenericPosture.Points[_ellipse.Center] : GetUntransformedComputedPoint(_ellipse.Center);
-                path.AddEllipse(center.Box(_ellipse.Radius));
-                return HitTester.HitTest(path, _point, 0, true, transformer);
+                PointF center = ellipse.Center >= 0 ? genericPosture.Points[ellipse.Center] : GetUntransformedComputedPoint(ellipse.Center);
+                path.AddEllipse(center.Box(ellipse.Radius));
+                return HitTester.HitTest(path, point, 0, true, transformer);
             }
         }
-        private bool IsPointOnEllipseArc(GenericPostureEllipse _ellipse, Point _point, IImageToViewportTransformer transformer)
+        private bool IsPointOnEllipseArc(GenericPostureEllipse ellipse, Point point, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {
-                PointF center = _ellipse.Center >= 0 ? m_GenericPosture.Points[_ellipse.Center] : GetUntransformedComputedPoint(_ellipse.Center);
-                path.AddArc(center.Box(_ellipse.Radius), 0, 360);
-                return HitTester.HitTest(path, _point, _ellipse.Width, false, transformer);
+                PointF center = ellipse.Center >= 0 ? genericPosture.Points[ellipse.Center] : GetUntransformedComputedPoint(ellipse.Center);
+                path.AddArc(center.Box(ellipse.Radius), 0, 360);
+                return HitTester.HitTest(path, point, ellipse.Width, false, transformer);
             }
         }
         #endregion

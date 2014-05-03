@@ -391,9 +391,9 @@ namespace Kinovea.ScreenManager
             if (points["b"] == points["o"])
                 points["b"] = points["o"].Translate(0, -length);
         }
-        private bool IsPointInObject(Point _point)
+        private bool IsPointInObject(Point point)
         {
-            return angleHelper.Hit(_point);
+            return angleHelper.Hit(point);
         }
         #endregion
     } 

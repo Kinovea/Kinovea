@@ -36,11 +36,11 @@ namespace Kinovea.ScreenManager
         public override Bitmap Icon {
             get { return Properties.Resources.revert; }
         }
-        public override void Activate(IWorkingZoneFramesContainer _framesContainer, Action<InteractiveEffect> _setInteractiveEffect)
+        public override void Activate(IWorkingZoneFramesContainer framesContainer, Action<InteractiveEffect> setInteractiveEffect)
         {
             // Should be quick so we don't go through the background thread.
-            if(_framesContainer != null)
-                _framesContainer.Revert();
+            if(framesContainer != null)
+                framesContainer.Revert();
         }
         protected override void Process(object sender, DoWorkEventArgs e)
         {

@@ -51,39 +51,39 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingStyle StylePreset
         {
-            get { return m_StylePreset;}
-            set { m_StylePreset = value;}
+            get { return stylePreset;}
+            set { stylePreset = value;}
         }
         public override DrawingStyle DefaultStylePreset
         {
-            get { return m_DefaultStylePreset;}
+            get { return defaultStylePreset;}
         }
         #endregion
         
         #region Members
-        private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
-        private DrawingStyle m_StylePreset;
+        private DrawingStyle defaultStylePreset = new DrawingStyle();
+        private DrawingStyle stylePreset;
         #endregion
         
         #region Constructor
         public DrawingToolPencil()
         {
-            m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.SeaGreen));
-            m_DefaultStylePreset.Elements.Add("pen size", new StyleElementPenSize(9));
-            m_StylePreset = m_DefaultStylePreset.Clone();
+            defaultStylePreset.Elements.Add("color", new StyleElementColor(Color.SeaGreen));
+            defaultStylePreset.Elements.Add("pen size", new StyleElementPenSize(9));
+            stylePreset = defaultStylePreset.Clone();
         }
         #endregion
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            return new DrawingPencil(_Origin, new Point(_Origin.X + 1, _Origin.Y), _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+            return new DrawingPencil(origin, new Point(origin.X + 1, origin.Y), timestamp, averageTimeStampsPerFrame, stylePreset);
         }
-        public override Cursor GetCursor(double _fStretchFactor)
+        public override Cursor GetCursor(double stretchFactor)
         {
             // Draw custom cursor: Colored and sized circle.
-            Color c = (Color)m_StylePreset.Elements["color"].Value;
-            int size = (int)(_fStretchFactor * (int)m_StylePreset.Elements["pen size"].Value);
+            Color c = (Color)stylePreset.Elements["color"].Value;
+            int size = (int)(stretchFactor * (int)stylePreset.Elements["pen size"].Value);
             Pen p = new Pen(c, 1);
             Bitmap b = new Bitmap(size + 2, size + 2);
             Graphics g = Graphics.FromImage(b);

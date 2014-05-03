@@ -51,37 +51,37 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingStyle StylePreset
         {
-            get { return m_StylePreset;}
-            set { m_StylePreset = value;}
+            get { return stylePreset;}
+            set { stylePreset = value;}
         }
         public override DrawingStyle DefaultStylePreset
         {
-            get { return m_DefaultStylePreset;}
+            get { return defaultStylePreset;}
         }
         #endregion
         
-        #region Private Methods
-        private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
-        private DrawingStyle m_StylePreset;
+        #region Members
+        private DrawingStyle defaultStylePreset = new DrawingStyle();
+        private DrawingStyle stylePreset;
         #endregion
         
         #region Constructor
         public DrawingToolCross2D()
         {
-            m_DefaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.CornflowerBlue));
-            m_StylePreset = m_DefaultStylePreset.Clone();
+            defaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.CornflowerBlue));
+            stylePreset = defaultStylePreset.Clone();
         }
         #endregion
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            return new DrawingCross2D(_Origin, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset, transformer);
+            return new DrawingCross2D(origin, timestamp, averageTimeStampsPerFrame, stylePreset, transformer);
         }
-        public override Cursor GetCursor(double _fStretchFactor)
+        public override Cursor GetCursor(double stretchFactor)
         {
             // Draw custom cursor: cross inside a semi transparent circle (same as drawing).
-            Color c = (Color)m_StylePreset.Elements["back color"].Value;
+            Color c = (Color)stylePreset.Elements["back color"].Value;
             Pen p = new Pen(c, 1);
             Bitmap b = new Bitmap(9, 9);
             Graphics g = Graphics.FromImage(b);

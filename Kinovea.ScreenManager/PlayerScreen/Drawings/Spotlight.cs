@@ -57,21 +57,21 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public Spotlight(long _iPosition, long _iAverageTimeStampsPerFrame, Point _center)
+        public Spotlight(long position, long averageTimeStampsPerFrame, Point center)
         {
-            position = _iPosition;
-            points["o"] = _center;
+            this.position = position;
+            points["o"] = center;
             radius = minimalRadius;
-            infosFading = new InfosFading(_iPosition, _iAverageTimeStampsPerFrame);
+            infosFading = new InfosFading(position, averageTimeStampsPerFrame);
             infosFading.UseDefault = false;
             infosFading.FadingFrames = 25;
         }
-        public Spotlight(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, long _iAverageTimeStampsPerFrame)
+        public Spotlight(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, long averageTimeStampsPerFrame)
             : this(0, 0, Point.Empty)
         {
-             ReadXml(_xmlReader, _scale, _remapTimestampCallback);
+             ReadXml(xmlReader, scale, remapTimestampCallback);
              
-             infosFading = new InfosFading(position, _iAverageTimeStampsPerFrame);
+             infosFading = new InfosFading(position, averageTimeStampsPerFrame);
              infosFading.UseDefault = false;
              infosFading.FadingFrames = 25;
         }

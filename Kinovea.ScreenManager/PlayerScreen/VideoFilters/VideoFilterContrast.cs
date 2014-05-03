@@ -37,9 +37,9 @@ namespace Kinovea.ScreenManager
 		    get { return Properties.Resources.contrast; }
 		}
 		public override ImageProcessor ImageProcessor {
-		    get { return m_Filter.ApplyInPlace; }
+		    get { return filter.ApplyInPlace; }
 		}
 		
-		private ContrastCorrection m_Filter = new ContrastCorrection(1.6F);
+		private ContrastCorrection filter = new ContrastCorrection(1.6F);
 	}
 }

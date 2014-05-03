@@ -72,11 +72,11 @@ namespace Kinovea.ScreenManager
             defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.Red));
             stylePreset = defaultStylePreset.Clone();
         }
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
            return null;
         }
-        public override Cursor GetCursor(double _fStretchFactor)
+        public override Cursor GetCursor(double stretchFactor)
         {
             return Cursors.Cross;
         }

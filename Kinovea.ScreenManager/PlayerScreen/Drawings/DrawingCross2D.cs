@@ -55,19 +55,19 @@ namespace Kinovea.ScreenManager
             get 
             {
                 int hash = 0;
-                hash ^= m_StyleHelper.ContentHash;
-                hash ^= m_InfosFading.ContentHash;
+                hash ^= styleHelper.ContentHash;
+                hash ^= infosFading.ContentHash;
                 return hash;
             }
         } 
         public DrawingStyle DrawingStyle
         {
-            get { return m_Style;}
+            get { return style;}
         }
         public override InfosFading InfosFading
         {
-            get { return m_InfosFading; }
-            set { m_InfosFading = value; }
+            get { return infosFading; }
+            set { infosFading = value; }
         }
         public override DrawingCapabilities Caps
         {
@@ -97,94 +97,94 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         
-        private KeyframeLabel m_LabelCoordinates;
+        private KeyframeLabel labelCoordinates;
         // Decoration
-        private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style;
-        private InfosFading m_InfosFading;
+        private StyleHelper styleHelper = new StyleHelper();
+        private DrawingStyle style;
+        private InfosFading infosFading;
         
         // Context menu
         private ToolStripMenuItem mnuShowCoordinates = new ToolStripMenuItem();
         
-        private const int m_iDefaultBackgroundAlpha = 64;
-        private const int m_iDefaultRadius = 3;
+        private const int defaultBackgroundAlpha = 64;
+        private const int defaultRadius = 3;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
-        public DrawingCross2D(Point _center, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset, IImageToViewportTransformer transformer)
+        public DrawingCross2D(Point center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
         {
-            points["0"] = _center;
-            m_LabelCoordinates = new KeyframeLabel(points["0"], Color.Black, transformer);
+            points["0"] = center;
+            labelCoordinates = new KeyframeLabel(points["0"], Color.Black, transformer);
             
             // Decoration & binding with editors
-            m_StyleHelper.Color = Color.CornflowerBlue;
-            if(_preset != null)
+            styleHelper.Color = Color.CornflowerBlue;
+            if(preset != null)
             {
-                m_Style = _preset.Clone();
+                style = preset.Clone();
                 BindStyle();
             }
                         
-            m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             
             // Context menu
             mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
             mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
-        public DrawingCross2D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+        public DrawingCross2D(XmlReader xmlReader, PointF scale, Metadata parent)
             : this(Point.Empty,0,0, ToolManager.CrossMark.StylePreset.Clone(), null)
         {
-            ReadXml(_xmlReader, _scale);
+            ReadXml(xmlReader, scale);
         }
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
             
             if(tracking)
-                fOpacityFactor = 1.0;
+                opacityFactor = 1.0;
             
-            if(fOpacityFactor <= 0)
+            if(opacityFactor <= 0)
                 return;
             
-            int iAlpha = (int)(fOpacityFactor * 255);
-            Point c = _transformer.Transform(points["0"]);
+            int iAlpha = (int)(opacityFactor * 255);
+            Point c = transformer.Transform(points["0"]);
 
-            using(Pen p = m_StyleHelper.GetPen(iAlpha))
-            using(SolidBrush b = m_StyleHelper.GetBrush((int)(fOpacityFactor * m_iDefaultBackgroundAlpha)))
+            using(Pen p = styleHelper.GetPen(iAlpha))
+            using(SolidBrush b = styleHelper.GetBrush((int)(opacityFactor * defaultBackgroundAlpha)))
             {
-                _canvas.DrawLine(p, c.X - m_iDefaultRadius, c.Y, c.X + m_iDefaultRadius, c.Y);
-                _canvas.DrawLine(p, c.X, c.Y - m_iDefaultRadius, c.X, c.Y + m_iDefaultRadius);
-                _canvas.FillEllipse(b, c.Box(m_iDefaultRadius + 1));
+                canvas.DrawLine(p, c.X - defaultRadius, c.Y, c.X + defaultRadius, c.Y);
+                canvas.DrawLine(p, c.X, c.Y - defaultRadius, c.X, c.Y + defaultRadius);
+                canvas.FillEllipse(b, c.Box(defaultRadius + 1));
             }
             
             if(ShowMeasurableInfo)
             {
-                m_LabelCoordinates.SetText(CalibrationHelper.GetPointText(new PointF(points["0"].X, points["0"].Y), true, true));
-                m_LabelCoordinates.Draw(_canvas, _transformer, fOpacityFactor);
+                labelCoordinates.SetText(CalibrationHelper.GetPointText(new PointF(points["0"].X, points["0"].Y), true, true));
+                labelCoordinates.Draw(canvas, transformer, opacityFactor);
             }
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             if(handleNumber == 1)
-                m_LabelCoordinates.SetLabel(point);
+                labelCoordinates.SetLabel(point);
         }
-        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
             points["0"] = points["0"].Translate(dx, dy);
             SignalTrackablePointMoved();
-            m_LabelCoordinates.SetAttach(points["0"], true);
+            labelCoordinates.SetAttach(points["0"], true);
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
-            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             if (tracking || opacity > 0)
             {
-                if(ShowMeasurableInfo && m_LabelCoordinates.HitTest(point, transformer))
+                if(ShowMeasurableInfo && labelCoordinates.HitTest(point, transformer))
                     result = 1;
                 else if (HitTester.HitTest(points["0"], point, transformer))
                     result = 0;
@@ -195,69 +195,69 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Serialization
-        private void ReadXml(XmlReader _xmlReader, PointF _scale)
+        private void ReadXml(XmlReader xmlReader, PointF scale)
         {
-            if (_xmlReader.MoveToAttribute("id"))
-                identifier = new Guid(_xmlReader.ReadContentAsString());
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
 
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "CenterPoint":
-                        PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
-                        points["0"] = p.Scale(_scale.X, _scale.Y);
+                        PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                        points["0"] = p.Scale(scale.X, scale.Y);
                         break;
                     case "CoordinatesVisible":
-                        ShowMeasurableInfo = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        ShowMeasurableInfo = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        m_Style = new DrawingStyle(_xmlReader);
+                        style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
-                        m_InfosFading.ReadXml(_xmlReader);
+                        infosFading.ReadXml(xmlReader);
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
-            m_LabelCoordinates.SetAttach(points["0"], true);
+            xmlReader.ReadEndElement();
+            labelCoordinates.SetAttach(points["0"], true);
             SignalTrackablePointMoved();
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter xmlWriter)
         {
-            _xmlWriter.WriteElementString("CenterPoint", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["0"].X, points["0"].Y));
-            _xmlWriter.WriteElementString("CoordinatesVisible", ShowMeasurableInfo ? "true" : "false");
+            xmlWriter.WriteElementString("CenterPoint", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["0"].X, points["0"].Y));
+            xmlWriter.WriteElementString("CoordinatesVisible", ShowMeasurableInfo ? "true" : "false");
             
-            _xmlWriter.WriteStartElement("DrawingStyle");
-            m_Style.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("DrawingStyle");
+            style.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement();
             
-            _xmlWriter.WriteStartElement("InfosFading");
-            m_InfosFading.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement(); 
+            xmlWriter.WriteStartElement("InfosFading");
+            infosFading.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement(); 
             
             if(ShowMeasurableInfo)
             {
                 // Spreadsheet support.
-                _xmlWriter.WriteStartElement("Coordinates");
+                xmlWriter.WriteStartElement("Coordinates");
                 
                 PointF p = new PointF(points["0"].X, points["0"].Y);
                 PointF coords = CalibrationHelper.GetPoint(p);
-                _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
-                _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
-                _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
-                _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.Y));
-                _xmlWriter.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
+                xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
+                xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
+                xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
+                xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.Y));
+                xmlWriter.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
                 
-                _xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndElement();
             }
         }
         #endregion
@@ -281,7 +281,7 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
-            m_LabelCoordinates.SetAttach(points["0"], true);
+            labelCoordinates.SetAttach(points["0"], true);
         }
         private void SignalTrackablePointMoved()
         {
@@ -309,7 +309,7 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            m_Style.Bind(m_StyleHelper, "Color", "back color");
+            style.Bind(styleHelper, "Color", "back color");
         }
         #endregion
 

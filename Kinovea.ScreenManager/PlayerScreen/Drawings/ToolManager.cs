@@ -41,12 +41,10 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                if (object.ReferenceEquals(m_Tools, null))
-                {
+                if (object.ReferenceEquals(tools, null))
                     Initialize();
-                }
                 
-                return m_Tools; 
+                return tools; 
             }
         }
         
@@ -116,7 +114,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private static Dictionary<string, AbstractDrawingTool> m_Tools = null;
+        private static Dictionary<string, AbstractDrawingTool> tools = null;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -124,13 +122,13 @@ namespace Kinovea.ScreenManager
         {
             SavePresets(Software.ColorProfileDirectory + "current.xml");
         }
-        public static void SavePresets(string _file)
+        public static void SavePresets(string file)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.CloseOutput = true;
             
-            using(XmlWriter w = XmlWriter.Create(_file, settings))
+            using(XmlWriter w = XmlWriter.Create(file, settings))
             {
                 w.WriteStartElement("KinoveaColorProfile");
                 w.WriteElementString("FormatVersion", "3.0");
@@ -153,9 +151,9 @@ namespace Kinovea.ScreenManager
         {
             LoadPresets(Software.ColorProfileDirectory + "current.xml");
         }
-        public static void LoadPresets(string _file)
+        public static void LoadPresets(string file)
         {
-            if(!File.Exists(_file))
+            if(!File.Exists(file))
                 return;
             
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -164,7 +162,7 @@ namespace Kinovea.ScreenManager
             settings.IgnoreWhitespace = true;
             settings.CloseInput = true;
             
-            using(XmlReader r = XmlReader.Create(_file, settings))
+            using(XmlReader r = XmlReader.Create(file, settings))
             {
                 try
                 {
@@ -209,26 +207,26 @@ namespace Kinovea.ScreenManager
         #region Private Methods
         private static void Initialize()
         {
-            m_Tools = new Dictionary<string, AbstractDrawingTool>();
+            tools = new Dictionary<string, AbstractDrawingTool>();
             
             // The core drawing tools are hard wired.
             // Maybe in the future we can have a plug-in system with .dll containing extensions tools.
             // Note that the pointer "tool" is not listed, as each screen must have its own.
-            m_Tools.Add("Angle", new DrawingToolAngle2D());
-            m_Tools.Add("Chrono", new DrawingToolChrono());
-            m_Tools.Add("Circle", new DrawingToolCircle());
-            m_Tools.Add("CrossMark", new DrawingToolCross2D());
-            m_Tools.Add("Line", new DrawingToolLine2D());
-            m_Tools.Add("Arrow", new DrawingToolArrow());
-            m_Tools.Add("Pencil", new DrawingToolPencil());
-            m_Tools.Add("GenericPosture", new DrawingToolGenericPosture());
-            m_Tools.Add("Label", new DrawingToolText());
-            m_Tools.Add("Grid", new DrawingToolGrid());
-            m_Tools.Add("Plane", new DrawingToolPlane());
-            m_Tools.Add("Spotlight", new DrawingToolSpotlight());
-            m_Tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
-            m_Tools.Add("Magnifier", new DrawingToolMagnifier());
-            m_Tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
+            tools.Add("Angle", new DrawingToolAngle2D());
+            tools.Add("Chrono", new DrawingToolChrono());
+            tools.Add("Circle", new DrawingToolCircle());
+            tools.Add("CrossMark", new DrawingToolCross2D());
+            tools.Add("Line", new DrawingToolLine2D());
+            tools.Add("Arrow", new DrawingToolArrow());
+            tools.Add("Pencil", new DrawingToolPencil());
+            tools.Add("GenericPosture", new DrawingToolGenericPosture());
+            tools.Add("Label", new DrawingToolText());
+            tools.Add("Grid", new DrawingToolGrid());
+            tools.Add("Plane", new DrawingToolPlane());
+            tools.Add("Spotlight", new DrawingToolSpotlight());
+            tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
+            tools.Add("Magnifier", new DrawingToolMagnifier());
+            tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
             
             LoadPresets();
         }

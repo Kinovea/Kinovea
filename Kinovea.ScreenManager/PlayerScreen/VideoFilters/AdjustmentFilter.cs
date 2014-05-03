@@ -41,16 +41,16 @@ namespace Kinovea.ScreenManager
     public abstract class AdjustmentFilter : AbstractVideoFilter
     {
         public abstract ImageProcessor ImageProcessor { get ; }
-        private ReadOnlyCollection<VideoFrame> m_Frames;
+        private ReadOnlyCollection<VideoFrame> frames;
         
-        public override void Activate(IWorkingZoneFramesContainer _framesContainer, Action<InteractiveEffect> _setInteractiveEffect)
+        public override void Activate(IWorkingZoneFramesContainer framesContainer, Action<InteractiveEffect> setInteractiveEffect)
         {
-            if(ImageProcessor == null || _framesContainer == null || _framesContainer.Frames == null || _framesContainer.Frames.Count < 1)
+            if(ImageProcessor == null || framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
 
-            m_Frames = _framesContainer.Frames;
+            frames = framesContainer.Frames;
             
-            using(Bitmap bmp = _framesContainer.Representative.CloneDeep())
+            using(Bitmap bmp = framesContainer.Representative.CloneDeep())
             {
                 ImageProcessor(bmp);
                 using(formPreviewVideoFilter fpvf = new formPreviewVideoFilter(bmp, Name))
@@ -63,10 +63,10 @@ namespace Kinovea.ScreenManager
         protected override void Process(object sender, DoWorkEventArgs e)
         {
             int i = 0;
-            foreach(VideoFrame vf in m_Frames)
+            foreach(VideoFrame vf in frames)
             {
                 ImageProcessor(vf.Image);
-                ((BackgroundWorker)sender).ReportProgress(++i, m_Frames.Count);
+                ((BackgroundWorker)sender).ReportProgress(++i, frames.Count);
             }
         }
     }
