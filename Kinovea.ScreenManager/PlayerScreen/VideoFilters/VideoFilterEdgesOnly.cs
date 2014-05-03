@@ -45,15 +45,15 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        private DifferenceEdgeDetector m_Filter = new DifferenceEdgeDetector();
+        private DifferenceEdgeDetector filter = new DifferenceEdgeDetector();
         
-        private void ProcessSingleImage(Bitmap _src)
+        private void ProcessSingleImage(Bitmap source)
         {
-            using(Bitmap gray = Grayscale.CommonAlgorithms.BT709.Apply(_src))
-            using(Bitmap tmp = m_Filter.Apply(gray))
+            using(Bitmap gray = Grayscale.CommonAlgorithms.BT709.Apply(source))
+            using(Bitmap tmp = filter.Apply(gray))
             {
                 // Paint the result on the source to emulate ApplyInPlace.
-                Graphics g = Graphics.FromImage(_src);
+                Graphics g = Graphics.FromImage(source);
                 g.DrawImage(tmp, 0, 0);
             }
         }

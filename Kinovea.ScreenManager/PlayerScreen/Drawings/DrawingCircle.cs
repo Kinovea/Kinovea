@@ -51,18 +51,18 @@ namespace Kinovea.ScreenManager
             { 
                 int iHash = center.GetHashCode();
                 iHash ^= radius.GetHashCode();
-                iHash ^= m_StyleHelper.ContentHash;
+                iHash ^= styleHelper.ContentHash;
                 return iHash;
             }
         } 
         public DrawingStyle DrawingStyle
         {
-            get { return m_Style;}
+            get { return style;}
         }
         public override InfosFading InfosFading
         {
-            get{ return m_InfosFading;}
-            set{ m_InfosFading = value;}
+            get{ return infosFading;}
+            set{ infosFading = value;}
         }
         public override DrawingCapabilities Caps
         {
@@ -78,57 +78,57 @@ namespace Kinovea.ScreenManager
         // Core
         private PointF center;
         private int radius;
-        private bool m_bSelected;
+        private bool selected;
         // Decoration
-        private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style;
-        private InfosFading m_InfosFading;
+        private StyleHelper styleHelper = new StyleHelper();
+        private DrawingStyle style;
+        private InfosFading infosFading;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public DrawingCircle(Point _center, int radius, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingCircle(Point center, int radius, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset)
         {
-            this.center = _center;
+            this.center = center;
             this.radius = Math.Min(radius, 10);
-            this.m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+            this.infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             
-            m_StyleHelper.Color = Color.Empty;
-            m_StyleHelper.LineSize = 1;
-            if(_preset != null)
+            styleHelper.Color = Color.Empty;
+            styleHelper.LineSize = 1;
+            if(preset != null)
             {
-                m_Style = _preset.Clone();
+                style = preset.Clone();
                 BindStyle();
             }
         }
-        public DrawingCircle(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+        public DrawingCircle(XmlReader xmlReader, PointF scale, Metadata parent)
             : this(Point.Empty,0,0,0, ToolManager.Circle.StylePreset.Clone())
         {
-            ReadXml(_xmlReader, _scale);
+            ReadXml(xmlReader, scale);
         }
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if(fOpacityFactor <= 0)
+            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
+            if(opacityFactor <= 0)
                 return;
             
-            int alpha = (int)(fOpacityFactor * 255);
-            m_bSelected = _bSelected;
+            int alpha = (int)(opacityFactor * 255);
+            this.selected = selected;
             
-            using(Pen p = m_StyleHelper.GetPen(alpha, _transformer.Scale))
+            using(Pen p = styleHelper.GetPen(alpha, transformer.Scale))
             {
-                Rectangle boundingBox = _transformer.Transform(center.Box(radius));
-                _canvas.DrawEllipse(p, boundingBox);
+                Rectangle boundingBox = transformer.Transform(center.Box(radius));
+                canvas.DrawEllipse(p, boundingBox);
                 
-                if(_bSelected)
+                if(selected)
                 {
                     // Handler: arc in lower right quadrant.
                     p.Color = p.Color.Invert();
-                    _canvas.DrawArc(p, boundingBox, 25, 40);
+                    canvas.DrawArc(p, boundingBox, 25, 40);
                 }
             }
         }
@@ -140,7 +140,7 @@ namespace Kinovea.ScreenManager
             radius = (int)Math.Sqrt((shiftX*shiftX) + (shiftY*shiftY));
             radius = Math.Max(radius, 10);
         }
-        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
             center = center.Translate(dx, dy);
         }
@@ -148,10 +148,10 @@ namespace Kinovea.ScreenManager
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
-            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             if (opacity > 0)
             {
-                if (m_bSelected && IsPointOnHandler(point, transformer))
+                if (selected && IsPointOnHandler(point, transformer))
                     result = 1;
                 else if (IsPointInObject(point, transformer))
                     result = 0;
@@ -161,48 +161,48 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region KVA Serialization
-        private void ReadXml(XmlReader _xmlReader, PointF _scale)
+        private void ReadXml(XmlReader xmlReader, PointF scale)
         {
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "Origin":
-                        center = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
+                        center = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
                         break;
                     case "Radius":
-                        radius = (int)(_xmlReader.ReadElementContentAsInt() * _scale.X);
+                        radius = (int)(xmlReader.ReadElementContentAsInt() * scale.X);
                         break;
                     case "DrawingStyle":
-                        m_Style = new DrawingStyle(_xmlReader);
+                        style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
-                        m_InfosFading.ReadXml(_xmlReader);
+                        infosFading.ReadXml(xmlReader);
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter xmlWriter)
         {
-            _xmlWriter.WriteElementString("Origin", String.Format(CultureInfo.InvariantCulture, "{0};{1}", center.X, center.Y));
-            _xmlWriter.WriteElementString("Radius", radius.ToString());
+            xmlWriter.WriteElementString("Origin", String.Format(CultureInfo.InvariantCulture, "{0};{1}", center.X, center.Y));
+            xmlWriter.WriteElementString("Radius", radius.ToString());
             
-            _xmlWriter.WriteStartElement("DrawingStyle");
-            m_Style.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("DrawingStyle");
+            style.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement();
             
-            _xmlWriter.WriteStartElement("InfosFading");
-            m_InfosFading.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("InfosFading");
+            infosFading.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement();
         }
         #endregion
         
@@ -216,15 +216,15 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            m_Style.Bind(m_StyleHelper, "Color", "color");
-            m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
+            style.Bind(styleHelper, "Color", "color");
+            style.Bind(styleHelper, "LineSize", "pen size");
         }
         private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
         {
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddEllipse(center.Box(radius + m_StyleHelper.LineSize));
+                areaPath.AddEllipse(center.Box(radius + styleHelper.LineSize));
                 hit = HitTester.HitTest(areaPath, point, 0, true, transformer);
             }
             return hit;
@@ -237,7 +237,7 @@ namespace Kinovea.ScreenManager
             using(GraphicsPath areaPath = new GraphicsPath())
             {
                 areaPath.AddArc(center.Box(radius), 25, 40);
-                return HitTester.HitTest(areaPath, point, m_StyleHelper.LineSize, false, transformer);
+                return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
             }
         }
         #endregion

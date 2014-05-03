@@ -33,21 +33,21 @@ namespace Kinovea.ScreenManager
         #region Properties
         public Dictionary<string, AbstractStyleElement> Elements
         {
-            get { return m_StyleElements; }
+            get { return styleElements; }
         }
         #endregion
         
         #region Members
-        private Dictionary<string, AbstractStyleElement> m_StyleElements = new Dictionary<string, AbstractStyleElement>();
-        private Dictionary<string, AbstractStyleElement> m_Memo = new Dictionary<string, AbstractStyleElement>();
+        private Dictionary<string, AbstractStyleElement> styleElements = new Dictionary<string, AbstractStyleElement>();
+        private Dictionary<string, AbstractStyleElement> memo = new Dictionary<string, AbstractStyleElement>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
         public DrawingStyle(){}
-        public DrawingStyle(XmlReader _xmlReader)
+        public DrawingStyle(XmlReader xmlReader)
         {
-            ReadXml(_xmlReader);
+            ReadXml(xmlReader);
         }
         #endregion
         
@@ -55,67 +55,66 @@ namespace Kinovea.ScreenManager
         public DrawingStyle Clone()
         {
             DrawingStyle clone = new DrawingStyle();
-            foreach(KeyValuePair<string, AbstractStyleElement> element in m_StyleElements)
+            foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)
             {
                 clone.Elements.Add(element.Key, element.Value.Clone());
             }
+
             return clone;
         }
-        public void ReadXml(XmlReader _xmlReader)
+        public void ReadXml(XmlReader xmlReader)
         {			
-            m_StyleElements.Clear();
+            styleElements.Clear();
             
-            _xmlReader.ReadStartElement();	// <ToolPreset Key="ToolName"> or <DrawingStyle>
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            xmlReader.ReadStartElement();	// <ToolPreset Key="ToolName"> or <DrawingStyle>
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
                 AbstractStyleElement styleElement = null;
-                string key = _xmlReader.GetAttribute("Key");
+                string key = xmlReader.GetAttribute("Key");
                 
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "Color":
-                        styleElement = new StyleElementColor(_xmlReader);
+                        styleElement = new StyleElementColor(xmlReader);
                         break;
                     case "FontSize":
-                        styleElement = new StyleElementFontSize(_xmlReader);
+                        styleElement = new StyleElementFontSize(xmlReader);
                         break;
                     case "PenSize":
-                        styleElement = new StyleElementPenSize(_xmlReader);
+                        styleElement = new StyleElementPenSize(xmlReader);
                         break;
                     case "LineSize":
-                        styleElement = new StyleElementLineSize(_xmlReader);
+                        styleElement = new StyleElementLineSize(xmlReader);
                         break;
                     case "Arrows":
-                        styleElement = new StyleElementLineEnding(_xmlReader);
+                        styleElement = new StyleElementLineEnding(xmlReader);
                         break;
                     case "TrackShape":
-                        styleElement = new StyleElementTrackShape(_xmlReader);
+                        styleElement = new StyleElementTrackShape(xmlReader);
                         break;
                     case "GridDivisions":
-                        styleElement = new StyleElementGridDivisions(_xmlReader);
+                        styleElement = new StyleElementGridDivisions(xmlReader);
                         break;
                     default:
-                        log.ErrorFormat("Could not import style element \"{0}\"", _xmlReader.Name);
-                        log.ErrorFormat("Content was: {0}", _xmlReader.ReadOuterXml());
+                        log.ErrorFormat("Could not import style element \"{0}\"", xmlReader.Name);
+                        log.ErrorFormat("Content was: {0}", xmlReader.ReadOuterXml());
                         break;
                 }
                 
                 if(styleElement != null)
-                {
-                    m_StyleElements.Add(key, styleElement);
-                }
+                    styleElements.Add(key, styleElement);
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter xmlWriter)
         {
-            foreach(KeyValuePair<string, AbstractStyleElement> element in m_StyleElements)
+            foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)
             {
-                _xmlWriter.WriteStartElement(element.Value.XmlName);
-                _xmlWriter.WriteAttributeString("Key", element.Key);
-                element.Value.WriteXml(_xmlWriter);
-                _xmlWriter.WriteEndElement();
+                xmlWriter.WriteStartElement(element.Value.XmlName);
+                xmlWriter.WriteAttributeString("Key", element.Key);
+                element.Value.WriteXml(xmlWriter);
+                xmlWriter.WriteEndElement();
             }
         }
         
@@ -130,71 +129,67 @@ namespace Kinovea.ScreenManager
         /// This binding goes style -> stylehelper. When a style helper is modified directly, style.readvalue() should be called
         /// to trigger the backwards binding.
         /// </summary>
-        /// <param name="_target">The drawing's style helper object</param>
-        /// <param name="_targetProperty">The name of the property in the style helper that needs automatic update</param>
-        /// <param name="_source">The style element that will push its change to the property</param>
-        public void Bind(StyleHelper _target, string _targetProperty, string _source)
+        /// <param name="target">The drawing's style helper object</param>
+        /// <param name="targetProperty">The name of the property in the style helper that needs automatic update</param>
+        /// <param name="source">The style element that will push its change to the property</param>
+        public void Bind(StyleHelper target, string targetProperty, string source)
         {
             AbstractStyleElement elem;
-            bool found = m_StyleElements.TryGetValue(_source, out elem);
+            bool found = styleElements.TryGetValue(source, out elem);
             if(found && elem != null)
-            {
-                elem.Bind(_target, _targetProperty);
-            }
+                elem.Bind(target, targetProperty);
             else
-            {
-                log.ErrorFormat("The element \"{0}\" was not found.", _source);
-            }
+                log.ErrorFormat("The element \"{0}\" was not found.", source);
         }
         public void RaiseValueChanged()
         {
-            foreach(KeyValuePair<string, AbstractStyleElement> element in m_StyleElements)
+            foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)
             {
                 element.Value.RaiseValueChanged();
             }
         }
         public void ReadValue()
         {
-            foreach(KeyValuePair<string, AbstractStyleElement> element in m_StyleElements)
+            foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)
             {
                 element.Value.ReadValue();
             }
         }
         public void Memorize()
         {
-            m_Memo.Clear();
-            foreach(KeyValuePair<string, AbstractStyleElement> element in m_StyleElements)
+            memo.Clear();
+            foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)
             {
-                m_Memo.Add(element.Key, element.Value.Clone());
+                memo.Add(element.Key, element.Value.Clone());
             }
         }
-        public void Memorize(DrawingStyle _memo)
+        public void Memorize(DrawingStyle drawingStyleMemo)
         {
             // This is used when the whole DrawingStyle has been recreated and we want it to 
             // remember its state before the recreation.
             // Used for style presets to carry the memo after XML load.
-            m_Memo.Clear();
-            foreach(KeyValuePair<string, AbstractStyleElement> element in _memo.Elements)
+            memo.Clear();
+            foreach(KeyValuePair<string, AbstractStyleElement> element in drawingStyleMemo.Elements)
             {
-                m_Memo.Add(element.Key, element.Value.Clone());
+                memo.Add(element.Key, element.Value.Clone());
             }
         }
         public void Revert()
         {
-            m_StyleElements.Clear();
-            foreach(KeyValuePair<string, AbstractStyleElement> element in m_Memo)
+            styleElements.Clear();
+            foreach(KeyValuePair<string, AbstractStyleElement> element in memo)
             {
-                m_StyleElements.Add(element.Key, element.Value.Clone());
+                styleElements.Add(element.Key, element.Value.Clone());
             }
         }
         public void Dump()
         {
-            foreach(KeyValuePair<string, AbstractStyleElement> element in m_StyleElements)
+            foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)
             {
                 log.DebugFormat("{0}: {1}", element.Key, element.Value.ToString());
             }
             
-            foreach(KeyValuePair<string, AbstractStyleElement> element in m_Memo)
+            foreach(KeyValuePair<string, AbstractStyleElement> element in memo)
             {
                 log.DebugFormat("Memo: {0}: {1}", element.Key, element.Value.ToString());
             }

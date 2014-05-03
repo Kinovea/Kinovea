@@ -56,20 +56,20 @@ namespace Kinovea.ScreenManager
             get 
             {
                 int iHash = 0;
-                iHash ^= m_StyleHelper.ContentHash;
+                iHash ^= styleHelper.ContentHash;
                 iHash ^= ShowMeasurableInfo.GetHashCode();
-                iHash ^= m_InfosFading.ContentHash;
+                iHash ^= infosFading.ContentHash;
                 return iHash;
             }
         }
         public DrawingStyle DrawingStyle
         {
-            get { return m_Style;}
+            get { return style;}
         }
         public override InfosFading InfosFading
         {
-            get { return m_InfosFading; }
-            set { m_InfosFading = value; }
+            get { return infosFading; }
+            set { infosFading = value; }
         }
         public override DrawingCapabilities Caps
         {
@@ -102,10 +102,10 @@ namespace Kinovea.ScreenManager
         private bool tracking;
         
         // Decoration
-        private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style;
-        private KeyframeLabel m_LabelMeasure;
-        private InfosFading m_InfosFading;
+        private StyleHelper styleHelper = new StyleHelper();
+        private DrawingStyle style;
+        private KeyframeLabel labelMeasure;
+        private InfosFading infosFading;
         
         // Context menu
         private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
@@ -115,23 +115,23 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingLine2D(Point _start, Point _end, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset, IImageToViewportTransformer transformer)
+        public DrawingLine2D(Point start, Point end, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
         {
-            points["a"] = _start;
-            points["b"] = _end;
-            m_LabelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black, transformer);
+            points["a"] = start;
+            points["b"] = end;
+            labelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black, transformer);
             
             // Decoration
-            m_StyleHelper.Color = Color.DarkSlateGray;
-            m_StyleHelper.LineSize = 1;
-            if(_preset != null)
+            styleHelper.Color = Color.DarkSlateGray;
+            styleHelper.LineSize = 1;
+            if(preset != null)
             {
-                m_Style = _preset.Clone();
+                style = preset.Clone();
                 BindStyle();
             }
             
             // Fading
-            m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             
             // Context menu
             mnuShowMeasure.Click += new EventHandler(mnuShowMeasure_Click);
@@ -139,38 +139,38 @@ namespace Kinovea.ScreenManager
             mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
             mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
         }
-        public DrawingLine2D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+        public DrawingLine2D(XmlReader xmlReader, PointF scale, Metadata parent)
             : this(Point.Empty, Point.Empty, 0, 0, ToolManager.Line.StylePreset.Clone(), null)
         {
-            ReadXml(_xmlReader, _scale);
+            ReadXml(xmlReader, scale);
         }
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
             
             if(tracking)
-                fOpacityFactor = 1.0;
+                opacityFactor = 1.0;
             
-            if(fOpacityFactor <= 0)
+            if(opacityFactor <= 0)
                 return;
             
-            Point start = _transformer.Transform(points["a"]);
-            Point end = _transformer.Transform(points["b"]);
+            Point start = transformer.Transform(points["a"]);
+            Point end = transformer.Transform(points["b"]);
             
-            using(Pen penEdges = m_StyleHelper.GetPen((int)(fOpacityFactor * 255), _transformer.Scale))
+            using(Pen penEdges = styleHelper.GetPen((int)(opacityFactor * 255), transformer.Scale))
             {
-                _canvas.DrawLine(penEdges, start, end);
+                canvas.DrawLine(penEdges, start, end);
                 
                 // Handlers
-                penEdges.Width = _bSelected ? 2 : 1;
-                if(m_StyleHelper.LineEnding.StartCap != LineCap.ArrowAnchor)
-                    _canvas.DrawEllipse(penEdges, start.Box(3));
+                penEdges.Width = selected ? 2 : 1;
+                if(styleHelper.LineEnding.StartCap != LineCap.ArrowAnchor)
+                    canvas.DrawEllipse(penEdges, start.Box(3));
                 
-                if(m_StyleHelper.LineEnding.EndCap != LineCap.ArrowAnchor)
-                    _canvas.DrawEllipse(penEdges, end.Box(3));
+                if(styleHelper.LineEnding.EndCap != LineCap.ArrowAnchor)
+                    canvas.DrawEllipse(penEdges, end.Box(3));
             }
 
             if(ShowMeasurableInfo)
@@ -178,18 +178,18 @@ namespace Kinovea.ScreenManager
                 // Text of the measure. (The helpers knows the unit)
                 PointF a = new PointF(points["a"].X, points["a"].Y);
                 PointF b = new PointF(points["b"].X, points["b"].Y);
-                m_LabelMeasure.SetText(CalibrationHelper.GetLengthText(a, b, true, true));
-                m_LabelMeasure.Draw(_canvas, _transformer, fOpacityFactor);
+                labelMeasure.SetText(CalibrationHelper.GetLengthText(a, b, true, true));
+                labelMeasure.Draw(canvas, transformer, opacityFactor);
             }
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
-            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             
             if (tracking || opacity > 0)
             {
-                if(ShowMeasurableInfo && m_LabelMeasure.HitTest(point, transformer))
+                if(ShowMeasurableInfo && labelMeasure.HitTest(point, transformer))
                     result = 3;
                 else if (HitTester.HitTest(points["a"], point, transformer))
                     result = 1;
@@ -212,7 +212,7 @@ namespace Kinovea.ScreenManager
                     else
                         points["a"] = point;
 
-                    m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
+                    labelMeasure.SetAttach(GetMiddlePoint(), true);
                     SignalTrackablePointMoved("a");
                     break;
                 case 2:
@@ -221,88 +221,88 @@ namespace Kinovea.ScreenManager
                     else
                         points["b"] = point;
 
-                    m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
+                    labelMeasure.SetAttach(GetMiddlePoint(), true);
                     SignalTrackablePointMoved("b");
                     break;
                 case 3:
                     // Move the center of the mini label to the mouse coord.
-                    m_LabelMeasure.SetLabel(point);
+                    labelMeasure.SetLabel(point);
                     break;
             }
         }
-        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
             points["a"] = points["a"].Translate(dx, dy);
             points["b"] = points["b"].Translate(dx, dy);
-            m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
+            labelMeasure.SetAttach(GetMiddlePoint(), true);
             SignalAllTrackablePointsMoved();
         }
         #endregion
 
         #region KVA Serialization
-        private void ReadXml(XmlReader _xmlReader, PointF _scale)
+        private void ReadXml(XmlReader xmlReader, PointF scale)
         {
-            if (_xmlReader.MoveToAttribute("id"))
-                identifier = new Guid(_xmlReader.ReadContentAsString());
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
 
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "Start":
                         {
-                            PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
-                            points["a"] = p.Scale(_scale.X, _scale.Y);
+                            PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                            points["a"] = p.Scale(scale.X, scale.Y);
                             break;
                         }
                     case "End":
                         {
-                            PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
-                            points["b"] = p.Scale(_scale.X, _scale.Y);
+                            PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                            points["b"] = p.Scale(scale.X, scale.Y);
                             break;
                         }
                     case "DrawingStyle":
-                        m_Style = new DrawingStyle(_xmlReader);
+                        style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
-                        m_InfosFading.ReadXml(_xmlReader);
+                        infosFading.ReadXml(xmlReader);
                         break;
                     case "MeasureVisible":
-                        ShowMeasurableInfo = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        ShowMeasurableInfo = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
             
-            m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
+            labelMeasure.SetAttach(GetMiddlePoint(), true);
             SignalAllTrackablePointsMoved();
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter xmlWriter)
         {
-            _xmlWriter.WriteElementString("Start", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["a"].X, points["a"].Y));
-            _xmlWriter.WriteElementString("End", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["b"].X, points["b"].Y));
-            _xmlWriter.WriteElementString("MeasureVisible", ShowMeasurableInfo ? "true" : "false");
+            xmlWriter.WriteElementString("Start", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["a"].X, points["a"].Y));
+            xmlWriter.WriteElementString("End", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["b"].X, points["b"].Y));
+            xmlWriter.WriteElementString("MeasureVisible", ShowMeasurableInfo ? "true" : "false");
             
-            _xmlWriter.WriteStartElement("DrawingStyle");
-            m_Style.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("DrawingStyle");
+            style.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement();
             
-            _xmlWriter.WriteStartElement("InfosFading");
-            m_InfosFading.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();  
+            xmlWriter.WriteStartElement("InfosFading");
+            infosFading.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement();  
 
             if(ShowMeasurableInfo)
             {
                 // Spreadsheet support.
-                _xmlWriter.WriteStartElement("Measure");
+                xmlWriter.WriteStartElement("Measure");
                 
                 PointF a = CalibrationHelper.GetPoint(new PointF(points["a"].X, points["a"].Y));
                 PointF b = CalibrationHelper.GetPoint(new PointF(points["b"].X, points["b"].Y));
@@ -311,11 +311,11 @@ namespace Kinovea.ScreenManager
                 string value = String.Format("{0:0.00}", len);
                 string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
 
-                _xmlWriter.WriteAttributeString("UserLength", value);
-                _xmlWriter.WriteAttributeString("UserLengthInvariant", valueInvariant);
-                _xmlWriter.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
+                xmlWriter.WriteAttributeString("UserLength", value);
+                xmlWriter.WriteAttributeString("UserLengthInvariant", valueInvariant);
+                xmlWriter.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
                 
-                _xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndElement();
             }
         }
         #endregion
@@ -346,7 +346,7 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
-            m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
+            labelMeasure.SetAttach(GetMiddlePoint(), true);
         }
         private void SignalAllTrackablePointsMoved()
         {
@@ -405,9 +405,9 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
-            m_Style.Bind(m_StyleHelper, "Color", "color");
-            m_Style.Bind(m_StyleHelper, "LineSize", "line size");
-            m_Style.Bind(m_StyleHelper, "LineEnding", "arrows");
+            style.Bind(styleHelper, "Color", "color");
+            style.Bind(styleHelper, "LineSize", "line size");
+            style.Bind(styleHelper, "LineEnding", "arrows");
         }
         private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
         {
@@ -418,7 +418,7 @@ namespace Kinovea.ScreenManager
                 else
                     areaPath.AddLine(points["a"], points["b"]);
 
-                return HitTester.HitTest(areaPath, point, m_StyleHelper.LineSize, false, transformer);
+                return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
             }
         }
         private Point GetMiddlePoint()

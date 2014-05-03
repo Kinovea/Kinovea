@@ -93,17 +93,17 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Draw this drawing on the provided canvas.
         /// </summary>
-        /// <param name="_canvas">The GDI+ surface on which to draw</param>
-        /// <param name="_transformer">A helper object providing coordinate systems transformation</param>
-        /// <param name="_bSelected">Whether the drawing is currently selected</param>
-        /// <param name="_iCurrentTimestamp">The current time position in the video</param>
+        /// <param name="canvas">The GDI+ surface on which to draw</param>
+        /// <param name="transformer">A helper object providing coordinate systems transformation</param>
+        /// <param name="selected">Whether the drawing is currently selected</param>
+        /// <param name="currentTimestamp">The current time position in the video</param>
         public abstract void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp);
         
         /// <summary>
         /// Evaluates if a particular point is inside the drawing, on a handler, or completely outside the drawing.
         /// </summary>
-        /// <param name="_point">The coordinates at original image scale of the point to evaluate</param>
-        /// <param name="_iCurrentTimestamp">The current time position in the video</param>
+        /// <param name="point">The coordinates at original image scale of the point to evaluate</param>
+        /// <param name="currentTimestamp">The current time position in the video</param>
         /// <returns>-1 : missed. 0 : The drawing as a whole has been hit. n (with n>0) : The id of a manipulation handle that has been hit</returns>
         public abstract int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming);
         

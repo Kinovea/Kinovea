@@ -18,66 +18,66 @@ namespace Kinovea.ScreenManager
         #region Properties
         public RectangleF Rectangle
         {
-            get { return m_Rectangle; }
-            set { m_Rectangle = value; }
+            get { return rectangle; }
+            set { rectangle = value; }
         }
         public PointF Center
         {
-            get { return new PointF(m_Rectangle.X + m_Rectangle.Width / 2, m_Rectangle.Y + m_Rectangle.Height / 2); }
+            get { return new PointF(rectangle.X + rectangle.Width / 2, rectangle.Y + rectangle.Height / 2); }
         }
         public float X
         {
-            get { return m_Rectangle.X; }
+            get { return rectangle.X; }
         }
         public float Y
         {
-            get { return m_Rectangle.Y; }
+            get { return rectangle.Y; }
         }
         #endregion
 
         #region Members
-        private RectangleF m_Rectangle;
+        private RectangleF rectangle;
         #endregion
 
         /// <summary>
         /// Draw a rounded rectangle on the provided canvas. 
         /// This method is typically used after applying a transform to the original rectangle.
         /// </summary>
-        /// <param name="_canvas">The graphics object on which to draw</param>
-        /// <param name="_rect">The rectangle specifications</param>
-        /// <param name="_brush">Brush to draw with</param>
-        /// <param name="_radius">Radius of the rounded corners</param>
-        public static void Draw(Graphics _canvas, RectangleF _rect, SolidBrush _brush, int _radius, bool _dropShape, bool _contour, Pen _penContour)
+        /// <param name="canvas">The graphics object on which to draw</param>
+        /// <param name="rect">The rectangle specifications</param>
+        /// <param name="brush">Brush to draw with</param>
+        /// <param name="radius">Radius of the rounded corners</param>
+        public static void Draw(Graphics canvas, RectangleF rect, SolidBrush brush, int radius, bool dropShape, bool contour, Pen penContour)
         {
-            float diameter = 2F * _radius;
-            RectangleF arc = new RectangleF(_rect.Location, new SizeF(diameter, diameter));
+            float diameter = 2F * radius;
+            RectangleF arc = new RectangleF(rect.Location, new SizeF(diameter, diameter));
         
             GraphicsPath gp = new GraphicsPath();
             gp.StartFigure();
             
-            if(_dropShape)
+            if(dropShape)
                 gp.AddLine(arc.Left, arc.Top, arc.Right, arc.Top);
             else
                 gp.AddArc(arc, 180, 90);
             
-            arc.X = _rect.Right - diameter;
+            arc.X = rect.Right - diameter;
             gp.AddArc(arc, 270, 90);
 
-            arc.Y = _rect.Bottom - diameter;
-             if(_dropShape)
+            arc.Y = rect.Bottom - diameter;
+             if(dropShape)
                 gp.AddLine(arc.Right, arc.Top, arc.Right, arc.Bottom);
             else
                 gp.AddArc(arc, 0, 90);
             
-            arc.X = _rect.Left;
+            arc.X = rect.Left;
             gp.AddArc(arc, 90, 90);
             
             gp.CloseFigure();
             
-            _canvas.FillPath(_brush, gp);
+            canvas.FillPath(brush, gp);
             
-            if(_contour)
-                _canvas.DrawPath(_penContour, gp);
+            if(contour)
+                canvas.DrawPath(penContour, gp);
             
             gp.Dispose();
         }
@@ -87,8 +87,8 @@ namespace Kinovea.ScreenManager
 
             /*SizeF size = transformer.Untransform(m_Rectangle.Size);
             RectangleF hitArea = new RectangleF(m_Rectangle.Location, size);*/
-            SizeF size = m_Rectangle.Size;
-            RectangleF hitArea = m_Rectangle;
+            SizeF size = rectangle.Size;
+            RectangleF hitArea = rectangle;
 
             if (hiddenHandle)
             {
@@ -105,12 +105,12 @@ namespace Kinovea.ScreenManager
         }
         public void Move(float dx, float dy)
         {
-            m_Rectangle = m_Rectangle.Translate(dx, dy);
+            rectangle = rectangle.Translate(dx, dy);
         }
         public void CenterOn(PointF point)
         {
-            PointF location = new PointF(point.X - m_Rectangle.Size.Width / 2, point.Y - m_Rectangle.Size.Height / 2);
-            m_Rectangle = new RectangleF(location, m_Rectangle.Size);
+            PointF location = new PointF(point.X - rectangle.Size.Width / 2, point.Y - rectangle.Size.Height / 2);
+            rectangle = new RectangleF(location, rectangle.Size);
         }
     }
 }

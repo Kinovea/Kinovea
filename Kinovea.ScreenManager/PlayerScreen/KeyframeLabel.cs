@@ -49,28 +49,28 @@ namespace Kinovea.ScreenManager
         #region Properties
         public long Timestamp
         {
-            get { return m_iTimestamp; }
-            set { m_iTimestamp = value; }
+            get { return timestamp; }
+            set { timestamp = value; }
         }
         public int AttachIndex
         {
-            get { return m_iAttachIndex; }
-            set { m_iAttachIndex = value; }
+            get { return attachIndex; }
+            set { attachIndex = value; }
         }
         public Color BackColor
         {
-            get { return m_StyleHelper.Bicolor.Background; }
-            set { m_StyleHelper.Bicolor = new Bicolor(value); }
+            get { return styleHelper.Bicolor.Background; }
+            set { styleHelper.Bicolor = new Bicolor(value); }
         }
         #endregion
 
         #region Members
-        private string m_Text = "Label";
-        private RoundedRectangle m_Background = new RoundedRectangle();
-        private long m_iTimestamp; // Absolute time.
-        private int m_iAttachIndex; // The index of the reference point in the track points list.
+        private string text = "Label";
+        private RoundedRectangle background = new RoundedRectangle();
+        private long timestamp; // Absolute time.
+        private int attachIndex; // The index of the reference point in the track points list.
         private PointF attachLocation; // The point we are attached to (image coordinates).
-        private StyleHelper m_StyleHelper = new StyleHelper();
+        private StyleHelper styleHelper = new StyleHelper();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -87,51 +87,51 @@ namespace Kinovea.ScreenManager
                 ty = transformer.Untransform(-50);
             }
 
-            m_Background.Rectangle = new Rectangle(attachPoint.Translate(tx, ty).ToPoint(), Size.Empty);
-            m_StyleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
-            m_StyleHelper.Bicolor = new Bicolor(Color.FromArgb(160, color));
+            background.Rectangle = new Rectangle(attachPoint.Translate(tx, ty).ToPoint(), Size.Empty);
+            styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
+            styleHelper.Bicolor = new Bicolor(Color.FromArgb(160, color));
         }
-        public KeyframeLabel(XmlReader _xmlReader, PointF _scale)
+        public KeyframeLabel(XmlReader xmlReader, PointF scale)
             : this(Point.Empty, Color.Black, null)
         {
-            ReadXml(_xmlReader, _scale);
+            ReadXml(xmlReader, scale);
         }
         #endregion
 
         #region Public methods
-        public bool HitTest(Point _point, IImageToViewportTransformer transformer)
+        public bool HitTest(Point point, IImageToViewportTransformer transformer)
         {
-            return (m_Background.HitTest(_point, false, transformer) > -1);
+            return (background.HitTest(point, false, transformer) > -1);
         }
         public override int GetHashCode()
         {
-            int iHash = 0;
-            iHash ^= m_Background.Rectangle.Location.GetHashCode();
-            iHash ^= m_StyleHelper.ContentHash;
-            return iHash;
+            int hash = 0;
+            hash ^= background.Rectangle.Location.GetHashCode();
+            hash ^= styleHelper.ContentHash;
+            return hash;
         }
-        public void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, double _fOpacityFactor)
+        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, double opacityFactor)
         {
-            using(SolidBrush fillBrush = m_StyleHelper.GetBackgroundBrush((int)(_fOpacityFactor*255)))
-            using(Pen p = m_StyleHelper.GetBackgroundPen((int)(_fOpacityFactor*64)))
-            using(Font f = m_StyleHelper.GetFont((float)_transformer.Scale))
-            using(SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor*255)))
+            using(SolidBrush fillBrush = styleHelper.GetBackgroundBrush((int)(opacityFactor*255)))
+            using(Pen p = styleHelper.GetBackgroundPen((int)(opacityFactor*64)))
+            using(Font f = styleHelper.GetFont((float)transformer.Scale))
+            using(SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacityFactor*255)))
             {
-                SizeF textSize = _canvas.MeasureString(m_Text, f);
-                Point location = _transformer.Transform(m_Background.Rectangle.Location);
+                SizeF textSize = canvas.MeasureString(text, f);
+                Point location = transformer.Transform(background.Rectangle.Location);
                 Size size = new Size((int)textSize.Width, (int)textSize.Height);
 
-                SizeF untransformed = _transformer.Untransform(textSize);
-                m_Background.Rectangle = new RectangleF(m_Background.Rectangle.Location, untransformed);
+                SizeF untransformed = transformer.Untransform(textSize);
+                background.Rectangle = new RectangleF(background.Rectangle.Location, untransformed);
                 
-                Point attch = _transformer.Transform(attachLocation);
-                Point center = _transformer.Transform(m_Background.Center);
-                _canvas.FillEllipse(fillBrush, attch.Box(2));
-                _canvas.DrawLine(p, attch, center);
+                Point attch = transformer.Transform(attachLocation);
+                Point center = transformer.Transform(background.Center);
+                canvas.FillEllipse(fillBrush, attch.Box(2));
+                canvas.DrawLine(p, attch, center);
                 
                 Rectangle rect = new Rectangle(location, size);
-                RoundedRectangle.Draw(_canvas, rect, fillBrush, f.Height/4, false, false, null);
-                _canvas.DrawString(m_Text, f, fontBrush, rect.Location);
+                RoundedRectangle.Draw(canvas, rect, fillBrush, f.Height/4, false, false, null);
+                canvas.DrawString(text, f, fontBrush, rect.Location);
             }
         }    
         public void SetAttach(PointF p, bool moveLabel)
@@ -142,57 +142,57 @@ namespace Kinovea.ScreenManager
             attachLocation = p;
             
             if(moveLabel)
-                m_Background.Move(dx, dy);
+                background.Move(dx, dy);
         }
-        public void SetLabel(PointF _point)
+        public void SetLabel(PointF point)
         {
-            m_Background.CenterOn(_point);
+            background.CenterOn(point);
         }
         public void MoveLabel(float dx, float dy)
         {
-            m_Background.Move(dx, dy);
+            background.Move(dx, dy);
         }
-        public void SetText(string _text)
+        public void SetText(string text)
         {
-            m_Text = _text;
+            this.text = text;
 
             using(Button but = new Button())
             using(Graphics g = but.CreateGraphics())
-            using(Font f = m_StyleHelper.GetFont(1F))
+            using(Font f = styleHelper.GetFont(1F))
             {
-                SizeF textSize = g.MeasureString(m_Text, f);
-                m_Background.Rectangle = new RectangleF(m_Background.Rectangle.Location, textSize);
+                SizeF textSize = g.MeasureString(text, f);
+                background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
             }
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter xmlWriter)
         {
-            _xmlWriter.WriteElementString("SpacePosition", String.Format(CultureInfo.InvariantCulture, "{0};{1}", m_Background.X, m_Background.Y));
-            _xmlWriter.WriteElementString("TimePosition", m_iTimestamp.ToString());
+            xmlWriter.WriteElementString("SpacePosition", String.Format(CultureInfo.InvariantCulture, "{0};{1}", background.X, background.Y));
+            xmlWriter.WriteElementString("TimePosition", timestamp.ToString());
         }
-        public void ReadXml(XmlReader _xmlReader, PointF _scale)
+        public void ReadXml(XmlReader xmlReader, PointF scale)
         {
-             _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
              
-             while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "SpacePosition":
-                        PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
-                        Point location = p.Scale(_scale.X, _scale.Y).ToPoint();
-                        m_Background.Rectangle = new Rectangle(location, Size.Empty);
+                        PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                        Point location = p.Scale(scale.X, scale.Y).ToPoint();
+                        background.Rectangle = new Rectangle(location, Size.Empty);
                         break;
                     case "TimePosition":
-                        m_iTimestamp = _xmlReader.ReadElementContentAsLong();
+                        timestamp = xmlReader.ReadElementContentAsLong();
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
              
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
         #endregion
     }

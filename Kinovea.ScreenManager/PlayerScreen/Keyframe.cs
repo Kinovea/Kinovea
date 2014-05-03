@@ -1,5 +1,6 @@
+#region License
 /*
-Copyright © Joan Charmant 2008.
+Copyright © Joan Charmant 2008
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -15,8 +16,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
+#endregion
 
 using System;
 using System.Collections.Generic;

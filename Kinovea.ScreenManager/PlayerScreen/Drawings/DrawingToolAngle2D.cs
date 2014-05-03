@@ -52,37 +52,37 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingStyle StylePreset
         {
-            get { return m_StylePreset;}
-            set { m_StylePreset = value;}
+            get { return stylePreset;}
+            set { stylePreset = value;}
         }
         public override DrawingStyle DefaultStylePreset
         {
-            get { return m_DefaultStylePreset;}
+            get { return defaultStylePreset;}
         }
         #endregion
         
         #region Members
-        private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
-        private DrawingStyle m_StylePreset;
+        private DrawingStyle defaultStylePreset = new DrawingStyle();
+        private DrawingStyle stylePreset;
         #endregion
         
         #region Constructor
         public DrawingToolAngle2D()
         {
-            m_DefaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
-            m_StylePreset = m_DefaultStylePreset.Clone();
+            defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
+            stylePreset = defaultStylePreset.Clone();
         }
         #endregion
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             int length = transformer.Untransform(50);
-            Point a = new Point(_Origin.X, _Origin.Y - length);
-            Point b = new Point(_Origin.X + length, _Origin.Y);
-            return new DrawingAngle2D(_Origin, a, b, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+            Point a = new Point(origin.X, origin.Y - length);
+            Point b = new Point(origin.X + length, origin.Y);
+            return new DrawingAngle2D(origin, a, b, timestamp, averageTimeStampsPerFrame, stylePreset);
         }
-        public override Cursor GetCursor(double _fStretchFactor)
+        public override Cursor GetCursor(double stretchFactor)
         {
             return Cursors.Cross;
         }

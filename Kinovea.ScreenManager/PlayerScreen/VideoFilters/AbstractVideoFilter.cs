@@ -64,12 +64,12 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Abstract Methods
-        public abstract void Activate(IWorkingZoneFramesContainer _framesContainer, Action<InteractiveEffect> _setInteractiveEffect);
+        public abstract void Activate(IWorkingZoneFramesContainer framesContainer, Action<InteractiveEffect> setInteractiveEffect);
         protected abstract void Process(object sender, DoWorkEventArgs e);
         #endregion
         
         #region Members
-        private formProgressBar m_FormProgressBar;
+        private formProgressBar formProgressBar;
         #endregion
         
         #region Concrete Methods
@@ -85,8 +85,8 @@ namespace Kinovea.ScreenManager
             worker.RunWorkerCompleted += bgWorker_RunWorkerCompleted;
             worker.RunWorkerAsync();
             
-            m_FormProgressBar = new formProgressBar(false);
-            m_FormProgressBar.ShowDialog();
+            formProgressBar = new formProgressBar(false);
+            formProgressBar.ShowDialog();
         }
         private void bgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
@@ -96,12 +96,12 @@ namespace Kinovea.ScreenManager
 
             if (iValue > iMaximum) { iValue = iMaximum; }
             
-            m_FormProgressBar.Update(iValue, iMaximum, false);
+            formProgressBar.Update(iValue, iMaximum, false);
         }
         private void bgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            m_FormProgressBar.Close();
-            m_FormProgressBar.Dispose();
+            formProgressBar.Close();
+            formProgressBar.Dispose();
         }
         #endregion
     }

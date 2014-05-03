@@ -48,21 +48,21 @@ namespace Kinovea.ScreenManager
         {
             get 
             { 
-                int iHash = m_iStartCountingTimestamp.GetHashCode();
-                iHash ^= m_iStopCountingTimestamp.GetHashCode();
-                iHash ^= m_iVisibleTimestamp.GetHashCode();
-                iHash ^= m_iInvisibleTimestamp.GetHashCode();
-                iHash ^= m_bCountdown.GetHashCode();
-                iHash ^= m_StyleHelper.ContentHash;
-                iHash ^= m_Label.GetHashCode();
-                iHash ^= m_bShowLabel.GetHashCode();
+                int iHash = startCountingTimestamp.GetHashCode();
+                iHash ^= stopCountingTimestamp.GetHashCode();
+                iHash ^= visibleTimestamp.GetHashCode();
+                iHash ^= invisibleTimestamp.GetHashCode();
+                iHash ^= countdown.GetHashCode();
+                iHash ^= styleHelper.ContentHash;
+                iHash ^= label.GetHashCode();
+                iHash ^= showLabel.GetHashCode();
     
                 return iHash;
             }
         } 
         public DrawingStyle DrawingStyle
         {
-            get { return m_Style;}
+            get { return style;}
         }
         public override InfosFading  InfosFading
         {
@@ -80,158 +80,156 @@ namespace Kinovea.ScreenManager
         }
         public Metadata ParentMetadata
         {
-            get { return m_ParentMetadata; }    // unused.
-            set { m_ParentMetadata = value; }
+            get { return parentMetadata; }    // unused.
+            set { parentMetadata = value; }
         }
         public long TimeStart
         {
-            get { return m_iStartCountingTimestamp; }
+            get { return startCountingTimestamp; }
         }
         public long TimeStop
         {
-            get { return m_iStopCountingTimestamp; }
+            get { return stopCountingTimestamp; }
         }
         public long TimeVisible
         {
-            get { return m_iVisibleTimestamp; }
+            get { return visibleTimestamp; }
         }
         public long TimeInvisible
         {
-            get { return m_iInvisibleTimestamp; }
+            get { return invisibleTimestamp; }
         }
         public bool CountDown
         {
-            get { return m_bCountdown;}
+            get { return countdown;}
             set 
             {
                 // We should only toggle to countdown if we do have a stop value.
-                m_bCountdown = value;
+                countdown = value;
             }
         }
         public bool HasTimeStop
         {
             // This is used to know if we can toggle to countdown or not.
-            get{ return (m_iStopCountingTimestamp != long.MaxValue);}
+            get{ return (stopCountingTimestamp != long.MaxValue);}
         }
         
         // The following properties are used from the formConfigureChrono.
         public string Label
         {
-            get { return m_Label; }
+            get { return label; }
             set 
             { 
-                m_Label = value;
+                label = value;
                 UpdateLabelRectangle();
             }
         }
         public bool ShowLabel
         {
-            get { return m_bShowLabel; }
-            set { m_bShowLabel = value; }
+            get { return showLabel; }
+            set { showLabel = value; }
         }
         #endregion
 
         #region Members
         // Core
-        private long m_iStartCountingTimestamp;         	// chrono starts counting.
-        private long m_iStopCountingTimestamp;          	// chrono stops counting. 
-        private long m_iVisibleTimestamp;               	// chrono becomes visible.
-        private long m_iInvisibleTimestamp;             	// chrono stops being visible.
-        private bool m_bCountdown;							// chrono works backwards. (Must have a stop)
-        private string m_Timecode;
-        private string m_Label;
-        private bool m_bShowLabel;
+        private long startCountingTimestamp;         	// chrono starts counting.
+        private long stopCountingTimestamp;          	// chrono stops counting. 
+        private long visibleTimestamp;               	// chrono becomes visible.
+        private long invisibleTimestamp;             	// chrono stops being visible.
+        private bool countdown;							// chrono works backwards. (Must have a stop)
+        private string timecode;
+        private string label;
+        private bool showLabel;
         // Decoration
-        private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style;
-        private InfosFading m_InfosFading;
-        private static readonly int m_iAllowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
-        private RoundedRectangle m_MainBackground = new RoundedRectangle();
-        private RoundedRectangle m_lblBackground = new RoundedRectangle();
+        private StyleHelper styleHelper = new StyleHelper();
+        private DrawingStyle style;
+        private InfosFading infosFading;
+        private static readonly int allowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
+        private RoundedRectangle mainBackground = new RoundedRectangle();
+        private RoundedRectangle lblBackground = new RoundedRectangle();
         
-        private Metadata m_ParentMetadata;
+        private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
-        public DrawingChrono(Point p, long start, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingChrono(Point p, long start, long averageTimeStampsPerFrame, DrawingStyle preset)
         {
             // Core
-            m_iVisibleTimestamp = start;
-            m_iStartCountingTimestamp = long.MaxValue;
-            m_iStopCountingTimestamp = long.MaxValue;
-            m_iInvisibleTimestamp = long.MaxValue;
-            m_bCountdown = false;
-            m_MainBackground.Rectangle = new Rectangle(p, Size.Empty);
+            visibleTimestamp = start;
+            startCountingTimestamp = long.MaxValue;
+            stopCountingTimestamp = long.MaxValue;
+            invisibleTimestamp = long.MaxValue;
+            countdown = false;
+            mainBackground.Rectangle = new Rectangle(p, Size.Empty);
 
-            m_Timecode = "error";
+            timecode = "error";
             
-            m_StyleHelper.Bicolor = new Bicolor(Color.Black);
-            m_StyleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
-            if(_preset != null)
+            styleHelper.Bicolor = new Bicolor(Color.Black);
+            styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
+            if(preset != null)
             {
-                m_Style = _preset.Clone();
+                style = preset.Clone();
                 BindStyle();
             }
             
-            m_Label = "";
-            m_bShowLabel = true;
+            label = "";
+            showLabel = true;
             
             // We use the InfosFading utility to fade the chrono away.
             // The refererence frame will be the frame at which fading start.
             // Must be updated on "Hide" menu.
-            m_InfosFading = new InfosFading(m_iInvisibleTimestamp, _AverageTimeStampsPerFrame);
-            m_InfosFading.FadingFrames = m_iAllowedFramesOver;
-            m_InfosFading.UseDefault = false;
+            infosFading = new InfosFading(invisibleTimestamp, averageTimeStampsPerFrame);
+            infosFading.FadingFrames = allowedFramesOver;
+            infosFading.UseDefault = false;
         }
-        public DrawingChrono(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
+        public DrawingChrono(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback)
             : this(Point.Empty, 0, 1, ToolManager.Chrono.StylePreset.Clone())
         {
-            ReadXml(_xmlReader, _scale, _remapTimestampCallback);
+            ReadXml(xmlReader, scale, remapTimestampCallback);
         }
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            if (_iCurrentTimestamp < m_iVisibleTimestamp)
+            if (currentTimestamp < visibleTimestamp)
                 return;
             
-            double fOpacityFactor = 1.0;
-            if (_iCurrentTimestamp > m_iInvisibleTimestamp)
-                fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            double opacityFactor = 1.0;
+            if (currentTimestamp > invisibleTimestamp)
+                opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
 
-            if (fOpacityFactor <= 0)
+            if (opacityFactor <= 0)
                 return;
 
-            m_Timecode = GetTimecode(_iCurrentTimestamp);
+            timecode = GetTimecode(currentTimestamp);
+            string text = timecode;
 
-            string text = m_Timecode;
-
-            using (SolidBrush brushBack = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor * 128)))
-            using (SolidBrush brushText = m_StyleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
-            using (Font fontText = m_StyleHelper.GetFont((float)_transformer.Scale))
+            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * 128)))
+            using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
+            using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
             {
-                SizeF textSize = _canvas.MeasureString(text, fontText);
-                Point bgLocation = _transformer.Transform(m_MainBackground.Rectangle.Location);
+                SizeF textSize = canvas.MeasureString(text, fontText);
+                Point bgLocation = transformer.Transform(mainBackground.Rectangle.Location);
                 Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
 
-                SizeF untransformed = _transformer.Untransform(textSize);
-                m_MainBackground.Rectangle = new RectangleF(m_MainBackground.Rectangle.Location, untransformed);
+                SizeF untransformed = transformer.Untransform(textSize);
+                mainBackground.Rectangle = new RectangleF(mainBackground.Rectangle.Location, untransformed);
 
                 Rectangle rect = new Rectangle(bgLocation, bgSize);
-                RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height / 4, false, false, null);
-                _canvas.DrawString(text, fontText, brushText, rect.Location);
+                RoundedRectangle.Draw(canvas, rect, brushBack, fontText.Height / 4, false, false, null);
+                canvas.DrawString(text, fontText, brushText, rect.Location);
 
-                
-                if (m_bShowLabel && m_Label.Length > 0)
+                if (showLabel && label.Length > 0)
                 {
-                    using (Font fontLabel = m_StyleHelper.GetFont((float)_transformer.Scale * 0.5f))
+                    using (Font fontLabel = styleHelper.GetFont((float)transformer.Scale * 0.5f))
                     {
-                        SizeF lblTextSize = _canvas.MeasureString(m_Label, fontLabel); 
+                        SizeF lblTextSize = canvas.MeasureString(label, fontLabel); 
                         Rectangle lblRect = new Rectangle(rect.Location.X, rect.Location.Y - (int)lblTextSize.Height, (int)lblTextSize.Width, (int)lblTextSize.Height);
-                        RoundedRectangle.Draw(_canvas, lblRect, brushBack, fontLabel.Height/3, true, false, null);
-                        _canvas.DrawString(m_Label, fontLabel, brushText, lblRect.Location);
+                        RoundedRectangle.Draw(canvas, lblRect, brushBack, fontLabel.Height/3, true, false, null);
+                        canvas.DrawString(label, fontLabel, brushText, lblRect.Location);
                     }
                 }
             }
@@ -240,15 +238,15 @@ namespace Kinovea.ScreenManager
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
-            long maxHitTimeStamps = m_iInvisibleTimestamp;
+            long maxHitTimeStamps = invisibleTimestamp;
             if (maxHitTimeStamps != long.MaxValue)
-                maxHitTimeStamps += (m_iAllowedFramesOver * m_ParentMetadata.AverageTimeStampsPerFrame);
+                maxHitTimeStamps += (allowedFramesOver * parentMetadata.AverageTimeStampsPerFrame);
 
-            if (currentTimestamp >= m_iVisibleTimestamp && currentTimestamp <= maxHitTimeStamps)
+            if (currentTimestamp >= visibleTimestamp && currentTimestamp <= maxHitTimeStamps)
             {
-                result = m_MainBackground.HitTest(point, true, transformer);
+                result = mainBackground.HitTest(point, true, transformer);
                 if(result < 0) 
-                    result = m_lblBackground.HitTest(point, false, transformer);
+                    result = lblBackground.HitTest(point, false, transformer);
             }
 
             return result;
@@ -256,262 +254,245 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             // Invisible handler to change font size.
-            int wantedHeight = (int)(point.Y - m_MainBackground.Rectangle.Location.Y);
-            m_StyleHelper.ForceFontSize(wantedHeight, m_Timecode);
-            m_Style.ReadValue();
+            int wantedHeight = (int)(point.Y - mainBackground.Rectangle.Location.Y);
+            styleHelper.ForceFontSize(wantedHeight, timecode);
+            style.ReadValue();
             UpdateLabelRectangle();
         }
-        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
-            m_MainBackground.Move(dx, dy);
-            m_lblBackground.Move(dx, dy);
+            mainBackground.Move(dx, dy);
+            lblBackground.Move(dx, dy);
         }
         #endregion
         
         #region KVA Serialization
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter xmlWriter)
         {
-            _xmlWriter.WriteElementString("Position", string.Format("{0};{1}", m_MainBackground.Rectangle.Location.X, m_MainBackground.Rectangle.Location.Y));
+            xmlWriter.WriteElementString("Position", string.Format("{0};{1}", mainBackground.Rectangle.Location.X, mainBackground.Rectangle.Location.Y));
             
-            _xmlWriter.WriteStartElement("Values");
-            _xmlWriter.WriteElementString("Visible", (m_iVisibleTimestamp == long.MaxValue) ? "-1" : m_iVisibleTimestamp.ToString());
-            _xmlWriter.WriteElementString("StartCounting", (m_iStartCountingTimestamp == long.MaxValue) ? "-1" : m_iStartCountingTimestamp.ToString());
-            _xmlWriter.WriteElementString("StopCounting", (m_iStopCountingTimestamp == long.MaxValue) ? "-1" : m_iStopCountingTimestamp.ToString());
-            _xmlWriter.WriteElementString("Invisible", (m_iInvisibleTimestamp == long.MaxValue) ? "-1" : m_iInvisibleTimestamp.ToString());
-            _xmlWriter.WriteElementString("Countdown", m_bCountdown ? "true" : "false");
+            xmlWriter.WriteStartElement("Values");
+            xmlWriter.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
+            xmlWriter.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
+            xmlWriter.WriteElementString("StopCounting", (stopCountingTimestamp == long.MaxValue) ? "-1" : stopCountingTimestamp.ToString());
+            xmlWriter.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
+            xmlWriter.WriteElementString("Countdown", countdown ? "true" : "false");
             
             // Spreadsheet support
             string userDuration = "0";
-            if (m_iStartCountingTimestamp != long.MaxValue && m_iStopCountingTimestamp != long.MaxValue)
+            if (startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
             {
-                userDuration = m_ParentMetadata.TimeStampsToTimecode(m_iStopCountingTimestamp - m_iStartCountingTimestamp, TimeType.Duration, TimecodeFormat.Unknown, false);
+                userDuration = parentMetadata.TimeStampsToTimecode(stopCountingTimestamp - startCountingTimestamp, TimeType.Duration, TimecodeFormat.Unknown, false);
             }
-            _xmlWriter.WriteElementString("UserDuration", userDuration);
+            xmlWriter.WriteElementString("UserDuration", userDuration);
             
             // </values>
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
             
             // Label
-            _xmlWriter.WriteStartElement("Label");
-            _xmlWriter.WriteElementString("Text", m_Label);
-            _xmlWriter.WriteElementString("Show", m_bShowLabel ? "true" : "false");
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("Label");
+            xmlWriter.WriteElementString("Text", label);
+            xmlWriter.WriteElementString("Show", showLabel ? "true" : "false");
+            xmlWriter.WriteEndElement();
             
-            _xmlWriter.WriteStartElement("DrawingStyle");
-            m_Style.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("DrawingStyle");
+            style.WriteXml(xmlWriter);
+            xmlWriter.WriteEndElement();
         }
-        private void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
+        private void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback)
         {
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "Position":
-                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        Point location = p.Scale(_scale.X, _scale.Y);
-                        m_MainBackground.Rectangle = new Rectangle(location, Size.Empty);
+                        Point p = XmlHelper.ParsePoint(xmlReader.ReadElementContentAsString());
+                        Point location = p.Scale(scale.X, scale.Y);
+                        mainBackground.Rectangle = new Rectangle(location, Size.Empty);
                         break;
                     case "Values":
-                        ParseWorkingValues(_xmlReader, _remapTimestampCallback);
+                        ParseWorkingValues(xmlReader, remapTimestampCallback);
                         break;
                     case "DrawingStyle":
-                        m_Style = new DrawingStyle(_xmlReader);
+                        style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
                     case "Label":
-                        ParseLabel(_xmlReader);
+                        ParseLabel(xmlReader);
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
-        private void ParseWorkingValues(XmlReader _xmlReader, TimeStampMapper _remapTimestampCallback)
+        private void ParseWorkingValues(XmlReader xmlReader, TimeStampMapper remapTimestampCallback)
         {
-            if(_remapTimestampCallback == null)
+            if(remapTimestampCallback == null)
             {
-                _xmlReader.ReadOuterXml();
+                xmlReader.ReadOuterXml();
                 return;                
             }
             
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "Visible":
-                        m_iVisibleTimestamp = _remapTimestampCallback(_xmlReader.ReadElementContentAsLong(), false);
+                        visibleTimestamp = remapTimestampCallback(xmlReader.ReadElementContentAsLong(), false);
                         break;
                     case "StartCounting":
-                        long start = _xmlReader.ReadElementContentAsLong(); 
-                        m_iStartCountingTimestamp = (start == -1) ? long.MaxValue : _remapTimestampCallback(start, false);
+                        long start = xmlReader.ReadElementContentAsLong(); 
+                        startCountingTimestamp = (start == -1) ? long.MaxValue : remapTimestampCallback(start, false);
                         break;
                     case "StopCounting":
-                        long stop = _xmlReader.ReadElementContentAsLong();
-                        m_iStopCountingTimestamp = (stop == -1) ? long.MaxValue : _remapTimestampCallback(stop, false);
+                        long stop = xmlReader.ReadElementContentAsLong();
+                        stopCountingTimestamp = (stop == -1) ? long.MaxValue : remapTimestampCallback(stop, false);
                         break;
                     case "Invisible":
-                        long hide = _xmlReader.ReadElementContentAsLong();
-                        m_iInvisibleTimestamp = (hide == -1) ? long.MaxValue : _remapTimestampCallback(hide, false);                        
+                        long hide = xmlReader.ReadElementContentAsLong();
+                        invisibleTimestamp = (hide == -1) ? long.MaxValue : remapTimestampCallback(hide, false);                        
                         break;
                     case "Countdown":
-                        m_bCountdown = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        countdown = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
-            
-            // Sanity check values.
-            if (m_iVisibleTimestamp < 0) m_iVisibleTimestamp = 0;
-            if (m_iStartCountingTimestamp < 0) m_iStartCountingTimestamp = 0;
-            if (m_iStopCountingTimestamp < 0) m_iStopCountingTimestamp = 0;
-            if (m_iInvisibleTimestamp < 0) m_iInvisibleTimestamp = 0;
+            xmlReader.ReadEndElement();
 
-            if (m_iVisibleTimestamp > m_iStartCountingTimestamp)
-            {
-                m_iVisibleTimestamp = m_iStartCountingTimestamp;
-            }
-
-            if (m_iStopCountingTimestamp < m_iStartCountingTimestamp)
-            {
-                m_iStopCountingTimestamp = long.MaxValue;
-            }
-
-            if (m_iInvisibleTimestamp < m_iStopCountingTimestamp)
-            {
-                m_iInvisibleTimestamp = long.MaxValue;
-            }
+            SanityCheckValues();
         }
-        private void ParseLabel(XmlReader _xmlReader)
+        private void SanityCheckValues()
         {
-            _xmlReader.ReadStartElement();
+            startCountingTimestamp = Math.Max(startCountingTimestamp, 0);
+            stopCountingTimestamp = Math.Max(stopCountingTimestamp, 0);
+            invisibleTimestamp = Math.Max(invisibleTimestamp, 0);
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            visibleTimestamp = Math.Min(Math.Max(visibleTimestamp, 0), startCountingTimestamp);
+            
+            if (stopCountingTimestamp < startCountingTimestamp)
+                stopCountingTimestamp = long.MaxValue;
+
+            if (invisibleTimestamp < stopCountingTimestamp)
+                invisibleTimestamp = long.MaxValue;
+        }
+        private void ParseLabel(XmlReader xmlReader)
+        {
+            xmlReader.ReadStartElement();
+            
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "Text":
-                        m_Label = _xmlReader.ReadElementContentAsString();
+                        label = xmlReader.ReadElementContentAsString();
                         break;
                     case "Show":
-                        m_bShowLabel = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        showLabel = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
         #endregion
 
         #region PopMenu commands Implementation that change internal values.
-        public void Start(long _iCurrentTimestamp)
+        public void Start(long currentTimestamp)
         {
-            m_iStartCountingTimestamp = _iCurrentTimestamp;
+            startCountingTimestamp = currentTimestamp;
 
-            // Reset if crossed.
-            if (m_iStartCountingTimestamp >= m_iStopCountingTimestamp)
-            {
-                m_iStopCountingTimestamp = long.MaxValue; 
-            }
+            if (stopCountingTimestamp < startCountingTimestamp)
+                stopCountingTimestamp = long.MaxValue;
         }
-        public void Stop(long _iCurrentTimestamp)
+        public void Stop(long currentTimestamp)
         {
-            m_iStopCountingTimestamp = _iCurrentTimestamp;
+            stopCountingTimestamp = currentTimestamp;
 
-            // ? if crossed.
-            if (m_iStopCountingTimestamp <= m_iStartCountingTimestamp)
-            {
-                m_iStartCountingTimestamp = m_iStopCountingTimestamp;
-            }
+            if (stopCountingTimestamp <= startCountingTimestamp)
+                startCountingTimestamp = stopCountingTimestamp;
 
-            if (m_iStopCountingTimestamp > m_iInvisibleTimestamp)
-            {
-                m_iInvisibleTimestamp = m_iStopCountingTimestamp;
-            }
+            if (stopCountingTimestamp > invisibleTimestamp)
+                invisibleTimestamp = stopCountingTimestamp;
         }
-        public void Hide(long _iCurrentTimestamp)
+        public void Hide(long currentTimestamp)
         {
-            m_iInvisibleTimestamp = _iCurrentTimestamp;
+            invisibleTimestamp = currentTimestamp;
 
             // Update fading conf.
-            m_InfosFading.ReferenceTimestamp = m_iInvisibleTimestamp;
+            infosFading.ReferenceTimestamp = invisibleTimestamp;
             
             // Avoid counting when fading.
-            if (m_iInvisibleTimestamp < m_iStopCountingTimestamp)
-            {
-                m_iStopCountingTimestamp = m_iInvisibleTimestamp;
-                if (m_iStopCountingTimestamp < m_iStartCountingTimestamp)
-                {
-                    m_iStartCountingTimestamp = m_iStopCountingTimestamp;
-                }
-            }
+            if (invisibleTimestamp >= stopCountingTimestamp)
+                return;
+            
+            stopCountingTimestamp = invisibleTimestamp;
+            if (stopCountingTimestamp < startCountingTimestamp)
+                startCountingTimestamp = stopCountingTimestamp;
         }
         #endregion
 
         #region Lower level helpers
         private void BindStyle()
         {
-            m_Style.Bind(m_StyleHelper, "Bicolor", "color");
-            m_Style.Bind(m_StyleHelper, "Font", "font size");    
+            style.Bind(styleHelper, "Bicolor", "color");
+            style.Bind(styleHelper, "Font", "font size");    
         }
         private void UpdateLabelRectangle()
         {
-            using(Font f = m_StyleHelper.GetFont(0.5F))
+            using(Font f = styleHelper.GetFont(0.5F))
             using(Button but = new Button())
             using(Graphics g = but.CreateGraphics())
             {
-                SizeF size = g.MeasureString(m_Label, f);
-                m_lblBackground.Rectangle = new RectangleF(m_MainBackground.X,
-                                                          m_MainBackground.Y - m_lblBackground.Rectangle.Height,
-                                                          size.Width + 11,
-                                                          size.Height);
+                SizeF size = g.MeasureString(label, f);
+                lblBackground.Rectangle = new RectangleF(
+                    mainBackground.X, mainBackground.Y - lblBackground.Rectangle.Height, size.Width + 11, size.Height);
             }
         }
-        private string GetTimecode(long _iTimestamp)
+        private string GetTimecode(long timestamp)
         {
             long timestamps;
 
-            // compute Text value depending on where we are.
-            if (_iTimestamp > m_iStartCountingTimestamp)
+            // Compute Text value depending on where we are.
+            if (timestamp > startCountingTimestamp)
             {
-                if (_iTimestamp <= m_iStopCountingTimestamp)
+                if (timestamp <= stopCountingTimestamp)
                 {
                     // After start and before stop.
-                    if(m_bCountdown)
-                        timestamps = m_iStopCountingTimestamp - _iTimestamp;
+                    if(countdown)
+                        timestamps = stopCountingTimestamp - timestamp;
                     else
-                        timestamps = _iTimestamp - m_iStartCountingTimestamp;                		
+                        timestamps = timestamp - startCountingTimestamp;                		
                 }
                 else
                 {
                     // After stop. Keep max value.
-                    timestamps = m_bCountdown ? 0 : m_iStopCountingTimestamp - m_iStartCountingTimestamp;
+                    timestamps = countdown ? 0 : stopCountingTimestamp - startCountingTimestamp;
                 }
             }
             else
             {
                 // Before start. Keep min value.
-                timestamps = m_bCountdown ? m_iStopCountingTimestamp - m_iStartCountingTimestamp : 0;
+                timestamps = countdown ? stopCountingTimestamp - startCountingTimestamp : 0;
             }
 
-            return m_ParentMetadata.TimeStampsToTimecode(timestamps, TimeType.Duration, TimecodeFormat.Unknown, false);
+            return parentMetadata.TimeStampsToTimecode(timestamps, TimeType.Duration, TimecodeFormat.Unknown, false);
         }
         #endregion
     }

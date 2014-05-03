@@ -84,38 +84,38 @@ namespace Kinovea.ScreenManager
         // All coordinates must be given already descaled to image coordinates.
         //--------------------------------------------------------------------
         private ManipulationType manipulationType;
-        private SelectedObjectType m_SelectedObjectType;
+        private SelectedObjectType selectedObjectType;
         private PointF lastPoint;
         private PointF mouseDelta;
-        private Point m_DirectZoomTopLeft;
-        private int m_iResizingHandle;
-        private Size m_ImgSize;
+        private Point directZoomTopLeft;
+        private int resizingHandle;
+        private Size imgSize;
         private Cursor cursorHandOpen;
         private Cursor cursorHandClose;
-        private int m_iLastCursorType = 0;
+        private int lastCursorType = 0;
         #endregion
 
         #region Constructor
         public DrawingToolPointer()
         {
             manipulationType = ManipulationType.None;
-            m_SelectedObjectType = SelectedObjectType.None;
+            selectedObjectType = SelectedObjectType.None;
             lastPoint = PointF.Empty;
-            m_iResizingHandle = 0;
-            m_ImgSize = new Size(320,240);
+            resizingHandle = 0;
+            imgSize = new Size(320,240);
             mouseDelta = PointF.Empty;
-            m_DirectZoomTopLeft = new Point(-1, -1);
+            directZoomTopLeft = new Point(-1, -1);
 
             SetupHandCursors();
         }
         #endregion
         
         #region AbstractDrawingTool Implementation
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             return null;
         }
-        public override Cursor GetCursor(double _fStretchFactor)
+        public override Cursor GetCursor(double stretchFactor)
         {
             return manipulationType == ManipulationType.None ? cursorHandOpen : cursorHandClose;
         }
@@ -137,7 +137,7 @@ namespace Kinovea.ScreenManager
             // If a Drawing is under a Trajectory or Chrono, we have to be able to move it around...
             //--------------------------------------------------------------------------------------
 
-            bool bHit = true;
+            bool hit = true;
             manipulationType = ManipulationType.None;
 
             metadata.UnselectAll();
@@ -152,8 +152,8 @@ namespace Kinovea.ScreenManager
                     if (!IsOnExtraDrawing(metadata, coords, currentTimeStamp))
                     {
                         // Moving the whole image (Direct Zoom)
-                        m_SelectedObjectType = SelectedObjectType.None;
-                        bHit = false;
+                        selectedObjectType = SelectedObjectType.None;
+                        hit = false;
                     }
                 }
             }
@@ -162,110 +162,98 @@ namespace Kinovea.ScreenManager
             lastPoint.X = mouseCoordinates.X;
             lastPoint.Y = mouseCoordinates.Y;
 
-            return bHit;
+            return hit;
         }
-        public bool OnMouseMove(Metadata metadata, PointF mouseLocation, Point _DirectZoomTopLeft, Keys _ModifierKeys)
+        public bool OnMouseMove(Metadata metadata, PointF mouseLocation, Point newDirectZoomTopLeft, Keys modifiers)
         {
             // Note: We work with image coordinates at subpixel accuracy.
             // Note: We only get here if left mouse button is down.
 
-            bool bIsMovingAnObject = true;
+            bool isMovingAnObject = true;
             float deltaX = 0;
             float deltaY = 0;
 
-            if (m_DirectZoomTopLeft.X == -1)
+            if (this.directZoomTopLeft.X == -1)
             {
                 // Initialize the zoom offset.
-                m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
+                this.directZoomTopLeft = new Point(newDirectZoomTopLeft.X, newDirectZoomTopLeft.Y);
             }
 
             // Find difference between previous and current position
-            deltaX = (mouseLocation.X - lastPoint.X) - (_DirectZoomTopLeft.X - m_DirectZoomTopLeft.X);
+            deltaX = (mouseLocation.X - lastPoint.X) - (newDirectZoomTopLeft.X - directZoomTopLeft.X);
             lastPoint.X = mouseLocation.X;
             
-            deltaY = (mouseLocation.Y - lastPoint.Y) - (_DirectZoomTopLeft.Y - m_DirectZoomTopLeft.Y);
+            deltaY = (mouseLocation.Y - lastPoint.Y) - (newDirectZoomTopLeft.Y - directZoomTopLeft.Y);
             lastPoint.Y = mouseLocation.Y;
             
             mouseDelta = new PointF(deltaX, deltaY);
-            m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
+            directZoomTopLeft = new Point(newDirectZoomTopLeft.X, newDirectZoomTopLeft.Y);
 
-            if (deltaX != 0 || deltaY != 0)
-            {
-                switch (manipulationType)
-                {
-                    case ManipulationType.Move:
-                        {
-                            switch (m_SelectedObjectType)
-                            {
-                                case SelectedObjectType.ExtraDrawing:
-                                    if (metadata.SelectedExtraDrawing >= 0)
-                                    {
-                                        metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys, metadata.CoordinateSystem.Zooming);
-                                    }
-                                    break;
-                                case SelectedObjectType.Drawing:
-                                    if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
-                                    {
-                                        metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys, metadata.CoordinateSystem.Zooming);
-                                    }
-                                    break;
-                                default:
-                                    bIsMovingAnObject = false;
-                                    break;
-                            }
-                        }
-                        break;
-                    case ManipulationType.Resize:
-                        {
-                            switch (m_SelectedObjectType)
-                            {
-                                case SelectedObjectType.ExtraDrawing:
-                                    if (metadata.SelectedExtraDrawing >= 0)
-                                    {
-                                        metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveHandle(mouseLocation, m_iResizingHandle, _ModifierKeys);		
-                                    }
-                                    break;
-                                case SelectedObjectType.Drawing:
-                                    if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
-                                    {
-                                        metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveHandle(mouseLocation, m_iResizingHandle, _ModifierKeys);
-                                    }
-                                    break;
-                                default:
-                                    bIsMovingAnObject = false;
-                                    break;
-                            }
-                        }
-                        break;
-                    default:
-                        bIsMovingAnObject = false;
-                        break;
-                }
-            }
-            else
-            {
-                bIsMovingAnObject = false;
-            }
+            if (deltaX == 0 && deltaY == 0)
+                return false;
 
-            return bIsMovingAnObject;
+            switch (manipulationType)
+            {
+                case ManipulationType.Move:
+                    {
+                        switch (selectedObjectType)
+                        {
+                            case SelectedObjectType.ExtraDrawing:
+                                if (metadata.SelectedExtraDrawing >= 0)
+                                    metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, modifiers, metadata.CoordinateSystem.Zooming);
+                                break;
+                            case SelectedObjectType.Drawing:
+                                if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
+                                    metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveDrawing(deltaX, deltaY, modifiers, metadata.CoordinateSystem.Zooming);
+                                break;
+                            default:
+                                isMovingAnObject = false;
+                                break;
+                        }
+                    }
+                    break;
+                case ManipulationType.Resize:
+                    {
+                        switch (selectedObjectType)
+                        {
+                            case SelectedObjectType.ExtraDrawing:
+                                if (metadata.SelectedExtraDrawing >= 0)
+                                    metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveHandle(mouseLocation, resizingHandle, modifiers);		
+                                break;
+                            case SelectedObjectType.Drawing:
+                                if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
+                                    metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveHandle(mouseLocation, resizingHandle, modifiers);
+                                break;
+                            default:
+                                isMovingAnObject = false;
+                                break;
+                        }
+                    }
+                    break;
+                default:
+                    isMovingAnObject = false;
+                    break;
+            }
+            
+            return isMovingAnObject;
         }
-        public void SetImageSize(Size _size)
+        public void SetImageSize(Size newSize)
         {
-            m_ImgSize = new Size(_size.Width, _size.Height);	
+            imgSize = newSize;
         }
-        public void SetZoomLocation(Point _point)
+        public void SetZoomLocation(Point point)
         {
-            m_DirectZoomTopLeft = new Point(_point.X, _point.Y);	
+            directZoomTopLeft = point;
         }
-        public Cursor GetCursor(int _type)
+        public Cursor GetCursor(int type)
         {
             // 0: Open hand, 1: Closed hand, -1: same as last time.
             
             Cursor cur = cursorHandOpen;
-            switch(_type)
+            switch(type)
             {
                 case -1:
-                    cur = (m_iLastCursorType == 0)?cursorHandOpen:cursorHandClose;
+                    cur = lastCursorType == 0 ? cursorHandOpen : cursorHandClose;
                     break;
                 case 1:
                     cur = cursorHandClose;
@@ -277,66 +265,62 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Helpers
-        private bool IsOnDrawing(Metadata _Metadata, int _iActiveKeyFrameIndex, Point mouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
+        private bool IsOnDrawing(Metadata metadata, int activeKeyFrameIndex, Point mouseCoordinates, long currentTimeStamp, bool allFrames)
         {
             bool bIsOnDrawing = false;
             
-            if (_bAllFrames && _Metadata.Keyframes.Count > 0)
+            if (allFrames && metadata.Keyframes.Count > 0)
             {
-                int[] zOrder = _Metadata.GetKeyframesZOrder(_iCurrentTimeStamp);
+                int[] zOrder = metadata.GetKeyframesZOrder(currentTimeStamp);
 
                 for (int i = 0; i < zOrder.Length; i++)
                 {
-                    bIsOnDrawing = DrawingHitTest(_Metadata, zOrder[i], mouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem);
+                    bIsOnDrawing = DrawingHitTest(metadata, zOrder[i], mouseCoordinates, currentTimeStamp, metadata.CoordinateSystem);
                     if (bIsOnDrawing)
-                    {
                         break;
-                    }
                 }
             }
-            else if (_iActiveKeyFrameIndex >= 0)
+            else if (activeKeyFrameIndex >= 0)
             {
-                bIsOnDrawing = DrawingHitTest(_Metadata, _iActiveKeyFrameIndex, mouseCoordinates, _Metadata[_iActiveKeyFrameIndex].Position, _Metadata.CoordinateSystem);
+                bIsOnDrawing = DrawingHitTest(metadata, activeKeyFrameIndex, mouseCoordinates, metadata[activeKeyFrameIndex].Position, metadata.CoordinateSystem);
             }
 
             return bIsOnDrawing;
         }
-        private bool DrawingHitTest(Metadata _Metadata, int _iKeyFrameIndex, Point mouseCoordinates, long _iCurrentTimeStamp, CoordinateSystem transformer)
+        private bool DrawingHitTest(Metadata metadata, int keyFrameIndex, Point mouseCoordinates, long currentTimeStamp, CoordinateSystem transformer)
         {
-            bool bDrawingHit = false;
-            Keyframe kf = _Metadata.Keyframes[_iKeyFrameIndex];
-            int hitRes = -1;
-            int iCurrentDrawing = 0;
+            bool isOnDrawing = false;
+            int hitResult = -1;
+            int currentDrawing = 0;
 
-            while (hitRes < 0 && iCurrentDrawing < kf.Drawings.Count)
+            Keyframe kf = metadata.Keyframes[keyFrameIndex];
+            while (hitResult < 0 && currentDrawing < kf.Drawings.Count)
             {
-                hitRes = kf.Drawings[iCurrentDrawing].HitTest(mouseCoordinates, _iCurrentTimeStamp, transformer, transformer.Zooming);
-                if (hitRes >= 0)
-                {
-                    bDrawingHit = true;
-                    m_SelectedObjectType = SelectedObjectType.Drawing;
-                    _Metadata.SelectedDrawing = iCurrentDrawing;
-                    _Metadata.SelectedDrawingFrame = _iKeyFrameIndex;
-                    //_Metadata.HitDrawing = kf.Drawings[iCurrentDrawing];
+                hitResult = kf.Drawings[currentDrawing].HitTest(mouseCoordinates, currentTimeStamp, transformer, transformer.Zooming);
 
-                    // Handler hit ?
-                    if (hitRes > 0)
-                    {
-                        manipulationType = ManipulationType.Resize;
-                        m_iResizingHandle = hitRes;
-                    }
-                    else
-                    {
-                        manipulationType = ManipulationType.Move;
-                    }
+                if (hitResult < 0)
+                {
+                    currentDrawing++;
+                    continue;
+                }
+                
+                isOnDrawing = true;
+                selectedObjectType = SelectedObjectType.Drawing;
+                metadata.SelectedDrawing = currentDrawing;
+                metadata.SelectedDrawingFrame = keyFrameIndex;
+
+                if (hitResult > 0)
+                {
+                    manipulationType = ManipulationType.Resize;
+                    resizingHandle = hitResult;
                 }
                 else
                 {
-                    iCurrentDrawing++;
+                    manipulationType = ManipulationType.Move;
                 }
             }
 
-            return bDrawingHit;
+            return isOnDrawing;
         }
         private bool IsOnExtraDrawing(Metadata metadata, Point mouseCoordinates, long currentTimestamp)
         {
@@ -349,75 +333,75 @@ namespace Kinovea.ScreenManager
             while (hitResult < 0 && currentDrawing < metadata.ExtraDrawings.Count)
             {
                 hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
-                if (hitResult >= 0)
+
+                if (hitResult < 0)
                 {
-                    isOnDrawing = true;
-                    m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
-                    metadata.SelectedExtraDrawing = currentDrawing;
+                    currentDrawing++;
+                    continue;
+                }
+
+                isOnDrawing = true;
+                selectedObjectType = SelectedObjectType.ExtraDrawing;
+                metadata.SelectedExtraDrawing = currentDrawing;
                     
-                    // Handler hit ?
-                    if (hitResult > 0)
-                    {
-                        manipulationType = ManipulationType.Resize;
-                        m_iResizingHandle = hitResult;
-                    }
-                    else
-                    {
-                        manipulationType = ManipulationType.Move;
-                    }
+                if (hitResult > 0)
+                {
+                    manipulationType = ManipulationType.Resize;
+                    resizingHandle = hitResult;
                 }
                 else
                 {
-                    currentDrawing++;
+                    manipulationType = ManipulationType.Move;
                 }
             }
             
             return isOnDrawing;
         }
-        private bool IsOnTrack(Metadata _Metadata, Point mouseCoordinates, long _iCurrentTimeStamp)
+        private bool IsOnTrack(Metadata metadata, Point mouseCoordinates, long currentTimeStamp)
         {
             // Track have their own special hit test because we need to differenciate the interactive case from the edit case.
-            bool bTrackHit = false;
+            bool isOnDrawing = false;
 
-            for (int i = 0; i < _Metadata.ExtraDrawings.Count; i++)
+            for (int i = 0; i < metadata.ExtraDrawings.Count; i++)
             {
-                DrawingTrack trk = _Metadata.ExtraDrawings[i] as DrawingTrack;
-                if(trk != null)
+                DrawingTrack trk = metadata.ExtraDrawings[i] as DrawingTrack;
+
+                if (trk == null)
+                    continue;
+
+                int hitResult = trk.HitTest(mouseCoordinates, currentTimeStamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
+                    
+                if (hitResult < 0)
+                    continue;
+
+                isOnDrawing = true;
+                selectedObjectType = SelectedObjectType.ExtraDrawing;
+                metadata.SelectedExtraDrawing = i;
+
+                manipulationType = ManipulationType.Move;
+
+                switch (trk.Status)
                 {
-                    // Handle signification depends on track status.
-                    int handle = trk.HitTest(mouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem, _Metadata.CoordinateSystem.Zooming);
-                    if (handle < 0)
-                        continue;
+                    case TrackStatus.Interactive:
+                        if (hitResult == 0 || hitResult == 1)
+                        {
+                            manipulationType = ManipulationType.Resize;
+                            resizingHandle = hitResult;
+                        }
+                        break;
+                    case TrackStatus.Configuration:
+                        if (hitResult > 1)
+                        {
+                            manipulationType = ManipulationType.Resize;
+                            resizingHandle = hitResult;
+                        }
+                        break;
+                }
 
-                    bTrackHit = true;
-                    m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
-                    _Metadata.SelectedExtraDrawing = i;
-
-                    manipulationType = ManipulationType.Move;
-
-                    switch (trk.Status)
-                    {
-                        case TrackStatus.Interactive:
-                            if (handle == 0 || handle == 1)
-                            {
-                                manipulationType = ManipulationType.Resize;
-                                m_iResizingHandle = handle;
-                            }
-                            break;
-                        case TrackStatus.Configuration:
-                            if (handle > 1)
-                            {
-                                manipulationType = ManipulationType.Resize;
-                                m_iResizingHandle = handle;
-                            }
-                            break;
-                    }
-
-                    break;
-                }	
+                break;	
             }
 
-            return bTrackHit;
+            return isOnDrawing;
         }
         private void SetupHandCursors()
         {
@@ -428,7 +412,7 @@ namespace Kinovea.ScreenManager
             Bitmap bmpClose = Kinovea.ScreenManager.Properties.Drawings.handclose24b;
             cursorHandClose = new Cursor(bmpClose.GetHicon());
 
-            m_iLastCursorType = 0;
+            lastCursorType = 0;
         }
         #endregion
     }
