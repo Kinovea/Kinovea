@@ -7,6 +7,8 @@ using System.IO;
 using System.Globalization;
 using Kinovea.ScreenManager;
 using Kinovea.Services;
+using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 
 namespace Kinovea.Tests.Metadata
 {
@@ -24,6 +26,7 @@ namespace Kinovea.Tests.Metadata
         
         private long durationTimestamps;
         private Size imageSize;
+        private long averageTimestampPerFrame;
 
         public KVAFuzzer20()
         {
@@ -38,8 +41,6 @@ namespace Kinovea.Tests.Metadata
 
             Initialize();
             
-
-
             XmlTextWriter w = new XmlTextWriter(output, Encoding.UTF8);
             w.Formatting = Formatting.Indented;
             
@@ -47,13 +48,15 @@ namespace Kinovea.Tests.Metadata
             w.WriteStartElement("KinoveaVideoAnalysis");
 
             WriteGeneralInformation(w);
-            WriteKeyframes(w);
-            WriteChronos(w);
-            /*WriteTracks(w);
-            WriteSpotlights(w);
-            WriteAutoNumbers(w);
-            WriteCoordinateSystem(w);
-            WriteTrackablePoints(w);*/
+            //WriteKeyframes(w);
+            //WriteChronos(w);
+            //WriteExtraDrawings(w, 50, "Chronos", "Chrono", WriteChrono);
+            WriteExtraDrawings(w, 50, "Tracks", "Track", WriteTrack);
+            //WriteTracks(w);
+            //WriteSpotlights(w);
+            //WriteAutoNumbers(w);
+            //WriteCoordinateSystem(w);
+            //WriteTrackablePoints(w);
             
             w.WriteEndElement();
             w.WriteEndDocument();
@@ -64,15 +67,15 @@ namespace Kinovea.Tests.Metadata
 
         private void Initialize()
         {
-            //durationTimestamps = random.Next(10000);
             durationTimestamps = 100000;
             imageSize = random.NextSize(50, 4096);
+            averageTimestampPerFrame = 1;
         }
 
         private void WriteGeneralInformation(XmlTextWriter w)
         {
             //long averageTimestampPerFrame = random.Next(1, 5000);
-            long averageTimestampPerFrame = 1;
+            
             double captureFPS = 1 + random.NextDouble() * 600;
             //long firstTimestamp = random.Next(0, 50);
             long firstTimestamp = 0;
@@ -215,19 +218,19 @@ namespace Kinovea.Tests.Metadata
             WriteInfosFading(w);
             w.WriteEndElement();
         }
-        
-        private void WriteChronos(XmlTextWriter w)
+
+        private void WriteExtraDrawings(XmlTextWriter w, int max, string name, string itemName, Action<XmlTextWriter> itemWriter)
         {
-            int count = random.Next(0, 50);
+            int count = random.Next(0, max);
             if (count == 0)
                 return;
 
-            w.WriteStartElement("Chronos");
-            
-            for(int i=0; i < count; i++)
+            w.WriteStartElement(name);
+
+            for (int i = 0; i < count; i++)
             {
-                w.WriteStartElement("Chrono");
-                WriteChrono(w);
+                w.WriteStartElement(itemName);
+                itemWriter(w);
                 w.WriteEndElement();
             }
 
@@ -266,6 +269,126 @@ namespace Kinovea.Tests.Metadata
             w.WriteEndElement();
         }
 
+        private void WriteTrack(XmlTextWriter w)
+        {
+            long beginTimestamp = random.Next((int)durationTimestamps);
+
+            Array viewValues = Enum.GetValues(typeof(TrackView));
+            TrackView view = (TrackView)viewValues.GetValue(random.Next(viewValues.Length));
+            Array extraDataValues = Enum.GetValues(typeof(TrackExtraData));
+            TrackExtraData extraData = (TrackExtraData)extraDataValues.GetValue(random.Next(extraDataValues.Length));
+            Array markerValues = Enum.GetValues(typeof(TrackMarker));
+            TrackMarker marker = (TrackMarker)markerValues.GetValue(random.Next(markerValues.Length));
+            bool displayBestFitCircle = random.NextBoolean();
+            string mainLabelText = random.NextString(20);
+
+            w.WriteElementString("TimePosition", beginTimestamp.ToString());
+            w.WriteElementString("Mode", view.ToString());
+            w.WriteElementString("ExtraData", extraData.ToString());
+            w.WriteElementString("Marker", marker.ToString());
+            w.WriteElementString("DisplayBestFitCircle", displayBestFitCircle.ToString().ToLower());
+
+            WriteTrackerParameters(w);
+            WriteTrackPoints(w, beginTimestamp);
+
+            w.WriteStartElement("DrawingStyle");
+            WriteDrawingStyleColor(w, "color");
+            WriteDrawingStyleLineSize(w, "line size");
+            WriteDrawingStyleTrackShape(w, "track shape");
+            w.WriteEndElement();
+
+            w.WriteStartElement("MainLabel");
+            w.WriteAttributeString("Text", mainLabelText);
+            PointF location = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            w.WriteElementString("SpacePosition", XmlHelper.WritePointF(location));
+            w.WriteElementString("TimePosition", "0");
+            w.WriteEndElement();
+
+            
+            /*if (keyframesLabels.Count > 0)
+            {
+                w.WriteStartElement("KeyframeLabelList");
+                w.WriteAttributeString("Count", keyframesLabels.Count.ToString());
+
+                foreach (KeyframeLabel kfl in keyframesLabels)
+                {
+                    w.WriteStartElement("KeyframeLabel");
+                    kfl.WriteXml(w);
+                    w.WriteEndElement();
+                }
+
+                w.WriteEndElement();
+            }*/
+        }
+
+        private void WriteTrackPoints(XmlTextWriter w, long beginTimestamp)
+        {
+            int count = random.Next(0, 1000);
+            List<TrackPointBlock> positions = new List<TrackPointBlock>();
+
+            for (int i = 0; i < count; i++)
+            {
+                PointF location = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+                long t = beginTimestamp + (i * averageTimestampPerFrame);
+                TrackPointBlock point = new TrackPointBlock(location.X, location.Y, t);
+                positions.Add(point);
+            }
+
+            w.WriteStartElement("TrackPointList");
+            w.WriteAttributeString("Count", count.ToString());
+            //w.WriteAttributeString("UserUnitLength", parentMetadata.CalibrationHelper.GetLengthAbbreviation());
+
+            if (positions.Count > 0)
+            {
+                foreach (AbstractTrackPoint tp in positions)
+                {
+                    w.WriteStartElement("TrackPoint");
+
+                    /*PointF p = parentMetadata.CalibrationHelper.GetPoint(tp.Point);
+                    string userT = parentMetadata.TimeCodeBuilder(tp.T, TimeType.Time, TimecodeFormat.Unknown, false);
+
+                    w.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
+                    w.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
+                    w.WriteAttributeString("UserY", String.Format("{0:0.00}", p.Y));
+                    w.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
+                    w.WriteAttributeString("UserTime", userT);*/
+
+                    tp.WriteXml(w);
+                    w.WriteEndElement();
+                }
+            }
+
+            w.WriteEndElement();
+        }
+
+        private void WriteSpotlights(XmlTextWriter w)
+        {
+
+        }
+
+        private void WriteAutoNumbers(XmlTextWriter w)
+        {
+
+        }
+
+        private void WriteCoordinateSystem(XmlTextWriter w)
+        {
+            Guid id = Guid.NewGuid();
+            bool visible = random.NextBoolean();
+            
+            w.WriteStartElement("CoordinateSystem");
+            w.WriteAttributeString("id", id.ToString());
+
+            w.WriteElementString("Visible", visible.ToString().ToLower());
+            
+            w.WriteEndElement();
+        }
+
+        private void WriteTrackablePoints(XmlTextWriter w)
+        {
+
+        }
+
         #region Common utilities
         private QuadrilateralF GetRandomQuadrilateral()
         {
@@ -277,6 +400,24 @@ namespace Kinovea.Tests.Metadata
 
             return new QuadrilateralF(a, b, c, d);
         }
+
+        private void WriteTrackerParameters(XmlTextWriter w)
+        {
+            double similarityThreshold = random.NextDouble(0.5, 1.0);
+            double templateUpdateThreshold = random.NextDouble(0.4, similarityThreshold);
+            int refinementNeighborhood = random.Next(1, 4);
+            Size referenceSearchWindow = new Size(imageSize.Width / 20, imageSize.Height / 20);
+            Size searchWindow = random.NextSize(referenceSearchWindow.Width - 10, referenceSearchWindow.Width + 10, referenceSearchWindow.Height - 10, referenceSearchWindow.Height + 10);
+            Size blockWindow = random.NextSize(4, searchWindow.Width, 4, searchWindow.Height + 10);
+
+            w.WriteStartElement("TrackerParameters");
+            w.WriteElementString("SimilarityThreshold", String.Format(CultureInfo.InvariantCulture, "{0}", similarityThreshold));
+            w.WriteElementString("TemplateUpdateThreshold", String.Format(CultureInfo.InvariantCulture, "{0}", templateUpdateThreshold));
+            w.WriteElementString("RefinementNeighborhood", String.Format(CultureInfo.InvariantCulture, "{0}", refinementNeighborhood));
+            w.WriteElementString("SearchWindow", XmlHelper.WriteSizeF(searchWindow));
+            w.WriteElementString("BlockWindow", XmlHelper.WriteSizeF(blockWindow));
+            w.WriteEndElement();
+        }
         
         private void WriteDrawingStyleColor(XmlTextWriter w, string key)
         {
@@ -287,7 +428,30 @@ namespace Kinovea.Tests.Metadata
             w.WriteElementString("Value", XmlHelper.WriteColor(color, true));
             w.WriteEndElement();
         }
-        
+
+        private void WriteDrawingStyleLineSize(XmlTextWriter w, string key)
+        {
+            int lineSize = random.Next(1, 20);
+
+            w.WriteStartElement("LineSize");
+            w.WriteAttributeString("Key", key);
+            w.WriteElementString("Value", lineSize.ToString());
+            w.WriteEndElement();
+        }
+
+        private void WriteDrawingStyleTrackShape(XmlTextWriter w, string key)
+        {
+            Array values = Enum.GetValues(typeof(DashStyle));
+            DashStyle value = (DashStyle)values.GetValue(random.Next(values.Length));
+            bool showSteps = random.NextBoolean();
+            string output = string.Format("{0};{1}", value.ToString(), showSteps.ToString().ToLower());
+
+            w.WriteStartElement("TrackShape");
+            w.WriteAttributeString("Key", key);
+            w.WriteElementString("Value", output);
+            w.WriteEndElement();
+        }
+
         private void WriteDrawingStyleFont(XmlTextWriter w, string key)
         {
             int fontSize = random.Next(6, 32);
