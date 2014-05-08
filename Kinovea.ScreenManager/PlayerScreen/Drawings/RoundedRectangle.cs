@@ -85,8 +85,6 @@ namespace Kinovea.ScreenManager
         {
             int result = -1;
 
-            /*SizeF size = transformer.Untransform(m_Rectangle.Size);
-            RectangleF hitArea = new RectangleF(m_Rectangle.Location, size);*/
             SizeF size = rectangle.Size;
             RectangleF hitArea = rectangle;
 

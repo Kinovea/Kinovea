@@ -1436,8 +1436,8 @@ namespace Kinovea.ScreenManager
         public void RecallState()
         {
             // Used when the user cancels his modifications on formConfigureTrajectory.
-            // m_StyleHelper has been reverted already as part of style elements framework.
-            // This in turn triggered mainStyle_ValueChanged() event handler so the m_MainLabel has been reverted already too.
+            // styleHelper has been reverted already as part of style elements framework.
+            // This in turn triggered mainStyle_ValueChanged() event handler so the mainLabel has been reverted already too.
             trackView = memoTrackView;
             mainLabelText = memoLabel;
         }
