@@ -124,6 +124,10 @@ namespace Kinovea.ScreenManager
         {
             corners = corners.Select( p => p.Translate(x,y)).ToArray();
         }
+        public void Scale(float x, float y)
+        {
+            corners = corners.Select(p => p.Scale(x, y)).ToArray();
+        }
         public void Expand(float width, float height)
         {
             A = A.Translate(-width, -height);

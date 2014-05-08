@@ -152,8 +152,7 @@ namespace Kinovea.ScreenManager
                         metadata.GlobalTitle = r.ReadElementContentAsString();
                         break;
                     case "ImageSize":
-                        Point p = XmlHelper.ParsePoint(r.ReadElementContentAsString());
-                        inputImageSize = new Size(p);
+                        inputImageSize = XmlHelper.ParseSize(r.ReadElementContentAsString());
                         break;
                     case "AverageTimeStampsPerFrame":
                         inputAverageTimeStampsPerFrame = r.ReadElementContentAsLong();
@@ -168,7 +167,7 @@ namespace Kinovea.ScreenManager
                         inputSelectionStart = r.ReadElementContentAsLong();
                         break;
                     case "Calibration":
-                        metadata.CalibrationHelper.ReadXml(r);
+                        metadata.CalibrationHelper.ReadXml(r, GetScaling());
                         break;
                     case "Keyframes":
                         ParseKeyframes(r);
@@ -484,25 +483,9 @@ namespace Kinovea.ScreenManager
             // so these exports have more user friendly values. (timecode vs timestamps, cm vs pixels, etc.)
 
             w.WriteStartElement("KinoveaVideoAnalysis");
-            WriteGeneralInformation(w);
-
-            // Keyframes
-            int actives = metadata.Keyframes.Count(kf => !kf.Disabled);
             
-            if (actives > 0)
-            {
-                w.WriteStartElement("Keyframes");
-                
-                foreach (Keyframe kf in metadata.Keyframes.Where(kf => !kf.Disabled))
-                {
-                    w.WriteStartElement("Keyframe");
-                    kf.WriteXml(w);
-                    w.WriteEndElement();
-                }
-
-                w.WriteEndElement();
-            }
-
+            WriteGeneralInformation(w);
+            WriteKeyframes(w);
             WriteChronos(w);
             WriteTracks(w);
             WriteSpotlights(w);
@@ -528,6 +511,23 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("SelectionStart", metadata.SelectionStart.ToString());
 
             WriteCalibrationHelp(w);
+        }
+        private void WriteKeyframes(XmlWriter w)
+        {
+            int enabled = metadata.Keyframes.Count(kf => !kf.Disabled);
+            if (enabled == 0)
+                return;
+            
+            w.WriteStartElement("Keyframes");
+
+            foreach (Keyframe kf in metadata.Keyframes.Where(kf => !kf.Disabled))
+            {
+                w.WriteStartElement("Keyframe");
+                kf.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            w.WriteEndElement();
         }
         private void WriteChronos(XmlWriter w)
         {

@@ -377,7 +377,7 @@ namespace Kinovea.ScreenManager
             w.WriteString(lengthUnit.ToString());
             w.WriteEndElement();
         }
-        public void ReadXml(XmlReader r)
+        public void ReadXml(XmlReader r, PointF scale)
         {
             r.ReadStartElement();
             
@@ -388,13 +388,13 @@ namespace Kinovea.ScreenManager
                     case "CalibrationPlane":
                         calibratorType = CalibratorType.Plane;
                         calibrator = calibrationPlane;
-                        calibrationPlane.ReadXml(r);
+                        calibrationPlane.ReadXml(r, scale);
                         ComputeBoundingRectangle();
                         break;
                     case "CalibrationLine":
                         calibratorType = CalibratorType.Line;
                         calibrator = calibrationLine;
-                        calibrationLine.ReadXml(r);
+                        calibrationLine.ReadXml(r, scale);
                         break;
                     case "Unit":
                         lengthUnit = (LengthUnit) Enum.Parse(typeof(LengthUnit), r.ReadElementContentAsString());

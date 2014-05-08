@@ -157,32 +157,32 @@ namespace Kinovea.ScreenManager
             
             if(!string.IsNullOrEmpty(comments))
                 w.WriteElementString("Comment", comments);
+
+            if (drawings.Count == 0)
+                return;
             
-            if (drawings.Count > 0)
+            w.WriteStartElement("Drawings");
+            foreach (AbstractDrawing drawing in drawings)
             {
-                w.WriteStartElement("Drawings");
-                foreach (AbstractDrawing drawing in drawings)
+                IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
+                if(serializableDrawing != null)
                 {
-                    IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
-                    if(serializableDrawing != null)
-                    {
-                        // The XML name for this drawing should be stored in its [XMLType] C# attribute.
-                        Type t = serializableDrawing.GetType();
-                        object[] attributes = t.GetCustomAttributes(typeof(XmlTypeAttribute), false);
+                    // The XML name for this drawing should be stored in its [XMLType] C# attribute.
+                    Type t = serializableDrawing.GetType();
+                    object[] attributes = t.GetCustomAttributes(typeof(XmlTypeAttribute), false);
                     
-                        if(attributes.Length > 0)
-                        {
-                            string xmlName = ((XmlTypeAttribute)attributes[0]).TypeName;
+                    if(attributes.Length > 0)
+                    {
+                        string xmlName = ((XmlTypeAttribute)attributes[0]).TypeName;
                             
-                            w.WriteStartElement(xmlName);
-                            w.WriteAttributeString("id", drawing.ID.ToString());
-                            serializableDrawing.WriteXml(w);
-                            w.WriteEndElement();
-                        }
+                        w.WriteStartElement(xmlName);
+                        w.WriteAttributeString("id", drawing.ID.ToString());
+                        serializableDrawing.WriteXml(w);
+                        w.WriteEndElement();
                     }
                 }
-                w.WriteEndElement();
             }
+            w.WriteEndElement();
         }
         #endregion
 

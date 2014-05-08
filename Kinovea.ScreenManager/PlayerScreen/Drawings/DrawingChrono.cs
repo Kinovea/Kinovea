@@ -308,9 +308,8 @@ namespace Kinovea.ScreenManager
                 switch(xmlReader.Name)
                 {
                     case "Position":
-                        Point p = XmlHelper.ParsePoint(xmlReader.ReadElementContentAsString());
-                        Point location = p.Scale(scale.X, scale.Y);
-                        mainBackground.Rectangle = new Rectangle(location, Size.Empty);
+                        PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                        mainBackground.Rectangle = new RectangleF(p.Scale(scale.X, scale.Y), SizeF.Empty);
                         break;
                     case "Values":
                         ParseWorkingValues(xmlReader, remapTimestampCallback);
