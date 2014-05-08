@@ -1128,88 +1128,89 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region XML import/export
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            xmlWriter.WriteElementString("TimePosition", beginTimeStamp.ToString());
+            w.WriteElementString("TimePosition", beginTimeStamp.ToString());
             
             TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackView));
             string xmlMode = enumConverter.ConvertToString(trackView);
-            xmlWriter.WriteElementString("Mode", xmlMode);
+            w.WriteElementString("Mode", xmlMode);
             
             enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
             string xmlExtraData = enumConverter.ConvertToString(trackExtraData);
-            xmlWriter.WriteElementString("ExtraData", xmlExtraData);
+            w.WriteElementString("ExtraData", xmlExtraData);
 
             enumConverter = TypeDescriptor.GetConverter(typeof(TrackMarker));
             string xmlTrackMarker = enumConverter.ConvertToString(trackMarker);
-            xmlWriter.WriteElementString("Marker", xmlTrackMarker);
+            w.WriteElementString("Marker", xmlTrackMarker);
 
-            xmlWriter.WriteElementString("DisplayBestFitCircle", displayBestFitCircle.ToString().ToLower());
+            w.WriteElementString("DisplayBestFitCircle", displayBestFitCircle.ToString().ToLower());
 
-            xmlWriter.WriteStartElement("TrackerParameters");
-            tracker.Parameters.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("TrackerParameters");
+            tracker.Parameters.WriteXml(w);
+            w.WriteEndElement();
 
-            TrackPointsToXml(xmlWriter);
+            TrackPointsToXml(w);
             
-            xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("DrawingStyle");
+            style.WriteXml(w);
+            w.WriteEndElement();
             
-            xmlWriter.WriteStartElement("MainLabel");
-            xmlWriter.WriteAttributeString("Text", mainLabelText);
+            w.WriteStartElement("MainLabel");
+            w.WriteAttributeString("Text", mainLabelText);
             
             // Reset to first point.
             if (positions.Count > 0)
                 mainLabel.SetAttach(positions[0].Point, true);
-            mainLabel.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            mainLabel.WriteXml(w);
+            w.WriteEndElement();
 
             if (positions.Count > 0)
                 mainLabel.SetAttach(positions[currentPoint].Point, true);
             
             if (keyframesLabels.Count > 0)
             {
-                xmlWriter.WriteStartElement("KeyframeLabelList");
-                xmlWriter.WriteAttributeString("Count", keyframesLabels.Count.ToString());
+                w.WriteStartElement("KeyframeLabelList");
+                w.WriteAttributeString("Count", keyframesLabels.Count.ToString());
 
                 foreach (KeyframeLabel kfl in keyframesLabels)
                 {
-                    xmlWriter.WriteStartElement("KeyframeLabel");
-                    kfl.WriteXml(xmlWriter);
-                    xmlWriter.WriteEndElement();
+                    w.WriteStartElement("KeyframeLabel");
+                    kfl.WriteXml(w);
+                    w.WriteEndElement();
                 }
 
-                xmlWriter.WriteEndElement();
+                w.WriteEndElement();
             }
         }
-        private void TrackPointsToXml(XmlWriter xmlWriter)
+        private void TrackPointsToXml(XmlWriter w)
         {
-            xmlWriter.WriteStartElement("TrackPointList");
-            xmlWriter.WriteAttributeString("Count", positions.Count.ToString());
-            xmlWriter.WriteAttributeString("UserUnitLength", parentMetadata.CalibrationHelper.GetLengthAbbreviation());
+            w.WriteStartElement("TrackPointList");
+            w.WriteAttributeString("Count", positions.Count.ToString());
+            w.WriteAttributeString("UserUnitLength", parentMetadata.CalibrationHelper.GetLengthAbbreviation());
             
             if(positions.Count > 0)
             {
                 foreach (AbstractTrackPoint tp in positions)
                 {
-                    xmlWriter.WriteStartElement("TrackPoint");
+                    w.WriteStartElement("TrackPoint");
                     
                     PointF p = parentMetadata.CalibrationHelper.GetPoint(tp.Point);
                     string userT = parentMetadata.TimeCodeBuilder(tp.T, TimeType.Time, TimecodeFormat.Unknown, false);
                     
-                    xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
-                    xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
-                    xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", p.Y));
-                    xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
-                    xmlWriter.WriteAttributeString("UserTime", userT);
+                    w.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
+                    w.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
+                    w.WriteAttributeString("UserY", String.Format("{0:0.00}", p.Y));
+                    w.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
+                    w.WriteAttributeString("UserTime", userT);
             
-                    tp.WriteXml(xmlWriter);
+                    tp.WriteXml(w);
                     
-                    xmlWriter.WriteEndElement();
+                    w.WriteEndElement();
                 }
             }
-            xmlWriter.WriteEndElement();
+
+            w.WriteEndElement();
         }
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
@@ -1253,7 +1254,7 @@ namespace Kinovea.ScreenManager
                         displayBestFitCircle = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "TrackerParameters":
-                        tracker.Parameters = TrackerParameters.ReadXml(xmlReader);
+                        tracker.Parameters = TrackerParameters.ReadXml(xmlReader, scale);
                         break;
                     case "TrackPointList":
                         ParseTrackPointList(xmlReader, scale, timestampMapper);
@@ -1307,7 +1308,7 @@ namespace Kinovea.ScreenManager
                     AbstractTrackPoint tp = tracker.CreateOrphanTrackPoint(PointF.Empty, 0);
                     tp.ReadXml(xmlReader);
                     
-                    // time was stored in relative value, we still need to adjust it.
+                    // Time is stored in absolute timestamps.
                     AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T, true));
 
                     positions.Add(adapted);

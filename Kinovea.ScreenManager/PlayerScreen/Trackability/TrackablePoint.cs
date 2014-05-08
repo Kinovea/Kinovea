@@ -193,7 +193,7 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
         }
 
-        public TrackablePoint(XmlReader r)
+        public TrackablePoint(XmlReader r, PointF scale)
         {
             r.ReadStartElement();
 
@@ -202,7 +202,7 @@ namespace Kinovea.ScreenManager
                 switch (r.Name)
                 {
                     case "TrackerParameters":
-                        trackerParameters = TrackerParameters.ReadXml(r);
+                        trackerParameters = TrackerParameters.ReadXml(r, scale);
                         break;
                     case "NonTrackingValue":
                         nonTrackingValue = XmlHelper.ParsePointF(r.ReadElementContentAsString());

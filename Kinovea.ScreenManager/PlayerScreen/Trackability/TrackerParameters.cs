@@ -128,7 +128,7 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("BlockWindow", String.Format(CultureInfo.InvariantCulture, "{0};{1}", blockWindow.Width, blockWindow.Height));
         }
 
-        public static TrackerParameters ReadXml(XmlReader r)
+        public static TrackerParameters ReadXml(XmlReader r, PointF scale)
         {
             TrackingProfile classic = new TrackingProfile();
             double similarityThreshold = classic.SimilarityThreshold;
@@ -154,9 +154,11 @@ namespace Kinovea.ScreenManager
                         break;
                     case "SearchWindow":
                         searchWindow = XmlHelper.ParseSize(r.ReadElementContentAsString());
+                        searchWindow = new SizeF(searchWindow.Width * scale.X, searchWindow.Height * scale.Y).ToSize();
                         break;
                     case "BlockWindow":
                         blockWindow = XmlHelper.ParseSize(r.ReadElementContentAsString());
+                        blockWindow = new SizeF(blockWindow.Width * scale.X, blockWindow.Height * scale.Y).ToSize();
                         break;
                     default:
                         string outerXml = r.ReadOuterXml();
