@@ -10,8 +10,9 @@ using System.IO;
 using System.Threading;
 using System.Globalization;
 using System.Drawing.Drawing2D;
+using Kinovea.ScreenManager;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.Tests.Kinematics
 {
     /// <summary>
     /// Creates video at a given framerate, size and with object moving at given speed.
@@ -20,11 +21,11 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void CreateVideo(string path, int width, int height, double fps, double durationSeconds, MovingObject o)
+        public void CreateVideo(string outputPath, int width, int height, double fps, double durationSeconds, MovingObject o)
         {
             string extension = "avi";
             string filename = string.Format("{0:yyyyMMddTHHmmss}-{1}x{2}px-{3}s-{4}Hz.{5}", DateTime.Now, width, height, durationSeconds, fps, extension);
-            string filepath = Path.Combine(path, filename);
+            string filepath = Path.Combine(outputPath, filename);
             int intervalMilliseconds = (int)(1000 / fps);
             Size frameSize = new Size(width, height);
 
