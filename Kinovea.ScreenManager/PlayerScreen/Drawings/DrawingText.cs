@@ -203,9 +203,8 @@ namespace Kinovea.ScreenManager
                         text = xmlReader.ReadElementContentAsString();
                         break;
                     case "Position":
-                        Point p = XmlHelper.ParsePoint(xmlReader.ReadElementContentAsString());
-                        Point location = new Point((int)((float)p.X * scale.X), (int)((float)p.Y * scale.Y));
-                        background.Rectangle = new Rectangle(location, Size.Empty);
+                        PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                        background.Rectangle = new RectangleF(p.Scale(scale.X, scale.Y), SizeF.Empty);
                         break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
@@ -227,7 +226,7 @@ namespace Kinovea.ScreenManager
         public void WriteXml(XmlWriter xmlWriter)
         {
             xmlWriter.WriteElementString("Text", text);
-            xmlWriter.WriteElementString("Position", String.Format(CultureInfo.InvariantCulture, "{0};{1}", background.Rectangle.X, background.Rectangle.Y));
+            xmlWriter.WriteElementString("Position", XmlHelper.WritePointF(background.Rectangle.Location));
             
             xmlWriter.WriteStartElement("DrawingStyle");
             style.WriteXml(xmlWriter);

@@ -126,7 +126,7 @@ namespace Kinovea.ScreenManager
         #region Serialization
         public void WriteXml(XmlWriter w)
         {
-            w.WriteElementString("Size", String.Format(CultureInfo.InvariantCulture, "{0};{1}", size.Width, size.Height));
+            w.WriteElementString("Size", XmlHelper.WriteSizeF(size));
             
             w.WriteStartElement("Quadrilateral");
             WritePointF(w, "A", quadImage.A);
@@ -139,9 +139,9 @@ namespace Kinovea.ScreenManager
         }
         private void WritePointF(XmlWriter w, string name, PointF p)
         {
-            w.WriteElementString(name, String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
+            w.WriteElementString(name, XmlHelper.WritePointF(p));
         }
-        public void ReadXml(XmlReader r)
+        public void ReadXml(XmlReader r, PointF scale)
         {
             r.ReadStartElement();
             
@@ -153,7 +153,7 @@ namespace Kinovea.ScreenManager
                         size = XmlHelper.ParseSizeF(r.ReadElementContentAsString());
                         break;
                     case "Quadrilateral":
-                        ParseQuadrilateral(r);
+                        ParseQuadrilateral(r, scale);
                         break;
                     case "Origin":
                         origin = XmlHelper.ParsePointF(r.ReadElementContentAsString());
@@ -170,7 +170,7 @@ namespace Kinovea.ScreenManager
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
             initialized = true;
         }
-        private void ParseQuadrilateral(XmlReader r)
+        private void ParseQuadrilateral(XmlReader r, PointF scale)
         {
             r.ReadStartElement();
             
@@ -196,7 +196,9 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }
-            
+
+            quadImage.Scale(scale.X, scale.Y);
+
             r.ReadEndElement();
         }
         #endregion

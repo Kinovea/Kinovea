@@ -69,10 +69,10 @@ namespace Kinovea.ScreenManager
         #region Serialization
         public void WriteXml(XmlWriter w)
         {
-            w.WriteElementString("Origin", String.Format(CultureInfo.InvariantCulture, "{0};{1}", origin.X, origin.Y));
-            w.WriteElementString("Scale", String.Format(CultureInfo.InvariantCulture, "{0}", scale));
+            w.WriteElementString("Origin", XmlHelper.WritePointF(origin));
+            w.WriteElementString("Scale", string.Format(CultureInfo.InvariantCulture, "{0}", scale));
         }
-        public void ReadXml(XmlReader r)
+        public void ReadXml(XmlReader r, PointF scaling)
         {
             r.ReadStartElement();
             
@@ -82,6 +82,7 @@ namespace Kinovea.ScreenManager
                 {
                     case "Origin":
                         origin = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        origin = origin.Scale(scaling.X, scaling.Y);
                         break;
                     case "Scale":
                         scale = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);

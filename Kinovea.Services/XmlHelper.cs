@@ -34,22 +34,6 @@ namespace Kinovea.Services
         // Note: the built-in TypeConverters are crashing on some machines for unknown reason. (TypeDescriptor.GetConverter(typeof(Point)))
     	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public static Point ParsePoint(string str)
-        {
-            Point point = Point.Empty;
-            
-            try
-            {
-                string[] a = str.Split(new char[] {';'});
-                point = new Point(int.Parse(a[0]), int.Parse(a[1]));
-            }
-            catch (Exception)
-            {
-                log.Error(String.Format("An error happened while parsing Point value. ({0}).", str));
-            }
-
-            return point;
-        }
         public static PointF ParsePointF(string str)
         {
             PointF point = PointF.Empty;
@@ -238,6 +222,19 @@ namespace Kinovea.Services
         public static string WritePointF(PointF point)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0};{1}", point.X, point.Y);
+        }
+        
+        public static string WriteSizeF(SizeF size)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0};{1}", size.Width, size.Height);
+        }
+
+        public static string WriteColor(Color color, bool alpha)
+        {
+            if (alpha)
+                return string.Format("{0};{1};{2};{3}", color.A.ToString(), color.R.ToString(), color.G.ToString(), color.B.ToString());
+            else
+                return string.Format("{0};{1};{2}", color.R.ToString(), color.G.ToString(), color.B.ToString());
         }
     
     }
