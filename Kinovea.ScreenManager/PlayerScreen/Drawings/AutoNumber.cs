@@ -65,10 +65,10 @@ namespace Kinovea.ScreenManager
             
             SetText(value.ToString());
         }
-        public AutoNumber(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, long averageTimeStampsPerFrame, StyleHelper styleHelper)
+        public AutoNumber(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, long averageTimeStampsPerFrame, StyleHelper styleHelper)
             : this(0, 0, Point.Empty, 0, styleHelper)
         {
-             ReadXml(xmlReader, scale, remapTimestampCallback);
+             ReadXml(xmlReader, scale, timestampMapper);
              
              infosFading = new InfosFading(position, averageTimeStampsPerFrame);
              infosFading.UseDefault = false;
@@ -140,9 +140,9 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region KVA Serialization
-        private void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback)
+        private void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
-            if(remapTimestampCallback == null)
+            if(timestampMapper == null)
             {
                 xmlReader.ReadOuterXml();
                 return;                
@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
                 switch(xmlReader.Name)
                 {
                     case "Time":
-                        position = remapTimestampCallback(xmlReader.ReadElementContentAsLong(), false);
+                        position = timestampMapper(xmlReader.ReadElementContentAsLong(), false);
                         break;
                     case "Location":
                         PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());

@@ -66,10 +66,10 @@ namespace Kinovea.ScreenManager
             infosFading.UseDefault = false;
             infosFading.FadingFrames = 25;
         }
-        public Spotlight(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, long averageTimeStampsPerFrame)
+        public Spotlight(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, long averageTimeStampsPerFrame)
             : this(0, 0, Point.Empty)
         {
-             ReadXml(xmlReader, scale, remapTimestampCallback);
+             ReadXml(xmlReader, scale, timestampMapper);
              
              infosFading = new InfosFading(position, averageTimeStampsPerFrame);
              infosFading.UseDefault = false;
@@ -199,7 +199,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region KVA Serialization
-        private void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper timeStampMapper)
+        private void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timeStampMapper)
         {
             if(timeStampMapper == null)
             {

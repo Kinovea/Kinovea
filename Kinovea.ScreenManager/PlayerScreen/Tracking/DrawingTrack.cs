@@ -329,10 +329,10 @@ namespace Kinovea.ScreenManager
         }
 
         
-        public DrawingTrack(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, Size imageSize)
+        public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Size imageSize)
             : this(Point.Empty,0, null, imageSize)
         {
-            ReadXml(xmlReader, scale, remapTimestampCallback);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
@@ -1211,11 +1211,11 @@ namespace Kinovea.ScreenManager
             }
             xmlWriter.WriteEndElement();
         }
-        public void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             invalid = true;
                 
-            if (remapTimestampCallback == null)
+            if (timestampMapper == null)
             {
                 string unparsed = xmlReader.ReadOuterXml();
                 log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
@@ -1229,7 +1229,7 @@ namespace Kinovea.ScreenManager
                 switch(xmlReader.Name)
                 {
                     case "TimePosition":
-                        beginTimeStamp = remapTimestampCallback(xmlReader.ReadElementContentAsLong(), false);
+                        beginTimeStamp = timestampMapper(xmlReader.ReadElementContentAsLong(), false);
                         break;
                     case "Mode":
                         {
@@ -1256,7 +1256,7 @@ namespace Kinovea.ScreenManager
                         tracker.Parameters = TrackerParameters.ReadXml(xmlReader);
                         break;
                     case "TrackPointList":
-                        ParseTrackPointList(xmlReader, scale, remapTimestampCallback);
+                        ParseTrackPointList(xmlReader, scale, timestampMapper);
                         break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
@@ -1295,7 +1295,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public void ParseTrackPointList(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback)
+        public void ParseTrackPointList(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             positions.Clear();
             xmlReader.ReadStartElement();
@@ -1308,7 +1308,7 @@ namespace Kinovea.ScreenManager
                     tp.ReadXml(xmlReader);
                     
                     // time was stored in relative value, we still need to adjust it.
-                    AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), remapTimestampCallback(tp.T, true));
+                    AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T, true));
 
                     positions.Add(adapted);
                 }
