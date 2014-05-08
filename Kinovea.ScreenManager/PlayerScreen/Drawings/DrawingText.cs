@@ -243,10 +243,13 @@ namespace Kinovea.ScreenManager
             this.editing = editing;
 
             if(imageToViewportTransformer == null)
-               imageToViewportTransformer = transformer; 
+               imageToViewportTransformer = transformer;
 
             if (editing)
+            {
                 RelocateEditbox(); // This is needed because the container top-left corner may have changed 
+                textBox.Text = text;
+            }
             
             textBox.Visible = editing;
         }
