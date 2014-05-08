@@ -132,12 +132,12 @@ namespace Kinovea.Services
             this.AverageTimeStampsPerFrame = origin.AverageTimeStampsPerFrame;
             this.MasterFactor = origin.MasterFactor;
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            xmlWriter.WriteElementString("Enabled", enabled ? "true" : "false");
-            xmlWriter.WriteElementString("Frames", fadingFrames.ToString());
-            xmlWriter.WriteElementString("AlwaysVisible", alwaysVisible ? "true" : "false");
-            xmlWriter.WriteElementString("UseDefault", useDefault ? "true" : "false");
+            w.WriteElementString("Enabled", enabled.ToString().ToLower());
+            w.WriteElementString("Frames", fadingFrames.ToString());
+            w.WriteElementString("AlwaysVisible", alwaysVisible.ToString().ToLower());
+            w.WriteElementString("UseDefault", useDefault.ToString().ToLower());
         }
         public void ReadXml(XmlReader xmlReader)
         {
