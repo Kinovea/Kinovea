@@ -175,7 +175,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public void ReadXml(XmlReader r)
+        public void ReadXml(XmlReader r, PointF scale)
         {
             bool isEmpty = r.IsEmptyElement;
             r.ReadStartElement();
@@ -185,7 +185,7 @@ namespace Kinovea.ScreenManager
                 switch (r.Name)
                 {
                     case "TrackableDrawing":
-                        DrawingTracker tracker = new DrawingTracker(r);
+                        DrawingTracker tracker = new DrawingTracker(r, scale);
                         if (trackers.ContainsKey(tracker.ID))
                         {
                             trackers[tracker.ID].Dispose();

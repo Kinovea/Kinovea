@@ -138,6 +138,8 @@ namespace Kinovea.ScreenManager
             r.ReadStartElement();
             r.ReadElementContentAsString("FormatVersion", "");
 
+            PointF scaling = GetScaling();
+
             while (r.NodeType == XmlNodeType.Element)
             {
                 switch (r.Name)
@@ -167,7 +169,7 @@ namespace Kinovea.ScreenManager
                         inputSelectionStart = r.ReadElementContentAsLong();
                         break;
                     case "Calibration":
-                        metadata.CalibrationHelper.ReadXml(r, GetScaling());
+                        metadata.CalibrationHelper.ReadXml(r, scaling);
                         break;
                     case "Keyframes":
                         ParseKeyframes(r);
@@ -182,13 +184,13 @@ namespace Kinovea.ScreenManager
                         ParseSpotlights(r);
                         break;
                     case "AutoNumbers":
-                        metadata.AutoNumberManager.ReadXml(r, GetScaling(), DoRemapTimestamp, metadata.AverageTimeStampsPerFrame);
+                        metadata.AutoNumberManager.ReadXml(r, scaling, DoRemapTimestamp, metadata.AverageTimeStampsPerFrame);
                         break;
                     case "CoordinateSystem":
                         metadata.DrawingCoordinateSystem.ReadXml(r);
                         break;
                     case "Trackability":
-                        metadata.TrackabilityManager.ReadXml(r);
+                        metadata.TrackabilityManager.ReadXml(r, scaling);
                         break;
                     default:
                         // Skip the unparsed nodes.

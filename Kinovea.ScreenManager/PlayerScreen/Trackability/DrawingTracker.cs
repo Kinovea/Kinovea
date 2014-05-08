@@ -167,7 +167,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public DrawingTracker(XmlReader r)
+        public DrawingTracker(XmlReader r, PointF scale)
         {
             bool isEmpty = r.IsEmptyElement;
 
@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
                 switch (r.Name)
                 {
                     case "TrackablePoint":
-                        ParseTrackablePoint(r);
+                        ParseTrackablePoint(r, scale);
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
@@ -196,7 +196,7 @@ namespace Kinovea.ScreenManager
                 r.ReadEndElement();
         }
 
-        private void ParseTrackablePoint(XmlReader r)
+        private void ParseTrackablePoint(XmlReader r, PointF scale)
         {
             string key = "";
             
@@ -205,7 +205,7 @@ namespace Kinovea.ScreenManager
             if (r.MoveToAttribute("key"))
                 key = r.ReadContentAsString();
 
-            TrackablePoint point = new TrackablePoint(r);
+            TrackablePoint point = new TrackablePoint(r, scale);
             trackablePoints.Add(key, point);
         }
     }
