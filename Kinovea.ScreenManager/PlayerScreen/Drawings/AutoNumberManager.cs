@@ -97,10 +97,10 @@ namespace Kinovea.ScreenManager
                 BindStyle();
             }
         }
-        public AutoNumberManager(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, long averageTimeStampsPerFrame)
+        public AutoNumberManager(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, long averageTimeStampsPerFrame)
             : this(ToolManager.AutoNumbers.StylePreset.Clone())
         {
-            ReadXml(xmlReader, scale, remapTimestampCallback, averageTimeStampsPerFrame);
+            ReadXml(xmlReader, scale, timestampMapper, averageTimeStampsPerFrame);
         }
         
         #region AbstractDrawing Implementation
@@ -170,7 +170,7 @@ namespace Kinovea.ScreenManager
             int nextValue = NextValue(position);
             selected = InsertSorted(new AutoNumber(position, averageTimeStampsPerFrame, point, nextValue, styleHelper));
         }
-        public void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, long averageTimeStampsPerFrame)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, long averageTimeStampsPerFrame)
         {
             Clear();
 
@@ -185,7 +185,7 @@ namespace Kinovea.ScreenManager
                         BindStyle();
                         break;
                     case "AutoNumber":
-                        AutoNumber number = new AutoNumber(xmlReader, scale, remapTimestampCallback, averageTimeStampsPerFrame, styleHelper);
+                        AutoNumber number = new AutoNumber(xmlReader, scale, timestampMapper, averageTimeStampsPerFrame, styleHelper);
                         InsertSorted(number);
                         break;
                     default:

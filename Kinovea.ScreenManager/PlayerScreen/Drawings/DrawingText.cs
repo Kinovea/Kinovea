@@ -268,7 +268,6 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Bicolor", "back color");
             style.Bind(styleHelper, "Font", "font size");
         }
-
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
             text = textBox.Text;

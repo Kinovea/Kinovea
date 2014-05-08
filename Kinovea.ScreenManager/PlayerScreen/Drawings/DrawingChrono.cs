@@ -184,10 +184,10 @@ namespace Kinovea.ScreenManager
             infosFading.FadingFrames = allowedFramesOver;
             infosFading.UseDefault = false;
         }
-        public DrawingChrono(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback)
+        public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
             : this(Point.Empty, 0, 1, ToolManager.Chrono.StylePreset.Clone())
         {
-            ReadXml(xmlReader, scale, remapTimestampCallback);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
@@ -267,16 +267,16 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region KVA Serialization
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            xmlWriter.WriteElementString("Position", string.Format("{0};{1}", mainBackground.Rectangle.Location.X, mainBackground.Rectangle.Location.Y));
+            w.WriteElementString("Position", XmlHelper.WritePointF(mainBackground.Rectangle.Location));
             
-            xmlWriter.WriteStartElement("Values");
-            xmlWriter.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
-            xmlWriter.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
-            xmlWriter.WriteElementString("StopCounting", (stopCountingTimestamp == long.MaxValue) ? "-1" : stopCountingTimestamp.ToString());
-            xmlWriter.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
-            xmlWriter.WriteElementString("Countdown", countdown ? "true" : "false");
+            w.WriteStartElement("Values");
+            w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
+            w.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
+            w.WriteElementString("StopCounting", (stopCountingTimestamp == long.MaxValue) ? "-1" : stopCountingTimestamp.ToString());
+            w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
+            w.WriteElementString("Countdown", countdown.ToString().ToLower());
             
             // Spreadsheet support
             string userDuration = "0";
@@ -284,22 +284,22 @@ namespace Kinovea.ScreenManager
             {
                 userDuration = parentMetadata.TimeCodeBuilder(stopCountingTimestamp - startCountingTimestamp, TimeType.Duration, TimecodeFormat.Unknown, false);
             }
-            xmlWriter.WriteElementString("UserDuration", userDuration);
+            w.WriteElementString("UserDuration", userDuration);
             
             // </values>
-            xmlWriter.WriteEndElement();
+            w.WriteEndElement();
             
             // Label
-            xmlWriter.WriteStartElement("Label");
-            xmlWriter.WriteElementString("Text", label);
-            xmlWriter.WriteElementString("Show", showLabel ? "true" : "false");
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("Label");
+            w.WriteElementString("Text", label);
+            w.WriteElementString("Show", showLabel.ToString().ToLower());
+            w.WriteEndElement();
             
-            xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("DrawingStyle");
+            style.WriteXml(w);
+            w.WriteEndElement();
         }
-        private void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback)
+        private void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             xmlReader.ReadStartElement();
             
@@ -312,7 +312,7 @@ namespace Kinovea.ScreenManager
                         mainBackground.Rectangle = new RectangleF(p.Scale(scale.X, scale.Y), SizeF.Empty);
                         break;
                     case "Values":
-                        ParseWorkingValues(xmlReader, remapTimestampCallback);
+                        ParseWorkingValues(xmlReader, timestampMapper);
                         break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
@@ -330,9 +330,9 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
         }
-        private void ParseWorkingValues(XmlReader xmlReader, TimeStampMapper remapTimestampCallback)
+        private void ParseWorkingValues(XmlReader xmlReader, TimestampMapper timestampMapper)
         {
-            if(remapTimestampCallback == null)
+            if(timestampMapper == null)
             {
                 xmlReader.ReadOuterXml();
                 return;                
@@ -345,19 +345,19 @@ namespace Kinovea.ScreenManager
                 switch(xmlReader.Name)
                 {
                     case "Visible":
-                        visibleTimestamp = remapTimestampCallback(xmlReader.ReadElementContentAsLong(), false);
+                        visibleTimestamp = timestampMapper(xmlReader.ReadElementContentAsLong(), false);
                         break;
                     case "StartCounting":
                         long start = xmlReader.ReadElementContentAsLong(); 
-                        startCountingTimestamp = (start == -1) ? long.MaxValue : remapTimestampCallback(start, false);
+                        startCountingTimestamp = (start == -1) ? long.MaxValue : timestampMapper(start, false);
                         break;
                     case "StopCounting":
                         long stop = xmlReader.ReadElementContentAsLong();
-                        stopCountingTimestamp = (stop == -1) ? long.MaxValue : remapTimestampCallback(stop, false);
+                        stopCountingTimestamp = (stop == -1) ? long.MaxValue : timestampMapper(stop, false);
                         break;
                     case "Invisible":
                         long hide = xmlReader.ReadElementContentAsLong();
-                        invisibleTimestamp = (hide == -1) ? long.MaxValue : remapTimestampCallback(hide, false);                        
+                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide, false);                        
                         break;
                     case "Countdown":
                         countdown = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
