@@ -96,15 +96,16 @@ namespace Kinovea.ScreenManager
         	set;
         }
 
-        public abstract void DisplayAsActiveScreen(bool _bActive);
+        public abstract void DisplayAsActiveScreen(bool active);
         public abstract void RefreshUICulture();
         public abstract void PreferencesUpdated();
         public abstract void BeforeClose();
         public abstract void AfterClose();
         public abstract void RefreshImage();
-        public abstract void AddImageDrawing(string _filename, bool _bIsSvg);
-        public abstract void AddImageDrawing(Bitmap _bmp);
-        public abstract void FullScreen(bool _bFullScreen);
+        public abstract void AddImageDrawing(string filename, bool isSvg);
+        public abstract void AddImageDrawing(Bitmap bmp);
+        public abstract void FullScreen(bool fullScreen);
         public abstract void ExecuteCommand(int cmd);
+        public abstract void LoadKVA(string path);
     }   
 }

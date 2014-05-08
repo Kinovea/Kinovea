@@ -388,6 +388,13 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
+        public override void LoadKVA(string path)
+        {
+            MetadataSerializer s = new MetadataSerializer();
+            s.Load(frameServer.Metadata, path, true);
+            
+            view.PostImportMetadata();
+        }
         #endregion
         
         #region Other public methods called from the ScreenManager
