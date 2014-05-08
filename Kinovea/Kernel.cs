@@ -72,7 +72,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuMotion = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLanguages = new ToolStripMenuItem();
-        private Dictionary<string, ToolStripMenuItem> m_LanguageMenus = new Dictionary<string, ToolStripMenuItem>();
+        private Dictionary<string, ToolStripMenuItem> languageMenus = new Dictionary<string, ToolStripMenuItem>();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
@@ -308,7 +308,7 @@ namespace Kinovea.Root
                 ToolStripMenuItem mnuLang = new ToolStripMenuItem(lang.Value);
                 mnuLang.Tag = lang.Key;
                 mnuLang.Click += mnuLanguage_OnClick;
-                m_LanguageMenus.Add(lang.Key, mnuLang);
+                languageMenus.Add(lang.Key, mnuLang);
                 mnuLanguages.DropDownItems.Add(mnuLang);
             }
             
@@ -509,18 +509,18 @@ namespace Kinovea.Root
         }
         private void CheckLanguageMenu()
         {
-            foreach(ToolStripMenuItem mnuLang in m_LanguageMenus.Values)
+            foreach(ToolStripMenuItem mnuLang in languageMenus.Values)
                 mnuLang.Checked = false;
 
             string cultureName = LanguageManager.GetCurrentCultureName();
             
             try
             {
-                m_LanguageMenus[cultureName].Checked = true;    
+                languageMenus[cultureName].Checked = true;    
             }
             catch(KeyNotFoundException)
             {
-                m_LanguageMenus["en"].Checked = true;            
+                languageMenus["en"].Checked = true;            
             }
         }
         private void mnuPreferencesOnClick(object sender, EventArgs e)
