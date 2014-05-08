@@ -48,8 +48,8 @@ namespace Kinovea.Tests.Metadata
 
             WriteGeneralInformation(w);
             WriteKeyframes(w);
-            /*WriteChronos(w);
-            WriteTracks(w);
+            WriteChronos(w);
+            /*WriteTracks(w);
             WriteSpotlights(w);
             WriteAutoNumbers(w);
             WriteCoordinateSystem(w);
@@ -174,7 +174,7 @@ namespace Kinovea.Tests.Metadata
 
             w.WriteElementString("Title", title);
             
-            int drawingsCount = random.Next(0, 100);
+            int drawingsCount = random.Next(0, 10);
             if (drawingsCount == 0)
                 return;
                         
@@ -207,7 +207,8 @@ namespace Kinovea.Tests.Metadata
             w.WriteElementString("Position", XmlHelper.WritePointF(location));
 
             w.WriteStartElement("DrawingStyle");
-            WriteDrawingStyle(w);
+            WriteDrawingStyleColor(w, "back color");
+            WriteDrawingStyleFont(w, "font size");
             w.WriteEndElement();
 
             w.WriteStartElement("InfosFading");
@@ -215,96 +216,55 @@ namespace Kinovea.Tests.Metadata
             w.WriteEndElement();
         }
         
-        #region Chronos
-        /*private void GenerateChronos(XmlTextWriter w)
+        private void WriteChronos(XmlTextWriter w)
         {
+            int count = random.Next(0, 50);
+            if (count == 0)
+                return;
+
             w.WriteStartElement("Chronos");
-            int totalChronos = random.Next(50, 150);
-            for(int i=0;i<totalChronos;i++)
+            
+            for(int i=0; i < count; i++)
             {
-                GenerateChrono(w);
+                w.WriteStartElement("Chrono");
+                WriteChrono(w);
+                w.WriteEndElement();
             }
+
             w.WriteEndElement();	
         }
-        private void GenerateChrono(XmlTextWriter w)
+        
+        private void WriteChrono(XmlTextWriter w)
         {
-            int stringLength = random.Next(5, 30);
-            string text = GenerateString(stringLength);
-            bool bShowLabel = true;
-            int left = random.Next(imageSize.Width);
-            int top = random.Next(imageSize.Height);
-            Point position = new Point(left, top);
-            
-            w.WriteStartElement("Chrono");
-            w.WriteAttributeString("Type", "DrawingChrono");	
-            
-            // Background StartPoint
-            w.WriteStartElement("Position");
-            w.WriteString(position.X.ToString() + ";" + position.Y.ToString());
-            w.WriteEndElement();
-            
-            // Values
-            int visible = random.Next(1, 1500);
-            int start = visible + random.Next(1, 20);
-            int stop = start + random.Next(1, 500);
-            int invisible = stop + random.Next(1, 50);
-            bool bCountDown = false;
-            int userDuration = stop - start + 1;
-            
+            PointF location = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            long visibleTimestamp = random.Next((int)durationTimestamps);
+            long startCountingTimestamp = random.Next((int)visibleTimestamp, (int)durationTimestamps);
+            long stopCountingTimestamp = random.Next((int)startCountingTimestamp, (int)durationTimestamps);
+            long invisibleTimestamp = random.Next((int)stopCountingTimestamp, (int)durationTimestamps);
+            bool countdown = random.NextBoolean();
+            string label = random.NextString(20);
+            bool showLabel = random.NextBoolean();
+
+            w.WriteElementString("Position", XmlHelper.WritePointF(location));
+
             w.WriteStartElement("Values");
-            
-            w.WriteStartElement("Visible");
-            w.WriteString(visible.ToString());
-            w.WriteEndElement();
-            
-            w.WriteStartElement("StartCounting");
-            w.WriteString(start.ToString());
-            w.WriteEndElement();
-            
-            w.WriteStartElement("StopCounting");
-            w.WriteString(stop.ToString());
-            w.WriteEndElement();
-            
-            w.WriteStartElement("Invisible");
-            w.WriteString(invisible.ToString());
-            w.WriteEndElement();
-            
-            w.WriteStartElement("Countdown");
-            w.WriteString(bCountDown.ToString());
-            w.WriteEndElement();
-    
-            w.WriteStartElement("UserDuration");
-            w.WriteString(userDuration.ToString());
-            w.WriteEndElement();
-            
-            w.WriteEndElement();
-            
-            // Other
-            GenerateTextDecoration(w);
-            
-            // Label
-            w.WriteStartElement("Label");
-            
-            w.WriteStartElement("Text");
-            w.WriteString(text);
-            w.WriteEndElement();
-            
-            w.WriteStartElement("Show");
-            w.WriteString(bShowLabel.ToString());
+            w.WriteElementString("Visible", visibleTimestamp.ToString());
+            w.WriteElementString("StartCounting", startCountingTimestamp.ToString());
+            w.WriteElementString("StopCounting", stopCountingTimestamp.ToString());
+            w.WriteElementString("Invisible", invisibleTimestamp.ToString());
+            w.WriteElementString("Countdown", countdown.ToString().ToLower());
             w.WriteEndElement();
 
+            w.WriteStartElement("Label");
+            w.WriteElementString("Text", label);
+            w.WriteElementString("Show", showLabel.ToString().ToLower());
             w.WriteEndElement();
-            
-            // </Chrono>
+
+            w.WriteStartElement("DrawingStyle");
+            WriteDrawingStyleColor(w, "color");
+            WriteDrawingStyleFont(w, "font size");
             w.WriteEndElement();
-            
-            
-            
-      
-        
         }
-        #endregion*/
-        #endregion
 
         #region Common utilities
         private QuadrilateralF GetRandomQuadrilateral()
@@ -317,21 +277,25 @@ namespace Kinovea.Tests.Metadata
 
             return new QuadrilateralF(a, b, c, d);
         }
-        private void WriteDrawingStyle(XmlTextWriter w)
+        
+        private void WriteDrawingStyleColor(XmlTextWriter w, string key)
         {
-            Color backColor = random.NextColor(255);
+            Color color = random.NextColor(255);
+            
+            w.WriteStartElement("Color");
+            w.WriteAttributeString("Key", key);
+            w.WriteElementString("Value", XmlHelper.WriteColor(color, true));
+            w.WriteEndElement();
+        }
+        
+        private void WriteDrawingStyleFont(XmlTextWriter w, string key)
+        {
             int fontSize = random.Next(6, 32);
 
-            w.WriteStartElement("Color");
-            w.WriteAttributeString("Key", "back color");
-            w.WriteElementString("Value", XmlHelper.WriteColor(backColor, true));
-            w.WriteEndElement();
-
             w.WriteStartElement("FontSize");
-            w.WriteAttributeString("Key", "font size");
+            w.WriteAttributeString("Key", key);
             w.WriteElementString("Value", fontSize.ToString());
             w.WriteEndElement();
-
         }
 
         private void WriteInfosFading(XmlTextWriter w)
