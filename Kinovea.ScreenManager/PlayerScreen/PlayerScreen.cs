@@ -156,7 +156,6 @@ namespace Kinovea.ScreenManager
         }
         public bool Synched
         {
-            //get { return m_PlayerScreenUI.m_bSynched; }
             set { view.Synched = value;}
         }
         public long SyncPosition

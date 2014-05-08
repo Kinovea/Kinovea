@@ -195,8 +195,6 @@ namespace Kinovea.ScreenManager
             double unstretchedY = (double)point.Y / stretch;
 
             // 2. Unzoom coords -> As if zoom factor was 1.0f.
-            // Unmoved is m_DirectZoomWindow.Left * m_fDirectZoomFactor.
-            // Unzoomed is Unmoved / m_fDirectZoomFactor.
             double unzoomedX = (double)directZoomWindow.Left + (unstretchedX / zoom);
             double unzoomedY = (double)directZoomWindow.Top + (unstretchedY / zoom);
 

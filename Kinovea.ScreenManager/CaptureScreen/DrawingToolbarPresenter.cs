@@ -125,8 +125,6 @@ namespace Kinovea.ScreenManager
                         tsi.ToolTipText = tool.DisplayName;
                 }
             }
-                
-            //m_btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
         }
         
         private ToolStripButton CreateToolButton()
