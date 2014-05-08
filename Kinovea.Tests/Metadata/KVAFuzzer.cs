@@ -48,14 +48,12 @@ namespace Kinovea.Tests.Metadata
             w.WriteStartElement("KinoveaVideoAnalysis");
 
             WriteGeneralInformation(w);
-            //WriteKeyframes(w);
-            //WriteChronos(w);
-            //WriteExtraDrawings(w, 50, "Chronos", "Chrono", WriteChrono);
+            WriteKeyframes(w);
+            WriteExtraDrawings(w, 50, "Chronos", "Chrono", WriteChrono);
             WriteExtraDrawings(w, 50, "Tracks", "Track", WriteTrack);
-            //WriteTracks(w);
-            //WriteSpotlights(w);
-            //WriteAutoNumbers(w);
-            //WriteCoordinateSystem(w);
+            WriteExtraDrawings(w, 1000, "Spotlights", "Spotlight", WriteSpotlight);
+            WriteAutoNumbers(w, 100);
+            WriteCoordinateSystem(w);
             //WriteTrackablePoints(w);
             
             w.WriteEndElement();
@@ -336,22 +334,12 @@ namespace Kinovea.Tests.Metadata
 
             w.WriteStartElement("TrackPointList");
             w.WriteAttributeString("Count", count.ToString());
-            //w.WriteAttributeString("UserUnitLength", parentMetadata.CalibrationHelper.GetLengthAbbreviation());
 
             if (positions.Count > 0)
             {
                 foreach (AbstractTrackPoint tp in positions)
                 {
                     w.WriteStartElement("TrackPoint");
-
-                    /*PointF p = parentMetadata.CalibrationHelper.GetPoint(tp.Point);
-                    string userT = parentMetadata.TimeCodeBuilder(tp.T, TimeType.Time, TimecodeFormat.Unknown, false);
-
-                    w.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
-                    w.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
-                    w.WriteAttributeString("UserY", String.Format("{0:0.00}", p.Y));
-                    w.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
-                    w.WriteAttributeString("UserTime", userT);*/
 
                     tp.WriteXml(w);
                     w.WriteEndElement();
@@ -361,14 +349,56 @@ namespace Kinovea.Tests.Metadata
             w.WriteEndElement();
         }
 
-        private void WriteSpotlights(XmlTextWriter w)
+        private void WriteSpotlight(XmlTextWriter w)
         {
+            Guid id = Guid.NewGuid();
+            w.WriteAttributeString("id", id.ToString());
 
+            long time = random.Next((int)durationTimestamps);
+            //long time = random.Next((int)1000);
+
+            PointF location = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            int radius = random.Next(5, 100);
+
+            w.WriteElementString("Time", time.ToString());
+            w.WriteElementString("Center", XmlHelper.WritePointF(location));
+            w.WriteElementString("Radius", radius.ToString());
         }
 
-        private void WriteAutoNumbers(XmlTextWriter w)
+        private void WriteAutoNumbers(XmlTextWriter w, int max)
         {
+            string name = "AutoNumbers";
+            string itemName = "AutoNumber";
 
+            w.WriteStartElement(name);
+
+            w.WriteStartElement("DrawingStyle");
+            WriteDrawingStyleColor(w, "back color");
+            WriteDrawingStyleFont(w, "font size");
+            w.WriteEndElement();
+
+            int count = random.Next(0, max);
+            if (count == 0)
+                return;
+
+            for (int i = 0; i < count; i++)
+            {
+                w.WriteStartElement(itemName);
+                WriteAutoNumber(w, i);
+                w.WriteEndElement();
+            }
+
+            w.WriteEndElement();
+        }
+        private void WriteAutoNumber(XmlTextWriter w, int value)
+        {
+            //long time = random.Next((int)durationTimestamps);
+            long time = random.Next((int)1000);
+            PointF location = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+
+            w.WriteElementString("Time", time.ToString());
+            w.WriteElementString("Location", XmlHelper.WritePointF(location));
+            w.WriteElementString("Value", value.ToString());
         }
 
         private void WriteCoordinateSystem(XmlTextWriter w)
@@ -380,6 +410,10 @@ namespace Kinovea.Tests.Metadata
             w.WriteAttributeString("id", id.ToString());
 
             w.WriteElementString("Visible", visible.ToString().ToLower());
+            
+            w.WriteStartElement("DrawingStyle");
+            WriteDrawingStyleColor(w, "line color");
+            w.WriteEndElement();
             
             w.WriteEndElement();
         }
