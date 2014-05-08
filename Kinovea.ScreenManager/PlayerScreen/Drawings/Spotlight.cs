@@ -225,6 +225,8 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Radius":
                         radius = xmlReader.ReadElementContentAsInt();
+                        float minScale = Math.Min(scale.X, scale.Y);
+                        radius = (int)(radius * minScale);
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
@@ -236,11 +238,11 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadEndElement();
             SignalTrackablePointMoved();
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            xmlWriter.WriteElementString("Time", position.ToString());
-            xmlWriter.WriteElementString("Center", string.Format(CultureInfo.InvariantCulture, "{0};{1}", points["o"].X, points["o"].Y));
-            xmlWriter.WriteElementString("Radius", radius.ToString());
+            w.WriteElementString("Time", position.ToString());
+            w.WriteElementString("Center", XmlHelper.WritePointF(points["o"]));
+            w.WriteElementString("Radius", radius.ToString());
         }
         #endregion
     }
