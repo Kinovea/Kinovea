@@ -348,6 +348,10 @@ namespace Kinovea.ScreenManager
         public void WriteXml(XmlWriter w)
         {
             w.WriteElementString("Visible", Visible.ToString().ToLower());
+            
+            w.WriteStartElement("DrawingStyle");
+            style.WriteXml(w);
+            w.WriteEndElement();
         }
         public void ReadXml(XmlReader r)
         {
@@ -362,6 +366,10 @@ namespace Kinovea.ScreenManager
                 {
                     case "Visible":
                         Visible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    case "DrawingStyle":
+                        style = new DrawingStyle(r);
+                        BindStyle();
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
