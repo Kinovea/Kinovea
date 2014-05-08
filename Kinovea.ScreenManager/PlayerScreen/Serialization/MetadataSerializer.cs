@@ -135,10 +135,10 @@ namespace Kinovea.ScreenManager
             if (!(r.Name == "KinoveaVideoAnalysis"))
                 return;
 
+            PointF scaling = PointF.Empty;
+
             r.ReadStartElement();
             r.ReadElementContentAsString("FormatVersion", "");
-
-            PointF scaling = GetScaling();
 
             while (r.NodeType == XmlNodeType.Element)
             {
@@ -155,6 +155,7 @@ namespace Kinovea.ScreenManager
                         break;
                     case "ImageSize":
                         inputImageSize = XmlHelper.ParseSize(r.ReadElementContentAsString());
+                        scaling = GetScaling();
                         break;
                     case "AverageTimeStampsPerFrame":
                         inputAverageTimeStampsPerFrame = r.ReadElementContentAsLong();
@@ -184,7 +185,7 @@ namespace Kinovea.ScreenManager
                         ParseSpotlights(r);
                         break;
                     case "AutoNumbers":
-                        metadata.AutoNumberManager.ReadXml(r, scaling, DoRemapTimestamp, metadata.AverageTimeStampsPerFrame);
+                        metadata.AutoNumberManager.ReadXml(r, scaling, RemapTimestamp, metadata.AverageTimeStampsPerFrame);
                         break;
                     case "CoordinateSystem":
                         metadata.DrawingCoordinateSystem.ReadXml(r);
@@ -237,7 +238,7 @@ namespace Kinovea.ScreenManager
                 {
                     case "Position":
                         int inputPosition = r.ReadElementContentAsInt();
-                        keyframe.Position = DoRemapTimestamp(inputPosition, false);
+                        keyframe.Position = RemapTimestamp(inputPosition, false);
                         break;
                     case "Title":
                         keyframe.Title = r.ReadElementContentAsString();
@@ -329,7 +330,7 @@ namespace Kinovea.ScreenManager
                 // on a similar model than for attached drawings. (see ParseDrawing())
                 if (r.Name == "Chrono")
                 {
-                    DrawingChrono dc = new DrawingChrono(r, GetScaling(), DoRemapTimestamp);
+                    DrawingChrono dc = new DrawingChrono(r, GetScaling(), RemapTimestamp);
 
                     if (dc != null)
                         metadata.AddChrono(dc);
@@ -353,7 +354,7 @@ namespace Kinovea.ScreenManager
             {
                 if (r.Name == "Track")
                 {
-                    DrawingTrack trk = new DrawingTrack(r, GetScaling(), DoRemapTimestamp, metadata.ImageSize);
+                    DrawingTrack trk = new DrawingTrack(r, GetScaling(), RemapTimestamp, metadata.ImageSize);
 
                     if (!trk.Invalid)
                     {
@@ -379,7 +380,7 @@ namespace Kinovea.ScreenManager
             {
                 if (r.Name == "Spotlight")
                 {
-                    Spotlight spotlight = new Spotlight(r, GetScaling(), DoRemapTimestamp, metadata.AverageTimeStampsPerFrame);
+                    Spotlight spotlight = new Spotlight(r, GetScaling(), RemapTimestamp, metadata.AverageTimeStampsPerFrame);
                     metadata.SpotlightManager.Add(spotlight);
                 }
                 else
@@ -431,7 +432,7 @@ namespace Kinovea.ScreenManager
 
             return scaling;
         }
-        private long DoRemapTimestamp(long inputTimestamp, bool relative)
+        private long RemapTimestamp(long inputTimestamp, bool relative)
         {
             //-----------------------------------------------------------------------------------------
             // In the general case:

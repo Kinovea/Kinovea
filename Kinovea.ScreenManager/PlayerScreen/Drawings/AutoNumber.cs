@@ -173,11 +173,11 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            xmlWriter.WriteElementString("Time", position.ToString());
-            xmlWriter.WriteElementString("Location", string.Format("{0};{1}", background.X, background.Y));
-            xmlWriter.WriteElementString("Value", value.ToString());
+            w.WriteElementString("Time", position.ToString());
+            w.WriteElementString("Location", XmlHelper.WritePointF(background.Rectangle.Location));
+            w.WriteElementString("Value", value.ToString());
         }
         #endregion
         
