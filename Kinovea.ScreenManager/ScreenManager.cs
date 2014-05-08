@@ -2326,14 +2326,25 @@ namespace Kinovea.ScreenManager
             DoLoadMovieInScreen(e.Path, e.Target, false);
         }
         
-        private void DoLoadMovieInScreen(string path, int forcedScreen, bool storeState)
+        private void DoLoadMovieInScreen(string path, int targetScreen, bool storeState)
         {
             if(!File.Exists(path))
                 return;
-                
-            IUndoableCommand clmis = new CommandLoadMovieInScreen(this, path, forcedScreen, storeState);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(clmis);
+
+            if (Path.GetExtension(path).ToLower() == ".kva" && targetScreen >= 0)
+            {
+                AbstractScreen screen = GetScreenAt(targetScreen);
+                if (screen == null || !screen.Full)
+                    return;
+
+                screen.LoadKVA(path);
+            }
+            else
+            {
+                IUndoableCommand clmis = new CommandLoadMovieInScreen(this, path, targetScreen, storeState);
+                CommandManager cm = CommandManager.Instance();
+                cm.LaunchUndoableCommand(clmis);
+            }
             
             // No need to call PrepareSync here because it will be called when the working zone is set anyway.
         }

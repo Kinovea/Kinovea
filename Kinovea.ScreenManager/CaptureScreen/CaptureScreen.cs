@@ -255,7 +255,17 @@ namespace Kinovea.ScreenManager
         {
             // propagate command from the other capture screen.
         }
-
+        public override void LoadKVA(string path)
+        {
+            if (!File.Exists(path))
+                return;
+            
+            MetadataSerializer s = new MetadataSerializer();
+            s.Load(metadata, path, true);
+            
+            if (metadata.Count > 1)
+                metadata.Keyframes.RemoveRange(1, metadata.Keyframes.Count - 1);
+        }
         #endregion
         
         #region Methods called from the view. These could also be events or commands.
@@ -581,14 +591,7 @@ namespace Kinovea.ScreenManager
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
             string startupFile = folder + "\\capture.kva";
-            if (File.Exists(startupFile))
-            {
-                MetadataSerializer serializer = new MetadataSerializer();
-                serializer.Load(metadata, startupFile, true);
-            }
-                
-            if(metadata.Count > 1)
-                metadata.Keyframes.RemoveRange(1, metadata.Keyframes.Count - 1);
+            LoadKVA(startupFile);
         }
         private void InitializeTools()
         {
