@@ -270,8 +270,6 @@
     <Compile Include="PlayerScreen\Kinematics\MovingAverage.cs" />
     <Compile Include="PlayerScreen\Serialization\MetadataSerializer.cs" />
     <Compile Include="PlayerScreen\Serialization\MetadataConverter.cs" />
-    <Compile Include="PlayerScreen\Test\MovingObject.cs" />
-    <Compile Include="PlayerScreen\Test\VideoSynthesizer.cs" />
     <Compile Include="PlayerScreen\TimeType.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackerParameterUnit.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackingProfile.cs" />
@@ -280,7 +278,6 @@
     <Compile Include="PlayerScreen\Kinematics\FilteringResult.cs" />
     <Compile Include="PlayerScreen\Kinematics\KinematicsHelper.cs" />
     <Compile Include="PlayerScreen\Kinematics\StatsHelper.cs" />
-    <Compile Include="PlayerScreen\Test\KinematicsTestData.cs" />
     <Compile Include="PlayerScreen\Kinematics\TimedPoint.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackColorCycler.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackExtraData.cs" />
