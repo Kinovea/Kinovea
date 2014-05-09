@@ -295,25 +295,25 @@ namespace Kinovea.ScreenManager
             points["b"] = points["b"].Scale(scale.X, scale.Y);
             SignalAllTrackablePointsMoved();
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            xmlWriter.WriteElementString("PointO", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["o"].X, points["o"].Y));
-            xmlWriter.WriteElementString("PointA", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["a"].X, points["a"].Y));
-            xmlWriter.WriteElementString("PointB", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["b"].X, points["b"].Y));
+            w.WriteElementString("PointO", XmlHelper.WritePointF(points["o"]));
+            w.WriteElementString("PointA", XmlHelper.WritePointF(points["a"]));
+            w.WriteElementString("PointB", XmlHelper.WritePointF(points["b"]));
 
-            xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("DrawingStyle");
+            style.WriteXml(w);
+            w.WriteEndElement();
             
-            xmlWriter.WriteStartElement("InfosFading");
-            infosFading.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("InfosFading");
+            infosFading.WriteXml(w);
+            w.WriteEndElement();
             
             // Spreadsheet support.
-            xmlWriter.WriteStartElement("Measure");        	
+            w.WriteStartElement("Measure");        	
             int angle = (int)Math.Floor(-angleHelper.CalibratedAngle.Sweep);
-            xmlWriter.WriteAttributeString("UserAngle", angle.ToString());
-            xmlWriter.WriteEndElement();      	
+            w.WriteAttributeString("UserAngle", angle.ToString());
+            w.WriteEndElement();      	
         }
         #endregion
         

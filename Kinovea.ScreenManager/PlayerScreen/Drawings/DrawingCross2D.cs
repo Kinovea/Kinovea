@@ -231,33 +231,33 @@ namespace Kinovea.ScreenManager
             labelCoordinates.SetAttach(points["0"], true);
             SignalTrackablePointMoved();
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            xmlWriter.WriteElementString("CenterPoint", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["0"].X, points["0"].Y));
-            xmlWriter.WriteElementString("CoordinatesVisible", ShowMeasurableInfo ? "true" : "false");
+            w.WriteElementString("CenterPoint", XmlHelper.WritePointF(points["0"]));
+            w.WriteElementString("CoordinatesVisible", ShowMeasurableInfo.ToString().ToLower());
             
-            xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("DrawingStyle");
+            style.WriteXml(w);
+            w.WriteEndElement();
             
-            xmlWriter.WriteStartElement("InfosFading");
-            infosFading.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement(); 
+            w.WriteStartElement("InfosFading");
+            infosFading.WriteXml(w);
+            w.WriteEndElement(); 
             
             if(ShowMeasurableInfo)
             {
                 // Spreadsheet support.
-                xmlWriter.WriteStartElement("Coordinates");
+                w.WriteStartElement("Coordinates");
                 
                 PointF p = new PointF(points["0"].X, points["0"].Y);
                 PointF coords = CalibrationHelper.GetPoint(p);
-                xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
-                xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
-                xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
-                xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.Y));
-                xmlWriter.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
+                w.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
+                w.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
+                w.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
+                w.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.Y));
+                w.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
                 
-                xmlWriter.WriteEndElement();
+                w.WriteEndElement();
             }
         }
         #endregion

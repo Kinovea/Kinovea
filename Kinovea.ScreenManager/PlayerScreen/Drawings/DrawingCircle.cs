@@ -194,18 +194,18 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            xmlWriter.WriteElementString("Origin", String.Format(CultureInfo.InvariantCulture, "{0};{1}", center.X, center.Y));
-            xmlWriter.WriteElementString("Radius", radius.ToString());
+            w.WriteElementString("Origin", XmlHelper.WritePointF(center));
+            w.WriteElementString("Radius", radius.ToString());
             
-            xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("DrawingStyle");
+            style.WriteXml(w);
+            w.WriteEndElement();
             
-            xmlWriter.WriteStartElement("InfosFading");
-            infosFading.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("InfosFading");
+            infosFading.WriteXml(w);
+            w.WriteEndElement();
         }
         #endregion
         
