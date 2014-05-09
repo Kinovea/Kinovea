@@ -179,8 +179,8 @@ namespace Kinovea.ScreenManager
                 {
                     case "SpacePosition":
                         PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
-                        Point location = p.Scale(scale.X, scale.Y).ToPoint();
-                        background.Rectangle = new Rectangle(location, Size.Empty);
+                        PointF location = p.Scale(scale.X, scale.Y);
+                        background.Rectangle = new RectangleF(location, SizeF.Empty);
                         break;
                     case "TimePosition":
                         timestamp = xmlReader.ReadElementContentAsLong();
