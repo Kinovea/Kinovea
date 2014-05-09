@@ -235,7 +235,7 @@ namespace Kinovea.ScreenManager
         private bool showingMeasurables;
         private bool initialized;
         
-        private string globalTitle = " ";
+        private string globalTitle;
         private Size imageSize = new Size(0,0);
         private long averageTimeStampsPerFrame = 1;
         private long firstTimeStamp;

@@ -272,9 +272,9 @@ namespace Kinovea.ScreenManager
 
                 if (drawing != null)
                 {
-                    keyframe.Drawings.Insert(0, drawing);
-                    keyframe.Drawings[0].InfosFading.ReferenceTimestamp = keyframe.Position;
-                    keyframe.Drawings[0].InfosFading.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerFrame;
+                    keyframe.Drawings.Add(drawing);
+                    drawing.InfosFading.ReferenceTimestamp = keyframe.Position;
+                    drawing.InfosFading.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerFrame;
                     metadata.AfterDrawingCreation(drawing);
                 }
             }
