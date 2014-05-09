@@ -37,6 +37,7 @@ namespace Kinovea.ScreenManager
     public class StyleElementGridDivisions : AbstractStyleElement
     {
         #region Properties
+        public static readonly string[] Options;
         public override object Value
         {
             get { return value; }
@@ -62,29 +63,27 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private int value;
-        private string[] options;
         private static readonly int defaultValue = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
+        static StyleElementGridDivisions()
+        {
+            List<string> d = new List<string>();
+            for (int i = 2; i < 21; i++)
+                d.Add(i.ToString());
+
+            Options = d.ToArray();
+        }
+
         public StyleElementGridDivisions(int initialValue)
         {
-            InitializeOptions();
-            value = (Array.IndexOf(options, initialValue.ToString()) >= 0) ? initialValue : defaultValue;
+            value = (Array.IndexOf(Options, initialValue.ToString()) >= 0) ? initialValue : defaultValue;
         }
         public StyleElementGridDivisions(XmlReader _xmlReader)
         {
-            InitializeOptions();
             ReadXML(_xmlReader);
-        }
-        private void InitializeOptions()
-        {
-            List<string> d = new List<string>();
-            for(int i = 2; i < 21; i++)
-                d.Add(i.ToString());
-            
-            options = d.ToArray();
         }
         #endregion
 
@@ -93,8 +92,8 @@ namespace Kinovea.ScreenManager
         {
             ComboBox editor = new ComboBox();
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
-            editor.Items.AddRange(options);
-            editor.SelectedIndex = Array.IndexOf(options, value.ToString());
+            editor.Items.AddRange(Options);
+            editor.SelectedIndex = Array.IndexOf(Options, value.ToString());
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             return editor;
         }
@@ -121,7 +120,7 @@ namespace Kinovea.ScreenManager
             }
             
             // Restrict to the actual list of "athorized" values.
-            this.value = (Array.IndexOf(options, value.ToString()) >= 0) ? value : defaultValue;
+            this.value = (Array.IndexOf(Options, value.ToString()) >= 0) ? value : defaultValue;
             
             reader.ReadEndElement();
         }
