@@ -48,11 +48,11 @@ namespace Kinovea.Tests.Metadata
             w.WriteStartElement("KinoveaVideoAnalysis");
 
             WriteGeneralInformation(w);
-            WriteKeyframes(w);
-            WriteExtraDrawings(w, 50, "Chronos", "Chrono", WriteChrono);
-            WriteExtraDrawings(w, 50, "Tracks", "Track", WriteTrack);
-            WriteExtraDrawings(w, 1000, "Spotlights", "Spotlight", WriteSpotlight);
-            WriteAutoNumbers(w, 100);
+            WriteKeyframes(w, 50);
+            //WriteExtraDrawings(w, 50, "Chronos", "Chrono", WriteChrono);
+            //WriteExtraDrawings(w, 50, "Tracks", "Track", WriteTrack);
+            //WriteExtraDrawings(w, 1000, "Spotlights", "Spotlight", WriteSpotlight);
+            //WriteAutoNumbers(w, 100);
             WriteCoordinateSystem(w);
             //WriteTrackablePoints(w);
             
@@ -143,9 +143,9 @@ namespace Kinovea.Tests.Metadata
             w.WriteEndElement();
         }
 
-        private void WriteKeyframes(XmlTextWriter w)
+        private void WriteKeyframes(XmlTextWriter w, int max)
         {
-            int keyframeCount = random.Next(0, 50);
+            int keyframeCount = random.Next(0, max);
             if (keyframeCount == 0)
                 return;
 
@@ -197,7 +197,7 @@ namespace Kinovea.Tests.Metadata
         {
             Guid id = Guid.NewGuid();
 
-            int drawing = random.Next(2);
+            int drawing = random.Next(4, 7);
 
             switch(drawing)
             {
@@ -210,7 +210,37 @@ namespace Kinovea.Tests.Metadata
                 case 1:
                     w.WriteStartElement("Angle");
                     w.WriteAttributeString("id", id.ToString());
-                    WriteDrawingText(w);
+                    WriteDrawingAngle(w);
+                    w.WriteEndElement();
+                    break;
+                case 2:
+                    w.WriteStartElement("CrossMark");
+                    w.WriteAttributeString("id", id.ToString());
+                    WriteDrawingCrossMark(w);
+                    w.WriteEndElement();
+                    break;
+                case 3:
+                    w.WriteStartElement("Line");
+                    w.WriteAttributeString("id", id.ToString());
+                    WriteDrawingLine(w);
+                    w.WriteEndElement();
+                    break;
+                case 4:
+                    w.WriteStartElement("Circle");
+                    w.WriteAttributeString("id", id.ToString());
+                    WriteDrawingCircle(w);
+                    w.WriteEndElement();
+                    break;
+                case 5:
+                    w.WriteStartElement("Pencil");
+                    w.WriteAttributeString("id", id.ToString());
+                    WriteDrawingPencil(w);
+                    w.WriteEndElement();
+                    break;
+                case 6:
+                    w.WriteStartElement("Plane");
+                    w.WriteAttributeString("id", id.ToString());
+                    WriteDrawingPlane(w);
                     w.WriteEndElement();
                     break;
             }
@@ -230,9 +260,121 @@ namespace Kinovea.Tests.Metadata
             WriteDrawingStyleFont(w, "font size");
             w.WriteEndElement();
 
-            w.WriteStartElement("InfosFading");
             WriteInfosFading(w);
+        }
+
+        private void WriteDrawingAngle(XmlTextWriter w)
+        {
+            PointF o = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            PointF a = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            PointF b = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+
+            w.WriteElementString("PointO", XmlHelper.WritePointF(o));
+            w.WriteElementString("PointA", XmlHelper.WritePointF(a));
+            w.WriteElementString("PointB", XmlHelper.WritePointF(b));
+
+            w.WriteStartElement("DrawingStyle");
+            WriteDrawingStyleColor(w, "line color");
             w.WriteEndElement();
+
+            WriteInfosFading(w);
+        }
+
+        private void WriteDrawingCrossMark(XmlTextWriter w)
+        {
+            PointF center = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            bool measurableInfoVisible = random.NextBoolean();
+
+            w.WriteElementString("CenterPoint", XmlHelper.WritePointF(center));
+            w.WriteElementString("CoordinatesVisible", measurableInfoVisible.ToString().ToLower());
+
+            w.WriteStartElement("DrawingStyle");
+            WriteDrawingStyleColor(w, "back color");
+            w.WriteEndElement();
+
+            WriteInfosFading(w);
+        }
+
+        private void WriteDrawingLine(XmlTextWriter w)
+        {
+            PointF a = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            PointF b = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            bool measurableInfoVisible = random.NextBoolean();
+
+            w.WriteElementString("Start", XmlHelper.WritePointF(a));
+            w.WriteElementString("End", XmlHelper.WritePointF(b));
+            w.WriteElementString("MeasureVisible", measurableInfoVisible.ToString().ToLower());
+
+            w.WriteStartElement("DrawingStyle");
+            WriteDrawingStyleColor(w, "color");
+            WriteDrawingStyleLineSize(w, "line size");
+            WriteDrawingStyleArrows(w, "arrows");
+            w.WriteEndElement();
+
+            WriteInfosFading(w);
+        }
+
+        private void WriteDrawingCircle(XmlTextWriter w)
+        {
+            PointF center = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            int radius = random.Next(200);
+
+            w.WriteElementString("Origin", XmlHelper.WritePointF(center));
+            w.WriteElementString("Radius", radius.ToString());
+
+            w.WriteStartElement("DrawingStyle");
+            WriteDrawingStyleColor(w, "color");
+            WriteDrawingStylePenSize(w, "pen size");
+            w.WriteEndElement();
+            
+            WriteInfosFading(w);
+        }
+
+        private void WriteDrawingPencil(XmlTextWriter w)
+        {
+            int count = random.Next(1, 200);
+
+            w.WriteStartElement("PointList");
+            w.WriteAttributeString("Count", count.ToString());
+            for (int i = 0; i < count; i++)
+            {
+                PointF p = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+                w.WriteElementString("Point", XmlHelper.WritePointF(p));
+            }
+
+            w.WriteEndElement();
+
+            w.WriteStartElement("DrawingStyle");
+            WriteDrawingStyleColor(w, "color");
+            WriteDrawingStylePenSize(w, "pen size");
+            w.WriteEndElement();
+
+            WriteInfosFading(w);
+        }
+
+        private void WriteDrawingPlane(XmlTextWriter w)
+        {
+            QuadrilateralF quadImage = GetRandomQuadrilateral();
+            bool inPerspective = random.NextBoolean();
+            if (!inPerspective)
+            {
+                quadImage.C = new PointF(quadImage.B.X, quadImage.D.Y);
+                quadImage.MakeRectangle(0);
+            }
+
+            w.WriteElementString("PointUpperLeft", XmlHelper.WritePointF(quadImage.A));
+            w.WriteElementString("PointUpperRight", XmlHelper.WritePointF(quadImage.B));
+            w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(quadImage.C));
+            w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(quadImage.D));
+
+            w.WriteElementString("Perspective", inPerspective.ToString().ToLower());
+
+            w.WriteStartElement("DrawingStyle");
+            WriteDrawingStyleColor(w, "color");
+            WriteDrawingStyleGridDivisions(w, "divisions");
+            w.WriteEndElement();
+
+            WriteInfosFading(w);
         }
 
         private void WriteExtraDrawings(XmlTextWriter w, int max, string name, string itemName, Action<XmlTextWriter> itemWriter)
@@ -493,14 +635,12 @@ namespace Kinovea.Tests.Metadata
 
         private void WriteDrawingStyleTrackShape(XmlTextWriter w, string key)
         {
-            Array values = Enum.GetValues(typeof(DashStyle));
-            DashStyle value = (DashStyle)values.GetValue(random.Next(values.Length));
-            bool showSteps = random.NextBoolean();
-            string output = string.Format("{0};{1}", value.ToString(), showSteps.ToString().ToLower());
-
+            TrackShape value = StyleElementTrackShape.Options[random.Next(StyleElementTrackShape.Options.Length)];
+            StyleElementTrackShape style = new StyleElementTrackShape(value);
+            
             w.WriteStartElement("TrackShape");
             w.WriteAttributeString("Key", key);
-            w.WriteElementString("Value", output);
+            style.WriteXml(w);
             w.WriteEndElement();
         }
 
@@ -514,17 +654,51 @@ namespace Kinovea.Tests.Metadata
             w.WriteEndElement();
         }
 
+        private void WriteDrawingStyleGridDivisions(XmlTextWriter w, string key)
+        {
+            string size = StyleElementGridDivisions.Options[random.Next(StyleElementGridDivisions.Options.Length)];
+
+            w.WriteStartElement("GridDivisions");
+            w.WriteAttributeString("Key", key);
+            w.WriteElementString("Value", size);
+            w.WriteEndElement();
+        }
+
+        private void WriteDrawingStylePenSize(XmlTextWriter w, string key)
+        {
+            int size = StyleElementPenSize.Options[random.Next(StyleElementPenSize.Options.Length)];
+
+            w.WriteStartElement("PenSize");
+            w.WriteAttributeString("Key", key);
+            w.WriteElementString("Value", size.ToString());
+            w.WriteEndElement();
+        }
+
+        private void WriteDrawingStyleArrows(XmlTextWriter w, string key)
+        {
+            LineEnding value = StyleElementLineEnding.Options[random.Next(StyleElementLineEnding.Options.Length)];
+            StyleElementLineEnding style = new StyleElementLineEnding(value);
+
+            w.WriteStartElement("Arrows");
+            w.WriteAttributeString("Key", key);
+            style.WriteXml(w);
+            w.WriteEndElement();
+        }
+
         private void WriteInfosFading(XmlTextWriter w)
         {
+
             bool enabled = random.NextBoolean();
             int fadingFrames = random.Next(1, 100);
             bool alwaysVisible = random.NextBoolean();
             bool useDefault = random.NextBoolean();
 
+            w.WriteStartElement("InfosFading");
             w.WriteElementString("Enabled", enabled.ToString().ToLower());
             w.WriteElementString("Frames", fadingFrames.ToString());
             w.WriteElementString("AlwaysVisible", alwaysVisible.ToString().ToLower());
             w.WriteElementString("UseDefault", useDefault.ToString().ToLower());
+            w.WriteEndElement();
         }
         #endregion
     }
