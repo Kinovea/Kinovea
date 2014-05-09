@@ -43,6 +43,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private long position;
+        private Guid id = Guid.NewGuid();
         private RoundedRectangle background = new RoundedRectangle();   // <-- Also used as a simple ellipsis-defining rectangle when value < 10.
         private InfosFading infosFading;
         private int value = 1;
@@ -147,7 +148,10 @@ namespace Kinovea.ScreenManager
                 xmlReader.ReadOuterXml();
                 return;                
             }
-            
+
+            if (xmlReader.MoveToAttribute("id"))
+                id = new Guid(xmlReader.ReadContentAsString());
+
             xmlReader.ReadStartElement();
             
             while(xmlReader.NodeType == XmlNodeType.Element)

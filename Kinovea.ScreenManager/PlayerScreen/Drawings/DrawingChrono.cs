@@ -301,6 +301,9 @@ namespace Kinovea.ScreenManager
         }
         private void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
             xmlReader.ReadStartElement();
             
             while(xmlReader.NodeType == XmlNodeType.Element)
