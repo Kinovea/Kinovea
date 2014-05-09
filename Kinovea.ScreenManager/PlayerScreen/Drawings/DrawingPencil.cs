@@ -194,22 +194,22 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            xmlWriter.WriteStartElement("PointList");
-            xmlWriter.WriteAttributeString("Count", pointList.Count.ToString());
+            w.WriteStartElement("PointList");
+            w.WriteAttributeString("Count", pointList.Count.ToString());
             foreach (PointF p in pointList)
-                xmlWriter.WriteElementString("Point", string.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
+                w.WriteElementString("Point", XmlHelper.WritePointF(p));
 
-            xmlWriter.WriteEndElement();
+            w.WriteEndElement();
             
-            xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("DrawingStyle");
+            style.WriteXml(w);
+            w.WriteEndElement();
             
-            xmlWriter.WriteStartElement("InfosFading");
-            infosFading.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement(); 
+            w.WriteStartElement("InfosFading");
+            infosFading.WriteXml(w);
+            w.WriteEndElement(); 
         }
         #endregion
         

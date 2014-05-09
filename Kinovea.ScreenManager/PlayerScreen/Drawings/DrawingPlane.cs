@@ -336,7 +336,10 @@ namespace Kinovea.ScreenManager
             // Sanity check for rectangular constraint.
             if(!inPerspective && !quadImage.IsRectangle)
                 inPerspective = true;
-                
+
+            if (inPerspective)
+                planeIsConvex = quadImage.IsConvex;
+
             initialized = true;
 
             SignalAllTrackablePointsMoved();
@@ -346,22 +349,22 @@ namespace Kinovea.ScreenManager
             PointF p = XmlHelper.ParsePointF(reader.ReadElementContentAsString());
             return p.Scale(scale.X, scale.Y);
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            _xmlWriter.WriteElementString("PointUpperLeft", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.A.X, (int)quadImage.A.Y));
-            _xmlWriter.WriteElementString("PointUpperRight", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.B.X, (int)quadImage.B.Y));
-            _xmlWriter.WriteElementString("PointLowerRight", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.C.X, (int)quadImage.C.Y));
-            _xmlWriter.WriteElementString("PointLowerLeft", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.D.X, (int)quadImage.D.Y));
+            w.WriteElementString("PointUpperLeft", XmlHelper.WritePointF(quadImage.A));
+            w.WriteElementString("PointUpperRight", XmlHelper.WritePointF(quadImage.B));
+            w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(quadImage.C));
+            w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(quadImage.D));
+
+            w.WriteElementString("Perspective", inPerspective.ToString().ToLower());
             
-            _xmlWriter.WriteElementString("Perspective", inPerspective ? "true" : "false");
+            w.WriteStartElement("DrawingStyle");
+            style.WriteXml(w);
+            w.WriteEndElement();
             
-            _xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
-            
-            _xmlWriter.WriteStartElement("InfosFading");
-            infosFading.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
+            w.WriteStartElement("InfosFading");
+            infosFading.WriteXml(w);
+            w.WriteEndElement();
         }
         
         #endregion

@@ -285,24 +285,24 @@ namespace Kinovea.ScreenManager
             labelMeasure.SetAttach(GetMiddlePoint(), true);
             SignalAllTrackablePointsMoved();
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            xmlWriter.WriteElementString("Start", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["a"].X, points["a"].Y));
-            xmlWriter.WriteElementString("End", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["b"].X, points["b"].Y));
-            xmlWriter.WriteElementString("MeasureVisible", ShowMeasurableInfo ? "true" : "false");
+            w.WriteElementString("Start", XmlHelper.WritePointF(points["a"]));
+            w.WriteElementString("End", XmlHelper.WritePointF(points["b"]));
+            w.WriteElementString("MeasureVisible", ShowMeasurableInfo.ToString().ToLower());
             
-            xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteStartElement("DrawingStyle");
+            style.WriteXml(w);
+            w.WriteEndElement();
             
-            xmlWriter.WriteStartElement("InfosFading");
-            infosFading.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();  
+            w.WriteStartElement("InfosFading");
+            infosFading.WriteXml(w);
+            w.WriteEndElement();  
 
             if(ShowMeasurableInfo)
             {
                 // Spreadsheet support.
-                xmlWriter.WriteStartElement("Measure");
+                w.WriteStartElement("Measure");
                 
                 PointF a = CalibrationHelper.GetPoint(new PointF(points["a"].X, points["a"].Y));
                 PointF b = CalibrationHelper.GetPoint(new PointF(points["b"].X, points["b"].Y));
@@ -311,11 +311,11 @@ namespace Kinovea.ScreenManager
                 string value = String.Format("{0:0.00}", len);
                 string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
 
-                xmlWriter.WriteAttributeString("UserLength", value);
-                xmlWriter.WriteAttributeString("UserLengthInvariant", valueInvariant);
-                xmlWriter.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
+                w.WriteAttributeString("UserLength", value);
+                w.WriteAttributeString("UserLengthInvariant", valueInvariant);
+                w.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
                 
-                xmlWriter.WriteEndElement();
+                w.WriteEndElement();
             }
         }
         #endregion
