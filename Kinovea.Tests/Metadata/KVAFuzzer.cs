@@ -150,20 +150,26 @@ namespace Kinovea.Tests.Metadata
                 return;
 
             w.WriteStartElement("Keyframes");
+
+            List<int> times = new List<int>();
+            for (int i = 0; i < keyframeCount; i++)
+                times.Add(random.Next((int)durationTimestamps));
+
+            times.Sort();
             
             for(int i = 0; i < keyframeCount; i++)
             {
                 w.WriteStartElement("Keyframe");
-                WriteKeyframe(w);
+                WriteKeyframe(w, times[i]);
                 w.WriteEndElement();
             }
              
             w.WriteEndElement();
         }
 
-        private void WriteKeyframe(XmlTextWriter w)
+        private void WriteKeyframe(XmlTextWriter w, int time)
         {
-            string position = random.Next((int)durationTimestamps).ToString();
+            string position = time.ToString();
             //string userTime = metadata.TimeCodeBuilder(position - metadata.SelectionStart, TimeType.Time, TimecodeFormat.Unknown, false);
             string userTime = position;
             string title = random.NextString(20);
@@ -191,11 +197,23 @@ namespace Kinovea.Tests.Metadata
         {
             Guid id = Guid.NewGuid();
 
-            // TODO: select random drawing tool and do a switch.
-            w.WriteStartElement("Label");
-            w.WriteAttributeString("id", id.ToString());
-            WriteDrawingText(w);
-            w.WriteEndElement();
+            int drawing = random.Next(2);
+
+            switch(drawing)
+            {
+                case 0:
+                    w.WriteStartElement("Label");
+                    w.WriteAttributeString("id", id.ToString());
+                    WriteDrawingText(w);
+                    w.WriteEndElement();
+                    break;
+                case 1:
+                    w.WriteStartElement("Angle");
+                    w.WriteAttributeString("id", id.ToString());
+                    WriteDrawingText(w);
+                    w.WriteEndElement();
+                    break;
+            }
         }
 
         private void WriteDrawingText(XmlTextWriter w)
@@ -442,7 +460,7 @@ namespace Kinovea.Tests.Metadata
             int refinementNeighborhood = random.Next(1, 4);
             Size referenceSearchWindow = new Size(imageSize.Width / 20, imageSize.Height / 20);
             Size searchWindow = random.NextSize(referenceSearchWindow.Width - 10, referenceSearchWindow.Width + 10, referenceSearchWindow.Height - 10, referenceSearchWindow.Height + 10);
-            Size blockWindow = random.NextSize(4, searchWindow.Width, 4, searchWindow.Height + 10);
+            Size blockWindow = random.NextSize(4, Math.Max(searchWindow.Width, 5), 4, Math.Max(searchWindow.Height, 5));
 
             w.WriteStartElement("TrackerParameters");
             w.WriteElementString("SimilarityThreshold", String.Format(CultureInfo.InvariantCulture, "{0}", similarityThreshold));
@@ -465,7 +483,7 @@ namespace Kinovea.Tests.Metadata
 
         private void WriteDrawingStyleLineSize(XmlTextWriter w, string key)
         {
-            int lineSize = random.Next(1, 20);
+            int lineSize = StyleElementLineSize.Options[random.Next(StyleElementLineSize.Options.Length)];
 
             w.WriteStartElement("LineSize");
             w.WriteAttributeString("Key", key);
@@ -488,18 +506,18 @@ namespace Kinovea.Tests.Metadata
 
         private void WriteDrawingStyleFont(XmlTextWriter w, string key)
         {
-            int fontSize = random.Next(6, 32);
+            string fontSize = StyleElementFontSize.Options[random.Next(StyleElementFontSize.Options.Length)];
 
             w.WriteStartElement("FontSize");
             w.WriteAttributeString("Key", key);
-            w.WriteElementString("Value", fontSize.ToString());
+            w.WriteElementString("Value", fontSize);
             w.WriteEndElement();
         }
 
         private void WriteInfosFading(XmlTextWriter w)
         {
             bool enabled = random.NextBoolean();
-            int fadingFrames = random.Next(100);
+            int fadingFrames = random.Next(1, 100);
             bool alwaysVisible = random.NextBoolean();
             bool useDefault = random.NextBoolean();
 
