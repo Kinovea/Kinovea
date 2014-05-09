@@ -41,14 +41,11 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private long position;
-        
         private Guid id = Guid.NewGuid();
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
-        
         private int radius;
         private Rectangle rescaledRect;
-        
         private static readonly int minimalRadius = 10;
         private static readonly int borderWidth = 2;
         private static readonly DashStyle dashStyle = DashStyle.Dash;

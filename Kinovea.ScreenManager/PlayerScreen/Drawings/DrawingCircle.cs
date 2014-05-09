@@ -163,6 +163,9 @@ namespace Kinovea.ScreenManager
         #region KVA Serialization
         private void ReadXml(XmlReader xmlReader, PointF scale)
         {
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
             xmlReader.ReadStartElement();
             
             while(xmlReader.NodeType == XmlNodeType.Element)
