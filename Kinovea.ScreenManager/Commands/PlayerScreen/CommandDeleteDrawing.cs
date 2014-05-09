@@ -29,7 +29,7 @@ namespace Kinovea.ScreenManager
 
         public string FriendlyName 
         {
-            get { return ScreenManagerLang.CommandDeleteDrawing_FriendlyName + " (" + drawing.DisplayName + ")"; }
+            get { return drawing == null ? "" : ScreenManagerLang.CommandDeleteDrawing_FriendlyName + " (" + drawing.DisplayName + ")"; }
         }
 
         private Action doScreenInvalidate;
@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
             this.drawingIndex = drawingIndex;
             
             int index = metadata.GetKeyframeIndex(framePosition);
-            if (index >= 0)
+            if (index >= 0 && drawingIndex < metadata[index].Drawings.Count)
                 drawing = metadata[index].Drawings[drawingIndex];
         }
         
@@ -56,10 +56,10 @@ namespace Kinovea.ScreenManager
             // When we come back here for a redo, we should be in the exact same state
             // as the first time.
             // Even if drawings were added in between, we can't come back here
-            // before all those new drawings have been unstacked from the m_CommandStack stack.
+            // before all those new drawings have been unstacked from the command stack.
 
             int index = metadata.GetKeyframeIndex(framePosition);
-            if (index < 0)
+            if (index < 0 || drawing == null)
                 return;
             
             metadata.DeleteDrawing(index, drawingIndex);
@@ -69,7 +69,7 @@ namespace Kinovea.ScreenManager
         public void Unexecute()
         {
             int index = metadata.GetKeyframeIndex(framePosition);
-            if (index < 0)
+            if (index < 0 || drawing == null)
                 return;
             
             // We must insert exactly where we deleted, otherwise the drawing table gets messed up.
