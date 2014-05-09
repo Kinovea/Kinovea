@@ -35,6 +35,7 @@ namespace Kinovea.ScreenManager
     public class StyleElementTrackShape : AbstractStyleElement
     {
         #region Properties
+        public static readonly TrackShape[] Options = { TrackShape.Solid, TrackShape.Dash, TrackShape.SolidSteps, TrackShape.DashSteps };
         public override object Value
         {
             get { return trackShape; }
@@ -61,14 +62,13 @@ namespace Kinovea.ScreenManager
         #region Members
         private TrackShape trackShape;
         private static readonly int lineWidth = 3;
-        private static readonly TrackShape[] options = { TrackShape.Solid, TrackShape.Dash, TrackShape.SolidSteps, TrackShape.DashSteps };
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
         public StyleElementTrackShape(TrackShape givenDefault)
         {
-            trackShape = (Array.IndexOf(options, givenDefault) >= 0) ? givenDefault : TrackShape.Solid;
+            trackShape = (Array.IndexOf(Options, givenDefault) >= 0) ? givenDefault : TrackShape.Solid;
         }
         public StyleElementTrackShape(XmlReader xmlReader)
         {
@@ -83,8 +83,8 @@ namespace Kinovea.ScreenManager
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
             editor.ItemHeight = 15;
             editor.DrawMode = DrawMode.OwnerDrawFixed;
-            for(int i=0;i<options.Length;i++) editor.Items.Add(new object());
-            editor.SelectedIndex = Array.IndexOf(options, trackShape);
+            for(int i=0;i<Options.Length;i++) editor.Items.Add(new object());
+            editor.SelectedIndex = Array.IndexOf(Options, trackShape);
             editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             return editor;
@@ -112,7 +112,7 @@ namespace Kinovea.ScreenManager
             }
             
             // Restrict to the actual list of "athorized" values.
-            trackShape = (Array.IndexOf(options, value) >= 0) ? value : TrackShape.Solid;
+            trackShape = (Array.IndexOf(Options, value) >= 0) ? value : TrackShape.Solid;
             
             xmlReader.ReadEndElement();
         }
@@ -127,19 +127,19 @@ namespace Kinovea.ScreenManager
         #region Private Methods
         private void editor_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index < 0 || e.Index >= options.Length)
+            if (e.Index < 0 || e.Index >= Options.Length)
                 return;
             
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 
             Pen p = new Pen(Color.Black, lineWidth);
-            p.DashStyle = options[e.Index].DashStyle;
+            p.DashStyle = Options[e.Index].DashStyle;
                 
             int top = e.Bounds.Height / 2;
                 
             e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
                 
-            if(options[e.Index].ShowSteps)
+            if(Options[e.Index].ShowSteps)
             {
                 Pen stepPen = new Pen(Color.Black, 2);
                 int margin = (int)(lineWidth * 1.5);
@@ -154,9 +154,9 @@ namespace Kinovea.ScreenManager
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
         {
             int index = ((ComboBox)sender).SelectedIndex;
-            if( index >= 0 && index < options.Length)
+            if( index >= 0 && index < Options.Length)
             {
-                trackShape = options[index];
+                trackShape = Options[index];
                 RaiseValueChanged();
             }
         }
