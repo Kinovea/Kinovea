@@ -36,6 +36,8 @@ namespace Kinovea.ScreenManager
     public class StyleElementFontSize : AbstractStyleElement
     {
         #region Properties
+        public static readonly string[] Options = { "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36" };
+        
         public override object Value
         {
             get { return fontSize; }
@@ -62,14 +64,13 @@ namespace Kinovea.ScreenManager
         #region Members
         private int fontSize;
         private static readonly int defaultFontSize = 10;
-        private static readonly string[] options = { "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36" };
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
         public StyleElementFontSize(int givenDefault)
         {
-            fontSize = (Array.IndexOf(options, givenDefault.ToString()) >= 0) ? givenDefault : defaultFontSize;
+            fontSize = (Array.IndexOf(Options, givenDefault.ToString()) >= 0) ? givenDefault : defaultFontSize;
         }
         public StyleElementFontSize(XmlReader xmlReader)
         {
@@ -82,8 +83,8 @@ namespace Kinovea.ScreenManager
         {
             ComboBox editor = new ComboBox();
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
-            editor.Items.AddRange(options);
-            editor.SelectedIndex = Array.IndexOf(options, fontSize.ToString());
+            editor.Items.AddRange(Options);
+            editor.SelectedIndex = Array.IndexOf(Options, fontSize.ToString());
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             return editor;
         }
@@ -110,7 +111,7 @@ namespace Kinovea.ScreenManager
             }
             
             // Restrict to the actual list of "athorized" values.
-            fontSize = (Array.IndexOf(options, value.ToString()) >= 0) ? value : defaultFontSize;
+            fontSize = (Array.IndexOf(Options, value.ToString()) >= 0) ? value : defaultFontSize;
             
             xmlReader.ReadEndElement();
         }
