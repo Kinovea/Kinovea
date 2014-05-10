@@ -32,10 +32,10 @@ namespace Kinovea.ScreenManager
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.grpConfig = new System.Windows.Forms.GroupBox();
-            this.tbFPSRealWorld = new System.Windows.Forms.TextBox();
+            this.tbCaptureFPS = new System.Windows.Forms.TextBox();
             this.lblSlowFactor = new System.Windows.Forms.Label();
-            this.lblFPSDisplayTime = new System.Windows.Forms.Label();
-            this.lblFPSCaptureTime = new System.Windows.Forms.Label();
+            this.lblVideoFPS = new System.Windows.Forms.Label();
+            this.lblCaptureFPS = new System.Windows.Forms.Label();
             this.btnReset = new System.Windows.Forms.Button();
             this.toolTips = new System.Windows.Forms.ToolTip(this.components);
             this.grpConfig.SuspendLayout();
@@ -69,10 +69,10 @@ namespace Kinovea.ScreenManager
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpConfig.Controls.Add(this.btnReset);
-            this.grpConfig.Controls.Add(this.tbFPSRealWorld);
+            this.grpConfig.Controls.Add(this.tbCaptureFPS);
             this.grpConfig.Controls.Add(this.lblSlowFactor);
-            this.grpConfig.Controls.Add(this.lblFPSDisplayTime);
-            this.grpConfig.Controls.Add(this.lblFPSCaptureTime);
+            this.grpConfig.Controls.Add(this.lblVideoFPS);
+            this.grpConfig.Controls.Add(this.lblCaptureFPS);
             this.grpConfig.Location = new System.Drawing.Point(12, 12);
             this.grpConfig.Name = "grpConfig";
             this.grpConfig.Size = new System.Drawing.Size(304, 172);
@@ -82,13 +82,13 @@ namespace Kinovea.ScreenManager
             // 
             // tbFPSOriginal
             // 
-            this.tbFPSRealWorld.Location = new System.Drawing.Point(101, 65);
-            this.tbFPSRealWorld.Name = "tbFPSOriginal";
-            this.tbFPSRealWorld.Size = new System.Drawing.Size(51, 20);
-            this.tbFPSRealWorld.TabIndex = 24;
-            this.tbFPSRealWorld.Text = "0000";
-            this.tbFPSRealWorld.TextChanged += new System.EventHandler(this.tbFPSRealWorld_TextChanged);
-            this.tbFPSRealWorld.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbFPSRealWorld_KeyPress);
+            this.tbCaptureFPS.Location = new System.Drawing.Point(101, 65);
+            this.tbCaptureFPS.Name = "tbFPSOriginal";
+            this.tbCaptureFPS.Size = new System.Drawing.Size(51, 20);
+            this.tbCaptureFPS.TabIndex = 24;
+            this.tbCaptureFPS.Text = "0000";
+            this.tbCaptureFPS.TextChanged += new System.EventHandler(this.tbCaptureFPS_TextChanged);
+            this.tbCaptureFPS.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbCaptureFPS_KeyPress);
             // 
             // lblSlowFactor
             // 
@@ -102,24 +102,24 @@ namespace Kinovea.ScreenManager
             // 
             // lblFPSDisplayTime
             // 
-            this.lblFPSDisplayTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.lblVideoFPS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblFPSDisplayTime.Location = new System.Drawing.Point(10, 111);
-            this.lblFPSDisplayTime.Name = "lblFPSDisplayTime";
-            this.lblFPSDisplayTime.Size = new System.Drawing.Size(288, 23);
-            this.lblFPSDisplayTime.TabIndex = 22;
-            this.lblFPSDisplayTime.Text = "Number of frames per seconds at display time : {0} fps.";
+            this.lblVideoFPS.Location = new System.Drawing.Point(10, 111);
+            this.lblVideoFPS.Name = "lblFPSDisplayTime";
+            this.lblVideoFPS.Size = new System.Drawing.Size(288, 23);
+            this.lblVideoFPS.TabIndex = 22;
+            this.lblVideoFPS.Text = "Number of frames per seconds at display time : {0} fps.";
             // 
             // lblFPSCaptureTime
             // 
-            this.lblFPSCaptureTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.lblCaptureFPS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblFPSCaptureTime.Location = new System.Drawing.Point(10, 22);
-            this.lblFPSCaptureTime.Name = "lblFPSCaptureTime";
-            this.lblFPSCaptureTime.Size = new System.Drawing.Size(288, 30);
-            this.lblFPSCaptureTime.TabIndex = 21;
-            this.lblFPSCaptureTime.Text = "Number of frames per second at capture time :";
-            this.lblFPSCaptureTime.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.lblCaptureFPS.Location = new System.Drawing.Point(10, 22);
+            this.lblCaptureFPS.Name = "lblFPSCaptureTime";
+            this.lblCaptureFPS.Size = new System.Drawing.Size(288, 30);
+            this.lblCaptureFPS.TabIndex = 21;
+            this.lblCaptureFPS.Text = "Number of frames per second at capture time :";
+            this.lblCaptureFPS.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // btnReset
             // 
@@ -160,10 +160,10 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.GroupBox grpConfig;
-        private System.Windows.Forms.Label lblFPSCaptureTime;
+        private System.Windows.Forms.Label lblCaptureFPS;
         private System.Windows.Forms.Label lblSlowFactor;
-        private System.Windows.Forms.Label lblFPSDisplayTime;
-        private System.Windows.Forms.TextBox tbFPSRealWorld;
+        private System.Windows.Forms.Label lblVideoFPS;
+        private System.Windows.Forms.TextBox tbCaptureFPS;
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.ToolTip toolTips;
 
