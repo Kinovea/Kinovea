@@ -196,6 +196,10 @@ namespace Kinovea.ScreenManager
             // Real size of the calibration rectangle. Used to populate the calibration dialog.
             return calibrationPlane.Size;
         }
+        public bool CalibrationByPlane_IsValid()
+        {
+            return calibrationPlane.Valid;
+        }
         #endregion
 
         #region Value computers

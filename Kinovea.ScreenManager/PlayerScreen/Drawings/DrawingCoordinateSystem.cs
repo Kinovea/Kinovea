@@ -156,6 +156,9 @@ namespace Kinovea.ScreenManager
             if(!Visible || CalibrationHelper == null)
                 return;
 
+            if (CalibrationHelper.CalibratorType == CalibratorType.Plane && !CalibrationHelper.CalibrationByPlane_IsValid())
+                return;
+
             RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
             if (bounds.Size == SizeF.Empty)
                 return;
