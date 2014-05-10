@@ -574,6 +574,8 @@ namespace Kinovea.ScreenManager
             ActivateKeyframe(m_iCurrentPosition);
 
             m_fHighSpeedFactor = m_FrameServer.Metadata.CalibrationHelper.FramesPerSecond / m_FrameServer.VideoReader.Info.FramesPerSeconds;
+            UpdateTimedLabels();
+            
             m_FrameServer.SetupMetadata(false);
             m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
             
@@ -681,9 +683,7 @@ namespace Kinovea.ScreenManager
             lblSelDuration.AutoSize = true;
 
             lblWorkingZone.Text = ScreenManagerLang.lblWorkingZone_Text;
-            UpdateSpeedLabel();
-            UpdateSelectionLabels();
-            UpdateCurrentPositionLabel();
+            UpdateTimedLabels();
             
             RepositionSpeedControl();			
             ReloadTooltipsCulture();
@@ -921,7 +921,7 @@ namespace Kinovea.ScreenManager
             m_bTextEdit = false;
             
             m_fHighSpeedFactor = 1.0f;
-            UpdateSpeedLabel();
+            UpdateTimedLabels();
         }
         private void DemuxMetadata()
         {
@@ -1895,23 +1895,9 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateSpeedLabel()
         {
-            if(m_fHighSpeedFactor != 1.0)
-            {
-                double fRealtimePercentage = (double)m_fSlowmotionPercentage / m_fHighSpeedFactor;
-                lblSpeedTuner.Text = String.Format("{0} {1:0.00}%", ScreenManagerLang.lblSpeedTuner_Text, fRealtimePercentage);
-            }
-            else
-            {
-                if(m_fSlowmotionPercentage % 1 == 0)
-                {
-                    lblSpeedTuner.Text = ScreenManagerLang.lblSpeedTuner_Text + " " + m_fSlowmotionPercentage + "%";
-                }
-                else
-                {
-                    // Special case when the speed percentage is coming from the other screen and is not an integer.
-                    lblSpeedTuner.Text = String.Format("{0} {1:0.00}%", ScreenManagerLang.lblSpeedTuner_Text, m_fSlowmotionPercentage);
-                }
-            }			
+            double realtimePercentage = (double)m_fSlowmotionPercentage / m_fHighSpeedFactor;
+            string percentage = realtimePercentage % 1 != 0 ? string.Format("{0:0.00}%", realtimePercentage) : string.Format("{0}%", (int)realtimePercentage);
+            lblSpeedTuner.Text = string.Format("{0} {1}", ScreenManagerLang.lblSpeedTuner_Text, percentage);
         }
         private void RepositionSpeedControl()
         {
@@ -2414,13 +2400,16 @@ namespace Kinovea.ScreenManager
             
             fcs.Dispose();
 
-            // Update times.
-            UpdateSelectionLabels();
-            UpdateCurrentPositionLabel();
-            UpdateSpeedLabel();
+            UpdateTimedLabels();
             m_PlayerScreenUIHandler.PlayerScreenUI_SpeedChanged(true);
             m_FrameServer.Metadata.CalibrationHelper.FramesPerSecond = m_FrameServer.VideoReader.Info.FramesPerSeconds * m_fHighSpeedFactor;
             DoInvalidate();
+        }
+        private void UpdateTimedLabels()
+        {
+            UpdateSelectionLabels();
+            UpdateCurrentPositionLabel();
+            UpdateSpeedLabel();
         }
         private double GetPlaybackFrameInterval()
         {
