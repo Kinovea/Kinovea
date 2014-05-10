@@ -38,7 +38,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("CrossMark")]
-    public class DrawingCross2D : AbstractDrawing, IKvaSerializable, IDecorable, ITrackable, IMeasurable
+    public class DrawingCrossMark : AbstractDrawing, IKvaSerializable, IDecorable, ITrackable, IMeasurable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
@@ -112,7 +112,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingCross2D(Point center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
+        public DrawingCrossMark(Point center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
         {
             points["0"] = center;
             labelCoordinates = new KeyframeLabel(points["0"], Color.Black, transformer);
@@ -131,7 +131,7 @@ namespace Kinovea.ScreenManager
             mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
             mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
-        public DrawingCross2D(XmlReader xmlReader, PointF scale, Metadata parent)
+        public DrawingCrossMark(XmlReader xmlReader, PointF scale, Metadata parent)
             : this(Point.Empty,0,0, ToolManager.CrossMark.StylePreset.Clone(), null)
         {
             ReadXml(xmlReader, scale);

@@ -51,9 +51,9 @@ namespace Kinovea.ScreenManager
         // Maybe we could find a way to generate this list of properties automatically.
         // A custom tool in the vein of the ResXFileCodeGenerator that would take an XML file in,
         // and creates a set of accessor properties.
-        public static DrawingToolAngle2D Angle
+        public static DrawingToolAngle Angle
         {
-            get { return (DrawingToolAngle2D)Tools["Angle"]; }
+            get { return (DrawingToolAngle)Tools["Angle"]; }
         }
         public static DrawingToolChrono Chrono
         {
@@ -63,13 +63,13 @@ namespace Kinovea.ScreenManager
         {
             get { return (DrawingToolCircle)Tools["Circle"]; }
         }
-        public static DrawingToolCross2D CrossMark
+        public static DrawingToolCrossMark CrossMark
         {
-            get { return (DrawingToolCross2D)Tools["CrossMark"]; }
+            get { return (DrawingToolCrossMark)Tools["CrossMark"]; }
         }
-        public static DrawingToolLine2D Line
+        public static DrawingToolLine Line
         {
-            get { return (DrawingToolLine2D)Tools["Line"]; }
+            get { return (DrawingToolLine)Tools["Line"]; }
         }
         public static DrawingToolArrow Arrow
         {
@@ -212,11 +212,11 @@ namespace Kinovea.ScreenManager
             // The core drawing tools are hard wired.
             // Maybe in the future we can have a plug-in system with .dll containing extensions tools.
             // Note that the pointer "tool" is not listed, as each screen must have its own.
-            tools.Add("Angle", new DrawingToolAngle2D());
+            tools.Add("Angle", new DrawingToolAngle());
             tools.Add("Chrono", new DrawingToolChrono());
             tools.Add("Circle", new DrawingToolCircle());
-            tools.Add("CrossMark", new DrawingToolCross2D());
-            tools.Add("Line", new DrawingToolLine2D());
+            tools.Add("CrossMark", new DrawingToolCrossMark());
+            tools.Add("Line", new DrawingToolLine());
             tools.Add("Arrow", new DrawingToolArrow());
             tools.Add("Pencil", new DrawingToolPencil());
             tools.Add("GenericPosture", new DrawingToolGenericPosture());
