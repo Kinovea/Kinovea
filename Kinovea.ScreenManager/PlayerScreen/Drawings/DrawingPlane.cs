@@ -425,6 +425,7 @@ namespace Kinovea.ScreenManager
 
             projectiveMapping.Update(quadPlane, quadImage);
             CalibrationHelper.CalibrationByPlane_Update(quadImage);
+            planeIsConvex = quadImage.IsConvex;
         }
         private void SignalAllTrackablePointsMoved()
         {
