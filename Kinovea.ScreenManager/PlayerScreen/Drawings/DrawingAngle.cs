@@ -37,7 +37,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Angle")]
-    public class DrawingAngle2D : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, ITrackable, IMeasurable
+    public class DrawingAngle : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, ITrackable, IMeasurable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingAngle2D(Point o, Point a, Point b, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
+        public DrawingAngle(Point o, Point a, Point b, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
         {
             points.Add("o", o);
             points.Add("a", a);
@@ -129,7 +129,7 @@ namespace Kinovea.ScreenManager
             mnuInvertAngle.Click += mnuInvertAngle_Click;
             mnuInvertAngle.Image = Properties.Drawings.angleinvert;
         }
-        public DrawingAngle2D(XmlReader xmlReader, PointF scale, Metadata parent)
+        public DrawingAngle(XmlReader xmlReader, PointF scale, Metadata parent)
             : this(Point.Empty, Point.Empty, Point.Empty, 0, 0, ToolManager.Angle.StylePreset.Clone())
         {
             ReadXml(xmlReader, scale);

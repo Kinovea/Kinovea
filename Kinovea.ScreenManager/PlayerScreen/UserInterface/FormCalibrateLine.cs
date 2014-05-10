@@ -40,14 +40,14 @@ namespace Kinovea.ScreenManager
     {
         #region Members
         private CalibrationHelper calibrationHelper;
-        private DrawingLine2D line;
+        private DrawingLine line;
         private float pixelLength;
         private float calibratedLength;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Construction & Initialization
-        public FormCalibrateLine(CalibrationHelper calibrationHelper, DrawingLine2D line)
+        public FormCalibrateLine(CalibrationHelper calibrationHelper, DrawingLine line)
         {
             this.calibrationHelper = calibrationHelper;
             this.line = line;

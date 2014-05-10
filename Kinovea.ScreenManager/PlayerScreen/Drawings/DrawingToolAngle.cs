@@ -26,16 +26,17 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingToolCross2D : AbstractDrawingTool
+    public class DrawingToolAngle : AbstractDrawingTool
     {
+        
         #region Properties
         public override string DisplayName
         {
-            get { return ScreenManagerLang.ToolTip_DrawingToolCross2D; }
+            get { return ScreenManagerLang.ToolTip_DrawingToolAngle2D; }
         }
         public override Bitmap Icon
         {
-            get { return Properties.Drawings.crossmark; }
+            get { return Properties.Drawings.angle; }
         }
         public override bool Attached
         {
@@ -43,11 +44,11 @@ namespace Kinovea.ScreenManager
         }
         public override bool KeepTool
         {
-            get { return true; }
+            get { return false; }
         }
         public override bool KeepToolFrameChanged
         {
-            get { return true; }
+            get { return false; }
         }
         public override DrawingStyle StylePreset
         {
@@ -66,9 +67,9 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public DrawingToolCross2D()
+        public DrawingToolAngle()
         {
-            defaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.CornflowerBlue));
+            defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
             stylePreset = defaultStylePreset.Clone();
         }
         #endregion
@@ -76,26 +77,14 @@ namespace Kinovea.ScreenManager
         #region Public Methods
         public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            return new DrawingCross2D(origin, timestamp, averageTimeStampsPerFrame, stylePreset, transformer);
+            int length = transformer.Untransform(50);
+            Point a = new Point(origin.X, origin.Y - length);
+            Point b = new Point(origin.X + length, origin.Y);
+            return new DrawingAngle(origin, a, b, timestamp, averageTimeStampsPerFrame, stylePreset);
         }
         public override Cursor GetCursor(double stretchFactor)
         {
-            // Draw custom cursor: cross inside a semi transparent circle (same as drawing).
-            Color c = (Color)stylePreset.Elements["back color"].Value;
-            Pen p = new Pen(c, 1);
-            Bitmap b = new Bitmap(9, 9);
-            Graphics g = Graphics.FromImage(b);
-
-            // Center point is {4,4}
-            g.DrawLine(p, 1, 4, 7, 4);
-            g.DrawLine(p, 4, 1, 4, 7);
-            
-            SolidBrush tempBrush = new SolidBrush(Color.FromArgb(32, c));
-            g.FillEllipse(tempBrush, 0, 0, 8, 8);
-            tempBrush.Dispose();
-            p.Dispose();
-            
-            return new Cursor(b.GetHicon());
+            return Cursors.Cross;
         }
         #endregion
     }

@@ -39,7 +39,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Line")]
-    public class DrawingLine2D : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, ITrackable, IMeasurable
+    public class DrawingLine : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, ITrackable, IMeasurable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingLine2D(Point start, Point end, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
+        public DrawingLine(Point start, Point end, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
         {
             points["a"] = start;
             points["b"] = end;
@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
             mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
             mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
         }
-        public DrawingLine2D(XmlReader xmlReader, PointF scale, Metadata parent)
+        public DrawingLine(XmlReader xmlReader, PointF scale, Metadata parent)
             : this(Point.Empty, Point.Empty, 0, 0, ToolManager.Line.StylePreset.Clone(), null)
         {
             ReadXml(xmlReader, scale);

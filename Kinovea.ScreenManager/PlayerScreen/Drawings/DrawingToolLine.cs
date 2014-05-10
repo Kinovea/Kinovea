@@ -26,17 +26,16 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingToolAngle2D : AbstractDrawingTool
+    public class DrawingToolLine : AbstractDrawingTool
     {
-        
         #region Properties
         public override string DisplayName
         {
-            get { return ScreenManagerLang.ToolTip_DrawingToolAngle2D; }
+            get { return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
         }
         public override Bitmap Icon
         {
-            get { return Properties.Drawings.angle; }
+            get { return Properties.Drawings.line; }
         }
         public override bool Attached
         {
@@ -44,11 +43,11 @@ namespace Kinovea.ScreenManager
         }
         public override bool KeepTool
         {
-            get { return false; }
+            get { return true; }
         }
         public override bool KeepToolFrameChanged
         {
-            get { return false; }
+            get { return true; }
         }
         public override DrawingStyle StylePreset
         {
@@ -67,9 +66,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public DrawingToolAngle2D()
+        public DrawingToolLine()
         {
-            defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
+            defaultStylePreset.Elements.Add("color", new StyleElementColor(Color.LightGreen));
+            defaultStylePreset.Elements.Add("line size", new StyleElementLineSize(2));
+            defaultStylePreset.Elements.Add("arrows", new StyleElementLineEnding(LineEnding.None));
             stylePreset = defaultStylePreset.Clone();
         }
         #endregion
@@ -77,10 +78,7 @@ namespace Kinovea.ScreenManager
         #region Public Methods
         public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            int length = transformer.Untransform(50);
-            Point a = new Point(origin.X, origin.Y - length);
-            Point b = new Point(origin.X + length, origin.Y);
-            return new DrawingAngle2D(origin, a, b, timestamp, averageTimeStampsPerFrame, stylePreset);
+            return new DrawingLine(origin, new Point(origin.X + 10, origin.Y), timestamp, averageTimeStampsPerFrame, stylePreset, transformer);
         }
         public override Cursor GetCursor(double stretchFactor)
         {

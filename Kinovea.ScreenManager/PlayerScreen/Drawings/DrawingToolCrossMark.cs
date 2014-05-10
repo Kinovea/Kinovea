@@ -26,16 +26,16 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingToolLine2D : AbstractDrawingTool
+    public class DrawingToolCrossMark : AbstractDrawingTool
     {
         #region Properties
         public override string DisplayName
         {
-            get { return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
+            get { return ScreenManagerLang.ToolTip_DrawingToolCross2D; }
         }
         public override Bitmap Icon
         {
-            get { return Properties.Drawings.line; }
+            get { return Properties.Drawings.crossmark; }
         }
         public override bool Attached
         {
@@ -66,11 +66,9 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public DrawingToolLine2D()
+        public DrawingToolCrossMark()
         {
-            defaultStylePreset.Elements.Add("color", new StyleElementColor(Color.LightGreen));
-            defaultStylePreset.Elements.Add("line size", new StyleElementLineSize(2));
-            defaultStylePreset.Elements.Add("arrows", new StyleElementLineEnding(LineEnding.None));
+            defaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.CornflowerBlue));
             stylePreset = defaultStylePreset.Clone();
         }
         #endregion
@@ -78,11 +76,26 @@ namespace Kinovea.ScreenManager
         #region Public Methods
         public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            return new DrawingLine2D(origin, new Point(origin.X + 10, origin.Y), timestamp, averageTimeStampsPerFrame, stylePreset, transformer);
+            return new DrawingCrossMark(origin, timestamp, averageTimeStampsPerFrame, stylePreset, transformer);
         }
         public override Cursor GetCursor(double stretchFactor)
         {
-            return Cursors.Cross;
+            // Draw custom cursor: cross inside a semi transparent circle (same as drawing).
+            Color c = (Color)stylePreset.Elements["back color"].Value;
+            Pen p = new Pen(c, 1);
+            Bitmap b = new Bitmap(9, 9);
+            Graphics g = Graphics.FromImage(b);
+
+            // Center point is {4,4}
+            g.DrawLine(p, 1, 4, 7, 4);
+            g.DrawLine(p, 4, 1, 4, 7);
+            
+            SolidBrush tempBrush = new SolidBrush(Color.FromArgb(32, c));
+            g.FillEllipse(tempBrush, 0, 0, 8, 8);
+            tempBrush.Dispose();
+            p.Dispose();
+            
+            return new Cursor(b.GetHicon());
         }
         #endregion
     }
