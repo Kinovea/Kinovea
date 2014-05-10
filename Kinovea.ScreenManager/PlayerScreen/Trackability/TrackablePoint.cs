@@ -193,7 +193,7 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
         }
 
-        public TrackablePoint(XmlReader r, PointF scale)
+        public TrackablePoint(XmlReader r, PointF scale, TimestampMapper timeMapper)
         {
             r.ReadStartElement();
 
@@ -206,12 +206,14 @@ namespace Kinovea.ScreenManager
                         break;
                     case "NonTrackingValue":
                         nonTrackingValue = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        nonTrackingValue = nonTrackingValue.Scale(scale.X, scale.Y);
                         break;
                     case "CurrentValue":
                         currentValue = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        currentValue = currentValue.Scale(scale.X, scale.Y);
                         break;
                     case "Timeline":
-                        ParseTimeline(r);
+                        ParseTimeline(r, scale, timeMapper);
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
@@ -222,7 +224,7 @@ namespace Kinovea.ScreenManager
             r.ReadEndElement();
         }
 
-        private void ParseTimeline(XmlReader r)
+        private void ParseTimeline(XmlReader r, PointF scale, TimestampMapper timeMapper)
         {
             trackTimeline.Clear();
             
@@ -235,7 +237,7 @@ namespace Kinovea.ScreenManager
                 switch (r.Name)
                 {
                     case "Frame":
-                        TrackFrame frame = new TrackFrame(r);
+                        TrackFrame frame = new TrackFrame(r, scale, timeMapper);
                         trackTimeline.Insert(frame.Time, frame);
                         break;
                     default:

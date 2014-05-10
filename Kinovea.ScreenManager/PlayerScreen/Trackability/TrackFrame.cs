@@ -76,7 +76,7 @@ namespace Kinovea.ScreenManager
             this.positionningSource = positionningSource;
         }
 
-        public TrackFrame(XmlReader r)
+        public TrackFrame(XmlReader r, PointF scale, TimestampMapper timestampMapper)
         {
             bool isEmpty = r.IsEmptyElement;
 
@@ -85,13 +85,16 @@ namespace Kinovea.ScreenManager
             PointF location = PointF.Empty;
 
             if (r.MoveToAttribute("time"))
-                time = r.ReadContentAsLong();
+                time = timestampMapper(r.ReadContentAsLong(), false);
 
             if (r.MoveToAttribute("source"))
                 source = (PositionningSource)Enum.Parse(typeof(PositionningSource), r.ReadContentAsString());
 
             if (r.MoveToAttribute("location"))
+            {
                 location = XmlHelper.ParsePointF(r.ReadContentAsString());
+                location = location.Scale(scale.X, scale.Y);
+            }
 
             r.ReadStartElement();
 
