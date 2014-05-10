@@ -18,6 +18,7 @@ namespace Kinovea.ScreenManager
     /// This class is used to import additional metadata into an existing metadata object and save metadata to KVA.
     /// Metadata is whatever is saved into a KVA file.
     /// When importing, the data may be adapted to fit the size and duration of the current video.
+    /// TODO: group scaling and timestamp remapping into a dedicated MetadataAdapter class that we would pass to parsers.
     /// </summary>
     public class MetadataSerializer
     {
@@ -128,6 +129,9 @@ namespace Kinovea.ScreenManager
         #region load
         private void Load(XmlReader r)
         {
+            // Note: the order of tags is somewhat important.
+            // Image size and the timing information must be at the top so we can adapt 
+            // all coordinates and times found in the file to the existing video.
             log.Debug("Importing Metadata from KVA file.");
 
             r.MoveToContent();
@@ -191,7 +195,7 @@ namespace Kinovea.ScreenManager
                         metadata.DrawingCoordinateSystem.ReadXml(r);
                         break;
                     case "Trackability":
-                        metadata.TrackabilityManager.ReadXml(r, scaling);
+                        metadata.TrackabilityManager.ReadXml(r, scaling, RemapTimestamp);
                         break;
                     default:
                         // Skip the unparsed nodes.
