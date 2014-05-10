@@ -27,6 +27,7 @@ namespace Kinovea.Tests.Metadata
         private long durationTimestamps;
         private Size imageSize;
         private long averageTimestampPerFrame;
+        private List<TrackableDrawing> trackableDrawings = new List<TrackableDrawing>(); 
 
         public KVAFuzzer20()
         {
@@ -48,13 +49,13 @@ namespace Kinovea.Tests.Metadata
             w.WriteStartElement("KinoveaVideoAnalysis");
 
             WriteGeneralInformation(w);
-            WriteKeyframes(w, 50);
+            WriteKeyframes(w, 20);
             //WriteExtraDrawings(w, 50, "Chronos", "Chrono", WriteChrono);
             //WriteExtraDrawings(w, 50, "Tracks", "Track", WriteTrack);
             //WriteExtraDrawings(w, 1000, "Spotlights", "Spotlight", WriteSpotlight);
             //WriteAutoNumbers(w, 100);
             WriteCoordinateSystem(w);
-            //WriteTrackablePoints(w);
+            WriteTrackablePoints(w);
             
             w.WriteEndElement();
             w.WriteEndDocument();
@@ -188,16 +189,16 @@ namespace Kinovea.Tests.Metadata
             w.WriteStartElement("Drawings");
             
             for(int i = 0; i < drawingsCount; i++)
-                WriteDrawing(w);
+                WriteDrawing(w, time);
 
             w.WriteEndElement();
         }
         
-        private void WriteDrawing(XmlTextWriter w)
+        private void WriteDrawing(XmlTextWriter w, long time)
         {
             Guid id = Guid.NewGuid();
 
-            int drawing = random.Next(4, 7);
+            int drawing = random.Next(6, 7);
 
             switch(drawing)
             {
@@ -210,19 +211,19 @@ namespace Kinovea.Tests.Metadata
                 case 1:
                     w.WriteStartElement("Angle");
                     w.WriteAttributeString("id", id.ToString());
-                    WriteDrawingAngle(w);
+                    WriteDrawingAngle(w, id, time);
                     w.WriteEndElement();
                     break;
                 case 2:
                     w.WriteStartElement("CrossMark");
                     w.WriteAttributeString("id", id.ToString());
-                    WriteDrawingCrossMark(w);
+                    WriteDrawingCrossMark(w, id, time);
                     w.WriteEndElement();
                     break;
                 case 3:
                     w.WriteStartElement("Line");
                     w.WriteAttributeString("id", id.ToString());
-                    WriteDrawingLine(w);
+                    WriteDrawingLine(w, id, time);
                     w.WriteEndElement();
                     break;
                 case 4:
@@ -240,7 +241,7 @@ namespace Kinovea.Tests.Metadata
                 case 6:
                     w.WriteStartElement("Plane");
                     w.WriteAttributeString("id", id.ToString());
-                    WriteDrawingPlane(w);
+                    WriteDrawingPlane(w, id, time);
                     w.WriteEndElement();
                     break;
             }
@@ -263,7 +264,7 @@ namespace Kinovea.Tests.Metadata
             WriteInfosFading(w);
         }
 
-        private void WriteDrawingAngle(XmlTextWriter w)
+        private void WriteDrawingAngle(XmlTextWriter w, Guid id, long time)
         {
             PointF o = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
             PointF a = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
@@ -278,9 +279,16 @@ namespace Kinovea.Tests.Metadata
             w.WriteEndElement();
 
             WriteInfosFading(w);
+
+            bool tracked = random.NextBoolean();
+            if (!tracked)
+                return;
+
+            List<string> pointKeys = new List<string>() { "o", "a", "b" };
+            trackableDrawings.Add(new TrackableDrawing(id, time, pointKeys));
         }
 
-        private void WriteDrawingCrossMark(XmlTextWriter w)
+        private void WriteDrawingCrossMark(XmlTextWriter w, Guid id, long time)
         {
             PointF center = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
             bool measurableInfoVisible = random.NextBoolean();
@@ -293,9 +301,16 @@ namespace Kinovea.Tests.Metadata
             w.WriteEndElement();
 
             WriteInfosFading(w);
+
+            bool tracked = random.NextBoolean();
+            if (!tracked)
+                return;
+
+            List<string> pointKeys = new List<string>() { "0" };
+            trackableDrawings.Add(new TrackableDrawing(id, time, pointKeys));
         }
 
-        private void WriteDrawingLine(XmlTextWriter w)
+        private void WriteDrawingLine(XmlTextWriter w, Guid id, long time)
         {
             PointF a = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
             PointF b = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
@@ -312,6 +327,13 @@ namespace Kinovea.Tests.Metadata
             w.WriteEndElement();
 
             WriteInfosFading(w);
+
+            bool tracked = random.NextBoolean();
+            if (!tracked)
+                return;
+
+            List<string> pointKeys = new List<string>() { "a", "b" };
+            trackableDrawings.Add(new TrackableDrawing(id, time, pointKeys));
         }
 
         private void WriteDrawingCircle(XmlTextWriter w)
@@ -336,11 +358,9 @@ namespace Kinovea.Tests.Metadata
 
             w.WriteStartElement("PointList");
             w.WriteAttributeString("Count", count.ToString());
+            List<PointF> points = GetRandomTrajectory(count);
             for (int i = 0; i < count; i++)
-            {
-                PointF p = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
-                w.WriteElementString("Point", XmlHelper.WritePointF(p));
-            }
+                w.WriteElementString("Point", XmlHelper.WritePointF(points[i]));
 
             w.WriteEndElement();
 
@@ -352,7 +372,7 @@ namespace Kinovea.Tests.Metadata
             WriteInfosFading(w);
         }
 
-        private void WriteDrawingPlane(XmlTextWriter w)
+        private void WriteDrawingPlane(XmlTextWriter w, Guid id, long time)
         {
             QuadrilateralF quadImage = GetRandomQuadrilateral();
             bool inPerspective = random.NextBoolean();
@@ -375,6 +395,13 @@ namespace Kinovea.Tests.Metadata
             w.WriteEndElement();
 
             WriteInfosFading(w);
+
+            bool tracked = random.NextBoolean();
+            if (!tracked)
+                return;
+
+            List<string> pointKeys = new List<string>() { "0", "1", "2", "3" };
+            trackableDrawings.Add(new TrackableDrawing(id, time, pointKeys));
         }
 
         private void WriteExtraDrawings(XmlTextWriter w, int max, string name, string itemName, Action<XmlTextWriter> itemWriter)
@@ -483,12 +510,11 @@ namespace Kinovea.Tests.Metadata
         {
             int count = random.Next(0, 1000);
             List<TrackPointBlock> positions = new List<TrackPointBlock>();
-
+            List<PointF> points = GetRandomTrajectory(count);
             for (int i = 0; i < count; i++)
             {
-                PointF location = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
                 long t = beginTimestamp + (i * averageTimestampPerFrame);
-                TrackPointBlock point = new TrackPointBlock(location.X, location.Y, t);
+                TrackPointBlock point = new TrackPointBlock(points[i].X, points[i].Y, t);
                 positions.Add(point);
             }
 
@@ -550,6 +576,7 @@ namespace Kinovea.Tests.Metadata
 
             w.WriteEndElement();
         }
+        
         private void WriteAutoNumber(XmlTextWriter w, int value)
         {
             //long time = random.Next((int)durationTimestamps);
@@ -580,9 +607,59 @@ namespace Kinovea.Tests.Metadata
 
         private void WriteTrackablePoints(XmlTextWriter w)
         {
+            if (trackableDrawings.Count == 0)
+                return;
 
+            w.WriteStartElement("Trackability");
+
+            foreach (TrackableDrawing drawing in trackableDrawings)
+            {
+                bool tracking = random.NextBoolean();
+                w.WriteStartElement("TrackableDrawing");
+                w.WriteAttributeString("id", drawing.DrawingId.ToString());
+                w.WriteAttributeString("tracking", tracking.ToString().ToLower());
+
+                int frameCount = random.Next(200);
+                foreach (string key in drawing.PointKeys)
+                {
+                    w.WriteStartElement("TrackablePoint");
+                    w.WriteAttributeString("key", key);
+                    WriteTrackablePoint(w, frameCount, drawing.Time);
+                    w.WriteEndElement();
+                }
+                w.WriteEndElement();
+            }
+
+            w.WriteEndElement();
         }
 
+        private void WriteTrackablePoint(XmlTextWriter w, int frameCount, long time)
+        {
+            PointF nonTrackingValue = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            PointF currentValue = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            
+            WriteTrackerParameters(w);
+            w.WriteElementString("NonTrackingValue", XmlHelper.WritePointF(nonTrackingValue));
+            w.WriteElementString("CurrentValue", XmlHelper.WritePointF(currentValue));
+
+            w.WriteStartElement("Timeline");
+            List<PointF> points = GetRandomTrajectory(frameCount);
+
+            for (int i = 0; i < frameCount; i++)
+            {
+                Array values = Enum.GetValues(typeof(PositionningSource));
+                PositionningSource source = (PositionningSource)values.GetValue(random.Next(values.Length));
+                long currentTime = time + (i * averageTimestampPerFrame);
+                w.WriteStartElement("Frame");
+                w.WriteAttributeString("time", currentTime.ToString());
+                w.WriteAttributeString("location", XmlHelper.WritePointF(points[i]));
+                w.WriteAttributeString("source", source.ToString());
+                w.WriteEndElement();
+            }
+                
+            w.WriteEndElement();
+        }
+        
         #region Common utilities
         private QuadrilateralF GetRandomQuadrilateral()
         {
@@ -595,10 +672,27 @@ namespace Kinovea.Tests.Metadata
             return new QuadrilateralF(a, b, c, d);
         }
 
+        private List<PointF> GetRandomTrajectory(int count)
+        {
+            PointF current = random.NextPointF(0, imageSize.Width, 0, imageSize.Height);
+            List<PointF> trajectory = new List<PointF>();
+            
+            for (int i = 0; i < count; i++)
+            {
+                double x = random.NextDouble(-10, 11);
+                double y = random.NextDouble(-10, 11);
+                current = new PointF((float)(current.X + x), (float)(current.Y + y));
+                
+                trajectory.Add(current);
+            }
+
+            return trajectory;
+        }
+
         private void WriteTrackerParameters(XmlTextWriter w)
         {
-            double similarityThreshold = random.NextDouble(0.5, 1.0);
-            double templateUpdateThreshold = random.NextDouble(0.4, similarityThreshold);
+            double templateUpdateThreshold = random.NextDouble(0.5, 1.0);
+            double similarityThreshold = random.NextDouble(0.4, templateUpdateThreshold);
             int refinementNeighborhood = random.Next(1, 4);
             Size referenceSearchWindow = new Size(imageSize.Width / 20, imageSize.Height / 20);
             Size searchWindow = random.NextSize(referenceSearchWindow.Width - 10, referenceSearchWindow.Width + 10, referenceSearchWindow.Height - 10, referenceSearchWindow.Height + 10);
