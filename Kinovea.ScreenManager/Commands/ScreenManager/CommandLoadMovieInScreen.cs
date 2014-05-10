@@ -35,9 +35,10 @@ namespace Kinovea.ScreenManager
         private String path;
         private ScreenManagerKernel manager;
         private int targetScreen;
+        private ScreenDescriptionPlayback recoveryScreenDescription;
 
         #region constructor
-        public CommandLoadMovieInScreen(ScreenManagerKernel manager, String path, int targetScreen, bool storeState)
+        public CommandLoadMovieInScreen(ScreenManagerKernel manager, string path, int targetScreen, bool storeState)
         {
             this.manager = manager;
             this.path = path;
@@ -45,6 +46,15 @@ namespace Kinovea.ScreenManager
             if (storeState) 
                 manager.StoreCurrentState();
         }
+        public CommandLoadMovieInScreen(ScreenManagerKernel manager, string path, ScreenDescriptionPlayback screenDescription)
+        {
+            // Used in the context of crash recovery or launch via command line.
+            this.manager = manager;
+            this.path = path;
+            this.targetScreen = -1;
+            this.recoveryScreenDescription = screenDescription;
+        }
+
         #endregion
 
         public void Execute()
@@ -123,7 +133,7 @@ namespace Kinovea.ScreenManager
                 if (!confirmed)
                     return;
 
-                CommandManager.LaunchCommand(new CommandLoadMovie(playerScreen, path));
+                CommandManager.LaunchCommand(new CommandLoadMovie(playerScreen, path, recoveryScreenDescription));
 
                 if (playerScreen.FrameServer.Loaded)
                 {

@@ -149,6 +149,7 @@ namespace Kinovea.ScreenManager
                 {
                     MetadataSerializer serializer = new MetadataSerializer();
                     serializer.SaveToFile(metadata, fve.Filename);
+                    metadata.AfterManualExport();
                 }
                 else
                 {

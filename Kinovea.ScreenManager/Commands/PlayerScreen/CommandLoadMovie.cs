@@ -33,15 +33,15 @@ namespace Kinovea.ScreenManager
             get { return ScreenManagerLang.CommandLoadMovie_FriendlyName;}
         }
         
-        #region Members
         private string path;
         private PlayerScreen player;
-        #endregion
-        
-        public CommandLoadMovie( PlayerScreen player, String path)
+        private ScreenDescriptionPlayback screenDescription;
+
+        public CommandLoadMovie(PlayerScreen player, String path, ScreenDescriptionPlayback screenDescription)
         {
             this.player = player;    
             this.path = path;
+            this.screenDescription = screenDescription;
         }
 
         public void Execute()
@@ -54,7 +54,10 @@ namespace Kinovea.ScreenManager
         {
             if(player.FrameServer.Loaded)
                 player.view.ResetToEmptyState();
-            
+
+            if (screenDescription != null)
+                player.view.SetLaunchDescription(screenDescription);
+
             OpenVideoResult res = player.FrameServer.Load(path);
 
             switch (res)

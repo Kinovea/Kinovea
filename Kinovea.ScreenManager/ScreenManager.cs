@@ -168,6 +168,8 @@ namespace Kinovea.ScreenManager
 
             view = new ScreenManagerUserInterface(this);
             view.FileLoadAsked += View_FileLoadAsked;
+            view.AutoLaunchAsked += View_AutoLaunchAsked;
+
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             
@@ -200,7 +202,7 @@ namespace Kinovea.ScreenManager
             filterMenus.Add(CreateFilterMenu(new VideoFilterEdgesOnly()));
             filterMenus.Add(CreateFilterMenu(new VideoFilterMosaic()));
             filterMenus.Add(CreateFilterMenu(new VideoFilterReverse()));
-            //m_filterMenus.Add(CreateFilterMenu(new VideoFilterSandbox()));
+            //filterMenus.Add(CreateFilterMenu(new VideoFilterSandbox()));
         }
 
         private ToolStripMenuItem CreateFilterMenu(AbstractVideoFilter _filter)
@@ -228,17 +230,27 @@ namespace Kinovea.ScreenManager
                 player.SetInteractiveEffect(_effect);
         }
         
-        public void PrepareScreen()
+        public void RecoverCrash()
         {
-            // Prepare a screen to hold the command line argument file.
-            IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-            CommandManager.Instance().LaunchUndoableCommand(caps);
-            
-            ICommand css = new CommandShowScreens(this);
-            CommandManager.LaunchCommand(css);
-            
-            OrganizeCommonControls();
-            OrganizeMenus();
+            try
+            {
+                List<ScreenDescriptionPlayback> recoverables = RecoveryManager.GetRecoverables();
+                if (recoverables != null && recoverables.Count > 0)
+                {
+                    FormCrashRecovery fcr = new FormCrashRecovery(recoverables);
+                    FormsHelper.Locate(fcr);
+                    if (fcr.ShowDialog() != DialogResult.OK)
+                    {
+                        log.DebugFormat("Recovery procedure cancelled. Deleting files.");
+                        FilesystemHelper.DeleteOrphanFiles();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                log.Error("An error happened while running crash detection and recovery routine.");
+                FilesystemHelper.DeleteOrphanFiles();
+            }
         }
         #endregion
 
@@ -2380,6 +2392,41 @@ namespace Kinovea.ScreenManager
             CameraTypeManager.StopDiscoveringCameras();
             DoLoadCameraInScreen(e.Source, e.Target);
         }
+
+        private void View_AutoLaunchAsked(object source, EventArgs e)
+        {
+            CommandManager cm = CommandManager.Instance();
+
+            int reloaded = 0;
+            foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
+            {
+                if (screenDescription is ScreenDescriptionPlayback)
+                {
+                    ScreenDescriptionPlayback sdp = screenDescription as ScreenDescriptionPlayback;
+
+                    ICommand caps = new CommandAddPlayerScreen(this, false);
+                    CommandManager.LaunchCommand(caps);
+
+                    IUndoableCommand clmis = new CommandLoadMovieInScreen(this, sdp.FullPath, sdp);
+                    cm.LaunchUndoableCommand(clmis);
+
+                    reloaded++;
+                }
+
+                if (reloaded == 2)
+                    break;
+            }
+
+            if (reloaded > 0)
+            {
+                ICommand css = new CommandShowScreens(this);
+                CommandManager.LaunchCommand(css);
+
+                OrganizeCommonControls();
+                OrganizeMenus();
+            }
+        }
+
         #endregion
 
         #region Keyboard Handling

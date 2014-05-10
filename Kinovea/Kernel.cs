@@ -97,7 +97,7 @@ namespace Kinovea.Root
         #region Constructor
         public RootKernel()
         {
-            CommandLineArgumentManager.Instance().ParseArguments(Environment.GetCommandLineArgs());
+            CommandLineArgumentManager.Instance.ParseArguments(Environment.GetCommandLineArgs());
             
             VideoTypeManager.LoadVideoReaders();
             CameraTypeManager.LoadCameraManagers();
@@ -128,14 +128,11 @@ namespace Kinovea.Root
             RefreshUICulture();
             CheckLanguageMenu();
             CheckTimecodeMenu();
-            
-            LogInitialConfiguration();
-            
-            if(CommandLineArgumentManager.Instance().InputFile != null)
-                screenManager.PrepareScreen();
         }
         public void Launch()
-        {            
+        {
+            screenManager.RecoverCrash();
+
             log.Debug("Calling Application.Run() to boot up the UI.");
             Application.Run(mainWindow);
         }
@@ -694,16 +691,6 @@ namespace Kinovea.Root
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
             }
-        }
-        private void LogInitialConfiguration()
-        {
-            CommandLineArgumentManager am = CommandLineArgumentManager.Instance();
-            
-            log.Debug("Initial configuration:");
-            log.Debug("InputFile : " + am.InputFile);
-            log.Debug("SpeedPercentage : " + am.SpeedPercentage.ToString());
-            log.Debug("StretchImage : " + am.StretchImage.ToString());
-            log.Debug("HideExplorer : " + am.HideExplorer.ToString());
         }
         private string GetLocalizedHelpResource(bool manual)
         {

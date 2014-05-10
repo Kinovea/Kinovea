@@ -25,9 +25,6 @@ using System.Threading;
 
 namespace Kinovea.Services
 {
-    /// <summary>
-    /// Description of LanguageManager.
-    /// </summary>
     public static class LanguageManager
     {
         public static Dictionary<string, string> Languages
@@ -144,7 +141,7 @@ namespace Kinovea.Services
         
         private static Dictionary<string, string> languages = null;
         
-        public static void Initialize()
+        private static void Initialize()
         {
             // Alphabetical order by native name. (Check Wikipedia order if in doubt).
             languages = new Dictionary<string, string>();

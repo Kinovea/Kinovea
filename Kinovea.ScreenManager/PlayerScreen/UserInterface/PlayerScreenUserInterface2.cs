@@ -255,6 +255,7 @@ namespace Kinovea.ScreenManager
         private PointF m_DescaledMouse;    // The current mouse point expressed in the original image size coordinates.
 
         // Others
+        private ScreenDescriptionPlayback m_LaunchDescription;
         private InteractiveEffect m_InteractiveEffect;
         private const float m_MaxZoomFactor = 6.0F;
         private const int m_MaxRenderingDrops = 6;
@@ -331,13 +332,6 @@ namespace Kinovea.ScreenManager
             AfterSyncAlphaChange();
             m_MessageToaster = new MessageToaster(pbSurfaceScreen);
             
-            CommandLineArgumentManager clam = CommandLineArgumentManager.Instance();
-            if(!clam.SpeedConsumed)
-            {
-                sldrSpeed.Value = clam.SpeedPercentage;
-                clam.SpeedConsumed = true;
-            }
-            
             // Most members and controls should be initialized with the right value.
             // So we don't need to do an extra ResetData here.
             
@@ -391,8 +385,13 @@ namespace Kinovea.ScreenManager
             lblFileName.Text = "";
             m_KeyframeCommentsHub.Hide();
             UpdatePlayingModeButton();
+            m_LaunchDescription = null;
             
             m_PlayerScreenUIHandler.PlayerScreenUI_Reset();
+        }
+        public void SetLaunchDescription(ScreenDescriptionPlayback description)
+        {
+            m_LaunchDescription = description;
         }
         public void EnableDisableActions(bool _bEnable)
         {
@@ -416,7 +415,7 @@ namespace Kinovea.ScreenManager
             // Called from CommandLoadMovie when VideoFile.Load() is successful.
             //---------------------------------------------------------------------------
             
-            // By default the filename of metadata will be the one of the video.
+
             m_FrameServer.Metadata.FullPath = m_FrameServer.VideoReader.FilePath;
             
             DemuxMetadata();
@@ -471,30 +470,51 @@ namespace Kinovea.ScreenManager
             m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
             
             UpdateFilenameLabel();
-            sldrSpeed.Enabled = true;
 
             // Screen position and size.
             m_FrameServer.CoordinateSystem.SetOriginalSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
             m_FrameServer.CoordinateSystem.ReinitZoom();
             SetUpForNewMovie();
             m_KeyframeCommentsHub.UserActivated = false;
-
-            if (!m_FrameServer.Metadata.HasData)
-                LookForLinkedAnalysis();
             
             // Check for startup kva
-            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
-            string startupFile = folder + "\\playback.kva";
-            if (File.Exists(startupFile))
+            bool recoveredMetadata = false;
+            if (m_LaunchDescription != null)
             {
-                MetadataSerializer s = new MetadataSerializer();
-                s.Load(m_FrameServer.Metadata, startupFile, true);
+                if (m_LaunchDescription.RecoveryId != Guid.Empty)
+                {
+                    m_FrameServer.Metadata.Recover(m_LaunchDescription.RecoveryId);
+                    recoveredMetadata = true;
+                }
+
+                m_fSlowmotionPercentage = m_LaunchDescription.SpeedPercentage;
+                sldrSpeed.Value = (int)m_fSlowmotionPercentage;
+            }
+            else
+            {
+                if (!m_FrameServer.Metadata.HasData)
+                    LookForLinkedAnalysis();
+            
+                string folder = Software.SettingsDirectory;
+                string startupFile = Path.Combine(folder, "playback.kva");
+                if (File.Exists(startupFile))
+                {
+                    MetadataSerializer s = new MetadataSerializer();
+                    s.Load(m_FrameServer.Metadata, startupFile, true);
+                }
             }
             
+            sldrSpeed.Enabled = true;
+
             if (m_FrameServer.Metadata.HasData)
             {
                 PostImportMetadata();
-                m_FrameServer.Metadata.CleanupHash();
+                if (!recoveredMetadata)
+                    m_FrameServer.Metadata.CleanupHash();
+            }
+            else
+            {
+                m_FrameServer.Metadata.StartAutosave();
             }
             
             Application.Idle += PostLoad_Idle;
@@ -578,6 +598,8 @@ namespace Kinovea.ScreenManager
             
             m_FrameServer.SetupMetadata(false);
             m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
+            
+            m_FrameServer.Metadata.StartAutosave();
             
             DoInvalidate();
         }
@@ -2131,6 +2153,7 @@ namespace Kinovea.ScreenManager
             
             Application.Idle += Application_Idle;
             m_FrameServer.VideoReader.BeforePlayloop();
+            m_FrameServer.Metadata.PauseAutosave();
 
             int userCtx = 0;
             m_IdMultimediaTimer = timeSetEvent(_interval, _interval, m_TimerEventHandler, ref userCtx, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
@@ -2143,6 +2166,7 @@ namespace Kinovea.ScreenManager
             m_IdMultimediaTimer = 0;
             m_bIsCurrentlyPlaying = false;
             Application.Idle -= Application_Idle;
+            m_FrameServer.Metadata.UnpauseAutosave();
             
             log.DebugFormat("Rendering drops ratio: {0:0.00}", m_DropWatcher.Ratio);
             log.DebugFormat("Average rendering loop time: {0:0.000}ms", m_LoopWatcher.Average);
@@ -3611,6 +3635,8 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            // FIXME: this does not remove trackable drawings.
+            // We can't simply remove them if we want to support undo.
             m_FrameServer.Metadata.RemoveAt(_iKeyframeIndex);
             m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
             OrganizeKeyframes();

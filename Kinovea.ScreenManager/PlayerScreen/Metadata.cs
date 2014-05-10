@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                int currentHash = GetCurrentHash();
+                int currentHash = GetContentHash();
                 bool dirty = currentHash != referenceHash;
                 log.DebugFormat("Dirty:{0}, reference hash:{1}, current:{2}.", dirty.ToString(), referenceHash, currentHash);
                 return dirty;
@@ -211,10 +211,14 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        private Guid id = Guid.NewGuid();
         private TimeCodeBuilder timecodeBuilder;
         private ClosestFrameDisplayer closestFrameDisplayer;
         
+        // Folders
         private string fullPath;
+        private string tempFolder;
+        private AutoSaver autoSaver;
         
         private List<Keyframe> keyframes = new List<Keyframe>();
         private int hitDrawingFrameIndex = -1;
@@ -256,9 +260,13 @@ namespace Kinovea.ScreenManager
             
             calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
             
+            autoSaver = new AutoSaver(this);
+            
             CreateStaticExtraDrawings();
             CleanupHash();
-            
+
+            SetupTempDirectory(id);
+
             log.Debug("Constructing new Metadata object.");
         }
         public Metadata(string kvaString,  VideoInfo info, TimeCodeBuilder timecodeBuilder, ClosestFrameDisplayer closestFrameDisplayer)
@@ -525,7 +533,13 @@ namespace Kinovea.ScreenManager
             firstTimeStamp = 0;
             
             ResetCoreContent();
+            autoSaver.Stop();
+            EmptyTempDirectory();
             CleanupHash();
+        }
+        public void Close()
+        {
+            DeleteTempDirectory();
         }
         public void ShowCoordinateSystem()
         {
@@ -562,9 +576,14 @@ namespace Kinovea.ScreenManager
             if(t != null && (t.Status == TrackStatus.Edit || t.Status == TrackStatus.Configuration))
                 t.UpdateTrackPoint(_bmp);
         }
+        public int GetContentHash()
+        {
+            return GetKeyframesContentHash() ^ GetExtraDrawingsContentHash() ^ trackabilityManager.ContentHash;
+        }
         public void CleanupHash()
         {
-            referenceHash = GetCurrentHash();
+            referenceHash = GetContentHash();
+            autoSaver.Clear();
             log.Debug(String.Format("Metadata content hash reset:{0}.", referenceHash));
         }
         public List<Bitmap> GetFullImages()
@@ -621,8 +640,46 @@ namespace Kinovea.ScreenManager
             trackabilityManager.CleanUnassigned();
             
             AfterCalibrationChanged();
+
+
+        }
+        public void AfterManualExport()
+        {
+            CleanupHash();
+            DeleteAutosaveFile();
+        }
+        public void Recover(Guid id)
+        {
+            DeleteTempDirectory();
+            SetupTempDirectory(id);
+            string autosaveFile = Path.Combine(tempFolder, "autosave.kva");
+            if (File.Exists(autosaveFile))
+            {
+                MetadataSerializer s = new MetadataSerializer();
+                s.Load(this, autosaveFile, true);
+            }
         }
 
+        #region Autosave
+        public void StartAutosave()
+        {
+            autoSaver.FreshStart();
+        }
+        public void PauseAutosave()
+        {
+            autoSaver.Stop();
+        }
+        public void UnpauseAutosave()
+        {
+            autoSaver.Start();
+        }
+        public void PerformAutosave()
+        {
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.SaveToFile(this, Path.Combine(tempFolder, "autosave.kva"));
+        }
+        #endregion
+        
         #region Objects Hit Tests
         // Note: these hit tests are for right click only.
         // They work slightly differently than the hit test in the PointerTool which is for left click.
@@ -741,10 +798,6 @@ namespace Kinovea.ScreenManager
         #endregion
    
         #region Lower level Helpers
-        private int GetCurrentHash()
-        {
-            return GetKeyframesContentHash() ^ GetExtraDrawingsContentHash() ^ trackabilityManager.ContentHash;
-        }
         private void ResetCoreContent()
         {
             // Semi reset: we keep Image size and AverageTimeStampsPerFrame
@@ -854,6 +907,27 @@ namespace Kinovea.ScreenManager
         private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs e)
         {
             showingMeasurables = !showingMeasurables;
+        }
+        private void SetupTempDirectory(Guid id)
+        {
+            tempFolder = Path.Combine(Software.TempDirectory, id.ToString());
+            if (!Directory.Exists(tempFolder))
+                Directory.CreateDirectory(tempFolder);
+        }
+        private void DeleteTempDirectory()
+        {
+            if (Directory.Exists(tempFolder))
+                Directory.Delete(tempFolder, true);
+        }
+        private void EmptyTempDirectory()
+        {
+            DeleteAutosaveFile();
+        }
+        private void DeleteAutosaveFile()
+        {
+            string autosaveFile = Path.Combine(tempFolder, "autosave.kva");
+            if (File.Exists(autosaveFile))
+                File.Delete(autosaveFile);
         }
         #endregion
     }
