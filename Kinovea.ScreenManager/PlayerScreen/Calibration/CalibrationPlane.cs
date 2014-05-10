@@ -48,10 +48,16 @@ namespace Kinovea.ScreenManager
         {
             get { return quadImage; }
         }
+
+        public bool Valid
+        {
+            get { return valid; }
+        }
         
         private bool initialized;
         private SizeF size;
         private QuadrilateralF quadImage = new QuadrilateralF();
+        private bool valid;
         private ProjectiveMapping mapping = new ProjectiveMapping();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -115,12 +121,15 @@ namespace Kinovea.ScreenManager
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
             SetOrigin(originImage);
             this.initialized = true;
+
+            valid = quadImage.IsConvex;
         }
 
         public void Update(QuadrilateralF quadImage)
         {
             this.quadImage = quadImage.Clone();
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
+            valid = quadImage.IsConvex;
         }
         
         #region Serialization
