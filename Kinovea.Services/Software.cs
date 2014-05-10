@@ -47,11 +47,10 @@ namespace Kinovea.Services
             Version = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
             SettingsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + ApplicationName + "\\";
             ColorProfileDirectory = SettingsDirectory + "ColorProfiles\\";
-            PreferencesFile = SettingsDirectory + "Preferences.xml";
             TempDirectory = SettingsDirectory + "Temp\\";
+            PreferencesFile = SettingsDirectory + "Preferences.xml";
             
             string applicationDirectory = Application.StartupPath + "\\";
-            
             HelpVideosDirectory = applicationDirectory + "HelpVideos\\";
             ManualsDirectory = applicationDirectory + "Manuals\\";
             XSLTDirectory = applicationDirectory + "xslt\\";
@@ -67,6 +66,9 @@ namespace Kinovea.Services
         	
         	if(!Directory.Exists(ColorProfileDirectory))
         	   	Directory.CreateDirectory(ColorProfileDirectory);
+
+            if (!Directory.Exists(TempDirectory))
+                Directory.CreateDirectory(TempDirectory);
         }
         
         public static void LogInfo()

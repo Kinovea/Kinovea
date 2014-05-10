@@ -44,7 +44,10 @@ namespace Kinovea.ScreenManager
             {
                 int hash = 0;
                 foreach (DrawingTracker tracker in trackers.Values)
-                    hash ^= tracker.ContentHash;
+                {
+                    if (tracker != null)
+                        hash ^= tracker.ContentHash;
+                }
 
                 return hash;
             }

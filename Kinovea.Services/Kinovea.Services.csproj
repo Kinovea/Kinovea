@@ -130,12 +130,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphanumComparator.cs" />
-    <Compile Include="CommandLine\CommandLineArgumentException.cs" />
-    <Compile Include="CommandLine\CommandLineArgumentManager.cs" />
-    <Compile Include="CommandLine\CommandLineArgumentParser.cs" />
+    <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentException.cs" />
+    <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentManager.cs" />
+    <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentParser.cs" />
     <Compile Include="Events\CurrentDirectoryChangedEventArgs.cs" />
     <Compile Include="Events\ExplorerTabEventArgs.cs" />
     <Compile Include="Events\StatusUpdatedEventArgs.cs" />
+    <Compile Include="LaunchSettings\IScreenDescription.cs" />
+    <Compile Include="LaunchSettings\LaunchSettingsManager.cs" />
+    <Compile Include="LaunchSettings\ScreenDescriptionCapture.cs" />
+    <Compile Include="LaunchSettings\ScreenDescriptionPlayback.cs" />
+    <Compile Include="LaunchSettings\ScreenType.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="Preferences\AccelerationUnit.cs" />
     <Compile Include="Preferences\AngleUnit.cs" />

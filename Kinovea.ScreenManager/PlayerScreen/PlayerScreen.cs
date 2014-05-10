@@ -330,6 +330,8 @@ namespace Kinovea.ScreenManager
         }
         public override void AfterClose()
         {
+            frameServer.Metadata.Close();
+            
             if(!frameServer.Loaded)
                 return;
             

@@ -264,6 +264,7 @@
     <Compile Include="CoordinateSystem.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="PlayerScreen\AutoSaver.cs" />
     <Compile Include="PlayerScreen\Serialization\MetadataExporter.cs" />
     <Compile Include="PlayerScreen\HitTester.cs" />
     <Compile Include="PlayerScreen\Kinematics\Component.cs" />
@@ -296,11 +297,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Player.resx</DependentUpon>
     </Compile>
+    <Compile Include="RecoveryManager.cs" />
     <Compile Include="UserInterface\CommonControlsCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UserInterface\CommonControlsCapture.Designer.cs">
       <DependentUpon>CommonControlsCapture.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\FormCrashRecovery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\FormCrashRecovery.designer.cs">
+      <DependentUpon>FormCrashRecovery.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\ICommonControlsManager.cs" />
     <Compile Include="IScreenHandler.cs" />
@@ -843,6 +851,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormColorPicker.resx">
       <DependentUpon>FormColorPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormCrashRecovery.resx">
+      <DependentUpon>FormCrashRecovery.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormIconPicker.resx">
       <DependentUpon>FormIconPicker.cs</DependentUpon>

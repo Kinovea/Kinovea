@@ -105,6 +105,9 @@ namespace Kinovea.ScreenManager
             if (string.IsNullOrEmpty(file))
                 throw new ArgumentNullException("file");
 
+            if (!Directory.Exists(Path.GetDirectoryName(file)))
+                Directory.CreateDirectory(Path.GetDirectoryName(file));
+            
             this.metadata = metadata;
 
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -116,7 +119,6 @@ namespace Kinovea.ScreenManager
                 try
                 {
                     WriteXml(w);
-                    metadata.CleanupHash();
                 }
                 catch (Exception e)
                 {
@@ -124,6 +126,19 @@ namespace Kinovea.ScreenManager
                     log.Error(e);
                 }
             }
+        }
+
+        public static string ExtractFullPath(string source)
+        {
+            // Extract the referenced video file from the given KVA file.
+            // Used in the context of crash recovery.
+            string kva = MetadataConverter.Convert(source, true);
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(kva);
+            
+            XmlNode pathNode = doc.DocumentElement.SelectSingleNode("descendant::FullPath");
+            return pathNode != null ? pathNode.InnerText : null;
         }
 
         #region load
@@ -153,6 +168,11 @@ namespace Kinovea.ScreenManager
                         break;
                     case "OriginalFilename":
                         inputFileName = r.ReadElementContentAsString();
+                        break;
+                    case "FullPath":
+                        string fullPath = r.ReadElementContentAsString();
+                        if (string.IsNullOrEmpty(metadata.FullPath))
+                            metadata.FullPath = fullPath;
                         break;
                     case "GlobalTitle":
                         metadata.GlobalTitle = r.ReadElementContentAsString();
@@ -507,6 +527,7 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("FormatVersion", "2.0");
             w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
             w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(metadata.FullPath));
+            w.WriteElementString("FullPath", metadata.FullPath);
 
             if (!string.IsNullOrEmpty(metadata.GlobalTitle))
                 w.WriteElementString("GlobalTitle", metadata.GlobalTitle);

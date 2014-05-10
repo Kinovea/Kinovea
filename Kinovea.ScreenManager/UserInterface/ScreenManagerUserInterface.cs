@@ -40,6 +40,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
+        public event EventHandler AutoLaunchAsked;
         
         #region Properties
         public bool CommonControlsVisible 
@@ -85,8 +86,6 @@ namespace Kinovea.ScreenManager
             thumbnailViewerContainer.BringToFront();
             pnlScreens.BringToFront();
             pnlScreens.Dock = DockStyle.Fill;
-
-            Application.Idle += this.IdleDetector;
         }
         
         #region Public methods
@@ -174,17 +173,11 @@ namespace Kinovea.ScreenManager
             
             this.Controls.Add(thumbnailViewerContainer);
         }
-        private void IdleDetector(object sender, EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            log.Debug("Application is idle in ScreenManagerUserInterface.");
-            
-            // This is a one time only routine.
-            Application.Idle -= new EventHandler(this.IdleDetector);
-            
-            // Launch file.
-            string filePath = CommandLineArgumentManager.Instance().InputFile;
-            if(filePath != null && File.Exists(filePath) && FileLoadAsked != null)
-                FileLoadAsked(this, new FileLoadAskedEventArgs(filePath, -1));
+            log.DebugFormat("In ScreenManager OnLoad");
+            if (LaunchSettingsManager.ScreenDescriptions.Count > 0 && AutoLaunchAsked != null)
+                AutoLaunchAsked(this, EventArgs.Empty);
         }
         private void pnlScreens_Resize(object sender, EventArgs e)
         {

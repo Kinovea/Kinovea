@@ -15,20 +15,6 @@ using System.Text;
 
 namespace Bsc
 {
-    /// <summary>
-    /// Command line argument parser.
-    /// 
-    /// Usage:
-    /// 1. Make a reference file Bsc.CommandLineArgumentParser.dll.
-    ///    In solution explorer, right click on "References" and select "Add Reference" 
-    ///    from the context menu. Then click on the "Browse" tab and navigate to 
-    ///    Bsc.CommandLineArgumentParser.dll.
-    /// 2. Include the Bsc namespace.
-    ///    using Bsc.   
-    /// </summary>
-    /// <example>
-    /// See ExampleUsage.cs
-    /// </example>
     public class CommandLineArgumentParser
     {
         public const string Version = "1.0.0";
@@ -279,7 +265,7 @@ namespace Bsc
                         //
                         requiredParameters[paramName] = rawArguments[paramInd + 1];
 
-                        rawArguments.RemoveAt(paramInd);                        
+                        rawArguments.RemoveAt(paramInd);
                         rawArguments.RemoveAt(paramInd);
                     }
                     else
