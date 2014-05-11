@@ -386,10 +386,10 @@ namespace Kinovea.FileBrowser
             {
                 if(sf.Location != currentShortcutItem.Path)
                     continue;
-                
-                IUndoableCommand cds = new CommandDeleteShortcut(this, sf);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(cds);
+
+                PreferencesManager.FileExplorerPreferences.RemoveShortcut(sf);
+                PreferencesManager.Save();
+                ReloadShortcuts();
                 break;
             }
         }
