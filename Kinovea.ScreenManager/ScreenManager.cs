@@ -55,11 +55,6 @@ namespace Kinovea.ScreenManager
         {
             get { return new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly()); }
         }
-        public bool CancelLastCommand
-        {
-            get { return cancelLastCommand; } // Unused.
-            set { cancelLastCommand = value; }
-        }
         public int ScreenCount
         {
             get { return screenList.Count;}
@@ -68,8 +63,6 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private ScreenManagerUserInterface view;
-        private bool cancelLastCommand;			// true when a RemoveScreen command was canceled by user.
-
         private List<AbstractScreen> screenList = new List<AbstractScreen>();
         private IEnumerable<PlayerScreen> playerScreens;
         private IEnumerable<CaptureScreen> captureScreens;
@@ -156,7 +149,6 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
-        private List<ScreenManagerState> storedStates  = new List<ScreenManagerState>();
         private const int WM_KEYDOWN = 0x0100;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -927,24 +919,13 @@ namespace Kinovea.ScreenManager
         {
             return (index >= 0 && index < screenList.Count) ? screenList[index] : null;
         }
-        public void AddScreen(AbstractScreen screen)
-        {
-            screen.CloseAsked += Screen_CloseAsked;
-            screen.Activated += Screen_Activated;
-            screen.CommandProcessed += Screen_CommandProcessed;
-            screenList.Add(screen);
-        }
-        public void RemoveFirstEmpty(bool storeState)
+        
+        public void RemoveFirstEmpty()
         {
             foreach (AbstractScreen screen in screenList)
             {
                 if (screen.Full)
                     continue;
-
-                // We store the current state now.
-                // (We don't store it at construction time to handle the redo case better)
-                if (storeState)
-                    StoreCurrentState();
 
                 RemoveScreen(screen);
                 break;
@@ -983,6 +964,7 @@ namespace Kinovea.ScreenManager
         public void OrganizeScreens()
         {
             view.OrganizeScreens(screenList);
+            UpdateStatusBar();
         }
 
         public void UpdateStatusBar()
@@ -1627,11 +1609,8 @@ namespace Kinovea.ScreenManager
         }
         private void CloseFile(int screenIndex)
         {
-            RemoveScreen(screenIndex, true);
-            
-            ICommand css = new CommandShowScreens(this);
-            CommandManager.LaunchCommand(css);
-
+            ScreenRemover.RemoveScreen(this, screenIndex);
+            OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
         }
@@ -1717,20 +1696,16 @@ namespace Kinovea.ScreenManager
             if(screenList.Count <= 0)
                 return;
             
-            if(RemoveScreen(0, true))
+            if(ScreenRemover.RemoveScreen(this, 0))
             {
                 synching = false;
                 
                 // Second screen is now in [0] spot.
                 if(screenList.Count > 0)
-                    RemoveScreen(0, true);
+                    ScreenRemover.RemoveScreen(this, 0);
             }
-              
-            // Display the new list.
-            CommandManager cm = CommandManager.Instance();
-            ICommand css = new CommandShowScreens(this);
-            CommandManager.LaunchCommand(css);
-            
+
+            OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
         }
@@ -1750,9 +1725,7 @@ namespace Kinovea.ScreenManager
             {
                 case 0:
                     {
-                        // Currently : 0 screens. -> add a player.
-                        IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-                        cm.LaunchUndoableCommand(caps);
+                        AddPlayerScreen();
                         break;
                     }
                 case 1:
@@ -1760,10 +1733,8 @@ namespace Kinovea.ScreenManager
                         if(screenList[0] is CaptureScreen)
                         {
                             // Currently : 1 capture. -> remove and add a player.
-                            IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
-                            cm.LaunchUndoableCommand(crs);
-                            IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps);
+                            ScreenRemover.RemoveScreen(this, 0);
+                            AddPlayerScreen();
                         }
                         else
                         {
@@ -1783,24 +1754,19 @@ namespace Kinovea.ScreenManager
                         if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
                         {
                             // [capture][capture] -> remove both and add player.
-                            IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
-                            cm.LaunchUndoableCommand(crs);
-                            IUndoableCommand crs2 = new CommandRemoveScreen(this, 0, true);
-                            cm.LaunchUndoableCommand(crs2);
-                            IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps);
+                            ScreenRemover.RemoveScreen(this, 0);
+                            ScreenRemover.RemoveScreen(this, 0);
+                            AddPlayerScreen();
                         }
                         else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
                         {
                             // [capture][player] -> remove capture.	
-                            IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
-                            cm.LaunchUndoableCommand(crs);
+                            ScreenRemover.RemoveScreen(this, 0);
                         }
                         else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
                         {
                             // [player][capture] -> remove capture.	
-                            IUndoableCommand crs = new CommandRemoveScreen(this, 1, true);
-                            cm.LaunchUndoableCommand(crs);
+                            ScreenRemover.RemoveScreen(this, 1);
                         }
                         else
                         {
@@ -1814,9 +1780,9 @@ namespace Kinovea.ScreenManager
                             //---------------------------------------------
                             
                             if(!screenList[0].Full && screenList[1].Full)
-                                RemoveScreen(0, true);
+                                ScreenRemover.RemoveScreen(this, 0);
                             else
-                                RemoveScreen(1, true);
+                                ScreenRemover.RemoveScreen(this, 1);
                         }
                         break;
                     }
@@ -1824,10 +1790,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            // Display the new list.
-            ICommand css = new CommandShowScreens(this);
-            CommandManager.LaunchCommand(css);
-            
+            OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
         }
@@ -1848,10 +1811,8 @@ namespace Kinovea.ScreenManager
                     {
                         // Currently : 0 screens. -> add two players.
                         // We use two different commands to keep the undo history working.
-                        IUndoableCommand caps1 = new CommandAddPlayerScreen(this, true);
-                        cm.LaunchUndoableCommand(caps1);
-                        IUndoableCommand caps2 = new CommandAddPlayerScreen(this, true);
-                        cm.LaunchUndoableCommand(caps2);
+                        AddPlayerScreen();
+                        AddPlayerScreen();
                         break;
                     }
                 case 1:
@@ -1859,18 +1820,14 @@ namespace Kinovea.ScreenManager
                         if(screenList[0] is CaptureScreen)
                         {
                             // Currently : 1 capture. -> remove and add 2 players.
-                            IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
-                            cm.LaunchUndoableCommand(crs);
-                            IUndoableCommand caps1 = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps1);
-                            IUndoableCommand caps2 = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps2);
+                            ScreenRemover.RemoveScreen(this, 0);
+                            AddPlayerScreen();
+                            AddPlayerScreen();
                         }
                         else
                         {
                             // Currently : 1 player. -> add another.
-                            IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps);
+                            AddPlayerScreen();
                         }                    
                         break;
                     }
@@ -1886,30 +1843,22 @@ namespace Kinovea.ScreenManager
                         if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
                         {
                             // [capture][capture] -> remove both and add two players.
-                            IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
-                            cm.LaunchUndoableCommand(crs);
-                            IUndoableCommand crs2 = new CommandRemoveScreen(this, 0, true);
-                            cm.LaunchUndoableCommand(crs2);
-                            IUndoableCommand caps1 = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps1);
-                            IUndoableCommand caps2 = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps2);
+                            ScreenRemover.RemoveScreen(this, 0);
+                            ScreenRemover.RemoveScreen(this, 0);
+                            AddPlayerScreen();
+                            AddPlayerScreen();
                         }
                         else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
                         {
                             // [capture][player] -> remove capture and add player.
-                            IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
-                            cm.LaunchUndoableCommand(crs);
-                            IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps);
+                            ScreenRemover.RemoveScreen(this, 0);
+                            AddPlayerScreen();
                         }
                         else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
                         {
                             // [player][capture] -> remove capture and add player.
-                            IUndoableCommand crs = new CommandRemoveScreen(this, 1, true);
-                            cm.LaunchUndoableCommand(crs);
-                            IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps);
+                            ScreenRemover.RemoveScreen(this, 1);
+                            AddPlayerScreen();
                         }
                         else
                         {
@@ -1922,10 +1871,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            // Display the new list.
-            ICommand css = new CommandShowScreens(this);
-            CommandManager.LaunchCommand(css);
-            
+            OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
         }
@@ -1945,8 +1891,7 @@ namespace Kinovea.ScreenManager
                 case 0:
                     {
                         // Currently : 0 screens. -> add a capture.
-                        IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                        cm.LaunchUndoableCommand(cacs);
+                        AddCaptureScreen();
                         break;
                     }
                 case 1:
@@ -1954,11 +1899,8 @@ namespace Kinovea.ScreenManager
                         if(screenList[0] is PlayerScreen)
                         {
                             // Currently : 1 player. -> remove and add a capture.
-                            if(RemoveScreen(0, true))
-                            {
-                                IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                                cm.LaunchUndoableCommand(cacs);	
-                            }
+                            if(ScreenRemover.RemoveScreen(this, 0))
+                                AddCaptureScreen();
                         }
                         else
                         {
@@ -1987,35 +1929,28 @@ namespace Kinovea.ScreenManager
                             //---------------------------------------------
                             
                             if(!screenList[0].Full && screenList[1].Full)
-                            {
-                                RemoveScreen(0, true);
-                            }
+                                ScreenRemover.RemoveScreen(this, 0);
                             else
-                            {
-                                RemoveScreen(1, true);
-                            }
+                                ScreenRemover.RemoveScreen(this, 1);
                         }
                         else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
                         {
                             // [capture][player] -> remove player.	
-                            RemoveScreen(1, true);
+                            ScreenRemover.RemoveScreen(this, 1);
                         }
                         else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
                         {
                             // [player][capture] -> remove player.
-                            RemoveScreen(0, true);
+                            ScreenRemover.RemoveScreen(this, 0);
                         }
                         else
                         {
                             // remove both and add one capture.
-                            if(RemoveScreen(0, true))
+                            if(ScreenRemover.RemoveScreen(this, 0))
                             {
                                 // remaining player has moved in [0] spot.
-                                if(RemoveScreen(0, true))
-                                {
-                                    IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                                    cm.LaunchUndoableCommand(cacs);
-                                }
+                                if(ScreenRemover.RemoveScreen(this, 0))
+                                    AddCaptureScreen();
                             }
                         }
                         break;
@@ -2024,11 +1959,9 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            // Display the new list.
-            ICommand css = new CommandShowScreens(this);
-            CommandManager.LaunchCommand(css);
-            
             UpdateCaptureBuffers();
+            
+            OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
         }
@@ -2048,11 +1981,8 @@ namespace Kinovea.ScreenManager
                 case 0:
                     {
                         // Currently : 0 screens. -> add two capture.
-                        // We use two different commands to keep the undo history working.
-                        IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                        cm.LaunchUndoableCommand(cacs);
-                        IUndoableCommand cacs2 = new CommandAddCaptureScreen(this, true);
-                        cm.LaunchUndoableCommand(cacs2);
+                        AddCaptureScreen();
+                        AddCaptureScreen();
                         break;
                     }
                 case 1:
@@ -2060,18 +1990,15 @@ namespace Kinovea.ScreenManager
                         if(screenList[0] is CaptureScreen)
                         {
                             // Currently : 1 capture. -> add another.
-                            IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                            cm.LaunchUndoableCommand(cacs);
+                            AddCaptureScreen();
                         }
                         else
                         {
                             // Currently : 1 player. -> remove and add 2 capture.
-                            if(RemoveScreen(0, true))
+                            if(ScreenRemover.RemoveScreen(this, 0))
                             {
-                                IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                                cm.LaunchUndoableCommand(cacs);
-                                IUndoableCommand cacs2 = new CommandAddCaptureScreen(this, true);
-                                cm.LaunchUndoableCommand(cacs2);	
+                                AddCaptureScreen();
+                                AddCaptureScreen();
                             }
                         }                   
                         break;
@@ -2092,33 +2019,25 @@ namespace Kinovea.ScreenManager
                         else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
                         {
                             // [capture][player] -> remove player and add capture.
-                            if(RemoveScreen(1, true))
-                            {
-                                IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                                cm.LaunchUndoableCommand(cacs);
-                            }
+                            if(ScreenRemover.RemoveScreen(this, 1))
+                                AddCaptureScreen();
                         }
                         else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
                         {
                             // [player][capture] -> remove player and add capture.
-                            if(RemoveScreen(0, true))
-                            {
-                                IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                                cm.LaunchUndoableCommand(cacs);	
-                            }
+                            if(ScreenRemover.RemoveScreen(this, 0))
+                                AddCaptureScreen();
                         }
                         else
                         {
                             // [player][player] -> remove both and add 2 capture.
-                            if(RemoveScreen(0, true))
+                            if(ScreenRemover.RemoveScreen(this, 0))
                             {
                                 // remaining player has moved in [0] spot.
-                                if(RemoveScreen(0, true))
+                                if(ScreenRemover.RemoveScreen(this, 0))
                                 {
-                                    IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                                    cm.LaunchUndoableCommand(cacs);
-                                    IUndoableCommand cacs2 = new CommandAddCaptureScreen(this, true);
-                                    cm.LaunchUndoableCommand(cacs2);
+                                    AddCaptureScreen();
+                                    AddCaptureScreen();
                                 }
                             }
                         }
@@ -2129,11 +2048,9 @@ namespace Kinovea.ScreenManager
                     break;
             }
             
-            // Display the new list.
-            ICommand css = new CommandShowScreens(this);
-            CommandManager.LaunchCommand(css);
-            
             UpdateCaptureBuffers();
+            
+            OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
         }
@@ -2153,10 +2070,8 @@ namespace Kinovea.ScreenManager
                 case 0:
                     {
                         // Currently : 0 screens. -> add a capture and a player.
-                        IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                        cm.LaunchUndoableCommand(cacs);
-                        IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-                        cm.LaunchUndoableCommand(caps);
+                        AddCaptureScreen();
+                        AddPlayerScreen();
                         break;
                     }
                 case 1:
@@ -2164,15 +2079,13 @@ namespace Kinovea.ScreenManager
                         if(screenList[0] is CaptureScreen)
                         {
                             // Currently : 1 capture. -> add a player.
-                            IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps);
+                            AddPlayerScreen();
                         }
                         else
                         {
                             // Currently : 1 player. -> add a capture.
-                            IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                            cm.LaunchUndoableCommand(cacs);
-                        }                    
+                            AddCaptureScreen();
+                        }
                         break;
                     }
                 case 2:
@@ -2182,10 +2095,8 @@ namespace Kinovea.ScreenManager
                         if(screenList[0] is CaptureScreen && screenList[1] is CaptureScreen)
                         {
                             // [capture][capture] -> remove right and add player.
-                            IUndoableCommand crs = new CommandRemoveScreen(this, 1, true);
-                            cm.LaunchUndoableCommand(crs);
-                            IUndoableCommand caps1 = new CommandAddPlayerScreen(this, true);
-                            cm.LaunchUndoableCommand(caps1);
+                            ScreenRemover.RemoveScreen(this, 1);
+                            AddPlayerScreen();
                         }
                         else if(screenList[0] is CaptureScreen && screenList[1] is PlayerScreen)
                         {
@@ -2198,11 +2109,8 @@ namespace Kinovea.ScreenManager
                         else
                         {
                             // [player][player] -> remove right and add capture.
-                            if(RemoveScreen(1, true))
-                            {
-                                IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
-                                cm.LaunchUndoableCommand(cacs);
-                            }
+                            if(ScreenRemover.RemoveScreen(this, 1))
+                                AddCaptureScreen();
                         }
                         
                         break;
@@ -2211,11 +2119,9 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            // Display the new list.
-            ICommand css = new CommandShowScreens(this);
-            CommandManager.LaunchCommand(css);
-            
             UpdateCaptureBuffers();
+            
+            OrganizeScreens();
             OrganizeCommonControls();
             OrganizeMenus();
         }
@@ -2223,10 +2129,13 @@ namespace Kinovea.ScreenManager
         {
             if (screenList.Count != 2)
                 return;
-            
-            IUndoableCommand command = new CommandSwapScreens(this);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(command);
+
+            SwapScreens();
+            OrganizeScreens();
+            OrganizeMenus();
+            UpdateStatusBar();
+            SwapSync();
+            SetSyncPoint(true);
         }
         private void mnuToggleCommonCtrlsOnClick(object sender, EventArgs e)
         {
@@ -2335,16 +2244,17 @@ namespace Kinovea.ScreenManager
         #region Services
         private void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
         {
-            DoLoadMovieInScreen(e.Path, e.Target, false);
+            DoLoadMovieInScreen(e.Path, e.Target);
         }
         
-        private void DoLoadMovieInScreen(string path, int targetScreen, bool storeState)
+        private void DoLoadMovieInScreen(string path, int targetScreen)
         {
             if(!File.Exists(path))
                 return;
 
             if (Path.GetExtension(path).ToLower() == ".kva" && targetScreen >= 0)
             {
+                // Special case of loading a KVA file on top of a loaded video.
                 AbstractScreen screen = GetScreenAt(targetScreen);
                 if (screen == null || !screen.Full)
                     return;
@@ -2353,9 +2263,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                IUndoableCommand clmis = new CommandLoadMovieInScreen(this, path, targetScreen, storeState);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(clmis);
+                LoaderVideo.LoadVideoInScreen(this, path, targetScreen);
             }
             
             // No need to call PrepareSync here because it will be called when the working zone is set anyway.
@@ -2365,12 +2273,8 @@ namespace Kinovea.ScreenManager
         {
             if(summary == null)
                 return;
-                
-            IUndoableCommand clmis = new CommandLoadCameraInScreen(this, summary, targetScreen);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(clmis);
-            
-            UpdateCaptureBuffers();
+
+            LoaderCamera.LoadCameraInScreen(this, summary, targetScreen);
         }
         
         public void DoStopPlaying()
@@ -2384,7 +2288,7 @@ namespace Kinovea.ScreenManager
 
         private void View_FileLoadAsked(object source, FileLoadAskedEventArgs e)
         {
-            DoLoadMovieInScreen(e.Source, e.Target, true);
+            DoLoadMovieInScreen(e.Source, e.Target);
         }
 
         private void CameraTypeManager_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
@@ -2402,13 +2306,13 @@ namespace Kinovea.ScreenManager
             {
                 if (screenDescription is ScreenDescriptionPlayback)
                 {
+                    AddPlayerScreen();
+
                     ScreenDescriptionPlayback sdp = screenDescription as ScreenDescriptionPlayback;
+                    LoaderVideo.LoadVideoInScreen(this, sdp.FullPath, sdp);
 
-                    ICommand caps = new CommandAddPlayerScreen(this, false);
-                    CommandManager.LaunchCommand(caps);
-
-                    IUndoableCommand clmis = new CommandLoadMovieInScreen(this, sdp.FullPath, sdp);
-                    cm.LaunchUndoableCommand(clmis);
+                    //IUndoableCommand clmis = new CommandLoadMovieInScreen(this, sdp.FullPath, sdp);
+                    //cm.LaunchUndoableCommand(clmis);
 
                     reloaded++;
                 }
@@ -2419,9 +2323,7 @@ namespace Kinovea.ScreenManager
 
             if (reloaded > 0)
             {
-                ICommand css = new CommandShowScreens(this);
-                CommandManager.LaunchCommand(css);
-
+                OrganizeScreens();
                 OrganizeCommonControls();
                 OrganizeMenus();
             }
@@ -3043,408 +2945,79 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Screens State Recalling
-        public void StoreCurrentState()
+        #region Screen organization
+        public void AddPlayerScreen()
         {
-            //------------------------------------------------------------------------------
-            // Before we start anything messy, let's store the current state of the ViewPort
-            // So we can reinstate it later in case the user change his mind.
-            //-------------------------------------------------------------------------------
-            storedStates.Add(GetCurrentState());
+            PlayerScreen screen = new PlayerScreen(this);
+            screen.RefreshUICulture();
+            AddScreen(screen);
         }
-        public ScreenManagerState GetCurrentState()
+        public void AddCaptureScreen()
         {
-            ScreenManagerState currentState = new ScreenManagerState();
+            CaptureScreen screen = new CaptureScreen();
+            if (screenList.Count > 1)
+                screen.SetShared(true);
 
-            foreach (AbstractScreen screen in screenList)
+            screen.RefreshUICulture();
+            AddScreen(screen);
+        }
+
+        /// <summary>
+        /// Looks for a camera screen or a non-loaded player screen.
+        /// </summary>
+        public int FindEmptyScreen()
+        {
+            AbstractScreen screen0 = GetScreenAt(0);
+            if (!screen0.Full)
+                return 0;
+
+            AbstractScreen screen1 = GetScreenAt(1);
+            if (!screen1.Full)
+                return 1;
+
+            return -1;
+        }
+        /// <summary>
+        /// Asks the user for confirmation on replacing the current content.
+        /// Check if we are overloading on a non-empty screen and propose to save data.
+        /// </summary>
+        /// <returns>true if the loading can go on</returns>
+        public bool BeforeReplacingPlayerContent(int targetScreen)
+        {
+            PlayerScreen player = GetScreenAt(targetScreen) as PlayerScreen;
+            if (player == null || !player.FrameServer.Metadata.IsDirty)
+                return true;
+
+            DialogResult save = ShowConfirmDirtyDialog();
+            if (save == DialogResult.No)
             {
-                ScreenState state = new ScreenState();
-                state.UniqueId = screen.UniqueId;
-
-                if (screen is PlayerScreen && screen.Full)
-                {
-                    state.Loaded = true;
-                    state.FilePath = ((PlayerScreen)screen).FilePath;
-                    MetadataSerializer s = new MetadataSerializer();
-                    state.MetadataString = s.SaveToString(((PlayerScreen)screen).FrameServer.Metadata);
-                }
-                else
-                {
-                    state.Loaded = false;
-                    state.FilePath = "";
-                    state.MetadataString = "";
-                }
-
-                currentState.ScreenList.Add(state);
+                return true;
             }
-
-            return currentState;
-        }
-        public void RecallState()
-        {
-            // TODO: refactor this monster.
-
-            //-------------------------------------------------
-            // Reconfigure the ViewPort to match the old state.
-            // Reload the right movie with its meta data.
-            //-------------------------------------------------
-            if (storedStates.Count == 0)
-                return;
-            
-            int lastState = storedStates.Count - 1;
-            CommandManager cm = CommandManager.Instance();
-            ICommand css = new CommandShowScreens(this);
-
-            ScreenManagerState currentState = GetCurrentState();
-
-            switch (currentState.ScreenList.Count)
+            else if (save == DialogResult.Cancel)
             {
-                case 0:
-                    //-----------------------------
-                    // Il y a actuellement 0 écran.
-                    //-----------------------------
-                    switch (storedStates[lastState].ScreenList.Count)
-                    {
-                        case 0:
-                            // Il n'y en avait aucun : Ne rien faire.
-                            break;
-                        case 1:
-                            {
-                                // Il y en avait un : Ajouter l'écran.
-                                ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState); 
-                                CommandManager.LaunchCommand(css);
-                                break;
-                            }
-                        case 2:
-                            {
-                                // Ajouter les deux écrans, on ne se préoccupe pas trop de l'ordre
-                                ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
-                                ReinstateScreen(storedStates[lastState].ScreenList[1], 1, currentState);
-                                CommandManager.LaunchCommand(css);
-                                break;
-                            }
-                        default:
-                            break;
-                    }
-                    break;
-                case 1:
-                    //-----------------------------
-                    // Il y a actuellement 1 écran.
-                    //-----------------------------
-                    switch (storedStates[lastState].ScreenList.Count)
-                    {
-                        case 0:
-                            {
-                                // Il n'y en avait aucun : Supprimer l'écran.
-                                RemoveScreen(0, false);
-                                CommandManager.LaunchCommand(css);
-                                break;
-                            }
-                        case 1:
-                            {
-                                // Il y en avait un : Remplacer si besoin.
-                                ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
-                                CommandManager.LaunchCommand(css);
-                                break;
-                            }
-                        case 2:
-                            {
-                                // Il y avait deux écran : Comparer chaque ancien écran avec le restant.
-                                int matchingScreen = -1;
-                                int i=0;
-                                while ((matchingScreen == -1) && (i < storedStates[lastState].ScreenList.Count))
-                                {
-                                    if (storedStates[lastState].ScreenList[i].UniqueId == currentState.ScreenList[0].UniqueId)
-                                        matchingScreen = i;
-                                    else
-                                        i++;
-                                }
-
-                                switch (matchingScreen)
-                                {
-                                    case -1:
-                                        {
-                                            // No matching screen found
-                                            ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
-                                            ReinstateScreen(storedStates[lastState].ScreenList[1], 1, currentState);
-                                            break;
-                                        }
-                                    case 0:
-                                        {
-                                            // the old 0 is the new 0, the old 1 doesn't exist yet.
-                                            ReinstateScreen(storedStates[lastState].ScreenList[1], 1, currentState);
-                                            break;
-                                        }
-                                    case 1:
-                                        {
-                                            // the old 1 is the new 0, the old 0 doesn't exist yet.
-                                            ReinstateScreen(storedStates[lastState].ScreenList[0], 1, currentState);
-                                            break;
-                                        }
-                                    default:
-                                        break;
-                                }
-                                CommandManager.LaunchCommand(css);
-                                break;
-                            }
-                        default:
-                            break;
-                    }
-                    break;
-                case 2:
-                    // Il y a actuellement deux écrans.
-                    switch (storedStates[lastState].ScreenList.Count)
-                    {
-                        case 0:
-                            {
-                                // Il n'yen avait aucun : supprimer les deux.
-                                RemoveScreen(1, false);
-                                RemoveScreen(0, false);
-                                CommandManager.LaunchCommand(css);
-                                break;
-                            }
-                        case 1:
-                            {
-                                // Il y en avait un : le rechercher parmi les nouveaux.
-                                int matchingScreen = -1;
-                                int i = 0;
-                                while ((matchingScreen == -1) && (i < currentState.ScreenList.Count))
-                                {
-                                    if (storedStates[lastState].ScreenList[0].UniqueId == currentState.ScreenList[i].UniqueId)
-                                        matchingScreen = i;
-                                        
-                                    i++;
-                                }
-
-                                switch (matchingScreen)
-                                {
-                                    case -1:
-                                        // L'ancien écran n'a pas été retrouvé.
-                                        // On supprime tout et on le rajoute.
-                                        RemoveScreen(1, false);
-                                        ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
-                                        break;
-                                    case 0:
-                                        // L'ancien écran a été retrouvé dans l'écran [0]
-                                        // On supprime le second.
-                                        RemoveScreen(1, false);
-                                        break;
-                                    case 1:
-                                        // L'ancien écran a été retrouvé dans l'écran [1]
-                                        // On supprime le premier.
-                                        RemoveScreen(0, false);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                CommandManager.LaunchCommand(css);
-                                break;
-                            }
-                        case 2:
-                            {
-                                // Il y avait deux écrans également : Rechercher chacun parmi les nouveaux.
-                                int[] matchingScreens = new int[2];
-                                matchingScreens[0] = -1;
-                                matchingScreens[1] = -1;
-                                int i = 0;
-                                while (i < currentState.ScreenList.Count)
-                                {
-                                    if (storedStates[lastState].ScreenList[0].UniqueId == currentState.ScreenList[i].UniqueId)
-                                        matchingScreens[0] = i;
-                                    else if (storedStates[lastState].ScreenList[1].UniqueId == currentState.ScreenList[i].UniqueId)
-                                        matchingScreens[1] = i;
-
-                                    i++;
-                                }
-
-                                switch (matchingScreens[0])
-                                {
-                                    case -1:
-                                        {
-                                            // => L'ancien écran [0] n'a pas été retrouvé.
-                                            switch (matchingScreens[1])
-                                            {
-                                                case -1:
-                                                    {
-                                                        // Aucun écran n'a été retrouvé.
-                                                        ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
-                                                        ReinstateScreen(storedStates[lastState].ScreenList[1], 1, currentState);
-                                                        break;
-                                                    }
-                                                case 0:
-                                                    {
-                                                        // Ecran 0 non retrouvé, écran 1 retrouvé dans le 0.
-                                                        // Remplacer l'écran 1 par l'ancien 0.
-                                                        ReinstateScreen(storedStates[lastState].ScreenList[0], 1, currentState);
-                                                        break;
-                                                    }
-                                                case 1:
-                                                    {
-                                                        // Ecran 0 non retrouvé, écran 1 retrouvé dans le 1.
-                                                        // Remplacer l'écran 0.
-                                                        ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
-                                                        break;
-                                                    }
-                                                default:
-                                                    break;
-                                            }
-                                            break;
-                                        }
-                                    case 0:
-                                        {
-                                            // L'ancien écran [0] a été retrouvé dans l'écran [0]
-                                            switch (matchingScreens[1])
-                                            {
-                                                case -1:
-                                                    {
-                                                        // Ecran 0 retrouvé dans le [0], écran 1 non retrouvé. 
-                                                        ReinstateScreen(storedStates[lastState].ScreenList[1], 1, currentState);
-                                                        break;
-                                                    }
-                                                case 0:
-                                                    {
-                                                        // Ecran 0 retrouvé dans le [0], écran 1 retrouvé dans le [0].
-                                                        // Impossible.
-                                                        break;
-                                                    }
-                                                case 1:
-                                                    {
-                                                        // Ecran 0 retrouvé dans le [0], écran 1 retrouvé dans le [1].
-                                                        // rien à faire.
-                                                        break;
-                                                    }
-                                                default:
-                                                    break;
-                                            }
-                                            break;
-                                        }
-                                    case 1:
-                                        {
-                                            // L'ancien écran [0] a été retrouvé dans l'écran [1]
-                                            switch (matchingScreens[1])
-                                            {
-                                                case -1:
-                                                    {
-                                                        // Ecran 0 retrouvé dans le [1], écran 1 non retrouvé. 
-                                                        ReinstateScreen(storedStates[lastState].ScreenList[1], 0, currentState);
-                                                        break;
-                                                    }
-                                                case 0:
-                                                    {
-                                                        // Ecran 0 retrouvé dans le [1], écran 1 retrouvé dans le [0].
-                                                        // rien à faire (?)
-                                                        break;
-                                                    }
-                                                case 1:
-                                                    {
-                                                        // Ecran 0 retrouvé dans le [1], écran 1 retrouvé dans le [1].
-                                                        // Impossible
-                                                        break;
-                                                    }
-                                                default:
-                                                    break;
-                                            }
-                                            break;
-                                        }
-                                    default:
-                                        break;
-                                }
-
-                                CommandManager.LaunchCommand(css);
-                                break;
-                            }
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            // Once we have made such a recall, the Redo menu must be disabled...
-            cm.BlockRedo();
-
-            UpdateCaptureBuffers();
-                
-            // Mettre à jour menus et Status bar
-            UpdateStatusBar();
-            OrganizeCommonControls();
-            OrganizeMenus();
-
-            storedStates.RemoveAt(lastState);
-        }
-        private void ReinstateScreen(ScreenState oldScreen, int newPosition, ScreenManagerState currentState)
-        {
-            CommandManager cm = CommandManager.Instance();
-
-            if (newPosition > currentState.ScreenList.Count - 1)
-            {
-                // We need a new screen.
-                ICommand caps = new CommandAddPlayerScreen(this, false);
-                CommandManager.LaunchCommand(caps);
-
-                if (oldScreen.Loaded)
-                    ReloadScreen(oldScreen, newPosition + 1);
+                return false;
             }
             else
             {
-                if (oldScreen.Loaded)
-                {
-                    ReloadScreen(oldScreen, newPosition + 1);
-                }
-                else if (currentState.ScreenList[newPosition].Loaded)
-                {
-                    // L'ancien n'est pas chargé mais le nouveau l'est.
-                    // => unload movie.
-                    RemoveScreen(newPosition, false);
-
-                    ICommand caps = new CommandAddPlayerScreen(this, false);
-                    CommandManager.LaunchCommand(caps);
-                }
-                else
-                {
-                    // L'ancien n'est pas chargé, le nouveau non plus.
-                    // vérifier que les deux sont bien des players...
-                }
+                // TODO: shouldn't we save the correct screen instead of just the active one ?
+                SaveData();
+                return true;
             }
         }
-        private bool RemoveScreen(int position, bool storeState)
+        private DialogResult ShowConfirmDirtyDialog()
         {
-            ICommand crs = new CommandRemoveScreen(this, position, storeState);
-            CommandManager.LaunchCommand(crs);
-
-            bool cancelled = cancelLastCommand;
-            if (cancelled)
-            {
-                CommandManager cm = CommandManager.Instance();
-                cm.UnstackLastCommand();
-                cancelLastCommand = false;
-            }
-            
-            return !cancelled;
+            return MessageBox.Show(
+                ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n"),
+                ScreenManagerLang.InfoBox_MetadataIsDirty_Title,
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
         }
-        private void ReloadScreen(ScreenState oldScreen, int newPosition)
+        private void AddScreen(AbstractScreen screen)
         {
-            if(!File.Exists(oldScreen.FilePath))
-                return;
-            
-            // We instantiate and launch it like a simple command (not undoable).
-            ICommand clmis = new CommandLoadMovieInScreen(this, oldScreen.FilePath, newPosition, false);
-            CommandManager.LaunchCommand(clmis);
-            
-            // Check that everything went well
-            // Potential problem : the video was deleted between do and undo.
-            // _iNewPosition should always point to a valid position here.
-            if (screenList[newPosition-1].Full)
-            {
-                PlayerScreen ps = activeScreen as PlayerScreen;
-                if(ps != null)
-                {
-                    MetadataSerializer s = new MetadataSerializer();
-                    s.Load(ps.FrameServer.Metadata, oldScreen.MetadataString, false);
-                    ps.view.PostImportMetadata();
-                }
-            }
+            screen.CloseAsked += Screen_CloseAsked;
+            screen.Activated += Screen_Activated;
+            screen.CommandProcessed += Screen_CommandProcessed;
+            screenList.Add(screen);
         }
         #endregion
     }

@@ -238,7 +238,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CommandProcessedEventArgs.cs" />
-    <Compile Include="Commands\ScreenManager\CommandLoadCameraInScreen.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="ImageToViewportTransformer.cs" />
@@ -254,16 +253,11 @@
     <Compile Include="Commands\PlayerScreen\CommandModifyChrono.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteTrack.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteEndOfTrack.cs" />
-    <Compile Include="Commands\ScreenManager\CommandAddCaptureScreen.cs" />
-    <Compile Include="Commands\ScreenManager\CommandAddPlayerScreen.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandLoadMovie.cs" />
-    <Compile Include="Commands\ScreenManager\CommandLoadMovieInScreen.cs" />
-    <Compile Include="Commands\ScreenManager\CommandRemoveScreen.cs" />
-    <Compile Include="Commands\ScreenManager\CommandShowScreens.cs" />
-    <Compile Include="Commands\ScreenManager\CommandSwapScreens.cs" />
     <Compile Include="CoordinateSystem.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="LoaderCamera.cs" />
+    <Compile Include="LoaderVideo.cs" />
     <Compile Include="PlayerScreen\AutoSaver.cs" />
     <Compile Include="PlayerScreen\Serialization\MetadataExporter.cs" />
     <Compile Include="PlayerScreen\HitTester.cs" />
@@ -298,6 +292,7 @@
       <DependentUpon>Player.resx</DependentUpon>
     </Compile>
     <Compile Include="RecoveryManager.cs" />
+    <Compile Include="ScreenRemover.cs" />
     <Compile Include="UserInterface\CommonControlsCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>

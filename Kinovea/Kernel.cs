@@ -500,9 +500,16 @@ namespace Kinovea.Root
         }
         private void SwitchCulture(string name)
         {
-            IUndoableCommand command = new CommandSwitchUICulture(this, Thread.CurrentThread, new CultureInfo(name), Thread.CurrentThread.CurrentUICulture);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(command);
+            CultureInfo oldCulture = Thread.CurrentThread.CurrentUICulture;
+            CultureInfo newCulture = new CultureInfo(name);
+
+            log.Debug(String.Format("Changing culture from [{0}] to [{1}].", oldCulture.Name, newCulture.Name));
+            
+            PreferencesManager.GeneralPreferences.SetCulture(newCulture.Name);
+            Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
+            PreferencesManager.Save();
+
+            RefreshUICulture();
         }
         private void CheckLanguageMenu()
         {
@@ -610,9 +617,7 @@ namespace Kinovea.Root
             string resourceUri = GetLocalizedHelpResource(false);
             if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
             {
-                IUndoableCommand clmis = new CommandLoadMovieInScreen(screenManager, resourceUri, -1, true);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(clmis);
+                LoaderVideo.LoadVideoInScreen(screenManager, resourceUri, -1);
             }
             else
             {
@@ -677,12 +682,8 @@ namespace Kinovea.Root
         {
             if (File.Exists(filePath))
             {
-                IUndoableCommand clmis = new CommandLoadMovieInScreen(screenManager, filePath, -1, true);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(clmis);
-
-                ICommand css = new CommandShowScreens(screenManager);
-                CommandManager.LaunchCommand(css);
+                LoaderVideo.LoadVideoInScreen(screenManager, filePath, -1);
+                screenManager.OrganizeScreens();
             }
             else
             {
