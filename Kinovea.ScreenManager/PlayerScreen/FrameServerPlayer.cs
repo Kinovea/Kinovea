@@ -69,11 +69,17 @@ namespace Kinovea.ScreenManager
                     return videoReader.Current.Image;
             }
         }
+        public long SyncPosition
+        {
+            get { return syncPosition; }
+            set { syncPosition = value; }
+        }
         #endregion
         
         #region Members
         private VideoReader videoReader;
         private Metadata metadata;
+        private long syncPosition;
         private formProgressBar formProgressBar;
         private BackgroundWorker bgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
         private SaveResult saveResult;
@@ -193,6 +199,82 @@ namespace Kinovea.ScreenManager
             }
 
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
+        }
+        public string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool isSynched)
+        {
+            // Input    : TimeStamp (might be a duration. If starting ts isn't 0, it should already be shifted.)
+            // Output   : time in a specific format
+            
+            if (videoReader == null || !videoReader.Loaded)
+                return "0";
+
+            TimecodeFormat tcf = format == TimecodeFormat.Unknown ? PreferencesManager.PlayerPreferences.TimecodeFormat : format;
+
+            long actualTimestamps = timestamps;
+            switch (type)
+            {
+                case TimeType.Time:
+                    actualTimestamps = isSynched ? timestamps - syncPosition : timestamps;
+                    break;
+                case TimeType.Duration:
+                default:
+                    actualTimestamps = timestamps;
+                    break;
+            }
+
+            // timestamp to milliseconds. (Needed for most formats)
+            double seconds = (double)actualTimestamps / videoReader.Info.AverageTimeStampsPerSeconds;
+            double milliseconds = (seconds * 1000) / metadata.HighSpeedFactor;
+            bool showThousandth = (metadata.HighSpeedFactor * videoReader.Info.FramesPerSeconds) >= 100;
+
+            int frames = 1;
+            if (videoReader.Info.AverageTimeStampsPerFrame != 0)
+                frames = (int)((double)actualTimestamps / videoReader.Info.AverageTimeStampsPerFrame) + 1;
+            string frameString = String.Format("{0}", frames);
+
+            string outputTimeCode;
+            switch (tcf)
+            {
+                case TimecodeFormat.ClassicTime:
+                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);
+                    break;
+                case TimecodeFormat.Frames:
+                    outputTimeCode = frameString;
+                    break;
+                case TimecodeFormat.Milliseconds:
+                    outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds));
+                    break;
+                case TimecodeFormat.TenThousandthOfHours:
+                    // 1 Ten Thousandth of Hour = 360 ms.
+                    double inTenThousandsOfAnHour = milliseconds / 360.0;
+                    outputTimeCode = String.Format("{0}:{1:00}", (int)inTenThousandsOfAnHour, Math.Floor((inTenThousandsOfAnHour - (int)inTenThousandsOfAnHour) * 100));
+                    break;
+                case TimecodeFormat.HundredthOfMinutes:
+                    // 1 Hundredth of minute = 600 ms.
+                    double inHundredsOfAMinute = milliseconds / 600.0;
+                    outputTimeCode = String.Format("{0}:{1:00}", (int)inHundredsOfAMinute, Math.Floor((inHundredsOfAMinute - (int)inHundredsOfAMinute) * 100));
+                    break;
+                case TimecodeFormat.TimeAndFrames:
+                    String timeString = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);
+                    outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
+                    break;
+                case TimecodeFormat.Normalized:
+                    long duration = videoReader.Info.DurationTimeStamps - videoReader.Info.AverageTimeStampsPerFrame;
+                    double totalFrames = (double)duration / videoReader.Info.AverageTimeStampsPerFrame;
+                    int magnitude = (int)Math.Ceiling(Math.Log10(totalFrames));
+                    string outputFormat = string.Format("{{0:0.{0}}}", new string('0', magnitude));
+                    double normalized = (double)actualTimestamps / duration;
+                    outputTimeCode = String.Format(outputFormat, normalized);
+                    break;
+                case TimecodeFormat.Timestamps:
+                    outputTimeCode = String.Format("{0}", (int)actualTimestamps);
+                    break;
+                default:
+                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);
+                    break;
+            }
+
+            return outputTimeCode;
         }
         #endregion
         

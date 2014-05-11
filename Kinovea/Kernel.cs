@@ -186,9 +186,6 @@ namespace Kinovea.Root
             CheckLanguageMenu();
             CheckTimecodeMenu();
             
-            CommandManager cm = CommandManager.Instance();
-            cm.UpdateMenus();
-
             toolOpenFile.ToolTipText = RootLang.mnuOpenFile;
             
             fileBrowser.RefreshUICulture();
@@ -244,7 +241,7 @@ namespace Kinovea.Root
             #region File
             mnuFile.MergeAction = MergeAction.Append;
             mnuOpenFile.Image = Properties.Resources.folder;
-            mnuOpenFile.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O;
+            mnuOpenFile.ShortcutKeys = Keys.Control | Keys.O;
             mnuOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
             mnuHistory.Image = Properties.Resources.time;
             
@@ -267,21 +264,19 @@ namespace Kinovea.Root
 
             #region Edit
             mnuEdit.MergeAction = MergeAction.Append;
+            
             mnuUndo.Tag = RootLang.ResourceManager;
             mnuUndo.Image = Properties.Resources.arrow_undo;
-            mnuUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            mnuUndo.Click += new EventHandler(menuUndoOnClick);
+            mnuUndo.ShortcutKeys = Keys.Control | Keys.Z;
             mnuUndo.Enabled = false;
+
             mnuRedo.Tag = RootLang.ResourceManager;
             mnuRedo.Image = Properties.Resources.arrow_redo;
-            mnuRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            mnuRedo.Click += new EventHandler(menuRedoOnClick);
+            mnuRedo.ShortcutKeys = Keys.Control | Keys.Y;
             mnuRedo.Enabled = false;
 
-            CommandManager cm = CommandManager.Instance();
-            cm.RegisterUndoMenu(mnuUndo);
-            cm.RegisterRedoMenu(mnuRedo);
-
+            HistoryMenuManager.RegisterMenus(mnuUndo, mnuRedo);
+            
             mnuEdit.DropDownItems.AddRange(new ToolStripItem[] { mnuUndo, mnuRedo });
             #endregion
 
@@ -289,10 +284,10 @@ namespace Kinovea.Root
             mnuToggleFileExplorer.Image = Properties.Resources.explorer;
             mnuToggleFileExplorer.Checked = true;
             mnuToggleFileExplorer.CheckState = System.Windows.Forms.CheckState.Checked;
-            mnuToggleFileExplorer.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            mnuToggleFileExplorer.ShortcutKeys = Keys.F4;
             mnuToggleFileExplorer.Click += new EventHandler(mnuToggleFileExplorerOnClick);
             mnuFullScreen.Image = Properties.Resources.fullscreen;
-            mnuFullScreen.ShortcutKeys = System.Windows.Forms.Keys.F11;
+            mnuFullScreen.ShortcutKeys = Keys.F11;
             mnuFullScreen.Click += new EventHandler(mnuFullScreenOnClick);
             
             mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleFileExplorer, mnuFullScreen, new ToolStripSeparator() });
@@ -330,7 +325,7 @@ namespace Kinovea.Root
 
             #region Help
             mnuHelpContents.Image = Properties.Resources.book_open;
-            mnuHelpContents.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            mnuHelpContents.ShortcutKeys = Keys.F1;
             mnuHelpContents.Click += new EventHandler(mnuHelpContents_OnClick);
             mnuTutorialVideos.Image = Properties.Resources.film;
             mnuTutorialVideos.Click += new EventHandler(mnuTutorialVideos_OnClick);
@@ -445,19 +440,6 @@ namespace Kinovea.Root
         private void menuQuitOnClick(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-        #endregion
-
-        #region Edit
-        private void menuUndoOnClick(object sender, EventArgs e)
-        {
-            CommandManager cm = CommandManager.Instance();
-            cm.Undo();
-        }
-        private void menuRedoOnClick(object sender, EventArgs e)
-        {
-            CommandManager cm = CommandManager.Instance();
-            cm.Redo();
         }
         #endregion
 

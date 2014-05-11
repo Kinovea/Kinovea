@@ -156,13 +156,22 @@ namespace Kinovea.ScreenManager
         }
         public bool Synched
         {
-            set { view.Synched = value;}
+            get { return synched; }
+            set 
+            { 
+                view.Synched = value;
+                synched = value;
+            }
         }
         public long SyncPosition
         {
             // Reference timestamp for synchronization, expressed in local timebase.
             get { return view.SyncPosition; }
-            set { view.SyncPosition = value; }
+            set 
+            { 
+                view.SyncPosition = value;
+                frameServer.SyncPosition = value;
+            }
         }
         public long Position
         {
@@ -215,22 +224,30 @@ namespace Kinovea.ScreenManager
         public bool InteractiveFiltering {
             get {return view.InteractiveFiltering;}
         }
+        public HistoryStack HistoryStack
+        {
+            get { return historyStack; }
+        }
         #endregion
 
         #region members
         public PlayerScreenUserInterface view; // <-- FIXME: Rely on a IPlayerScreenUI or IPlayerScreenView rather than the concrete implementation.
-        
+
         private IScreenHandler screenManager;
-        private FrameServerPlayer frameServer = new FrameServerPlayer();
+        private HistoryStack historyStack; 
+        private FrameServerPlayer frameServer;
         private Guid uniqueId;
+        private bool synched;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public PlayerScreen(IScreenHandler _screenHandler)
+        public PlayerScreen(IScreenHandler screenHandler)
         {
             log.Debug("Constructing a PlayerScreen.");
-            screenManager = _screenHandler;
+            historyStack = new HistoryStack();
+            frameServer = new FrameServerPlayer();
+            this.screenManager = screenHandler;
             uniqueId = System.Guid.NewGuid();
             view = new PlayerScreenUserInterface(frameServer, this);
             
@@ -250,6 +267,7 @@ namespace Kinovea.ScreenManager
             // and the post init for trackable drawings is handled there by calling a command that is implemented here.
             
             // Event handlers
+            view.AddKeyframeAsked += View_AddKeyframeAsked;
             view.DrawingAdded += (s, e) => frameServer.Metadata.AddDrawing(e.Drawing, e.KeyframeIndex);
             view.CommandProcessed += (s, e) => OnCommandProcessed(e);
             
@@ -266,7 +284,33 @@ namespace Kinovea.ScreenManager
             view.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
             
             frameServer.Metadata.AddTrackableDrawingCommand = new RelayCommand<ITrackable>(AddTrackableDrawing);
-            
+        }
+
+        #region Undoable commands
+        public void AddKeyframe(long time)
+        {
+            string timecode = frameServer.TimeStampsToTimecode(time - frameServer.VideoReader.WorkingZone.Start, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, synched);
+            Keyframe keyframe = new Keyframe(time, timecode, frameServer.CurrentImage, frameServer.Metadata);
+            frameServer.Metadata.Add(keyframe);
+            frameServer.Metadata.Sort();
+            frameServer.Metadata.UpdateTrajectoriesForKeyframes();
+
+            // Present the result before generating the disabled version of the image as it can be lengthly (FIXME: do in an another thread ?).
+            view.OrganizeKeyframes();
+
+            keyframe.GenerateDisabledThumbnail();
+            view.AfterAddedKeyframe();
+        }
+        #endregion
+        
+        private void View_AddKeyframeAsked(object sender, TimeEventArgs e)
+        {
+            if (frameServer.CurrentImage == null)
+                return;
+
+            HistoryMementoAddKeyframe memento = new HistoryMementoAddKeyframe(this, e.Time);
+            AddKeyframe(e.Time);
+            historyStack.PushNewCommand(memento);
         }
         
         #region IPlayerScreenUIHandler (and IScreenUIHandler) implementation
@@ -438,7 +482,26 @@ namespace Kinovea.ScreenManager
         }
         public void ConfigureHighSpeedCamera()
         {
-            view.DisplayConfigureSpeedBox(true);
+            if (!frameServer.Loaded)
+                return;
+            
+            formConfigureSpeed fcs = new formConfigureSpeed(frameServer.VideoReader.Info.FramesPerSeconds, frameServer.Metadata.HighSpeedFactor);
+            fcs.StartPosition = FormStartPosition.CenterScreen;
+
+            if (fcs.ShowDialog() != DialogResult.OK)
+            {
+                fcs.Dispose();
+                return;
+            }
+
+            frameServer.Metadata.HighSpeedFactor = fcs.SlowFactor;
+            fcs.Dispose();
+
+            view.UpdateTimedLabels();
+            PlayerScreenUI_SpeedChanged(true);
+            frameServer.Metadata.CalibrationHelper.FramesPerSecond = frameServer.VideoReader.Info.FramesPerSeconds * frameServer.Metadata.HighSpeedFactor;
+
+            view.RefreshImage();
         }
         public long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
         {
