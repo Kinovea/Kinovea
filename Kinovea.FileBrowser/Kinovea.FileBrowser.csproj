@@ -127,7 +127,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\CommandDeleteShortcut.cs" />
     <Compile Include="FileBrowser.cs" />
     <Compile Include="UserInterface\FormCameraWizard.cs">
       <SubType>Form</SubType>
