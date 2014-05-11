@@ -176,7 +176,6 @@
     <Compile Include="Infrastructure\ToggleCommand.cs" />
     <Compile Include="LanguageIdentifier.cs" />
     <Compile Include="LanguageManager.cs" />
-    <Compile Include="UndoRedo\ICommand.cs" />
     <Compile Include="UndoRedo\IUndoableCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Preferences\ActiveFileBrowserTab.cs" />

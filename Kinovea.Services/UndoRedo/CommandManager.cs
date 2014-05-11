@@ -29,9 +29,7 @@ namespace Kinovea.Services
 {
     /// <summary>
     /// Manages Commands execution and undo/redo mechanics.
-    /// Optionnellement couplé à un menu undo/redo
     /// </summary>
-    /// <remarks>Design Pattern : Singleton</remarks>
     public class CommandManager
     {
         #region Members
@@ -60,12 +58,7 @@ namespace Kinovea.Services
         }
         #endregion
 
-        #region Implementation
-        public static void LaunchCommand(ICommand command)
-        {
-            if (command != null) 
-                command.Execute();
-        }
+        #region Public methods
         public void LaunchUndoableCommand(IUndoableCommand command)
         {
             if (command == null)
@@ -80,12 +73,6 @@ namespace Kinovea.Services
                 
             DoCurrentCommand();
             UpdateMenus();
-            
-        }
-        private void DoCurrentCommand()
-        {
-            if (!isEmpty)
-                commandStack[playHead].Execute();
         }
         public void Undo()
         {
@@ -116,30 +103,6 @@ namespace Kinovea.Services
             if (redoMenu != null) 
                 this.redoMenu = redoMenu;
         }
-        public void ResetHistory()
-        {
-            commandStack.Clear();
-            playHead = -1;
-            isEmpty = true;
-            UpdateMenus();
-        }
-        public void UnstackLastCommand()
-        {
-            // This happens when the command is cancelled while being performed.
-            // For example, cancellation of screen closing.
-            if(commandStack.Count <= 0)
-                return;
-            commandStack.RemoveAt(commandStack.Count - 1);
-            playHead = commandStack.Count - 1;
-            isEmpty = (commandStack.Count < 1);
-            UpdateMenus();    
-        }
-        public void BlockRedo()
-        {
-            if ((commandStack.Count - 1) >= playHead && playHead >= 0)
-                commandStack.RemoveRange(playHead, commandStack.Count - playHead);
-        }
-        
         public void UpdateMenus()
         {
             // Since the menus have their very own Resource Manager in the Tag field, 
@@ -151,7 +114,14 @@ namespace Kinovea.Services
             UpdateUndoMenu();
             UpdateRedoMenu();
         }
-        
+        #endregion
+
+        #region Private methods
+        private void DoCurrentCommand()
+        {
+            if (!isEmpty)
+                commandStack[playHead].Execute();
+        }
         private void UpdateUndoMenu()
         {
             ResourceManager rm = undoMenu.Tag as ResourceManager;
