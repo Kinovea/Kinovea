@@ -23,8 +23,21 @@ using System;
 
 namespace Kinovea.Services
 {
-    public interface IUndoableCommand : ICommand
+    public interface IUndoableCommand
     {
+        /// <summary>
+        /// The name of the command as it will appear in the undo menu.
+        /// </summary>
+        string FriendlyName
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Code to perform (or perform again in the case of redo) the command.
+        /// </summary>
+        void Execute();
+
     	/// <summary>
     	/// Code to revert the action of the command.
     	/// </summary>
