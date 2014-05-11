@@ -195,7 +195,17 @@ namespace Kinovea.ScreenManager
         {
             get { return selectionStart; }
             set { selectionStart = value; }
-        }         
+        }
+        public long SelectionEnd
+        {
+            get { return selectionEnd; }
+            set { selectionEnd = value; }
+        }
+        public double HighSpeedFactor
+        {
+            get { return highSpeedFactor; }
+            set { highSpeedFactor = value; }
+        }
         public CalibrationHelper CalibrationHelper 
         {
             get { return calibrationHelper; }
@@ -244,6 +254,8 @@ namespace Kinovea.ScreenManager
         private long averageTimeStampsPerFrame = 1;
         private long firstTimeStamp;
         private long selectionStart;
+        private long selectionEnd;
+        private double highSpeedFactor = 1.0;
         private int referenceHash;
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
         private CoordinateSystem coordinateSystem = new CoordinateSystem();
@@ -299,6 +311,14 @@ namespace Kinovea.ScreenManager
         public void RemoveAt(int _index)
         {
             keyframes.RemoveAt(_index);
+        }
+        public void EnableDisableKeyframes()
+        {
+            foreach(Keyframe keyframe in keyframes)
+            {
+                keyframe.TimeCode = timecodeBuilder(keyframe.Position - selectionStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+                keyframe.Disabled = keyframe.Position < selectionStart || keyframe.Position > selectionEnd;
+            }
         }
         #endregion
         

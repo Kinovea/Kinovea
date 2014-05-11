@@ -1102,6 +1102,9 @@ namespace Kinovea.ScreenManager
             // Enable / disable menus depending on state of active screen
             // and global screen configuration.
             
+            // TODO: fix selection of history stack context.
+
+
             #region Menus depending only on the state of the active screen
             bool activeScreenIsEmpty = false;
             if (activeScreen != null && screenList.Count > 0)
@@ -1143,6 +1146,9 @@ namespace Kinovea.ScreenManager
                     // Motion
                     mnuHighspeedCamera.Enabled = true;
                     ConfigureVideoFilterMenus(player);
+
+                    // Test
+                    HistoryMenuManager.SwitchContext(player.HistoryStack);
                 }
                 else if(activeScreen is CaptureScreen)
                 {
@@ -1330,6 +1336,10 @@ namespace Kinovea.ScreenManager
             }
             #endregion
 
+
+            
+
+        
         }
         private void ConfigureVideoFilterMenus(PlayerScreen player)
         {
@@ -1719,7 +1729,6 @@ namespace Kinovea.ScreenManager
             //------------------------------------------------------------
             
             synching = false;
-            CommandManager cm = CommandManager.Instance();
 
             switch (screenList.Count)
             {
@@ -1803,7 +1812,6 @@ namespace Kinovea.ScreenManager
             // Here : Two player screens.
             //------------------------------------------------------------
             synching = false;
-            CommandManager cm = CommandManager.Instance();
             
             switch (screenList.Count)
             {
@@ -1884,8 +1892,7 @@ namespace Kinovea.ScreenManager
             // Here : One capture screens.
             //------------------------------------------------------------
             synching = false;
-            CommandManager cm = CommandManager.Instance();
-           
+            
             switch (screenList.Count)
             {
                 case 0:
@@ -1974,7 +1981,6 @@ namespace Kinovea.ScreenManager
             // Here : Two capture screens.
             //------------------------------------------------------------
             synching = false;
-            CommandManager cm = CommandManager.Instance();
             
             switch (screenList.Count)
             {
@@ -2063,7 +2069,6 @@ namespace Kinovea.ScreenManager
             // Here : Mixed screen. The workspace preset is : [capture][player]
             //------------------------------------------------------------
             synching = false;
-            CommandManager cm = CommandManager.Instance();
             
             switch (screenList.Count)
             {
@@ -2299,8 +2304,6 @@ namespace Kinovea.ScreenManager
 
         private void View_AutoLaunchAsked(object source, EventArgs e)
         {
-            CommandManager cm = CommandManager.Instance();
-
             int reloaded = 0;
             foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
             {
@@ -2310,10 +2313,6 @@ namespace Kinovea.ScreenManager
 
                     ScreenDescriptionPlayback sdp = screenDescription as ScreenDescriptionPlayback;
                     LoaderVideo.LoadVideoInScreen(this, sdp.FullPath, sdp);
-
-                    //IUndoableCommand clmis = new CommandLoadMovieInScreen(this, sdp.FullPath, sdp);
-                    //cm.LaunchUndoableCommand(clmis);
-
                     reloaded++;
                 }
 

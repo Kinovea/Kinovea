@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Events
+        public event EventHandler<TimeEventArgs> AddKeyframeAsked;
         public event EventHandler<DrawingEventArgs> DrawingAdded;
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingDeleted;
@@ -104,7 +105,7 @@ namespace Kinovea.ScreenManager
             // It takes high speed camera into account.
             get 
             { 
-                return m_fSlowmotionPercentage / m_fHighSpeedFactor;
+                return m_fSlowmotionPercentage / m_FrameServer.Metadata.HighSpeedFactor;
             }
             set
             {
@@ -112,7 +113,7 @@ namespace Kinovea.ScreenManager
                 // when the other video changed its speed percentage (user or forced).
                 // We must NOT trigger the event here, or it will impact the other screen in an infinite loop.
                 // Compute back the slow motion percentage relative to the playback framerate.
-                double fPlaybackPercentage = value * m_fHighSpeedFactor;
+                double fPlaybackPercentage = value * m_FrameServer.Metadata.HighSpeedFactor;
                 if(fPlaybackPercentage > 200) fPlaybackPercentage = 200;
                 sldrSpeed.Value = (int)fPlaybackPercentage;
                 
@@ -260,7 +261,6 @@ namespace Kinovea.ScreenManager
         private const float m_MaxZoomFactor = 6.0F;
         private const int m_MaxRenderingDrops = 6;
         private const int m_MaxDecodingDrops = 6;
-        private Double m_fHighSpeedFactor = 1.0f;           	// When capture fps is different from Playing fps.
         private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
         private MessageToaster m_MessageToaster;
         private bool m_Constructed;
@@ -269,7 +269,6 @@ namespace Kinovea.ScreenManager
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuDirectTrack = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPlayPause = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSetCaptureSpeed = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSendPic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCopyPic = new ToolStripMenuItem();
@@ -324,7 +323,7 @@ namespace Kinovea.ScreenManager
             
             m_PlayerScreenUIHandler = _PlayerScreenUIHandler;
             m_FrameServer = _FrameServer;
-            m_FrameServer.Metadata = new Metadata(TimeStampsToTimecode, OnShowClosestFrame);
+            m_FrameServer.Metadata = new Metadata(m_FrameServer.TimeStampsToTimecode, OnShowClosestFrame);
             
             InitializeComponent();
             BuildContextMenus();
@@ -466,6 +465,7 @@ namespace Kinovea.ScreenManager
             // Other various infos.
             m_FrameServer.SetupMetadata(true);
             m_FrameServer.Metadata.SelectionStart = m_iSelStart;
+            m_FrameServer.Metadata.SelectionEnd = m_iSelEnd;
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
             m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
             
@@ -593,7 +593,7 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
             ActivateKeyframe(m_iCurrentPosition);
 
-            m_fHighSpeedFactor = m_FrameServer.Metadata.CalibrationHelper.FramesPerSecond / m_FrameServer.VideoReader.Info.FramesPerSeconds;
+            m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.CalibrationHelper.FramesPerSecond / m_FrameServer.VideoReader.Info.FramesPerSeconds;
             UpdateTimedLabels();
             
             m_FrameServer.SetupMetadata(false);
@@ -602,6 +602,12 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.StartAutosave();
             
             DoInvalidate();
+        }
+        public void UpdateTimedLabels()
+        {
+            UpdateSelectionLabels();
+            UpdateCurrentPositionLabel();
+            UpdateSpeedLabel();
         }
         public void UpdateWorkingZone(bool _bForceReload)
         {
@@ -942,7 +948,7 @@ namespace Kinovea.ScreenManager
             m_bDocked = true;
             m_bTextEdit = false;
             
-            m_fHighSpeedFactor = 1.0f;
+            m_FrameServer.Metadata.HighSpeedFactor = 1.0f;
             UpdateTimedLabels();
         }
         private void DemuxMetadata()
@@ -951,7 +957,7 @@ namespace Kinovea.ScreenManager
             string kva = m_FrameServer.VideoReader.ReadMetadata();
             if (!string.IsNullOrEmpty(kva))
             {
-                m_FrameServer.Metadata = new Metadata(kva, m_FrameServer.VideoReader.Info,  TimeStampsToTimecode, OnShowClosestFrame);
+                m_FrameServer.Metadata = new Metadata(kva, m_FrameServer.VideoReader.Info, m_FrameServer.TimeStampsToTimecode, OnShowClosestFrame);
                 UpdateFramesMarkers();
                 OrganizeKeyframes();
             }
@@ -1026,8 +1032,6 @@ namespace Kinovea.ScreenManager
             mnuDirectTrack.Click += new EventHandler(mnuDirectTrack_Click);
             mnuDirectTrack.Image = Properties.Drawings.track;
             mnuPlayPause.Click += new EventHandler(buttonPlay_Click);
-            mnuSetCaptureSpeed.Click += new EventHandler(mnuSetCaptureSpeed_Click);
-            mnuSetCaptureSpeed.Image = Properties.Resources.camera_speed;
             mnuSavePic.Click += new EventHandler(btnSnapShot_Click);
             mnuSavePic.Image = Properties.Resources.picture_save;
             mnuSendPic.Click += new EventHandler(mnuSendPic_Click);
@@ -1299,84 +1303,6 @@ namespace Kinovea.ScreenManager
             {
                 DockKeyframePanel(true);
             }
-        }
-        private string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool isSynched)
-        {
-            //-------------------------
-            // Input    : TimeStamp (might be a duration. If starting ts isn't 0, it should already be shifted.)
-            // Output   : time in a specific format
-            //-------------------------
-
-            if(!m_FrameServer.Loaded)
-                return "0";
-
-            TimecodeFormat tcf = format == TimecodeFormat.Unknown ? PreferencesManager.PlayerPreferences.TimecodeFormat : format;
-
-            long actualTimestamps = timestamps;
-            switch(type)
-            {
-                case TimeType.Time:
-                    actualTimestamps = isSynched ? timestamps - m_iSyncPosition : timestamps;
-                    break;
-                case TimeType.Duration:
-                default:
-                    actualTimestamps = timestamps;
-                    break;
-            }
-            
-            // timestamp to milliseconds. (Needed for most formats)
-            double seconds = (double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-            double milliseconds = (seconds * 1000) / m_fHighSpeedFactor;
-            bool showThousandth = (m_fHighSpeedFactor * m_FrameServer.VideoReader.Info.FramesPerSeconds) >= 100;
-
-            int frames = 1;
-            if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
-                frames = (int)((double)actualTimestamps / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame) + 1;
-            string frameString = String.Format("{0}", frames);
-
-            string outputTimeCode;
-            switch (tcf)
-            {
-                case TimecodeFormat.ClassicTime:
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);
-                    break;
-                case TimecodeFormat.Frames:
-                    outputTimeCode = frameString;
-                    break;
-                case TimecodeFormat.Milliseconds:
-                    outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds));
-                    break;
-                case TimecodeFormat.TenThousandthOfHours:
-                    // 1 Ten Thousandth of Hour = 360 ms.
-                    double inTenThousandsOfAnHour = milliseconds / 360.0;
-                    outputTimeCode = String.Format("{0}:{1:00}", (int)inTenThousandsOfAnHour, Math.Floor((inTenThousandsOfAnHour - (int)inTenThousandsOfAnHour)*100));
-                    break;
-                case TimecodeFormat.HundredthOfMinutes:
-                    // 1 Hundredth of minute = 600 ms.
-                    double inHundredsOfAMinute = milliseconds / 600.0;
-                    outputTimeCode = String.Format("{0}:{1:00}", (int)inHundredsOfAMinute, Math.Floor((inHundredsOfAMinute - (int)inHundredsOfAMinute) * 100));
-                    break;
-                case TimecodeFormat.TimeAndFrames:
-                    String timeString = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);
-                    outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
-                    break;
-                case TimecodeFormat.Normalized:
-                    long duration = m_FrameServer.VideoReader.Info.DurationTimeStamps - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-                    double totalFrames = (double)duration / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-                    int magnitude = (int)Math.Ceiling(Math.Log10(totalFrames));
-                    string outputFormat = string.Format("{{0:0.{0}}}", new string('0', magnitude));
-                    double normalized = (double)actualTimestamps / duration;
-                    outputTimeCode = String.Format(outputFormat, normalized);
-                    break;
-                case TimecodeFormat.Timestamps:
-                    outputTimeCode = String.Format("{0}", (int)actualTimestamps);
-                    break;
-                default :
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth, true);
-                    break;
-            }
-
-            return outputTimeCode;
         }
         private void DoDrawingUndrawn()
         {
@@ -1772,10 +1698,12 @@ namespace Kinovea.ScreenManager
                 duration = m_iSelDuration;
             }
             
-            lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(start, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+            string startTimecode = m_FrameServer.TimeStampsToTimecode(start, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+            lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + startTimecode;
 
             duration -= m_FrameServer.Metadata.AverageTimeStampsPerFrame;
-            lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(duration, TimeType.Duration, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+            string durationTimecode = m_FrameServer.TimeStampsToTimecode(duration, TimeType.Duration, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+            lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + durationTimecode;
         }
         private void UpdateSelectionDataFromControl()
         {
@@ -1791,6 +1719,7 @@ namespace Kinovea.ScreenManager
         {
             // Update everything as if we moved the handlers manually.
             m_FrameServer.Metadata.SelectionStart = m_iSelStart;
+            m_FrameServer.Metadata.SelectionEnd = m_iSelEnd;
             
             UpdateFramesMarkers();
             
@@ -1862,7 +1791,7 @@ namespace Kinovea.ScreenManager
         {
             // Note: among other places, this is run inside the playloop.
             // Position is relative to working zone.
-            string timecode = TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched);
+            string timecode = m_FrameServer.TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched);
             lblTimeCode.Text = string.Format("{0} : {1}", ScreenManagerLang.lblTimeCode_Text, timecode);
         }
         private void UpdatePositionUI()
@@ -1917,7 +1846,7 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateSpeedLabel()
         {
-            double realtimePercentage = (double)m_fSlowmotionPercentage / m_fHighSpeedFactor;
+            double realtimePercentage = (double)m_fSlowmotionPercentage / m_FrameServer.Metadata.HighSpeedFactor;
             string percentage = realtimePercentage % 1 != 0 ? string.Format("{0:0.00}%", realtimePercentage) : string.Format("{0}%", (int)realtimePercentage);
             lblSpeedTuner.Text = string.Format("{0} {1}", ScreenManagerLang.lblSpeedTuner_Text, percentage);
         }
@@ -2388,53 +2317,6 @@ namespace Kinovea.ScreenManager
                 UpdatePositionUI();
             }
         }
-        private void mnuSetCaptureSpeed_Click(object sender, EventArgs e)
-        {
-            DisplayConfigureSpeedBox(false);
-        }
-        private void lblTimeCode_DoubleClick(object sender, EventArgs e)
-        {
-            // Same as mnuSetCaptureSpeed_Click but different location.
-            DisplayConfigureSpeedBox(true);
-        }
-        public void DisplayConfigureSpeedBox(bool _center)
-        {
-            //--------------------------------------------------------------------
-            // Display the dialog box that let the user specify the capture speed.
-            // Used to adpat time for high speed cameras.
-            //--------------------------------------------------------------------
-            if (!m_FrameServer.Loaded)
-                return;
-            
-            formConfigureSpeed fcs = new formConfigureSpeed(m_FrameServer.VideoReader.Info.FramesPerSeconds, m_fHighSpeedFactor);
-            if (_center)
-            {
-                fcs.StartPosition = FormStartPosition.CenterScreen;
-            }
-            else
-            {
-                fcs.StartPosition = FormStartPosition.Manual;
-                FormsHelper.Locate(fcs);
-            }
-            
-            if (fcs.ShowDialog() == DialogResult.OK)
-            {
-                m_fHighSpeedFactor = fcs.SlowFactor;
-            }
-            
-            fcs.Dispose();
-
-            UpdateTimedLabels();
-            m_PlayerScreenUIHandler.PlayerScreenUI_SpeedChanged(true);
-            m_FrameServer.Metadata.CalibrationHelper.FramesPerSecond = m_FrameServer.VideoReader.Info.FramesPerSeconds * m_fHighSpeedFactor;
-            DoInvalidate();
-        }
-        private void UpdateTimedLabels()
-        {
-            UpdateSelectionLabels();
-            UpdateCurrentPositionLabel();
-            UpdateSpeedLabel();
-        }
         private double GetPlaybackFrameInterval()
         {
             // Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
@@ -2470,7 +2352,6 @@ namespace Kinovea.ScreenManager
             // 1. Default context menu.
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuPlayPause.Text = ScreenManagerLang.mnuPlayPause;
-            mnuSetCaptureSpeed.Text = ScreenManagerLang.mnuSetCaptureSpeed;
             mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
             mnuSendPic.Text = ScreenManagerLang.mnuSendPic;
             mnuCopyPic.Text = "Copy image to clipboard";
@@ -3380,7 +3261,7 @@ namespace Kinovea.ScreenManager
                 OnPoke();
             }
         }
-        private void OrganizeKeyframes()
+        public void OrganizeKeyframes()
         {
             // Should only be called when adding/removing a Thumbnail
             
@@ -3483,29 +3364,10 @@ namespace Kinovea.ScreenManager
         }
         private void EnableDisableKeyframes()
         {
-            // Enable Keyframes that are within Working Zone, Disable others.
-            for (int i = 0; i < thumbnails.Count; i++)
-            {
-                KeyframeBox tb = thumbnails[i];
-                m_FrameServer.Metadata[i].TimeCode = TimeStampsToTimecode(m_FrameServer.Metadata[i].Position - m_iSelStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
-                    
-                if (m_FrameServer.Metadata[i].Position >= m_iSelStart && m_FrameServer.Metadata[i].Position <= m_iSelEnd)
-                {
-                    m_FrameServer.Metadata[i].Disabled = false;
-                        
-                    tb.Enabled = true;
-                    tb.pbThumbnail.Image = m_FrameServer.Metadata[i].Thumbnail;
-                }
-                else
-                {
-                    m_FrameServer.Metadata[i].Disabled = true;
-                        
-                    tb.Enabled = false;
-                    tb.pbThumbnail.Image = m_FrameServer.Metadata[i].DisabledThumbnail;
-                }
+            m_FrameServer.Metadata.EnableDisableKeyframes();
 
-                tb.UpdateTitle(m_FrameServer.Metadata[i].Title);
-            }
+            foreach (KeyframeBox box in thumbnails)
+                box.UpdateEnableStatus();
         }
         public void OnKeyframesTitleChanged()
         {
@@ -3552,61 +3414,20 @@ namespace Kinovea.ScreenManager
 
         private void AddKeyframe()
         {
-            int i = 0;
-            bool alreadyAKeyFrame = false;
-            for (i = 0; i < m_FrameServer.Metadata.Count; i++)
+            int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
+            if (keyframeIndex >= 0)
             {
-                if (m_FrameServer.Metadata[i].Position == m_iCurrentPosition)
-                {
-                    alreadyAKeyFrame = true;
-                    m_iActiveKeyFrameIndex = i;
-                }
-            }
-
-            if (alreadyAKeyFrame)
+                m_iActiveKeyFrameIndex = keyframeIndex;
                 return;
+            }
             
-            IUndoableCommand cak = new CommandAddKeyframe(this, m_FrameServer.Metadata, m_iCurrentPosition);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(cak);
-                
-            // If it is the very first key frame, we raise the KF panel.
-            // Otherwise we keep whatever choice the user made.
-            if(m_FrameServer.Metadata.Count == 1)
-                DockKeyframePanel(false);
+            if (AddKeyframeAsked != null)
+                AddKeyframeAsked(this, new TimeEventArgs(m_iCurrentPosition));
         }
-        public void OnAddKeyframe(long _iPosition)
+        public void AfterAddedKeyframe()
         {
-            // Public because called from CommandAddKeyframe.Execute()
-            // Title becomes the current timecode. (relative to sel start or sel minimum ?)
-            if (m_FrameServer.CurrentImage == null)
-                return;
-
-            Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched), m_FrameServer.CurrentImage, m_FrameServer.Metadata);
-            
-            if (_iPosition != m_iCurrentPosition)
-            {
-                // Move to the required Keyframe.
-                // Should only happen when Undoing a DeleteKeyframe.
-                m_iFramesToDecode = 1;
-                ShowNextFrame(_iPosition, true);
-                UpdatePositionUI();
-
-                // Readjust and complete the Keyframe
-                kf.ImportImage(m_FrameServer.CurrentImage);
-            }
-
-            m_FrameServer.Metadata.Add(kf);
-
-            // Keep the list sorted
-            m_FrameServer.Metadata.Sort();
-            m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
-
-            // Refresh Keyframes preview.
-            OrganizeKeyframes();
-
-            // B&W conversion can be lengthly. We do it after showing the result.
-            kf.GenerateDisabledThumbnail();
+            if (m_FrameServer.Metadata.Count == 1)
+                DockKeyframePanel(false);
 
             if (!m_bIsCurrentlyPlaying)
                 ActivateKeyframe(m_iCurrentPosition);
@@ -3619,26 +3440,13 @@ namespace Kinovea.ScreenManager
 
             //OnRemoveKeyframe(_iKeyframeIndex);
         }
-        public void OnRemoveKeyframe(int _iKeyframeIndex)
+        public void OnRemoveKeyframe(int index)
         {
-            if (_iKeyframeIndex == m_iActiveKeyFrameIndex)
-            {
-                // Removing active frame
+            if (m_iActiveKeyFrameIndex == index)
                 m_iActiveKeyFrameIndex = -1;
-            }
-            else if (_iKeyframeIndex < m_iActiveKeyFrameIndex)
-            {
-                if (m_iActiveKeyFrameIndex > 0)
-                {
-                    // Active keyframe index shift
-                    m_iActiveKeyFrameIndex--;
-                }
-            }
+            else if (m_iActiveKeyFrameIndex >= index && m_iActiveKeyFrameIndex > 0)
+                m_iActiveKeyFrameIndex--;
 
-            // FIXME: this does not remove trackable drawings.
-            // We can't simply remove them if we want to support undo.
-            m_FrameServer.Metadata.RemoveAt(_iKeyframeIndex);
-            m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
             OrganizeKeyframes();
             DoInvalidate();
         }
@@ -4695,8 +4503,8 @@ namespace Kinovea.ScreenManager
                 tcf = _timeCodeFormat;
             
             // Timecode string (Not relative to sync position)
-            string suffix = TimeStampsToTimecode(_position - m_iSelStart, TimeType.Time, tcf, false);
-            string maxSuffix = TimeStampsToTimecode(m_iSelEnd - m_iSelStart, TimeType.Time, tcf, false);
+            string suffix = m_FrameServer.TimeStampsToTimecode(_position - m_iSelStart, TimeType.Time, tcf, false);
+            string maxSuffix = m_FrameServer.TimeStampsToTimecode(m_iSelEnd - m_iSelStart, TimeType.Time, tcf, false);
 
             switch (tcf)
             {

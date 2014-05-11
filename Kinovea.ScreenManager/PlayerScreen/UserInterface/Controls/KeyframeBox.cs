@@ -77,6 +77,12 @@ namespace Kinovea.ScreenManager
         
             UpdateToolTip();	
         }
+        public void UpdateEnableStatus()
+        {
+            this.Enabled = !keyframe.Disabled;
+            this.pbThumbnail.Image = keyframe.Disabled ? keyframe.DisabledThumbnail : keyframe.Thumbnail;
+            UpdateTitle(keyframe.Title);
+        }
         #endregion
         
         #region Event Handlers - Mouse Enter / Leave
