@@ -253,7 +253,10 @@ namespace Kinovea.ScreenManager
             // This will not create a fully functionnal Keyframe.
             // It must be followed by a call to PostImportMetadata() so we can create the thumbnail.
             Keyframe keyframe = new Keyframe(metadata);
-
+            
+            if (r.MoveToAttribute("id"))
+                keyframe.Id = new Guid(r.ReadContentAsString());
+            
             r.ReadStartElement();
 
             while (r.NodeType == XmlNodeType.Element)
@@ -282,7 +285,7 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
 
-            MergeInsertKeyframe(keyframe);
+            metadata.MergeInsertKeyframe(keyframe);
         }
         private void ParseDrawings(XmlReader r, Keyframe keyframe)
         {
@@ -292,56 +295,13 @@ namespace Kinovea.ScreenManager
 
             while (r.NodeType == XmlNodeType.Element)
             {
-                AbstractDrawing drawing = ParseDrawing(r);
-
-                if (drawing != null)
-                {
-                    keyframe.Drawings.Add(drawing);
-                    drawing.InfosFading.ReferenceTimestamp = keyframe.Position;
-                    drawing.InfosFading.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerFrame;
-                    metadata.AfterDrawingCreation(drawing);
-                }
+                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, GetScaling(), metadata);
+                metadata.AddDrawing(keyframe, drawing);
             }
 
             r.ReadEndElement();
         }
-        private AbstractDrawing ParseDrawing(XmlReader r)
-        {
-            AbstractDrawing drawing = null;
-
-            // Find the right class to instanciate.
-            // The class must derive from AbstractDrawing and have the corresponding [XmlType] C# attribute.
-            bool drawingRead = false;
-            Assembly a = Assembly.GetExecutingAssembly();
-            foreach (Type t in a.GetTypes())
-            {
-                if (t.BaseType != typeof(AbstractDrawing))
-                    continue;
-
-                object[] attributes = t.GetCustomAttributes(typeof(XmlTypeAttribute), false);
-                if (attributes.Length <= 0 || ((XmlTypeAttribute)attributes[0]).TypeName != r.Name)
-                    continue;
-
-                ConstructorInfo ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(Metadata)});
-                if (ci == null)
-                    break;
-
-                PointF scaling = GetScaling();
-                object[] parameters = new object[] { r, scaling, metadata };
-                drawing = (AbstractDrawing)Activator.CreateInstance(t, parameters);
-                drawingRead = drawing != null;
-                
-                break;
-            }
-
-            if (!drawingRead)
-            {
-                string unparsed = r.ReadOuterXml();
-                log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-            }
-
-            return drawing;
-        }
+        
         private void ParseChronos(XmlReader r)
         {
             // TODO: catch empty tag <Chronos/>.
@@ -415,35 +375,6 @@ namespace Kinovea.ScreenManager
             }
 
             r.ReadEndElement();
-        }
-        private void MergeInsertKeyframe(Keyframe keyframe)
-        {
-            bool processed = false;
-
-            for (int i = 0; i < metadata.Keyframes.Count; i++)
-            {
-                Keyframe k = metadata.Keyframes[i];
-                
-                if (keyframe.Position < k.Position)
-                {
-                    metadata.Keyframes.Insert(i, keyframe);
-                    processed = true;
-                    break;
-                }
-                else if (keyframe.Position == k.Position)
-                {
-                    foreach (AbstractDrawing ad in keyframe.Drawings)
-                    {
-                        k.Drawings.Add(ad);
-                    }
-
-                    processed = true;
-                    break;
-                }
-            }
-
-            if (!processed)
-                metadata.Keyframes.Add(keyframe);
         }
         private PointF GetScaling()
         {
@@ -551,6 +482,7 @@ namespace Kinovea.ScreenManager
             foreach (Keyframe kf in metadata.Keyframes.Where(kf => !kf.Disabled))
             {
                 w.WriteStartElement("Keyframe");
+                w.WriteAttributeString("id", kf.Id.ToString());
                 kf.WriteXml(w);
                 w.WriteEndElement();
             }
@@ -624,7 +556,7 @@ namespace Kinovea.ScreenManager
         private void WriteCoordinateSystem(XmlWriter w)
         {
             w.WriteStartElement("CoordinateSystem");
-            w.WriteAttributeString("id", metadata.DrawingCoordinateSystem.ID.ToString());
+            w.WriteAttributeString("id", metadata.DrawingCoordinateSystem.Id.ToString());
             metadata.DrawingCoordinateSystem.WriteXml(w);
             w.WriteEndElement();
         }

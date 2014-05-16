@@ -25,7 +25,7 @@ namespace Kinovea.ScreenManager
             menuRedo.Click += menuRedo_Click;
         }
 
-        static void menuRedo_Click(object sender, EventArgs e)
+        private static void menuRedo_Click(object sender, EventArgs e)
         {
             if (stack == null)
                 return;
@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
             UpdateMenus();
         }
 
-        static void menuUndo_Click(object sender, EventArgs e)
+        private static void menuUndo_Click(object sender, EventArgs e)
         {
             if (stack == null)
                 return;
@@ -45,7 +45,12 @@ namespace Kinovea.ScreenManager
 
         public static void SwitchContext(HistoryStack _stack)
         {
+            if (stack != null)
+                stack.HistoryChanged -= HistoryChanged;
+
             stack = _stack;
+            stack.HistoryChanged += HistoryChanged;
+
             UpdateMenus();
         }
         
@@ -53,17 +58,20 @@ namespace Kinovea.ScreenManager
         {
             ResourceManager rm = menuUndo.Tag as ResourceManager;
 
-            menuUndo.Enabled = stack != null && stack.CanUndo;
             menuUndo.Text = rm.GetString("mnuUndo");
+            menuUndo.Enabled = stack != null && stack.CanUndo;
+            if (menuUndo.Enabled)
+              menuUndo.Text += " : " + stack.UndoActionName;
 
-            //if (stack.CanUndo)
-              //  menuUndo.Text += " : " + stack.UndoAction;
-
-            menuRedo.Enabled = stack != null && stack.CanRedo;
             menuRedo.Text = rm.GetString("mnuRedo");
-
-            //if (stack.CanRedo)
-            //  menuRedo.Text += " : " + stack.RedoAction;
+            menuRedo.Enabled = stack != null && stack.CanRedo;
+            if (menuRedo.Enabled)
+              menuRedo.Text += " : " + stack.RedoActionName;
+        }
+        
+        private static void HistoryChanged(object sender, EventArgs e)
+        {
+            UpdateMenus();
         }
     }
 }

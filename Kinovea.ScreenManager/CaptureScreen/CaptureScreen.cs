@@ -570,7 +570,8 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeMetadata()
         {
-            metadata = new Metadata(null, null);
+            metadata = new Metadata(null, null, null);
+            // TODO: hook to events raised by metadata.
             
             LoadCompanionKVA();
             
@@ -578,7 +579,7 @@ namespace Kinovea.ScreenManager
             {
                 Keyframe kf = new Keyframe(metadata);
                 kf.Position = 0;
-                metadata.Add(kf);
+                metadata.AddKeyframe(kf);
             }
             
             metadataRenderer = new MetadataRenderer(metadata);

@@ -22,7 +22,7 @@ using System;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
     public class CommandDeleteDrawing : IUndoableCommand
     {
@@ -62,8 +62,8 @@ namespace Kinovea.ScreenManager
             if (index < 0 || drawing == null)
                 return;
             
-            metadata.DeleteDrawing(index, drawingIndex);
-            doScreenInvalidate();
+            //metadata.DeleteDrawing(index, drawingIndex);
+            //doScreenInvalidate();
         }
 
         public void Unexecute()
@@ -73,9 +73,9 @@ namespace Kinovea.ScreenManager
                 return;
             
             // We must insert exactly where we deleted, otherwise the drawing table gets messed up.
-            // We must still be able to undo any Add action that where performed before.
-            metadata.UndeleteDrawing(index, drawingIndex, drawing);
-            doScreenInvalidate();
+            // We must still be able to undo any Add action that was performed before.
+            //metadata.UndeleteDrawing(index, drawingIndex, drawing);
+            //doScreenInvalidate();
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
     public abstract class AbstractDrawing
     {
         #region Concrete properties
-        public Guid ID
+        public Guid Id
         {
             get { return identifier; }
         }

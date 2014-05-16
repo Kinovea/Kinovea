@@ -174,7 +174,15 @@ namespace Kinovea.ScreenManager
         
         public void DeleteHitDrawing()
         {
-            metadata.DeleteHitDrawing();
+            Keyframe keyframe = metadata.HitDrawingKeyframe;
+            AbstractDrawing drawing = metadata.HitDrawing;
+
+            if (keyframe == null || drawing == null)
+                return;
+
+            HistoryMemento memento = new HistoryMementoDeleteDrawing(metadata, keyframe.Id, drawing.Id, drawing.DisplayName);
+            metadata.DeleteDrawing(keyframe.Id, drawing.Id);
+            metadata.HistoryStack.PushNewCommand(memento);
         }
         
         public void DeselectTool()
@@ -217,7 +225,11 @@ namespace Kinovea.ScreenManager
         private void AddDrawing(Point imagePoint, int keyframeIndex, int timestampPerFrame, ImageToViewportTransformer transformer)
         {
             AbstractDrawing drawing = screenToolManager.ActiveTool.GetNewDrawing(imagePoint, keyframeIndex, timestampPerFrame, transformer);
-            metadata.AddDrawing(drawing, keyframeIndex);
+            Guid keyframeId = metadata.GetKeyframeId(keyframeIndex);
+
+            HistoryMementoAddDrawing memento = new HistoryMementoAddDrawing(metadata, keyframeId, drawing.Id, drawing.DisplayName);
+            metadata.AddDrawing(keyframeId, drawing);
+            metadata.HistoryStack.PushNewCommand(memento);
             
             // Special cases
             if(screenToolManager.ActiveTool == ToolManager.Label)

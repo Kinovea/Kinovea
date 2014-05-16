@@ -22,7 +22,7 @@ using System;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
     public class CommandAddDrawing : IUndoableCommand
     {

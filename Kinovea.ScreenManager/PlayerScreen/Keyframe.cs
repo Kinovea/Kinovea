@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -35,6 +36,11 @@ namespace Kinovea.ScreenManager
     public class Keyframe : IComparable
     {
         #region Properties
+        public Guid Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
         public long Position
         {
             get { return position; }
@@ -94,6 +100,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        private Guid id = Guid.NewGuid();
         private long position = -1;            // Position is absolute in all timestamps.
         private string  title = "";
         private string timecode = "";
@@ -136,6 +143,10 @@ namespace Kinovea.ScreenManager
         {
             disabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(thumbnail);
         }
+        public AbstractDrawing GetDrawing(Guid id)
+        {
+            return drawings.FirstOrDefault(d => d.Id == id);
+        }
         public void AddDrawing(AbstractDrawing drawing)
         {
             // insert to the top of z-order except for grids.
@@ -143,6 +154,10 @@ namespace Kinovea.ScreenManager
                 drawings.Add(drawing);
             else
                 drawings.Insert(0, drawing);
+        }
+        public void RemoveDrawing(Guid id)
+        {
+            drawings.RemoveAll(d => d.Id == id);
         }
         public void WriteXml(XmlWriter w)
         {
@@ -165,22 +180,10 @@ namespace Kinovea.ScreenManager
             foreach (AbstractDrawing drawing in drawings)
             {
                 IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
-                if(serializableDrawing != null)
-                {
-                    // The XML name for this drawing should be stored in its [XMLType] C# attribute.
-                    Type t = serializableDrawing.GetType();
-                    object[] attributes = t.GetCustomAttributes(typeof(XmlTypeAttribute), false);
-                    
-                    if(attributes.Length > 0)
-                    {
-                        string xmlName = ((XmlTypeAttribute)attributes[0]).TypeName;
-                            
-                        w.WriteStartElement(xmlName);
-                        w.WriteAttributeString("id", drawing.ID.ToString());
-                        serializableDrawing.WriteXml(w);
-                        w.WriteEndElement();
-                    }
-                }
+                if (serializableDrawing == null)
+                    continue;
+
+                DrawingSerializer.Serialize(w, serializableDrawing);
             }
             w.WriteEndElement();
         }

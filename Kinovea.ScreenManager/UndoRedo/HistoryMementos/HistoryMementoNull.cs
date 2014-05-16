@@ -7,13 +7,14 @@ namespace Kinovea.ScreenManager
 {
     public class HistoryMementoNull : HistoryMemento
     {
-        public HistoryMementoNull()
+        public override string CommandName
         {
+            get { return ""; }
+            set { }
         }
 
         public override HistoryMemento PerformUndo()
         {
-            //throw new InvalidOperationException("This operation is not undoable");
             return null;
         }
     }

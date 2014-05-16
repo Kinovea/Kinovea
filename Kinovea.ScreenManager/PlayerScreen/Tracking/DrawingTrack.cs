@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
         #region Delegates
         // To ask the UI to display the frame closest to selected pos.
         // used when moving the target in direct interactive mode.
-        public ClosestFrameDisplayer ShowClosestFrame;     
+        public ClosestFrameDisplayer ClosestFrameDisplayer;     
         #endregion
 
         #region Properties
@@ -890,8 +890,8 @@ namespace Kinovea.ScreenManager
             {
                 // Move Playhead to closest frame (x,y,t).
                 // In this case, _X and _Y are absolute values.
-                if (ShowClosestFrame != null && positions.Count > 1)
-                    ShowClosestFrame(new Point((int)dx, (int)dy), positions, totalDistance, false);
+                if (ClosestFrameDisplayer != null && positions.Count > 1)
+                    ClosestFrameDisplayer(new Point((int)dx, (int)dy), positions, totalDistance, false);
             }
         }
         private void MoveLabelTo(float dx, float dy, int labelNumber)

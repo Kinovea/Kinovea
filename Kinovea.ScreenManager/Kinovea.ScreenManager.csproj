@@ -259,7 +259,9 @@
     <Compile Include="LoaderCamera.cs" />
     <Compile Include="LoaderVideo.cs" />
     <Compile Include="PlayerScreen\AutoSaver.cs" />
+    <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
+    <Compile Include="PlayerScreen\Serialization\DrawingSerializer.cs" />
     <Compile Include="PlayerScreen\Serialization\MetadataExporter.cs" />
     <Compile Include="PlayerScreen\HitTester.cs" />
     <Compile Include="PlayerScreen\Kinematics\Component.cs" />
@@ -295,7 +297,9 @@
     <Compile Include="RecoveryManager.cs" />
     <Compile Include="ScreenRemover.cs" />
     <Compile Include="UndoRedo\HistoryMemento.cs" />
+    <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddDrawing.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddKeyframe.cs" />
+    <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteDrawing.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteKeyframe.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoNull.cs" />
     <Compile Include="UndoRedo\HistoryMenuManager.cs" />

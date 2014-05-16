@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
         public DrawingTracker(ITrackable drawing, TrackingContext context, TrackerParameters parameters)
         {
             this.drawing = drawing;
-            this.drawingId = drawing.ID;
+            this.drawingId = drawing.Id;
             this.parameters = parameters;
            
             foreach(KeyValuePair<string, PointF> pair in drawing.GetTrackablePoints())
@@ -97,7 +97,7 @@ namespace Kinovea.ScreenManager
 
         public void Assign(ITrackable drawing)
         {
-            if (drawing.ID != drawingId)
+            if (drawing.Id != drawingId)
                 return;
 
             this.drawing = drawing;

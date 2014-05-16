@@ -40,12 +40,17 @@ namespace Kinovea.ScreenManager
         [Category("Action"), Browsable(true)]
         public event EventHandler ClickInfos;
         #endregion
-        
+
+        public Keyframe Keyframe
+        {
+            get { return keyframe; }
+        }
+
         public bool Editing
         {
             get { return editing; }
         }
-
+        
         private bool editing;
         private Keyframe keyframe;
         private bool manualUpdate;
@@ -56,10 +61,13 @@ namespace Kinovea.ScreenManager
             this.keyframe = keyframe;
             
             InitializeComponent();
-            //lblTimecode.Visible = true;
+            lblTimecode.Text = keyframe.Title;
+            tbTitle.Text = keyframe.Title;
             BackColor = Color.Black;
             btnClose.Parent = pbThumbnail;
             btnComment.Parent = pbThumbnail;
+
+            pbThumbnail.SizeMode = PictureBoxSizeMode.StretchImage;
         }
         #endregion
         

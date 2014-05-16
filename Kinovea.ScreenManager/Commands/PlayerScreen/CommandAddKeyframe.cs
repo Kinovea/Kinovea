@@ -21,14 +21,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
-    //--------------------------------------------
-    // CommandAddPlayerScreen -> devrait être réversible ?
-    // Charge le fichier spécifier dans un écran, en créé un si besoin.
-    // Si ok, réorganise les écrans pour montrer le nouveau ou décharger un ancien si besoin
-    // Affiche le nouvel écran avec la vidéo dedans, prête.
-    //--------------------------------------------
     public class CommandAddKeyframe : IUndoableCommand
     {
 
@@ -52,7 +46,7 @@ namespace Kinovea.ScreenManager
 
         public void Execute()
         {
-            view.OnAddKeyframe(framePosition);
+            //view.OnAddKeyframe(framePosition);
         }
 
         public void Unexecute()
@@ -62,9 +56,9 @@ namespace Kinovea.ScreenManager
             // (ex: Add KF + Close screen + undo + undo)
 
             // Delete Keyframe at given position
-            int index = metadata.GetKeyframeIndex(framePosition);
+            /*int index = metadata.GetKeyframeIndex(framePosition);
             if (index >= 0)
-                view.OnRemoveKeyframe(index);
+                view.OnRemoveKeyframe(index);*/
         }
     }
 }

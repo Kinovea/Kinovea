@@ -8,6 +8,12 @@ namespace Kinovea.Tests.HistoryStackTester
 {
     public class MementoTest : HistoryMemento
     {
+        public override string CommandName
+        {
+            get { return "Test"; }
+            set { }
+        }
+
         private State state;
         private int value;
 
@@ -18,8 +24,7 @@ namespace Kinovea.Tests.HistoryStackTester
         }
 
         /// <summary>
-        /// Builds a command that will be able to undo the undo.
-        /// Perform the undo.
+        /// Builds a command that will be able to undo the undo, then perform the undo.
         /// </summary>
         public override HistoryMemento PerformUndo()
         {
