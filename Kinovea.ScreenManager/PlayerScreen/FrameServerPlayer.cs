@@ -46,6 +46,10 @@ namespace Kinovea.ScreenManager
         {
             get { return videoReader; }
         }
+        public HistoryStack HistoryStack
+        {
+            get { return historyStack; }
+        }
         public Metadata Metadata
         {
             get { return metadata; }
@@ -78,6 +82,7 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private VideoReader videoReader;
+        private HistoryStack historyStack;
         private Metadata metadata;
         private long syncPosition;
         private formProgressBar formProgressBar;
@@ -88,8 +93,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public FrameServerPlayer()
+        public FrameServerPlayer(HistoryStack historyStack)
         {
+            this.historyStack = historyStack;
             bgWorkerSave.ProgressChanged += bgWorkerSave_ProgressChanged;
             bgWorkerSave.RunWorkerCompleted += bgWorkerSave_RunWorkerCompleted;
             bgWorkerSave.DoWork += bgWorkerSave_DoWork;

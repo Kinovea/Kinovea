@@ -49,6 +49,9 @@ namespace Kinovea.ScreenManager
     public class Metadata
     {
         #region Events and commands
+        public EventHandler MetadataChanged;
+        public EventHandler KeyframeAdded;
+        public EventHandler KeyframeDeleted;
         public RelayCommand<ITrackable> AddTrackableDrawingCommand { get; set; }
         public RelayCommand<ITrackable> DeleteTrackableDrawingCommand { get; set; }
         #endregion
@@ -57,6 +60,10 @@ namespace Kinovea.ScreenManager
         public TimeCodeBuilder TimeCodeBuilder
         {
             get { return timecodeBuilder; }
+        }
+        public HistoryStack HistoryStack
+        {
+            get { return historyStack; }
         }
         public bool IsDirty
         {
@@ -156,6 +163,10 @@ namespace Kinovea.ScreenManager
         {
             get { return hitDrawing;}
         }
+        public Keyframe HitDrawingKeyframe
+        {
+            get { return hitDrawingKeyframe; }
+        }
         
         public Magnifier Magnifier
         {
@@ -229,10 +240,12 @@ namespace Kinovea.ScreenManager
         private string fullPath;
         private string tempFolder;
         private AutoSaver autoSaver;
-        
+
+        private HistoryStack historyStack;
         private List<Keyframe> keyframes = new List<Keyframe>();
         private int hitDrawingFrameIndex = -1;
         private int hitDrawingIndex = -1;
+        private Keyframe hitDrawingKeyframe;
         private AbstractDrawing hitDrawing;
         
         // Drawings not attached to any key image.
@@ -265,8 +278,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public Metadata(TimeCodeBuilder timecodeBuilder, ClosestFrameDisplayer closestFrameDisplayer)
-        { 
+        public Metadata(HistoryStack historyStack, TimeCodeBuilder timecodeBuilder, ClosestFrameDisplayer closestFrameDisplayer)
+        {
+            this.historyStack = historyStack;
             this.timecodeBuilder = timecodeBuilder;
             this.closestFrameDisplayer = closestFrameDisplayer;
             
@@ -281,8 +295,8 @@ namespace Kinovea.ScreenManager
 
             log.Debug("Constructing new Metadata object.");
         }
-        public Metadata(string kvaString,  VideoInfo info, TimeCodeBuilder timecodeBuilder, ClosestFrameDisplayer closestFrameDisplayer)
-            : this(timecodeBuilder, closestFrameDisplayer)
+        public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder, ClosestFrameDisplayer closestFrameDisplayer)
+            : this(historyStack, timecodeBuilder, closestFrameDisplayer)
         {
             imageSize = info.AspectRatioSize;
             AverageTimeStampsPerFrame = info.AverageTimeStampsPerFrame;
@@ -295,22 +309,29 @@ namespace Kinovea.ScreenManager
 
         #region Public Interface
         
-        #region Key images
-        public void Clear()
+        #region Keyframes
+        public Keyframe GetKeyframe(Guid id)
         {
-            keyframes.Clear();
+            return keyframes.FirstOrDefault(kf => kf.Id == id);
         }
-        public void Add(Keyframe _kf)
+        public void AddKeyframe(Keyframe keyframe)
         {
-            keyframes.Add(_kf);
-        }
-        public void Sort()
-        {
+            keyframes.Add(keyframe);
             keyframes.Sort();
+            UpdateTrajectoriesForKeyframes();
+            
+            keyframe.GenerateDisabledThumbnail();
+
+            if (KeyframeAdded != null)
+                KeyframeAdded(this, EventArgs.Empty);
         }
-        public void RemoveAt(int _index)
+        public void DeleteKeyframe(Guid id)
         {
-            keyframes.RemoveAt(_index);
+            keyframes.RemoveAll(k => k.Id == id);
+            UpdateTrajectoriesForKeyframes();
+            
+            if (KeyframeDeleted != null)
+                KeyframeDeleted(this, new KeyframeEventArgs(id));
         }
         public void EnableDisableKeyframes()
         {
@@ -319,6 +340,60 @@ namespace Kinovea.ScreenManager
                 keyframe.TimeCode = timecodeBuilder(keyframe.Position - selectionStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
                 keyframe.Disabled = keyframe.Position < selectionStart || keyframe.Position > selectionEnd;
             }
+        }
+        public int GetKeyframeIndex(long position)
+        {
+            // Temporary function to accomodate clients of the old API where we used indices to reference keyframes and drawings.
+            // The only real client of this is PSUI which then use the index internally.
+            // Remove this function as soon as PSUI uses the Guid of the frame.
+            for (int i = 0; i < keyframes.Count; i++)
+                if (keyframes[i].Position == position)
+                    return i;
+
+            return -1;
+        }
+        public Guid GetKeyframeId(int keyframeIndex)
+        {
+            // Temporary function to accomodate the capture screen UI.
+            return keyframes[keyframeIndex].Id;
+        }
+        public int GetKeyframeIndex(Guid id)
+        {
+            // Temporary function to accomodate clients of the old API where we used indices to reference keyframes and drawings.
+            for (int i = 0; i < keyframes.Count; i++)
+                if (keyframes[i].Id == id)
+                    return i;
+
+            return -1;
+        }
+        public void MergeInsertKeyframe(Keyframe keyframe)
+        {
+            bool processed = false;
+
+            for (int i = 0; i < keyframes.Count; i++)
+            {
+                Keyframe k = keyframes[i];
+
+                if (keyframe.Position < k.Position)
+                {
+                    keyframes.Insert(i, keyframe);
+                    processed = true;
+                    break;
+                }
+                else if (keyframe.Position == k.Position)
+                {
+                    foreach (AbstractDrawing ad in keyframe.Drawings)
+                    {
+                        k.Drawings.Add(ad);
+                    }
+
+                    processed = true;
+                    break;
+                }
+            }
+
+            if (!processed)
+                keyframes.Add(keyframe);
         }
         #endregion
         
@@ -375,22 +450,29 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region Add/Delete drawings
-        public int GetKeyframeIndex(long position)
+        #region Drawings
+        public void AddDrawing(Guid keyframeId, AbstractDrawing drawing)
         {
-            for (int i = 0; i < keyframes.Count; i++)
-                if (keyframes[i].Position == position)
-                    return i;
+            Keyframe keyframe = GetKeyframe(keyframeId);
+            if (keyframe == null)
+                return;
 
-            return -1;
+            AddDrawing(keyframe, drawing);
         }
-        public void AddDrawing(AbstractDrawing drawing, int keyframeIndex)
+        public void AddDrawing(Keyframe keyframe, AbstractDrawing drawing)
         {
-            keyframes[keyframeIndex].AddDrawing(drawing);
-            hitDrawingFrameIndex = keyframeIndex;
+            keyframe.AddDrawing(drawing);
+            drawing.InfosFading.ReferenceTimestamp = keyframe.Position;
+            drawing.InfosFading.AverageTimeStampsPerFrame = averageTimeStampsPerFrame;
+
+            // FIXME: remove usage of hitDrawingFrameIndex and hitDrawingIndex.
+            hitDrawingFrameIndex = GetKeyframeIndex(keyframe.Id);
             hitDrawingIndex = 0;
+            hitDrawingKeyframe = keyframe;
             hitDrawing = drawing;
+
             AfterDrawingCreation(drawing);
+            OnMetadataChanged();
         }
         public void AddImageDrawing(string filename, bool isSVG, long time)
         {
@@ -447,83 +529,60 @@ namespace Kinovea.ScreenManager
             extraDrawings.Add(_chrono);
             hitExtraDrawingIndex = extraDrawings.Count - 1;
         }
-        public void AddTrack(DrawingTrack _track, ClosestFrameDisplayer _showClosestFrame, Color _color)
+        public void AddTrack(DrawingTrack track, ClosestFrameDisplayer closestFrameDisplayer, Color color)
         {
-            _track.ParentMetadata = this;
-            _track.Status = TrackStatus.Edit;
-            _track.ShowClosestFrame = _showClosestFrame;
-            _track.MainColor = _color;
+            track.ParentMetadata = this;
+            track.Status = TrackStatus.Edit;
+            track.ClosestFrameDisplayer = closestFrameDisplayer;
+            track.MainColor = color;
             if (lastUsedTrackerParameters != null)
-                _track.TrackerParameters = lastUsedTrackerParameters;
-            extraDrawings.Add(_track);
+                track.TrackerParameters = lastUsedTrackerParameters;
+            extraDrawings.Add(track);
             hitExtraDrawingIndex = extraDrawings.Count - 1;
 
-            _track.TrackerParametersChanged += Track_TrackerParametersChanged;
+            track.TrackerParametersChanged += Track_TrackerParametersChanged;
+        }
+
+        public void DeleteDrawing(Guid keyframeId, Guid drawingId)
+        {
+            // Remove event handlers from the drawing as well as all associated data like tracking data,
+            // and finally remove the drawing itself.
+
+            Keyframe keyframe = GetKeyframe(keyframeId);
+            if (keyframe == null)
+                return;
+
+            AbstractDrawing drawing = keyframe.GetDrawing(drawingId);
+            if (drawing == null)
+                return;
+
+            ITrackable trackableDrawing = drawing as ITrackable;
+            if (trackableDrawing != null)
+                DeleteTrackableDrawing(trackableDrawing);
+            
+            IMeasurable measurableDrawing = drawing as IMeasurable;
+            if (measurableDrawing != null)
+                measurableDrawing.ShowMeasurableInfoChanged -= MeasurableDrawing_ShowMeasurableInfoChanged;
+
+            keyframe.RemoveDrawing(drawingId);
+
+            UnselectAll();
+            OnMetadataChanged();
+        }
+        
+        private void DeleteTrackableDrawing(ITrackable drawing)
+        {
+            trackabilityManager.Remove(drawing);
         }
 
         private void Track_TrackerParametersChanged(object sender, EventArgs e)
         {
-            // Remember last trackerparameters used.
+            // Remember these track parameters to bootstrap the next trackable.
             DrawingTrack track = sender as DrawingTrack;
             if (track == null)
                 return;
 
             lastUsedTrackerParameters = track.TrackerParameters;
-        }
-        
-        public void DeleteHitDrawing()
-        {
-            // TODO: handle multi drawings and trackable drawings.
-            // Create command so we can undo.
-            if(hitDrawing == null)
-                return;
-                
-            keyframes[hitDrawingFrameIndex].Drawings.Remove(hitDrawing);
-            
-            /*
-            
-            Block of code originally in the screens.
-            
-            if(drawing is AbstractMultiDrawing)
-            {
-                IUndoableCommand cds = new CommandDeleteMultiDrawingItem(this, metadataManipulator.Metadata);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(cds);
-            }
-            else
-            {
-                ITrackable trackable = drawing as ITrackable;
-                if(trackable != null && TrackableDrawingDeleted != null)
-                    TrackableDrawingDeleted(this, new TrackableDrawingEventArgs(trackable));
-                
-                IUndoableCommand cdd = new CommandDeleteDrawing(DoInvalidate, m_FrameServer.Metadata, m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Position, m_FrameServer.Metadata.SelectedDrawing);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(cdd);
-                DoInvalidate();
-            }*/
-        }
-        public void DeleteDrawing(int _frameIndex, int _drawingIndex)
-        {
-            // TODO: remove hooks.
-            keyframes[_frameIndex].Drawings.RemoveAt(_drawingIndex);
-            UnselectAll();
-        }
-        public void DeleteTrackableDrawing(ITrackable drawing)
-        {
-            // TODO: when removal of all regular drawings is handled here in Metadata, we can set this method to private.
-            // We'll also need to unhook from measurableDrawing.ShowMeasurableInfoChanged. 
-            trackabilityManager.Remove(drawing);
-        }
-        public void UndeleteDrawing(int frameIndex, int drawingIndex, AbstractDrawing drawing)
-        {
-            if(frameIndex >= keyframes.Count)
-                return;
-            
-            keyframes[frameIndex].Drawings.Insert(drawingIndex, drawing);
-            hitDrawingFrameIndex = frameIndex;
-            hitDrawingIndex = drawingIndex;
-            hitDrawing = drawing;
-            AfterDrawingCreation(drawing);
         }
         #endregion
         
@@ -622,6 +681,8 @@ namespace Kinovea.ScreenManager
             hitDrawingIndex = -1;
             hitDrawingFrameIndex = -1;
             hitExtraDrawingIndex = -1;
+
+            hitDrawingKeyframe = null;
             hitDrawing = null;
         }
         public void SelectExtraDrawing(AbstractDrawing drawing)
@@ -660,8 +721,6 @@ namespace Kinovea.ScreenManager
             trackabilityManager.CleanUnassigned();
             
             AfterCalibrationChanged();
-
-
         }
         public void AfterManualExport()
         {
@@ -818,6 +877,11 @@ namespace Kinovea.ScreenManager
         #endregion
    
         #region Lower level Helpers
+        private void OnMetadataChanged()
+        {
+            if (MetadataChanged != null)
+                MetadataChanged(this, EventArgs.Empty);
+        }
         private void ResetCoreContent()
         {
             // Semi reset: we keep Image size and AverageTimeStampsPerFrame
@@ -843,8 +907,10 @@ namespace Kinovea.ScreenManager
 
             bool isOnDrawing = false;
             Keyframe keyframe = keyframes[keyFrameIndex];
+            
             hitDrawingFrameIndex = -1;
             hitDrawingIndex = -1;
+            hitDrawingKeyframe = null;
             hitDrawing = null;
             
             int currentDrawing = 0;

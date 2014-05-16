@@ -246,7 +246,7 @@ namespace Kinovea.ScreenManager
         {
             log.Debug("Constructing a PlayerScreen.");
             historyStack = new HistoryStack();
-            frameServer = new FrameServerPlayer();
+            frameServer = new FrameServerPlayer(historyStack);
             this.screenManager = screenHandler;
             uniqueId = System.Guid.NewGuid();
             view = new PlayerScreenUserInterface(frameServer, this);
@@ -262,22 +262,20 @@ namespace Kinovea.ScreenManager
             
             
             // Refactoring in progress.
-            // Moving code out the UI. The UI should raise an event instead, which we handle here.
+            // Moving code out the UI. 
             // For example when adding a drawing, the UI raise an event that we handle here, then the Metadata performs the actual code,
             // and the post init for trackable drawings is handled there by calling a command that is implemented here.
             
-            // Event handlers
-            view.AddKeyframeAsked += View_AddKeyframeAsked;
-            view.DrawingAdded += (s, e) => frameServer.Metadata.AddDrawing(e.Drawing, e.KeyframeIndex);
+            // Event coming from the view, these should push a memento on the history stack.
+            view.KeyframeAdding += View_KeyframeAdding;
+            view.KeyframeDeleting += View_KeyframeDeleting;
+            view.DrawingAdding += View_DrawingAdding;
+            view.DrawingDeleting += View_DrawingDeleting;
+            
             view.CommandProcessed += (s, e) => OnCommandProcessed(e);
             
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
             view.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
-            
-            // For magnifier AND other drawings. Remove as soon as possible, when delete drawing is handled in metadata.
-            // Currently all the code for delete drawing is in the UI. It should be in Metadata.
-            view.TrackableDrawingDeleted += (s, e) => frameServer.Metadata.DeleteTrackableDrawing(e.TrackableDrawing);
-            
             
             // Commands
             view.ToggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
@@ -285,34 +283,53 @@ namespace Kinovea.ScreenManager
             
             frameServer.Metadata.AddTrackableDrawingCommand = new RelayCommand<ITrackable>(AddTrackableDrawing);
         }
-
-        #region Undoable commands
-        public void AddKeyframe(long time)
-        {
-            string timecode = frameServer.TimeStampsToTimecode(time - frameServer.VideoReader.WorkingZone.Start, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, synched);
-            Keyframe keyframe = new Keyframe(time, timecode, frameServer.CurrentImage, frameServer.Metadata);
-            frameServer.Metadata.Add(keyframe);
-            frameServer.Metadata.Sort();
-            frameServer.Metadata.UpdateTrajectoriesForKeyframes();
-
-            // Present the result before generating the disabled version of the image as it can be lengthly (FIXME: do in an another thread ?).
-            view.OrganizeKeyframes();
-
-            keyframe.GenerateDisabledThumbnail();
-            view.AfterAddedKeyframe();
-        }
-        #endregion
-        
-        private void View_AddKeyframeAsked(object sender, TimeEventArgs e)
+ 
+        private void View_KeyframeAdding(object sender, TimeEventArgs e)
         {
             if (frameServer.CurrentImage == null)
                 return;
 
-            HistoryMementoAddKeyframe memento = new HistoryMementoAddKeyframe(this, e.Time);
-            AddKeyframe(e.Time);
+            long time = e.Time;
+            string timecode = frameServer.TimeStampsToTimecode(time - frameServer.VideoReader.WorkingZone.Start, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, synched);
+            Keyframe keyframe = new Keyframe(time, timecode, frameServer.CurrentImage, frameServer.Metadata);
+
+            HistoryMementoAddKeyframe memento = new HistoryMementoAddKeyframe(frameServer.Metadata, keyframe.Id);
+            frameServer.Metadata.AddKeyframe(keyframe);
             historyStack.PushNewCommand(memento);
         }
-        
+
+        private void View_KeyframeDeleting(object sender, KeyframeEventArgs e)
+        {
+            HistoryMemento memento = new HistoryMementoDeleteKeyframe(frameServer.Metadata, e.KeyframeId);
+            frameServer.Metadata.DeleteKeyframe(e.KeyframeId);
+            historyStack.PushNewCommand(memento);
+        }
+
+        private void View_DrawingAdding(object sender, DrawingEventArgs e)
+        {
+            // Temporary function.
+            // Once the player screen ui uses the viewport, this event handler should be removed.
+            // The code here should also be in the metadata manipulator until this function is removed.
+
+            Guid keyframeId = frameServer.Metadata.GetKeyframeId(e.KeyframeIndex);
+            AbstractDrawing drawing = e.Drawing;
+
+            HistoryMemento memento = new HistoryMementoAddDrawing(frameServer.Metadata, keyframeId, drawing.Id, drawing.DisplayName);
+            frameServer.Metadata.AddDrawing(keyframeId, drawing);
+            historyStack.PushNewCommand(memento);
+        }
+
+        private void View_DrawingDeleting(object sender, DrawingEventArgs e)
+        {
+            // Temporary function. This code should be done by metadata manipulator.
+            Guid keyframeId = frameServer.Metadata.GetKeyframeId(e.KeyframeIndex);
+            AbstractDrawing drawing = e.Drawing;
+
+            HistoryMemento memento = new HistoryMementoDeleteDrawing(frameServer.Metadata, keyframeId, drawing.Id, drawing.DisplayName);
+            frameServer.Metadata.DeleteDrawing(keyframeId, drawing.Id);
+            historyStack.PushNewCommand(memento);
+        }
+
         #region IPlayerScreenUIHandler (and IScreenUIHandler) implementation
         
         // TODO: turn all these dependencies into commands.

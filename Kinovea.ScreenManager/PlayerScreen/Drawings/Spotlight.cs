@@ -144,7 +144,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ITrackable implementation and support.
-        public Guid ID
+        public Guid Id
         {
             get { return id; }
         }

@@ -68,20 +68,20 @@ namespace Kinovea.ScreenManager
 
         public void Add(ITrackable drawing, VideoFrame videoFrame)
         {
-            if(trackers.ContainsKey(drawing.ID))
+            if(trackers.ContainsKey(drawing.Id))
                return;
             
             TrackingProfile profile = drawing.CustomTrackingProfile ?? trackingProfileManager.Current;
             TrackerParameters parameters = new TrackerParameters(profile, imageSize);
 
             TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-            trackers.Add(drawing.ID, new DrawingTracker(drawing, context, parameters));
+            trackers.Add(drawing.Id, new DrawingTracker(drawing, context, parameters));
         }
 
         public void Assign(ITrackable drawing)
         {
-            if (trackers.ContainsKey(drawing.ID) && !trackers[drawing.ID].Assigned)
-                trackers[drawing.ID].Assign(drawing);
+            if (trackers.ContainsKey(drawing.Id) && !trackers[drawing.Id].Assigned)
+                trackers[drawing.Id].Assign(drawing);
         }
         
         public void CleanUnassigned()
@@ -106,11 +106,11 @@ namespace Kinovea.ScreenManager
         
         public void Remove(ITrackable drawing)
         {
-            if(trackers.Count == 0 || !trackers.ContainsKey(drawing.ID))
+            if(trackers.Count == 0 || !trackers.ContainsKey(drawing.Id))
                 return;
             
-            trackers[drawing.ID].Dispose();
-            trackers.Remove(drawing.ID);
+            trackers[drawing.Id].Dispose();
+            trackers.Remove(drawing.Id);
         }
 
         public void Track(VideoFrame videoFrame)
@@ -125,27 +125,27 @@ namespace Kinovea.ScreenManager
         
         public bool IsTracking(ITrackable drawing)
         {
-            if(!SanityCheck(drawing.ID))
+            if(!SanityCheck(drawing.Id))
                 return false;
             
-            return trackers[drawing.ID].IsTracking;
+            return trackers[drawing.Id].IsTracking;
         }
         
         public void UpdateContext(ITrackable drawing, VideoFrame videoFrame)
         {
-            if(!SanityCheck(drawing.ID))
+            if(!SanityCheck(drawing.Id))
                 return;
             
             TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-            trackers[drawing.ID].Track(context);
+            trackers[drawing.Id].Track(context);
         }
         
         public void ToggleTracking(ITrackable drawing)
         {
-            if(!SanityCheck(drawing.ID))
+            if(!SanityCheck(drawing.Id))
                 return;
            
-            trackers[drawing.ID].ToggleTracking();
+            trackers[drawing.Id].ToggleTracking();
         }
         
         private bool SanityCheck(Guid id)

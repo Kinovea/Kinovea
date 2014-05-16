@@ -35,6 +35,10 @@ namespace Kinovea.ScreenManager
     public class AutoNumber : IKvaSerializable
     {
         #region Properties
+        public Guid Id
+        {
+            get { return id; }
+        }
         public int Value 
         {
             get { return value;}

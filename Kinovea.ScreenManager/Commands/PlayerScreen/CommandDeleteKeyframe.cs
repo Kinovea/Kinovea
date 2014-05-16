@@ -21,7 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
     //--------------------------------------------
     // CommandAddPlayerScreen -> devrait être réversible ?
@@ -55,14 +55,14 @@ namespace Kinovea.ScreenManager
 
         public void Execute()
         {
-            int index = metadata.GetKeyframeIndex(framePosition);
+            /*int index = metadata.GetKeyframeIndex(framePosition);
             if (index >= 0)
-                view.OnRemoveKeyframe(index);
+                view.OnRemoveKeyframe(index);*/
         }
 
         public void Unexecute()
         {
-            view.OnAddKeyframe(framePosition);
+            //view.OnAddKeyframe(framePosition);
 
             // We can't add them through the CommandAddDrawing scheme, 
             // because it completely messes up the Commands History.

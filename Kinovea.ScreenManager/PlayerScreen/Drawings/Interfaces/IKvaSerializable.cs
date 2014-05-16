@@ -23,12 +23,14 @@ using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// Objects that can serialize themselves to .kva. 
-	/// Generally should have a static ReadXml method to deserialize too.
-	/// </summary>
-	public interface IKvaSerializable
-	{
-		void WriteXml(XmlWriter xmlWriter);
-	}
+    /// <summary>
+    /// Objects that can serialize themselves to .kva. 
+    /// Generally should have a static ReadXml method to deserialize too.
+    /// </summary>
+    public interface IKvaSerializable
+    {
+        Guid Id { get; }
+        
+        void WriteXml(XmlWriter xmlWriter);
+    }
 }

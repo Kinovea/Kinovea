@@ -71,10 +71,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Events
-        public event EventHandler<TimeEventArgs> AddKeyframeAsked;
-        public event EventHandler<DrawingEventArgs> DrawingAdded;
+        public event EventHandler<TimeEventArgs> KeyframeAdding;
+        public event EventHandler<KeyframeEventArgs> KeyframeDeleting;
+        public event EventHandler<DrawingEventArgs> DrawingAdding;
+        public event EventHandler<DrawingEventArgs> DrawingDeleting;
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
-        public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingDeleted;
         public event EventHandler<CommandProcessedEventArgs> CommandProcessed;
         #endregion
         
@@ -323,8 +324,12 @@ namespace Kinovea.ScreenManager
             
             m_PlayerScreenUIHandler = _PlayerScreenUIHandler;
             m_FrameServer = _FrameServer;
-            m_FrameServer.Metadata = new Metadata(m_FrameServer.TimeStampsToTimecode, OnShowClosestFrame);
             
+            m_FrameServer.Metadata = new Metadata(m_FrameServer.HistoryStack, m_FrameServer.TimeStampsToTimecode, OnShowClosestFrame);
+            m_FrameServer.Metadata.MetadataChanged += (s, e) => RefreshImage();
+            m_FrameServer.Metadata.KeyframeDeleted += (s, e) => AfterDeletedKeyframe();
+            m_FrameServer.Metadata.KeyframeAdded += (s, e) => AfterAddedKeyframe();
+           
             InitializeComponent();
             BuildContextMenus();
             InitializeDrawingTools();
@@ -957,7 +962,7 @@ namespace Kinovea.ScreenManager
             string kva = m_FrameServer.VideoReader.ReadMetadata();
             if (!string.IsNullOrEmpty(kva))
             {
-                m_FrameServer.Metadata = new Metadata(kva, m_FrameServer.VideoReader.Info, m_FrameServer.TimeStampsToTimecode, OnShowClosestFrame);
+                m_FrameServer.Metadata = new Metadata(kva, m_FrameServer.VideoReader.Info, m_FrameServer.HistoryStack, m_FrameServer.TimeStampsToTimecode, OnShowClosestFrame);
                 UpdateFramesMarkers();
                 OrganizeKeyframes();
             }
@@ -1225,7 +1230,10 @@ namespace Kinovea.ScreenManager
                     break;
                 case PlayerScreenCommands.DeleteKeyframe:
                     if (m_iActiveKeyFrameIndex >= 0)
-                        RemoveKeyframe(m_iActiveKeyFrameIndex);
+                    {
+                        Guid id = m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex);
+                        DeleteKeyframe(id);
+                    }
                     break;
                 case PlayerScreenCommands.DeleteDrawing:
                     DeleteSelectedDrawing();
@@ -2545,8 +2553,8 @@ namespace Kinovea.ScreenManager
             {
                 AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
                 
-                if(DrawingAdded != null)
-                    DrawingAdded(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));
+                if(DrawingAdding != null)
+                    DrawingAdding(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));
             }
             else
             {
@@ -2572,8 +2580,8 @@ namespace Kinovea.ScreenManager
                 {
                     AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
                     
-                    if(DrawingAdded != null)
-                        DrawingAdded(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));
+                    if(DrawingAdding != null)
+                        DrawingAdding(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));
                     
                     // TODO: Find a way to move this to Metadata.
                     DrawingText drawingText = drawing as DrawingText;
@@ -2890,9 +2898,9 @@ namespace Kinovea.ScreenManager
                     }
                     else if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
                     {
-                        IUndoableCommand cad = new CommandAddDrawing(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata, m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Position);
+                        /*IUndoableCommand cad = new CommandAddDrawing(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata, m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Position);
                         CommandManager cm = CommandManager.Instance();
-                        cm.LaunchUndoableCommand(cad);
+                        cm.LaunchUndoableCommand(cad);*/
                         
                         // Deselect the drawing we just added.
                         m_FrameServer.Metadata.UnselectAll();
@@ -3270,7 +3278,6 @@ namespace Kinovea.ScreenManager
 
             if (m_FrameServer.Metadata.Count > 0)
             {
-                int iKeyframeIndex = 0;
                 int iPixelsOffset = 0;
                 int iPixelsSpacing = 20;
 
@@ -3281,22 +3288,14 @@ namespace Kinovea.ScreenManager
                     
                     // Finish the setup
                     box.Left = iPixelsOffset + iPixelsSpacing;
-
-                    box.UpdateTitle(kf.Title);
-                    box.Tag = iKeyframeIndex;
-                    box.pbThumbnail.SizeMode = PictureBoxSizeMode.StretchImage;
-                    
                     box.CloseThumb += ThumbBoxClose;
                     box.ClickThumb += ThumbBoxClick;
                     box.ClickInfos += ThumbBoxInfosClick;
                     
-                    // TODO - Titre de la Keyframe en ToolTip.
                     iPixelsOffset += (iPixelsSpacing + box.Width);
 
                     pnlThumbnails.Controls.Add(box);
                     thumbnails.Add(box);
-
-                    iKeyframeIndex++;
                 }
                 
                 EnableDisableKeyframes();
@@ -3421,32 +3420,27 @@ namespace Kinovea.ScreenManager
                 return;
             }
             
-            if (AddKeyframeAsked != null)
-                AddKeyframeAsked(this, new TimeEventArgs(m_iCurrentPosition));
+            if (KeyframeAdding != null)
+                KeyframeAdding(this, new TimeEventArgs(m_iCurrentPosition));
         }
-        public void AfterAddedKeyframe()
+        private void AfterAddedKeyframe()
         {
+            OrganizeKeyframes();
+            
             if (m_FrameServer.Metadata.Count == 1)
                 DockKeyframePanel(false);
 
             if (!m_bIsCurrentlyPlaying)
                 ActivateKeyframe(m_iCurrentPosition);
         }
-        private void RemoveKeyframe(int _iKeyframeIndex)
+        private void DeleteKeyframe(Guid keyframeId)
         {
-            IUndoableCommand cdk = new CommandDeleteKeyframe(this, m_FrameServer.Metadata, m_FrameServer.Metadata[_iKeyframeIndex].Position);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(cdk);
-
-            //OnRemoveKeyframe(_iKeyframeIndex);
+            if (KeyframeDeleting != null)
+                KeyframeDeleting(this, new KeyframeEventArgs(keyframeId));
         }
-        public void OnRemoveKeyframe(int index)
+        private void AfterDeletedKeyframe()
         {
-            if (m_iActiveKeyFrameIndex == index)
-                m_iActiveKeyFrameIndex = -1;
-            else if (m_iActiveKeyFrameIndex >= index && m_iActiveKeyFrameIndex > 0)
-                m_iActiveKeyFrameIndex--;
-
+            m_iActiveKeyFrameIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
             OrganizeKeyframes();
             DoInvalidate();
         }
@@ -3488,31 +3482,35 @@ namespace Kinovea.ScreenManager
         #region ThumbBox event Handlers
         private void ThumbBoxClose(object sender, EventArgs e)
         {
-            RemoveKeyframe((int)((KeyframeBox)sender).Tag);
+            KeyframeBox keyframeBox = sender as KeyframeBox;
+            if (keyframeBox == null)
+                return;
+
+            DeleteKeyframe(keyframeBox.Keyframe.Id);
 
             // Set as active screen is done after in case we don't have any keyframes left.
             OnPoke();
         }
         private void ThumbBoxClick(object sender, EventArgs e)
         {
+            KeyframeBox keyframeBox = sender as KeyframeBox;
+            if (keyframeBox == null)
+                return;
+
             // Move to the right spot.
             OnPoke();
             StopPlaying();
             m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 
-            long iTargetPosition = m_FrameServer.Metadata[(int)((KeyframeBox)sender).Tag].Position;
+            long targetPosition = keyframeBox.Keyframe.Position;
 
-            trkSelection.SelPos = iTargetPosition;
+            trkSelection.SelPos = targetPosition;
             m_iFramesToDecode = 1;
 
-
-            ShowNextFrame(iTargetPosition, true);
-            m_iCurrentPosition = iTargetPosition;
+            ShowNextFrame(targetPosition, true);
+            m_iCurrentPosition = targetPosition;
 
             UpdatePositionUI();
-
-            // On active sur la position réelle, au cas où on ne soit pas sur la frame demandée.
-            // par ex, si la kf cliquée est hors zone
             ActivateKeyframe(m_iCurrentPosition);
         }
         private void ThumbBoxInfosClick(object sender, EventArgs e)
@@ -3801,14 +3799,8 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                ITrackable trackable = drawing as ITrackable;
-                if(trackable != null && TrackableDrawingDeleted != null)
-                    TrackableDrawingDeleted(this, new TrackableDrawingEventArgs(trackable));
-                
-                IUndoableCommand cdd = new CommandDeleteDrawing(DoInvalidate, m_FrameServer.Metadata, m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Position, m_FrameServer.Metadata.SelectedDrawing);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(cdd);
-                DoInvalidate();
+                if (DrawingDeleting != null)
+                    DrawingDeleting(this, new DrawingEventArgs(drawing, m_FrameServer.Metadata.SelectedDrawingFrame));
             }
         }
         #endregion

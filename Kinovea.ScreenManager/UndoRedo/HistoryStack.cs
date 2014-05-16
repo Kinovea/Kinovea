@@ -10,6 +10,8 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class HistoryStack
     {
+        public EventHandler HistoryChanged;
+
         private List<HistoryMemento> undoStack = new List<HistoryMemento>();
         private List<HistoryMemento> redoStack = new List<HistoryMemento>();
 
@@ -23,6 +25,16 @@ namespace Kinovea.ScreenManager
             get { return redoStack.Count > 0; }
         }
 
+        public string UndoActionName
+        {
+            get { return CanUndo ? undoStack[undoStack.Count - 1].CommandName : ""; }
+        }
+
+        public string RedoActionName
+        {
+            get { return CanRedo ? redoStack[redoStack.Count - 1].CommandName : ""; }
+        }
+
         public HistoryStack()
         {
         }
@@ -31,6 +43,7 @@ namespace Kinovea.ScreenManager
         {
             ClearRedoStack();
             undoStack.Add(value);
+            OnHistoryChanged();
         }
 
         /// <summary>
@@ -45,6 +58,7 @@ namespace Kinovea.ScreenManager
             HistoryMemento redoCommand = undoCommand.PerformUndo();
             undoStack.RemoveAt(undoStack.Count - 1);
             redoStack.Add(redoCommand);
+            OnHistoryChanged();
         }
 
         /// <summary>
@@ -59,17 +73,26 @@ namespace Kinovea.ScreenManager
             HistoryMemento undoCommand = redoCommand.PerformUndo();
             redoStack.RemoveAt(redoStack.Count - 1);
             undoStack.Add(undoCommand);
+            OnHistoryChanged();
         }
 
         public void ClearAll()
         {
             undoStack.Clear();
             redoStack.Clear();
+            OnHistoryChanged();
         }
 
         public void ClearRedoStack()
         {
             redoStack.Clear();
+            OnHistoryChanged();
+        }
+
+        private void OnHistoryChanged()
+        {
+            if (HistoryChanged != null)
+                HistoryChanged(this, EventArgs.Empty);
         }
     }
 }
