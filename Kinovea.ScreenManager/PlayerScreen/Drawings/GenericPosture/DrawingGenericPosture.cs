@@ -531,6 +531,8 @@ namespace Kinovea.ScreenManager
         }
         private void DrawAngles(Pen penEdge, Color basePenEdgeColor, SolidBrush brushFill, Color baseBrushFillColor, int alpha, int alphaBackground, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
+            UpdateAngles(transformer);
+            
             List<Rectangle> boxes = new List<Rectangle>();
             foreach(AngleHelper angle in angles)
                 boxes.Add(transformer.Transform(angle.BoundingBox));
@@ -544,17 +546,17 @@ namespace Kinovea.ScreenManager
                     continue;
                 
                 AngleHelper angle = angles[i];
-
-                UpdateAngles(transformer);
-                    
-                brushFill.Color = angle.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, angle.Color);
-                
-                canvas.FillPie(brushFill, boxes[i], (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
+                Rectangle box = boxes[i];
                 
                 try
                 {
+                    log.DebugFormat("before fill pie, box:{0}, start:{1}, sweep:{2}", box, (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
+
+                    brushFill.Color = angle.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, angle.Color);
+                    canvas.FillPie(brushFill, box, (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
+                
                     penEdge.Color = angle.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, angle.Color);
-                    canvas.DrawArc(penEdge, boxes[i], (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
+                    canvas.DrawArc(penEdge, box, (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
                 }
                 catch(Exception e)
                 {
