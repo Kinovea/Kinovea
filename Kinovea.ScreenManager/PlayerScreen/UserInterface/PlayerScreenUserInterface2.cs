@@ -440,7 +440,6 @@ namespace Kinovea.ScreenManager
                 return -2;
             }
             
-            
             //---------------------------------------------------------------------------------------
             // First frame loaded.
             //
@@ -506,31 +505,17 @@ namespace Kinovea.ScreenManager
             
             sldrSpeed.Enabled = true;
 
-            if (m_FrameServer.Metadata.HasData)
-            {
-                PostImportMetadata();
-                if (!recoveredMetadata)
-                    m_FrameServer.Metadata.CleanupHash();
-            }
-            else
-            {
-                m_FrameServer.Metadata.StartAutosave();
-            }
+            if (!recoveredMetadata)
+                m_FrameServer.Metadata.CleanupHash();
+            
+            m_FrameServer.Metadata.StartAutosave();
             
             Application.Idle += PostLoad_Idle;
             
             return 0;
         }
-        public void PostImportMetadata()
+        private void AfterKVAImported()
         {
-            //----------------------------------------------------------
-            // Analysis file or stream was imported into metadata.
-            // Now we need to load each frames and do some scaling.
-            //
-            // Public because accessed from :
-            // 	ScreenManager upon loading standalone analysis.
-            //----------------------------------------------------------
-
             int firstOutOfRange = -1;
             int currentKeyframe = -1;
 
@@ -574,13 +559,11 @@ namespace Kinovea.ScreenManager
             ActivateKeyframe(m_iCurrentPosition);
 
             m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.CalibrationHelper.FramesPerSecond / m_FrameServer.VideoReader.Info.FramesPerSeconds;
-            UpdateTimedLabels();
             
             m_FrameServer.SetupMetadata(false);
             m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
             
-            m_FrameServer.Metadata.StartAutosave();
-            
+            UpdateTimedLabels();
             DoInvalidate();
         }
         public void UpdateTimedLabels()
@@ -3251,8 +3234,8 @@ namespace Kinovea.ScreenManager
 
             if (m_FrameServer.Metadata.Count > 0)
             {
-                int iPixelsOffset = 0;
-                int iPixelsSpacing = 20;
+                int pixelsOffset = 0;
+                int pixelsSpacing = 20;
 
                 foreach (Keyframe kf in m_FrameServer.Metadata.Keyframes)
                 {
@@ -3260,12 +3243,12 @@ namespace Kinovea.ScreenManager
                     SetupDefaultThumbBox(box);
                     
                     // Finish the setup
-                    box.Left = iPixelsOffset + iPixelsSpacing;
+                    box.Left = pixelsOffset + pixelsSpacing;
                     box.CloseThumb += ThumbBoxClose;
                     box.ClickThumb += ThumbBoxClick;
                     box.ClickInfos += ThumbBoxInfosClick;
                     
-                    iPixelsOffset += (iPixelsSpacing + box.Width);
+                    pixelsOffset += (pixelsSpacing + box.Width);
 
                     pnlThumbnails.Controls.Add(box);
                     thumbnails.Add(box);
@@ -3408,10 +3391,6 @@ namespace Kinovea.ScreenManager
 
             if (!m_bIsCurrentlyPlaying)
                 ActivateKeyframe(m_iCurrentPosition);
-        }
-        private void AfterKVAImported()
-        {
-            AfterAddedKeyframe();
         }
         private void DeleteKeyframe(Guid keyframeId)
         {
