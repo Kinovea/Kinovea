@@ -91,6 +91,8 @@ namespace Kinovea.ScreenManager
                 tool.SetInfo(posture);
                 tools.Add(tool);
             }
+
+            initialized = true;
         }
         #endregion
     }

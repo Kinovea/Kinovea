@@ -167,12 +167,15 @@ namespace Kinovea.ScreenManager
     			{
                     switch(r.Name)
     				{
-                        case "Name":
                         case "Icon":
                              r.ReadOuterXml();
                             break;
+
                         case "Id":
                             Id = new Guid(r.ReadElementContentAsString());
+                            break;
+                        case "Name":
+                            Name = r.ReadElementContentAsString();
                             break;
                         case "PointCount":
                             ParsePointCount(r);
