@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events and commands
         public EventHandler KVAImported;
-        public EventHandler KeyframeAdded;
+        public EventHandler<KeyframeEventArgs> KeyframeAdded;
         public EventHandler KeyframeDeleted;
         public EventHandler<DrawingEventArgs> DrawingAdded;
         public EventHandler DrawingDeleted;
@@ -328,10 +328,8 @@ namespace Kinovea.ScreenManager
             keyframes.Sort();
             UpdateTrajectoriesForKeyframes();
             
-            keyframe.GenerateDisabledThumbnail();
-
             if (KeyframeAdded != null)
-                KeyframeAdded(this, EventArgs.Empty);
+                KeyframeAdded(this, new KeyframeEventArgs(keyframe.Id));
         }
         public void DeleteKeyframe(Guid id)
         {

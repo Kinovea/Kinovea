@@ -262,6 +262,7 @@
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="PlayerScreen\Serialization\DrawingSerializer.cs" />
+    <Compile Include="PlayerScreen\Serialization\KeyframeSerializer.cs" />
     <Compile Include="PlayerScreen\Serialization\MetadataExporter.cs" />
     <Compile Include="PlayerScreen\HitTester.cs" />
     <Compile Include="PlayerScreen\Kinematics\Component.cs" />

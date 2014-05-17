@@ -327,7 +327,7 @@ namespace Kinovea.ScreenManager
             
             m_FrameServer.Metadata = new Metadata(m_FrameServer.HistoryStack, m_FrameServer.TimeStampsToTimecode, OnShowClosestFrame);
             m_FrameServer.Metadata.KVAImported += (s, e) => AfterKVAImported();
-            m_FrameServer.Metadata.KeyframeAdded += (s, e) => AfterAddedKeyframe();
+            m_FrameServer.Metadata.KeyframeAdded += (s, e) => AfterAddedKeyframe(e.KeyframeId);
             m_FrameServer.Metadata.KeyframeDeleted += (s, e) => AfterDeletedKeyframe();
             m_FrameServer.Metadata.DrawingAdded += (s, e) => AfterDrawingAdded(e.Drawing);
             m_FrameServer.Metadata.DrawingDeleted += (s, e) => AfterDrawingDeleted();
@@ -520,27 +520,12 @@ namespace Kinovea.ScreenManager
             foreach (Keyframe kf in m_FrameServer.Metadata.Keyframes)
             {
                 currentKeyframe++;
+                long lastTimestamp = m_FrameServer.VideoReader.Info.FirstTimeStamp + m_FrameServer.VideoReader.Info.DurationTimeStamps;
 
-                if (kf.Position < (m_FrameServer.VideoReader.Info.FirstTimeStamp + m_FrameServer.VideoReader.Info.DurationTimeStamps))
-                {
-                    // Goto frame.
-                    m_iFramesToDecode = 1;
-                    ShowNextFrame(kf.Position, true);
-                    
-                    if(m_FrameServer.CurrentImage == null)
-                        continue;
-                    
-                    UpdatePositionUI();
-
-                    // Readjust and complete the Keyframe
-                    kf.Position = m_iCurrentPosition;
-                    kf.ImportImage(m_FrameServer.CurrentImage);
-                    kf.GenerateDisabledThumbnail();
-                }
+                if (!kf.Initialized && kf.Position < lastTimestamp)
+                    InitializeKeyframe(kf);
                 else if (firstOutOfRange < 0)
-                {
                     firstOutOfRange = currentKeyframe;
-                }
             }
 
             if (firstOutOfRange != -1)
@@ -3366,10 +3351,17 @@ namespace Kinovea.ScreenManager
             if (KeyframeAdding != null)
                 KeyframeAdding(this, new TimeEventArgs(m_iCurrentPosition));
         }
-        private void AfterAddedKeyframe()
+        private void AfterAddedKeyframe(Guid keyframeId)
         {
             if (m_FrameServer.Metadata.KVAImporting)
                 return;
+
+            Keyframe keyframe = m_FrameServer.Metadata.GetKeyframe(keyframeId);
+            if (keyframe == null)
+                return;
+
+            if (!keyframe.Initialized)
+                InitializeKeyframe(keyframe);
 
             OrganizeKeyframes();
             
@@ -3378,6 +3370,21 @@ namespace Kinovea.ScreenManager
 
             if (!m_bIsCurrentlyPlaying)
                 ActivateKeyframe(m_iCurrentPosition);
+        }
+        private void InitializeKeyframe(Keyframe keyframe)
+        {
+            // Move the playhead to the keyframe position to import the image and build thumbnail.
+            if (m_iCurrentPosition != keyframe.Position)
+            {
+                m_iFramesToDecode = 1;
+                ShowNextFrame(keyframe.Position, true);
+                UpdatePositionUI();
+            }
+
+            if (m_FrameServer.CurrentImage == null)
+                return;
+
+            keyframe.Initialize(m_iCurrentPosition, m_FrameServer.CurrentImage);
         }
         private void DeleteKeyframe(Guid keyframeId)
         {
@@ -3401,8 +3408,8 @@ namespace Kinovea.ScreenManager
             {
                 if (kf.Position >= m_iSelStart && kf.Position <= m_iSelEnd)
                 {
-//kf.ImportImage(m_FrameServer.VideoReader.FrameList[(int)m_FrameServer.VideoReader.GetFrameNumber(kf.Position)].BmpImage);
-                    kf.GenerateDisabledThumbnail();
+                    //kf.ImportImage(m_FrameServer.VideoReader.FrameList[(int)m_FrameServer.VideoReader.GetFrameNumber(kf.Position)].BmpImage);
+                    //kf.GenerateDisabledThumbnail();
                     bAtLeastOne = true;
                 }
                 else

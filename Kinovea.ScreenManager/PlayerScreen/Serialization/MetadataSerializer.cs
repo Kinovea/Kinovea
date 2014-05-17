@@ -236,66 +236,15 @@ namespace Kinovea.ScreenManager
             {
                 if (r.Name == "Keyframe")
                 {
-                    ParseKeyframe(r);
+                    Keyframe keyframe = KeyframeSerializer.Deserialize(r, GetScaling(), RemapTimestamp, metadata);
+                    if (keyframe != null)
+                        metadata.MergeInsertKeyframe(keyframe);
                 }
                 else
                 {
                     string unparsed = r.ReadOuterXml();
                     log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
-            }
-
-            r.ReadEndElement();
-        }
-        private void ParseKeyframe(XmlReader r)
-        {
-            // This will not create a fully functionnal Keyframe.
-            // It must be followed by a call to PostImportMetadata() so we can create the thumbnail.
-            Keyframe keyframe = new Keyframe(metadata);
-            
-            if (r.MoveToAttribute("id"))
-                keyframe.Id = new Guid(r.ReadContentAsString());
-            
-            r.ReadStartElement();
-
-            while (r.NodeType == XmlNodeType.Element)
-            {
-                switch (r.Name)
-                {
-                    case "Position":
-                        int inputPosition = r.ReadElementContentAsInt();
-                        keyframe.Position = RemapTimestamp(inputPosition, false);
-                        break;
-                    case "Title":
-                        keyframe.Title = r.ReadElementContentAsString();
-                        break;
-                    case "Comment":
-                        keyframe.Comments = r.ReadElementContentAsString();
-                        break;
-                    case "Drawings":
-                        ParseDrawings(r, keyframe);
-                        break;
-                    default:
-                        string unparsed = r.ReadOuterXml();
-                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                        break;
-                }
-            }
-
-            r.ReadEndElement();
-
-            metadata.MergeInsertKeyframe(keyframe);
-        }
-        private void ParseDrawings(XmlReader r, Keyframe keyframe)
-        {
-            // TODO: catch empty tag <Drawings/>.
-
-            r.ReadStartElement();
-
-            while (r.NodeType == XmlNodeType.Element)
-            {
-                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, GetScaling(), metadata);
-                metadata.AddDrawing(keyframe, drawing);
             }
 
             r.ReadEndElement();
@@ -480,10 +429,7 @@ namespace Kinovea.ScreenManager
 
             foreach (Keyframe kf in metadata.Keyframes.Where(kf => !kf.Disabled))
             {
-                w.WriteStartElement("Keyframe");
-                w.WriteAttributeString("id", kf.Id.ToString());
-                kf.WriteXml(w);
-                w.WriteEndElement();
+                KeyframeSerializer.Serialize(w, kf);
             }
 
             w.WriteEndElement();

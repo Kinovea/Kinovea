@@ -19,10 +19,7 @@ namespace Kinovea.ScreenManager
         private Metadata metadata;
         private Guid keyframeId;
 
-        // TODO: replace this by XML serialization.
-        private long time;
-        private string title;
-        private Bitmap thumbnail;
+        private string data;
         private string commandName = ScreenManagerLang.CommandDeleteKeyframe_FriendlyName;
 
         public HistoryMementoDeleteKeyframe(Metadata metadata, Guid keyframeId)
@@ -34,11 +31,9 @@ namespace Kinovea.ScreenManager
             // Including all drawings and trackable drawings associated with these drawings.
             Keyframe keyframe = metadata.GetKeyframe(keyframeId);
             if (keyframe == null)
-                return;
+                throw new NullReferenceException("keyframe");
 
-            this.time = keyframe.Position;
-            this.title = keyframe.Title;
-            this.thumbnail = keyframe.Thumbnail; // <- not a proper clone.
+            data = KeyframeSerializer.SerializeToString(keyframe);
         }
 
         public override HistoryMemento PerformUndo()
@@ -46,10 +41,7 @@ namespace Kinovea.ScreenManager
             HistoryMemento redoMemento = new HistoryMementoAddKeyframe(metadata, keyframeId);
             redoMemento.CommandName = commandName;
 
-            // TODO: recreate the entire keyframe from XML.
-            Keyframe keyframe = new Keyframe(time, title, thumbnail, metadata);
-            keyframe.Id = keyframeId;
-
+            Keyframe keyframe = KeyframeSerializer.DeserializeFromString(data, metadata);
             metadata.AddKeyframe(keyframe);
 
             return redoMemento;
