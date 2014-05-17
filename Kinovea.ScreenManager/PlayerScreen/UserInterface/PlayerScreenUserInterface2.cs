@@ -420,9 +420,6 @@ namespace Kinovea.ScreenManager
             // Configure the interface according to he video and try to read first frame.
             // Called from CommandLoadMovie when VideoFile.Load() is successful.
             //---------------------------------------------------------------------------
-            m_FrameServer.Metadata.FullPath = m_FrameServer.VideoReader.FilePath;
-            
-            DemuxMetadata();
             ShowNextFrame(-1, true);
             UpdatePositionUI();
 
@@ -468,6 +465,7 @@ namespace Kinovea.ScreenManager
             
             // Other various infos.
             m_FrameServer.SetupMetadata(true);
+            m_FrameServer.Metadata.FullPath = m_FrameServer.VideoReader.FilePath;
             m_FrameServer.Metadata.SelectionStart = m_iSelStart;
             m_FrameServer.Metadata.SelectionEnd = m_iSelEnd;
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
@@ -913,17 +911,6 @@ namespace Kinovea.ScreenManager
             
             m_FrameServer.Metadata.HighSpeedFactor = 1.0f;
             UpdateTimedLabels();
-        }
-        private void DemuxMetadata()
-        {
-            // Try to find metadata muxed inside the file and load it.
-            string kva = m_FrameServer.VideoReader.ReadMetadata();
-            if (!string.IsNullOrEmpty(kva))
-            {
-                m_FrameServer.Metadata = new Metadata(kva, m_FrameServer.VideoReader.Info, m_FrameServer.HistoryStack, m_FrameServer.TimeStampsToTimecode, OnShowClosestFrame);
-                UpdateFramesMarkers();
-                OrganizeKeyframes();
-            }
         }
         private void SetupPrimarySelectionData()
         {
