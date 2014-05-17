@@ -232,6 +232,7 @@ namespace Kinovea.ScreenManager
             metadata.HistoryStack.PushNewCommand(memento);
             
             // Special cases
+            // TODO: implement the event handler to metadata DrawingAdded and finish the label in the handler.
             if(screenToolManager.ActiveTool == ToolManager.Label)
             {
                 if(LabelAdded != null)

@@ -39,8 +39,7 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentNullException("source");
 
             this.metadata = metadata;
-            metadata.StopAllTracking();
-            metadata.UnselectAll();
+            metadata.BeforeKVAImport();
 
             string kva = MetadataConverter.Convert(source, isFile);
 

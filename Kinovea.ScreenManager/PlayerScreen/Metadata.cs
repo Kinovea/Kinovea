@@ -49,9 +49,12 @@ namespace Kinovea.ScreenManager
     public class Metadata
     {
         #region Events and commands
-        public EventHandler MetadataChanged;
+        public EventHandler KVAImported;
         public EventHandler KeyframeAdded;
         public EventHandler KeyframeDeleted;
+        public EventHandler<DrawingEventArgs> DrawingAdded;
+        public EventHandler DrawingDeleted;
+
         public RelayCommand<ITrackable> AddTrackableDrawingCommand { get; set; }
         public RelayCommand<ITrackable> DeleteTrackableDrawingCommand { get; set; }
         #endregion
@@ -74,6 +77,10 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat("Dirty:{0}, reference hash:{1}, current:{2}.", dirty.ToString(), referenceHash, currentHash);
                 return dirty;
             }
+        }
+        public bool KVAImporting
+        {
+            get { return kvaImporting; }
         }
         public string GlobalTitle
         {
@@ -235,6 +242,7 @@ namespace Kinovea.ScreenManager
         private Guid id = Guid.NewGuid();
         private TimeCodeBuilder timecodeBuilder;
         private ClosestFrameDisplayer closestFrameDisplayer;
+        private bool kvaImporting;
         
         // Folders
         private string fullPath;
@@ -472,7 +480,9 @@ namespace Kinovea.ScreenManager
             hitDrawing = drawing;
 
             AfterDrawingCreation(drawing);
-            OnMetadataChanged();
+
+            if (DrawingAdded != null)
+                DrawingAdded(this, new DrawingEventArgs(drawing, hitDrawingFrameIndex));
         }
         public void AddImageDrawing(string filename, bool isSVG, long time)
         {
@@ -567,7 +577,9 @@ namespace Kinovea.ScreenManager
             keyframe.RemoveDrawing(drawingId);
 
             UnselectAll();
-            OnMetadataChanged();
+            
+            if (DrawingDeleted != null)
+                DrawingDeleted(this, EventArgs.Empty);
         }
         
         private void DeleteTrackableDrawing(ITrackable drawing)
@@ -713,6 +725,13 @@ namespace Kinovea.ScreenManager
                 measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
             }
         }
+
+        public void BeforeKVAImport()
+        {
+            kvaImporting = true;
+            StopAllTracking();
+            UnselectAll();
+        }
         public void AfterKVAImport()
         {
             foreach (ITrackable drawing in TrackableDrawings())
@@ -721,6 +740,10 @@ namespace Kinovea.ScreenManager
             trackabilityManager.CleanUnassigned();
             
             AfterCalibrationChanged();
+            kvaImporting = false;
+
+            if (KVAImported != null)
+                KVAImported(this, EventArgs.Empty);
         }
         public void AfterManualExport()
         {
@@ -877,11 +900,6 @@ namespace Kinovea.ScreenManager
         #endregion
    
         #region Lower level Helpers
-        private void OnMetadataChanged()
-        {
-            if (MetadataChanged != null)
-                MetadataChanged(this, EventArgs.Empty);
-        }
         private void ResetCoreContent()
         {
             // Semi reset: we keep Image size and AverageTimeStampsPerFrame

@@ -326,9 +326,11 @@ namespace Kinovea.ScreenManager
             m_FrameServer = _FrameServer;
             
             m_FrameServer.Metadata = new Metadata(m_FrameServer.HistoryStack, m_FrameServer.TimeStampsToTimecode, OnShowClosestFrame);
-            m_FrameServer.Metadata.MetadataChanged += (s, e) => RefreshImage();
-            m_FrameServer.Metadata.KeyframeDeleted += (s, e) => AfterDeletedKeyframe();
+            m_FrameServer.Metadata.KVAImported += (s, e) => AfterKVAImported();
             m_FrameServer.Metadata.KeyframeAdded += (s, e) => AfterAddedKeyframe();
+            m_FrameServer.Metadata.KeyframeDeleted += (s, e) => AfterDeletedKeyframe();
+            m_FrameServer.Metadata.DrawingAdded += (s, e) => AfterDrawingAdded(e.Drawing);
+            m_FrameServer.Metadata.DrawingDeleted += (s, e) => AfterDrawingDeleted();
            
             InitializeComponent();
             BuildContextMenus();
@@ -418,8 +420,6 @@ namespace Kinovea.ScreenManager
             // Configure the interface according to he video and try to read first frame.
             // Called from CommandLoadMovie when VideoFile.Load() is successful.
             //---------------------------------------------------------------------------
-            
-
             m_FrameServer.Metadata.FullPath = m_FrameServer.VideoReader.FilePath;
             
             DemuxMetadata();
@@ -497,16 +497,11 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                if (!m_FrameServer.Metadata.HasData)
-                    LookForLinkedAnalysis();
-            
-                string folder = Software.SettingsDirectory;
-                string startupFile = Path.Combine(folder, "playback.kva");
-                if (File.Exists(startupFile))
-                {
-                    MetadataSerializer s = new MetadataSerializer();
-                    s.Load(m_FrameServer.Metadata, startupFile, true);
-                }
+                string kvaFile = Path.Combine(Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath), Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + ".kva");
+                LookForLinkedAnalysis(kvaFile);
+
+                string startupFile = Path.Combine(Software.SettingsDirectory, "playback.kva");
+                LookForLinkedAnalysis(startupFile);
             }
             
             sldrSpeed.Enabled = true;
@@ -536,12 +531,12 @@ namespace Kinovea.ScreenManager
             // 	ScreenManager upon loading standalone analysis.
             //----------------------------------------------------------
 
-            int iOutOfRange = -1;
-            int iCurrentKeyframe = -1;
+            int firstOutOfRange = -1;
+            int currentKeyframe = -1;
 
             foreach (Keyframe kf in m_FrameServer.Metadata.Keyframes)
             {
-                iCurrentKeyframe++;
+                currentKeyframe++;
 
                 if (kf.Position < (m_FrameServer.VideoReader.Info.FirstTimeStamp + m_FrameServer.VideoReader.Info.DurationTimeStamps))
                 {
@@ -558,40 +553,20 @@ namespace Kinovea.ScreenManager
                     kf.Position = m_iCurrentPosition;
                     kf.ImportImage(m_FrameServer.CurrentImage);
                     kf.GenerateDisabledThumbnail();
-
-                    // EditBoxes
-                    foreach (AbstractDrawing ad in kf.Drawings)
-                    {
-                        if (ad is DrawingText)
-                        {
-                            ((DrawingText)ad).ContainerScreen = pbSurfaceScreen;
-                            panelCenter.Controls.Add(((DrawingText)ad).EditBox);
-                            ((DrawingText)ad).EditBox.BringToFront();
-                        }
-                    }
                 }
-                else
+                else if (firstOutOfRange < 0)
                 {
-                    // TODO - Alert box to inform that some images couldn't be matched.
-                    if (iOutOfRange < 0)
-                    {
-                        iOutOfRange = iCurrentKeyframe;
-                    }
+                    firstOutOfRange = currentKeyframe;
                 }
             }
 
-            if (iOutOfRange != -1)
-            {
-                // Some keyframes were out of range. remove them.
-                m_FrameServer.Metadata.Keyframes.RemoveRange(iOutOfRange, m_FrameServer.Metadata.Keyframes.Count - iOutOfRange);
-            }
+            if (firstOutOfRange != -1)
+                m_FrameServer.Metadata.Keyframes.RemoveRange(firstOutOfRange, m_FrameServer.Metadata.Keyframes.Count - firstOutOfRange);
             
             UpdateFilenameLabel();
             OrganizeKeyframes();
             if(m_FrameServer.Metadata.Count > 0)
-            {
                 DockKeyframePanel(false);
-            }
             
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
@@ -1003,18 +978,12 @@ namespace Kinovea.ScreenManager
             m_KeyframeCommentsHub = new formKeyframeComments(this);
             FormsHelper.MakeTopmost(m_KeyframeCommentsHub);
         }
-        private void LookForLinkedAnalysis()
+        private void LookForLinkedAnalysis(string file)
         {
-            // Look for an Anlaysis with the same file name in the same directory.
-
-            // Complete path of hypothetical Analysis.
-            string kvaFile = Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath);
-            kvaFile = kvaFile + "\\" + Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + ".kva";
-
-            if (File.Exists(kvaFile))
+            if (File.Exists(file))
             {
                 MetadataSerializer s = new MetadataSerializer();
-                s.Load(m_FrameServer.Metadata, kvaFile, true);
+                s.Load(m_FrameServer.Metadata, file, true);
             }
         }
         private void UpdateFilenameLabel()
@@ -2545,56 +2514,60 @@ namespace Kinovea.ScreenManager
         private void CreateNewDrawing()
         {
             m_FrameServer.Metadata.UnselectAll();
-            
-            // Add a KeyFrame here if it doesn't exist.
             AddKeyframe();
-            
-            if (m_ActiveTool != ToolManager.Label)
+
+            bool editingLabel = false;
+            if (m_ActiveTool == ToolManager.Label)
+            {
+                foreach (DrawingText label in m_FrameServer.Metadata.Labels())
+                {
+                    int hit = label.HitTest(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.CoordinateSystem, m_FrameServer.Metadata.CoordinateSystem.Zooming);
+                    if (hit < 0)
+                        continue;
+                    
+                    label.SetEditMode(true, m_FrameServer.CoordinateSystem);
+                    editingLabel = true;
+                    break;
+                }
+            }
+
+            if (!editingLabel)
             {
                 AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
-                
-                if(DrawingAdding != null)
+
+                if (drawing is DrawingText)
+                {
+                    // Labels need to be switched immediately into edit mode.
+                    ImportEditbox(drawing as DrawingText);
+                    ((DrawingText)drawing).SetEditMode(true, m_FrameServer.CoordinateSystem);
+                }
+
+                if (DrawingAdding != null)
                     DrawingAdding(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));
             }
-            else
-            {
-                // We are using the Text Tool. This is a special case because
-                // if we are on an existing Textbox, we just go into edit mode
-                // otherwise, we add and setup a new textbox.
-                bool bEdit = false;
-                foreach (AbstractDrawing ad in m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings)
-                {
-                    if (ad is DrawingText)
-                    {
-                        int hitRes = ad.HitTest(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.CoordinateSystem, m_FrameServer.Metadata.CoordinateSystem.Zooming);
-                        if (hitRes >= 0)
-                        {
-                            bEdit = true;
-                            ((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
-                        }
-                    }
-                }
-                
-                // If we are not on an existing textbox : create new DrawingText.
-                if (!bEdit)
-                {
-                    AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
-                    
-                    if(DrawingAdding != null)
-                        DrawingAdding(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));
-                    
-                    // TODO: Find a way to move this to Metadata.
-                    DrawingText drawingText = drawing as DrawingText;
-                    
-                    drawingText.ContainerScreen = pbSurfaceScreen;
-                    drawingText.SetEditMode(true, m_FrameServer.CoordinateSystem);
-                    
-                    TextBox textBox = drawingText.EditBox;
-                    panelCenter.Controls.Add(textBox);
-                    textBox.BringToFront();
-                    textBox.Focus();
-                }
-            }
+        }
+        private void AfterDrawingAdded(AbstractDrawing drawing)
+        {
+            if (drawing is DrawingText)
+                ImportEditbox(drawing as DrawingText);
+
+            if (!m_FrameServer.Metadata.KVAImporting)
+                RefreshImage();
+        }
+        private void ImportEditbox(DrawingText drawing)
+        {
+            if (panelCenter.Controls.Contains(drawing.EditBox))
+                return;
+            
+            drawing.ContainerScreen = pbSurfaceScreen;
+            panelCenter.Controls.Add(drawing.EditBox);
+            drawing.EditBox.BringToFront();
+            drawing.EditBox.Focus();
+        }
+        private void AfterDrawingDeleted()
+        {
+            if (!m_FrameServer.Metadata.KVAImporting)
+                RefreshImage();
         }
         private void SurfaceScreen_RightDown()
         {
@@ -3425,6 +3398,9 @@ namespace Kinovea.ScreenManager
         }
         private void AfterAddedKeyframe()
         {
+            if (m_FrameServer.Metadata.KVAImporting)
+                return;
+
             OrganizeKeyframes();
             
             if (m_FrameServer.Metadata.Count == 1)
@@ -3432,6 +3408,10 @@ namespace Kinovea.ScreenManager
 
             if (!m_bIsCurrentlyPlaying)
                 ActivateKeyframe(m_iCurrentPosition);
+        }
+        private void AfterKVAImported()
+        {
+            AfterAddedKeyframe();
         }
         private void DeleteKeyframe(Guid keyframeId)
         {
