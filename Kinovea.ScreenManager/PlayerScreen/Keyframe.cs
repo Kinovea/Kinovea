@@ -41,6 +41,10 @@ namespace Kinovea.ScreenManager
             get { return id; }
             set { id = value; }
         }
+        public bool Initialized
+        {
+            get { return initialized; }
+        }
         public long Position
         {
             get { return position; }
@@ -67,10 +71,6 @@ namespace Kinovea.ScreenManager
             get { return comments; }
             set { comments = value; }
         }
-
-        /// <summary>
-        /// The title of a keyframe is set to the timecode until the user manually set it.
-        /// </summary>
         public string Title
         {
             get 
@@ -101,47 +101,47 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Guid id = Guid.NewGuid();
+        private bool initialized;
         private long position = -1;            // Position is absolute in all timestamps.
-        private string  title = "";
-        private string timecode = "";
+        private string title;
+        private string timecode;
         private string comments;
+        private Bitmap fullFrame;
         private Bitmap thumbnail;
         private Bitmap disabledThumbnail;
         private List<AbstractDrawing> drawings = new List<AbstractDrawing>();
-        private Bitmap fullFrame;
         private bool disabled;
         private Metadata metadata;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public Keyframe(Metadata metadata)
+        public Keyframe(long position, string timecode, Metadata metadata)
         {
-            // Used only during parsing to hold dummy Keyframe while it is loaded.
-            // Must be followed by a call to PostImportMetadata()
-            this.metadata = metadata;
-        }
-        public Keyframe(long position, string timecode, Bitmap image, Metadata metadata)
-        {
-            // Title is a variable default.
-            // as long as it's null, it takes the value of timecode (which is updated when selection change).
-            // as soon as the user put value in title, we use it instead.
             this.position = position;
             this.timecode = timecode;
-            this.thumbnail = new Bitmap(image, 100, 75);
-            this.fullFrame = ImageHelper.ConvertToJPG(image, 90);
             this.metadata = metadata;
+        }
+        public Keyframe(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
+            : this(0, "", metadata)
+        {
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
         #region Public Interface
-        public void ImportImage(Bitmap image)
+        public void Initialize(long position, Bitmap image)
         {
-            this.thumbnail = new Bitmap(image, 100, 75);
-            this.fullFrame = ImageHelper.ConvertToJPG(image, 90);
-        }
-        public void GenerateDisabledThumbnail()
-        {
-            disabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(thumbnail);
+            this.position = position;
+            
+            if (image != null)
+            {
+                this.thumbnail = new Bitmap(image, 100, 75);
+                this.fullFrame = ImageHelper.ConvertToJPG(image, 90);
+                this.disabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(thumbnail);
+            }
+            
+            initialized = true;
         }
         public AbstractDrawing GetDrawing(Guid id)
         {
@@ -159,6 +159,9 @@ namespace Kinovea.ScreenManager
         {
             drawings.RemoveAll(d => d.Id == id);
         }
+        #endregion
+
+        #region KVA Serialization
         public void WriteXml(XmlWriter w)
         {
             w.WriteStartElement("Position");
@@ -166,16 +169,16 @@ namespace Kinovea.ScreenManager
             w.WriteAttributeString("UserTime", userTime);
             w.WriteString(position.ToString());
             w.WriteEndElement();
-            
-            if(!string.IsNullOrEmpty(Title))
+
+            if (!string.IsNullOrEmpty(Title))
                 w.WriteElementString("Title", Title);
-            
-            if(!string.IsNullOrEmpty(comments))
+
+            if (!string.IsNullOrEmpty(comments))
                 w.WriteElementString("Comment", comments);
 
             if (drawings.Count == 0)
                 return;
-            
+
             w.WriteStartElement("Drawings");
             foreach (AbstractDrawing drawing in drawings)
             {
@@ -187,6 +190,54 @@ namespace Kinovea.ScreenManager
             }
             w.WriteEndElement();
         }
+        private void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper)
+        {
+            if (r.MoveToAttribute("id"))
+                id = new Guid(r.ReadContentAsString());
+
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "Position":
+                        int inputPosition = r.ReadElementContentAsInt();
+                        position = timestampMapper(inputPosition, false);
+                        break;
+                    case "Title":
+                        title = r.ReadElementContentAsString();
+                        break;
+                    case "Comment":
+                        comments = r.ReadElementContentAsString();
+                        break;
+                    case "Drawings":
+                        ParseDrawings(r, scale);
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+
+            r.ReadEndElement();
+        }
+        private void ParseDrawings(XmlReader r, PointF scale)
+        {
+            // TODO: catch empty tag <Drawings/>.
+
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, metadata);
+                metadata.AddDrawing(this, drawing);
+            }
+
+            r.ReadEndElement();
+        }
+        
         #endregion
 
         #region IComparable Implementation

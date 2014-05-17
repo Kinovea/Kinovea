@@ -577,8 +577,7 @@ namespace Kinovea.ScreenManager
             
             if(metadata.Count == 0)
             {
-                Keyframe kf = new Keyframe(metadata);
-                kf.Position = 0;
+                Keyframe kf = new Keyframe(0, "capture", metadata);
                 metadata.AddKeyframe(kf);
             }
             
