@@ -10,7 +10,7 @@ using Kinovea.Video;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Finds the best place to load the video into, creating a new screen if necessary, and loads the video into the chosen screen.
+    /// Finds the best screen to load the video into, creating a new one if necessary, and loads the video into it.
     /// </summary>
     public static class LoaderVideo
     {

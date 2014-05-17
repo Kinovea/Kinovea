@@ -1657,7 +1657,6 @@ namespace Kinovea.ScreenManager
 
             MetadataSerializer s = new MetadataSerializer();
             s.Load(((PlayerScreen)activeScreen).FrameServer.Metadata, openFileDialog.FileName, true);
-            ((PlayerScreen)activeScreen).view.PostImportMetadata();
         }
         private void mnuExportODF_OnClick(object sender, EventArgs e)
         {

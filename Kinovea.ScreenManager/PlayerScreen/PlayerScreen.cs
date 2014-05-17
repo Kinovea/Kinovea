@@ -455,8 +455,6 @@ namespace Kinovea.ScreenManager
         {
             MetadataSerializer s = new MetadataSerializer();
             s.Load(frameServer.Metadata, path, true);
-            
-            view.PostImportMetadata();
         }
         #endregion
         
