@@ -330,8 +330,8 @@ namespace Kinovea.ScreenManager
             
             m_FrameServer.Metadata = new Metadata(m_FrameServer.HistoryStack, m_FrameServer.TimeStampsToTimecode, OnShowClosestFrame);
             m_FrameServer.Metadata.KVAImported += (s, e) => AfterKVAImported();
-            m_FrameServer.Metadata.KeyframeAdded += (s, e) => AfterAddedKeyframe(e.KeyframeId);
-            m_FrameServer.Metadata.KeyframeDeleted += (s, e) => AfterDeletedKeyframe();
+            m_FrameServer.Metadata.KeyframeAdded += (s, e) => AfterKeyframeAdded(e.KeyframeId);
+            m_FrameServer.Metadata.KeyframeDeleted += (s, e) => AfterKeyframeDeleted();
             m_FrameServer.Metadata.DrawingAdded += (s, e) => AfterDrawingAdded(e.Drawing);
             m_FrameServer.Metadata.DrawingDeleted += (s, e) => AfterDrawingDeleted();
             m_FrameServer.Metadata.MultiDrawingItemAdded += (s, e) => AfterMultiDrawingItemAdded();
@@ -2446,13 +2446,6 @@ namespace Kinovea.ScreenManager
                 SetCursor(m_PointerTool.GetCursor(1));
                 m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
             }
-            else if (m_ActiveTool == ToolManager.Chrono)
-            {
-                // Add a Chrono.
-                DrawingChrono chrono = (DrawingChrono)m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
-                m_FrameServer.Metadata.AddChrono(chrono);
-                m_ActiveTool = m_PointerTool;
-            }
             else if(m_ActiveTool == ToolManager.Spotlight)
             {
                 CreateNewMultiDrawingItem(m_FrameServer.Metadata.SpotlightManager);
@@ -2461,16 +2454,20 @@ namespace Kinovea.ScreenManager
             {
                 CreateNewMultiDrawingItem(m_FrameServer.Metadata.AutoNumberManager);
             }
+            else if (m_ActiveTool == ToolManager.Chrono)
+            {
+                CreateNewDrawing(m_FrameServer.Metadata.ChronoManager.Id);
+            }
             else
             {
-                CreateNewDrawing();
+                AddKeyframe();
+                CreateNewDrawing(m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex));
             }
         }
-        private void CreateNewDrawing()
+        private void CreateNewDrawing(Guid managerId)
         {
             m_FrameServer.Metadata.UnselectAll();
-            AddKeyframe();
-
+            
             bool editingLabel = false;
             if (m_ActiveTool == ToolManager.Label)
             {
@@ -2485,7 +2482,7 @@ namespace Kinovea.ScreenManager
                     break;
                 }
             }
-
+           
             if (!editingLabel)
             {
                 AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
@@ -2497,10 +2494,8 @@ namespace Kinovea.ScreenManager
                     ((DrawingText)drawing).SetEditMode(true, m_FrameServer.CoordinateSystem);
                 }
 
-                Guid keyframeId = m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex);
-
                 if (DrawingAdding != null)
-                    DrawingAdding(this, new DrawingEventArgs(drawing, keyframeId));
+                    DrawingAdding(this, new DrawingEventArgs(drawing, managerId));
             }
         }
         private void AfterDrawingAdded(AbstractDrawing drawing)
@@ -2509,7 +2504,10 @@ namespace Kinovea.ScreenManager
                 ImportEditbox(drawing as DrawingText);
 
             if (!m_FrameServer.Metadata.KVAImporting)
+            {
+                UpdateFramesMarkers();
                 RefreshImage();
+            }
         }
         private void ImportEditbox(DrawingText drawing)
         {
@@ -2524,7 +2522,10 @@ namespace Kinovea.ScreenManager
         private void AfterDrawingDeleted()
         {
             if (!m_FrameServer.Metadata.KVAImporting)
+            {
+                UpdateFramesMarkers();
                 RefreshImage();
+            }
         }
         private void CreateNewMultiDrawingItem(AbstractMultiDrawing manager)
         {
@@ -2821,42 +2822,9 @@ namespace Kinovea.ScreenManager
             
             m_FrameServer.Metadata.Magnifier.OnMouseUp(m_DescaledMouse.ToPoint());
             
-            // Memorize the action we just finished to enable undo.
-            if(m_ActiveTool == ToolManager.Chrono)
-            {
-                IUndoableCommand cac = new CommandAddChrono(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(cac);
-            }
-            else if (m_ActiveTool != m_PointerTool)
-            {
-                
-                if(m_FrameServer.Metadata.SelectedExtraDrawing >= 0 && m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] is AbstractMultiDrawing)
-                {
-                    /*IUndoableCommand cad = new CommandAddMultiDrawingItem(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata);
-                    CommandManager cm = CommandManager.Instance();
-                    cm.LaunchUndoableCommand(cad);
-                    
-                    m_FrameServer.Metadata.UnselectAll();*/
-                }
-                else if(m_iActiveKeyFrameIndex >= 0)
-                {
-                    if (m_bTextEdit)
-                    {
-                        m_bTextEdit = false;
-                    }
-                    else if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-                    {
-                        /*IUndoableCommand cad = new CommandAddDrawing(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata, m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Position);
-                        CommandManager cm = CommandManager.Instance();
-                        cm.LaunchUndoableCommand(cad);*/
-                        
-                        // Deselect the drawing we just added.
-                        //m_FrameServer.Metadata.UnselectAll();
-                    }
-                }
-            }
-            
+            if (m_bTextEdit && m_ActiveTool != m_PointerTool && m_iActiveKeyFrameIndex >= 0)
+                m_bTextEdit = false;
+
             // The fact that we stay on this tool or fall back to pointer tool, depends on the tool.
             m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
             
@@ -3372,7 +3340,7 @@ namespace Kinovea.ScreenManager
             if (KeyframeAdding != null)
                 KeyframeAdding(this, new TimeEventArgs(m_iCurrentPosition));
         }
-        private void AfterAddedKeyframe(Guid keyframeId)
+        private void AfterKeyframeAdded(Guid keyframeId)
         {
             if (m_FrameServer.Metadata.KVAImporting)
                 return;
@@ -3385,6 +3353,7 @@ namespace Kinovea.ScreenManager
                 InitializeKeyframe(keyframe);
 
             OrganizeKeyframes();
+            UpdateFramesMarkers();
             
             if (m_FrameServer.Metadata.Count == 1)
                 DockKeyframePanel(false);
@@ -3412,10 +3381,11 @@ namespace Kinovea.ScreenManager
             if (KeyframeDeleting != null)
                 KeyframeDeleting(this, new KeyframeEventArgs(keyframeId));
         }
-        private void AfterDeletedKeyframe()
+        private void AfterKeyframeDeleted()
         {
             m_iActiveKeyFrameIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
             OrganizeKeyframes();
+            UpdateFramesMarkers();
             DoInvalidate();
         }
         public void UpdateKeyframes()
@@ -3934,11 +3904,12 @@ namespace Kinovea.ScreenManager
         }
         private void mnuChronoDelete_Click(object sender, EventArgs e)
         {
-            IUndoableCommand cdc = new CommandDeleteChrono(this, m_FrameServer.Metadata);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(cdc);
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+            if(drawing == null || !(drawing is DrawingChrono))
+                return;
             
-            UpdateFramesMarkers();
+            if (DrawingDeleting != null)
+                DrawingDeleting(this, new DrawingEventArgs(drawing, m_FrameServer.Metadata.ChronoManager.Id));
         }
         private void mnuChronoConfigure_Click(object sender, EventArgs e)
         {

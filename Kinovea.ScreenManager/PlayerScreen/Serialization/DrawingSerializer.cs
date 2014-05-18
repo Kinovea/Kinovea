@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using System.Reflection;
 using System.Drawing;
 using System.IO;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -55,7 +56,7 @@ namespace Kinovea.ScreenManager
             using (XmlReader r = XmlReader.Create(new StringReader(data), settings))
             {
                 r.MoveToContent();
-                drawing = Deserialize(r, identityScale, metadata);
+                drawing = Deserialize(r, identityScale, metadata, TimeHelper.IdentityTimestampMapper);
             }
 
             return drawing;
@@ -78,7 +79,7 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
         }
 
-        public static AbstractDrawing Deserialize(XmlReader r, PointF scaling, Metadata metadata)
+        public static AbstractDrawing Deserialize(XmlReader r, PointF scaling, Metadata metadata, TimestampMapper timestampMapper)
         {
             AbstractDrawing drawing = null;
 
@@ -95,11 +96,24 @@ namespace Kinovea.ScreenManager
                 if (attributes.Length <= 0 || ((XmlTypeAttribute)attributes[0]).TypeName != r.Name)
                     continue;
 
-                ConstructorInfo ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(Metadata) });
+                // Try possible constructors of drawings.
+                ConstructorInfo ci = null;
+                object[] parameters = null;
+
+                if (t == typeof(DrawingChrono))
+                {
+                    ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(TimestampMapper) });
+                    parameters = new object[] { r, scaling, timestampMapper};
+                }
+                else
+                {
+                    ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(Metadata) });
+                    parameters = new object[] { r, scaling, metadata };
+                }
+                
                 if (ci == null)
                     break;
-
-                object[] parameters = new object[] { r, scaling, metadata };
+ 
                 drawing = (AbstractDrawing)Activator.CreateInstance(t, parameters);
                 drawingRead = drawing != null;
 
