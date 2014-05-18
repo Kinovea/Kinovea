@@ -32,18 +32,18 @@ namespace Kinovea.ScreenManager
             get { return drawing; }
         }
         
-        public int KeyframeIndex
+        public Guid ManagerId
         {
-            get { return keyframeIndex; }
+            get { return managerId; }
         }
 
         private readonly AbstractDrawing drawing;
-        private readonly int keyframeIndex;
+        private readonly Guid managerId;
                 
-        public DrawingEventArgs(AbstractDrawing drawing, int keyframeIndex)
+        public DrawingEventArgs(AbstractDrawing drawing, Guid managerId)
         {
             this.drawing = drawing;
-            this.keyframeIndex = keyframeIndex;
+            this.managerId = managerId;
         }
     }
 }

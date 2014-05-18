@@ -43,8 +43,7 @@ using Kinovea.Video;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Main class representing non video data associated with the analysis.
-    /// Responsible for the management of all drawings.
+    /// Main class representing the analysis document.
     /// </summary>
     public class Metadata
     {
@@ -483,7 +482,7 @@ namespace Kinovea.ScreenManager
             AfterDrawingCreation(drawing);
 
             if (DrawingAdded != null)
-                DrawingAdded(this, new DrawingEventArgs(drawing, hitDrawingFrameIndex));
+                DrawingAdded(this, new DrawingEventArgs(drawing, keyframe.Id));
         }
         public void AddMultidrawingItem(AbstractMultiDrawing manager, AbstractMultiDrawingItem item)
         {
