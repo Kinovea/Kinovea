@@ -2497,8 +2497,10 @@ namespace Kinovea.ScreenManager
                     ((DrawingText)drawing).SetEditMode(true, m_FrameServer.CoordinateSystem);
                 }
 
+                Guid keyframeId = m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex);
+
                 if (DrawingAdding != null)
-                    DrawingAdding(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));
+                    DrawingAdding(this, new DrawingEventArgs(drawing, keyframeId));
             }
         }
         private void AfterDrawingAdded(AbstractDrawing drawing)
@@ -3772,8 +3774,9 @@ namespace Kinovea.ScreenManager
             }
             else
             {
+                Guid keyframeId = m_FrameServer.Metadata.GetKeyframeId(m_FrameServer.Metadata.SelectedDrawingFrame);
                 if (DrawingDeleting != null)
-                    DrawingDeleting(this, new DrawingEventArgs(drawing, m_FrameServer.Metadata.SelectedDrawingFrame));
+                    DrawingDeleting(this, new DrawingEventArgs(drawing, keyframeId));
             }
         }
         #endregion

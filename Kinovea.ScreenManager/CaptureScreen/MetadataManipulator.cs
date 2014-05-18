@@ -236,7 +236,7 @@ namespace Kinovea.ScreenManager
             if(screenToolManager.ActiveTool == ToolManager.Label)
             {
                 if(LabelAdded != null)
-                    LabelAdded(this, new DrawingEventArgs(drawing, keyframeIndex));
+                    LabelAdded(this, new DrawingEventArgs(drawing, keyframeId));
                 
                 ((DrawingText)drawing).SetEditMode(true, transformer);
             }

@@ -313,23 +313,16 @@ namespace Kinovea.ScreenManager
             // Temporary function.
             // Once the player screen ui uses the viewport, this event handler should be removed.
             // The code here should also be in the metadata manipulator until this function is removed.
-
-            Guid keyframeId = frameServer.Metadata.GetKeyframeId(e.KeyframeIndex);
-            AbstractDrawing drawing = e.Drawing;
-
-            HistoryMemento memento = new HistoryMementoAddDrawing(frameServer.Metadata, keyframeId, drawing.Id, drawing.DisplayName);
-            frameServer.Metadata.AddDrawing(keyframeId, drawing);
+            HistoryMemento memento = new HistoryMementoAddDrawing(frameServer.Metadata, e.ManagerId, e.Drawing.Id, e.Drawing.DisplayName);
+            frameServer.Metadata.AddDrawing(e.ManagerId, e.Drawing);
             historyStack.PushNewCommand(memento);
         }
 
         private void View_DrawingDeleting(object sender, DrawingEventArgs e)
         {
             // Temporary function. This code should be done by metadata manipulator.
-            Guid keyframeId = frameServer.Metadata.GetKeyframeId(e.KeyframeIndex);
-            AbstractDrawing drawing = e.Drawing;
-
-            HistoryMemento memento = new HistoryMementoDeleteDrawing(frameServer.Metadata, keyframeId, drawing.Id, drawing.DisplayName);
-            frameServer.Metadata.DeleteDrawing(keyframeId, drawing.Id);
+            HistoryMemento memento = new HistoryMementoDeleteDrawing(frameServer.Metadata, e.ManagerId, e.Drawing.Id, e.Drawing.DisplayName);
+            frameServer.Metadata.DeleteDrawing(e.ManagerId, e.Drawing.Id);
             historyStack.PushNewCommand(memento);
         }
 
