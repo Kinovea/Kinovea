@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Drawing;
 using System.IO;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -37,8 +38,9 @@ namespace Kinovea.ScreenManager
             // Also handle thumbnail and trackable drawings.
 
             Keyframe keyframe = null;
+            
             PointF identityScaling = new PointF(1, 1);
-            TimestampMapper indentityTimestampMapper = (input, relative) => input;
+            
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreComments = true;
             settings.IgnoreProcessingInstructions = true;
@@ -48,7 +50,7 @@ namespace Kinovea.ScreenManager
             using (XmlReader r = XmlReader.Create(new StringReader(data), settings))
             {
                 r.MoveToContent();
-                keyframe = Deserialize(r, identityScaling, indentityTimestampMapper, metadata);
+                keyframe = Deserialize(r, identityScaling, TimeHelper.IdentityTimestampMapper, metadata);
             }
 
             return keyframe;

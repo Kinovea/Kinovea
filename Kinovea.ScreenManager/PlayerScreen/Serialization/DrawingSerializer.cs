@@ -18,31 +18,33 @@ namespace Kinovea.ScreenManager
         {
             // TODO: check for non serializable drawings. (bitmap/svg).
 
-            string result = "";
 
             IKvaSerializable kvaDrawing = drawing as IKvaSerializable;
-            if (kvaDrawing != null)
+            if (kvaDrawing == null)
+                return "";
+
+            string result = "";
+            
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = false;
+            settings.CloseOutput = true;
+
+            StringBuilder builder = new StringBuilder();
+
+            using (XmlWriter w = XmlWriter.Create(builder, settings))
             {
-                XmlWriterSettings settings = new XmlWriterSettings();
-                settings.Indent = false;
-                settings.CloseOutput = true;
-
-                StringBuilder builder = new StringBuilder();
-
-                using (XmlWriter w = XmlWriter.Create(builder, settings))
-                {
-                    Serialize(w, kvaDrawing);
-                    w.Flush();
-                    result = builder.ToString();
-                }
+                Serialize(w, kvaDrawing);
+                w.Flush();
+                result = builder.ToString();
             }
-
+        
             return result;
         }
 
         public static AbstractDrawing DeserializeFromString(string data, Metadata metadata)
         {
             AbstractDrawing drawing = null;
+            PointF identityScale = new PointF(1, 1);
 
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreComments = true;
@@ -53,7 +55,7 @@ namespace Kinovea.ScreenManager
             using (XmlReader r = XmlReader.Create(new StringReader(data), settings))
             {
                 r.MoveToContent();
-                drawing = Deserialize(r, new PointF(1, 1), metadata);
+                drawing = Deserialize(r, identityScale, metadata);
             }
 
             return drawing;
