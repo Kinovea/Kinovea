@@ -25,6 +25,7 @@ using System.Linq;
 
 using Kinovea.Video;
 using System.Xml;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {

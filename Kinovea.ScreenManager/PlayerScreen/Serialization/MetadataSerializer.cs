@@ -205,10 +205,10 @@ namespace Kinovea.ScreenManager
                         ParseChronos(r);
                         break;
                     case "Spotlights":
-                        ParseSpotlights(r);
+                        metadata.SpotlightManager.ReadXml(r, metadata, scaling, RemapTimestamp, metadata.AverageTimeStampsPerFrame);
                         break;
                     case "AutoNumbers":
-                        metadata.AutoNumberManager.ReadXml(r, scaling, RemapTimestamp, metadata.AverageTimeStampsPerFrame);
+                        metadata.AutoNumberManager.ReadXml(r, metadata, scaling, RemapTimestamp, metadata.AverageTimeStampsPerFrame);
                         break;
                     case "CoordinateSystem":
                         metadata.DrawingCoordinateSystem.ReadXml(r);
@@ -293,27 +293,6 @@ namespace Kinovea.ScreenManager
                         metadata.AddTrack(trk, metadata.ClosestFrameDisplayer, trk.MainColor);
                         trk.Status = TrackStatus.Interactive;
                     }
-                }
-                else
-                {
-                    string unparsed = r.ReadOuterXml();
-                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                }
-            }
-
-            r.ReadEndElement();
-        }
-        private void ParseSpotlights(XmlReader r)
-        {
-            // Fixme: move this code into a SpotlightManager.ReadXml().
-            r.ReadStartElement();
-
-            while (r.NodeType == XmlNodeType.Element)
-            {
-                if (r.Name == "Spotlight")
-                {
-                    Spotlight spotlight = new Spotlight(r, GetScaling(), RemapTimestamp, metadata.AverageTimeStampsPerFrame);
-                    metadata.SpotlightManager.Add(spotlight);
                 }
                 else
                 {

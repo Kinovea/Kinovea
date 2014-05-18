@@ -75,6 +75,9 @@ namespace Kinovea.ScreenManager
         public event EventHandler<KeyframeEventArgs> KeyframeDeleting;
         public event EventHandler<DrawingEventArgs> DrawingAdding;
         public event EventHandler<DrawingEventArgs> DrawingDeleting;
+        public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdding;
+        public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemDeleting;
+
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
         public event EventHandler<CommandProcessedEventArgs> CommandProcessed;
         #endregion
@@ -331,6 +334,9 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.KeyframeDeleted += (s, e) => AfterDeletedKeyframe();
             m_FrameServer.Metadata.DrawingAdded += (s, e) => AfterDrawingAdded(e.Drawing);
             m_FrameServer.Metadata.DrawingDeleted += (s, e) => AfterDrawingDeleted();
+            m_FrameServer.Metadata.MultiDrawingItemAdded += (s, e) => AfterMultiDrawingItemAdded();
+            m_FrameServer.Metadata.MultiDrawingItemDeleted += (s, e) => AfterMultiDrawingItemDeleted();
+
            
             InitializeComponent();
             BuildContextMenus();
@@ -2449,17 +2455,11 @@ namespace Kinovea.ScreenManager
             }
             else if(m_ActiveTool == ToolManager.Spotlight)
             {
-                AddKeyframe();
-                m_FrameServer.Metadata.SpotlightManager.Add(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
-                m_FrameServer.Metadata.SelectExtraDrawing(m_FrameServer.Metadata.SpotlightManager);
-                // Keep the tool so the user can finish drawing initialization.
+                CreateNewMultiDrawingItem(m_FrameServer.Metadata.SpotlightManager);
             }
             else if(m_ActiveTool == ToolManager.AutoNumbers)
             {
-                AddKeyframe();
-                m_FrameServer.Metadata.AutoNumberManager.Add(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
-                m_FrameServer.Metadata.SelectExtraDrawing(m_FrameServer.Metadata.AutoNumberManager);
-                m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
+                CreateNewMultiDrawingItem(m_FrameServer.Metadata.AutoNumberManager);
             }
             else
             {
@@ -2520,6 +2520,26 @@ namespace Kinovea.ScreenManager
             drawing.EditBox.Focus();
         }
         private void AfterDrawingDeleted()
+        {
+            if (!m_FrameServer.Metadata.KVAImporting)
+                RefreshImage();
+        }
+        private void CreateNewMultiDrawingItem(AbstractMultiDrawing manager)
+        {
+            m_FrameServer.Metadata.UnselectAll();
+            AddKeyframe();
+
+            AbstractMultiDrawingItem item = manager.GetNewItem(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+
+            if (MultiDrawingItemAdding != null)
+                MultiDrawingItemAdding(this, new MultiDrawingItemEventArgs(item, manager));
+        }
+        private void AfterMultiDrawingItemAdded()
+        {
+            if (!m_FrameServer.Metadata.KVAImporting)
+                RefreshImage();
+        }
+        private void AfterMultiDrawingItemDeleted()
         {
             if (!m_FrameServer.Metadata.KVAImporting)
                 RefreshImage();
@@ -2808,15 +2828,14 @@ namespace Kinovea.ScreenManager
             }
             else if (m_ActiveTool != m_PointerTool)
             {
-                // TODO: Review this !
                 
                 if(m_FrameServer.Metadata.SelectedExtraDrawing >= 0 && m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] is AbstractMultiDrawing)
                 {
-                    IUndoableCommand cad = new CommandAddMultiDrawingItem(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata);
+                    /*IUndoableCommand cad = new CommandAddMultiDrawingItem(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata);
                     CommandManager cm = CommandManager.Instance();
                     cm.LaunchUndoableCommand(cad);
                     
-                    m_FrameServer.Metadata.UnselectAll();
+                    m_FrameServer.Metadata.UnselectAll();*/
                 }
                 else if(m_iActiveKeyFrameIndex >= 0)
                 {
@@ -2831,7 +2850,7 @@ namespace Kinovea.ScreenManager
                         cm.LaunchUndoableCommand(cad);*/
                         
                         // Deselect the drawing we just added.
-                        m_FrameServer.Metadata.UnselectAll();
+                        //m_FrameServer.Metadata.UnselectAll();
                     }
                 }
             }
@@ -3746,9 +3765,10 @@ namespace Kinovea.ScreenManager
             
             if(drawing is AbstractMultiDrawing)
             {
-                IUndoableCommand cds = new CommandDeleteMultiDrawingItem(this, m_FrameServer.Metadata);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(cds);
+                AbstractMultiDrawing manager = drawing as AbstractMultiDrawing;
+
+                if (MultiDrawingItemDeleting != null)
+                    MultiDrawingItemDeleting(this, new MultiDrawingItemEventArgs(manager.SelectedItem, manager));
             }
             else
             {

@@ -146,6 +146,7 @@
     <Compile Include="Preferences\AngleUnit.cs" />
     <Compile Include="Preferences\AngularAccelerationUnit.cs" />
     <Compile Include="Preferences\AngularVelocityUnit.cs" />
+    <Compile Include="TimestampMapper.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
     <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
