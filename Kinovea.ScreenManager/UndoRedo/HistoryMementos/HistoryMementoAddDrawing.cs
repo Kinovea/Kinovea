@@ -15,15 +15,15 @@ namespace Kinovea.ScreenManager
         }
 
         private Metadata metadata;
-        private Guid keyframeId;
+        private Guid managerId;
         private Guid drawingId;
         private string drawingName;
         private string commandName;
 
-        public HistoryMementoAddDrawing(Metadata metadata, Guid keyframeId, Guid drawingId, string drawingName)
+        public HistoryMementoAddDrawing(Metadata metadata, Guid managerId, Guid drawingId, string drawingName)
         {
             this.metadata = metadata;
-            this.keyframeId = keyframeId;
+            this.managerId = managerId;
             this.drawingId = drawingId;
             this.drawingName = drawingName;
 
@@ -32,10 +32,10 @@ namespace Kinovea.ScreenManager
 
         public override HistoryMemento PerformUndo()
         {
-            HistoryMemento redoMemento = new HistoryMementoDeleteDrawing(metadata, keyframeId, drawingId, drawingName);
+            HistoryMemento redoMemento = new HistoryMementoDeleteDrawing(metadata, managerId, drawingId, drawingName);
             redoMemento.CommandName = commandName;
 
-            metadata.DeleteDrawing(keyframeId, drawingId);
+            metadata.DeleteDrawing(managerId, drawingId);
 
             return redoMemento;
         }

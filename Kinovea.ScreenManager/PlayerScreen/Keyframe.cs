@@ -33,10 +33,10 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class Keyframe : IComparable
+    public class Keyframe : AbstractDrawingManager, IComparable
     {
         #region Properties
-        public Guid Id
+        public override Guid Id
         {
             get { return id; }
             set { id = value; }
@@ -143,19 +143,22 @@ namespace Kinovea.ScreenManager
             
             initialized = true;
         }
-        public AbstractDrawing GetDrawing(Guid id)
+        #endregion
+
+        #region AbstractDrawingManager implementation
+        public override AbstractDrawing GetDrawing(Guid id)
         {
             return drawings.FirstOrDefault(d => d.Id == id);
         }
-        public void AddDrawing(AbstractDrawing drawing)
+        public override void AddDrawing(AbstractDrawing drawing)
         {
             // insert to the top of z-order except for grids.
-            if(drawing is DrawingPlane)
+            if (drawing is DrawingPlane)
                 drawings.Add(drawing);
             else
                 drawings.Insert(0, drawing);
         }
-        public void RemoveDrawing(Guid id)
+        public override void RemoveDrawing(Guid id)
         {
             drawings.RemoveAll(d => d.Id == id);
         }
@@ -231,7 +234,7 @@ namespace Kinovea.ScreenManager
 
             while (r.NodeType == XmlNodeType.Element)
             {
-                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, metadata);
+                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, metadata, TimeHelper.IdentityTimestampMapper);
                 metadata.AddDrawing(this, drawing);
             }
 

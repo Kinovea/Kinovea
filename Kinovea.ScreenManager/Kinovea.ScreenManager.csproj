@@ -237,6 +237,7 @@
     <Compile Include="CaptureScreen\Views\ViewPort.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PlayerScreen\ChronoManager.cs" />
     <Compile Include="CommandProcessedEventArgs.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
     <Compile Include="ImageHelper.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="LoaderCamera.cs" />
     <Compile Include="LoaderVideo.cs" />
+    <Compile Include="PlayerScreen\AbstractDrawingManager.cs" />
     <Compile Include="PlayerScreen\AutoSaver.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractMultiDrawingItem.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />

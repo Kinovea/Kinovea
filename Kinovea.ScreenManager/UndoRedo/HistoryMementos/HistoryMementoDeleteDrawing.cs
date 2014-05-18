@@ -17,35 +17,41 @@ namespace Kinovea.ScreenManager
         }
 
         private Metadata metadata;
-        private Guid keyframeId;
+        private Guid managerId;
         private Guid drawingId;
         private string drawingName;
         private string commandName;
         private string data;
 
-        public HistoryMementoDeleteDrawing(Metadata metadata, Guid keyframeId, Guid drawingId, string drawingName)
+        public HistoryMementoDeleteDrawing(Metadata metadata, Guid managerId, Guid drawingId, string drawingName)
         {
             this.metadata = metadata;
-            this.keyframeId = keyframeId;
+            this.managerId = managerId;
             this.drawingId = drawingId;
             this.drawingName = drawingName;
 
             commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandDeleteDrawing_FriendlyName, drawingName);
 
-            Keyframe keyframe = metadata.GetKeyframe(keyframeId);
-            if (keyframe != null)
-                data = DrawingSerializer.SerializeToString(keyframe.GetDrawing(drawingId));
+            AbstractDrawingManager manager = null;
+
+            if (managerId == metadata.ChronoManager.Id)
+                manager = metadata.ChronoManager;
+            else
+                manager = metadata.GetKeyframe(managerId);
+
+            if (manager != null)
+                data = DrawingSerializer.SerializeToString(manager.GetDrawing(drawingId));
 
             // TODO: get the associated trackable drawing and save it too.
         }
 
         public override HistoryMemento PerformUndo()
         {
-            HistoryMemento redoMemento = new HistoryMementoAddDrawing(metadata, keyframeId, drawingId, drawingName);
+            HistoryMemento redoMemento = new HistoryMementoAddDrawing(metadata, managerId, drawingId, drawingName);
             redoMemento.CommandName = commandName;
 
             AbstractDrawing drawing = DrawingSerializer.DeserializeFromString(data, metadata);
-            metadata.AddDrawing(keyframeId, drawing);
+            metadata.AddDrawing(managerId, drawing);
 
             // TODO: re instate the associated trackable drawing.
 

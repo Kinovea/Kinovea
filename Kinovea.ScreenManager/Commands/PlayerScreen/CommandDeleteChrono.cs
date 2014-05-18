@@ -21,7 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
     public class CommandDeleteChrono : IUndoableCommand
     {

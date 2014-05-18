@@ -194,6 +194,10 @@ namespace Kinovea.ScreenManager
         {
             get { return drawingCoordinateSystem; }
         }
+        public ChronoManager ChronoManager
+        {
+            get { return chronoManager; }
+        }
         public bool Mirrored
         {
             get { return mirrored; }
@@ -266,6 +270,8 @@ namespace Kinovea.ScreenManager
         private SpotlightManager spotlightManager;
         private AutoNumberManager autoNumberManager;
         private DrawingCoordinateSystem drawingCoordinateSystem;
+        private ChronoManager chronoManager = new ChronoManager();
+
         private TrackerParameters lastUsedTrackerParameters;
         
         private bool mirrored;
@@ -362,7 +368,6 @@ namespace Kinovea.ScreenManager
         }
         public Guid GetKeyframeId(int keyframeIndex)
         {
-            // Temporary function to accomodate the capture screen UI.
             return keyframes[keyframeIndex].Id;
         }
         public int GetKeyframeIndex(Guid id)
@@ -459,13 +464,22 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Drawings
-        public void AddDrawing(Guid keyframeId, AbstractDrawing drawing)
+        public void AddDrawing(Guid managerId, AbstractDrawing drawing)
         {
-            Keyframe keyframe = GetKeyframe(keyframeId);
-            if (keyframe == null)
-                return;
+            // TODO: check if we could have a generic AddDrawing method taking an AbstractDrawingManager.
 
-            AddDrawing(keyframe, drawing);
+            Keyframe keyframe = GetKeyframe(managerId);
+            if (keyframe != null)
+            {
+                AddDrawing(keyframe, drawing);
+                return;
+            }
+
+            if (chronoManager.Id == managerId && drawing is DrawingChrono)
+            {
+                AddChrono(drawing as DrawingChrono);
+                return;
+            }
         }
         public void AddDrawing(Keyframe keyframe, AbstractDrawing drawing)
         {
@@ -492,6 +506,20 @@ namespace Kinovea.ScreenManager
             if (MultiDrawingItemAdded != null)
                 MultiDrawingItemAdded(this, new MultiDrawingItemEventArgs(item, manager));
         }
+        public void AddChrono(DrawingChrono chrono)
+        {
+            chronoManager.AddDrawing(chrono);
+            extraDrawings.Add(chrono);
+            chrono.ParentMetadata = this;
+            
+            hitExtraDrawingIndex = extraDrawings.Count - 1;
+
+            AfterDrawingCreation(chrono);
+
+            if (DrawingAdded != null)
+                DrawingAdded(this, new DrawingEventArgs(chrono, chronoManager.Id));
+        }
+
         public void AddImageDrawing(string filename, bool isSVG, long time)
         {
             // TODO: Use a drawing tool to do that ?
@@ -541,12 +569,7 @@ namespace Kinovea.ScreenManager
                 
             UnselectAll();
         }
-        public void AddChrono(DrawingChrono _chrono)
-        {
-            _chrono.ParentMetadata = this;
-            extraDrawings.Add(_chrono);
-            hitExtraDrawingIndex = extraDrawings.Count - 1;
-        }
+        
         public void AddTrack(DrawingTrack track, ClosestFrameDisplayer closestFrameDisplayer, Color color)
         {
             track.ParentMetadata = this;
@@ -561,16 +584,22 @@ namespace Kinovea.ScreenManager
             track.TrackerParametersChanged += Track_TrackerParametersChanged;
         }
 
-        public void DeleteDrawing(Guid keyframeId, Guid drawingId)
+        public void DeleteDrawing(Guid managerId, Guid drawingId)
         {
             // Remove event handlers from the drawing as well as all associated data like tracking data,
             // and finally remove the drawing itself.
 
-            Keyframe keyframe = GetKeyframe(keyframeId);
-            if (keyframe == null)
-                return;
+            AbstractDrawingManager manager = null;
+            
+            if (managerId == chronoManager.Id)
+                manager = chronoManager;
+            else 
+                manager = GetKeyframe(managerId);
 
-            AbstractDrawing drawing = keyframe.GetDrawing(drawingId);
+            if (manager == null)
+                return;
+                
+            AbstractDrawing drawing = manager.GetDrawing(drawingId);
             if (drawing == null)
                 return;
 
@@ -582,7 +611,7 @@ namespace Kinovea.ScreenManager
             if (measurableDrawing != null)
                 measurableDrawing.ShowMeasurableInfoChanged -= MeasurableDrawing_ShowMeasurableInfoChanged;
 
-            keyframe.RemoveDrawing(drawingId);
+            manager.RemoveDrawing(drawingId);
 
             UnselectAll();
             
@@ -1005,6 +1034,9 @@ namespace Kinovea.ScreenManager
             };
             
             spotlightManager.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
+
+            // Temporary hack while the list of chronometers is duplicated between the chronoManager and the extra drawing.
+            chronoManager.SetMetadata(this);
         }
         private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
