@@ -134,6 +134,7 @@ namespace Kinovea.ScreenManager
                 // TODO: detect if any extradrawing is dirty.
                 return keyframes.Count > 0 ||
                         extraDrawings.Count > totalStaticExtraDrawings ||
+                        chronoManager.Drawings.Count > 0 ||
                         magnifier.Mode != MagnifierMode.None;
             }
         }
@@ -162,11 +163,6 @@ namespace Kinovea.ScreenManager
         public List<AbstractDrawing> ExtraDrawings
         {
             get { return extraDrawings;}
-        }
-        public int SelectedExtraDrawing
-        {
-            get { return hitExtraDrawingIndex; }
-            set { hitExtraDrawingIndex = value; }
         }
         public AbstractDrawing HitDrawing
         {
@@ -264,7 +260,6 @@ namespace Kinovea.ScreenManager
         
         // Drawings not attached to any key image.
         private List<AbstractDrawing> extraDrawings = new List<AbstractDrawing>();
-        private int hitExtraDrawingIndex = -1;
         private int totalStaticExtraDrawings;           // TODO: might be removed when even Chronos and tracks are represented by a single manager object.
         private Magnifier magnifier = new Magnifier();
         private SpotlightManager spotlightManager;
@@ -509,10 +504,9 @@ namespace Kinovea.ScreenManager
         public void AddChrono(DrawingChrono chrono)
         {
             chronoManager.AddDrawing(chrono);
-            extraDrawings.Add(chrono);
             chrono.ParentMetadata = this;
             
-            hitExtraDrawingIndex = extraDrawings.Count - 1;
+            hitDrawing = chrono;
 
             AfterDrawingCreation(chrono);
 
@@ -579,7 +573,8 @@ namespace Kinovea.ScreenManager
             if (lastUsedTrackerParameters != null)
                 track.TrackerParameters = lastUsedTrackerParameters;
             extraDrawings.Add(track);
-            hitExtraDrawingIndex = extraDrawings.Count - 1;
+
+            hitDrawing = track;
 
             track.TrackerParametersChanged += Track_TrackerParametersChanged;
         }
@@ -706,10 +701,7 @@ namespace Kinovea.ScreenManager
         public void UpdateTrackPoint(Bitmap bitmap)
         {
             // Happens when mouse up and editing a track.
-            if(hitExtraDrawingIndex < 0)
-                return;
-            
-            DrawingTrack t = extraDrawings[hitExtraDrawingIndex] as DrawingTrack;
+            DrawingTrack t = hitDrawing as DrawingTrack;
             if(t != null && (t.Status == TrackStatus.Edit || t.Status == TrackStatus.Configuration))
                 t.UpdateTrackPoint(bitmap);
         }
@@ -734,15 +726,12 @@ namespace Kinovea.ScreenManager
         {
             hitDrawingIndex = -1;
             hitDrawingFrameIndex = -1;
-            hitExtraDrawingIndex = -1;
 
             hitDrawingKeyframe = null;
             hitDrawing = null;
         }
         public void SelectExtraDrawing(AbstractDrawing drawing)
         {
-            int index = extraDrawings.FindIndex(d => d == drawing);
-            hitExtraDrawingIndex = index;
             hitDrawing = drawing;
         }
         public void AfterDrawingCreation(AbstractDrawing drawing)
@@ -854,25 +843,38 @@ namespace Kinovea.ScreenManager
 
             return hit;
         }
-        public AbstractDrawing IsOnExtraDrawing(Point _MouseLocation, long _iTimestamp)
+        public AbstractDrawing IsOnExtraDrawing(Point point, long timestamp)
         {
             // Check if the mouse is on one of the drawings not attached to any key image.
             // Returns the drawing on which we stand (or null if none), and select it on the way.
             // the caller will then check its type and decide which action to perform.
             
             AbstractDrawing result = null;
-            
-            for(int i=extraDrawings.Count-1;i>=0;i--)
+
+            foreach (DrawingChrono chrono in chronoManager.Drawings)
+            {
+                int hit = chrono.HitTest(point, timestamp, coordinateSystem, coordinateSystem.Zooming);
+                if (hit < 0)
+                    continue;
+
+                result = chrono;
+                hitDrawing = chrono;
+                break;
+            }
+
+            if (result != null)
+                return result;
+
+            for(int i = extraDrawings.Count - 1; i >= 0; i--)
             {
                 AbstractDrawing candidate = extraDrawings[i];
-                int hitRes = candidate.HitTest(_MouseLocation, _iTimestamp, coordinateSystem, coordinateSystem.Zooming);
-                if(hitRes >= 0)
-                {
-                    hitExtraDrawingIndex = i;
-                    result = candidate;
-                    hitDrawing = candidate;
-                    break;
-                }
+                int hitRes = candidate.HitTest(point, timestamp, coordinateSystem, coordinateSystem.Zooming);
+                if (hitRes < 0)
+                    continue;
+                
+                result = candidate;
+                hitDrawing = candidate;
+                break;
             }
             
             return result;
@@ -967,11 +969,8 @@ namespace Kinovea.ScreenManager
 
             bool isOnDrawing = false;
             Keyframe keyframe = keyframes[keyFrameIndex];
-            
-            hitDrawingFrameIndex = -1;
-            hitDrawingIndex = -1;
-            hitDrawingKeyframe = null;
-            hitDrawing = null;
+
+            UnselectAll();
             
             int currentDrawing = 0;
             int hitResult = -1;
@@ -1005,6 +1004,9 @@ namespace Kinovea.ScreenManager
         private int GetExtraDrawingsContentHash()
         {
             int hash = 0;
+            foreach (DrawingChrono chrono in chronoManager.Drawings)
+                hash ^= chrono.ContentHash;
+
             foreach (AbstractDrawing ad in extraDrawings)
                 hash ^= ad.ContentHash;
 
@@ -1034,9 +1036,6 @@ namespace Kinovea.ScreenManager
             };
             
             spotlightManager.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
-
-            // Temporary hack while the list of chronometers is duplicated between the chronoManager and the extra drawing.
-            chronoManager.SetMetadata(this);
         }
         private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {

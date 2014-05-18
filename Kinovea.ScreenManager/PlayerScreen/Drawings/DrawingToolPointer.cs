@@ -137,32 +137,31 @@ namespace Kinovea.ScreenManager
             // If a Drawing is under a Trajectory or Chrono, we have to be able to move it around...
             //--------------------------------------------------------------------------------------
 
-            bool hit = true;
             manipulationType = ManipulationType.None;
-
             metadata.UnselectAll();
 
             // Hit testing doesn't need subpixel accuracy.
             Point coords = mouseCoordinates.ToPoint();
 
-            if (!IsOnDrawing(metadata, activeKeyFrameIndex, coords, currentTimeStamp, allFrames))
-            {
-                if (!IsOnTrack(metadata, coords, currentTimeStamp))
-                {
-                    if (!IsOnExtraDrawing(metadata, coords, currentTimeStamp))
-                    {
-                        // Moving the whole image (Direct Zoom)
-                        selectedObjectType = SelectedObjectType.None;
-                        hit = false;
-                    }
-                }
-            }
-            
             // Store position (descaled: in original image coords).
             lastPoint.X = mouseCoordinates.X;
             lastPoint.Y = mouseCoordinates.Y;
 
-            return hit;
+            if (IsOnDrawing(metadata, activeKeyFrameIndex, coords, currentTimeStamp, allFrames))
+                return true;
+
+            if (IsOnTrack(metadata, coords, currentTimeStamp))
+                return true;
+
+            if (IsOnChronometer(metadata, coords, currentTimeStamp))
+                return true;
+            
+            if (IsOnExtraDrawing(metadata, coords, currentTimeStamp))
+                return true;
+
+            // Moving the whole image (Direct Zoom)
+            selectedObjectType = SelectedObjectType.None;
+            return false;
         }
         public bool OnMouseMove(Metadata metadata, PointF mouseLocation, Point newDirectZoomTopLeft, Keys modifiers)
         {
@@ -199,12 +198,9 @@ namespace Kinovea.ScreenManager
                         switch (selectedObjectType)
                         {
                             case SelectedObjectType.ExtraDrawing:
-                                if (metadata.SelectedExtraDrawing >= 0)
-                                    metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, modifiers, metadata.CoordinateSystem.Zooming);
-                                break;
                             case SelectedObjectType.Drawing:
-                                if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
-                                    metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveDrawing(deltaX, deltaY, modifiers, metadata.CoordinateSystem.Zooming);
+                                if (metadata.HitDrawing != null)
+                                    metadata.HitDrawing.MoveDrawing(deltaX, deltaY, modifiers, metadata.CoordinateSystem.Zooming);
                                 break;
                             default:
                                 isMovingAnObject = false;
@@ -217,12 +213,9 @@ namespace Kinovea.ScreenManager
                         switch (selectedObjectType)
                         {
                             case SelectedObjectType.ExtraDrawing:
-                                if (metadata.SelectedExtraDrawing >= 0)
-                                    metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveHandle(mouseLocation, resizingHandle, modifiers);		
-                                break;
                             case SelectedObjectType.Drawing:
-                                if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
-                                    metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveHandle(mouseLocation, resizingHandle, modifiers);
+                                if (metadata.HitDrawing != null)
+                                    metadata.HitDrawing.MoveHandle(mouseLocation, resizingHandle, modifiers);
                                 break;
                             default:
                                 isMovingAnObject = false;
@@ -329,7 +322,7 @@ namespace Kinovea.ScreenManager
             bool isOnDrawing = false;
             int hitResult = -1;
             int currentDrawing = 0;
-
+            
             while (hitResult < 0 && currentDrawing < metadata.ExtraDrawings.Count)
             {
                 hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
@@ -342,7 +335,7 @@ namespace Kinovea.ScreenManager
 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.ExtraDrawing;
-                metadata.SelectedExtraDrawing = currentDrawing;
+                metadata.SelectExtraDrawing(metadata.ExtraDrawings[currentDrawing]);
                     
                 if (hitResult > 0)
                 {
@@ -355,6 +348,35 @@ namespace Kinovea.ScreenManager
                 }
             }
             
+            return isOnDrawing;
+        }
+        private bool IsOnChronometer(Metadata metadata, Point point, long currentTimestamp)
+        {
+            bool isOnDrawing = false;
+            int hitResult = -1;
+            foreach (AbstractDrawing drawing in metadata.ChronoManager.Drawings)
+            {
+                hitResult = drawing.HitTest(point, currentTimestamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
+                if (hitResult < 0)
+                    continue;
+
+                isOnDrawing = true;
+                selectedObjectType = SelectedObjectType.ExtraDrawing;
+                metadata.SelectExtraDrawing(drawing);
+
+                if (hitResult > 0)
+                {
+                    manipulationType = ManipulationType.Resize;
+                    resizingHandle = hitResult;
+                }
+                else
+                {
+                    manipulationType = ManipulationType.Move;
+                }
+
+                break;
+            }
+
             return isOnDrawing;
         }
         private bool IsOnTrack(Metadata metadata, Point mouseCoordinates, long currentTimeStamp)
@@ -376,7 +398,7 @@ namespace Kinovea.ScreenManager
 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.ExtraDrawing;
-                metadata.SelectedExtraDrawing = i;
+                metadata.SelectExtraDrawing(trk);
 
                 manipulationType = ManipulationType.Move;
 

@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager.Deprecated
         {
             this.view = view;
             this.metadata = metadata;
-            this.multiDrawing = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as AbstractMultiDrawing;
+            //this.multiDrawing = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as AbstractMultiDrawing;
             this.drawingItem = multiDrawing.SelectedItem;
         }
 

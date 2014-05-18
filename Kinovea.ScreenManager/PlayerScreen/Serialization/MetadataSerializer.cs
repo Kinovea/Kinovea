@@ -416,12 +416,8 @@ namespace Kinovea.ScreenManager
         private void WriteChronos(XmlWriter w)
         {
             bool atLeastOne = false;
-            foreach (AbstractDrawing ad in metadata.ExtraDrawings)
-            {
-                DrawingChrono dc = ad as DrawingChrono;
-                if (dc == null)
-                    continue;
-                
+            foreach (DrawingChrono chrono in metadata.ChronoManager.Drawings)
+            {   
                 if (!atLeastOne)
                 {
                     w.WriteStartElement("Chronos");
@@ -429,7 +425,7 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteStartElement("Chrono");
-                dc.WriteXml(w);
+                chrono.WriteXml(w);
                 w.WriteEndElement();
             }
 

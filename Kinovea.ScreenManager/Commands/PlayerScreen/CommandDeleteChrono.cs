@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager.Deprecated
         {
             this.view = view;
             this.metadata = metadata;
-            this.chrono = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingChrono;
+            //this.chrono = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingChrono;
         }
         #endregion
 
@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager.Deprecated
             if (chrono == null)
                 return;
             
-            metadata.ExtraDrawings.Remove(chrono);
+            //metadata.ExtraDrawings.Remove(chrono);
             view.DoInvalidate();
         }
         public void Unexecute()
@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager.Deprecated
             if (chrono == null)
                 return;
             
-            metadata.ExtraDrawings.Add(chrono);
+            //metadata.ExtraDrawings.Add(chrono);
             view.DoInvalidate();
         }
     }

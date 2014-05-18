@@ -3076,26 +3076,30 @@ namespace Kinovea.ScreenManager
                 FlushMagnifierOnGraphics(_sourceImage, g, m_FrameServer.CoordinateSystem);
             }
         }
-        private void FlushDrawingsOnGraphics(Graphics _canvas, CoordinateSystem _transformer, int _iKeyFrameIndex, long _iPosition)
+        private void FlushDrawingsOnGraphics(Graphics canvas, CoordinateSystem transformer, int keyFrameIndex, long time)
         {
             // Prepare for drawings
-            _canvas.SmoothingMode = SmoothingMode.AntiAlias;
-            _canvas.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            canvas.SmoothingMode = SmoothingMode.AntiAlias;
+            canvas.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-            // 1. Extra (non attached to any key image).
-            for (int i = 0; i < m_FrameServer.Metadata.ExtraDrawings.Count; i++)
+            foreach (DrawingChrono chrono in m_FrameServer.Metadata.ChronoManager.Drawings)
             {
-                bool selected = (i == m_FrameServer.Metadata.SelectedExtraDrawing);
-                m_FrameServer.Metadata.ExtraDrawings[i].Draw(_canvas, _transformer, selected, _iPosition);
+                bool selected = m_FrameServer.Metadata.HitDrawing == chrono;
+                chrono.Draw(canvas, transformer, selected, time);
+            }
+
+            foreach (AbstractDrawing drawing in m_FrameServer.Metadata.ExtraDrawings)
+            {
+                bool selected = m_FrameServer.Metadata.HitDrawing == drawing;
+                drawing.Draw(canvas, transformer, selected, time);
             }
             
-            // 2. Drawings attached to key images.
             if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled)
             {
                 // If fading is on, we ask all drawings to draw themselves with their respective
                 // fading factor for this position.
 
-                int[] zOrder = m_FrameServer.Metadata.GetKeyframesZOrder(_iPosition);
+                int[] zOrder = m_FrameServer.Metadata.GetKeyframesZOrder(time);
 
                 // Draw in reverse keyframes z order so the closest next keyframe gets drawn on top (last).
                 for (int ikf = zOrder.Length-1; ikf >= 0 ; ikf--)
@@ -3104,18 +3108,18 @@ namespace Kinovea.ScreenManager
                     for (int idr = kf.Drawings.Count - 1; idr >= 0; idr--)
                     {
                         bool bSelected = (zOrder[ikf] == m_FrameServer.Metadata.SelectedDrawingFrame && idr == m_FrameServer.Metadata.SelectedDrawing);
-                        kf.Drawings[idr].Draw(_canvas, _transformer, bSelected, _iPosition);
+                        kf.Drawings[idr].Draw(canvas, transformer, bSelected, time);
                     }
                 }
             }
-            else if (_iKeyFrameIndex >= 0)
+            else if (keyFrameIndex >= 0)
             {
                 // if fading is off, only draw the current keyframe.
                 // Draw all drawings in reverse order to get first object on the top of Z-order.
-                for (int i = m_FrameServer.Metadata[_iKeyFrameIndex].Drawings.Count - 1; i >= 0; i--)
+                for (int i = m_FrameServer.Metadata[keyFrameIndex].Drawings.Count - 1; i >= 0; i--)
                 {
-                    bool bSelected = (_iKeyFrameIndex == m_FrameServer.Metadata.SelectedDrawingFrame && i == m_FrameServer.Metadata.SelectedDrawing);
-                    m_FrameServer.Metadata[_iKeyFrameIndex].Drawings[i].Draw(_canvas, _transformer, bSelected, _iPosition);
+                    bool bSelected = (keyFrameIndex == m_FrameServer.Metadata.SelectedDrawingFrame && i == m_FrameServer.Metadata.SelectedDrawing);
+                    m_FrameServer.Metadata[keyFrameIndex].Drawings[i].Draw(canvas, transformer, bSelected, time);
                 }
             }
             else
@@ -3754,9 +3758,10 @@ namespace Kinovea.ScreenManager
         #region Tracking Menus
         private void mnuStopTracking_Click(object sender, EventArgs e)
         {
-            DrawingTrack trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as DrawingTrack;
+            DrawingTrack trk = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
             if(trk != null)
                 trk.StopTracking();
+
             CheckCustomDecodingSize(false);
             DoInvalidate();
         }
@@ -3771,7 +3776,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuRestartTracking_Click(object sender, EventArgs e)
         {
-            DrawingTrack trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as DrawingTrack;
+            DrawingTrack trk = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
             if(trk == null)
                 return;
             
@@ -3794,7 +3799,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
         {
-            DrawingTrack trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as DrawingTrack;
+            DrawingTrack trk = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
             if(trk == null)
                 return;
 
@@ -3874,31 +3879,41 @@ namespace Kinovea.ScreenManager
         #region Chronometers Menus
         private void mnuChronoStart_Click(object sender, EventArgs e)
         {
-            IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, ChronoModificationType.TimeStart, m_iCurrentPosition);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(cmc);
+            DrawingChrono chrono = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
+            if (chrono == null)
+                return;
+
+            chrono.Start(m_iCurrentPosition);
+            UpdateFramesMarkers();
         }
         private void mnuChronoStop_Click(object sender, EventArgs e)
         {
-            IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, ChronoModificationType.TimeStop, m_iCurrentPosition);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(cmc);
+            DrawingChrono chrono = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
+            if (chrono == null)
+                return;
+
+            chrono.Stop(m_iCurrentPosition);
             UpdateFramesMarkers();
         }
         private void mnuChronoHide_Click(object sender, EventArgs e)
         {
-            IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, ChronoModificationType.TimeHide, m_iCurrentPosition);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(cmc);
+            DrawingChrono chrono = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
+            if (chrono == null)
+                return;
+
+            chrono.Hide(m_iCurrentPosition);
+            UpdateFramesMarkers();
         }
         private void mnuChronoCountdown_Click(object sender, EventArgs e)
         {
             // This menu should only be accessible if we have a "Stop" value.
+
+            DrawingChrono chrono = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
+            if (chrono == null)
+                return;
+
             mnuChronoCountdown.Checked = !mnuChronoCountdown.Checked;
-            
-            IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, ChronoModificationType.Countdown, mnuChronoCountdown.Checked ? 1 : 0);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(cmc);
+            chrono.CountDown = mnuChronoCountdown.Checked;
             
             DoInvalidate();
         }
@@ -3913,7 +3928,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuChronoConfigure_Click(object sender, EventArgs e)
         {
-            DrawingChrono dc = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as DrawingChrono;
+            DrawingChrono dc = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
             if(dc != null)
             {
                 // Change this chrono display.

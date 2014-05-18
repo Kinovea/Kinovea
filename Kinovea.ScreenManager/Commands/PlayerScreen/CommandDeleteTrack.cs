@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
         {
             this.view = view;
             this.metadata = metadata;
-            this.track = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingTrack;
+            //this.track = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingTrack;
         }
 
         public void Execute()
@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
             if (track == null)
                 return;
             
-            metadata.ExtraDrawings.Remove(track);
+            //metadata.ExtraDrawings.Remove(track);
             view.DoInvalidate();
         }
 
@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
             if (track == null)
                 return;
             
-            metadata.ExtraDrawings.Add(track);
+            //metadata.ExtraDrawings.Add(track);
             view.DoInvalidate();
         }
     }

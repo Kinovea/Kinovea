@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
         {
             this.view = view;
             this.metadata = metadata;
-            this.track = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingTrack;
+            //this.track = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingTrack;
             this.framePosition = framePosition;
         }
 
