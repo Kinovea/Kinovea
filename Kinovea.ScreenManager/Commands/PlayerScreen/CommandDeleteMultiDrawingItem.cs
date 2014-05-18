@@ -23,7 +23,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
     public class CommandDeleteMultiDrawingItem : IUndoableCommand
     {
@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
             if (drawingItem == null)
                 return;
             
-            multiDrawing.Remove(drawingItem);
+            //multiDrawing.Remove(drawingItem);
             view.DoInvalidate();
         }
         public void Unexecute()
@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
             if (drawingItem == null)
                 return;
             
-            multiDrawing.Add(drawingItem);
+            //multiDrawing.Add(drawingItem);
             view.DoInvalidate();
         }
     }

@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.Services;
+using System.Xml.Serialization;
 
 namespace Kinovea.ScreenManager
 {
@@ -32,13 +33,10 @@ namespace Kinovea.ScreenManager
     /// AutoNumber. (MultiDrawingItem of AutoNumberManager)
     /// Describe and draw a single autonumber.
     /// </summary>
-    public class AutoNumber : IKvaSerializable
+    [XmlType("AutoNumber")]
+    public class AutoNumber : AbstractMultiDrawingItem, IKvaSerializable
     {
         #region Properties
-        public Guid Id
-        {
-            get { return id; }
-        }
         public int Value 
         {
             get { return value;}
@@ -47,51 +45,45 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private long position;
-        private Guid id = Guid.NewGuid();
         private RoundedRectangle background = new RoundedRectangle();   // <-- Also used as a simple ellipsis-defining rectangle when value < 10.
         private InfosFading infosFading;
         private int value = 1;
-        private StyleHelper styleHelper;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
-        public AutoNumber(long position, long averageTimeStampsPerFrame, Point location, int value, StyleHelper styleHelper)
+        public AutoNumber(long position, long averageTimeStampsPerFrame, PointF location, int value)
         {
             this.position = position;
-            background.Rectangle = new Rectangle(location, Size.Empty);
+            background.Rectangle = new RectangleF(location, SizeF.Empty);
             this.value = value;
 
             infosFading = new InfosFading(position, averageTimeStampsPerFrame);
             infosFading.UseDefault = false;
             infosFading.FadingFrames = 25;
-
-            this.styleHelper = styleHelper;
-            
-            SetText(value.ToString());
         }
-        public AutoNumber(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, long averageTimeStampsPerFrame, StyleHelper styleHelper)
-            : this(0, 0, Point.Empty, 0, styleHelper)
+        public AutoNumber(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, long averageTimeStampsPerFrame)
+            : this(0, 0, Point.Empty, 0)
         {
              ReadXml(xmlReader, scale, timestampMapper);
              
              infosFading = new InfosFading(position, averageTimeStampsPerFrame);
              infosFading.UseDefault = false;
              infosFading.FadingFrames = 25;
-             
-             SetText(value.ToString());
         }
         #endregion
         
         #region Public methods
-        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, long timestamp)
+        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, StyleHelper styleHelper)
         {
             double fOpacityFactor = infosFading.GetOpacityFactor(timestamp);
             if(fOpacityFactor <= 0)
                 return;
         
             int alpha = (int)(255 * fOpacityFactor);
-            
+
+            //SetText(styleHelper);
+
             using(SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(fOpacityFactor * 255)))
             using(SolidBrush brushFront = styleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
             using(Pen penContour = styleHelper.GetForegroundPen((int)(fOpacityFactor * 255)))
@@ -154,7 +146,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (xmlReader.MoveToAttribute("id"))
-                id = new Guid(xmlReader.ReadContentAsString());
+                identifier = new Guid(xmlReader.ReadContentAsString());
 
             xmlReader.ReadStartElement();
             
@@ -190,8 +182,10 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Private methods
-        private void SetText(string text)
+        private void SetText(StyleHelper styleHelper)
         {
+            string text = value.ToString();
+
             using(Button but = new Button())
             using(Graphics g = but.CreateGraphics())
             using(Font f = styleHelper.GetFont(1.0F))

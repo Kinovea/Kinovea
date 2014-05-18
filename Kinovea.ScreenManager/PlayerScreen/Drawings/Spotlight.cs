@@ -26,6 +26,7 @@ using System.Globalization;
 using System.Xml;
 
 using Kinovea.Services;
+using System.Xml.Serialization;
 
 namespace Kinovea.ScreenManager
 {
@@ -33,7 +34,8 @@ namespace Kinovea.ScreenManager
     /// SpotLight. (MultiDrawingItem of SpotlightManager)
     /// Describe and draw a single spotlight.
     /// </summary>
-    public class Spotlight : IKvaSerializable, ITrackable
+    [XmlType ("Spotlight")]
+    public class Spotlight : AbstractMultiDrawingItem, IKvaSerializable, ITrackable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
@@ -41,7 +43,6 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private long position;
-        private Guid id = Guid.NewGuid();
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         private int radius;
@@ -54,7 +55,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public Spotlight(long position, long averageTimeStampsPerFrame, Point center)
+        public Spotlight(long position, long averageTimeStampsPerFrame, PointF center)
         {
             this.position = position;
             points["o"] = center;
@@ -144,10 +145,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ITrackable implementation and support.
-        public Guid Id
-        {
-            get { return id; }
-        }
         public TrackingProfile CustomTrackingProfile
         {
             get { return null; }
@@ -198,14 +195,11 @@ namespace Kinovea.ScreenManager
         #region KVA Serialization
         private void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timeStampMapper)
         {
-            if(timeStampMapper == null)
-            {
-                xmlReader.ReadOuterXml();
-                return;                
-            }
-
+            if (timeStampMapper == null)
+                timeStampMapper = (t, b) => t;
+            
             if (xmlReader.MoveToAttribute("id"))
-                id = new Guid(xmlReader.ReadContentAsString());
+                identifier = new Guid(xmlReader.ReadContentAsString());
 
             xmlReader.ReadStartElement();
             

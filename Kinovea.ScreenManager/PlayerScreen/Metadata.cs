@@ -54,6 +54,9 @@ namespace Kinovea.ScreenManager
         public EventHandler KeyframeDeleted;
         public EventHandler<DrawingEventArgs> DrawingAdded;
         public EventHandler DrawingDeleted;
+        public EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdded;
+        public EventHandler MultiDrawingItemDeleted;
+
 
         public RelayCommand<ITrackable> AddTrackableDrawingCommand { get; set; }
         public RelayCommand<ITrackable> DeleteTrackableDrawingCommand { get; set; }
@@ -482,6 +485,14 @@ namespace Kinovea.ScreenManager
             if (DrawingAdded != null)
                 DrawingAdded(this, new DrawingEventArgs(drawing, hitDrawingFrameIndex));
         }
+        public void AddMultidrawingItem(AbstractMultiDrawing manager, AbstractMultiDrawingItem item)
+        {
+            manager.Add(item);
+            SelectExtraDrawing(manager);
+
+            if (MultiDrawingItemAdded != null)
+                MultiDrawingItemAdded(this, new MultiDrawingItemEventArgs(item, manager));
+        }
         public void AddImageDrawing(string filename, bool isSVG, long time)
         {
             // TODO: Use a drawing tool to do that ?
@@ -579,7 +590,16 @@ namespace Kinovea.ScreenManager
             if (DrawingDeleted != null)
                 DrawingDeleted(this, EventArgs.Empty);
         }
-        
+        public void DeleteMultiDrawingItem(AbstractMultiDrawing manager, Guid itemId)
+        {
+            // check if trackable.
+
+            manager.Remove(itemId);
+            UnselectAll();
+
+            if (MultiDrawingItemDeleted != null)
+                MultiDrawingItemDeleted(this, EventArgs.Empty);
+        }
         private void DeleteTrackableDrawing(ITrackable drawing)
         {
             trackabilityManager.Remove(drawing);
@@ -644,18 +664,18 @@ namespace Kinovea.ScreenManager
             foreach (DrawingText label in Labels())
                 label.SetEditMode(false, null);
         }
-        public void PerformTracking(VideoFrame _current)
+        public void PerformTracking(VideoFrame videoframe)
         {
             foreach(DrawingTrack t in Tracks())
                 if (t.Status == TrackStatus.Edit)
-                    t.TrackCurrentPosition(_current);
+                    t.TrackCurrentPosition(videoframe);
         }
         public void StopAllTracking()
         {
             foreach(DrawingTrack t in Tracks())
                 t.StopTracking();
         }
-        public void UpdateTrackPoint(Bitmap _bmp)
+        public void UpdateTrackPoint(Bitmap bitmap)
         {
             // Happens when mouse up and editing a track.
             if(hitExtraDrawingIndex < 0)
@@ -663,7 +683,7 @@ namespace Kinovea.ScreenManager
             
             DrawingTrack t = extraDrawings[hitExtraDrawingIndex] as DrawingTrack;
             if(t != null && (t.Status == TrackStatus.Edit || t.Status == TrackStatus.Configuration))
-                t.UpdateTrackPoint(_bmp);
+                t.UpdateTrackPoint(bitmap);
         }
         public int GetContentHash()
         {
@@ -674,10 +694,6 @@ namespace Kinovea.ScreenManager
             referenceHash = GetContentHash();
             autoSaver.Clear();
             log.Debug(String.Format("Metadata content hash reset:{0}.", referenceHash));
-        }
-        public List<Bitmap> GetFullImages()
-        {
-            return keyframes.Select(kf => kf.FullFrame).ToList();
         }
         public void ResizeFinished()
         {
@@ -949,10 +965,6 @@ namespace Kinovea.ScreenManager
             }
 
             return isOnDrawing;
-        }
-        private int ActiveKeyframes()
-        {
-            return keyframes.Count(kf => !kf.Disabled);
         }
         private int GetKeyframesContentHash()
         {

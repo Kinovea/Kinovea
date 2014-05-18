@@ -266,12 +266,14 @@ namespace Kinovea.ScreenManager
             // For example when adding a drawing, the UI raise an event that we handle here, then the Metadata performs the actual code,
             // and the post init for trackable drawings is handled there by calling a command that is implemented here.
             
-            // Event coming from the view, these should push a memento on the history stack.
+            // Requests for metadata modification coming from the view, these should push a memento on the history stack.
             view.KeyframeAdding += View_KeyframeAdding;
             view.KeyframeDeleting += View_KeyframeDeleting;
             view.DrawingAdding += View_DrawingAdding;
             view.DrawingDeleting += View_DrawingDeleting;
-            
+            view.MultiDrawingItemAdding += View_MultiDrawingItemAdding;
+            view.MultiDrawingItemDeleting += View_MultiDrawingItemDeleting;
+
             view.CommandProcessed += (s, e) => OnCommandProcessed(e);
             
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
@@ -283,7 +285,8 @@ namespace Kinovea.ScreenManager
             
             frameServer.Metadata.AddTrackableDrawingCommand = new RelayCommand<ITrackable>(AddTrackableDrawing);
         }
- 
+
+        #region Requests for Metadata modification coming from the view
         private void View_KeyframeAdding(object sender, TimeEventArgs e)
         {
             if (frameServer.CurrentImage == null)
@@ -330,8 +333,22 @@ namespace Kinovea.ScreenManager
             historyStack.PushNewCommand(memento);
         }
 
+        private void View_MultiDrawingItemAdding(object sender, MultiDrawingItemEventArgs e)
+        {
+            HistoryMemento memento = new HistoryMementoAddMultiDrawingItem(frameServer.Metadata, e.Manager, e.Item.Id);
+            frameServer.Metadata.AddMultidrawingItem(e.Manager, e.Item);
+            historyStack.PushNewCommand(memento);
+        }
+        private void View_MultiDrawingItemDeleting(object sender, MultiDrawingItemEventArgs e)
+        {
+            HistoryMemento memento = new HistoryMementoDeleteMultiDrawingItem(frameServer.Metadata, e.Manager, e.Item.Id);
+            frameServer.Metadata.DeleteMultiDrawingItem(e.Manager, e.Item.Id);
+            historyStack.PushNewCommand(memento);
+        }
+        #endregion
+
         #region IPlayerScreenUIHandler (and IScreenUIHandler) implementation
-        
+
         // TODO: turn all these dependencies into commands.
         
         public void ScreenUI_CloseAsked()

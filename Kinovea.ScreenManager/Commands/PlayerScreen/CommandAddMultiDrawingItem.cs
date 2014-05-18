@@ -22,7 +22,7 @@ using System;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
     public class CommandAddMultiDrawingItem : IUndoableCommand
     {
@@ -52,13 +52,13 @@ namespace Kinovea.ScreenManager
             if (multiDrawing.Count == totalDrawings)
                 return;
             
-            multiDrawing.Add(drawingItem);
+            //multiDrawing.Add(drawingItem);
             doInvalidate();
         }
         public void Unexecute()
         {
-            multiDrawing.Remove(drawingItem);
-            doUndrawn();
+            //multiDrawing.Remove(drawingItem);
+            //doUndrawn();
             doInvalidate();
         }
     }

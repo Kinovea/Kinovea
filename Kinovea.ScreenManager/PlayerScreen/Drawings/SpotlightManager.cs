@@ -25,6 +25,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Xml;
+using System.Linq;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -51,7 +52,7 @@ namespace Kinovea.ScreenManager
         {
             get { return 0; }
         } 
-        public override object SelectedItem 
+        public override AbstractMultiDrawingItem SelectedItem 
         {
             get 
             {
@@ -86,6 +87,7 @@ namespace Kinovea.ScreenManager
         private List<Spotlight> spotlights = new List<Spotlight>();
         private int selected = -1;
         private static readonly int defaultBackgroundAlpha = 150; // <-- opacity of the dim layer. Higher value => darker.
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region AbstractDrawing Implementation
@@ -162,7 +164,15 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractMultiDrawing Implementation
-        public override void Add(object item)
+        public override AbstractMultiDrawingItem GetNewItem(PointF point, long position, long averageTimeStampsPerFrame)
+        {
+            return new Spotlight(position, averageTimeStampsPerFrame, point);
+        }
+        public override AbstractMultiDrawingItem GetItem(Guid id)
+        {
+            return spotlights.FirstOrDefault(n => n.Id == id);
+        }
+        public override void Add(AbstractMultiDrawingItem item)
         {
             Spotlight spotlight = item as Spotlight;
             if(spotlight == null)
@@ -174,17 +184,10 @@ namespace Kinovea.ScreenManager
             if(TrackableDrawingAdded != null)
                 TrackableDrawingAdded(this, new TrackableDrawingEventArgs(spotlight));
         }
-        public override void Remove(object item)
+        public override void Remove(Guid id)
         {
-            Spotlight spotlight = item as Spotlight;
-            if(spotlight == null)
-                return;
-            
-            spotlights.Remove(spotlight);
+            spotlights.RemoveAll(s => s.Id == id);
             selected = -1;
-            
-            if(TrackableDrawingDeleted != null)
-                TrackableDrawingDeleted(this, new TrackableDrawingEventArgs(spotlight));
         }
         public override void Clear()
         {
@@ -207,25 +210,34 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
-        public void Add(Point point, long position, long averageTimeStampsPerFrame)
+        public void ReadXml(XmlReader r, Metadata metadata, PointF scale, TimestampMapper timestampMapper, long averageTimeStampsPerFrame)
         {
-            // Equivalent to GetNewDrawing() for regular drawing tools.
-            Spotlight spotlight = new Spotlight(position, averageTimeStampsPerFrame, point);
-            spotlights.Add(spotlight);
-            selected = spotlights.Count - 1;
-            
-            if(TrackableDrawingAdded != null)
-                TrackableDrawingAdded(this, new TrackableDrawingEventArgs(spotlight));
+            Clear();
+
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                if (r.Name == "Spotlight")
+                {
+                    AbstractMultiDrawingItem item = MultiDrawingItemSerializer.Deserialize(r, scale, timestampMapper, averageTimeStampsPerFrame);
+                    Spotlight spotlight = item as Spotlight;
+                    if (spotlight != null)
+                        metadata.AddMultidrawingItem(this, spotlight);
+                }
+                else
+                {
+                    string unparsed = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                }
+            }
+
+            r.ReadEndElement();
         }
         public void WriteXml(XmlWriter w)
         {
-            foreach(Spotlight spot in spotlights)
-            {
-                w.WriteStartElement("Spotlight");
-                w.WriteAttributeString("id", spot.Id.ToString());
-                spot.WriteXml(w);
-                w.WriteEndElement();
-            }
+            foreach (Spotlight spot in spotlights)
+                DrawingSerializer.Serialize(w, spot as IKvaSerializable);
         }
         #endregion
     }
