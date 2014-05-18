@@ -48,6 +48,9 @@ namespace Kinovea.ScreenManager
         
         private void RenderExtraDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
         {
+            foreach (AbstractDrawing ad in metadata.ChronoManager.Drawings)
+                ad.Draw(canvas, transformer, false, timestamp);
+
             foreach(AbstractDrawing ad in metadata.ExtraDrawings)
                 ad.Draw(canvas, transformer, false, timestamp);
         }

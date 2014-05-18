@@ -404,20 +404,20 @@ namespace Kinovea.ScreenManager
             // X will be the left coordinate, Y the width.
             chronosMarks.Clear();
             tracksMarks.Clear();
+            foreach (DrawingChrono chrono in metadata.ChronoManager.Drawings)
+            {
+                if (chrono.TimeStart != long.MaxValue && chrono.TimeStop != long.MaxValue)
+                {
+                    // Only chronos that have an end and something inside the selection.
+                    if (chrono.TimeStart <= maximum && chrono.TimeStop >= minimum)
+                        chronosMarks.Add(GetMarkerRange(chrono.TimeStart, chrono.TimeStop));
+                }
+            }
+
             foreach(AbstractDrawing ad in metadata.ExtraDrawings)
             {
-                DrawingChrono chrono = ad as DrawingChrono;
                 DrawingTrack trk = ad as DrawingTrack;
-                if(chrono != null)
-                {
-                    if(chrono.TimeStart != long.MaxValue && chrono.TimeStop != long.MaxValue)
-                    {
-                        // Only chronos that have an end and something inside the selection.
-                        if(chrono.TimeStart <= maximum && chrono.TimeStop >= minimum)
-                            chronosMarks.Add(GetMarkerRange(chrono.TimeStart, chrono.TimeStop));
-                    }
-                }
-                else if(trk != null)
+                if(trk != null)
                 {
                     if(trk.BeginTimeStamp <= maximum && trk.EndTimeStamp >= minimum)
                         tracksMarks.Add(GetMarkerRange(trk.BeginTimeStamp, trk.EndTimeStamp));

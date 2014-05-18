@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
             // In the special case of Countdown toggle, the new value will be 0 -> false, true otherwise .
             this.view = view;
             this.metadata = metadata;
-            this.chrono = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingChrono;
+            //this.chrono = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingChrono;
             this.newValue = newValue;
             this.modificationType = modificationType;
 

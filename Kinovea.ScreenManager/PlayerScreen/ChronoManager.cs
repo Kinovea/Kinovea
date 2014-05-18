@@ -13,9 +13,13 @@ namespace Kinovea.ScreenManager
             set { id = value; }
         }
 
-        private List<DrawingChrono> chronos = new List<DrawingChrono>();
+        public List<AbstractDrawing> Drawings
+        {
+            get { return chronos; }
+        }
+
+        private List<AbstractDrawing> chronos = new List<AbstractDrawing>();
         private Guid id = Guid.NewGuid();
-        private Metadata metadata;
 
         public override AbstractDrawing GetDrawing(Guid id)
         {
@@ -27,21 +31,12 @@ namespace Kinovea.ScreenManager
             if (!(drawing is DrawingChrono))
                 return;
 
-            chronos.Add(drawing as DrawingChrono);
+            chronos.Add(drawing);
         }
 
         public override void RemoveDrawing(Guid id)
         {
             chronos.RemoveAll(c => c.Id == id);
-
-            // Temporary hack while the list of chronometers is duplicated between the chronoManager and the extra drawing.
-            metadata.ExtraDrawings.RemoveAll(c => c.Id == id);
-        }
-
-        public void SetMetadata(Metadata metadata)
-        {
-            // Temporary hack while the list of chronometers is duplicated between the chronoManager and the extra drawing.
-            this.metadata = metadata;
         }
     }
 }

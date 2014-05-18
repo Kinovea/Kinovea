@@ -41,26 +41,26 @@ namespace Kinovea.ScreenManager.Deprecated
             this.doInvalidate = invalidate;
         	this.doUndrawn = undrawn;
             this.metadata = metadata;
-            chrono = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingChrono;
+            //chrono = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingChrono;
         }
 
         public void Execute()
         {
-            if (chrono == null || metadata.ExtraDrawings.IndexOf(chrono) != -1)
+            /*if (chrono == null || metadata.ExtraDrawings.IndexOf(chrono) != -1)
                 return;
         		
         	metadata.AddChrono(chrono);
-        	doInvalidate();
+        	doInvalidate();*/
         }
 
         public void Unexecute()
         {
-            if (chrono == null)
+            /*if (chrono == null)
                 return;
             
             metadata.ExtraDrawings.Remove(chrono);
             doUndrawn();
-            doInvalidate();
+            doInvalidate();*/
         }
     }
 }
