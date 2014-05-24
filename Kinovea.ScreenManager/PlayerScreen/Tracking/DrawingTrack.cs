@@ -35,6 +35,7 @@ using System.Xml;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
+using System.Xml.Serialization;
 
 namespace Kinovea.ScreenManager
 {
@@ -49,7 +50,8 @@ namespace Kinovea.ScreenManager
     /// In Edit state: dragging the target moves the point's coordinates.
     /// In Interactive state: dragging the target moves to the next point (in time).
     /// </summary>
-    public class DrawingTrack : AbstractDrawing, IDecorable
+    [XmlType ("Track")]
+    public class DrawingTrack : AbstractDrawing, IDecorable, IScalable, IKvaSerializable
     {
         #region Events
         public event EventHandler TrackerParametersChanged;
@@ -121,6 +123,9 @@ namespace Kinovea.ScreenManager
             get { return tracker.Parameters; }
             set 
             {
+                if (scalingDone)
+                    return;
+
                 tracker.Parameters = value;
                 UpdateBoundingBoxes();
             }
@@ -206,12 +211,13 @@ namespace Kinovea.ScreenManager
         
         // Current state.
         private TrackView trackView = TrackView.Complete;
-        private TrackStatus trackStatus = TrackStatus.Edit;
+        private TrackStatus trackStatus = TrackStatus.Interactive;
         private TrackExtraData trackExtraData = TrackExtraData.None;
         private TrackMarker trackMarker = TrackMarker.Cross;
         private bool displayBestFitCircle;
         private int movingHandler = -1;
         private bool invalid;                                 // Used for XML import.
+        private bool scalingDone;
             
         // Tracker tool.
         private AbstractTracker tracker;
@@ -264,33 +270,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingTrack(Point origin, long t, Bitmap currentImage, Size imageSize)
+        public DrawingTrack(Point origin, long t, DrawingStyle preset)
         {
-            //-----------------------------------------------------------------------------------------
-            // t is absolute time.
-            // _bmp is the whole picture, if null it means we don't need it.
-            // (Probably because we already have a few points that we are importing from xml.
-            // In this case we'll only need the last frame to reconstruct the last point.)
-            //-----------------------------------------------------------------------------------------
-            
-            // Create the first point
-            if (currentImage != null)
-            {
-                TrackerParameters parameters = GetTrackerParameters(currentImage.Size);
-                tracker = new TrackerBlock2(parameters);
-                AbstractTrackPoint atp = tracker.CreateTrackPoint(true, origin, 1.0f, t, currentImage, positions);
-                if(atp != null)
-                    positions.Add(atp);
-                else
-                    untrackable = true;
-            }
-            else
-            {
-                // Happens when loading Metadata from file or demuxing.
-                TrackerParameters parameters = GetTrackerParameters(imageSize);
-                tracker = new TrackerBlock2(parameters);
-                positions.Add(tracker.CreateOrphanTrackPoint(origin, t));
-            }
+            tracker = new TrackerBlock2(GetTrackerParameters(new Size(800, 600)));
+            positions.Add(new TrackPointBlock(origin.X, origin.Y, t));
 
             if(!untrackable)
             {
@@ -306,17 +289,16 @@ namespace Kinovea.ScreenManager
                 infosFading.Enabled = true;
             }
             
-            // Decoration
-            style = new DrawingStyle();
-            style.Elements.Add("color", new StyleElementColor(Color.SeaGreen));
-            style.Elements.Add("line size", new StyleElementLineSize(3));
-            style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
             styleHelper.Color = Color.Black;
             styleHelper.LineSize = 3;
             styleHelper.TrackShape = TrackShape.Dash;
-            BindStyle();
+            if (preset != null)
+            {
+                style = preset.Clone();
+                BindStyle();
+            }
             
-            styleHelper.ValueChanged += mainStyle_ValueChanged;
+            //styleHelper.ValueChanged += mainStyle_ValueChanged;
             ReinitializeMenu();
 
             mnuAnalysis.Click += (s, e) =>
@@ -328,9 +310,8 @@ namespace Kinovea.ScreenManager
             };
         }
 
-        
-        public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Size imageSize)
-            : this(Point.Empty,0, null, imageSize)
+        public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
+            : this(Point.Empty, 0, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -1033,15 +1014,23 @@ namespace Kinovea.ScreenManager
         {
             // Match the previous point in current image.
             // New points to trajectories are always created from here, 
-            // the user can only moves existing points.
-            
-            if (current.Timestamp <= positions.Last().T)
+
+            TrackPointBlock closestFrame = positions.Last() as TrackPointBlock;
+            if (closestFrame == null || current.Timestamp <= closestFrame.T)
                 return;
-            
+
+            if (closestFrame.Template == null)
+            {
+                // Contiuning a track that was imported through kva.
+                PointF location = new PointF(closestFrame.X, closestFrame.Y);
+                AbstractTrackPoint trackPoint = tracker.CreateTrackPoint(true, location, 1.0f, closestFrame.T, current.Image, positions);
+                positions[positions.Count - 1] = trackPoint;
+            }
+
             AbstractTrackPoint p = null;
             bool bMatched = tracker.Track(positions, current.Image, current.Timestamp, out p);
                 
-            if(p==null)
+            if (p == null)
             {
                 StopTracking();
                 return;
@@ -1089,7 +1078,7 @@ namespace Kinovea.ScreenManager
             // The user moved a point that had been previously placed.
             // We need to reconstruct tracking data stored in the point, for later tracking.
             // The coordinate of the point have already been updated during the mouse move.
-            if (positions.Count < 1 || currentPoint < 0)
+            if (currentImage == null || positions.Count < 1 || currentPoint < 0)
                 return;
             
             AbstractTrackPoint current = positions[currentPoint];
@@ -1117,17 +1106,15 @@ namespace Kinovea.ScreenManager
         {
             double similarityThreshold = 0.5;
             double templateUpdateThreshold = 0.8;
-            //double templateUpdateThreshold = 1.0;
             int refinementNeighborhood = 1;
             Size searchWindow = new Size((int)(size.Width * 0.2), (int)(size.Height * 0.2));
             Size blockWindow = new Size((int)(size.Width * 0.05), (int)(size.Height * 0.05));
 
             return new TrackerParameters(similarityThreshold, templateUpdateThreshold, refinementNeighborhood, searchWindow, blockWindow, false);
-            //return new TrackerParameters(new TrackingProfile(), size);
         }
         #endregion
         
-        #region XML import/export
+        #region KVA Serialization
         public void WriteXml(XmlWriter w)
         {
             w.WriteElementString("TimePosition", beginTimeStamp.ToString());
@@ -1215,6 +1202,7 @@ namespace Kinovea.ScreenManager
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             invalid = true;
+            tracker = new TrackerBlock2(GetTrackerParameters(new Size(800, 600)));
                 
             if (timestampMapper == null)
             {
@@ -1222,7 +1210,10 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 return;
             }
-            
+
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
             xmlReader.ReadStartElement();
             
             while(xmlReader.NodeType == XmlNodeType.Element)
@@ -1280,6 +1271,7 @@ namespace Kinovea.ScreenManager
             }
             
             xmlReader.ReadEndElement();
+            scalingDone = true;
             
             if (positions.Count > 0)
             {
@@ -1355,6 +1347,17 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        #region IScalable implementation
+        public void Scale(Size imageSize)
+        {
+            if (scalingDone)
+                return;
+
+            TrackerParameters parameters = GetTrackerParameters(imageSize);
+            tracker = new TrackerBlock2(parameters);
+        }
+        #endregion
+
         #region Miscellaneous public methods
         public void CalibrationChanged()
         {

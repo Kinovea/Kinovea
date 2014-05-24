@@ -81,7 +81,7 @@ namespace Kinovea.ScreenManager
             // The input informations we have at hand are:
             // - The current bitmap we have to find the point into.
             // - The coordinates of all the previous points tracked.
-            // - Previous tracking infos, stored in the TrackPoints tracked so far.
+            // - Previous tracking scores, stored in the TrackPoints tracked so far.
             //---------------------------------------------------------------------
             TrackPointBlock lastTrackPoint = (TrackPointBlock)previousPoints[previousPoints.Count - 1];
             PointF lastPoint = lastTrackPoint.Point;

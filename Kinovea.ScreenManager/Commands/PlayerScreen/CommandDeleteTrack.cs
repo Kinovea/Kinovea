@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
 
         private PlayerScreenUserInterface view;
         private Metadata metadata;
-        private DrawingTrack track;
+        //private DrawingTrack track;
         
         public CommandDeleteTrack(PlayerScreenUserInterface view, Metadata metadata)
         {
@@ -44,8 +44,8 @@ namespace Kinovea.ScreenManager
 
         public void Execute()
         {
-            if (track == null)
-                return;
+            //if (track == null)
+                //return;
             
             //metadata.ExtraDrawings.Remove(track);
             view.DoInvalidate();
@@ -53,8 +53,8 @@ namespace Kinovea.ScreenManager
 
         public void Unexecute()
         {
-            if (track == null)
-                return;
+            //if (track == null)
+                //return;
             
             //metadata.ExtraDrawings.Add(track);
             view.DoInvalidate();

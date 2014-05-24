@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
 
         private PlayerScreenUserInterface view;
         private Metadata metadata;
-        private DrawingTrack track;
+        //private DrawingTrack track;
         private long framePosition;
         public List<AbstractTrackPoint> points;
 
@@ -50,17 +50,17 @@ namespace Kinovea.ScreenManager
             // We store the old end-of-track values only here (and not in the ctor) 
             // because some points may be moved between the undo and 
             // the redo and we'll want to keep teir values.
-            if (track == null)
-                return;
+            //if (track == null)
+                //return;
             
-            points = track.GetEndOfTrack(framePosition);
-            track.ChopTrajectory(framePosition);
+            //points = track.GetEndOfTrack(framePosition);
+            //track.ChopTrajectory(framePosition);
             view.DoInvalidate();
         }
         public void Unexecute()
         {
-            if(points != null && track != null)
-                track.AppendPoints(framePosition, points);
+            //if(points != null && track != null)
+                //track.AppendPoints(framePosition, points);
 
             view.DoInvalidate();
         }

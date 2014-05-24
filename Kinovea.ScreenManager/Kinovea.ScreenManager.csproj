@@ -243,15 +243,7 @@
     <Compile Include="ImageHelper.cs" />
     <Compile Include="ImageToViewportTransformer.cs" />
     <Compile Include="ListExtensions.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandAddDrawing.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandAddKeyframe.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandAddMultiDrawingItem.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandDeleteDrawing.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteKeyframe.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandAddChrono.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandDeleteChrono.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandDeleteMultiDrawingItem.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandModifyChrono.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteTrack.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteEndOfTrack.cs" />
     <Compile Include="CoordinateSystem.cs" />
@@ -289,6 +281,7 @@
     <Compile Include="PlayerScreen\Tracking\TrackStatus.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackView.cs" />
     <Compile Include="PlayerScreen\Kinematics\TrajectoryKinematics.cs" />
+    <Compile Include="PlayerScreen\TrackManager.cs" />
     <Compile Include="Plotting\FormTimeseries.cs">
       <SubType>Form</SubType>
     </Compile>

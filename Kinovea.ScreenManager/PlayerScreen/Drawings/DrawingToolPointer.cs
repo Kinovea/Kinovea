@@ -299,8 +299,7 @@ namespace Kinovea.ScreenManager
                 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.Drawing;
-                metadata.SelectedDrawing = currentDrawing;
-                metadata.SelectedDrawingFrame = keyFrameIndex;
+                metadata.SelectDrawing(kf.Drawings[currentDrawing]);
 
                 if (hitResult > 0)
                 {
@@ -335,7 +334,7 @@ namespace Kinovea.ScreenManager
 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.ExtraDrawing;
-                metadata.SelectExtraDrawing(metadata.ExtraDrawings[currentDrawing]);
+                metadata.SelectDrawing(metadata.ExtraDrawings[currentDrawing]);
                     
                 if (hitResult > 0)
                 {
@@ -353,16 +352,15 @@ namespace Kinovea.ScreenManager
         private bool IsOnChronometer(Metadata metadata, Point point, long currentTimestamp)
         {
             bool isOnDrawing = false;
-            int hitResult = -1;
             foreach (AbstractDrawing drawing in metadata.ChronoManager.Drawings)
             {
-                hitResult = drawing.HitTest(point, currentTimestamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
+                int hitResult = drawing.HitTest(point, currentTimestamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
                 if (hitResult < 0)
                     continue;
 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.ExtraDrawing;
-                metadata.SelectExtraDrawing(drawing);
+                metadata.SelectDrawing(drawing);
 
                 if (hitResult > 0)
                 {
@@ -383,26 +381,23 @@ namespace Kinovea.ScreenManager
         {
             // Track have their own special hit test because we need to differenciate the interactive case from the edit case.
             bool isOnDrawing = false;
-
-            for (int i = 0; i < metadata.ExtraDrawings.Count; i++)
+            foreach (AbstractDrawing drawing in metadata.TrackManager.Drawings)
             {
-                DrawingTrack trk = metadata.ExtraDrawings[i] as DrawingTrack;
-
-                if (trk == null)
+                DrawingTrack track = drawing as DrawingTrack;
+                if (track == null)
                     continue;
 
-                int hitResult = trk.HitTest(mouseCoordinates, currentTimeStamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
-                    
+                int hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
                 if (hitResult < 0)
                     continue;
 
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.ExtraDrawing;
-                metadata.SelectExtraDrawing(trk);
+                metadata.SelectDrawing(drawing);
 
                 manipulationType = ManipulationType.Move;
 
-                switch (trk.Status)
+                switch (track.Status)
                 {
                     case TrackStatus.Interactive:
                         if (hitResult == 0 || hitResult == 1)
@@ -420,7 +415,7 @@ namespace Kinovea.ScreenManager
                         break;
                 }
 
-                break;	
+                break;
             }
 
             return isOnDrawing;

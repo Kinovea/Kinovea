@@ -424,13 +424,11 @@ namespace Kinovea.ScreenManager
         {
             view.BeforeAddImageDrawing();
             frameServer.Metadata.AddImageDrawing(filename, isSvg, frameServer.VideoReader.Current.Timestamp);
-            view.AfterAddImageDrawing();
         }
         public override void AddImageDrawing(Bitmap bmp)
         {
             view.BeforeAddImageDrawing();
             frameServer.Metadata.AddImageDrawing(bmp, frameServer.VideoReader.Current.Timestamp);
-            view.AfterAddImageDrawing();
         }
         public override void FullScreen(bool _bFullScreen)
         {

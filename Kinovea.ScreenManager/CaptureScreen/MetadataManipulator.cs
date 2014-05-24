@@ -174,7 +174,7 @@ namespace Kinovea.ScreenManager
         
         public void DeleteHitDrawing()
         {
-            Keyframe keyframe = metadata.HitDrawingKeyframe;
+            Keyframe keyframe = metadata.HitKeyframe;
             AbstractDrawing drawing = metadata.HitDrawing;
 
             if (keyframe == null || drawing == null)

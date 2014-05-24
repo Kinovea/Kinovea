@@ -32,13 +32,8 @@ namespace Kinovea.ScreenManager
 
             commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandDeleteDrawing_FriendlyName, drawingName);
 
-            AbstractDrawingManager manager = null;
-
-            if (managerId == metadata.ChronoManager.Id)
-                manager = metadata.ChronoManager;
-            else
-                manager = metadata.GetKeyframe(managerId);
-
+            AbstractDrawingManager manager = metadata.GetDrawingManager(managerId);
+            
             if (manager != null)
                 data = DrawingSerializer.SerializeToString(manager.GetDrawing(drawingId));
 

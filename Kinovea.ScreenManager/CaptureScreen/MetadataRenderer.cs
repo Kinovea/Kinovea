@@ -51,15 +51,18 @@ namespace Kinovea.ScreenManager
             foreach (AbstractDrawing ad in metadata.ChronoManager.Drawings)
                 ad.Draw(canvas, transformer, false, timestamp);
 
-            foreach(AbstractDrawing ad in metadata.ExtraDrawings)
+            foreach (AbstractDrawing ad in metadata.TrackManager.Drawings)
+                ad.Draw(canvas, transformer, false, timestamp);
+            
+            foreach (AbstractDrawing ad in metadata.ExtraDrawings)
                 ad.Draw(canvas, transformer, false, timestamp);
         }
         
         private void RenderDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
         {
-            foreach(Keyframe keyframe in metadata.Keyframes)
-                for (int i = keyframe.Drawings.Count - 1; i >= 0; i--)
-                    keyframe.Drawings[i].Draw(canvas, transformer, i == metadata.SelectedDrawing, timestamp);
-        }
+            foreach (Keyframe keyframe in metadata.Keyframes)
+                foreach (AbstractDrawing drawing in keyframe.Drawings)
+                    drawing.Draw(canvas, transformer, drawing == metadata.HitDrawing, timestamp);
+            }
     }
 }

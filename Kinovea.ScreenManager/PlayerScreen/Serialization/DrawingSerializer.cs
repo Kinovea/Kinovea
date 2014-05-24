@@ -11,6 +11,10 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Used in the context of KVA serialization and undo/redo serialization.
+    /// For undo/redo serialization, this class also handles chronos and tracks.
+    /// </summary>
     public static class DrawingSerializer
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -44,6 +48,9 @@ namespace Kinovea.ScreenManager
 
         public static AbstractDrawing DeserializeFromString(string data, Metadata metadata)
         {
+            if (string.IsNullOrEmpty(data))
+                return null;
+
             AbstractDrawing drawing = null;
             PointF identityScale = new PointF(1, 1);
 
@@ -100,7 +107,7 @@ namespace Kinovea.ScreenManager
                 ConstructorInfo ci = null;
                 object[] parameters = null;
 
-                if (t == typeof(DrawingChrono))
+                if (t == typeof(DrawingChrono) || t == typeof(DrawingTrack))
                 {
                     ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(TimestampMapper) });
                     parameters = new object[] { r, scaling, timestampMapper};
