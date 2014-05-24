@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Kinovea.ScreenManager
 {
-    public class ChronoManager : AbstractDrawingManager
+    public class TrackManager : AbstractDrawingManager
     {
         public override Guid Id
         {
@@ -18,6 +18,11 @@ namespace Kinovea.ScreenManager
             get { return drawings; }
         }
 
+        public bool Tracking
+        {
+            get { return Drawings.Any(t => ((DrawingTrack)t).Status == TrackStatus.Edit); }
+        }
+
         private List<AbstractDrawing> drawings = new List<AbstractDrawing>();
         private Guid id = Guid.NewGuid();
 
@@ -28,7 +33,7 @@ namespace Kinovea.ScreenManager
 
         public override void AddDrawing(AbstractDrawing drawing)
         {
-            if (!(drawing is DrawingChrono))
+            if (!(drawing is DrawingTrack))
                 return;
 
             drawings.Add(drawing);

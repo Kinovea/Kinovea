@@ -199,10 +199,10 @@ namespace Kinovea.ScreenManager
                         ParseKeyframes(r);
                         break;
                     case "Tracks":
-                        ParseTracks(r);
+                        ParseTracks(r, scaling);
                         break;
                     case "Chronos":
-                        ParseChronos(r);
+                        ParseChronos(r, scaling);
                         break;
                     case "Spotlights":
                         metadata.SpotlightManager.ReadXml(r, metadata, scaling, RemapTimestamp, metadata.AverageTimeStampsPerFrame);
@@ -250,7 +250,7 @@ namespace Kinovea.ScreenManager
             r.ReadEndElement();
         }
         
-        private void ParseChronos(XmlReader r)
+        private void ParseChronos(XmlReader r, PointF scale)
         {
             // TODO: catch empty tag <Chronos/>.
 
@@ -258,25 +258,13 @@ namespace Kinovea.ScreenManager
 
             while (r.NodeType == XmlNodeType.Element)
             {
-                // When we have other Chrono tools (cadence tool), make this dynamic
-                // on a similar model than for attached drawings. (see ParseDrawing())
-                if (r.Name == "Chrono")
-                {
-                    DrawingChrono dc = new DrawingChrono(r, GetScaling(), RemapTimestamp);
-
-                    if (dc != null)
-                        metadata.AddChrono(dc);
-                }
-                else
-                {
-                    string unparsed = r.ReadOuterXml();
-                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                }
+                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, metadata, TimeHelper.IdentityTimestampMapper);
+                metadata.AddDrawing(metadata.ChronoManager.Id, drawing);
             }
 
             r.ReadEndElement();
         }
-        private void ParseTracks(XmlReader r)
+        private void ParseTracks(XmlReader r, PointF scale)
         {
             // TODO: catch empty tag <Tracks/>.
 
@@ -284,21 +272,8 @@ namespace Kinovea.ScreenManager
 
             while (r.NodeType == XmlNodeType.Element)
             {
-                if (r.Name == "Track")
-                {
-                    DrawingTrack trk = new DrawingTrack(r, GetScaling(), RemapTimestamp, metadata.ImageSize);
-
-                    if (!trk.Invalid)
-                    {
-                        metadata.AddTrack(trk, metadata.ClosestFrameDisplayer, trk.MainColor);
-                        trk.Status = TrackStatus.Interactive;
-                    }
-                }
-                else
-                {
-                    string unparsed = r.ReadOuterXml();
-                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                }
+                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, metadata, TimeHelper.IdentityTimestampMapper);
+                metadata.AddDrawing(metadata.TrackManager.Id, drawing);
             }
 
             r.ReadEndElement();
@@ -435,12 +410,8 @@ namespace Kinovea.ScreenManager
         private void WriteTracks(XmlWriter w)
         {
             bool atLeastOne = false;
-            foreach (AbstractDrawing ad in metadata.ExtraDrawings)
+            foreach (DrawingTrack track in metadata.Tracks())
             {
-                DrawingTrack trk = ad as DrawingTrack;
-                if (trk == null)
-                    continue;
-                
                 if (!atLeastOne)
                 {
                     w.WriteStartElement("Tracks");
@@ -448,7 +419,7 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteStartElement("Track");
-                trk.WriteXml(w);
+                track.WriteXml(w);
                 w.WriteEndElement();
             }
 

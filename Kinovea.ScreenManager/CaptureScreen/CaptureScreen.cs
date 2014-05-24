@@ -570,7 +570,7 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeMetadata()
         {
-            metadata = new Metadata(null, null, null);
+            metadata = new Metadata(null, null);
             // TODO: hook to events raised by metadata.
             
             LoadCompanionKVA();

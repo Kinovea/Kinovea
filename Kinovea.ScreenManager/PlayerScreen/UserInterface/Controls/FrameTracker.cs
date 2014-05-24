@@ -414,14 +414,13 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            foreach(AbstractDrawing ad in metadata.ExtraDrawings)
+            foreach (DrawingTrack track in metadata.TrackManager.Drawings)
             {
-                DrawingTrack trk = ad as DrawingTrack;
-                if(trk != null)
-                {
-                    if(trk.BeginTimeStamp <= maximum && trk.EndTimeStamp >= minimum)
-                        tracksMarks.Add(GetMarkerRange(trk.BeginTimeStamp, trk.EndTimeStamp));
-                }
+                if (track == null)
+                    continue;
+
+                if (track.BeginTimeStamp <= maximum && track.EndTimeStamp >= minimum)
+                    tracksMarks.Add(GetMarkerRange(track.BeginTimeStamp, track.EndTimeStamp));
             }
         }
         private void UpdateSyncPointMarkerPosition()
