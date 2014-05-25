@@ -62,25 +62,30 @@ namespace Kinovea.ScreenManager
             
             InitializeComponent();
             lblTimecode.Text = keyframe.Title;
-            tbTitle.Text = keyframe.Title;
+            
             BackColor = Color.Black;
             btnClose.Parent = pbThumbnail;
             btnComment.Parent = pbThumbnail;
 
             pbThumbnail.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            manualUpdate = true;
+            tbTitle.Text = keyframe.Title;
+            manualUpdate = false;
         }
         #endregion
         
         #region Public Methods
-        public void DisplayAsSelected(bool _bSelected)
+        public void DisplayAsSelected(bool selected)
         {
-            BackColor = _bSelected ? Color.SteelBlue : Color.Black;
+            BackColor = selected ? Color.SteelBlue : Color.Black;
         }
-        public void UpdateTitle(string _title)
+        public void UpdateTitle(string title)
         {
-            lblTimecode.Text = _title;
+            lblTimecode.Text = title;
+            
             manualUpdate = true;
-            tbTitle.Text = _title;
+            tbTitle.Text = title;
             manualUpdate = false;
         
             UpdateToolTip();	

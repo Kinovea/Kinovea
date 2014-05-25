@@ -36,7 +36,7 @@ using SharpVectors.Renderer.Gdi;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingSVG : AbstractDrawing
+    public class DrawingSVG : AbstractDrawing, IScalable
     {
         #region Properties
         public override string DisplayName
@@ -92,10 +92,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingSVG(int width, int height, long timestamp, long averageTimeStampsPerFrame, string filename)
+        public DrawingSVG(long timestamp, long averageTimeStampsPerFrame, string filename)
         {
-            videoSize = new Size(width, height);
-            
             // Init and import an SVG.
             renderer.BackColor = Color.Transparent;
             
@@ -119,16 +117,6 @@ namespace Kinovea.ScreenManager
                 originalWidth = (int)svgWindow.Document.RootElement.Width.BaseVal.Value;
                 originalHeight  = (int)svgWindow.Document.RootElement.Height.BaseVal.Value;		        
             }
-            
-            // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
-            initialScale = (float) (((float)height * 0.75) / originalHeight);
-            originalWidth = (int) ((float)originalWidth * initialScale);
-            originalHeight = (int) ((float)originalHeight * initialScale);
-            
-            boundingBox.Rectangle = new Rectangle((width - originalWidth)/2, (height - originalHeight)/2, originalWidth, originalHeight);
-
-            // Render on first draw call.
-            finishedResizing = true;
             
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -192,7 +180,24 @@ namespace Kinovea.ScreenManager
             boundingBox.MoveAndSnap((int)dx, (int)dy, videoSize, snapMargin);
         }
         #endregion
-       
+
+        #region IScalable
+        public void Scale(Size size)
+        {
+            videoSize = size;
+
+            // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
+            initialScale = (float)(((float)videoSize.Height * 0.75) / originalHeight);
+            originalWidth = (int)((float)originalWidth * initialScale);
+            originalHeight = (int)((float)originalHeight * initialScale);
+
+            boundingBox.Rectangle = new Rectangle((videoSize.Width - originalWidth) / 2, (videoSize.Height - originalHeight) / 2, originalWidth, originalHeight);
+
+            // Render on first draw call.
+            finishedResizing = true;
+        }
+        #endregion
+        
         public void ResizeFinished()
         {
             // While the user was resizing the drawing or the image, we didn't update / render the SVG image.

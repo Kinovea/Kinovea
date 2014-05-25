@@ -310,12 +310,7 @@ namespace Kinovea.ScreenManager
 
         private void View_DrawingAdding(object sender, DrawingEventArgs e)
         {
-            // Temporary function.
-            // Once the player screen ui uses the viewport, this event handler should be removed.
-            // The code here should also be in the metadata manipulator until this function is removed.
-            HistoryMemento memento = new HistoryMementoAddDrawing(frameServer.Metadata, e.ManagerId, e.Drawing.Id, e.Drawing.DisplayName);
-            frameServer.Metadata.AddDrawing(e.ManagerId, e.Drawing);
-            historyStack.PushNewCommand(memento);
+            AddDrawing(e.ManagerId, e.Drawing);
         }
 
         private void View_DrawingDeleting(object sender, DrawingEventArgs e)
@@ -422,13 +417,40 @@ namespace Kinovea.ScreenManager
         }
         public override void AddImageDrawing(string filename, bool isSvg)
         {
+            if (!File.Exists(filename))
+                return;
+
             view.BeforeAddImageDrawing();
-            frameServer.Metadata.AddImageDrawing(filename, isSvg, frameServer.VideoReader.Current.Timestamp);
+            
+            if (frameServer.Metadata.HitKeyframe == null)
+                return;
+
+            AbstractDrawing drawing = null;
+            if (isSvg)
+            {
+                try
+                {
+                    drawing = new DrawingSVG(frameServer.VideoReader.Current.Timestamp, frameServer.VideoReader.Info.AverageTimeStampsPerFrame, filename);
+                }
+                catch
+                {
+                    // usual error case: external DTD an no network or invalid svg file.
+                    // FIXME: we could also have an error placeholder image as a way to inform the user.
+                }
+            }
+            else
+            {
+                drawing = new DrawingBitmap(frameServer.VideoReader.Current.Timestamp, frameServer.VideoReader.Info.AverageTimeStampsPerFrame, filename);
+            }
+
+            if (drawing != null)
+                frameServer.Metadata.AddDrawing(frameServer.Metadata.HitKeyframe.Id, drawing);
         }
         public override void AddImageDrawing(Bitmap bmp)
         {
             view.BeforeAddImageDrawing();
-            frameServer.Metadata.AddImageDrawing(bmp, frameServer.VideoReader.Current.Timestamp);
+            AbstractDrawing drawing = new DrawingBitmap(frameServer.VideoReader.Current.Timestamp, frameServer.VideoReader.Info.AverageTimeStampsPerFrame, bmp);
+            frameServer.Metadata.AddDrawing(frameServer.Metadata.HitKeyframe.Id, drawing);
         }
         public override void FullScreen(bool _bFullScreen)
         {
@@ -546,6 +568,15 @@ namespace Kinovea.ScreenManager
             OnActivated(EventArgs.Empty);
         }
 
+        private void AddDrawing(Guid managerId, AbstractDrawing drawing)
+        {
+            // Temporary function.
+            // Once the player screen ui uses the viewport, this event handler should be removed.
+            // The code here should also be in the metadata manipulator until this function is removed.
+            HistoryMemento memento = new HistoryMementoAddDrawing(frameServer.Metadata, managerId, drawing.Id, drawing.DisplayName);
+            frameServer.Metadata.AddDrawing(managerId, drawing);
+            historyStack.PushNewCommand(memento);
+        }
         private void AddTrackableDrawing(ITrackable trackableDrawing)
         {
             frameServer.Metadata.TrackabilityManager.Add(trackableDrawing, frameServer.VideoReader.Current);

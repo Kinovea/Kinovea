@@ -228,9 +228,12 @@ namespace Kinovea.ScreenManager
         }
         private void ParseDrawings(XmlReader r, PointF scale)
         {
-            // TODO: catch empty tag <Drawings/>.
-
+            bool isEmpty = r.IsEmptyElement;
+            
             r.ReadStartElement();
+
+            if (isEmpty)
+                return;
 
             while (r.NodeType == XmlNodeType.Element)
             {
@@ -263,7 +266,7 @@ namespace Kinovea.ScreenManager
             if(comments != null)
                 hash ^= comments.GetHashCode();
             
-            if(title != null)
+            if(!string.IsNullOrEmpty(title))
                 hash ^= title.GetHashCode();
             
             hash ^= timecode.GetHashCode();
