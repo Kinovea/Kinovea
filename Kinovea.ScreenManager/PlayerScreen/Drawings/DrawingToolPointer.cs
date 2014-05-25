@@ -300,6 +300,7 @@ namespace Kinovea.ScreenManager
                 isOnDrawing = true;
                 selectedObjectType = SelectedObjectType.Drawing;
                 metadata.SelectDrawing(kf.Drawings[currentDrawing]);
+                metadata.SelectKeyframe(kf);
 
                 if (hitResult > 0)
                 {
