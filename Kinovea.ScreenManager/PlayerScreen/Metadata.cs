@@ -514,7 +514,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void AddDrawing(Keyframe keyframe, AbstractDrawing drawing)
         {
-            if (keyframe == null)
+            if (keyframe == null || !drawing.IsValid)
                 return;
 
             keyframe.AddDrawing(drawing);

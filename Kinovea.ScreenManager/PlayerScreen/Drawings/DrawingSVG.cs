@@ -33,15 +33,18 @@ using Kinovea.Services;
 using SharpVectors.Dom.Svg;
 using SharpVectors.Dom.Svg.Rendering;
 using SharpVectors.Renderer.Gdi;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingSVG : AbstractDrawing, IScalable
+    [XmlType("SVG")]
+    public class DrawingSVG : AbstractDrawing, IScalable, IKvaSerializable
     {
         #region Properties
         public override string DisplayName
         {
-            get {  return "SVG Drawing"; }
+            get {  return "SVG Image"; }
         }
         public override int ContentHash
         {
@@ -60,9 +63,15 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
+        public override bool IsValid
+        {
+            get { return valid; }
+        }
         #endregion
 
         #region Members
+        private bool valid;
+        private string filename;
         // SVG
         private GdiRenderer renderer  = new GdiRenderer();
         private SvgWindow svgWindow;
@@ -94,46 +103,19 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public DrawingSVG(long timestamp, long averageTimeStampsPerFrame, string filename)
         {
-            // Init and import an SVG.
+            this.filename = filename;
             renderer.BackColor = Color.Transparent;
-            
-            // Rendering window. The width and height will be updated later.
             svgWindow = new SvgWindow(100, 100, renderer);
             
-            // FIXME: some files have external DTD that will be attempted to be loaded.
-            // See files created from Amaya for example.
-            svgWindow.Src = filename;
-            loaded = true;
+            if (!string.IsNullOrEmpty(filename))
+                LoadSVG(filename);
             
-            if(svgWindow.Document.RootElement.Width.BaseVal.UnitType == SvgLengthType.Percentage)
-            {
-                sizeInPercentage = true;
-                originalWidth = (int)(svgWindow.Document.RootElement.ViewBox.BaseVal.Width * (svgWindow.Document.RootElement.Width.BaseVal.Value/100));
-                originalHeight = (int)(svgWindow.Document.RootElement.ViewBox.BaseVal.Height * (svgWindow.Document.RootElement.Height.BaseVal.Value/100));	
-            }
-            else
-            {
-                sizeInPercentage = false;
-                originalWidth = (int)svgWindow.Document.RootElement.Width.BaseVal.Value;
-                originalHeight  = (int)svgWindow.Document.RootElement.Height.BaseVal.Value;		        
-            }
-            
-            // Fading
-            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-            infosFading.UseDefault = false;
-            infosFading.AlwaysVisible = true;            
-            
-            // This is used to set the opacity factor.
-            fadingColorMatrix.Matrix00 = 1.0f;
-            fadingColorMatrix.Matrix11 = 1.0f;
-            fadingColorMatrix.Matrix22 = 1.0f;
-            fadingColorMatrix.Matrix33 = 1.0f;	// Change alpha value here for fading. (i.e: 0.5f).
-            fadingColorMatrix.Matrix44 = 1.0f;
-            fadingImgAttr.SetColorMatrix(fadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-            
-            penBoundingBox = new Pen(Color.White, 1);
-            penBoundingBox.DashStyle = DashStyle.Dash;
-            brushBoundingBox = new SolidBrush(penBoundingBox.Color);
+            Initialize(timestamp, averageTimeStampsPerFrame);
+        }
+        public DrawingSVG(XmlReader xmlReader, PointF scale, Metadata parent)
+            : this(0, 0, "")
+        {
+            ReadXml(xmlReader, scale);
         }
         #endregion
 
@@ -197,7 +179,49 @@ namespace Kinovea.ScreenManager
             finishedResizing = true;
         }
         #endregion
-        
+
+        #region KVA Serialization
+        private void ReadXml(XmlReader xmlReader, PointF scale)
+        {
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
+            xmlReader.ReadStartElement();
+
+            while (xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch (xmlReader.Name)
+                {
+                    case "File":
+                        filename = xmlReader.ReadElementContentAsString();
+                        break;
+                    case "InfosFading":
+                        infosFading.ReadXml(xmlReader);
+                        break;
+                    default:
+                        string unparsed = xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+
+            xmlReader.ReadEndElement();
+
+            LoadSVG(filename);
+        }
+        public void WriteXml(XmlWriter w)
+        {
+            w.WriteElementString("File", filename);
+
+            w.WriteStartElement("InfosFading");
+            infosFading.WriteXml(w);
+            w.WriteEndElement();
+
+            // TODO: opacity value
+            // TODO: bounding box.
+        }
+        #endregion
+
         public void ResizeFinished()
         {
             // While the user was resizing the drawing or the image, we didn't update / render the SVG image.
@@ -209,6 +233,60 @@ namespace Kinovea.ScreenManager
         }
         
         #region Lower level helpers
+        private void LoadSVG(string filename)
+        {
+            if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
+            {
+                log.ErrorFormat("Error while loading SVG file. File not found.");
+                return;
+            }
+
+            try
+            {
+                svgWindow.Src = filename;
+                loaded = true;
+                valid = true;
+
+                if (svgWindow.Document.RootElement.Width.BaseVal.UnitType == SvgLengthType.Percentage)
+                {
+                    sizeInPercentage = true;
+                    originalWidth = (int)(svgWindow.Document.RootElement.ViewBox.BaseVal.Width * (svgWindow.Document.RootElement.Width.BaseVal.Value / 100));
+                    originalHeight = (int)(svgWindow.Document.RootElement.ViewBox.BaseVal.Height * (svgWindow.Document.RootElement.Height.BaseVal.Value / 100));
+                }
+                else
+                {
+                    sizeInPercentage = false;
+                    originalWidth = (int)svgWindow.Document.RootElement.Width.BaseVal.Value;
+                    originalHeight = (int)svgWindow.Document.RootElement.Height.BaseVal.Value;
+                }
+            }
+            catch(Exception e)
+            {
+                // FIXME: some files have external DTD that will be attempted to be loaded.
+                // See files created from Amaya for example.
+                // FIXME: we could also have an error placeholder image as a way to inform the user.
+                log.ErrorFormat("Error while loading SVG file. {0}", e.Message);
+            }
+        }
+        private void Initialize(long timestamp, long averageTimeStampsPerFrame)
+        {
+            // Fading
+            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
+            infosFading.UseDefault = false;
+            infosFading.AlwaysVisible = true;
+
+            // This is used to set the opacity factor.
+            fadingColorMatrix.Matrix00 = 1.0f;
+            fadingColorMatrix.Matrix11 = 1.0f;
+            fadingColorMatrix.Matrix22 = 1.0f;
+            fadingColorMatrix.Matrix33 = 1.0f;	// Change alpha value here for fading. (i.e: 0.5f).
+            fadingColorMatrix.Matrix44 = 1.0f;
+            fadingImgAttr.SetColorMatrix(fadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+            penBoundingBox = new Pen(Color.White, 1);
+            penBoundingBox.DashStyle = DashStyle.Dash;
+            brushBoundingBox = new SolidBrush(penBoundingBox.Color);
+        }
         private void RenderAtNewScale(Size size, double screenScaling)
         {
             // Depending on the complexity of the SVG, this can be a costly operation.

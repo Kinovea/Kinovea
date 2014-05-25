@@ -39,6 +39,10 @@ namespace Kinovea.ScreenManager
         {
             get { return identifier; }
         }
+        public virtual bool IsValid
+        {
+            get { return true; }
+        }
         #endregion
 
         #region Abstract properties

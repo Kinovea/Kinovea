@@ -310,7 +310,7 @@ namespace Kinovea.ScreenManager
 
         private void View_DrawingAdding(object sender, DrawingEventArgs e)
         {
-            AddDrawing(e.ManagerId, e.Drawing);
+            AddDrawingWithMemento(e.ManagerId, e.Drawing);
         }
 
         private void View_DrawingDeleting(object sender, DrawingEventArgs e)
@@ -427,24 +427,12 @@ namespace Kinovea.ScreenManager
 
             AbstractDrawing drawing = null;
             if (isSvg)
-            {
-                try
-                {
-                    drawing = new DrawingSVG(frameServer.VideoReader.Current.Timestamp, frameServer.VideoReader.Info.AverageTimeStampsPerFrame, filename);
-                }
-                catch
-                {
-                    // usual error case: external DTD an no network or invalid svg file.
-                    // FIXME: we could also have an error placeholder image as a way to inform the user.
-                }
-            }
+                drawing = new DrawingSVG(frameServer.VideoReader.Current.Timestamp, frameServer.VideoReader.Info.AverageTimeStampsPerFrame, filename);
             else
-            {
                 drawing = new DrawingBitmap(frameServer.VideoReader.Current.Timestamp, frameServer.VideoReader.Info.AverageTimeStampsPerFrame, filename);
-            }
 
             if (drawing != null)
-                frameServer.Metadata.AddDrawing(frameServer.Metadata.HitKeyframe.Id, drawing);
+                AddDrawingWithMemento(frameServer.Metadata.HitKeyframe.Id, drawing);
         }
         public override void AddImageDrawing(Bitmap bmp)
         {
@@ -568,7 +556,7 @@ namespace Kinovea.ScreenManager
             OnActivated(EventArgs.Empty);
         }
 
-        private void AddDrawing(Guid managerId, AbstractDrawing drawing)
+        private void AddDrawingWithMemento(Guid managerId, AbstractDrawing drawing)
         {
             // Temporary function.
             // Once the player screen ui uses the viewport, this event handler should be removed.
