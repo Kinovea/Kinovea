@@ -210,7 +210,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
-        public void ReadXml(XmlReader r, Metadata metadata, PointF scale, TimestampMapper timestampMapper, long averageTimeStampsPerFrame)
+        public void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
         {
             Clear();
 
@@ -220,7 +220,7 @@ namespace Kinovea.ScreenManager
             {
                 if (r.Name == "Spotlight")
                 {
-                    AbstractMultiDrawingItem item = MultiDrawingItemSerializer.Deserialize(r, scale, timestampMapper, averageTimeStampsPerFrame);
+                    AbstractMultiDrawingItem item = MultiDrawingItemSerializer.Deserialize(r, scale, timestampMapper, metadata);
                     Spotlight spotlight = item as Spotlight;
                     if (spotlight != null)
                         metadata.AddMultidrawingItem(this, spotlight);

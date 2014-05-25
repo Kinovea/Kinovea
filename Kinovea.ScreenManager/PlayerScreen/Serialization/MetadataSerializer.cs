@@ -205,10 +205,10 @@ namespace Kinovea.ScreenManager
                         ParseChronos(r, scaling);
                         break;
                     case "Spotlights":
-                        metadata.SpotlightManager.ReadXml(r, metadata, scaling, RemapTimestamp, metadata.AverageTimeStampsPerFrame);
+                        metadata.SpotlightManager.ReadXml(r, scaling, RemapTimestamp, metadata);
                         break;
                     case "AutoNumbers":
-                        metadata.AutoNumberManager.ReadXml(r, metadata, scaling, RemapTimestamp, metadata.AverageTimeStampsPerFrame);
+                        metadata.AutoNumberManager.ReadXml(r, scaling, RemapTimestamp, metadata);
                         break;
                     case "CoordinateSystem":
                         metadata.DrawingCoordinateSystem.ReadXml(r);

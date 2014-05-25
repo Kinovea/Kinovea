@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
-        public void ReadXml(XmlReader r, Metadata metadata, PointF scale, TimestampMapper timestampMapper, long averageTimeStampsPerFrame)
+        public void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
         {
             Clear();
 
@@ -178,7 +178,7 @@ namespace Kinovea.ScreenManager
                         BindStyle();
                         break;
                     case "AutoNumber":
-                        AbstractMultiDrawingItem item = MultiDrawingItemSerializer.Deserialize(r, scale, timestampMapper, averageTimeStampsPerFrame);
+                        AbstractMultiDrawingItem item = MultiDrawingItemSerializer.Deserialize(r, scale, timestampMapper, metadata);
                         AutoNumber number = item as AutoNumber;
                         if (number != null)
                             metadata.AddMultidrawingItem(this, number);
