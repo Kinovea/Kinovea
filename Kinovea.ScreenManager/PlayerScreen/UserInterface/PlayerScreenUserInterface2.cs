@@ -74,6 +74,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler<TimeEventArgs> KeyframeAdding;
         public event EventHandler<KeyframeEventArgs> KeyframeDeleting;
         public event EventHandler<DrawingEventArgs> DrawingAdding;
+        public event EventHandler<DrawingEventArgs> DrawingModifying;
         public event EventHandler<DrawingEventArgs> DrawingDeleting;
         public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdding;
         public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemDeleting;
@@ -333,6 +334,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.KeyframeAdded += (s, e) => AfterKeyframeAdded(e.KeyframeId);
             m_FrameServer.Metadata.KeyframeDeleted += (s, e) => AfterKeyframeDeleted();
             m_FrameServer.Metadata.DrawingAdded += (s, e) => AfterDrawingAdded(e.Drawing);
+            m_FrameServer.Metadata.DrawingModified += (s, e) => AfterDrawingModified(e.Drawing);
             m_FrameServer.Metadata.DrawingDeleted += (s, e) => AfterDrawingDeleted();
             m_FrameServer.Metadata.MultiDrawingItemAdded += (s, e) => AfterMultiDrawingItemAdded();
             m_FrameServer.Metadata.MultiDrawingItemDeleted += (s, e) => AfterMultiDrawingItemDeleted();
@@ -2515,6 +2517,11 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
         }
+        private void AfterDrawingModified(AbstractDrawing drawing)
+        {
+            UpdateFramesMarkers();
+            RefreshImage();
+        }
         private void ImportEditbox(DrawingText drawing)
         {
             if (panelCenter.Controls.Contains(drawing.EditBox))
@@ -3693,9 +3700,15 @@ namespace Kinovea.ScreenManager
             if(drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
                 return;
 
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, m_FrameServer.Metadata.HitDrawing.Id, m_FrameServer.Metadata.HitDrawing.DisplayName);
+            
             FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing.DrawingStyle, DoInvalidate);
             FormsHelper.Locate(fcd);
             fcd.ShowDialog();
+
+            if (fcd.DialogResult == DialogResult.OK)
+                m_FrameServer.HistoryStack.PushNewCommand(memento);
+            
             fcd.Dispose();
             DoInvalidate();
         }
@@ -3703,9 +3716,15 @@ namespace Kinovea.ScreenManager
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
 
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, drawing.Id, drawing.DisplayName);
+
             formConfigureFading fcf = new formConfigureFading(drawing, pbSurfaceScreen);
             FormsHelper.Locate(fcf);
             fcf.ShowDialog();
+
+            if (fcf.DialogResult == DialogResult.OK)
+                m_FrameServer.HistoryStack.PushNewCommand(memento);
+
             fcf.Dispose();
             DoInvalidate();
         }
@@ -3812,13 +3831,19 @@ namespace Kinovea.ScreenManager
         }
         private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
         {
-            DrawingTrack trk = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
-            if(trk == null)
+            DrawingTrack track = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
+            if(track == null)
                 return;
 
-            formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(trk, m_FrameServer.Metadata, m_FrameServer.CurrentImage, m_iCurrentPosition, DoInvalidate);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.DisplayName);
+
+            formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(track, m_FrameServer.Metadata, m_FrameServer.CurrentImage, m_iCurrentPosition, DoInvalidate);
             fctd.StartPosition = FormStartPosition.CenterScreen;
             fctd.ShowDialog();
+
+            if (fctd.DialogResult == DialogResult.OK)
+                m_FrameServer.HistoryStack.PushNewCommand(memento);
+
             fctd.Dispose();
             DoInvalidate();
         }
@@ -3944,10 +3969,16 @@ namespace Kinovea.ScreenManager
             DrawingChrono chrono = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
             if (chrono == null)
                 return;
+
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.DisplayName);
             
             formConfigureChrono fcc = new formConfigureChrono(chrono, DoInvalidate);
             FormsHelper.Locate(fcc);
             fcc.ShowDialog();
+            
+            if (fcc.DialogResult == DialogResult.OK)
+                m_FrameServer.HistoryStack.PushNewCommand(memento);
+            
             fcc.Dispose();
             DoInvalidate();
         }

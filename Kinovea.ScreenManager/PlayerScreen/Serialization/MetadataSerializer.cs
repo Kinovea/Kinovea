@@ -258,7 +258,7 @@ namespace Kinovea.ScreenManager
 
             while (r.NodeType == XmlNodeType.Element)
             {
-                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, metadata, TimeHelper.IdentityTimestampMapper);
+                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, TimeHelper.IdentityTimestampMapper, metadata);
                 metadata.AddDrawing(metadata.ChronoManager.Id, drawing);
             }
 
@@ -272,7 +272,7 @@ namespace Kinovea.ScreenManager
 
             while (r.NodeType == XmlNodeType.Element)
             {
-                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, metadata, TimeHelper.IdentityTimestampMapper);
+                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, TimeHelper.IdentityTimestampMapper, metadata);
                 metadata.AddDrawing(metadata.TrackManager.Id, drawing);
             }
 
