@@ -139,10 +139,10 @@ namespace Kinovea.ScreenManager
             mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
             mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
         }
-        public DrawingLine(XmlReader xmlReader, PointF scale, Metadata parent)
+        public DrawingLine(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(Point.Empty, Point.Empty, 0, 0, ToolManager.Line.StylePreset.Clone(), null)
         {
-            ReadXml(xmlReader, scale);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
@@ -240,7 +240,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region KVA Serialization
-        private void ReadXml(XmlReader xmlReader, PointF scale)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());

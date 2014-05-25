@@ -102,10 +102,10 @@ namespace Kinovea.ScreenManager
                 BindStyle();
             }
         }
-        public DrawingCircle(XmlReader xmlReader, PointF scale, Metadata parent)
+        public DrawingCircle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(Point.Empty,0,0,0, ToolManager.Circle.StylePreset.Clone())
         {
-            ReadXml(xmlReader, scale);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
@@ -161,7 +161,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region KVA Serialization
-        private void ReadXml(XmlReader xmlReader, PointF scale)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());

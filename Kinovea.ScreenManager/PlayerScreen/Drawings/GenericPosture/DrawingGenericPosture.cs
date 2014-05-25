@@ -155,15 +155,10 @@ namespace Kinovea.ScreenManager
             menuFlipVertical.Click += menuFlipVertical_Click;
             menuFlipVertical.Image = Properties.Drawings.flipvertical;
         }
-        public DrawingGenericPosture(XmlReader xmlReader, PointF scale, Metadata parent)
+        public DrawingGenericPosture(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(null, 0, 0, ToolManager.GenericPosture.StylePreset.Clone())
         {
-            ReadXml(xmlReader, scale);
-            
-            if(genericPosture != null)
-                Init();
-            else 
-                genericPosture = new GenericPosture("", true, false);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         
         #region AbstractDrawing Implementation
@@ -262,11 +257,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region KVA Serialization
-        private void ReadXml(XmlReader xmlReader, PointF scale)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
-            // TODO: the ctor is initialized with the style preset of the Angle tool.
-            // Create a real tool and reference it in the manager.
-            
             // The id must be read before the point list.
             Guid toolId;
 
@@ -304,6 +296,11 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
             SignalAllTrackablePointsMoved();
+
+            if (genericPosture != null)
+                Init();
+            else
+                genericPosture = new GenericPosture("", true, false);
         }
         private void ParsePointList(XmlReader xmlReader, PointF scale)
         {
