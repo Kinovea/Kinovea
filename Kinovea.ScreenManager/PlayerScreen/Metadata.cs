@@ -52,6 +52,7 @@ namespace Kinovea.ScreenManager
         public EventHandler<KeyframeEventArgs> KeyframeAdded;
         public EventHandler KeyframeDeleted;
         public EventHandler<DrawingEventArgs> DrawingAdded;
+        public EventHandler<DrawingEventArgs> DrawingModified; 
         public EventHandler DrawingDeleted;
         public EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdded;
         public EventHandler MultiDrawingItemDeleted;
@@ -366,7 +367,7 @@ namespace Kinovea.ScreenManager
             {
                 foreach (AbstractDrawing d in k.Drawings)
                 {
-                    if (d != drawing)
+                    if (d.Id != drawing.Id)
                         continue;
 
                     foundKeyframe = k;
@@ -1001,6 +1002,7 @@ namespace Kinovea.ScreenManager
 
                 isOnDrawing = true;
                 SelectDrawing(drawing);
+                SelectKeyframe(keyframe);
             }
 
             return isOnDrawing;
