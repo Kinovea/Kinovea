@@ -25,15 +25,20 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 using Kinovea.Services;
+using System.Xml.Serialization;
+using System.Xml;
+using System;
+using System.IO;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingBitmap : AbstractDrawing, IScalable
+    [XmlType("Bitmap")]
+    public class DrawingBitmap : AbstractDrawing, IScalable, IKvaSerializable
     {
         #region Properties
         public override string DisplayName
         {
-            get {  return "Bitmap Drawing"; }
+            get {  return "Bitmap Image"; }
         }
         public override int ContentHash
         {
@@ -52,9 +57,15 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
+        public override bool  IsValid
+        {
+            get { return valid; }
+        }
         #endregion
 
         #region Members
+        private bool valid;
+        private string filename;
         private Bitmap bitmap;
         private BoundingBox boundingBox = new BoundingBox();
         private float initialScale = 1.0f;			            // The scale we apply upon loading to make sure the image fits the screen.
@@ -62,58 +73,55 @@ namespace Kinovea.ScreenManager
         private int originalHeight;
         private Size videoSize;
         private static readonly int snapMargin = 0;
-        // Decoration
         private InfosFading infosFading;
         private ColorMatrix fadingColorMatrix = new ColorMatrix();
         private ImageAttributes fadingImgAttr = new ImageAttributes();
         private Pen penBoundingBox;
         private SolidBrush brushBoundingBox;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
         public DrawingBitmap(long timestamp, long averageTimeStampsPerFrame, string filename)
         {
-            bitmap = new Bitmap(filename);
+            if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
+            {
+                this.filename = filename;
+                bitmap = new Bitmap(filename);
+            }
+
+            valid = bitmap != null;
+            
             Initialize(timestamp, averageTimeStampsPerFrame);
         }
         public DrawingBitmap(long timestamp, long averageTimeStampsPerFrame, Bitmap bmp)
         {
-            bitmap = AForge.Imaging.Image.Clone(bmp);
+            if (bmp != null)
+                bitmap = AForge.Imaging.Image.Clone(bmp);
+
+            valid = bitmap != null;
+            
             Initialize(timestamp, averageTimeStampsPerFrame);
         }
-        private void Initialize(long timestamp, long averageTimeStampsPerFrame)
+        public DrawingBitmap(XmlReader xmlReader, PointF scale, Metadata parent)
+            : this(0, 0, "")
         {
-            // Fading
-            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-            infosFading.UseDefault = false;
-            infosFading.AlwaysVisible = true;            
-            
-            // This is used to set the opacity factor.
-            fadingColorMatrix.Matrix00 = 1.0f;
-            fadingColorMatrix.Matrix11 = 1.0f;
-            fadingColorMatrix.Matrix22 = 1.0f;
-            fadingColorMatrix.Matrix33 = 1.0f;	// Change alpha value here for fading. (i.e: 0.5f).
-            fadingColorMatrix.Matrix44 = 1.0f;
-            fadingImgAttr.SetColorMatrix(fadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-            
-            penBoundingBox = new Pen(Color.White, 1);
-            penBoundingBox.DashStyle = DashStyle.Dash;
-            brushBoundingBox = new SolidBrush(penBoundingBox.Color);        	
+            ReadXml(xmlReader, scale);
         }
         #endregion
 
         #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
+            if (!valid)
+                return;
+            
             double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
             if (opacityFactor <= 0)
                 return;
 
             Rectangle rect = transformer.Transform(boundingBox.Rectangle);
 
-            if (bitmap == null)
-                return;
-            
             fadingColorMatrix.Matrix33 = (float)opacityFactor;
             fadingImgAttr.SetColorMatrix(fadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             canvas.DrawImage(bitmap, rect, 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, fadingImgAttr);
@@ -123,6 +131,9 @@ namespace Kinovea.ScreenManager
         }
         public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
         {
+            if (!valid)
+                return -1;
+            
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
@@ -141,6 +152,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region IScalable
         public void Scale(Size size)
         {
             if (bitmap == null)
@@ -161,6 +173,72 @@ namespace Kinovea.ScreenManager
             }
 
             boundingBox.Rectangle = new Rectangle((videoSize.Width - originalWidth) / 2, (videoSize.Height - originalHeight) / 2, originalWidth, originalHeight);
+        }
+        #endregion
+
+        #region KVA Serialization
+        private void ReadXml(XmlReader xmlReader, PointF scale)
+        {
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
+            xmlReader.ReadStartElement();
+            
+            while(xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch(xmlReader.Name)
+                {
+                    case "File":
+                        filename = xmlReader.ReadElementContentAsString();
+                        break;
+                    case "InfosFading":
+                        infosFading.ReadXml(xmlReader);
+                        break;
+                    default:
+                        string unparsed = xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+
+            xmlReader.ReadEndElement();
+
+            if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
+                bitmap = new Bitmap(filename);
+
+            valid = bitmap != null;
+        }
+        public void WriteXml(XmlWriter w)
+        {
+            w.WriteElementString("File", filename);
+
+            w.WriteStartElement("InfosFading");
+            infosFading.WriteXml(w);
+            w.WriteEndElement();
+            
+            // TODO: opacity value
+            // TODO: bounding box.
+        }
+        #endregion
+        
+        private void Initialize(long timestamp, long averageTimeStampsPerFrame)
+        {
+            // Fading
+            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
+            infosFading.UseDefault = false;
+            infosFading.AlwaysVisible = true;
+
+            // This is used to set the opacity factor.
+            fadingColorMatrix.Matrix00 = 1.0f;
+            fadingColorMatrix.Matrix11 = 1.0f;
+            fadingColorMatrix.Matrix22 = 1.0f;
+            fadingColorMatrix.Matrix33 = 1.0f;	// Change alpha value here for fading. (i.e: 0.5f).
+            fadingColorMatrix.Matrix44 = 1.0f;
+            fadingImgAttr.SetColorMatrix(fadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+            penBoundingBox = new Pen(Color.White, 1);
+            penBoundingBox.DashStyle = DashStyle.Dash;
+            brushBoundingBox = new SolidBrush(penBoundingBox.Color);
         }
     }
 }
