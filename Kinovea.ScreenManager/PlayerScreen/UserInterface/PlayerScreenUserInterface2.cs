@@ -522,16 +522,21 @@ namespace Kinovea.ScreenManager
         {
             int firstOutOfRange = -1;
             int currentKeyframe = -1;
+            long lastTimestamp = m_FrameServer.VideoReader.Info.FirstTimeStamp + m_FrameServer.VideoReader.Info.DurationTimeStamps;
 
             foreach (Keyframe kf in m_FrameServer.Metadata.Keyframes)
             {
                 currentKeyframe++;
-                long lastTimestamp = m_FrameServer.VideoReader.Info.FirstTimeStamp + m_FrameServer.VideoReader.Info.DurationTimeStamps;
 
-                if (!kf.Initialized && kf.Position < lastTimestamp)
-                    InitializeKeyframe(kf);
+                if (kf.Position < lastTimestamp)
+                {
+                    if (!kf.Initialized)
+                        InitializeKeyframe(kf);
+                }
                 else if (firstOutOfRange < 0)
+                {
                     firstOutOfRange = currentKeyframe;
+                }
             }
 
             if (firstOutOfRange != -1)
