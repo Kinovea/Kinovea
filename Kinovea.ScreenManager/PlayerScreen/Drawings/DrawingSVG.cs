@@ -112,10 +112,10 @@ namespace Kinovea.ScreenManager
             
             Initialize(timestamp, averageTimeStampsPerFrame);
         }
-        public DrawingSVG(XmlReader xmlReader, PointF scale, Metadata parent)
+        public DrawingSVG(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(0, 0, "")
         {
-            ReadXml(xmlReader, scale);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
@@ -181,7 +181,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region KVA Serialization
-        private void ReadXml(XmlReader xmlReader, PointF scale)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());

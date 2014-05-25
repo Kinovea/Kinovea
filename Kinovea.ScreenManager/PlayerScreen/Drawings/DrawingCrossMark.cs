@@ -131,10 +131,10 @@ namespace Kinovea.ScreenManager
             mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
             mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
-        public DrawingCrossMark(XmlReader xmlReader, PointF scale, Metadata parent)
+        public DrawingCrossMark(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(Point.Empty,0,0, ToolManager.CrossMark.StylePreset.Clone(), null)
         {
-            ReadXml(xmlReader, scale);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
@@ -195,7 +195,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Serialization
-        private void ReadXml(XmlReader xmlReader, PointF scale)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());

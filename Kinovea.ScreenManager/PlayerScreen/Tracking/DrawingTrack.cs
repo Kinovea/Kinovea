@@ -310,7 +310,7 @@ namespace Kinovea.ScreenManager
             };
         }
 
-        public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
+        public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
             : this(Point.Empty, 0, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);

@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
             infosFading.FadingFrames = allowedFramesOver;
             infosFading.UseDefault = false;
         }
-        public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
+        public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
             : this(Point.Empty, 0, 1, ToolManager.Chrono.StylePreset.Clone())
         {
             ReadXml(xmlReader, scale, timestampMapper);
@@ -299,7 +299,7 @@ namespace Kinovea.ScreenManager
             style.WriteXml(w);
             w.WriteEndElement();
         }
-        private void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());

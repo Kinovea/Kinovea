@@ -135,10 +135,10 @@ namespace Kinovea.ScreenManager
             textBox.TextChanged += TextBox_TextChanged;
             UpdateLabelRectangle();
         }
-        public DrawingText(XmlReader xmlReader, PointF scale, Metadata parent)
+        public DrawingText(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(Point.Empty,0,0, ToolManager.Label.StylePreset.Clone())
         {
-            ReadXml(xmlReader, scale);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
@@ -191,7 +191,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region KVA Serialization
-        private void ReadXml(XmlReader xmlReader, PointF scale)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());

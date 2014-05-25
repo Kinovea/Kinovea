@@ -155,10 +155,10 @@ namespace Kinovea.ScreenManager
             mnuCalibrate.Click += new EventHandler(mnuCalibrate_Click);
             mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
-        public DrawingPlane(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+        public DrawingPlane(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(false, 0, 0, ToolManager.Grid.StylePreset.Clone())
         {
-            ReadXml(_xmlReader, _scale);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
         
@@ -279,59 +279,59 @@ namespace Kinovea.ScreenManager
             CalibrationHelper.CalibrationByPlane_Update(quadImage);
         }
         #endregion
-    
-        #region KVA Serialization
-        private void ReadXml(XmlReader _xmlReader, PointF _scale)
-        {
-            if (_xmlReader.MoveToAttribute("id"))
-                identifier = new Guid(_xmlReader.ReadContentAsString());
 
-            _xmlReader.ReadStartElement();
+        #region IKvaSerializable
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
+        {
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
+            xmlReader.ReadStartElement();
             
             Reset();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "PointUpperLeft":
                         {
-                            quadImage.A = ReadPoint(_xmlReader, _scale); 
+                            quadImage.A = ReadPoint(xmlReader, scale); 
                             break;
                         }
                     case "PointUpperRight":
                         {
-                            quadImage.B = ReadPoint(_xmlReader, _scale);
+                            quadImage.B = ReadPoint(xmlReader, scale);
                             break;
                         }
                     case "PointLowerRight":
                         {
-                            quadImage.C = ReadPoint(_xmlReader, _scale);
+                            quadImage.C = ReadPoint(xmlReader, scale);
                             break;
                         }
                     case "PointLowerLeft":
                         {
-                            quadImage.D = ReadPoint(_xmlReader, _scale);
+                            quadImage.D = ReadPoint(xmlReader, scale);
                             break;
                         }
                     case "Perspective":
-                        inPerspective = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        inPerspective = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-                        style = new DrawingStyle(_xmlReader);
+                        style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
-                        infosFading.ReadXml(_xmlReader);
+                        infosFading.ReadXml(xmlReader);
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
             
             // Sanity check for rectangular constraint.
             if(!inPerspective && !quadImage.IsRectangle)
@@ -365,8 +365,7 @@ namespace Kinovea.ScreenManager
             w.WriteStartElement("InfosFading");
             infosFading.WriteXml(w);
             w.WriteEndElement();
-        }
-        
+        } 
         #endregion
         
         #region IScalable implementation

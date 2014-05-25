@@ -103,21 +103,9 @@ namespace Kinovea.ScreenManager
                 if (attributes.Length <= 0 || ((XmlTypeAttribute)attributes[0]).TypeName != r.Name)
                     continue;
 
-                // Try possible constructors of drawings.
-                ConstructorInfo ci = null;
-                object[] parameters = null;
+                ConstructorInfo ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(TimestampMapper), typeof(Metadata)});
+                object[] parameters = parameters = new object[] { r, scaling, timestampMapper, metadata };
 
-                if (t == typeof(DrawingChrono) || t == typeof(DrawingTrack))
-                {
-                    ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(TimestampMapper) });
-                    parameters = new object[] { r, scaling, timestampMapper};
-                }
-                else
-                {
-                    ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(Metadata) });
-                    parameters = new object[] { r, scaling, metadata };
-                }
-                
                 if (ci == null)
                     break;
  
