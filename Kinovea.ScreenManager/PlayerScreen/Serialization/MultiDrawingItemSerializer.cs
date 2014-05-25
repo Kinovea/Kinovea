@@ -56,13 +56,13 @@ namespace Kinovea.ScreenManager
             using (XmlReader r = XmlReader.Create(new StringReader(data), settings))
             {
                 r.MoveToContent();
-                item = Deserialize(r, identityScaling, TimeHelper.IdentityTimestampMapper, metadata.AverageTimeStampsPerFrame);
+                item = Deserialize(r, identityScaling, TimeHelper.IdentityTimestampMapper, metadata);
             }
 
             return item;
         }
 
-        public static AbstractMultiDrawingItem Deserialize(XmlReader r, PointF scaling, TimestampMapper timestampMapper, long averageTimeStampsPerFrame)
+        public static AbstractMultiDrawingItem Deserialize(XmlReader r, PointF scaling, TimestampMapper timestampMapper, Metadata metadata)
         {
             AbstractMultiDrawingItem item = null;
 
@@ -79,11 +79,11 @@ namespace Kinovea.ScreenManager
                 if (attributes.Length <= 0 || ((XmlTypeAttribute)attributes[0]).TypeName != r.Name)
                     continue;
 
-                ConstructorInfo ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(TimestampMapper), typeof(long) });
+                ConstructorInfo ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(TimestampMapper), typeof(Metadata) });
                 if (ci == null)
                     break;
 
-                object[] parameters = new object[] { r, scaling, timestampMapper, averageTimeStampsPerFrame };
+                object[] parameters = new object[] { r, scaling, timestampMapper, metadata};
                 item = (AbstractMultiDrawingItem)Activator.CreateInstance(t, parameters);
                 itemRead = item != null;
 
