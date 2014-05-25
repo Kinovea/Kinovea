@@ -580,48 +580,6 @@ namespace Kinovea.ScreenManager
                 DrawingAdded(this, new DrawingEventArgs(track, trackManager.Id));
         }
 
-
-        public void AddImageDrawing(string filename, bool isSVG, long time)
-        {
-            // FIXME: Use a drawing tool to perform the instanciation ?
-
-            if (hitKeyframe == null)
-                return;
-
-            if(!File.Exists(filename))
-                return;
-                
-            AbstractDrawing drawing = null;
-            if(isSVG)
-            {
-                try
-                {
-                    drawing = new DrawingSVG(imageSize.Width, imageSize.Height, time, averageTimeStampsPerFrame, filename);
-                }
-                catch
-                {
-                    // usual error case: external DTD an no network or invalid svg file.
-                    // FIXME: we could also have an error placeholder image as a way to inform the user.
-                }
-            }
-            else
-            {
-                drawing = new DrawingBitmap(imageSize.Width, imageSize.Height, time, averageTimeStampsPerFrame, filename);
-            }
-            
-            if(drawing != null)
-                AddDrawing(hitKeyframe, drawing);
-        }
-
-        public void AddImageDrawing(Bitmap bmp, long time)
-        {
-            if (hitKeyframe == null)
-                return;
-
-            DrawingBitmap drawing = new DrawingBitmap(imageSize.Width, imageSize.Height, time, averageTimeStampsPerFrame, bmp);
-            AddDrawing(hitKeyframe, drawing);
-        }
-
         public void DeleteDrawing(Guid managerId, Guid drawingId)
         {
             // Remove event handlers from the drawing as well as all associated data like tracking data,

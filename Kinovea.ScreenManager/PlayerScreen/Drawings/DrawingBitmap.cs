@@ -28,7 +28,7 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingBitmap : AbstractDrawing
+    public class DrawingBitmap : AbstractDrawing, IScalable
     {
         #region Properties
         public override string DisplayName
@@ -71,38 +71,18 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingBitmap(int width, int height, long timestamp, long averageTimeStampsPerFrame, string filename)
+        public DrawingBitmap(long timestamp, long averageTimeStampsPerFrame, string filename)
         {
             bitmap = new Bitmap(filename);
-
-            if(bitmap != null)
-                Initialize(width, height, timestamp, averageTimeStampsPerFrame);
+            Initialize(timestamp, averageTimeStampsPerFrame);
         }
-        public DrawingBitmap(int width, int height, long timestamp, long averageTimeStampsPerFrame, Bitmap bmp)
+        public DrawingBitmap(long timestamp, long averageTimeStampsPerFrame, Bitmap bmp)
         {
             bitmap = AForge.Imaging.Image.Clone(bmp);
-
-            if(bitmap != null)
-                Initialize(width, height, timestamp, averageTimeStampsPerFrame);
+            Initialize(timestamp, averageTimeStampsPerFrame);
         }
-        private void Initialize(int width, int height, long timestamp, long averageTimeStampsPerFrame)
+        private void Initialize(long timestamp, long averageTimeStampsPerFrame)
         {
-            videoSize = new Size(width, height);
-            
-            originalWidth = bitmap.Width;
-            originalHeight  = bitmap.Height;
-            
-            // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
-            // For bitmap drawing, we only do this if no upsizing is involved.
-            initialScale = (float) (((float)height * 0.75) / originalHeight);
-            if(initialScale < 1.0)
-            {
-                originalWidth = (int) ((float)originalWidth * initialScale);
-                originalHeight = (int) ((float)originalHeight * initialScale);
-            }
-            
-            boundingBox.Rectangle = new Rectangle((width - originalWidth) / 2, (height - originalHeight) / 2, originalWidth, originalHeight);
-            
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             infosFading.UseDefault = false;
@@ -160,5 +140,27 @@ namespace Kinovea.ScreenManager
             boundingBox.MoveAndSnap((int)dx, (int)dy, videoSize, snapMargin);
         }
         #endregion
+
+        public void Scale(Size size)
+        {
+            if (bitmap == null)
+                return;
+
+            videoSize = size;
+            originalWidth = bitmap.Width;
+            originalHeight = bitmap.Height;
+
+            // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
+            // For bitmap drawing, we only do this if no upsizing is involved.
+            initialScale = (float)(((float)videoSize.Height * 0.75) / originalHeight);
+            
+            if (initialScale < 1.0)
+            {
+                originalWidth = (int)((float)originalWidth * initialScale);
+                originalHeight = (int)((float)originalHeight * initialScale);
+            }
+
+            boundingBox.Rectangle = new Rectangle((videoSize.Width - originalWidth) / 2, (videoSize.Height - originalHeight) / 2, originalWidth, originalHeight);
+        }
     }
 }
