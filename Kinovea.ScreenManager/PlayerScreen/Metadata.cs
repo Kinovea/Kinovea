@@ -581,6 +581,12 @@ namespace Kinovea.ScreenManager
                 DrawingAdded(this, new DrawingEventArgs(track, trackManager.Id));
         }
 
+        public void ModifiedDrawing()
+        {
+            if (DrawingModified != null)
+                DrawingModified(this, new DrawingEventArgs(null, Guid.Empty));
+        }
+        
         public void DeleteDrawing(Guid managerId, Guid drawingId)
         {
             // Remove event handlers from the drawing as well as all associated data like tracking data,

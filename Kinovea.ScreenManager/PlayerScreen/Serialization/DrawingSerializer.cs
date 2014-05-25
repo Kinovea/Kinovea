@@ -63,10 +63,33 @@ namespace Kinovea.ScreenManager
             using (XmlReader r = XmlReader.Create(new StringReader(data), settings))
             {
                 r.MoveToContent();
-                drawing = Deserialize(r, identityScale, metadata, TimeHelper.IdentityTimestampMapper);
+                drawing = Deserialize(r, identityScale, TimeHelper.IdentityTimestampMapper, metadata);
             }
 
             return drawing;
+        }
+
+        public static void ModifyFromString(Guid managerId, Guid drawingId, string data, Metadata metadata)
+        {
+            AbstractDrawingManager manager = metadata.GetDrawingManager(managerId);
+            IKvaSerializable drawing = manager.GetDrawing(drawingId) as IKvaSerializable;
+
+            if (drawing == null)
+                return;
+
+            PointF identityScale = new PointF(1, 1);
+
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreComments = true;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreWhitespace = true;
+            settings.CloseInput = true;
+
+            using (XmlReader r = XmlReader.Create(new StringReader(data), settings))
+            {
+                r.MoveToContent();
+                drawing.ReadXml(r, identityScale, TimeHelper.IdentityTimestampMapper);
+            }
         }
 
         public static void Serialize(XmlWriter w, IKvaSerializable drawing)
@@ -86,7 +109,7 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
         }
 
-        public static AbstractDrawing Deserialize(XmlReader r, PointF scaling, Metadata metadata, TimestampMapper timestampMapper)
+        public static AbstractDrawing Deserialize(XmlReader r, PointF scaling, TimestampMapper timestampMapper, Metadata metadata)
         {
             AbstractDrawing drawing = null;
 

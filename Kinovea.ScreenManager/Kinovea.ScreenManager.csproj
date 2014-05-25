@@ -302,6 +302,7 @@
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteDrawing.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteKeyframe.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteMultiDrawingItem.cs" />
+    <Compile Include="UndoRedo\HistoryMementos\HistoryMementoModifyDrawing.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoNull.cs" />
     <Compile Include="UndoRedo\HistoryMenuManager.cs" />
     <Compile Include="UndoRedo\HistoryStack.cs" />
