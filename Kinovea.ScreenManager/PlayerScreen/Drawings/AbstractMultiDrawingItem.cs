@@ -12,6 +12,8 @@ namespace Kinovea.ScreenManager
             get { return identifier; }
         }
 
+        public abstract int ContentHash { get; }
+        
         protected Guid identifier = Guid.NewGuid();
     }
 }

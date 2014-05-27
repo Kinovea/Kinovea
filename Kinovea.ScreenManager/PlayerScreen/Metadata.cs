@@ -132,11 +132,12 @@ namespace Kinovea.ScreenManager
                 // This is used to know if there is anything to burn on the images when saving.
                 // All kind of objects should be taken into account here, even those
                 // that we currently don't save to the .kva but only draw on the image.
-                // TODO: detect if any extradrawing is dirty.
                 return keyframes.Count > 0 ||
-                        extraDrawings.Count > totalStaticExtraDrawings ||
+                        spotlightManager.Count > 0 ||
+                        autoNumberManager.Count > 0 ||
                         chronoManager.Drawings.Count > 0 ||
                         trackManager.Drawings.Count > 0 ||
+                        extraDrawings.Count > totalStaticExtraDrawings ||
                         magnifier.Mode != MagnifierMode.None;
             }
         }

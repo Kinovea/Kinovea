@@ -41,6 +41,10 @@ namespace Kinovea.ScreenManager
         {
             get { return value;}
         }
+        public override int ContentHash
+        {
+            get { return value.GetHashCode() ^ background.GetHashCode(); }
+        }
         #endregion
 
         #region Members
