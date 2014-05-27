@@ -485,6 +485,23 @@ namespace Kinovea.ScreenManager
             else
                 return GetKeyframe(managerId);
         }
+
+        public AbstractDrawing GetDrawing(Guid managerId, Guid drawingId)
+        {
+            AbstractDrawingManager manager = null;
+
+            if (managerId == chronoManager.Id)
+                manager = chronoManager;
+            else if (managerId == trackManager.Id)
+                manager = trackManager;
+            else
+                manager = GetKeyframe(managerId);
+
+            if (manager == null)
+                return null;
+
+            return manager.GetDrawing(drawingId);
+        }
         
         /// <summary>
         /// General method to add a drawing on a manager (keyframe-attched, chrono, track).
@@ -582,8 +599,15 @@ namespace Kinovea.ScreenManager
                 DrawingAdded(this, new DrawingEventArgs(track, trackManager.Id));
         }
 
-        public void ModifiedDrawing()
+        public void ModifiedDrawing(Guid managerId, Guid drawingId)
         {
+            DrawingTrack track = GetDrawing(managerId, drawingId) as DrawingTrack;
+            if (track != null)
+            {
+                track.UpdateKinematics();
+                track.IntegrateKeyframes();
+            }
+
             if (DrawingModified != null)
                 DrawingModified(this, new DrawingEventArgs(null, Guid.Empty));
         }

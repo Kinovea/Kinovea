@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
         {
             HistoryMemento redoMemento = new HistoryMementoModifyDrawing(metadata, managerId, drawingId, drawingName);
             DrawingSerializer.ModifyFromString(managerId, drawingId, data, metadata);
-            metadata.ModifiedDrawing();
+            metadata.ModifiedDrawing(managerId, drawingId);
             return redoMemento;
         }
     }

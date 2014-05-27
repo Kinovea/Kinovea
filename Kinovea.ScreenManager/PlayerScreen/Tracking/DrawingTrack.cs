@@ -1117,10 +1117,11 @@ namespace Kinovea.ScreenManager
             // Reset to first point.
             if (positions.Count > 0)
                 mainLabel.SetAttach(positions[0].Point, true);
+
             mainLabel.WriteXml(w);
             w.WriteEndElement();
 
-            if (positions.Count > 0)
+            if (positions.Count > 0 && currentPoint < positions.Count)
                 mainLabel.SetAttach(positions[currentPoint].Point, true);
             
             if (keyframesLabels.Count > 0)
@@ -1332,6 +1333,11 @@ namespace Kinovea.ScreenManager
             UpdateKinematics();
             IntegrateKeyframes();
         }
+        public void UpdateKinematics()
+        {
+            List<TimedPoint> samples = positions.Select(p => new TimedPoint(p.X, p.Y, p.T)).ToList();
+            trajectoryKinematics = kinematicsHelper.AnalyzeTrajectory(samples, parentMetadata.CalibrationHelper);
+        }
         public void IntegrateKeyframes()
         {
             //-----------------------------------------------------------------------------------
@@ -1479,21 +1485,6 @@ namespace Kinovea.ScreenManager
         {
             searchWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow).ToRectangle();
             blockWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.BlockWindow).ToRectangle();
-        }
-        private void UpdateKinematics()
-        {
-            List<TimedPoint> samples = positions.Select(p => new TimedPoint(p.X, p.Y, p.T)).ToList();
-
-            // Testing smoothing: import test data, fs is 69.9Hz.
-            /*List<TimedPoint> samples = new List<TimedPoint>();
-            int s = 0;
-            foreach (double d in TestData.Data)
-            {
-                samples.Add(new TimedPoint(0, (float)d, s));
-                s++;
-            }*/
-
-            trajectoryKinematics = kinematicsHelper.AnalyzeTrajectory(samples, parentMetadata.CalibrationHelper);
         }
         private int FindClosestPoint(long currentTimestamp)
         {
