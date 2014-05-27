@@ -40,7 +40,14 @@ namespace Kinovea.ScreenManager
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
         #endregion
-        
+
+        #region Properties
+        public override int ContentHash
+        {
+            get { return position.GetHashCode() ^ radius.GetHashCode() ^ points["o"].GetHashCode(); }
+        }
+        #endregion
+
         #region Members
         private long position;
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();

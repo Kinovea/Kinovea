@@ -50,7 +50,10 @@ namespace Kinovea.ScreenManager
         }
         public override int ContentHash
         {
-            get { return 0; }
+            get 
+            {
+                return spotlights.Aggregate(0, (a, s) => a ^ s.GetHashCode());  
+            }
         } 
         public override AbstractMultiDrawingItem SelectedItem 
         {

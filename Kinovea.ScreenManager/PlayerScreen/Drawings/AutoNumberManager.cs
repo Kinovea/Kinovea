@@ -44,7 +44,10 @@ namespace Kinovea.ScreenManager
         }
         public override int ContentHash
         {
-            get { return 0; }
+            get 
+            { 
+                return autoNumbers.Aggregate(0, (a, n) => a ^ n.GetHashCode()); 
+            }
         } 
         public DrawingStyle DrawingStyle
         {
