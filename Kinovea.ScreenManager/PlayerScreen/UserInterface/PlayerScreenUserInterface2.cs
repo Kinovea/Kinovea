@@ -3799,9 +3799,15 @@ namespace Kinovea.ScreenManager
         }
         private void mnuDeleteEndOfTrajectory_Click(object sender, EventArgs e)
         {
-            IUndoableCommand cdeot = new CommandDeleteEndOfTrack(this, m_FrameServer.Metadata, m_iCurrentPosition);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(cdeot);
+            DrawingTrack track = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
+            if (track == null)
+                return;
+
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.DisplayName);
+
+            track.ChopTrajectory(m_iCurrentPosition);
+
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
 
             DoInvalidate();
             UpdateFramesMarkers();
@@ -3921,7 +3927,10 @@ namespace Kinovea.ScreenManager
             if (chrono == null)
                 return;
 
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.DisplayName);
             chrono.Start(m_iCurrentPosition);
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
+
             UpdateFramesMarkers();
         }
         private void mnuChronoStop_Click(object sender, EventArgs e)
@@ -3930,7 +3939,10 @@ namespace Kinovea.ScreenManager
             if (chrono == null)
                 return;
 
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.DisplayName);
             chrono.Stop(m_iCurrentPosition);
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
+
             UpdateFramesMarkers();
         }
         private void mnuChronoHide_Click(object sender, EventArgs e)
@@ -3939,7 +3951,10 @@ namespace Kinovea.ScreenManager
             if (chrono == null)
                 return;
 
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.DisplayName);
             chrono.Hide(m_iCurrentPosition);
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
+
             UpdateFramesMarkers();
         }
         private void mnuChronoCountdown_Click(object sender, EventArgs e)
@@ -3950,8 +3965,10 @@ namespace Kinovea.ScreenManager
             if (chrono == null)
                 return;
 
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.DisplayName);
             mnuChronoCountdown.Checked = !mnuChronoCountdown.Checked;
             chrono.CountDown = mnuChronoCountdown.Checked;
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
             
             DoInvalidate();
         }

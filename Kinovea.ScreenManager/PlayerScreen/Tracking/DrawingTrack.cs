@@ -965,38 +965,6 @@ namespace Kinovea.ScreenManager
             UpdateKinematics();
             IntegrateKeyframes();
         }
-        public List<AbstractTrackPoint> GetEndOfTrack(long timestamp)
-        {
-            // Called from CommandDeleteEndOfTrack,
-            // We need to keep the old values in case the command is undone.
-            List<AbstractTrackPoint> endOfTrack = positions.SkipWhile(p => p.T >= timestamp).ToList();
-            return endOfTrack;
-        }
-        public void AppendPoints(long currentTimestamp, List<AbstractTrackPoint> choppedPoints)
-        {
-            // Called when undoing CommandDeleteEndOfTrack,
-            // revival of the discarded points.
-            if (choppedPoints.Count == 0)
-                return;
-            
-            // Some points may have been re added already and we don't want to mix the two lists.
-            // Find the append insertion point, remove extra stuff, and append.
-            int iMatchedPoint = positions.Count - 1;
-                
-            while (positions[iMatchedPoint].T >= choppedPoints[0].T && iMatchedPoint > 0)
-                iMatchedPoint--;
-
-            if (iMatchedPoint < positions.Count - 1)
-                positions.RemoveRange(iMatchedPoint + 1, positions.Count - (iMatchedPoint+1));
-
-            foreach (AbstractTrackPoint trkpos in choppedPoints)
-                positions.Add(trkpos);
-
-            endTimeStamp = positions[positions.Count - 1].T;
-
-            UpdateKinematics();
-            IntegrateKeyframes();
-        }
         public void StopTracking()
         {
             trackStatus = TrackStatus.Interactive;
