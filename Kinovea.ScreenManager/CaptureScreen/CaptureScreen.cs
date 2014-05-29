@@ -87,6 +87,10 @@ namespace Kinovea.ScreenManager
             get { return summary == null ? ImageAspectRatio.Auto : Convert(summary.AspectRatio); }
             set { ChangeAspectRatio(value); }
         }
+        public HistoryStack HistoryStack
+        {
+            get { return historyStack; }
+        }
         #endregion
         
         #region Members
@@ -123,6 +127,7 @@ namespace Kinovea.ScreenManager
         private Timer nonGrabbingInteractionTimer = new Timer();
         private DateTime lastImageTime;
         private Averager averager = new Averager(25);
+        private HistoryStack historyStack = new HistoryStack();
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -137,7 +142,7 @@ namespace Kinovea.ScreenManager
             view.SetCapturedFilesView(capturedFiles.View);
             
             InitializeCaptureFilenames();
-            InitializeTools();
+            InitializeTools();            
             InitializeMetadata();
             
             view.SetToolbarView(drawingToolbarPresenter.View);
@@ -570,7 +575,7 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeMetadata()
         {
-            metadata = new Metadata(null, null);
+            metadata = new Metadata(historyStack, null);
             // TODO: hook to events raised by metadata.
             
             LoadCompanionKVA();
