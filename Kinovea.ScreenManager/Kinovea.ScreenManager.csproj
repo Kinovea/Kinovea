@@ -243,9 +243,6 @@
     <Compile Include="ImageHelper.cs" />
     <Compile Include="ImageToViewportTransformer.cs" />
     <Compile Include="ListExtensions.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandDeleteKeyframe.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandDeleteTrack.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandDeleteEndOfTrack.cs" />
     <Compile Include="CoordinateSystem.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Extensions.cs" />
