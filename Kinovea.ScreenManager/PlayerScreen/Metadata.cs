@@ -508,6 +508,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void AddDrawing(Guid managerId, AbstractDrawing drawing)
         {
+            if (drawing == null)
+                return;
+
             Keyframe keyframe = GetKeyframe(managerId);
             if (keyframe != null)
             {
@@ -533,7 +536,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void AddDrawing(Keyframe keyframe, AbstractDrawing drawing)
         {
-            if (keyframe == null || !drawing.IsValid)
+            if (keyframe == null || drawing == null || !drawing.IsValid)
                 return;
 
             keyframe.AddDrawing(drawing);
@@ -601,7 +604,8 @@ namespace Kinovea.ScreenManager
 
         public void ModifiedDrawing(Guid managerId, Guid drawingId)
         {
-            DrawingTrack track = GetDrawing(managerId, drawingId) as DrawingTrack;
+            AbstractDrawing drawing = GetDrawing(managerId, drawingId);
+            DrawingTrack track = drawing as DrawingTrack;
             if (track != null)
             {
                 track.UpdateKinematics();
@@ -609,7 +613,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (DrawingModified != null)
-                DrawingModified(this, new DrawingEventArgs(null, Guid.Empty));
+                DrawingModified(this, new DrawingEventArgs(drawing, managerId));
         }
         
         public void DeleteDrawing(Guid managerId, Guid drawingId)
