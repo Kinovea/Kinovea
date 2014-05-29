@@ -646,15 +646,17 @@ namespace Kinovea.ScreenManager
                 measurableDrawing.ShowMeasurableInfoChanged -= MeasurableDrawing_ShowMeasurableInfoChanged;
 
             manager.RemoveDrawing(drawingId);
-
             UnselectAll();
             
             if (DrawingDeleted != null)
                 DrawingDeleted(this, EventArgs.Empty);
         }
+        
         public void DeleteMultiDrawingItem(AbstractMultiDrawing manager, Guid itemId)
         {
-            // check if trackable.
+            ITrackable item = manager.GetItem(itemId) as ITrackable;
+            if (item != null)
+                DeleteTrackableDrawing(item);
 
             manager.Remove(itemId);
             UnselectAll();
@@ -662,6 +664,7 @@ namespace Kinovea.ScreenManager
             if (MultiDrawingItemDeleted != null)
                 MultiDrawingItemDeleted(this, EventArgs.Empty);
         }
+        
         private void DeleteTrackableDrawing(ITrackable drawing)
         {
             trackabilityManager.Remove(drawing);
