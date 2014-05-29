@@ -261,10 +261,8 @@ namespace Kinovea.ScreenManager
             if(drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
                 return;
 
-            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing.DrawingStyle, Refresh);
-            FormsHelper.Locate(fcd);
-            fcd.ShowDialog();
-            fcd.Dispose();
+            metadataManipulator.ConfigureDrawing(metadataManipulator.HitDrawing, Refresh);
+            
             Refresh();
         }
         private void mnuConfigureOpacity_Click(object sender, EventArgs e)
@@ -279,8 +277,6 @@ namespace Kinovea.ScreenManager
         }
         private void mnuDeleteDrawing_Click(object sender, EventArgs e)
         {
-            // FIXME: undo is temporarily disabled until the player also uses Viewport.
-            // Undo and redo needs to know the exact position of the drawing in the list of drawings for this keyframe.
             metadataManipulator.DeleteHitDrawing();
             Refresh();
         }
