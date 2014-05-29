@@ -295,25 +295,37 @@ namespace Kinovea.ScreenManager
             points["b"] = points["b"].Scale(scale.X, scale.Y);
             SignalAllTrackablePointsMoved();
         }
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteElementString("PointO", XmlHelper.WritePointF(points["o"]));
-            w.WriteElementString("PointA", XmlHelper.WritePointF(points["a"]));
-            w.WriteElementString("PointB", XmlHelper.WritePointF(points["b"]));
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteElementString("PointO", XmlHelper.WritePointF(points["o"]));
+                w.WriteElementString("PointA", XmlHelper.WritePointF(points["a"]));
+                w.WriteElementString("PointB", XmlHelper.WritePointF(points["b"]));
+            }
 
-            w.WriteStartElement("DrawingStyle");
-            style.WriteXml(w);
-            w.WriteEndElement();
-            
-            w.WriteStartElement("InfosFading");
-            infosFading.WriteXml(w);
-            w.WriteEndElement();
-            
-            // Spreadsheet support.
-            w.WriteStartElement("Measure");        	
-            int angle = (int)Math.Floor(-angleHelper.CalibratedAngle.Sweep);
-            w.WriteAttributeString("UserAngle", angle.ToString());
-            w.WriteEndElement();      	
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeAll(filter))
+            {
+                // Spreadsheet support.
+                w.WriteStartElement("Measure");
+                int angle = (int)Math.Floor(-angleHelper.CalibratedAngle.Sweep);
+                w.WriteAttributeString("UserAngle", angle.ToString());
+                w.WriteEndElement();
+            }
         }
         #endregion
         

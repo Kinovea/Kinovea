@@ -19,7 +19,7 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static string SerializeMemento(Metadata metadata, AbstractDrawing drawing, bool saveTrackability)
+        public static string SerializeMemento(Metadata metadata, AbstractDrawing drawing, SerializationFilter filter, bool saveTrackability)
         {
             IKvaSerializable kvaDrawing = drawing as IKvaSerializable;
             if (kvaDrawing == null)
@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteStartElement("DrawingMemento");
 
-                Serialize(w, kvaDrawing);
+                Serialize(w, kvaDrawing, filter);
 
                 if (saveTrackability && drawing is ITrackable)
                     metadata.TrackabilityManager.WriteTracker(w, drawing.Id);
@@ -121,7 +121,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public static void Serialize(XmlWriter w, IKvaSerializable drawing)
+        public static void Serialize(XmlWriter w, IKvaSerializable drawing, SerializationFilter filter)
         {
             // The XML name for this drawing should be stored in its [XMLType] C# attribute.
             Type t = drawing.GetType();
@@ -134,7 +134,7 @@ namespace Kinovea.ScreenManager
 
             w.WriteStartElement(xmlName);
             w.WriteAttributeString("id", drawing.Id.ToString());
-            drawing.WriteXml(w);
+            drawing.WriteXml(w, filter);
             w.WriteEndElement();
         }
 

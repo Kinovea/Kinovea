@@ -335,25 +335,34 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("Number of points do not match. Tool expects {0}, read:{1}", genericPosture.Points.Count, points.Count);
             }
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
             if(genericPosture.Id == Guid.Empty)
                 return;
             
-            xmlWriter.WriteElementString("ToolId", genericPosture.Id.ToString());
-            
-            xmlWriter.WriteStartElement("Positions");
-            foreach (PointF p in genericPosture.Points)
-                xmlWriter.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
-            xmlWriter.WriteEndElement();
-            
-            xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
-        
-            xmlWriter.WriteStartElement("InfosFading");
-            infosFading.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
+            w.WriteElementString("ToolId", genericPosture.Id.ToString());
+
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteStartElement("Positions");
+                foreach (PointF p in genericPosture.Points)
+                    w.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
         }
         #endregion
 

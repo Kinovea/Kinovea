@@ -178,11 +178,14 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteElementString("Time", position.ToString());
-            w.WriteElementString("Location", XmlHelper.WritePointF(background.Rectangle.Location));
-            w.WriteElementString("Value", value.ToString());
+            if ((filter & SerializationFilter.Core) == SerializationFilter.Core)
+            {
+                w.WriteElementString("Time", position.ToString());
+                w.WriteElementString("Location", XmlHelper.WritePointF(background.Rectangle.Location));
+                w.WriteElementString("Value", value.ToString());
+            }
         }
         #endregion
         

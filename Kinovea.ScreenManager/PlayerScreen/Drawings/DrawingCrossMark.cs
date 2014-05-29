@@ -231,20 +231,29 @@ namespace Kinovea.ScreenManager
             labelCoordinates.SetAttach(points["0"], true);
             SignalTrackablePointMoved();
         }
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteElementString("CenterPoint", XmlHelper.WritePointF(points["0"]));
-            w.WriteElementString("CoordinatesVisible", ShowMeasurableInfo.ToString().ToLower());
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteElementString("CenterPoint", XmlHelper.WritePointF(points["0"]));
+                w.WriteElementString("CoordinatesVisible", ShowMeasurableInfo.ToString().ToLower());
+            }
+
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
             
-            w.WriteStartElement("DrawingStyle");
-            style.WriteXml(w);
-            w.WriteEndElement();
-            
-            w.WriteStartElement("InfosFading");
-            infosFading.WriteXml(w);
-            w.WriteEndElement(); 
-            
-            if(ShowMeasurableInfo)
+            if(ShowMeasurableInfo && ShouldSerializeAll(filter))
             {
                 // Spreadsheet support.
                 w.WriteStartElement("Coordinates");

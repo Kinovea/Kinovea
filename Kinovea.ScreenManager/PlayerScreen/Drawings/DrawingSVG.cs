@@ -209,14 +209,18 @@ namespace Kinovea.ScreenManager
 
             LoadSVG(filename);
         }
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteElementString("File", filename);
+            if (ShouldSerializeCore(filter))
+                w.WriteElementString("File", filename);
 
-            w.WriteStartElement("InfosFading");
-            infosFading.WriteXml(w);
-            w.WriteEndElement();
-
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
+            
             // TODO: opacity value
             // TODO: bounding box.
         }

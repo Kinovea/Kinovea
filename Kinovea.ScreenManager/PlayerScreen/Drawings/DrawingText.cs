@@ -226,18 +226,27 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadEndElement();
             UpdateLabelRectangle();
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            xmlWriter.WriteElementString("Text", text);
-            xmlWriter.WriteElementString("Position", XmlHelper.WritePointF(background.Rectangle.Location));
-            
-            xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
-            
-            xmlWriter.WriteStartElement("InfosFading");
-            infosFading.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement(); 
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteElementString("Text", text);
+                w.WriteElementString("Position", XmlHelper.WritePointF(background.Rectangle.Location));
+            }
+
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
         }
         #endregion
         
