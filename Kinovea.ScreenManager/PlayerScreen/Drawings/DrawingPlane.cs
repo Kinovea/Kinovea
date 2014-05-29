@@ -288,8 +288,6 @@ namespace Kinovea.ScreenManager
 
             xmlReader.ReadStartElement();
             
-            Reset();
-            
             while(xmlReader.NodeType == XmlNodeType.Element)
             {
                 switch(xmlReader.Name)
