@@ -237,10 +237,10 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
         }
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
             foreach (Spotlight spot in spotlights)
-                DrawingSerializer.Serialize(w, spot as IKvaSerializable);
+                DrawingSerializer.Serialize(w, spot as IKvaSerializable, filter);
         }
         #endregion
     }

@@ -189,7 +189,7 @@ namespace Kinovea.ScreenManager
                 if (serializableDrawing == null)
                     continue;
 
-                DrawingSerializer.Serialize(w, serializableDrawing);
+                DrawingSerializer.Serialize(w, serializableDrawing, SerializationFilter.All);
             }
             w.WriteEndElement();
         }

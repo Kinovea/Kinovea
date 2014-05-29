@@ -263,6 +263,7 @@
     <Compile Include="PlayerScreen\Serialization\MetadataSerializer.cs" />
     <Compile Include="PlayerScreen\Serialization\MetadataConverter.cs" />
     <Compile Include="PlayerScreen\Serialization\MultiDrawingItemSerializer.cs" />
+    <Compile Include="PlayerScreen\Serialization\SerializationFilter.cs" />
     <Compile Include="PlayerScreen\TimeType.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackerParameterUnit.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackingProfile.cs" />

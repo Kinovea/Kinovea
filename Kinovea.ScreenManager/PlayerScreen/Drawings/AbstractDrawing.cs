@@ -146,6 +146,22 @@ namespace Kinovea.ScreenManager
                     screenInvalidate();
             }
         }
+        public bool ShouldSerializeCore(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.Core) == SerializationFilter.Core;
+        }
+        public bool ShouldSerializeStyle(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.Style) == SerializationFilter.Style;
+        }
+        public bool ShouldSerializeFading(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.Fading) == SerializationFilter.Fading;
+        }
+        public bool ShouldSerializeAll(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.All) == SerializationFilter.All;
+        }
         #endregion
     }
 }

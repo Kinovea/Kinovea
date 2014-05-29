@@ -285,21 +285,31 @@ namespace Kinovea.ScreenManager
             labelMeasure.SetAttach(GetMiddlePoint(), true);
             SignalAllTrackablePointsMoved();
         }
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteElementString("Start", XmlHelper.WritePointF(points["a"]));
-            w.WriteElementString("End", XmlHelper.WritePointF(points["b"]));
-            w.WriteElementString("MeasureVisible", ShowMeasurableInfo.ToString().ToLower());
-            
-            w.WriteStartElement("DrawingStyle");
-            style.WriteXml(w);
-            w.WriteEndElement();
-            
-            w.WriteStartElement("InfosFading");
-            infosFading.WriteXml(w);
-            w.WriteEndElement();  
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteElementString("Start", XmlHelper.WritePointF(points["a"]));
+                w.WriteElementString("End", XmlHelper.WritePointF(points["b"]));
+                w.WriteElementString("MeasureVisible", ShowMeasurableInfo.ToString().ToLower());
+            }
 
-            if(ShowMeasurableInfo)
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
+            
+            
+            if(ShowMeasurableInfo && ShouldSerializeAll(filter))
             {
                 // Spreadsheet support.
                 w.WriteStartElement("Measure");

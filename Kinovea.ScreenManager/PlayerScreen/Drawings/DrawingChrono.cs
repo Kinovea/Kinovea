@@ -267,37 +267,46 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region KVA Serialization
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteElementString("Position", XmlHelper.WritePointF(mainBackground.Rectangle.Location));
-            
-            w.WriteStartElement("Values");
-            w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
-            w.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
-            w.WriteElementString("StopCounting", (stopCountingTimestamp == long.MaxValue) ? "-1" : stopCountingTimestamp.ToString());
-            w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
-            w.WriteElementString("Countdown", countdown.ToString().ToLower());
-            
-            // Spreadsheet support
-            string userDuration = "0";
-            if (startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
+            if (ShouldSerializeCore(filter))
             {
-                userDuration = parentMetadata.TimeCodeBuilder(stopCountingTimestamp - startCountingTimestamp, TimeType.Duration, TimecodeFormat.Unknown, false);
+                w.WriteElementString("Position", XmlHelper.WritePointF(mainBackground.Rectangle.Location));
+
+                w.WriteStartElement("Values");
+                
+                w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
+                w.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
+                w.WriteElementString("StopCounting", (stopCountingTimestamp == long.MaxValue) ? "-1" : stopCountingTimestamp.ToString());
+                w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
+                w.WriteElementString("Countdown", countdown.ToString().ToLower());
+
+                if (ShouldSerializeAll(filter))
+                {
+                    // Spreadsheet support
+                    string userDuration = "0";
+                    if (startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
+                        userDuration = parentMetadata.TimeCodeBuilder(stopCountingTimestamp - startCountingTimestamp, TimeType.Duration, TimecodeFormat.Unknown, false);
+
+                    w.WriteElementString("UserDuration", userDuration);
+                }
+
+                // </values>
+                w.WriteEndElement();
             }
-            w.WriteElementString("UserDuration", userDuration);
-            
-            // </values>
-            w.WriteEndElement();
-            
-            // Label
-            w.WriteStartElement("Label");
-            w.WriteElementString("Text", label);
-            w.WriteElementString("Show", showLabel.ToString().ToLower());
-            w.WriteEndElement();
-            
-            w.WriteStartElement("DrawingStyle");
-            style.WriteXml(w);
-            w.WriteEndElement();
+
+            if (ShouldSerializeStyle(filter))
+            {
+                // Label
+                w.WriteStartElement("Label");
+                w.WriteElementString("Text", label);
+                w.WriteElementString("Show", showLabel.ToString().ToLower());
+                w.WriteEndElement();
+
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
         }
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {

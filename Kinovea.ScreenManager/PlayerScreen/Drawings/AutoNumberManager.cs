@@ -195,14 +195,17 @@ namespace Kinovea.ScreenManager
             
             r.ReadEndElement();
         }
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteStartElement("DrawingStyle");
-            style.WriteXml(w);
-            w.WriteEndElement();
-            
             foreach(AutoNumber number in autoNumbers)
-                DrawingSerializer.Serialize(w, number as IKvaSerializable);
+                DrawingSerializer.Serialize(w, number as IKvaSerializable, filter);
+            
+            if ((filter & SerializationFilter.Style) == SerializationFilter.Style)
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
         }
         #endregion
         

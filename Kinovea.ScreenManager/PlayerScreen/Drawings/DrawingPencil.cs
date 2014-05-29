@@ -194,22 +194,31 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteStartElement("PointList");
-            w.WriteAttributeString("Count", pointList.Count.ToString());
-            foreach (PointF p in pointList)
-                w.WriteElementString("Point", XmlHelper.WritePointF(p));
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteStartElement("PointList");
+                w.WriteAttributeString("Count", pointList.Count.ToString());
+                foreach (PointF p in pointList)
+                    w.WriteElementString("Point", XmlHelper.WritePointF(p));
 
-            w.WriteEndElement();
-            
-            w.WriteStartElement("DrawingStyle");
-            style.WriteXml(w);
-            w.WriteEndElement();
-            
-            w.WriteStartElement("InfosFading");
-            infosFading.WriteXml(w);
-            w.WriteEndElement(); 
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
         }
         #endregion
         

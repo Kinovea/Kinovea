@@ -400,7 +400,7 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteStartElement("Chrono");
-                chrono.WriteXml(w);
+                chrono.WriteXml(w, SerializationFilter.All);
                 w.WriteEndElement();
             }
 
@@ -419,7 +419,7 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteStartElement("Track");
-                track.WriteXml(w);
+                track.WriteXml(w, SerializationFilter.All);
                 w.WriteEndElement();
             }
 
@@ -432,7 +432,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             w.WriteStartElement("Spotlights");
-            metadata.SpotlightManager.WriteXml(w);
+            metadata.SpotlightManager.WriteXml(w, SerializationFilter.All);
             w.WriteEndElement();
         }
         private void WriteAutoNumbers(XmlWriter w)
@@ -441,14 +441,14 @@ namespace Kinovea.ScreenManager
                 return;
 
             w.WriteStartElement("AutoNumbers");
-            metadata.AutoNumberManager.WriteXml(w);
+            metadata.AutoNumberManager.WriteXml(w, SerializationFilter.All);
             w.WriteEndElement();
         }
         private void WriteCoordinateSystem(XmlWriter w)
         {
             w.WriteStartElement("CoordinateSystem");
             w.WriteAttributeString("id", metadata.DrawingCoordinateSystem.Id.ToString());
-            metadata.DrawingCoordinateSystem.WriteXml(w);
+            metadata.DrawingCoordinateSystem.WriteXml(w, SerializationFilter.All);
             w.WriteEndElement();
         }
         private void WriteCalibrationHelp(XmlWriter w)

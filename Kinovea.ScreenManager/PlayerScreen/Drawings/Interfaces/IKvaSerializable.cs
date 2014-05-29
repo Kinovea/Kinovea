@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
     {
         Guid Id { get; }
         
-        void WriteXml(XmlWriter xmlWriter);
+        void WriteXml(XmlWriter xmlWriter, SerializationFilter filter);
         void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper);
     }
 }

@@ -348,13 +348,19 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Serialization
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteElementString("Visible", Visible.ToString().ToLower());
-            
-            w.WriteStartElement("DrawingStyle");
-            style.WriteXml(w);
-            w.WriteEndElement();
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteElementString("Visible", Visible.ToString().ToLower());
+            }
+
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
         }
         public void ReadXml(XmlReader r)
         {

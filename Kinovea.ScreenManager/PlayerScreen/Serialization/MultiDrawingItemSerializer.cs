@@ -15,7 +15,7 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static string SerializeToString(AbstractMultiDrawing manager, AbstractMultiDrawingItem item)
+        public static string SerializeMemento(AbstractMultiDrawing manager, AbstractMultiDrawingItem item, SerializationFilter filter)
         {
             // TODO: export other data needed for undo, like the associated trackable drawing.
 
@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
 
             using (XmlWriter w = XmlWriter.Create(builder, settings))
             {
-                DrawingSerializer.Serialize(w, kvaDrawing);
+                DrawingSerializer.Serialize(w, kvaDrawing, filter);
                 w.Flush();
                 result = builder.ToString();
             }

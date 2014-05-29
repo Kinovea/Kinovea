@@ -1071,59 +1071,65 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region KVA Serialization
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteElementString("TimePosition", beginTimeStamp.ToString());
-            
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackView));
-            string xmlMode = enumConverter.ConvertToString(trackView);
-            w.WriteElementString("Mode", xmlMode);
-            
-            enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
-            string xmlExtraData = enumConverter.ConvertToString(trackExtraData);
-            w.WriteElementString("ExtraData", xmlExtraData);
-
-            enumConverter = TypeDescriptor.GetConverter(typeof(TrackMarker));
-            string xmlTrackMarker = enumConverter.ConvertToString(trackMarker);
-            w.WriteElementString("Marker", xmlTrackMarker);
-
-            w.WriteElementString("DisplayBestFitCircle", displayBestFitCircle.ToString().ToLower());
-
-            w.WriteStartElement("TrackerParameters");
-            tracker.Parameters.WriteXml(w);
-            w.WriteEndElement();
-
-            TrackPointsToXml(w);
-            
-            w.WriteStartElement("DrawingStyle");
-            style.WriteXml(w);
-            w.WriteEndElement();
-            
-            w.WriteStartElement("MainLabel");
-            w.WriteAttributeString("Text", mainLabelText);
-            
-            // Reset to first point.
-            if (positions.Count > 0)
-                mainLabel.SetAttach(positions[0].Point, true);
-
-            mainLabel.WriteXml(w);
-            w.WriteEndElement();
-
-            if (positions.Count > 0 && currentPoint < positions.Count)
-                mainLabel.SetAttach(positions[currentPoint].Point, true);
-            
-            if (keyframesLabels.Count > 0)
+            if (ShouldSerializeCore(filter))
             {
-                w.WriteStartElement("KeyframeLabelList");
-                w.WriteAttributeString("Count", keyframesLabels.Count.ToString());
+                w.WriteElementString("TimePosition", beginTimeStamp.ToString());
 
-                foreach (KeyframeLabel kfl in keyframesLabels)
+                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackView));
+                string xmlMode = enumConverter.ConvertToString(trackView);
+                w.WriteElementString("Mode", xmlMode);
+            
+                enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
+                string xmlExtraData = enumConverter.ConvertToString(trackExtraData);
+                w.WriteElementString("ExtraData", xmlExtraData);
+
+                enumConverter = TypeDescriptor.GetConverter(typeof(TrackMarker));
+                string xmlTrackMarker = enumConverter.ConvertToString(trackMarker);
+                w.WriteElementString("Marker", xmlTrackMarker);
+
+                w.WriteElementString("DisplayBestFitCircle", displayBestFitCircle.ToString().ToLower());
+
+                w.WriteStartElement("TrackerParameters");
+                tracker.Parameters.WriteXml(w);
+                w.WriteEndElement();
+
+                TrackPointsToXml(w);
+
+                w.WriteStartElement("MainLabel");
+                w.WriteAttributeString("Text", mainLabelText);
+
+                // Reset to first point.
+                if (positions.Count > 0)
+                    mainLabel.SetAttach(positions[0].Point, true);
+
+                mainLabel.WriteXml(w);
+                w.WriteEndElement();
+
+                if (positions.Count > 0 && currentPoint < positions.Count)
+                    mainLabel.SetAttach(positions[currentPoint].Point, true);
+
+                if (keyframesLabels.Count > 0)
                 {
-                    w.WriteStartElement("KeyframeLabel");
-                    kfl.WriteXml(w);
+                    w.WriteStartElement("KeyframeLabelList");
+                    w.WriteAttributeString("Count", keyframesLabels.Count.ToString());
+
+                    foreach (KeyframeLabel kfl in keyframesLabels)
+                    {
+                        w.WriteStartElement("KeyframeLabel");
+                        kfl.WriteXml(w);
+                        w.WriteEndElement();
+                    }
+
                     w.WriteEndElement();
                 }
+            }
 
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
                 w.WriteEndElement();
             }
         }

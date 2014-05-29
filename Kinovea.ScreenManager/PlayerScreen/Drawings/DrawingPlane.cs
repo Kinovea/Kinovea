@@ -349,22 +349,31 @@ namespace Kinovea.ScreenManager
             PointF p = XmlHelper.ParsePointF(reader.ReadElementContentAsString());
             return p.Scale(scale.X, scale.Y);
         }
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteElementString("PointUpperLeft", XmlHelper.WritePointF(quadImage.A));
-            w.WriteElementString("PointUpperRight", XmlHelper.WritePointF(quadImage.B));
-            w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(quadImage.C));
-            w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(quadImage.D));
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteElementString("PointUpperLeft", XmlHelper.WritePointF(quadImage.A));
+                w.WriteElementString("PointUpperRight", XmlHelper.WritePointF(quadImage.B));
+                w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(quadImage.C));
+                w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(quadImage.D));
 
-            w.WriteElementString("Perspective", inPerspective.ToString().ToLower());
-            
-            w.WriteStartElement("DrawingStyle");
-            style.WriteXml(w);
-            w.WriteEndElement();
-            
-            w.WriteStartElement("InfosFading");
-            infosFading.WriteXml(w);
-            w.WriteEndElement();
+                w.WriteElementString("Perspective", inPerspective.ToString().ToLower());
+            }
+
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
         } 
         #endregion
         
