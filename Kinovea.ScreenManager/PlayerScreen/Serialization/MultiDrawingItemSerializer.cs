@@ -15,10 +15,8 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static string SerializeMemento(AbstractMultiDrawing manager, AbstractMultiDrawingItem item, SerializationFilter filter)
+        public static string SerializeMemento(Metadata metadata, AbstractMultiDrawing manager, AbstractMultiDrawingItem item, SerializationFilter filter)
         {
-            // TODO: export other data needed for undo, like the associated trackable drawing.
-
             IKvaSerializable kvaDrawing = item as IKvaSerializable;
             if (kvaDrawing == null)
                 return "";
@@ -33,7 +31,15 @@ namespace Kinovea.ScreenManager
 
             using (XmlWriter w = XmlWriter.Create(builder, settings))
             {
+                w.WriteStartElement("DrawingMemento");
+
                 DrawingSerializer.Serialize(w, kvaDrawing, filter);
+
+                if (item is ITrackable)
+                    metadata.TrackabilityManager.WriteTracker(w, item.Id);
+
+                w.WriteEndElement();
+
                 w.Flush();
                 result = builder.ToString();
             }
@@ -41,11 +47,11 @@ namespace Kinovea.ScreenManager
             return result;
         }
 
-        public static AbstractMultiDrawingItem DeserializeFromString(string data, Metadata metadata)
+        public static AbstractMultiDrawingItem DeserializeMemento(string data, Metadata metadata)
         {
             AbstractMultiDrawingItem item = null;
 
-            PointF identityScaling = new PointF(1, 1);
+            PointF identityScale = new PointF(1, 1);
 
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreComments = true;
@@ -56,7 +62,19 @@ namespace Kinovea.ScreenManager
             using (XmlReader r = XmlReader.Create(new StringReader(data), settings))
             {
                 r.MoveToContent();
-                item = Deserialize(r, identityScaling, TimeHelper.IdentityTimestampMapper, metadata);
+
+                if (!(r.Name == "DrawingMemento"))
+                    return null;
+
+                r.ReadStartElement();
+
+                item = Deserialize(r, identityScale, TimeHelper.IdentityTimestampMapper, metadata);
+
+                if (item is ITrackable)
+                {
+                    metadata.TrackabilityManager.ReadTracker(r, identityScale, TimeHelper.IdentityTimestampMapper);
+                    metadata.TrackabilityManager.Assign(item as ITrackable);
+                }
             }
 
             return item;

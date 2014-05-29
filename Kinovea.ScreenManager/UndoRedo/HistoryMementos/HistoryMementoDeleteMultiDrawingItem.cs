@@ -31,7 +31,7 @@ namespace Kinovea.ScreenManager
             commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandDeleteDrawing_FriendlyName, manager.DisplayName);
 
             if (manager != null)
-                data = MultiDrawingItemSerializer.SerializeMemento(manager, manager.GetItem(itemId), filter);
+                data = MultiDrawingItemSerializer.SerializeMemento(metadata, manager, manager.GetItem(itemId), filter);
 
             // TODO: get the associated trackable drawing and save it too.
         }
@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
             HistoryMemento redoMemento = new HistoryMementoAddMultiDrawingItem(metadata, manager, itemId);
             redoMemento.CommandName = commandName;
 
-            AbstractMultiDrawingItem item = MultiDrawingItemSerializer.DeserializeFromString(data, metadata);
+            AbstractMultiDrawingItem item = MultiDrawingItemSerializer.DeserializeMemento(data, metadata);
             metadata.AddMultidrawingItem(manager, item);
 
             // TODO: re instate the associated trackable drawing.
