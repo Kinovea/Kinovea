@@ -55,7 +55,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Properties
+        #region Members
         private Dictionary<Guid, DrawingTracker> trackers = new Dictionary<Guid, DrawingTracker>();
         private TrackingProfileManager trackingProfileManager = new TrackingProfileManager();
         private Size imageSize;
@@ -167,16 +167,23 @@ namespace Kinovea.ScreenManager
         public void WriteXml(XmlWriter w)
         {
             foreach (DrawingTracker tracker in trackers.Values)
-            {
-                if (tracker.Empty)
-                    continue;
+                WriteTracker(w, tracker.ID);
+        }
 
-                w.WriteStartElement("TrackableDrawing");
-                w.WriteAttributeString("id", tracker.ID.ToString());
-                w.WriteAttributeString("tracking", tracker.IsTracking.ToString().ToLower());
-                tracker.WriteXml(w);
-                w.WriteEndElement();
-            }
+        public void WriteTracker(XmlWriter w, Guid id)
+        {
+            if (!trackers.ContainsKey(id))
+                return;
+
+            DrawingTracker tracker = trackers[id];
+            if (tracker.Empty)
+                return;
+
+            w.WriteStartElement("TrackableDrawing");
+            w.WriteAttributeString("id", tracker.ID.ToString());
+            w.WriteAttributeString("tracking", tracker.IsTracking.ToString().ToLower());
+            tracker.WriteXml(w);
+            w.WriteEndElement();
         }
 
         public void ReadXml(XmlReader r, PointF scale, TimestampMapper timeMapper)
@@ -186,34 +193,32 @@ namespace Kinovea.ScreenManager
 
             while (r.NodeType == XmlNodeType.Element)
             {
-                switch (r.Name)
-                {
-                    case "TrackableDrawing":
-                        DrawingTracker tracker = new DrawingTracker(r, scale, timeMapper);
-                        if (trackers.ContainsKey(tracker.ID))
-                        {
-                            trackers[tracker.ID].Dispose();
-                            trackers[tracker.ID] = tracker;
-                        }
-                        else
-                        {
-                            trackers.Add(tracker.ID, tracker);
-                        }
-
-                        break;
-                    default:
-                        string unparsed = r.ReadOuterXml();
-                        break;
-                }
+                ReadTracker(r, scale, timeMapper);
             }
 
             if (!isEmpty)
                 r.ReadEndElement();
-        }     
+        }
 
-        private void ParseTrackableDrawing(XmlReader r)
+        public void ReadTracker(XmlReader r, PointF scale, TimestampMapper timeMapper)
         {
-            
+            if (r.Name == "TrackableDrawing")
+            {
+                DrawingTracker tracker = new DrawingTracker(r, scale, timeMapper);
+                if (trackers.ContainsKey(tracker.ID))
+                {
+                    trackers[tracker.ID].Dispose();
+                    trackers[tracker.ID] = tracker;
+                }
+                else
+                {
+                    trackers.Add(tracker.ID, tracker);
+                }
+            }
+            else
+            {
+                string unparsed = r.ReadOuterXml();
+            }
         }
     }
 }

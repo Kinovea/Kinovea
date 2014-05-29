@@ -35,9 +35,7 @@ namespace Kinovea.ScreenManager
             AbstractDrawingManager manager = metadata.GetDrawingManager(managerId);
             
             if (manager != null)
-                data = DrawingSerializer.SerializeToString(manager.GetDrawing(drawingId));
-
-            // TODO: get the associated trackable drawing and save it too.
+                data = DrawingSerializer.SerializeMemento(metadata, manager.GetDrawing(drawingId), true);
         }
 
         public override HistoryMemento PerformUndo()
@@ -45,11 +43,8 @@ namespace Kinovea.ScreenManager
             HistoryMemento redoMemento = new HistoryMementoAddDrawing(metadata, managerId, drawingId, drawingName);
             redoMemento.CommandName = commandName;
 
-            AbstractDrawing drawing = DrawingSerializer.DeserializeFromString(data, metadata);
+            AbstractDrawing drawing = DrawingSerializer.DeserializeMemento(data, metadata);
             metadata.AddDrawing(managerId, drawing);
-
-            // TODO: re instate the associated trackable drawing.
-
             return redoMemento;
         }
     }

@@ -19,7 +19,7 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static string SerializeToString(AbstractDrawing drawing)
+        public static string SerializeMemento(Metadata metadata, AbstractDrawing drawing, bool saveTrackability)
         {
             IKvaSerializable kvaDrawing = drawing as IKvaSerializable;
             if (kvaDrawing == null)
@@ -35,7 +35,15 @@ namespace Kinovea.ScreenManager
 
             using (XmlWriter w = XmlWriter.Create(builder, settings))
             {
+                w.WriteStartElement("DrawingMemento");
+
                 Serialize(w, kvaDrawing);
+
+                if (saveTrackability && drawing is ITrackable)
+                    metadata.TrackabilityManager.WriteTracker(w, drawing.Id);
+
+                w.WriteEndElement();
+
                 w.Flush();
                 result = builder.ToString();
             }
@@ -43,7 +51,7 @@ namespace Kinovea.ScreenManager
             return result;
         }
 
-        public static AbstractDrawing DeserializeFromString(string data, Metadata metadata)
+        public static AbstractDrawing DeserializeMemento(string data, Metadata metadata)
         {
             if (string.IsNullOrEmpty(data))
                 return null;
@@ -60,13 +68,25 @@ namespace Kinovea.ScreenManager
             using (XmlReader r = XmlReader.Create(new StringReader(data), settings))
             {
                 r.MoveToContent();
+
+                if (!(r.Name == "DrawingMemento"))
+                    return null;
+
+                r.ReadStartElement();
+
                 drawing = Deserialize(r, identityScale, TimeHelper.IdentityTimestampMapper, metadata);
+
+                if (drawing is ITrackable)
+                {
+                    metadata.TrackabilityManager.ReadTracker(r, identityScale, TimeHelper.IdentityTimestampMapper);
+                    metadata.TrackabilityManager.Assign(drawing as ITrackable);
+                }
             }
 
             return drawing;
         }
 
-        public static void ModifyFromString(Guid managerId, Guid drawingId, string data, Metadata metadata)
+        public static void DeserializeModifyMemento(Guid managerId, Guid drawingId, string data, Metadata metadata)
         {
             AbstractDrawingManager manager = metadata.GetDrawingManager(managerId);
             IKvaSerializable drawing = manager.GetDrawing(drawingId) as IKvaSerializable;
@@ -85,7 +105,19 @@ namespace Kinovea.ScreenManager
             using (XmlReader r = XmlReader.Create(new StringReader(data), settings))
             {
                 r.MoveToContent();
+
+                if (!(r.Name == "DrawingMemento"))
+                    return;
+
+                r.ReadStartElement();
+
                 drawing.ReadXml(r, identityScale, TimeHelper.IdentityTimestampMapper);
+
+                if (drawing is ITrackable)
+                {
+                    metadata.TrackabilityManager.ReadTracker(r, identityScale, TimeHelper.IdentityTimestampMapper);
+                    metadata.TrackabilityManager.Assign(drawing as ITrackable);
+                }
             }
         }
 

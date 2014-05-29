@@ -13,7 +13,7 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static string SerializeToString(Keyframe keyframe)
+        public static string SerializeMemento(Keyframe keyframe)
         {
             string result = "";
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
             return result;
         }
 
-        public static Keyframe DeserializeFromString(string data, Metadata metadata)
+        public static Keyframe DeserializeMemento(string data, Metadata metadata)
         {
             // TODO:
             // Also handle thumbnail and trackable drawings.
