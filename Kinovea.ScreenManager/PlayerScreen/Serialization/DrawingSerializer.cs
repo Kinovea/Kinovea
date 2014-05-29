@@ -21,9 +21,6 @@ namespace Kinovea.ScreenManager
 
         public static string SerializeToString(AbstractDrawing drawing)
         {
-            // TODO: check for non serializable drawings. (bitmap/svg).
-
-
             IKvaSerializable kvaDrawing = drawing as IKvaSerializable;
             if (kvaDrawing == null)
                 return "";

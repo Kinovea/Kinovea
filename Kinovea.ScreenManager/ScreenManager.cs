@@ -1111,7 +1111,8 @@ namespace Kinovea.ScreenManager
             {
                 if(!activeScreen.Full)
                 {
-                    activeScreenIsEmpty = true;	
+                    activeScreenIsEmpty = true;
+                    HistoryMenuManager.SwitchContext(null);
                 }
                 else if (activeScreen is PlayerScreen)
                 {
@@ -1147,7 +1148,6 @@ namespace Kinovea.ScreenManager
                     mnuHighspeedCamera.Enabled = true;
                     ConfigureVideoFilterMenus(player);
 
-                    // Test
                     HistoryMenuManager.SwitchContext(player.HistoryStack);
                 }
                 else if(activeScreen is CaptureScreen)
@@ -1178,17 +1178,21 @@ namespace Kinovea.ScreenManager
                     // Motion
                     mnuHighspeedCamera.Enabled = false;
                     ConfigureVideoFilterMenus(null);
+
+                    HistoryMenuManager.SwitchContext(null);
                 }
                 else
                 {
                     // KO ?
                     activeScreenIsEmpty = true;
+                    HistoryMenuManager.SwitchContext(null);
                 }
             }
             else
             {
                 // No active screen. ( = no screens)
                 activeScreenIsEmpty = true;
+                HistoryMenuManager.SwitchContext(null);
             }
 
             if (activeScreenIsEmpty)
@@ -1335,11 +1339,6 @@ namespace Kinovea.ScreenManager
                 mnuCloseFile2.Visible = false;
             }
             #endregion
-
-
-            
-
-        
         }
         private void ConfigureVideoFilterMenus(PlayerScreen player)
         {
