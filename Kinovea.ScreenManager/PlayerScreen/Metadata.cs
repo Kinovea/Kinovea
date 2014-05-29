@@ -327,6 +327,15 @@ namespace Kinovea.ScreenManager
         }
         public void DeleteKeyframe(Guid id)
         {
+            foreach (Keyframe keyframe in keyframes)
+            {
+                if (keyframe.Id != id)
+                    continue;
+
+                foreach (AbstractDrawing drawing in keyframe.Drawings)
+                    BeforeDrawingDeletion(drawing);
+            }
+
             keyframes.RemoveAll(k => k.Id == id);
             UpdateTrajectoriesForKeyframes();
             
@@ -637,14 +646,8 @@ namespace Kinovea.ScreenManager
             if (drawing == null)
                 return;
 
-            ITrackable trackableDrawing = drawing as ITrackable;
-            if (trackableDrawing != null)
-                DeleteTrackableDrawing(trackableDrawing);
+            BeforeDrawingDeletion(drawing);
             
-            IMeasurable measurableDrawing = drawing as IMeasurable;
-            if (measurableDrawing != null)
-                measurableDrawing.ShowMeasurableInfoChanged -= MeasurableDrawing_ShowMeasurableInfoChanged;
-
             manager.RemoveDrawing(drawingId);
             UnselectAll();
             
@@ -794,6 +797,17 @@ namespace Kinovea.ScreenManager
 
                 measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
             }
+        }
+
+        private void BeforeDrawingDeletion(AbstractDrawing drawing)
+        {
+            ITrackable trackableDrawing = drawing as ITrackable;
+            if (trackableDrawing != null)
+                DeleteTrackableDrawing(trackableDrawing);
+
+            IMeasurable measurableDrawing = drawing as IMeasurable;
+            if (measurableDrawing != null)
+                measurableDrawing.ShowMeasurableInfoChanged -= MeasurableDrawing_ShowMeasurableInfoChanged;
         }
 
         public void BeforeKVAImport()
