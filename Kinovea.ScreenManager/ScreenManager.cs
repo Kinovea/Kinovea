@@ -1152,7 +1152,7 @@ namespace Kinovea.ScreenManager
                 }
                 else if(activeScreen is CaptureScreen)
                 {
-                    CaptureScreen cs = activeScreen as CaptureScreen;   
+                    CaptureScreen captureScreen = activeScreen as CaptureScreen;   
                     
                     // File
                     mnuSave.Enabled = false;
@@ -1173,13 +1173,13 @@ namespace Kinovea.ScreenManager
                     mnuDeinterlace.Checked = false;
                     mnuMirror.Checked = false;
                    
-                    ConfigureImageFormatMenus(cs);
+                    ConfigureImageFormatMenus(captureScreen);
                     
                     // Motion
                     mnuHighspeedCamera.Enabled = false;
                     ConfigureVideoFilterMenus(null);
 
-                    HistoryMenuManager.SwitchContext(null);
+                    HistoryMenuManager.SwitchContext(captureScreen.HistoryStack);
                 }
                 else
                 {
