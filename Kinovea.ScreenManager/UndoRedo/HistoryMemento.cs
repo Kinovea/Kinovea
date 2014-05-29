@@ -7,9 +7,9 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Abstraction over a reversible state.
-    /// The memento stores the state prior to the change and will be capable to restore this state.
+    /// The memento backs up the state prior to the change and will be capable to restore this state.
     /// It is constructed before the state-changing operation is performed.
-    /// The constructor of the memento should store any relevant information to be able to recall the state later.
+    /// The constructor of the memento should store any relevant information to be able to restore the state later.
     ///
     /// Any context objects that are required to rebuild the state but that are themselves deleteable should be stored by value.
     /// For example, a drawing is stored in a keyframe. When adding a drawing, we should store the unique id of the keyframe, not 
