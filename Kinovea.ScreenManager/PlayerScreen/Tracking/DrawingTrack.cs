@@ -172,10 +172,6 @@ namespace Kinovea.ScreenManager
                 infosFading.AverageTimeStampsPerFrame = parentMetadata.AverageTimeStampsPerFrame;
             }
         }
-        public bool Untrackable
-        {
-            get { return untrackable; }
-        }
         public bool Invalid 
         {
             get { return invalid;}
@@ -221,7 +217,6 @@ namespace Kinovea.ScreenManager
             
         // Tracker tool.
         private AbstractTracker tracker;
-        private bool untrackable;
         
         // Hardwired parameters.
         private const int defaultCrossRadius = 4;
@@ -275,19 +270,13 @@ namespace Kinovea.ScreenManager
             tracker = new TrackerBlock2(GetTrackerParameters(new Size(800, 600)));
             positions.Add(new TrackPointBlock(origin.X, origin.Y, t));
 
-            if(!untrackable)
-            {
-                beginTimeStamp = t;
-                endTimeStamp = t;
-                mainLabel.SetAttach(origin, true);
+            beginTimeStamp = t;
+            endTimeStamp = t;
+            mainLabel.SetAttach(origin, true);
                 
-                // We use the InfosFading utility to fade the track away.
-                // The refererence frame will be the last point (at which fading start).
-                // AverageTimeStampsPerFrame will be updated when we get the parent metadata.
-                infosFading.FadingFrames = allowedFramesOver;
-                infosFading.UseDefault = false;
-                infosFading.Enabled = true;
-            }
+            infosFading.FadingFrames = allowedFramesOver;
+            infosFading.UseDefault = false;
+            infosFading.Enabled = true;
             
             styleHelper.Color = Color.Black;
             styleHelper.LineSize = 3;
@@ -298,7 +287,6 @@ namespace Kinovea.ScreenManager
                 BindStyle();
             }
             
-            //styleHelper.ValueChanged += mainStyle_ValueChanged;
             ReinitializeMenu();
 
             mnuAnalysis.Click += (s, e) =>
