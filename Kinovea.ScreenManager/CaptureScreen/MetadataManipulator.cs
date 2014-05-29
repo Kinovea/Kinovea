@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -183,6 +184,26 @@ namespace Kinovea.ScreenManager
             HistoryMemento memento = new HistoryMementoDeleteDrawing(metadata, keyframe.Id, drawing.Id, drawing.DisplayName);
             metadata.DeleteDrawing(keyframe.Id, drawing.Id);
             metadata.HistoryStack.PushNewCommand(memento);
+        }
+
+        public void ConfigureDrawing(AbstractDrawing drawing, Action refresh)
+        {
+            Keyframe keyframe = metadata.HitKeyframe;
+            IDecorable decorable = drawing as IDecorable;
+            if (keyframe == null || drawing == null || decorable == null)
+                return;
+
+            HistoryMemento memento = new HistoryMementoModifyDrawing(metadata, keyframe.Id, drawing.Id, drawing.DisplayName, SerializationFilter.Style);
+
+            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorable.DrawingStyle, refresh);
+            FormsHelper.Locate(fcd);
+            fcd.ShowDialog();
+
+            if (fcd.DialogResult == DialogResult.OK)
+                metadata.HistoryStack.PushNewCommand(memento);
+
+            fcd.Dispose();
+            
         }
         
         public void DeselectTool()
