@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
             if (keyframe == null)
                 throw new NullReferenceException("keyframe");
 
-            data = KeyframeSerializer.SerializeMemento(keyframe);
+            data = KeyframeSerializer.SerializeMemento(metadata, keyframe);
         }
 
         public override HistoryMemento PerformUndo()
