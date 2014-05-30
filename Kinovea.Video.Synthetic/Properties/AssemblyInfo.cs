@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 using System.Resources;
 using System;
 
-[assembly: AssemblyTitle("Kinovea.Video.SVG")]
-[assembly: AssemblyDescription("Kinovea - Reader for SVG files")]
+[assembly: AssemblyTitle("Kinovea.Video.Synthetic")]
+[assembly: AssemblyDescription("Kinovea - Reader for KSV files")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Kinovea")]
 [assembly: AssemblyProduct("Kinovea")]
-[assembly: AssemblyCopyright("Copyright © 2012 - Joan Charmant and contributors.")]
+[assembly: AssemblyCopyright("Copyright © 2014 - Joan Charmant and contributors.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("1.0.0")]
