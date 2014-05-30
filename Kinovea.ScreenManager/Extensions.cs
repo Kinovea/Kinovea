@@ -82,12 +82,6 @@ namespace Kinovea.ScreenManager
             return new Rectangle((int)point.X - radius, (int)point.Y - radius, radius * 2, radius * 2);
         }
         
-        // Color
-        public static Color Invert(this Color color)
-        {
-            return Color.FromArgb(color.A, 255 - color.R, 255 - color.G, 255 - color.B);
-        }
-        
         // Size
         public static bool FitsIn(this Size size, Size container)
         {
