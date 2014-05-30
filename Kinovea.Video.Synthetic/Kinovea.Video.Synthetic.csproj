@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2507E203-236D-4B02-8477-5FCBC30A670C}</ProjectGuid>
+    <ProjectGuid>{94D6DE5A-B99A-4EED-AF5B-C08746EA568E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kinovea.Video.SVG</RootNamespace>
-    <AssemblyName>Kinovea.Video.SVG</AssemblyName>
+    <RootNamespace>Kinovea.Video.Synthetic</RootNamespace>
+    <AssemblyName>Kinovea.Video.Synthetic</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -19,16 +19,15 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisLogFile>..\Root\bin\x86\Debug\Kinovea.Video.SVG.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\Debug\Kinovea.Video.Synthetic.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;c:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;c:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\Kinovea\bin\x86\Release\</OutputPath>
@@ -36,49 +35,37 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisLogFile>..\Root\bin\x86\Release\Kinovea.Video.SVG.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\Release\Kinovea.Video.Synthetic.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;c:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;c:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorBindings, Version=0.3.1.41361, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorCss, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorCss.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorDom, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorDom.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorObjectModel, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorObjectModel.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorRenderingEngine, Version=0.3.1.34123, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\Refs\SharpVectorRenderingEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorUtil, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorUtil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FrameGeneratorSVG.cs" />
+    <Compile Include="FrameGeneratorSyntheticVideo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VideoReaderSVG.cs" />
+    <Compile Include="SyntheticVideo.cs" />
+    <Compile Include="SyntheticVideoSerializer.cs" />
+    <Compile Include="VideoReaderSynthetic.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
+      <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
+      <Name>Kinovea.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
       <Name>Kinovea.Video</Name>

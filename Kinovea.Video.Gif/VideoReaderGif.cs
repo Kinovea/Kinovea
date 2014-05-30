@@ -74,7 +74,7 @@ namespace Kinovea.Video.GIF
         }
         public override VideoSummary ExtractSummary(string filePath, int thumbsToGet, Size maxSize)
         {
-           VideoSummary summary = null;
+            VideoSummary summary = null;
            
             OpenVideoResult res = LoadFile(filePath, false);
             FrameDimension dimension = new FrameDimension(gif.FrameDimensionsList[0]);
