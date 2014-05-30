@@ -33,6 +33,7 @@ using System.Xml;
 using System.Xml.Serialization;
 
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Video;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
