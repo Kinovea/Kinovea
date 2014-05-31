@@ -317,7 +317,6 @@
       <DependentUpon>FormCrashRecovery.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\ICommonControlsManager.cs" />
-    <Compile Include="IScreenHandler.cs" />
     <Compile Include="ManipulationType.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationLine.cs" />
