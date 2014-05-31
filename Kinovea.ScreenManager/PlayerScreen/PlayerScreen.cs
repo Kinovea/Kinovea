@@ -55,10 +55,10 @@ namespace Kinovea.ScreenManager
         {
             get { return view; }	
         }
-        public override Guid UniqueId
+        public override Guid Id
         {
-            get { return uniqueId; }
-            set { uniqueId = value; }
+            get { return id; }
+            set { id = value; }
         }
         public override string FileName
         {
@@ -241,9 +241,9 @@ namespace Kinovea.ScreenManager
 
         #region members
         public PlayerScreenUserInterface view; 
+        private Guid id = Guid.NewGuid();
         private HistoryStack historyStack; 
         private FrameServerPlayer frameServer;
-        private Guid uniqueId;
         private bool synched;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -254,7 +254,6 @@ namespace Kinovea.ScreenManager
             log.Debug("Constructing a PlayerScreen.");
             historyStack = new HistoryStack();
             frameServer = new FrameServerPlayer(historyStack);
-            uniqueId = System.Guid.NewGuid();
             view = new PlayerScreenUserInterface(frameServer);
             
             BindCommands();

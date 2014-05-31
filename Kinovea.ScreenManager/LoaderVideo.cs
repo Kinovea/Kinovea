@@ -101,6 +101,7 @@ namespace Kinovea.ScreenManager
                 player.view.SetLaunchDescription(screenDescription);
 
             OpenVideoResult res = player.FrameServer.Load(path);
+            player.Id = Guid.NewGuid();
 
             switch (res)
             {
@@ -151,7 +152,6 @@ namespace Kinovea.ScreenManager
                     }
             }
 
-            player.UniqueId = System.Guid.NewGuid();
         }
 
         private static void AfterLoadSuccess(PlayerScreen player)

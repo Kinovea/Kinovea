@@ -41,10 +41,10 @@ namespace Kinovea.ScreenManager
     public class CaptureScreen : AbstractScreen
     {
         #region Properties
-        public override Guid UniqueId
+        public override Guid Id
         {
-            get { return uid; }
-            set { uid = value;}
+            get { return id; }
+            set { id = value;}
         }
         public override bool Full
         {
@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private Guid uid = System.Guid.NewGuid();
+        private Guid id = Guid.NewGuid();
         private ICaptureScreenView view;
         
         private CameraManager manager;

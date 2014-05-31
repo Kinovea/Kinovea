@@ -61,7 +61,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
     
-        public abstract Guid UniqueId
+        public abstract Guid Id
         {
             get;
             set;
