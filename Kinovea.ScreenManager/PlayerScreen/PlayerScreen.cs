@@ -35,7 +35,7 @@ using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
-    public class PlayerScreen : AbstractScreen, IPlayerScreenUIHandler
+    public class PlayerScreen : AbstractScreen
     {
         #region Properties
         public override bool Full
@@ -249,7 +249,7 @@ namespace Kinovea.ScreenManager
             frameServer = new FrameServerPlayer(historyStack);
             this.screenManager = screenHandler;
             uniqueId = System.Guid.NewGuid();
-            view = new PlayerScreenUserInterface(frameServer, this);
+            view = new PlayerScreenUserInterface(frameServer);
             
             BindCommands();
         }
@@ -259,13 +259,16 @@ namespace Kinovea.ScreenManager
         {
             // Provides implementation for behaviors triggered from the view, either as commands or as event handlers.
             // Fixme: those using FrameServer.Metadata work only because the Metadata object is never replaced during the PlayerScreen life.
-            
-            
-            // Refactoring in progress.
-            // Moving code out the UI. 
-            // For example when adding a drawing, the UI raise an event that we handle here, then the Metadata performs the actual code,
-            // and the post init for trackable drawings is handled there by calling a command that is implemented here.
-            
+
+            view.CloseAsked += View_CloseAsked;
+            view.SetAsActiveScreen += View_SetAsActiveScreen;
+            view.SpeedChanged += View_SpeedChanged;
+            view.PauseAsked += View_PauseAsked;
+            view.SelectionChanged += View_SelectionChanged;
+            view.ImageChanged += View_ImageChanged;
+            view.SendImage += View_SendImage;
+            view.ResetAsked += View_ResetAsked;
+
             // Requests for metadata modification coming from the view, these should push a memento on the history stack.
             view.KeyframeAdding += View_KeyframeAdding;
             view.KeyframeDeleting += View_KeyframeDeleting;
@@ -285,6 +288,48 @@ namespace Kinovea.ScreenManager
             
             frameServer.Metadata.AddTrackableDrawingCommand = new RelayCommand<ITrackable>(AddTrackableDrawing);
         }
+
+        #region General events handlers
+        private void View_CloseAsked(object sender, EventArgs e)
+        {
+            screenManager.Screen_CloseAsked(this);
+        }
+        
+        public void View_SetAsActiveScreen(object sender, EventArgs e)
+        {
+            OnActivated(EventArgs.Empty);
+        }
+
+        public void View_SpeedChanged(object sender, EventArgs e)
+        {
+            screenManager.Player_SpeedChanged(this);
+        }
+
+        public void View_PauseAsked(object sender, EventArgs e)
+        {
+            screenManager.Player_PauseAsked(this);
+        }
+        
+        public void View_SelectionChanged(object sender, EventArgs<bool> e)
+        {
+            screenManager.Player_SelectionChanged(this, e.Value);
+        }
+        
+        public void View_ImageChanged(object sender, EventArgs<Bitmap> e)
+        {
+            screenManager.Player_ImageChanged(this, e.Value);
+        }
+
+        public void View_SendImage(object sender, EventArgs<Bitmap> e)
+        {
+            screenManager.Player_SendImage(this, e.Value);
+        }
+
+        public void View_ResetAsked(object sender, EventArgs e)
+        {
+            screenManager.Player_Reset(this);
+        }
+        #endregion
 
         #region Requests for Metadata modification coming from the view
         private void View_KeyframeAdding(object sender, TimeEventArgs e)
@@ -327,6 +372,7 @@ namespace Kinovea.ScreenManager
             frameServer.Metadata.AddMultidrawingItem(e.Manager, e.Item);
             historyStack.PushNewCommand(memento);
         }
+        
         private void View_MultiDrawingItemDeleting(object sender, MultiDrawingItemEventArgs e)
         {
             HistoryMemento memento = new HistoryMementoDeleteMultiDrawingItem(frameServer.Metadata, e.Manager, e.Item.Id, SerializationFilter.All);
@@ -335,51 +381,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region IPlayerScreenUIHandler (and IScreenUIHandler) implementation
-
-        // TODO: turn all these dependencies into commands.
-        
-        public void ScreenUI_CloseAsked()
-        {
-            screenManager.Screen_CloseAsked(this);
-        }
-        public void ScreenUI_SetAsActiveScreen()
-        {
-            OnActivated(EventArgs.Empty);
-        }
-        public void ScreenUI_UpdateStatusBarAsked()
-        {
-            screenManager.Screen_UpdateStatusBarAsked(this);
-        }
-
-        public void PlayerScreenUI_SpeedChanged(bool _bIntervalOnly)
-        {
-            // Used for synchronisation handling.
-            screenManager.Player_SpeedChanged(this, _bIntervalOnly);
-        }
-        public void PlayerScreenUI_PauseAsked()
-        {
-            screenManager.Player_PauseAsked(this);
-        }
-        public void PlayerScreenUI_SelectionChanged(bool _bInitialization)
-        {
-            // Used for synchronisation handling.
-            screenManager.Player_SelectionChanged(this, _bInitialization);
-        }
-        public void PlayerScreenUI_ImageChanged(Bitmap _image)
-        {
-            screenManager.Player_ImageChanged(this, _image);
-        }
-        public void PlayerScreenUI_SendImage(Bitmap _image)
-        {
-            screenManager.Player_SendImage(this, _image);
-        }
-        public void PlayerScreenUI_Reset()
-        {
-            screenManager.Player_Reset(this);
-        }
-        #endregion
-        
         #region AbstractScreen Implementation
         public override void DisplayAsActiveScreen(bool _bActive)
         {
@@ -531,7 +532,8 @@ namespace Kinovea.ScreenManager
             fcs.Dispose();
 
             view.UpdateTimedLabels();
-            PlayerScreenUI_SpeedChanged(true);
+            screenManager.Player_SpeedChanged(this);
+
             frameServer.Metadata.CalibrationHelper.FramesPerSecond = frameServer.VideoReader.Info.FramesPerSeconds * frameServer.Metadata.HighSpeedFactor;
 
             view.RefreshImage();

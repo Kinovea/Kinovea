@@ -318,7 +318,6 @@
     </Compile>
     <Compile Include="UserInterface\ICommonControlsManager.cs" />
     <Compile Include="IScreenHandler.cs" />
-    <Compile Include="IScreenUIHandler.cs" />
     <Compile Include="ManipulationType.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationLine.cs" />
@@ -439,7 +438,6 @@
     <Compile Include="PlayerScreen\Geometry\ProjectiveMapping.cs" />
     <Compile Include="PlayerScreen\Geometry\QuadrilateralF.cs" />
     <Compile Include="PlayerScreen\Geometry\Vector.cs" />
-    <Compile Include="PlayerScreen\IPlayerScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\Keyframe.cs" />
     <Compile Include="PlayerScreen\KeyframeLabel.cs" />
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
