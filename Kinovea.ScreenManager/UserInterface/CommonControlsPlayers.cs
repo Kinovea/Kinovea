@@ -248,7 +248,6 @@ namespace Kinovea.ScreenManager
         {
             if (DualSnapshotAsked != null)
                 DualSnapshotAsked(this, EventArgs.Empty);
-
         }
         private void btnDualVideo_Click(object sender, EventArgs e)
         {
@@ -257,13 +256,13 @@ namespace Kinovea.ScreenManager
         }
         private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
         {
-            if(e.Position != oldPosition)
-            {
-                oldPosition = e.Position;
+            if (e.Position == oldPosition)
+                return;
+            
+            oldPosition = e.Position;
 
-                if (PositionChanged != null)
-                    PositionChanged(this, new TimeEventArgs(e.Position));
-            }
+            if (PositionChanged != null)
+                PositionChanged(this, new TimeEventArgs(e.Position));
         }
         #endregion
         
