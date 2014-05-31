@@ -24,11 +24,20 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     public partial class CommonControlsCapture : UserControl
     {
+        #region Events
+        public event EventHandler SwapAsked;
+        public event EventHandler<EventArgs<bool>> GrabbingChanged;
+        public event EventHandler SnapshotAsked;
+        public event EventHandler<EventArgs<bool>> RecordingChanged;
+        #endregion
+
+        #region Properties
         public bool Grabbing
         {
             get { return grabbing; }
@@ -40,20 +49,17 @@ namespace Kinovea.ScreenManager
             get { return recording; }
             set { recording = value; }
         }
+        #endregion
 
-        private ICommonControlsManager screenManager;
+        #region Members
         private bool grabbing = true;
         private bool recording;
+        #endregion
 
         public CommonControlsCapture()
         {
             InitializeComponent();
             BackColor = Color.White;
-        }
-        
-        public void SetManager(ICommonControlsManager screenManager)
-        {
-            this.screenManager = screenManager;
         }
 
         public void RefreshUICulture()
@@ -67,34 +73,32 @@ namespace Kinovea.ScreenManager
 
         private void btnGrab_Click(object sender, EventArgs e)
         {
-            if (screenManager == null)
-                return;
-
             grabbing = !grabbing;
             RefreshGrabbingButton();
-            screenManager.CommonCtrl_GrabbingChanged(grabbing);
+
+            if (GrabbingChanged != null)
+                GrabbingChanged(this, new EventArgs<bool>(grabbing));
         }
 
         private void btnSnapshot_Click(object sender, EventArgs e)
         {
-            if (screenManager != null)
-                screenManager.CommonCtrl_Snapshot();
+            if (SnapshotAsked != null)
+                SnapshotAsked(this, EventArgs.Empty);
         }
 
         private void btnRecord_Click(object sender, EventArgs e)
         {
-            if (screenManager == null)
-                return;
-
             recording = !recording;
             RefreshRecordingButton();
-            screenManager.CommonCtrl_RecordingChanged(recording);
+
+            if (RecordingChanged != null)
+                RecordingChanged(this, new EventArgs<bool>(recording));
         }
         
         private void btnSwap_Click(object sender, EventArgs e)
         {
-            if(screenManager != null)
-                screenManager.CommonCtrl_Swap(); 
+            if (SwapAsked != null)
+                SwapAsked(this, EventArgs.Empty);
         }
 
         private void RefreshGrabbingButton()
