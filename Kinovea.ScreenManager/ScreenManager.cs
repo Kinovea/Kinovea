@@ -571,7 +571,7 @@ namespace Kinovea.ScreenManager
         {
             UpdateStatusBar();
         }
-        public void Player_SpeedChanged(PlayerScreen screen, bool initialisation)
+        public void Player_SpeedChanged(PlayerScreen screen)
         {
             if (!synching || screenList.Count != 2)
                 return;

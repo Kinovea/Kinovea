@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphanumComparator.cs" />
+    <Compile Include="Infrastructure\EventArgs`1.cs" />
     <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentException.cs" />
     <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentManager.cs" />
     <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentParser.cs" />

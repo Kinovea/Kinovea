@@ -45,7 +45,7 @@ namespace Kinovea.ScreenManager
         void Screen_CloseAsked(AbstractScreen screen);
         void Screen_UpdateStatusBarAsked(AbstractScreen screen);
 
-        void Player_SpeedChanged(PlayerScreen screen, bool initialisation);
+        void Player_SpeedChanged(PlayerScreen screen);
         void Player_PauseAsked(PlayerScreen screen);
         void Player_SelectionChanged(PlayerScreen screen, bool initialization);
         void Player_ImageChanged(PlayerScreen screen, Bitmap image);
