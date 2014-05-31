@@ -48,26 +48,16 @@ namespace Kinovea.ScreenManager
         public bool Playing
         {
             get { return playing;  }
-            set 
-            { 
-                playing = value;
-                RefreshPlayButton();
-            }
         }
-        public bool SyncMerging
+        public bool Merging
         {
-            get { return syncMerging; }
-            set 
-            { 
-                syncMerging = value; 
-                RefreshMergeTooltip();
-            }
+            get { return merging; }
         }
         #endregion
 
         #region Members
         private bool playing;
-        private bool syncMerging;
+        private bool merging;
         private long oldPosition;
         private Button btnSnapShot = new Button();
         private Button btnDualVideo = new Button();
@@ -155,6 +145,23 @@ namespace Kinovea.ScreenManager
             trkFrame.Position = position;
             trkFrame.Invalidate();
         }
+        
+        public void Pause()
+        {
+            bool toggled = playing == true;
+
+            playing = false;
+            RefreshPlayButton();
+
+            if (toggled && PlayToggled != null)
+                PlayToggled(this, EventArgs.Empty);
+        }
+
+        public void StopMerge()
+        {
+            merging = false;
+            RefreshMergeTooltip();
+        }
         #endregion
 
         private void First()
@@ -237,7 +244,7 @@ namespace Kinovea.ScreenManager
         }
         private void btnMerge_Click(object sender, EventArgs e)
         {
-            syncMerging = !syncMerging;
+            merging = !merging;
 
             if (MergeAsked != null)
                 MergeAsked(this, EventArgs.Empty);
@@ -277,7 +284,7 @@ namespace Kinovea.ScreenManager
         }
         private void RefreshMergeTooltip()
         {
-            string text = syncMerging ? ScreenManagerLang.ToolTip_CommonCtrl_DisableMerge : ScreenManagerLang.ToolTip_CommonCtrl_EnableMerge;
+            string text = merging ? ScreenManagerLang.ToolTip_CommonCtrl_DisableMerge : ScreenManagerLang.ToolTip_CommonCtrl_EnableMerge;
             toolTips.SetToolTip(btnMerge, text);
         }
         #endregion
