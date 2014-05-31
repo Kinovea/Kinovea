@@ -63,6 +63,8 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private ScreenManagerUserInterface view;
+        private DualPlayerController dualPlayer = new DualPlayerController();
+        private DualCaptureController dualCapture = new DualCaptureController();
         private List<AbstractScreen> screenList = new List<AbstractScreen>();
         private IEnumerable<PlayerScreen> playerScreens;
         private IEnumerable<CaptureScreen> captureScreens;
@@ -495,6 +497,8 @@ namespace Kinovea.ScreenManager
             OrganizeMenus();
             RefreshCultureToolbar();
             UpdateStatusBar();
+            dualPlayer.RefreshUICulture();
+            dualCapture.RefreshUICulture();
             view.RefreshUICulture();
 
             foreach (AbstractScreen screen in screenList)
@@ -587,9 +591,9 @@ namespace Kinovea.ScreenManager
         private void Player_PauseAsked(object sender, EventArgs e)
         {
             // An individual player asks for a global pause.
-            if (synching && view.CommonPlaying)
+            if (synching && dualPlayer.CommonPlaying)
             {
-                view.DisplayAsPaused();
+                dualPlayer.DisplayAsPaused();
                 CCtrl_PlayToggled(this, EventArgs.Empty);
             }
         }
@@ -645,24 +649,25 @@ namespace Kinovea.ScreenManager
         #region Common controls event handlers
         private void AddCommonControlsPlayersEventHandlers()
         {
-            view.CommonControlsPlayers.PlayToggled += CCtrl_PlayToggled;
-            view.CommonControlsPlayers.GotoFirst += CCtrl_GotoFirst;
-            view.CommonControlsPlayers.GotoPrev += CCtrl_GotoPrev;
-            view.CommonControlsPlayers.GotoNext += CCtrl_GotoNext;
-            view.CommonControlsPlayers.GotoLast += CCtrl_GotoLast;
-            view.CommonControlsPlayers.SwapAsked += CCtrl_SwapAsked;
-            view.CommonControlsPlayers.SyncAsked += CCtrl_SyncAsked;
-            view.CommonControlsPlayers.MergeAsked += CCtrl_MergeAsked;
-            view.CommonControlsPlayers.PositionChanged += CCtrl_PositionChanged;
-            view.CommonControlsPlayers.DualSaveAsked += CCtrl_DualSaveAsked;
-            view.CommonControlsPlayers.DualSnapshotAsked += CCtrl_DualSnapshotAsked;
+            dualPlayer.View.GotoFirst += CCtrl_GotoFirst;
+            dualPlayer.View.PlayToggled += CCtrl_PlayToggled;
+            dualPlayer.View.GotoFirst += CCtrl_GotoFirst;
+            dualPlayer.View.GotoPrev += CCtrl_GotoPrev;
+            dualPlayer.View.GotoNext += CCtrl_GotoNext;
+            dualPlayer.View.GotoLast += CCtrl_GotoLast;
+            dualPlayer.View.SwapAsked += CCtrl_SwapAsked;
+            dualPlayer.View.SyncAsked += CCtrl_SyncAsked;
+            dualPlayer.View.MergeAsked += CCtrl_MergeAsked;
+            dualPlayer.View.PositionChanged += CCtrl_PositionChanged;
+            dualPlayer.View.DualSaveAsked += CCtrl_DualSaveAsked;
+            dualPlayer.View.DualSnapshotAsked += CCtrl_DualSnapshotAsked;
         }
         private void AddCommonControlsCaptureEventHandlers()
         {
-            view.CommonControlsCapture.SwapAsked += CCtrl_SwapAsked;
-            view.CommonControlsCapture.GrabbingChanged += CCtrl_GrabbingChanged;
-            view.CommonControlsCapture.SnapshotAsked += CCtrl_SnapshotAsked;
-            view.CommonControlsCapture.RecordingChanged += CCtrl_RecordingChanged;
+            dualCapture.View.SwapAsked += CCtrl_SwapAsked;
+            dualCapture.View.GrabbingChanged += CCtrl_GrabbingChanged;
+            dualCapture.View.SnapshotAsked += CCtrl_SnapshotAsked;
+            dualCapture.View.RecordingChanged += CCtrl_RecordingChanged;
         }
         
         private void CCtrl_SwapAsked(object sender, EventArgs e)
@@ -674,7 +679,7 @@ namespace Kinovea.ScreenManager
         {
             if (synching)
             {
-                if (view.CommonPlaying)
+                if (dualPlayer.CommonPlaying)
                 {
                     // On play, simply launch the dynamic sync.
                     // It will handle which video can start right away.
@@ -689,7 +694,7 @@ namespace Kinovea.ScreenManager
             }
 
             // On stop, propagate the call to screens.
-            if(!view.CommonPlaying)
+            if(!dualPlayer.CommonPlaying)
             {	
                 if(screenList[0] is PlayerScreen)
                     EnsurePause(0);
@@ -706,7 +711,7 @@ namespace Kinovea.ScreenManager
             {
                 currentFrame = 0;
                 OnCommonPositionChanged(currentFrame, true);
-                view.UpdateTrkFrame(currentFrame);
+                dualPlayer.UpdateTrkFrame(currentFrame);
             }
             else
             {
@@ -724,7 +729,7 @@ namespace Kinovea.ScreenManager
                 {
                     currentFrame--;
                     OnCommonPositionChanged(currentFrame, true);
-                    view.UpdateTrkFrame(currentFrame);
+                    dualPlayer.UpdateTrkFrame(currentFrame);
                 }
             }
             else
@@ -743,7 +748,7 @@ namespace Kinovea.ScreenManager
                 {
                     currentFrame++;
                     OnCommonPositionChanged(-1, true);
-                    view.UpdateTrkFrame(currentFrame);
+                    dualPlayer.UpdateTrkFrame(currentFrame);
                 }
             }
             else
@@ -760,7 +765,7 @@ namespace Kinovea.ScreenManager
             {
                 currentFrame = maxFrame;
                 OnCommonPositionChanged(currentFrame, true);
-                view.UpdateTrkFrame(currentFrame);
+                dualPlayer.UpdateTrkFrame(currentFrame);
                 
             }
             else
@@ -783,8 +788,8 @@ namespace Kinovea.ScreenManager
         {
             if (!synching || screenList.Count != 2)
                 return;
-            
-            syncMerging = view.Merging;
+
+            syncMerging = dualPlayer.Merging;
             log.Debug(String.Format("SyncMerge videos is now {0}", syncMerging.ToString()));
                 
             // This will also do a full refresh, and triggers Player_ImageChanged().
@@ -802,7 +807,7 @@ namespace Kinovea.ScreenManager
             EnsurePause(0);
             EnsurePause(1);
 
-            view.DisplayAsPaused();
+            dualPlayer.DisplayAsPaused();
 
             currentFrame = e.Time;
             OnCommonPositionChanged(currentFrame, true);
@@ -1020,16 +1025,19 @@ namespace Kinovea.ScreenManager
         }
         public void OrganizeCommonControls()
         {
+            dualPlayer.ScreenListChanged(screenList);
+            dualCapture.ScreenListChanged(screenList);
+            
             if (screenList.Count == 2)
             {
                 Pair<Type, Type> types = new Pair<Type, Type>(screenList[0].GetType(), screenList[1].GetType());
                 bool show = types.First == types.Second;
-                view.ShowCommonControls(show, types);
+                view.ShowCommonControls(show, types, dualPlayer.View, dualCapture.View);
                 canShowCommonControls = show;
             }
             else
             {
-                view.ShowCommonControls(false, null);
+                view.ShowCommonControls(false, null, null, null);
                 canShowCommonControls = false;
             }
         }
@@ -2314,7 +2322,7 @@ namespace Kinovea.ScreenManager
                 player.StopPlaying();
             
             StopDynamicSync();
-            view.DisplayAsPaused();
+            dualPlayer.DisplayAsPaused();
         }
 
         private void View_FileLoadAsked(object source, FileLoadAskedEventArgs e)
@@ -2400,7 +2408,7 @@ namespace Kinovea.ScreenManager
                             
                             ((PlayerScreen)screenList[0]).SyncPosition = 0;
                             ((PlayerScreen)screenList[1]).SyncPosition = 0;
-                            view.UpdateSyncPosition(currentFrame);
+                            dualPlayer.UpdateSyncPosition(currentFrame);
 
                             // Dynamic Sync
                             ResetDynamicSyncFlags();
@@ -2408,7 +2416,7 @@ namespace Kinovea.ScreenManager
                             // Sync Merging
                             ((PlayerScreen)screenList[0]).SyncMerge = false;
                             ((PlayerScreen)screenList[1]).SyncMerge = false;
-                            view.Merging = false;
+                            dualPlayer.Merging = false;
                         }
 
                         // Mise à jour trkFrame
@@ -2428,6 +2436,11 @@ namespace Kinovea.ScreenManager
             else
             {
                 // Only one screen, or not all screens are PlayerScreens.
+                foreach (PlayerScreen p in playerScreens)
+                {
+                    p.Synched = false;
+                }
+
                 switch (screenList.Count)
                 {
                     case 1:
@@ -2454,7 +2467,7 @@ namespace Kinovea.ScreenManager
             if (!synching) 
             { 
                 StopDynamicSync();
-                view.DisplayAsPaused();
+                dualPlayer.DisplayAsPaused();
             }
         }
         public void SetSyncPoint(bool intervalOnly)
@@ -2507,8 +2520,8 @@ namespace Kinovea.ScreenManager
     
                 // Update common position (sign of m_iSyncLag might have changed.)
                 currentFrame = syncLag > 0 ? rightSyncFrame : leftSyncFrame;
-                
-                view.UpdateSyncPosition(currentFrame);  // <-- expects timestamp ?
+
+                dualPlayer.UpdateSyncPosition(currentFrame);  // <-- expects timestamp ?
             }
         }
         private void SetSyncLimits()
@@ -2549,7 +2562,7 @@ namespace Kinovea.ScreenManager
             }
 
             maxFrame = (int)Math.Max(leftEstimatedFrames, rightEstimatedFrames);
-            view.SetupTrkFrame(0, maxFrame, currentFrame);
+            dualPlayer.SetupTrkFrame(0, maxFrame, currentFrame);
 
             log.DebugFormat("m_iSyncLag:{0}, m_iSyncLagMilliseconds:{1}, MaxFrames:{2}", syncLag, syncLagMilliseconds, maxFrame);
         }
@@ -2660,7 +2673,7 @@ namespace Kinovea.ScreenManager
                 // This can happen when a screen is closed on the fly while synching.
                 StopDynamicSync();
                 synching = false;
-                view.DisplayAsPaused();
+                dualPlayer.DisplayAsPaused();
                 return;
             }
 
@@ -2878,7 +2891,8 @@ namespace Kinovea.ScreenManager
             object[] parameters = new object[] { currentFrame };
                 
             // Note: do we need to begin invoke here ?
-            view.BeginInvoke(view.delegateUpdateTrackerFrame, parameters);
+            //view.BeginInvoke(view.delegateUpdateTrackerFrame, parameters);
+            dualPlayer.UpdateTrkFrame(currentFrame);
 
             //log.Debug(String.Format("Tick:[{0}][{1}], Starting:[{2}][{3}], Catching up:[{4}][{5}]", iLeftPosition, iRightPosition, m_bLeftIsStarting, m_bRightIsStarting, m_bLeftIsCatchingUp, m_bRightIsCatchingUp));
         }
@@ -2893,7 +2907,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 synching = false;
-                view.DisplayAsPaused();
+                dualPlayer.DisplayAsPaused();
             }
         }
         private void EnsurePlay(int screenIndex)
@@ -2907,7 +2921,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 synching = false;
-                view.DisplayAsPaused();
+                dualPlayer.DisplayAsPaused();
             }
         }
         private void ResetDynamicSyncFlags()
@@ -2965,7 +2979,7 @@ namespace Kinovea.ScreenManager
             }
 
             OnCommonPositionChanged(currentFrame, true);
-            view.UpdateTrkFrame(currentFrame);
+            dualPlayer.UpdateTrkFrame(currentFrame);
 
         }
         #endregion

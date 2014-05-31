@@ -35,10 +35,6 @@ namespace Kinovea.ScreenManager
 {
     public partial class ScreenManagerUserInterface : UserControl
     {
-        #region Delegates
-        public DelegateUpdateTrackerFrame delegateUpdateTrackerFrame;
-        #endregion
-
         #region Events
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
         public event EventHandler AutoLaunchAsked;
@@ -49,30 +45,10 @@ namespace Kinovea.ScreenManager
         {
             get { return !splitScreensPanel.Panel2Collapsed; }
         }
-        public bool CommonPlaying
-        {
-            get { return cctrlsPlayers.Playing; }
-            set { cctrlsPlayers.Playing = value; }
-        }
-        public bool Merging
-        {
-            get { return cctrlsPlayers.SyncMerging; }
-            set { cctrlsPlayers.SyncMerging = value; }
-        }
-        public CommonControlsPlayers CommonControlsPlayers
-        {
-            get { return cctrlsPlayers; }
-        }
-        public CommonControlsCapture CommonControlsCapture
-        {
-            get { return cctrlsCapture; }
-        }
         #endregion
         
         #region Members
         private ThumbnailViewerContainer thumbnailViewerContainer = new ThumbnailViewerContainer();
-        private CommonControlsPlayers cctrlsPlayers = new CommonControlsPlayers();
-        private CommonControlsCapture cctrlsCapture = new CommonControlsCapture();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -81,15 +57,10 @@ namespace Kinovea.ScreenManager
             log.Debug("Constructing ScreenManagerUserInterface.");
             InitializeComponent();
 
-            cctrlsPlayers.Dock = DockStyle.Fill;
-            cctrlsCapture.Dock = DockStyle.Fill;
-            
             BackColor = Color.White;
             Dock = DockStyle.Fill;
             
             InitializeThumbnailsContainer();
-            
-            delegateUpdateTrackerFrame = UpdateTrkFrame;
 
             thumbnailViewerContainer.BringToFront();
             pnlScreens.BringToFront();
@@ -99,10 +70,9 @@ namespace Kinovea.ScreenManager
         #region Public methods
         public void RefreshUICulture()
         {
-            cctrlsPlayers.RefreshUICulture();
             thumbnailViewerContainer.RefreshUICulture();
         }
-        public void ShowCommonControls(bool show, Pair<Type, Type> types)
+        public void ShowCommonControls(bool show, Pair<Type, Type> types, CommonControlsPlayers cctrlsPlayers, CommonControlsCapture cctrlsCapture)
         {
             splitScreensPanel.Panel2Collapsed = !show;
             if (types == null)
@@ -148,26 +118,6 @@ namespace Kinovea.ScreenManager
                     ClearRightScreen();
             }
         }
-        
-        #region Forwarded to common controls
-        public void SetupTrkFrame(long min, long max, long pos)
-        {
-            cctrlsPlayers.SetupTrkFrame(min, max, pos);
-        }
-        public void UpdateTrkFrame(long position)
-        {
-            cctrlsPlayers.UpdateTrkFrame(position);
-        }
-        public void UpdateSyncPosition(long position)
-        {
-            cctrlsPlayers.UpdateSyncPosition(position);
-        }
-        public void DisplayAsPaused()
-        {
-            cctrlsPlayers.Playing = false;
-        }
-        #endregion
-
         #endregion
 
         private void InitializeThumbnailsContainer()

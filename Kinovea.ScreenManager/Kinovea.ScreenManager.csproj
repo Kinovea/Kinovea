@@ -237,6 +237,8 @@
     <Compile Include="CaptureScreen\Views\ViewPort.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DualCaptureController.cs" />
+    <Compile Include="DualPlayerController.cs" />
     <Compile Include="PlayerScreen\ChronoManager.cs" />
     <Compile Include="CommandProcessedEventArgs.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
