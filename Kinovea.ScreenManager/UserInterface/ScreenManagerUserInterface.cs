@@ -39,8 +39,10 @@ namespace Kinovea.ScreenManager
         public DelegateUpdateTrackerFrame delegateUpdateTrackerFrame;
         #endregion
 
+        #region Events
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
         public event EventHandler AutoLaunchAsked;
+        #endregion
         
         #region Properties
         public bool CommonControlsVisible 
@@ -57,6 +59,14 @@ namespace Kinovea.ScreenManager
             get { return cctrlsPlayers.SyncMerging; }
             set { cctrlsPlayers.SyncMerging = value; }
         }
+        public CommonControlsPlayers CommonControlsPlayers
+        {
+            get { return cctrlsPlayers; }
+        }
+        public CommonControlsCapture CommonControlsCapture
+        {
+            get { return cctrlsCapture; }
+        }
         #endregion
         
         #region Members
@@ -66,16 +76,14 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
-        public ScreenManagerUserInterface(ICommonControlsManager screenManager)
+        public ScreenManagerUserInterface()
         {
             log.Debug("Constructing ScreenManagerUserInterface.");
             InitializeComponent();
 
             cctrlsPlayers.Dock = DockStyle.Fill;
-            cctrlsPlayers.SetManager(screenManager);
             cctrlsCapture.Dock = DockStyle.Fill;
-            cctrlsCapture.SetManager(screenManager);
-
+            
             BackColor = Color.White;
             Dock = DockStyle.Fill;
             

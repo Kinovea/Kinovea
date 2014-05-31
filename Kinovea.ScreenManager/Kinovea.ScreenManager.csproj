@@ -316,7 +316,6 @@
     <Compile Include="UserInterface\FormCrashRecovery.designer.cs">
       <DependentUpon>FormCrashRecovery.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\ICommonControlsManager.cs" />
     <Compile Include="ManipulationType.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationLine.cs" />

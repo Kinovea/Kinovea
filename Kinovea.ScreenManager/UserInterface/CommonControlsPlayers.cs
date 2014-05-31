@@ -30,6 +30,20 @@ namespace Kinovea.ScreenManager
 {
     public partial class CommonControlsPlayers : UserControl
     {
+        #region Events
+        public event EventHandler PlayToggled;
+        public event EventHandler GotoFirst;
+        public event EventHandler GotoPrev;
+        public event EventHandler GotoNext;
+        public event EventHandler GotoLast;
+        public event EventHandler SwapAsked;
+        public event EventHandler SyncAsked;
+        public event EventHandler MergeAsked;
+        public event EventHandler<TimeEventArgs> PositionChanged;
+        public event EventHandler DualSaveAsked;
+        public event EventHandler DualSnapshotAsked;
+        #endregion
+
         #region Properties
         public bool Playing
         {
@@ -55,7 +69,6 @@ namespace Kinovea.ScreenManager
         private bool playing;
         private bool syncMerging;
         private long oldPosition;
-        private ICommonControlsManager screenManager;
         private Button btnSnapShot = new Button();
         private Button btnDualVideo = new Button();
         #endregion
@@ -104,10 +117,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
-        public void SetManager(ICommonControlsManager screenManager)
-        {
-            this.screenManager = screenManager;
-        }
         public void RefreshUICulture()
         {
             // Labels
@@ -150,47 +159,42 @@ namespace Kinovea.ScreenManager
 
         private void First()
         {
-            if (screenManager == null)
-                return;
+            if (GotoFirst != null)
+                GotoFirst(this, EventArgs.Empty);
 
-            screenManager.CommonCtrl_GotoFirst();
             trkFrame.Position = trkFrame.Minimum;
             trkFrame.Invalidate();
             PlayStopped();
         }
         private void Previous()
         {
-            if (screenManager == null)
-                return;
- 
-            screenManager.CommonCtrl_GotoPrev(); 
+            if (GotoPrev != null)
+                GotoPrev(this, EventArgs.Empty);
+            
             trkFrame.Position--;
             trkFrame.Invalidate();
         }
         private void Play()
         {
-            if (screenManager == null)
-                return;
-
             playing = !playing;
             RefreshPlayButton();
-            screenManager.CommonCtrl_PlayToggled(); 
+
+            if (PlayToggled != null)
+                PlayToggled(this, EventArgs.Empty);
         }
         private void Next()
         {
-            if (screenManager == null)
-                return;
- 
-            screenManager.CommonCtrl_GotoNext(); 
+            if (GotoNext != null)
+                GotoNext(this, EventArgs.Empty);
+
             trkFrame.Position++;
             trkFrame.Invalidate();
         }
         private void Last()
         {
-            if (screenManager == null)
-                return;
+            if (GotoLast != null)
+                GotoLast(this, EventArgs.Empty);
 
-            screenManager.CommonCtrl_GotoLast(); 
             trkFrame.Position = trkFrame.Maximum;
             trkFrame.Invalidate();
         }
@@ -223,40 +227,42 @@ namespace Kinovea.ScreenManager
         }
         private void btnSwap_Click(object sender, EventArgs e)
         {
-            if(screenManager != null)
-                screenManager.CommonCtrl_Swap(); 
+            if (SwapAsked != null)
+                SwapAsked(this, EventArgs.Empty);
         }
         private void btnSync_Click(object sender, EventArgs e)
         {
-            if(screenManager != null)
-                screenManager.CommonCtrl_Sync(); 
+            if (SyncAsked != null)
+                SyncAsked(this, EventArgs.Empty);
         }
         private void btnMerge_Click(object sender, EventArgs e)
         {
-            if(screenManager != null)
-            { 
-                syncMerging = !syncMerging;
-                screenManager.CommonCtrl_Merge();
-                RefreshMergeTooltip();
-            }
+            syncMerging = !syncMerging;
+
+            if (MergeAsked != null)
+                MergeAsked(this, EventArgs.Empty);
+
+            RefreshMergeTooltip();
         }
         private void btnSnapshot_Click(object sender, EventArgs e)
         {
-            if(screenManager != null)
-                screenManager.CommonCtrl_DualSnapshot();
+            if (DualSnapshotAsked != null)
+                DualSnapshotAsked(this, EventArgs.Empty);
+
         }
         private void btnDualVideo_Click(object sender, EventArgs e)
         {
-            if(screenManager != null)
-                screenManager.CommonCtrl_DualSave();
+            if (DualSaveAsked != null)
+                DualSaveAsked(this, EventArgs.Empty);
         }
         private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
         {
             if(e.Position != oldPosition)
             {
                 oldPosition = e.Position;
-                if(screenManager != null)
-                    screenManager.CommonCtrl_PositionChanged(e.Position); 
+
+                if (PositionChanged != null)
+                    PositionChanged(this, new TimeEventArgs(e.Position));
             }
         }
         #endregion

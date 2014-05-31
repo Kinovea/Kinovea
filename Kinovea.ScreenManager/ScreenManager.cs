@@ -40,7 +40,7 @@ using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {
-    public class ScreenManagerKernel : IKernel, ICommonControlsManager
+    public class ScreenManagerKernel : IKernel
     {
         #region Properties
         public UserControl UI
@@ -158,9 +158,11 @@ namespace Kinovea.ScreenManager
         {
             log.Debug("Module Construction : ScreenManager.");
 
-            view = new ScreenManagerUserInterface(this);
+            view = new ScreenManagerUserInterface();
             view.FileLoadAsked += View_FileLoadAsked;
             view.AutoLaunchAsked += View_AutoLaunchAsked;
+            AddCommonControlsPlayersEventHandlers();
+            AddCommonControlsCaptureEventHandlers();
 
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
@@ -588,7 +590,7 @@ namespace Kinovea.ScreenManager
             if (synching && view.CommonPlaying)
             {
                 view.DisplayAsPaused();
-                CommonCtrl_PlayToggled();
+                CCtrl_PlayToggled(this, EventArgs.Empty);
             }
         }
         private void Player_SelectionChanged(object sender, EventArgs<bool> e)
@@ -640,12 +642,35 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region ICommonControlsManager Implementation
-        public void CommonCtrl_Swap()
+        #region Common controls event handlers
+        private void AddCommonControlsPlayersEventHandlers()
+        {
+            view.CommonControlsPlayers.PlayToggled += CCtrl_PlayToggled;
+            view.CommonControlsPlayers.GotoFirst += CCtrl_GotoFirst;
+            view.CommonControlsPlayers.GotoPrev += CCtrl_GotoPrev;
+            view.CommonControlsPlayers.GotoNext += CCtrl_GotoNext;
+            view.CommonControlsPlayers.GotoLast += CCtrl_GotoLast;
+            view.CommonControlsPlayers.SwapAsked += CCtrl_SwapAsked;
+            view.CommonControlsPlayers.SyncAsked += CCtrl_SyncAsked;
+            view.CommonControlsPlayers.MergeAsked += CCtrl_MergeAsked;
+            view.CommonControlsPlayers.PositionChanged += CCtrl_PositionChanged;
+            view.CommonControlsPlayers.DualSaveAsked += CCtrl_DualSaveAsked;
+            view.CommonControlsPlayers.DualSnapshotAsked += CCtrl_DualSnapshotAsked;
+        }
+        private void AddCommonControlsCaptureEventHandlers()
+        {
+            view.CommonControlsCapture.SwapAsked += CCtrl_SwapAsked;
+            view.CommonControlsCapture.GrabbingChanged += CCtrl_GrabbingChanged;
+            view.CommonControlsCapture.SnapshotAsked += CCtrl_SnapshotAsked;
+            view.CommonControlsCapture.RecordingChanged += CCtrl_RecordingChanged;
+        }
+        
+        private void CCtrl_SwapAsked(object sender, EventArgs e)
         {
             mnuSwapScreensOnClick(null, EventArgs.Empty);	
         }
-        public void CommonCtrl_PlayToggled()
+
+        private void CCtrl_PlayToggled(object sender, EventArgs e)
         {
             if (synching)
             {
@@ -673,7 +698,7 @@ namespace Kinovea.ScreenManager
                     EnsurePause(1);
             }
         }
-        public void CommonCtrl_GotoFirst()
+        private void CCtrl_GotoFirst(object sender, EventArgs e)
         {
             DoStopPlaying();
             
@@ -689,7 +714,7 @@ namespace Kinovea.ScreenManager
                     screen.view.buttonGotoFirst_Click(this, EventArgs.Empty);
             }	
         }
-        public void CommonCtrl_GotoPrev()
+        private void CCtrl_GotoPrev(object sender, EventArgs e)
         {
             DoStopPlaying();
             
@@ -708,7 +733,7 @@ namespace Kinovea.ScreenManager
                     screen.view.buttonGotoPrevious_Click(this, EventArgs.Empty);
             }	
         }
-        public void CommonCtrl_GotoNext()
+        private void CCtrl_GotoNext(object sender, EventArgs e)
         {
             DoStopPlaying();
             
@@ -727,7 +752,7 @@ namespace Kinovea.ScreenManager
                     player.view.buttonGotoNext_Click(this, EventArgs.Empty);
             }	
         }
-        public void CommonCtrl_GotoLast()
+        private void CCtrl_GotoLast(object sender, EventArgs e)
         {
             DoStopPlaying();
             
@@ -744,7 +769,7 @@ namespace Kinovea.ScreenManager
                     player.view.buttonGotoLast_Click(this, EventArgs.Empty);
             }	
         }
-        public void CommonCtrl_Sync()
+        private void CCtrl_SyncAsked(object sender, EventArgs e)
         {
             if (!synching || screenList.Count != 2)
                 return;
@@ -754,7 +779,7 @@ namespace Kinovea.ScreenManager
             SetSyncLimits();
             OnCommonPositionChanged(currentFrame, true);
         }
-        public void CommonCtrl_Merge()
+        private void CCtrl_MergeAsked(object sender, EventArgs e)
         {
             if (!synching || screenList.Count != 2)
                 return;
@@ -766,7 +791,7 @@ namespace Kinovea.ScreenManager
             ((PlayerScreen)screenList[0]).SyncMerge = syncMerging;
             ((PlayerScreen)screenList[1]).SyncMerge = syncMerging;
         }
-        public void CommonCtrl_PositionChanged(long _iPosition)
+        private void CCtrl_PositionChanged(object sender, TimeEventArgs e)
         {
             // Manual static sync.
             if (!synching)
@@ -779,10 +804,10 @@ namespace Kinovea.ScreenManager
 
             view.DisplayAsPaused();
 
-            currentFrame = _iPosition;
+            currentFrame = e.Time;
             OnCommonPositionChanged(currentFrame, true);
         }
-        public void CommonCtrl_DualSave()
+        private void CCtrl_DualSaveAsked(object sender, EventArgs e)
         {
             // Create and save a composite video with side by side synchronized images.
             // If merge is active, just save one video.
@@ -842,7 +867,7 @@ namespace Kinovea.ScreenManager
             currentFrame = iCurrentFrame;
             OnCommonPositionChanged(currentFrame, true);
         }
-        public void CommonCtrl_DualSnapshot()
+        private void CCtrl_DualSnapshotAsked(object sender, EventArgs e)
         {
             // Retrieve current images and create a composite out of them.
             if (!synching || screenList.Count != 2)
@@ -879,20 +904,20 @@ namespace Kinovea.ScreenManager
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
 
-        public void CommonCtrl_GrabbingChanged(bool grab)
+        private void CCtrl_GrabbingChanged(object sender, EventArgs<bool> e)
         {
             foreach (CaptureScreen screen in captureScreens)
-                screen.ForceGrabbingStatus(grab);
+                screen.ForceGrabbingStatus(e.Value);
         }
-        public void CommonCtrl_Snapshot()
+        private void CCtrl_SnapshotAsked(object sender, EventArgs e)
         {
             foreach (CaptureScreen screen in captureScreens)
                 screen.PerformSnapshot();
         }
-        public void CommonCtrl_RecordingChanged(bool record)
+        private void CCtrl_RecordingChanged(object sender, EventArgs<bool> e)
         {
             foreach (CaptureScreen screen in captureScreens)
-                screen.ForceRecordingStatus(record);
+                screen.ForceRecordingStatus(e.Value);
         }
         #endregion
         
@@ -3054,6 +3079,7 @@ namespace Kinovea.ScreenManager
             player.SendImage -= Player_SendImage;
             player.ResetAsked -= Player_ResetAsked;
         }
+        
         #endregion
     }
 }
