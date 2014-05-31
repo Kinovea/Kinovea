@@ -586,15 +586,6 @@ namespace Kinovea.ScreenManager
             
             SetSyncPoint(true);
         }
-        private void Player_PauseAsked(object sender, EventArgs e)
-        {
-            // An individual player asks for a global pause.
-            if (dualPlayer.Synching && dualPlayer.Playing)
-            {
-                dualPlayer.DisplayAsPaused();
-                CCtrl_PlayToggled(this, EventArgs.Empty);
-            }
-        }
         private void Player_SelectionChanged(object sender, EventArgs<bool> e)
         {
             PrepareSync(e.Value);
@@ -804,7 +795,7 @@ namespace Kinovea.ScreenManager
             EnsurePause(0);
             EnsurePause(1);
 
-            dualPlayer.DisplayAsPaused();
+            dualPlayer.Pause();
 
             currentFrame = e.Time;
             OnCommonPositionChanged(currentFrame, true);
@@ -2319,7 +2310,7 @@ namespace Kinovea.ScreenManager
                 player.StopPlaying();
             
             StopDynamicSync();
-            dualPlayer.DisplayAsPaused();
+            dualPlayer.Pause();
         }
 
         private void View_FileLoadAsked(object source, FileLoadAskedEventArgs e)
@@ -2413,7 +2404,7 @@ namespace Kinovea.ScreenManager
                             // Sync Merging
                             ((PlayerScreen)screenList[0]).SyncMerge = false;
                             ((PlayerScreen)screenList[1]).SyncMerge = false;
-                            dualPlayer.Merging = false;
+                            dualPlayer.StopMerge();
                         }
 
                         // Mise à jour trkFrame
@@ -2464,7 +2455,7 @@ namespace Kinovea.ScreenManager
             if (!dualPlayer.Synching) 
             { 
                 StopDynamicSync();
-                dualPlayer.DisplayAsPaused();
+                dualPlayer.Pause();
             }
         }
         public void SetSyncPoint(bool intervalOnly)
@@ -2670,7 +2661,7 @@ namespace Kinovea.ScreenManager
                 // This can happen when a screen is closed on the fly while dualPlayer.Synching.
                 StopDynamicSync();
                 dualPlayer.Synching = false;
-                dualPlayer.DisplayAsPaused();
+                dualPlayer.Pause();
                 return;
             }
 
@@ -2904,7 +2895,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 dualPlayer.Synching = false;
-                dualPlayer.DisplayAsPaused();
+                dualPlayer.Pause();
             }
         }
         private void EnsurePlay(int screenIndex)
@@ -2918,7 +2909,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 dualPlayer.Synching = false;
-                dualPlayer.DisplayAsPaused();
+                dualPlayer.Pause();
             }
         }
         private void ResetDynamicSyncFlags()
@@ -3066,7 +3057,6 @@ namespace Kinovea.ScreenManager
         private void AddPlayerScreenEventHandlers(PlayerScreen player)
         {
             player.SpeedChanged += Player_SpeedChanged;
-            player.PauseAsked += Player_PauseAsked;
             player.SelectionChanged += Player_SelectionChanged;
             player.ImageChanged += Player_ImageChanged;
             player.SendImage += Player_SendImage;
@@ -3084,7 +3074,6 @@ namespace Kinovea.ScreenManager
         private void RemovePlayerScreenEventHandlers(PlayerScreen player)
         {
             player.SpeedChanged -= Player_SpeedChanged;
-            player.PauseAsked -= Player_PauseAsked;
             player.SelectionChanged -= Player_SelectionChanged;
             player.ImageChanged -= Player_ImageChanged;
             player.SendImage -= Player_SendImage;

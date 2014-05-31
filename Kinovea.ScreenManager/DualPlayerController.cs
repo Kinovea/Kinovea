@@ -16,13 +16,11 @@ namespace Kinovea.ScreenManager
         }
         public bool Merging
         {
-            get { return view.SyncMerging; }
-            set { view.SyncMerging = value; }
+            get { return view.Merging; }
         }
         public bool Playing
         {
             get { return view.Playing; }
-            set { view.Playing = value; }
         }
         public CommonControlsPlayers View
         {
@@ -68,9 +66,22 @@ namespace Kinovea.ScreenManager
         {
             view.UpdateSyncPosition(position);
         }
-        public void DisplayAsPaused()
+        public void Pause()
         {
-            view.Playing = false;
+            view.Pause();
+        }
+        public void StopMerge()
+        {
+            view.StopMerge();
+        }
+        #endregion
+
+        #region Players event handlers
+        private void Player_PauseAsked(object sender, EventArgs e)
+        {
+            // An individual player asks for a global pause.
+            if (synching && view.Playing)
+                Pause();
         }
         #endregion
 
@@ -82,19 +93,31 @@ namespace Kinovea.ScreenManager
             players.Clear();
             players.Add((PlayerScreen)screenList[0]);
             players.Add((PlayerScreen)screenList[1]);
-            // Add event handlers.
-            
+
+            foreach (PlayerScreen player in players)
+                AddEventHandlers(player);
+
             active = true;
         }
         private void Exit()
         {
             if (active)
             {
-                // Remove event handlers.
+                foreach (PlayerScreen player in players)
+                    RemoveEventHandlers(player);
+
                 players.Clear();
             }
 
             active = false;
+        }
+        private void AddEventHandlers(PlayerScreen player)
+        {
+            player.PauseAsked += Player_PauseAsked;
+        }
+        private void RemoveEventHandlers(PlayerScreen player)
+        {
+            player.PauseAsked -= Player_PauseAsked;
         }
         #endregion
     }
