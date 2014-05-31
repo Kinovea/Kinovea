@@ -40,7 +40,7 @@ using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {
-    public class ScreenManagerKernel : IKernel, IScreenHandler, ICommonControlsManager
+    public class ScreenManagerKernel : IKernel, ICommonControlsManager
     {
         #region Properties
         public UserControl UI
@@ -519,18 +519,39 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region IScreenHandler Implementation
-        public void Screen_CloseAsked(object sender, EventArgs e)
+        #region Event handlers for screens
+        private void Screen_CloseAsked(object sender, EventArgs e)
         {
             AbstractScreen screen = sender as AbstractScreen;
-            Screen_CloseAsked(screen);
+            if (screen == null)
+                return;
+
+            // If the screen is in Drawtime filter (e.g: Mosaic), we just go back to normal play.
+            if (screen is PlayerScreen && ((PlayerScreen)screen).InteractiveFiltering)
+            {
+                SetActiveScreen(screen);
+                ((PlayerScreen)screen).DeactivateInteractiveEffect();
+                return;
+            }
+
+            screen.BeforeClose();
+
+            // Reorganise screens.
+            // We leverage the fact that screens are always well ordered relative to menus.
+            if (screenList.Count > 0 && screen == screenList[0])
+                CloseFile(0);
+            else
+                CloseFile(1);
+
+            UpdateCaptureBuffers();
+            PrepareSync(false);
         }
-        public void Screen_Activated(object sender, EventArgs e)
+        private void Screen_Activated(object sender, EventArgs e)
         {
             AbstractScreen screen = sender as AbstractScreen;
             SetActiveScreen(screen);
         }
-        public void Screen_CommandProcessed(object sender, CommandProcessedEventArgs e)
+        private void Screen_CommandProcessed(object sender, CommandProcessedEventArgs e)
         {
             // Propagate the command to the other screen.
             AbstractScreen screen = sender as AbstractScreen;
@@ -543,48 +564,25 @@ namespace Kinovea.ScreenManager
             if (screenList[0].GetType() == screenList[1].GetType())
                 screenList[otherScreen].ExecuteCommand(e.Command);
         }
-        public void Screen_CloseAsked(AbstractScreen screen)
+
+        private void Player_SpeedChanged(object sender, EventArgs e)
         {
-            // Should be phased out soon in favor of the event handler above.
-        
-            // If the screen is in Drawtime filter (e.g: Mosaic), we just go back to normal play.
-            if(screen is PlayerScreen && ((PlayerScreen)screen).InteractiveFiltering)
-            {
-                SetActiveScreen(screen);
-                ((PlayerScreen)screen).DeactivateInteractiveEffect();
+            PlayerScreen screen = sender as PlayerScreen;
+            if (screen == null)
                 return;
-            }
-            
-            screen.BeforeClose();
-            
-            // Reorganise screens.
-            // We leverage the fact that screens are always well ordered relative to menus.
-            if (screenList.Count > 0 && screen == screenList[0])
-                CloseFile(0);
-            else
-                CloseFile(1);
-            
-            UpdateCaptureBuffers();
-            PrepareSync(false);
-        }
-        public void Screen_UpdateStatusBarAsked(AbstractScreen screen)
-        {
-            UpdateStatusBar();
-        }
-        public void Player_SpeedChanged(PlayerScreen screen)
-        {
+
             if (!synching || screenList.Count != 2)
                 return;
             
             if(PreferencesManager.PlayerPreferences.SyncLockSpeed)
             {
                 int otherScreen = screen == screenList[0] ? 1 : 0;
-                ((PlayerScreen)screenList[otherScreen]).RealtimePercentage = ((PlayerScreen)screen).RealtimePercentage;
+                ((PlayerScreen)screenList[otherScreen]).RealtimePercentage = screen.RealtimePercentage;
             }
             
             SetSyncPoint(true);
         }
-        public void Player_PauseAsked(PlayerScreen screen)
+        private void Player_PauseAsked(object sender, EventArgs e)
         {
             // An individual player asks for a global pause.
             if (synching && view.CommonPlaying)
@@ -593,12 +591,16 @@ namespace Kinovea.ScreenManager
                 CommonCtrl_PlayToggled();
             }
         }
-        public void Player_SelectionChanged(PlayerScreen screen, bool initialization)
+        private void Player_SelectionChanged(object sender, EventArgs<bool> e)
         {
-            PrepareSync(initialization);
+            PrepareSync(e.Value);
         }
-        public void Player_ImageChanged(PlayerScreen screen, Bitmap image)
+        private void Player_ImageChanged(object sender, EventArgs<Bitmap> e)
         {
+            PlayerScreen player = sender as PlayerScreen;
+            if (player == null)
+                return;
+
             if (!synching)
                 return;
 
@@ -607,31 +609,34 @@ namespace Kinovea.ScreenManager
             
             // Transfer the caller's image to the other screen.
             // The image has been cloned and transformed in the caller screen.
-            if (!syncMerging || image == null)
+            if (!syncMerging || e.Value == null)
                 return;
-           
-            foreach (PlayerScreen s in playerScreens)
-                s.SetSyncMergeImage(image, !dualSaveInProgress);
+
+            foreach (PlayerScreen p in playerScreens)
+            {
+                if (p != player)
+                    p.SetSyncMergeImage(e.Value, !dualSaveInProgress);
+            }
         }
-        public void Player_SendImage(PlayerScreen screen, Bitmap image)
+        private void Player_SendImage(object sender, EventArgs<Bitmap> e)
         {
+            PlayerScreen player = sender as PlayerScreen;
+            if (player == null)
+                return;
+
             // An image was sent from a screen to be added as an observational reference in the other screen.
             // The image has been cloned and transformed in the caller screen.
-            foreach (PlayerScreen s in playerScreens)
-                if (s != screen)
-                    s.AddImageDrawing(image);
+            foreach (PlayerScreen p in playerScreens)
+            {
+                if (p != player)
+                    p.AddImageDrawing(e.Value);
+            }
         }
-        public void Player_Reset(PlayerScreen screen)
+        private void Player_ResetAsked(object sender, EventArgs e)
         {
             // A screen was reset. (ex: a video was reloded in place).
             // We need to also reset all the sync states.
             PrepareSync(true);
-        }
-        public void Capture_FileSaved(CaptureScreen screen)
-        {
-            foreach (CaptureScreen s in captureScreens)
-                if (s != screen)
-                    s.RefreshUICulture();
         }
         #endregion
 
@@ -935,9 +940,7 @@ namespace Kinovea.ScreenManager
         }
         public void RemoveScreen(AbstractScreen screen)
         {
-            screen.CloseAsked -= Screen_CloseAsked;
-            screen.Activated -= Screen_Activated;
-            screen.CommandProcessed -= Screen_CommandProcessed;
+            RemoveScreenEventHandlers(screen);
             
             screen.BeforeClose();
             screenList.Remove(screen);
@@ -2945,7 +2948,7 @@ namespace Kinovea.ScreenManager
         #region Screen organization
         public void AddPlayerScreen()
         {
-            PlayerScreen screen = new PlayerScreen(this);
+            PlayerScreen screen = new PlayerScreen();
             screen.RefreshUICulture();
             AddScreen(screen);
         }
@@ -3011,10 +3014,45 @@ namespace Kinovea.ScreenManager
         }
         private void AddScreen(AbstractScreen screen)
         {
+            AddScreenEventHandlers(screen);
+            screenList.Add(screen);
+        }
+        private void AddScreenEventHandlers(AbstractScreen screen)
+        {
             screen.CloseAsked += Screen_CloseAsked;
             screen.Activated += Screen_Activated;
             screen.CommandProcessed += Screen_CommandProcessed;
-            screenList.Add(screen);
+
+            if (screen is PlayerScreen)
+                AddPlayerScreenEventHandlers(screen as PlayerScreen);
+            
+        }
+        private void AddPlayerScreenEventHandlers(PlayerScreen player)
+        {
+            player.SpeedChanged += Player_SpeedChanged;
+            player.PauseAsked += Player_PauseAsked;
+            player.SelectionChanged += Player_SelectionChanged;
+            player.ImageChanged += Player_ImageChanged;
+            player.SendImage += Player_SendImage;
+            player.ResetAsked += Player_ResetAsked;
+        }
+        private void RemoveScreenEventHandlers(AbstractScreen screen)
+        {
+            screen.CloseAsked -= Screen_CloseAsked;
+            screen.Activated -= Screen_Activated;
+            screen.CommandProcessed -= Screen_CommandProcessed;
+
+            if (screen is PlayerScreen)
+                RemovePlayerScreenEventHandlers(screen as PlayerScreen);
+        }
+        private void RemovePlayerScreenEventHandlers(PlayerScreen player)
+        {
+            player.SpeedChanged -= Player_SpeedChanged;
+            player.PauseAsked -= Player_PauseAsked;
+            player.SelectionChanged -= Player_SelectionChanged;
+            player.ImageChanged -= Player_ImageChanged;
+            player.SendImage -= Player_SendImage;
+            player.ResetAsked -= Player_ResetAsked;
         }
         #endregion
     }

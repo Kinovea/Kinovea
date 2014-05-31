@@ -37,6 +37,15 @@ namespace Kinovea.ScreenManager
 {
     public class PlayerScreen : AbstractScreen
     {
+        #region Events
+        public event EventHandler SpeedChanged;
+        public event EventHandler PauseAsked;
+        public event EventHandler<EventArgs<bool>> SelectionChanged;
+        public event EventHandler<EventArgs<Bitmap>> ImageChanged;
+        public event EventHandler<EventArgs<Bitmap>> SendImage;
+        public event EventHandler ResetAsked;
+        #endregion
+
         #region Properties
         public override bool Full
         {
@@ -231,9 +240,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region members
-        public PlayerScreenUserInterface view; // <-- FIXME: Rely on a IPlayerScreenUI or IPlayerScreenView rather than the concrete implementation.
-
-        private IScreenHandler screenManager;
+        public PlayerScreenUserInterface view; 
         private HistoryStack historyStack; 
         private FrameServerPlayer frameServer;
         private Guid uniqueId;
@@ -242,12 +249,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public PlayerScreen(IScreenHandler screenHandler)
+        public PlayerScreen()
         {
             log.Debug("Constructing a PlayerScreen.");
             historyStack = new HistoryStack();
             frameServer = new FrameServerPlayer(historyStack);
-            this.screenManager = screenHandler;
             uniqueId = System.Guid.NewGuid();
             view = new PlayerScreenUserInterface(frameServer);
             
@@ -292,7 +298,7 @@ namespace Kinovea.ScreenManager
         #region General events handlers
         private void View_CloseAsked(object sender, EventArgs e)
         {
-            screenManager.Screen_CloseAsked(this);
+            OnCloseAsked(EventArgs.Empty);
         }
         
         public void View_SetAsActiveScreen(object sender, EventArgs e)
@@ -302,32 +308,38 @@ namespace Kinovea.ScreenManager
 
         public void View_SpeedChanged(object sender, EventArgs e)
         {
-            screenManager.Player_SpeedChanged(this);
+            if (SpeedChanged != null)
+                SpeedChanged(this, EventArgs.Empty);
         }
 
         public void View_PauseAsked(object sender, EventArgs e)
         {
-            screenManager.Player_PauseAsked(this);
+            if (PauseAsked != null)
+                PauseAsked(this, EventArgs.Empty);
         }
         
         public void View_SelectionChanged(object sender, EventArgs<bool> e)
         {
-            screenManager.Player_SelectionChanged(this, e.Value);
+            if (SelectionChanged != null)
+                SelectionChanged(this, e);
         }
         
         public void View_ImageChanged(object sender, EventArgs<Bitmap> e)
         {
-            screenManager.Player_ImageChanged(this, e.Value);
+            if (ImageChanged != null)
+                ImageChanged(this, e);
         }
 
         public void View_SendImage(object sender, EventArgs<Bitmap> e)
         {
-            screenManager.Player_SendImage(this, e.Value);
+            if (SendImage != null)
+                SendImage(this, e);
         }
 
         public void View_ResetAsked(object sender, EventArgs e)
         {
-            screenManager.Player_Reset(this);
+            if (ResetAsked != null)
+                ResetAsked(this, e);
         }
         #endregion
 
@@ -532,7 +544,9 @@ namespace Kinovea.ScreenManager
             fcs.Dispose();
 
             view.UpdateTimedLabels();
-            screenManager.Player_SpeedChanged(this);
+            
+            if (SpeedChanged != null)
+                SpeedChanged(this, EventArgs.Empty);
 
             frameServer.Metadata.CalibrationHelper.FramesPerSecond = frameServer.VideoReader.Info.FramesPerSeconds * frameServer.Metadata.HighSpeedFactor;
 
