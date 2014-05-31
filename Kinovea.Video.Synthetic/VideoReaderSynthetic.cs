@@ -105,8 +105,8 @@ namespace Kinovea.Video.Synthetic
             Close();
             
             bool hasKva = VideoSummary.HasCompanionKva(filePath);
-            int durationMillisecs = (int)(videoInfo.DurationTimeStamps * videoInfo.FrameIntervalMilliseconds);
-
+            int durationMillisecs = (int)((videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame) * videoInfo.FrameIntervalMilliseconds);
+            
             return new VideoSummary(filePath, false, hasKva, size, durationMillisecs, new List<Bitmap>{ thumb });
         }
         public override void PostLoad()
