@@ -9,15 +9,20 @@ namespace Kinovea.ScreenManager
     public class DualPlayerController
     {
         #region Properties
-        public bool CommonPlaying
+        public bool Synching
         {
-            get { return view.Playing; }
-            set { view.Playing = value; }
+            get { return synching; }
+            set { synching = value; }
         }
         public bool Merging
         {
             get { return view.SyncMerging; }
             set { view.SyncMerging = value; }
+        }
+        public bool Playing
+        {
+            get { return view.Playing; }
+            set { view.Playing = value; }
         }
         public CommonControlsPlayers View
         {
@@ -27,6 +32,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private bool active;
+        private bool synching;
         private CommonControlsPlayers view = new CommonControlsPlayers();
         private List<PlayerScreen> players = new List<PlayerScreen>();
         #endregion
