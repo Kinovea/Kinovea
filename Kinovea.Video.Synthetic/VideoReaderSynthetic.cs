@@ -34,7 +34,8 @@ namespace Kinovea.Video.Synthetic
     public class VideoReaderSynthetic : VideoReader
     {
         #region Properties
-        public override VideoFrame Current { 
+        public override VideoFrame Current 
+        { 
             get { return current; }
         }
         public override VideoCapabilities Flags { 
@@ -62,6 +63,7 @@ namespace Kinovea.Video.Synthetic
         private VideoFrame current = new VideoFrame();
         private VideoSection workingZone;
         private VideoInfo videoInfo = new VideoInfo();
+        private bool firstDecoded;
         #endregion
         
         #region Public methods
@@ -107,10 +109,20 @@ namespace Kinovea.Video.Synthetic
 
             return new VideoSummary(filePath, false, hasKva, size, durationMillisecs, new List<Bitmap>{ thumb });
         }
-        public override void PostLoad(){}
+        public override void PostLoad()
+        {
+        }
         public override bool MoveNext(int skip, bool decodeIfNecessary)
         {
-            return UpdateCurrent(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
+            if (!firstDecoded)
+            {
+                firstDecoded = true;
+                return UpdateCurrent(0);
+            }
+            else
+            {
+                return UpdateCurrent(current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
+            }
         }
         public override bool MoveTo(long timestamp)
         {
@@ -120,8 +132,12 @@ namespace Kinovea.Video.Synthetic
         {
             workingZone = newZone;
         }
-        public override void BeforeFrameEnumeration(){}
-        public override void AfterFrameEnumeration(){}
+        public override void BeforeFrameEnumeration()
+        {
+        }
+        public override void AfterFrameEnumeration()
+        {
+        }
         #endregion
         
         #region Private methods
