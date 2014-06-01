@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
         [Category("Behavior"), Browsable(true)]
         public long Minimum
         {
-            get{return minimum;}
+            get { return minimum; }
             set
             {
                 minimum = value;
@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
         [Category("Behavior"), Browsable(true)]
         public long Maximum
         {
-            get{return maximum;}
+            get { return maximum; }
             set
             {
                 maximum = value;
@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
         [Category("Behavior"), Browsable(true)]
         public long Position
         {
-            get{return position;}
+            get { return position; }
             set
             {
                 position  = value;
@@ -93,6 +93,20 @@ namespace Kinovea.ScreenManager
         {
             get { return reportOnMouseMove;  }
             set { reportOnMouseMove = value; }
+        }
+        public long SyncPosition
+        {
+            get { return syncPointTimestamp; }
+        }
+        public long LeftHairline
+        {
+            get { return leftHairline; }
+            set { leftHairline = value; }
+        }
+        public long RightHairline
+        {
+            get { return rightHairline; }
+            set { rightHairline = value; }
         }
         #endregion
             
@@ -112,6 +126,7 @@ namespace Kinovea.ScreenManager
         
         private bool reportOnMouseMove = false;
         private bool enabled = true;
+        private bool commonTimeline;
         private Bitmap bmpNavCursor = Resources.liqcursor;
         private Bitmap bmpBumperLeft = Resources.liqbumperleft;
         private Bitmap bmpBumperRight = Resources.liqbumperright;
@@ -119,12 +134,13 @@ namespace Kinovea.ScreenManager
         
         #region Markers handling
         private Metadata metadata;
-        
+
+
         // Lists are lists of coordinates, or of pair of coordinates (start/end) in pixels.
         
         private List<int> keyframesMarks = new List<int>();
-        private static readonly Pen penKeyBorder = Pens.YellowGreen;
-        private static readonly Pen penKeyInside = new Pen(Color.FromArgb(96, Color.YellowGreen), 1);
+        private static readonly Pen penKey = Pens.SeaGreen;
+        private static readonly SolidBrush brushKey = new SolidBrush(Color.FromArgb(96, Color.SeaGreen));
         
         private List<Point> chronosMarks = new List<Point>();
         private static readonly Pen penChronoBorder = Pens.CornflowerBlue;
@@ -138,11 +154,19 @@ namespace Kinovea.ScreenManager
         private List<Point> cacheSegmentMarks = new List<Point>();
         private static readonly Pen penCacheBorder = Pens.DarkGray;
         private static readonly SolidBrush brushCache = new SolidBrush(Color.FromArgb(96, Color.DarkGray));
-        
+
         private long syncPointTimestamp;
         private int syncPointMark;
-        private static readonly Pen penSyncBorder = Pens.Firebrick;
-        private static readonly Pen penSyncInside = new Pen(Color.FromArgb(96, Color.Firebrick), 1);
+        private static readonly Pen penSync = Pens.Firebrick;
+        private static readonly SolidBrush brushSync = new SolidBrush(Color.FromArgb(96, Color.Firebrick));
+
+        private long leftHairline;
+        private long rightHairline;
+        private int leftPlayHeadMark;
+        private int rightPlayHeadMark;
+        private static readonly Pen penPlayHead = Pens.DarkCyan;
+        private static readonly SolidBrush brushPlayHead = new SolidBrush(Color.FromArgb(96, Color.DarkCyan));
+        
         #endregion
         
         private static readonly bool prebufferDisplay = false;
@@ -170,12 +194,18 @@ namespace Kinovea.ScreenManager
             maximumPixel = this.Width - spacers - halfCursorWidth;
             maxWidthPixel = maximumPixel - minimumPixel;
             
+            
+
             // Prepare the images resources for faster painting.
             //bmpBumperLeft = Resources.liqbumperleft..to32bppPArgb();
         }
         #endregion
         
         #region Public Methods
+        public void SetAsCommonTimeline(bool value)
+        {
+            this.commonTimeline = value;
+        }
         public void Remap(long minimum, long maximum)
         {
             // This method is only a shortcut to updating min and max properties at once.
@@ -209,6 +239,17 @@ namespace Kinovea.ScreenManager
             this.syncPointTimestamp = syncPointTimestamp;
             UpdateSyncPointMarkerPosition();
         }
+        public void UpdatePlayHeadMarkers()
+        {
+            leftPlayHeadMark = 0;
+            if (leftHairline != 0 && leftHairline >= minimum && leftHairline <= maximum)
+                leftPlayHeadMark = GetCoordFromTimestamp(leftHairline);
+
+            rightPlayHeadMark = 0;
+            if (rightHairline != 0 && rightHairline >= minimum && rightHairline <= maximum)
+                rightPlayHeadMark = GetCoordFromTimestamp(rightHairline);
+        }
+
         public void UpdateCacheSegmentMarker(VideoSection cacheSegment)
         {
             if(!cacheSegment.IsEmpty && prebufferDisplay)
@@ -282,8 +323,9 @@ namespace Kinovea.ScreenManager
             // When we land in this function, pixelPosition should have been set already.
             // It is the only member variable we'll use here.
             Graphics g = e.Graphics;
-            g.PixelOffsetMode = PixelOffsetMode.Half; // <-- fix stretch.
+            g.PixelOffsetMode = PixelOffsetMode.Half; // <-- fixes stretch.
             g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            
             Draw(g);
             
             invalidateAsked = false;
@@ -296,14 +338,14 @@ namespace Kinovea.ScreenManager
             // Bumpers.
             canvas.DrawImageUnscaled(bmpBumperLeft, 10, 0);
             canvas.DrawImageUnscaled(bmpBumperRight, Width-20, 0);
-            
+
             if(!enabled)
                 return;
             
             if(prebufferDisplay)
             {
                 foreach(Point mark in cacheSegmentMarks)
-                    DrawMark(canvas, Pens.LightSlateGray, Brushes.LightSteelBlue, mark);
+                    DrawRangeMark(canvas, Pens.LightSlateGray, Brushes.LightSteelBlue, mark.X, mark.Y);
 
                 DrawAllFrames(canvas, Pens.Black);
                 int pixPos =  GetCoordFromTimestamp(position);
@@ -311,19 +353,26 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                foreach (int mark in keyframesMarks)
-                    DrawMark(canvas, penKeyBorder, penKeyInside, mark);
-
                 foreach (Point mark in chronosMarks)
-                    DrawMark(canvas, penChronoBorder, brushChrono, mark);
+                    DrawRangeMark(canvas, penChronoBorder, brushChrono, mark.X, mark.Y);
 
                 foreach (Point mark in tracksMarks)
-                    DrawMark(canvas, penTrackBorder, brushTrack, mark);
+                    DrawRangeMark(canvas, penTrackBorder, brushTrack, mark.X, mark.Y);
 
-                if(syncPointMark != 0)
-                    DrawMark(canvas, penSyncBorder, penSyncInside, syncPointMark);
+                foreach (int mark in keyframesMarks)
+                    DrawFrameMark(canvas, penKey, brushKey, mark);
 
-                canvas.DrawImageUnscaled(bmpNavCursor, pixelPosition, 0);
+                DrawFrameMark(canvas, penSync, brushSync, syncPointMark);
+                
+                if (commonTimeline)
+                {
+                    DrawSideMark(canvas, penPlayHead, brushPlayHead, leftPlayHeadMark, true);
+                    DrawSideMark(canvas, penPlayHead, brushPlayHead, rightPlayHeadMark, false);
+                }
+                else
+                {
+                    canvas.DrawImageUnscaled(bmpNavCursor, pixelPosition, 0);
+                }
             }
         }
         private void DrawAllFrames(Graphics canvas, Pen pen)
@@ -344,34 +393,68 @@ namespace Kinovea.ScreenManager
                 canvas.DrawLine(pen, pixPos, 5, pixPos, 13);
             }
         }
-        private void DrawMark(Graphics canvas, Pen border, Pen inside, int coord)
+        private void DrawFrameMark(Graphics canvas, Pen border, SolidBrush inside, int coord)
         {
-            // Mark for a single point in time (key image).
-            if(coord <= 0)
+            if (coord <= 0)
+                return;
+
+            float left = coord;
+            float top = 5;
+            float width = 3;
+            float height = 8;
+
+            canvas.SmoothingMode = SmoothingMode.Default;
+
+            canvas.FillRectangle(inside, left - width / 2, top + 0.5f, width, height - 0.5f);
+            canvas.DrawRectangle(border, left - width / 2, top + 0.5f, width, height - 0.5f);
+        }
+        private void DrawSideMark(Graphics canvas, Pen border, SolidBrush inside, int coord, bool lookLeft)
+        {
+            if (coord <= 0)
                 return;
             
-            int iLeft = coord;
-            int iTop = 5;
-            int iWidth = 3;
-            int iHeight = 8;
+            float top = 5;
+            float width = 9;
+            float height = 8;
+            float left = lookLeft ? coord - width * 0.75f : coord - width * 0.25f;
             
-            canvas.DrawRectangle(border, iLeft, iTop, iWidth, iHeight );
-            canvas.DrawRectangle(inside, iLeft + 1, iTop+1, iWidth-2, iHeight-2 );
+            canvas.SmoothingMode = SmoothingMode.AntiAlias;
+
+            RectangleF rect = new RectangleF(left, top, width, height + 0.5f);
+            
+            GraphicsPath gp = new GraphicsPath();
+            gp.StartFigure();
+
+            if (lookLeft)
+                gp.AddArc(rect, -90, 180);
+            else
+                gp.AddArc(rect, 90, 180);
+
+            gp.CloseFigure();
+
+            canvas.FillPath(inside, gp);
+            canvas.DrawPath(border, gp);
+
+            gp.Dispose();
         }
-        private void DrawMark(Graphics canvas, Pen border, Brush inside, Point coords)
+        private void DrawRangeMark(Graphics canvas, Pen border, Brush inside, int start, int range)
         {
-            // Mark for a range in time (chrono or track).
-            int iLeft = coords.X;
-            int iTop = 5;
-            int iWidth = coords.Y;
-            int iHeight = 8;
+            float left = start;
+            float top = 5;
+            float width = range;
+            float height = 8;
             
             // Bound to bumpers.
-            if(iLeft < minimumPixel) iLeft = minimumPixel;
-            if(iLeft + iWidth > maximumPixel) iWidth = maximumPixel - iLeft;
+            if(left < minimumPixel) 
+                left = minimumPixel;
             
-            canvas.FillRectangle(inside, iLeft, iTop, iWidth, iHeight);
-            canvas.DrawRectangle(border, iLeft, iTop, iWidth, iHeight );
+            if(left + width > maximumPixel) 
+                width = maximumPixel - left;
+
+            canvas.SmoothingMode = SmoothingMode.Default;
+
+            canvas.FillRectangle(inside, left, top + 0.5f, width, height - 0.5f);
+            canvas.DrawRectangle(border, left, top + 0.5f, width, height - 0.5f);
         }
         #endregion
         
