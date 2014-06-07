@@ -492,13 +492,13 @@ namespace Kinovea.ScreenManager
             SetUpForNewMovie();
             m_KeyframeCommentsHub.UserActivated = false;
             
-            // Check for startup kva
+            // Check for launch description and startup kva
             bool recoveredMetadata = false;
             if (m_LaunchDescription != null)
             {
-                if (m_LaunchDescription.RecoveryId != Guid.Empty)
+                if (m_LaunchDescription.Id != Guid.Empty)
                 {
-                    m_FrameServer.Metadata.Recover(m_LaunchDescription.RecoveryId);
+                    m_FrameServer.Metadata.Recover(m_LaunchDescription.Id);
                     recoveredMetadata = true;
                 }
 
@@ -1664,7 +1664,7 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkers();
             
             OnPoke();
-            OnSelectionChanged(false);
+            OnSelectionChanged(true);
 
             // Update current image and keyframe  status.
             UpdateFramePrimarySelection();

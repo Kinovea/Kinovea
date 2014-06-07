@@ -238,7 +238,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DualCaptureController.cs" />
-    <Compile Include="DualPlayerController.cs" />
+    <Compile Include="DualPlayer\CommonTimeline.cs" />
+    <Compile Include="DualPlayer\DualPlayerController.cs" />
+    <Compile Include="DualPlayer\PlayerSyncInfo.cs" />
     <Compile Include="PlayerScreen\ChronoManager.cs" />
     <Compile Include="CommandProcessedEventArgs.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
@@ -691,10 +693,10 @@
     <Compile Include="UserInterface\FormColorPicker.Designer.cs">
       <DependentUpon>FormColorPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\CommonControlsPlayers.cs">
+    <Compile Include="DualPlayer\CommonControlsPlayers.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserInterface\CommonControlsPlayers.Designer.cs">
+    <Compile Include="DualPlayer\CommonControlsPlayers.Designer.cs">
       <DependentUpon>CommonControlsPlayers.cs</DependentUpon>
     </Compile>
     <Compile Include="Languages\ScreenManagerLang.Designer.cs">
@@ -867,7 +869,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UserInterface\CommonControlsPlayers.resx">
+    <EmbeddedResource Include="DualPlayer\CommonControlsPlayers.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CommonControlsPlayers.cs</DependentUpon>
     </EmbeddedResource>

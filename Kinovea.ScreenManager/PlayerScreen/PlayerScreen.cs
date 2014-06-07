@@ -134,6 +134,9 @@ namespace Kinovea.ScreenManager
             {
                 // Get the approximate frame we should be on.
                 // Only as accurate as the framerate is stable regarding to the timebase.
+                if (frameServer.VideoReader.Info.AverageTimeStampsPerFrame == 0)
+                    return 0;
+
                 
                 // SyncCurrentPosition timestamp is already relative to selection start).
                 return (long)((double)view.SyncCurrentPosition / frameServer.VideoReader.Info.AverageTimeStampsPerFrame);
@@ -489,6 +492,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Other public methods called from the ScreenManager
+        public void StartPlaying()
+        {
+            if (!IsPlaying)
+                view.OnButtonPlay();
+        }
         public void StopPlaying()
         {
             view.StopPlaying();

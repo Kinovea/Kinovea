@@ -29,6 +29,5 @@ namespace Kinovea.Services
         {
             get { return ScreenType.Capture; }
         }
-        
     }
 }

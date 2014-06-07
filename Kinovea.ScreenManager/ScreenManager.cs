@@ -70,6 +70,7 @@ namespace Kinovea.ScreenManager
         private IEnumerable<CaptureScreen> captureScreens;
         private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
+        private int dualLaunchSettingsPendingCountdown;
         
         // Video Filters
         private bool hasSvgFiles;
@@ -140,21 +141,9 @@ namespace Kinovea.ScreenManager
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             
             InitializeVideoFilters();
+            InitializeGuideWatcher();
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
-            
-            // Watch for changes in the guides directory.
-            svgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
-            svgFilesWatcher.Path = svgPath;
-            svgFilesWatcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
-            svgFilesWatcher.Filter = "*.svg";
-            svgFilesWatcher.IncludeSubdirectories = true;
-            svgFilesWatcher.EnableRaisingEvents = true;
-            
-            svgFilesWatcher.Changed += OnSVGFilesChanged;
-            svgFilesWatcher.Created += OnSVGFilesChanged;
-            svgFilesWatcher.Deleted += OnSVGFilesChanged;
-            svgFilesWatcher.Renamed += OnSVGFilesChanged;
 
             playerScreens = screenList.Where(s => s is PlayerScreen).Select(s => s as PlayerScreen);
             captureScreens = screenList.Where(s => s is CaptureScreen).Select(s => s as CaptureScreen);
@@ -189,6 +178,21 @@ namespace Kinovea.ScreenManager
             return menu;
         }
 
+        private void InitializeGuideWatcher()
+        {
+            svgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
+            svgFilesWatcher.Path = svgPath;
+            svgFilesWatcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
+            svgFilesWatcher.Filter = "*.svg";
+            svgFilesWatcher.IncludeSubdirectories = true;
+            svgFilesWatcher.EnableRaisingEvents = true;
+
+            svgFilesWatcher.Changed += OnSVGFilesChanged;
+            svgFilesWatcher.Created += OnSVGFilesChanged;
+            svgFilesWatcher.Deleted += OnSVGFilesChanged;
+            svgFilesWatcher.Renamed += OnSVGFilesChanged;
+        }
+
         public void SetInteractiveEffect(InteractiveEffect _effect)
         {
             PlayerScreen player = activeScreen as PlayerScreen;
@@ -198,6 +202,8 @@ namespace Kinovea.ScreenManager
         
         public void RecoverCrash()
         {
+            // Import recovered screens into launch settings.
+
             try
             {
                 List<ScreenDescriptionPlayback> recoverables = RecoveryManager.GetRecoverables();
@@ -481,7 +487,6 @@ namespace Kinovea.ScreenManager
                 screenList[i].BeforeClose();
                 CloseFile(i);
                 UpdateCaptureBuffers();
-                PrepareSync(false);
             }
             
             return screenList.Count != 0;
@@ -520,7 +525,6 @@ namespace Kinovea.ScreenManager
                 CloseFile(1);
 
             UpdateCaptureBuffers();
-            PrepareSync(false);
         }
         private void Screen_Activated(object sender, EventArgs e)
         {
@@ -540,11 +544,15 @@ namespace Kinovea.ScreenManager
             if (screenList[0].GetType() == screenList[1].GetType())
                 screenList[otherScreen].ExecuteCommand(e.Command);
         }
-
         
         private void Player_SelectionChanged(object sender, EventArgs<bool> e)
         {
-            PrepareSync(e.Value);
+            PrepareSync();
+
+            dualLaunchSettingsPendingCountdown--;
+
+            if (dualLaunchSettingsPendingCountdown == 0)
+                dualPlayer.CommitLaunchSettings();
         }
         
         private void Player_SendImage(object sender, EventArgs<Bitmap> e)
@@ -565,7 +573,7 @@ namespace Kinovea.ScreenManager
         {
             // A screen was reset. (ex: a video was reloded in place).
             // We need to also reset all the sync states.
-            PrepareSync(true);
+            PrepareSync();
         }
         #endregion
 
@@ -587,7 +595,7 @@ namespace Kinovea.ScreenManager
             mnuSwapScreensOnClick(null, EventArgs.Empty);	
         }
 
-        
+        // TODO: move the next three to DualCaptureController.
         private void CCtrl_GrabbingChanged(object sender, EventArgs<bool> e)
         {
             foreach (CaptureScreen screen in captureScreens)
@@ -1836,7 +1844,7 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        public void DoLoadCameraInScreen(CameraSummary summary, int targetScreen)
+        private void DoLoadCameraInScreen(CameraSummary summary, int targetScreen)
         {
             if(summary == null)
                 return;
@@ -1881,6 +1889,8 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
+            dualLaunchSettingsPendingCountdown = reloaded;
+
             if (reloaded > 0)
             {
                 OrganizeScreens();
@@ -1905,15 +1915,14 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Screen organization
-        private void PrepareSync(bool initialization)
+        private void PrepareSync()
         {
-            // Called each time the screen list change 
-            // or when a screen changed selection.
+            // Called each time the screen list change or when a screen changed selection.
 
             foreach (PlayerScreen p in playerScreens)
                 p.Synched = false;
 
-            dualPlayer.PrepareSync(initialization);
+            dualPlayer.PrepareSync();
         }
         public void AddPlayerScreen()
         {
