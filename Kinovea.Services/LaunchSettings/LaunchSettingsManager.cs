@@ -50,7 +50,6 @@ namespace Kinovea.Services
         }
         public static void AddScreenDescription(IScreenDescription screenDescription)
         {
-            // Note: it is possible to add more than 2 screen descriptions.
             screenDescriptions.Add(screenDescription);
         }
     }
