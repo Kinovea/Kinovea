@@ -156,12 +156,32 @@ namespace Kinovea.ScreenManager
             if (!active || !synching)
                 return;
 
-            PlayerScreen player = sender as PlayerScreen;
-            if (player == null)
+            SyncLockSpeed(sender as PlayerScreen);
+        }
+
+        private void Player_HighSpeedFactorChanged(object sender, EventArgs e)
+        {
+            if (!active || !synching)
                 return;
 
-            if (PreferencesManager.PlayerPreferences.SyncLockSpeed)
-                GetOtherPlayer(player).RealtimePercentage = player.RealtimePercentage;
+            SyncLockSpeed(sender as PlayerScreen);
+
+            // Synchronization must be reinitialized.
+            commonTimeline.Initialize(players[0], players[0].LocalSyncTime, players[1], players[1].LocalSyncTime);
+
+            // TODO: Check if current time is still in bounds.
+            currentTime = Math.Min(currentTime, commonTimeline.GetCommonTime(players[0], players[0].LocalTime));
+
+            view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);
+            view.UpdateSyncPosition(currentTime); 
+        }
+
+        private void SyncLockSpeed(PlayerScreen player)
+        {
+            if (player == null || !PreferencesManager.PlayerPreferences.SyncLockSpeed)
+                return;
+            
+            GetOtherPlayer(player).RealtimePercentage = player.RealtimePercentage;
         }
 
         private void Player_ImageChanged(object sender, EventArgs<Bitmap> e)
@@ -368,12 +388,14 @@ namespace Kinovea.ScreenManager
         {
             player.PauseAsked += Player_PauseAsked;
             player.SpeedChanged += Player_SpeedChanged;
+            player.HighSpeedFactorChanged += Player_HighSpeedFactorChanged;
             player.ImageChanged += Player_ImageChanged;
         }
         private void RemoveEventHandlers(PlayerScreen player)
         {
             player.PauseAsked -= Player_PauseAsked;
             player.SpeedChanged -= Player_SpeedChanged;
+            player.HighSpeedFactorChanged -= Player_HighSpeedFactorChanged;
             player.ImageChanged -= Player_ImageChanged;
         }
 

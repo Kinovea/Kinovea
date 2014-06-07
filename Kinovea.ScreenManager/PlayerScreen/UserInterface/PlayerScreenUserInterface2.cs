@@ -192,6 +192,66 @@ namespace Kinovea.ScreenManager
             get { return m_iCurrentPosition - m_iSelStart; }
         }
 
+        public long LocalTime
+        {
+            get
+            {
+                if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0)
+                    return 0;
+
+                long ts = m_iCurrentPosition - m_iSelStart;
+                double seconds = (double)ts / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+                seconds = seconds / m_FrameServer.Metadata.HighSpeedFactor;
+
+                return (long)(seconds * 1000000);
+            }
+        }
+
+        public long LocalLastTime
+        {
+            get 
+            {
+                long ts = m_FrameServer.VideoReader.WorkingZone.End - m_FrameServer.VideoReader.WorkingZone.Start;
+                double seconds = (double)ts / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+                seconds = seconds / m_FrameServer.Metadata.HighSpeedFactor;
+
+                return (long)(seconds * 1000000);    
+            }
+        }
+
+        public long LocalFrameTime
+        {
+            get
+            {
+                if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0)
+                    return 0;
+
+                double seconds = (double)m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+                seconds = seconds / m_FrameServer.Metadata.HighSpeedFactor;
+                
+                return (long)(seconds * 1000000);
+            }
+            
+        }
+
+        public long LocalSyncTime
+        {
+            get 
+            {
+                if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0)
+                    return 0;
+
+                long ts = m_iSyncPosition;
+                double seconds = (double)ts / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+
+                double percentage = m_fSlowmotionPercentage / m_FrameServer.Metadata.HighSpeedFactor;
+                seconds = seconds * percentage / 100;
+
+                return (long)(seconds * 1000000);
+            }
+        }
+        
+
         public bool SyncMerge
         {
             // Idicates whether we should draw the other screen image on top of this one.
@@ -2101,15 +2161,18 @@ namespace Kinovea.ScreenManager
             int skip = tracking ? 0 : _missedFrames;
             
             long estimateNext = m_iCurrentPosition + ((skip + 1) * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+
             if (estimateNext > m_iSelEnd)
             {
                 EndOfFile();
             }
             else
             {
+                long oldPosition = m_iCurrentPosition;
+
                 // This may be slow (several ms) due to delete call when dequeuing the pre-buffer. To investigate.
                 m_FrameServer.VideoReader.MoveNext(skip, false);
-                
+
                 // In case the frame wasn't available in the pre-buffer, don't render anything.
                 // This means if we missed the previous frame because the UI was busy, we won't 
                 // render it now either. On the other hand, it means we will have less chance to
@@ -2144,6 +2207,15 @@ namespace Kinovea.ScreenManager
                     UpdateCurrentPositionLabel();
                     
                     ReportForSyncMerge();
+                }
+
+                if (m_iCurrentPosition < oldPosition && m_bSynched)
+                {
+                    // Sometimes the test to preemptively detect the end of file won't work.
+                    StopPlaying();
+                    ShowNextFrame(m_iSelStart, true);
+                    UpdatePositionUI();
+                    m_iFramesToDecode = 1;
                 }
             }
         }

@@ -39,6 +39,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler SpeedChanged;
+        public event EventHandler HighSpeedFactorChanged;
         public event EventHandler PauseAsked;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
@@ -131,25 +132,14 @@ namespace Kinovea.ScreenManager
         
         public long LocalTime
         {
-            get
-            {
-                // Returns the local time in microseconds for synchronization purposes.
-
-                if (frameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0)
-                    return 0;
-
-                double seconds = (double)view.LocalTimestamp / frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-                return (long)(seconds * 1000000);
-            }
+            get { return view.LocalTime; }
         }
 
         public long LocalLastTime
         {
             get
             {
-                long duration = frameServer.VideoReader.WorkingZone.End - frameServer.VideoReader.WorkingZone.Start; 
-                double seconds = (double)duration / frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-                return (long)(seconds * 1000000);
+                return view.LocalLastTime;
             }
         }
 
@@ -157,8 +147,29 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                double seconds = (double)frameServer.VideoReader.Info.AverageTimeStampsPerFrame / frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-                return (long)(seconds * 1000000);
+                return view.LocalFrameTime;
+            }
+        }
+
+        public long LocalSyncTime
+        {
+            get
+            {
+                return view.LocalSyncTime;
+            }
+
+            set
+            {
+                // Convert from real time to video time then to timestamps.
+                long microseconds = value;
+                double seconds = (double)microseconds / 1000000;
+                seconds = seconds * frameServer.Metadata.HighSpeedFactor;
+
+                long ts = (long)(seconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
+                ts += frameServer.VideoReader.WorkingZone.Start;
+
+                frameServer.SyncTimestamp = ts;
+                view.LocalSyncTimestamp = ts;
             }
         }
          
@@ -188,29 +199,7 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        public long LocalSyncTime
-        {
-            get 
-            {
-                if (frameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0)
-                    return 0;
-
-                long ts = view.LocalSyncTimestamp;
-                double seconds = (double)ts / frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-                return (long)(seconds * 1000000);
-            }
-            
-            set
-            {
-                long microseconds = value;
-                double seconds = (double)microseconds / 1000000;
-                long ts = (long)(seconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
-                ts += frameServer.VideoReader.WorkingZone.Start;
-
-                view.LocalSyncTimestamp = ts;
-                frameServer.SyncTimestamp = ts;
-            }
-        }
+        
         
         public long Position
         {
@@ -534,7 +523,10 @@ namespace Kinovea.ScreenManager
         }
         public void GotoTime(long microseconds, bool allowUIUpdate)
         {
+            // Convert from real time to video time then to timestamps.
             double seconds = (double)microseconds / 1000000;
+            seconds = seconds * frameServer.Metadata.HighSpeedFactor;
+
             long ts = (long)(seconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
 
             ts += frameServer.VideoReader.WorkingZone.Start;
@@ -579,13 +571,13 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            frameServer.Metadata.HighSpeedFactor = fcs.SlowFactor;
+            frameServer.Metadata.HighSpeedFactor = fcs.HighSpeedFactor;
             fcs.Dispose();
 
             view.UpdateTimedLabels();
-            
-            if (SpeedChanged != null)
-                SpeedChanged(this, EventArgs.Empty);
+
+            if (HighSpeedFactorChanged != null)
+                HighSpeedFactorChanged(this, EventArgs.Empty);
 
             frameServer.Metadata.CalibrationHelper.FramesPerSecond = frameServer.VideoReader.Info.FramesPerSeconds * frameServer.Metadata.HighSpeedFactor;
 

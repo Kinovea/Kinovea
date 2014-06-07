@@ -236,9 +236,10 @@ namespace Kinovea.ScreenManager
             int frames = 1;
             if (videoReader.Info.AverageTimeStampsPerFrame != 0)
                 frames = (int)((double)actualTimestamps / videoReader.Info.AverageTimeStampsPerFrame) + 1;
-            string frameString = String.Format("{0}", frames);
 
+            string frameString = String.Format("{0}", frames);
             string outputTimeCode;
+
             switch (tcf)
             {
                 case TimecodeFormat.ClassicTime:
