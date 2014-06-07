@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Kinovea.ScreenManager
+{
+    public class CommonTimeline
+    {
+        public long LastTime
+        {
+            get { return commonLastTime; }
+        }
+
+        Dictionary<Guid, PlayerSyncInfo> syncInfos = new Dictionary<Guid, PlayerSyncInfo>();
+        private long commonLastTime;
+
+        public void Initialize(PlayerScreen leftPlayer, long leftSyncTime, PlayerScreen rightPlayer, long rightSyncTime)
+        {
+            syncInfos.Clear();
+
+            leftPlayer.SyncPosition = leftSyncTime;
+            rightPlayer.SyncPosition = rightSyncTime;
+
+            PlayerSyncInfo leftInfo = new PlayerSyncInfo();
+            leftInfo.SyncTime = leftSyncTime;
+            leftInfo.LastTime = leftPlayer.EstimatedFrames - 1;
+
+            PlayerSyncInfo rightInfo = new PlayerSyncInfo();
+            rightInfo.SyncTime = rightSyncTime;
+            rightInfo.LastTime = rightPlayer.EstimatedFrames - 1;
+
+            // Start of each video in common time. One will start at 0 while the other will have an offset.
+            long offsetLeft = 0;
+            long offsetRight = 0;
+
+            if (leftSyncTime < rightSyncTime)
+                offsetLeft = rightSyncTime - leftSyncTime;
+            else
+                offsetRight = leftSyncTime - rightSyncTime;
+
+            leftInfo.Offset = offsetLeft;
+            rightInfo.Offset = offsetRight;
+
+            syncInfos.Add(leftPlayer.Id, leftInfo);
+            syncInfos.Add(rightPlayer.Id, rightInfo);
+
+            // Max duration in common time. This is used to set up the width of the frame tracker control.
+            long leftEnd = GetCommonTime(leftPlayer, leftInfo.LastTime);
+            long rightEnd = GetCommonTime(rightPlayer, rightInfo.LastTime);
+
+            commonLastTime = Math.Max(leftEnd, rightEnd);
+        }
+        
+        public long GetLocalTime(PlayerScreen player, long commonTime)
+        {
+            if (!syncInfos.ContainsKey(player.Id))
+                return 0;
+
+            return commonTime - syncInfos[player.Id].Offset;
+        }
+
+        public long GetCommonTime(PlayerScreen player, long localTime)
+        {
+            if (!syncInfos.ContainsKey(player.Id))
+                return 0;
+
+            return syncInfos[player.Id].Offset + localTime;
+        }
+
+        public bool IsOutOfBounds(PlayerScreen player, long commonTime)
+        {
+            if (!syncInfos.ContainsKey(player.Id))
+                return true;
+
+            long localTime = GetLocalTime(player, commonTime);
+            return localTime < 0 || localTime > syncInfos[player.Id].LastTime;
+        }
+    }
+}

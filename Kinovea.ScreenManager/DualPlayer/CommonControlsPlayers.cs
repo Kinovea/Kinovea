@@ -103,6 +103,8 @@ namespace Kinovea.ScreenManager
             
             this.Controls.Add(btnSnapShot);
             this.Controls.Add(btnDualVideo);
+
+            trkFrame.SetAsCommonTimeline(true);
         }
         #endregion
         
@@ -126,35 +128,54 @@ namespace Kinovea.ScreenManager
             RefreshMergeTooltip();
         }
 
-        public void UpdateSyncPosition(long position)
-        {
-            trkFrame.UpdateSyncPointMarker(position);
-            trkFrame.Invalidate();
-        }
-
         public void SetupTrkFrame(long min, long max, long pos)
         {
             trkFrame.Minimum = min;
             trkFrame.Maximum = max;
             trkFrame.Position = pos;
             trkFrame.Invalidate();
+            UpdateDebug();
         }
 
-        public void UpdateTrkFrame(long position)
+        public void UpdateSyncPosition(long position)
+        {
+            trkFrame.UpdateSyncPointMarker(position);
+            trkFrame.Invalidate();
+            UpdateDebug();
+        }
+        
+        public void UpdateCurrentPosition(long position)
         {
             trkFrame.Position = position;
             trkFrame.Invalidate();
+            UpdateDebug();
+        }
+
+        public void UpdateHairline(long position, bool left)
+        {
+            if (left)
+                trkFrame.LeftHairline = position;
+            else
+                trkFrame.RightHairline = position;
+
+            trkFrame.UpdatePlayHeadMarkers();
+            trkFrame.Invalidate();
+        }
+
+        private void UpdateDebug()
+        {
+            lblInfo.Text = string.Format("{0}/{1}, s:{2}", trkFrame.Position, trkFrame.Maximum, trkFrame.SyncPosition);
         }
         
         public void Pause()
         {
-            bool toggled = playing == true;
+            //bool toggled = playing == true;
 
             playing = false;
             RefreshPlayButton();
 
-            if (toggled && PlayToggled != null)
-                PlayToggled(this, EventArgs.Empty);
+            //if (toggled && PlayToggled != null)
+                //PlayToggled(this, EventArgs.Empty);
         }
 
         public void StopMerge()
@@ -168,20 +189,13 @@ namespace Kinovea.ScreenManager
         {
             if (GotoFirst != null)
                 GotoFirst(this, EventArgs.Empty);
-
-            trkFrame.Position = trkFrame.Minimum;
-            trkFrame.Invalidate();
-            PlayStopped();
         }
         private void Previous()
         {
             if (GotoPrev != null)
                 GotoPrev(this, EventArgs.Empty);
-            
-            trkFrame.Position--;
-            trkFrame.Invalidate();
         }
-        private void Play()
+        private void PlayPause()
         {
             playing = !playing;
             RefreshPlayButton();
@@ -193,17 +207,11 @@ namespace Kinovea.ScreenManager
         {
             if (GotoNext != null)
                 GotoNext(this, EventArgs.Empty);
-
-            trkFrame.Position++;
-            trkFrame.Invalidate();
         }
         private void Last()
         {
             if (GotoLast != null)
                 GotoLast(this, EventArgs.Empty);
-
-            trkFrame.Position = trkFrame.Maximum;
-            trkFrame.Invalidate();
         }
         
         #region UI Handlers
@@ -222,7 +230,7 @@ namespace Kinovea.ScreenManager
         }
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            Play();
+            PlayPause();
         }
         private void buttonGotoNext_Click(object sender, EventArgs e)
         {
@@ -277,10 +285,6 @@ namespace Kinovea.ScreenManager
         private void RefreshPlayButton()
         {
             buttonPlay.Image = playing ? Resources.flatpause3b : Player.flatplay;
-        }
-        private void PlayStopped()
-        {
-            buttonPlay.Image = Player.flatplay;
         }
         private void RefreshMergeTooltip()
         {

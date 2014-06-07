@@ -55,7 +55,7 @@ namespace Kinovea.ScreenManager
                 if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
                 {
                     sdp = new ScreenDescriptionPlayback();
-                    sdp.RecoveryId = id;
+                    sdp.Id = id;
                     sdp.FullPath = filename;
                     sdp.RecoveryLastSave = lastSave;
                 }
