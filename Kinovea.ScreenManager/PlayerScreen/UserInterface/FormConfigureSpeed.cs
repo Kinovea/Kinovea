@@ -35,11 +35,11 @@ namespace Kinovea.ScreenManager
     public partial class formConfigureSpeed : Form
     {
         #region Properties
-        public double SlowFactor
+        public double HighSpeedFactor
         {
             get 
             {
-                return captureFPS < 1 ? memoSlowFactor : captureFPS / videoFPS;
+                return captureFPS < 1 ? memoHighSpeedFactor : captureFPS / videoFPS;
             }
         }
         #endregion
@@ -47,17 +47,17 @@ namespace Kinovea.ScreenManager
         #region Members
         private readonly double videoFPS;				
         private double captureFPS;
-        private double memoSlowFactor;
+        private double memoHighSpeedFactor;
         private const double maxCaptureFPS = 10000;
         private const double minCaptureFPS = 1;
         private bool internalUpdate;
         #endregion
 
-        public formConfigureSpeed(double videoFPS, double memoSlowFactor)
+        public formConfigureSpeed(double videoFPS, double memoHighSpeedFactor)
         {
             this.videoFPS = videoFPS;
-            this.memoSlowFactor = memoSlowFactor;
-            captureFPS = videoFPS * memoSlowFactor;
+            this.memoHighSpeedFactor = memoHighSpeedFactor;
+            captureFPS = videoFPS * memoHighSpeedFactor;
             
             InitializeComponent();
             LocalizeForm();
