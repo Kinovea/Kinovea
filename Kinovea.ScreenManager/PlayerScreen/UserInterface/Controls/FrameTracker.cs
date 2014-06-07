@@ -416,7 +416,7 @@ namespace Kinovea.ScreenManager
             float top = 5;
             float width = 9;
             float height = 8;
-            float left = lookLeft ? coord - width * 0.75f : coord - width * 0.25f;
+            float left = lookLeft ? coord - width * 0.25f : coord - width * 0.75f;
             
             canvas.SmoothingMode = SmoothingMode.AntiAlias;
 
@@ -426,9 +426,9 @@ namespace Kinovea.ScreenManager
             gp.StartFigure();
 
             if (lookLeft)
-                gp.AddArc(rect, -90, 180);
-            else
                 gp.AddArc(rect, 90, 180);
+            else
+                gp.AddArc(rect, -90, 180);
 
             gp.CloseFigure();
 
