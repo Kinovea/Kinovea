@@ -169,10 +169,15 @@ namespace Kinovea.ScreenManager
             // The duration of the selection in ts.
             get { return m_iSelDuration; }	
         }
-        public long SyncPosition
+        
+        public long LocalSyncTimestamp
         {
             // The absolute ts of the sync point for this video.
-            get { return m_iSyncPosition; }
+            get 
+            { 
+                return m_iSyncPosition; 
+            }
+
             set
             {
                 m_iSyncPosition = value;
@@ -181,11 +186,12 @@ namespace Kinovea.ScreenManager
                 UpdateCurrentPositionLabel();
             }
         }
-        public long SyncCurrentPosition
+        
+        public long LocalTimestamp
         {
-            // The current ts, relative to the selection.
             get { return m_iCurrentPosition - m_iSelStart; }
         }
+
         public bool SyncMerge
         {
             // Idicates whether we should draw the other screen image on top of this one.
@@ -625,40 +631,59 @@ namespace Kinovea.ScreenManager
         {
             StopPlaying(true);
         }
-        public void SyncSetCurrentFrame(long _iFrame, bool _bAllowUIUpdate)
+        public void ForcePosition(long timestamp, bool allowUIUpdate)
+        {
+            m_iFramesToDecode = 1;
+            StopPlaying();
+
+            m_iCurrentPosition = timestamp;
+
+            if (m_iCurrentPosition > m_iSelEnd)
+                m_iCurrentPosition = m_iSelEnd;
+
+            ShowNextFrame(m_iCurrentPosition, allowUIUpdate);
+
+            if (allowUIUpdate)
+            {
+                UpdatePositionUI();
+                ActivateKeyframe(m_iCurrentPosition);
+            }
+        }
+        public void ForceCurrentFrame(long frame, bool allowUIUpdate)
         {
             // Called during static sync.
             // Common position changed, we get a new frame to jump to.
             // target frame may be over the total.
 
-            if (m_FrameServer.Loaded)
-            {
-                m_iFramesToDecode = 1;
-                StopPlaying();
-                
-                if (_iFrame == -1)
-                {
-                    // Special case for +1 frame.
-                    if (m_iCurrentPosition < m_iSelEnd)
-                    {
-                        ShowNextFrame(-1, _bAllowUIUpdate);
-                    }
-                }
-                else
-                {
-                    m_iCurrentPosition = _iFrame * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-                    m_iCurrentPosition += m_iSelStart;
-                    
-                    if (m_iCurrentPosition > m_iSelEnd) m_iCurrentPosition = m_iSelEnd;
-                    
-                    ShowNextFrame(m_iCurrentPosition, _bAllowUIUpdate);
-                }
+            if (!m_FrameServer.Loaded)
+                return;
 
-                if(_bAllowUIUpdate)
+            m_iFramesToDecode = 1;
+            StopPlaying();
+                
+            if (frame == -1)
+            {
+                // Special case for +1 frame.
+                if (m_iCurrentPosition < m_iSelEnd)
                 {
-                    UpdatePositionUI();
-                    ActivateKeyframe(m_iCurrentPosition);
+                    ShowNextFrame(-1, allowUIUpdate);
                 }
+            }
+            else
+            {
+                m_iCurrentPosition = frame * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+                m_iCurrentPosition += m_iSelStart;
+                    
+                if (m_iCurrentPosition > m_iSelEnd) 
+                    m_iCurrentPosition = m_iSelEnd;
+                    
+                ShowNextFrame(m_iCurrentPosition, allowUIUpdate);
+            }
+
+            if(allowUIUpdate)
+            {
+                UpdatePositionUI();
+                ActivateKeyframe(m_iCurrentPosition);
             }
         }
         public void RefreshImage()
@@ -1141,7 +1166,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case PlayerScreenCommands.GotoSyncPoint:
                     if (m_bSynched)
-                        SyncSetCurrentFrame(m_iSyncPosition, true);
+                        ForceCurrentFrame(m_iSyncPosition, true);
                     break;
                 case PlayerScreenCommands.IncreaseZoom:
                     IncreaseDirectZoom();

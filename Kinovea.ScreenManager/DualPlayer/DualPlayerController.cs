@@ -31,7 +31,7 @@ namespace Kinovea.ScreenManager
         private bool dynamicSynching;
 
         private CommonTimeline commonTimeline = new CommonTimeline();   
-        private long currentFrame;
+        private long currentTime;
 
         // Dual saving
         private string dualSaveFileName;
@@ -132,7 +132,7 @@ namespace Kinovea.ScreenManager
                 PlayerScreen player = players.FirstOrDefault(p => p.Id == description.Id);
                 if (player != null)
                 {
-                    player.SyncPosition = description.SynchronizationPoint;
+                    player.LocalSyncTime = description.LocalSyncTime;
                     recovered++;
                 }
             }
@@ -140,13 +140,7 @@ namespace Kinovea.ScreenManager
             if (recovered != 2)
                 return;
 
-            commonTimeline.Initialize(players[0], players[0].SyncPosition, players[1], players[1].SyncPosition);
-
-            currentFrame = 0;
-
-            view.SetupTrkFrame(0, commonTimeline.LastTime, currentFrame);
-            view.UpdateSyncPosition(commonTimeline.GetCommonTime(players[0], players[0].SyncPosition));
-            UpdateHairLines();
+            InitializeSyncFromCurrentPositions();
         }
         #endregion
 
@@ -185,13 +179,13 @@ namespace Kinovea.ScreenManager
             {
                 if (player.IsPlaying)
                 {
-                    currentFrame = commonTimeline.GetCommonTime(player, player.CurrentFrame);
+                    currentTime = commonTimeline.GetCommonTime(player, player.LocalTime);
                     Synchronize();
                 }
                 else if (!otherPlayer.IsPlaying)
                 {
                     // Both players have completed a loop and are waiting.
-                    currentFrame = 0;
+                    currentTime = 0;
                     Synchronize();
                 }
             }
@@ -215,10 +209,10 @@ namespace Kinovea.ScreenManager
                 {
                     // Both players may have been moved independently from the common tracker.
                     // Reset common frame to the one most early in the common timeline.
-                    long leftTime = commonTimeline.GetCommonTime(players[0], players[0].CurrentFrame);
-                    long rightTime = commonTimeline.GetCommonTime(players[1], players[1].CurrentFrame);
-                    currentFrame = Math.Min(leftTime, rightTime);
-                    GotoFrame(currentFrame, true);
+                    long leftTime = commonTimeline.GetCommonTime(players[0], players[0].LocalTime);
+                    long rightTime = commonTimeline.GetCommonTime(players[1], players[1].LocalTime);
+                    currentTime = Math.Min(leftTime, rightTime);
+                    GotoTime(currentTime, true);
 
                     Synchronize();
                 }
@@ -234,9 +228,9 @@ namespace Kinovea.ScreenManager
 
             if (synching)
             {
-                currentFrame = 0;
-                GotoFrame(currentFrame, true);
-                UpdateTrkFrame(currentFrame);
+                currentTime = 0;
+                GotoTime(currentTime, true);
+                UpdateTrkFrame(currentTime);
             }
             else
             {
@@ -250,11 +244,12 @@ namespace Kinovea.ScreenManager
 
             if (synching)
             {
-                if (currentFrame > 0)
+                if (currentTime > 0)
                 {
-                    currentFrame--;
-                    GotoFrame(currentFrame, true);
-                    UpdateTrkFrame(currentFrame);
+                    currentTime -= commonTimeline.FrameTime;
+
+                    GotoTime(currentTime, true);
+                    UpdateTrkFrame(currentTime);
                 }
             }
             else
@@ -269,12 +264,12 @@ namespace Kinovea.ScreenManager
 
             if (synching)
             {
-                if (currentFrame < commonTimeline.LastTime)
+                if (currentTime < commonTimeline.LastTime)
                 {
-                    currentFrame++;
+                    currentTime += commonTimeline.FrameTime;
                     
-                    GotoNext(true);
-                    UpdateTrkFrame(currentFrame);
+                    GotoTime(currentTime, true);
+                    UpdateTrkFrame(currentTime);
                 }
             }
             else
@@ -289,9 +284,9 @@ namespace Kinovea.ScreenManager
 
             if (synching)
             {
-                currentFrame = commonTimeline.LastTime;
-                GotoFrame(currentFrame, true);
-                UpdateTrkFrame(currentFrame);
+                currentTime = commonTimeline.LastTime;
+                GotoTime(currentTime, true);
+                UpdateTrkFrame(currentTime);
             }
             else
             {
@@ -305,7 +300,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             SetSyncPoint(false);
-            GotoFrame(currentFrame, true);
+            GotoTime(currentTime, true);
         }
         private void CCtrl_MergeAsked(object sender, EventArgs e)
         {
@@ -325,8 +320,8 @@ namespace Kinovea.ScreenManager
 
             Pause();
             
-            currentFrame = e.Time;
-            GotoFrame(currentFrame, true);
+            currentTime = e.Time;
+            GotoTime(currentTime, true);
         }
         private void CCtrl_DualSaveAsked(object sender, EventArgs e)
         {
@@ -407,67 +402,64 @@ namespace Kinovea.ScreenManager
             players[1].SyncMerge = false;
             StopMerge();
 
-            GotoFrame(currentFrame, true);
+            GotoTime(currentTime, true);
         }
         
         private void InitializeSync()
         {
             commonTimeline.Initialize(players[0], 0, players[1], 0);
 
-            currentFrame = 0;
+            currentTime = 0;
 
-            view.SetupTrkFrame(0, commonTimeline.LastTime, currentFrame);
-            view.UpdateSyncPosition(currentFrame); 
+            view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);
+            view.UpdateSyncPosition(currentTime); 
+        }
+
+        private void InitializeSyncFromCurrentPositions()
+        {
+            commonTimeline.Initialize(players[0], players[0].LocalSyncTime, players[1], players[1].LocalSyncTime);
+
+            currentTime = 0;
+
+            view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);
+            view.UpdateSyncPosition(commonTimeline.GetCommonTime(players[0], players[0].LocalSyncTime));
+            UpdateHairLines();
         }
 
         private void SetSyncPoint(bool intervalOnly)
         {
-            log.DebugFormat("Setting sync point. [0]:{0}, [1]{1}", players[0].CurrentFrame, players[1].CurrentFrame);
+            log.DebugFormat("Setting sync point. [0]:{0}, [1]{1}", players[0].LocalTime, players[1].LocalTime);
 
-            commonTimeline.Initialize(players[0], players[0].CurrentFrame, players[1], players[1].CurrentFrame);
+            commonTimeline.Initialize(players[0], players[0].LocalTime, players[1], players[1].LocalTime);
 
-            currentFrame = commonTimeline.GetCommonTime(players[0], players[0].CurrentFrame);
+            currentTime = commonTimeline.GetCommonTime(players[0], players[0].LocalTime);
             
-            view.SetupTrkFrame(0, commonTimeline.LastTime, currentFrame);
-            view.UpdateSyncPosition(currentFrame); 
+            view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);
+            view.UpdateSyncPosition(currentTime); 
         }
 
-        private void GotoFrame(long commonFrame, bool allowUIUpdate)
+        private void GotoTime(long commonTime, bool allowUIUpdate)
         {
-            GotoFrame(players[0], commonFrame, allowUIUpdate);
-            GotoFrame(players[1], commonFrame, allowUIUpdate);
+            GotoTime(players[0], commonTime, allowUIUpdate);
+            GotoTime(players[1], commonTime, allowUIUpdate);
 
             UpdateHairLines();
         }
         
-        private void GotoFrame(PlayerScreen player, long commonFrame, bool allowUIUpdate)
+        private void GotoTime(PlayerScreen player, long commonTime, bool allowUIUpdate)
         {
-            // TODO: convert from frame to time.
-            long localTime = commonTimeline.GetLocalTime(player, commonFrame);
+            long localTime = commonTimeline.GetLocalTime(player, commonTime);
             
             localTime = Math.Max(0, localTime);
 
-            // TODO: convert back from time to frame.
-            if (player.CurrentFrame != localTime)
-                player.GotoFrame(localTime, allowUIUpdate);
-        }
-
-        private void GotoNext(bool allowUIUpdate)
-        {
-            // TODO : switch to time based.
-            if (!commonTimeline.IsOutOfBounds(players[0], currentFrame))
-                players[0].GotoNextFrame(allowUIUpdate);
-
-            if (!commonTimeline.IsOutOfBounds(players[1], currentFrame))
-                players[1].GotoNextFrame(allowUIUpdate);
-
-            UpdateHairLines();
+            if (player.LocalTime != localTime)
+                player.GotoTime(localTime, allowUIUpdate);
         }
 
         private void UpdateHairLines()
         {
-            long leftTime = commonTimeline.GetCommonTime(players[0], players[0].CurrentFrame);
-            long rightTime = commonTimeline.GetCommonTime(players[1], players[1].CurrentFrame);
+            long leftTime = commonTimeline.GetCommonTime(players[0], players[0].LocalTime);
+            long rightTime = commonTimeline.GetCommonTime(players[1], players[1].LocalTime);
 
             view.UpdateHairline(leftTime, true);
             view.UpdateHairline(rightTime, false);
@@ -481,7 +473,7 @@ namespace Kinovea.ScreenManager
 
         private void SynchronizePlayer(PlayerScreen player)
         {
-            if (!player.IsPlaying && !commonTimeline.IsOutOfBounds(player, currentFrame))
+            if (!player.IsPlaying && !commonTimeline.IsOutOfBounds(player, currentTime))
                 player.StartPlaying();
         }
 
@@ -491,58 +483,6 @@ namespace Kinovea.ScreenManager
         {
             return player == players[0] ? players[1] : players[0];
         }
-
-        /*private void SyncCatch()
-        {
-            // We sync back the videos.
-            // Used when one video has been moved individually.
-            log.Debug("SyncCatch() called.");
-            long leftFrame = players[0].CurrentFrame;
-            long rightFrame = players[1].CurrentFrame;
-
-            if (syncLag > 0)
-            {
-                // Right video goes ahead.
-                if (leftFrame + syncLag == currentFrame || (currentFrame < syncLag && leftFrame == 0))
-                {
-                    // Left video wasn't moved, we'll move it according to right video.
-                    currentFrame = rightFrame;
-                }
-                else if (rightFrame == currentFrame)
-                {
-                    // Right video wasn't moved, we'll move it according to left video.
-                    currentFrame = leftFrame + syncLag;
-                }
-                else
-                {
-                    // Both videos were moved.
-                    currentFrame = leftFrame + syncLag;
-                }
-            }
-            else
-            {
-                // Left video goes ahead.
-                if (rightFrame - syncLag == currentFrame || (currentFrame < -syncLag && rightFrame == 0))
-                {
-                    // Right video wasn't moved, we'll move it according to left video.
-                    currentFrame = leftFrame;
-                }
-                else if (leftFrame == currentFrame)
-                {
-                    // Left video wasn't moved, we'll move it according to right video.
-                    currentFrame = rightFrame - syncLag;
-                }
-                else
-                {
-                    // Both videos were moved.
-                    currentFrame = leftFrame;
-                }
-            }
-
-            OnCommonPositionChanged(currentFrame, true);
-            UpdateTrkFrame(currentFrame);
-        }*/
-        
 
         #region Side by side video save
         private void DualSave()
@@ -570,7 +510,7 @@ namespace Kinovea.ScreenManager
             if (dlgSave.ShowDialog() != DialogResult.OK)
                 return;
 
-            long memoCurrentFrame = currentFrame;
+            long memoCurrentTime = currentTime;
             dualSaveCancelled = false;
             dualSaveFileName = dlgSave.FileName;
 
@@ -602,8 +542,8 @@ namespace Kinovea.ScreenManager
             dualSaveInProgress = false;
             ps1.DualSaveInProgress = false;
             ps2.DualSaveInProgress = false;
-            currentFrame = memoCurrentFrame;
-            GotoFrame(currentFrame, true);
+            currentTime = memoCurrentTime;
+            GotoTime(currentTime, true);
         }
         private void bgWorkerDualSave_DoWork(object sender, DoWorkEventArgs e)
         {

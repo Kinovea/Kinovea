@@ -33,7 +33,7 @@ namespace Kinovea.Services
         public Guid Id { get; set; }
         public string FullPath { get; set; }
         public int SpeedPercentage { get; set; }
-        public long SynchronizationPoint { get; set; }
+        public long LocalSyncTime { get; set; }
         public bool Stretch { get; set; }
         public DateTime RecoveryLastSave { get; set; }
         

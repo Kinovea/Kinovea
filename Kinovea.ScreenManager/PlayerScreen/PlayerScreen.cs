@@ -128,28 +128,40 @@ namespace Kinovea.ScreenManager
                     return frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
             }
         }
-        public long CurrentFrame
+        
+        public long LocalTime
         {
             get
             {
-                // Get the approximate frame we should be on.
-                // Only as accurate as the framerate is stable regarding to the timebase.
-                if (frameServer.VideoReader.Info.AverageTimeStampsPerFrame == 0)
+                // Returns the local time in microseconds for synchronization purposes.
+
+                if (frameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0)
                     return 0;
 
-                
-                // SyncCurrentPosition timestamp is already relative to selection start).
-                return (long)((double)view.SyncCurrentPosition / frameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+                double seconds = (double)view.LocalTimestamp / frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+                return (long)(seconds * 1000000);
             }
         }
-        public long EstimatedFrames
+
+        public long LocalLastTime
         {
-            get 
+            get
             {
-                // Used to compute the total duration of the common track bar.
-                return frameServer.VideoReader.EstimatedFrames;
+                long duration = frameServer.VideoReader.WorkingZone.End - frameServer.VideoReader.WorkingZone.Start; 
+                double seconds = (double)duration / frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+                return (long)(seconds * 1000000);
             }
         }
+
+        public long LocalFrameTime
+        {
+            get
+            {
+                double seconds = (double)frameServer.VideoReader.Info.AverageTimeStampsPerFrame / frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+                return (long)(seconds * 1000000);
+            }
+        }
+         
         public double FrameInterval
         {
             get 
@@ -175,16 +187,31 @@ namespace Kinovea.ScreenManager
                 synched = value;
             }
         }
-        public long SyncPosition
+        
+        public long LocalSyncTime
         {
-            // Reference timestamp for synchronization, expressed in local timebase.
-            get { return view.SyncPosition; }
-            set 
-            { 
-                view.SyncPosition = value;
-                frameServer.SyncPosition = value;
+            get 
+            {
+                if (frameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0)
+                    return 0;
+
+                long ts = view.LocalSyncTimestamp;
+                double seconds = (double)ts / frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+                return (long)(seconds * 1000000);
+            }
+            
+            set
+            {
+                long microseconds = value;
+                double seconds = (double)microseconds / 1000000;
+                long ts = (long)(seconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
+                ts += frameServer.VideoReader.WorkingZone.Start;
+
+                view.LocalSyncTimestamp = ts;
+                frameServer.SyncTimestamp = ts;
             }
         }
+        
         public long Position
         {
             // Used to feed SyncPosition. 
@@ -501,13 +528,18 @@ namespace Kinovea.ScreenManager
         {
             view.StopPlaying();
         }
-        public void GotoNextFrame(bool _bAllowUIUpdate)
+        public void GotoNextFrame(bool allowUIUpdate)
         {
-            view.SyncSetCurrentFrame(-1, _bAllowUIUpdate);
+            view.ForceCurrentFrame(-1, allowUIUpdate);
         }
-        public void GotoFrame(long _frame, bool _bAllowUIUpdate)
+        public void GotoTime(long microseconds, bool allowUIUpdate)
         {
-            view.SyncSetCurrentFrame(_frame, _bAllowUIUpdate);
+            double seconds = (double)microseconds / 1000000;
+            long ts = (long)(seconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
+
+            ts += frameServer.VideoReader.WorkingZone.Start;
+
+            view.ForcePosition(ts, allowUIUpdate);
         }
         public void ResetSelectionImages(MemoPlayerScreen _memo)
         {
