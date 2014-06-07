@@ -164,7 +164,7 @@ namespace Kinovea.ScreenManager
 
         private void UpdateDebug()
         {
-            lblInfo.Text = string.Format("{0}/{1}, s:{2}", trkFrame.Position, trkFrame.Maximum, trkFrame.SyncPosition);
+            //lblInfo.Text = string.Format("{0}/{1}, s:{2}", trkFrame.Position, trkFrame.Maximum, trkFrame.SyncPosition);
         }
         
         public void Pause()

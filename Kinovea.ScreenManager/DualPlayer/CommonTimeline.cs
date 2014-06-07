@@ -12,23 +12,29 @@ namespace Kinovea.ScreenManager
             get { return commonLastTime; }
         }
 
+        public long FrameTime
+        {
+            get { return frameTime; }
+        }
+
         Dictionary<Guid, PlayerSyncInfo> syncInfos = new Dictionary<Guid, PlayerSyncInfo>();
         private long commonLastTime;
+        private long frameTime;
 
         public void Initialize(PlayerScreen leftPlayer, long leftSyncTime, PlayerScreen rightPlayer, long rightSyncTime)
         {
             syncInfos.Clear();
 
-            leftPlayer.SyncPosition = leftSyncTime;
-            rightPlayer.SyncPosition = rightSyncTime;
+            leftPlayer.LocalSyncTime = leftSyncTime;
+            rightPlayer.LocalSyncTime = rightSyncTime;
 
             PlayerSyncInfo leftInfo = new PlayerSyncInfo();
             leftInfo.SyncTime = leftSyncTime;
-            leftInfo.LastTime = leftPlayer.EstimatedFrames - 1;
+            leftInfo.LastTime = leftPlayer.LocalLastTime;
 
             PlayerSyncInfo rightInfo = new PlayerSyncInfo();
             rightInfo.SyncTime = rightSyncTime;
-            rightInfo.LastTime = rightPlayer.EstimatedFrames - 1;
+            rightInfo.LastTime = rightPlayer.LocalLastTime;
 
             // Start of each video in common time. One will start at 0 while the other will have an offset.
             long offsetLeft = 0;
@@ -45,10 +51,10 @@ namespace Kinovea.ScreenManager
             syncInfos.Add(leftPlayer.Id, leftInfo);
             syncInfos.Add(rightPlayer.Id, rightInfo);
 
-            // Max duration in common time. This is used to set up the width of the frame tracker control.
+            frameTime = Math.Min(leftPlayer.LocalFrameTime, rightPlayer.LocalFrameTime);
+
             long leftEnd = GetCommonTime(leftPlayer, leftInfo.LastTime);
             long rightEnd = GetCommonTime(rightPlayer, rightInfo.LastTime);
-
             commonLastTime = Math.Max(leftEnd, rightEnd);
         }
         
