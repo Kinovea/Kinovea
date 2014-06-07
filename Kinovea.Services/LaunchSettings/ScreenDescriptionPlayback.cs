@@ -25,22 +25,23 @@ namespace Kinovea.Services
 {
     public class ScreenDescriptionPlayback : IScreenDescription
     {
-        public ScreenType ScreenType {
+        public ScreenType ScreenType 
+        {
             get { return ScreenType.Playback; }
         }
         
+        public Guid Id { get; set; }
         public string FullPath { get; set; }
         public int SpeedPercentage { get; set; }
+        public long SynchronizationPoint { get; set; }
         public bool Stretch { get; set; }
-        
-        public Guid RecoveryId { get; set; }
         public DateTime RecoveryLastSave { get; set; }
         
         public ScreenDescriptionPlayback()
         {
             SpeedPercentage = 100;
             Stretch = false;
-            RecoveryId = Guid.Empty;
+            Id = Guid.NewGuid();
             RecoveryLastSave = DateTime.MinValue;
         }
     }

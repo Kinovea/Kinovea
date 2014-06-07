@@ -103,6 +103,9 @@ namespace Kinovea.ScreenManager
             OpenVideoResult res = player.FrameServer.Load(path);
             player.Id = Guid.NewGuid();
 
+            if (screenDescription != null && screenDescription.Id != Guid.Empty)
+                player.Id = screenDescription.Id;
+
             switch (res)
             {
                 case OpenVideoResult.Success:

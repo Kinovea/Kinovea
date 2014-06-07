@@ -23,12 +23,10 @@ using System;
 
 namespace Kinovea.Services
 {
-    /// <summary>
-    /// Description of ScreenDescriptionCapture.
-    /// </summary>
     public class ScreenDescriptionCapture : IScreenDescription
     {
-        public ScreenType ScreenType {
+        public ScreenType ScreenType 
+        {
             get { return ScreenType.Capture; }
         }
         
