@@ -121,7 +121,8 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
 
     SaveResult result = SaveResult::Success;
 
-    if(m_SavingContext != nullptr) delete m_SavingContext;
+    if (m_SavingContext != nullptr) 
+        delete m_SavingContext;
     
     m_SavingContext = gcnew SavingContext();
 
