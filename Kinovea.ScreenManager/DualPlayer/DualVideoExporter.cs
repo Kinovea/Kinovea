@@ -152,19 +152,32 @@ namespace Kinovea.ScreenManager
 
         private Bitmap GetCompositeImage(long currentTime)
         {
-            // TODO: merging.
+            Bitmap composite;
 
             GotoTime(leftPlayer, currentTime);
             GotoTime(rightPlayer, currentTime);
 
             Bitmap img1 = leftPlayer.GetFlushedImage();
-            Bitmap img2 = rightPlayer.GetFlushedImage();
-            Bitmap composite;
-            
-            composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
+
+            if (!merging)
+            {
+                Bitmap img2 = rightPlayer.GetFlushedImage();
+                composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
+                img2.Dispose();
+            }
+            else
+            {
+                int height = img1.Height;
+
+                if (img1.Height % 2 != 0)
+                    height++;
+
+                composite = new Bitmap(img1.Width, height, img1.PixelFormat);
+                Graphics g = Graphics.FromImage(composite);
+                g.DrawImage(img1, Point.Empty);
+            }
 
             img1.Dispose();
-            img2.Dispose();
             
             return composite;
         }
