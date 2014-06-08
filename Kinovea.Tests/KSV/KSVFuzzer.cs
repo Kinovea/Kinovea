@@ -50,7 +50,7 @@ namespace Kinovea.Tests
 
             w.WriteElementString("FormatVersion", KSV_VERSION);
             w.WriteElementString("ImageSize", string.Format("{0};{1}", imageSize.Width, imageSize.Height));
-            w.WriteElementString("FramesPerSecond", string.Format(CultureInfo.InvariantCulture, "{0}", framesPerSecond));
+            w.WriteElementString("FramesPerSecond", string.Format(CultureInfo.InvariantCulture, "{0:0.00}", framesPerSecond));
             w.WriteElementString("DurationFrames", string.Format(CultureInfo.InvariantCulture, "{0}", durationFrames));
             w.WriteElementString("BackgroundColor", XmlHelper.WriteColor(backgroundColor, true));
             w.WriteElementString("FrameNumber", frameNumber.ToString().ToLower());
