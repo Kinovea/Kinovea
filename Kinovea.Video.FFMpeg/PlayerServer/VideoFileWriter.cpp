@@ -147,6 +147,8 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
     if(_fFramesInterval > 0) 
         m_SavingContext->fFramesInterval = _fFramesInterval;
     
+    m_SavingContext->iBitrate = ComputeBitrate(m_SavingContext->outputSize, m_SavingContext->fFramesInterval);
+    
     do
     {
         // 1. Muxer selection.
@@ -406,6 +408,22 @@ AVOutputFormat* VideoFileWriter::GuessOutputFormat(String^ _FilePath, bool _bHas
     return pOutputFormat;
 }
 
+int VideoFileWriter::ComputeBitrate(Size outputSize, double frameInterval)
+{
+    // Compute a bitrate equivalent to DV quality.
+    // DV quality has a bitrate of 25 Mb/s for 720x576 px @ 30fps.
+    // That translates to 2.01 bit per pixel.
+    // Note that this parameter is not used anyway as we switched to constant quantization.
+
+    double qualityFactor = 2.01;
+
+    double pixelsPerFrame = outputSize.Width * outputSize.Height;
+    double pixelsPerSecond = pixelsPerFrame * (1000.0 / frameInterval);
+    double bitrate = pixelsPerSecond * qualityFactor;
+    
+    return bitrate;
+}
+
 ///<summary>
 /// VideoFileWriter::SetupMuxer
 /// Configure the Muxer with default parameters.
@@ -420,17 +438,6 @@ bool VideoFileWriter::SetupMuxer(SavingContext^ _SavingContext)
         
     _SavingContext->pOutputFormatContext->bit_rate = _SavingContext->iBitrate;
     
-    // Paramètres (par défaut ?) du muxeur
-    //AVFormatParameters	fpOutFile;
-    //AVDictionary *pOptions = NULL;
-    //memset(&pOptions, 0, sizeof(AVDictionary));
-    //if (av_set_parameters(_SavingContext->pOutputFormatContext, &pOptions) < 0)
-    /*if(av_dict_set(
-    {
-        log->Error("muxer parameters not set");
-        return false;
-    }*/
-
     // ?
     //_SavingContext->pOutputFormatContext->preload   = (int)(0.5 * AV_TIME_BASE);
     _SavingContext->pOutputFormatContext->max_delay = (int)(0.7 * AV_TIME_BASE); 
@@ -538,18 +545,28 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
     // src: ?
     // ->rate_emu
 
-
-    // Quality/Technique of encoding.
-    //_pOutputCodecContext->flags |= ;			// CODEC_FLAG_QSCALE : Constant Quantization = Best quality but innacceptably high file sizes.
-    _SavingContext->pOutputCodecContext->qcompress = 0.5;		// amount of qscale change between easy & hard scenes (0.0-1.0) 
-    _SavingContext->pOutputCodecContext->qblur = 0.5;			// amount of qscale smoothing over time (0.0-1.0)
-    _SavingContext->pOutputCodecContext->qmin = 2;				// minimum quantizer (def:2)
-    _SavingContext->pOutputCodecContext->qmax = 16;			// maximum quantizer (def:31)
-    _SavingContext->pOutputCodecContext->max_qdiff = 3;		// maximum quantizer difference between frames (def:3)
-    _SavingContext->pOutputCodecContext->mpeg_quant = 0;		// 0 -> h263 quant, 1 -> mpeg quant. (def:0)
-    //_pOutputCodecContext->b_quant_factor (qscale factor between IP and B-frames)
-
-
+    //-------------------------------------------------------------
+    // Encoding quality.
+    // 
+    // Old parameters up to 0.8.21 :
+    // CODEC_FLAG_QSCALE : not set.
+    // qcompress = 0.5, qblur = 0.5, qmin = 2, qmax = 16, max_qdiff = 3, mpeg_quant = 0.
+    //
+    // These parameters adjust "qscale" which is the degree of quantization during image encoding.
+    // The higher quantization, the more compression, the more artifacts, and the smaller filesize.
+    // If QSCALE flag is not set, the encoder will use up to qmax for the actual qscale parameter.
+    //
+    // When encoding for entertainment there might be a tradeoff between size and quality, 
+    // but in sport analysis we are heavy users of frame by frame on highly dynamic scenes, 
+    // These highly dynamic scenes are exactly what the encoding algorithms "optimize" out, 
+    // so if we use "entertainment" parameters we end up with artefacts exactly at the worst moment.
+    // In order to retain full details in dynamic scenes we must use the minimum quantization possible, at the expense of file size.
+    //-------------------------------------------------------------
+    
+    _SavingContext->pOutputCodecContext->flags |= CODEC_FLAG_QSCALE;	// Constant Quantization. (this means the bitrate parameter won't be used).
+    _SavingContext->pOutputCodecContext->qmin = 1;						// minimum quantizer (def:2)
+    _SavingContext->pOutputCodecContext->qmax = 1;						// maximum quantizer (def:31) (When using QSCALE flag only qmin is used anyway.)
+    
     // Sample Aspect Ratio.
     
     // Assume PAR=1:1 (square pixels).
