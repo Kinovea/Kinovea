@@ -76,6 +76,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	// Private Methods
 	private:
 		static AVOutputFormat* GuessOutputFormat(String^ _FilePath, bool _bHasMetadata);
+		int ComputeBitrate(Size outputSize, double frameInterval);
 		bool SetupMuxer(SavingContext^ _SavingContext);
 		bool SetupEncoder(SavingContext^ _SavingContext);
 		
