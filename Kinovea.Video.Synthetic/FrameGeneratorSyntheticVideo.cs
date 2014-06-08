@@ -59,9 +59,10 @@ namespace Kinovea.Video.Synthetic
                 if (video.FrameNumber)
                 {
                     using (SolidBrush foreBrush = new SolidBrush(video.BackgroundColor.Invert()))
-                    using (Font font = new Font("Arial", 16, FontStyle.Regular))
+                    using (Font font = new Font("Arial", 24, FontStyle.Regular))
                     {
-                        g.DrawString(timestamp.ToString(), font, foreBrush, new PointF(25, 25));
+                        string text = string.Format("Current frame : {0}", timestamp);
+                        g.DrawString(text, font, foreBrush, new PointF(25, 25));
                     }
                 }
             }
