@@ -15,8 +15,7 @@ namespace Kinovea.Tests.Metadata
     /// <summary>
     /// Generates random kva.
     /// TODO:
-    /// Chronos, Tracks, drawings other than label.
-    /// Add a summary to get stats on what was generated.
+    /// Add a summary as an xML comment to get stats on what was generated.
     /// </summary>
     public class KVAFuzzer20
     {
