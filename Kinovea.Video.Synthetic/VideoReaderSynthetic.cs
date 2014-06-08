@@ -121,7 +121,8 @@ namespace Kinovea.Video.Synthetic
             }
             else
             {
-                return UpdateCurrent(current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
+                long offset = (skip + 1) * videoInfo.AverageTimeStampsPerFrame;
+                return UpdateCurrent(current.Timestamp + offset);
             }
         }
         public override bool MoveTo(long timestamp)
