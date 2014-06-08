@@ -160,16 +160,10 @@ namespace Kinovea.ScreenManager
 
             set
             {
-                // Convert from real time to video time then to timestamps.
-                long microseconds = value;
-                double seconds = (double)microseconds / 1000000;
-                seconds = seconds * frameServer.Metadata.HighSpeedFactor;
+                long absoluteTimestamp = RealtimeToTimestamp(value);
 
-                long ts = (long)(seconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
-                ts += frameServer.VideoReader.WorkingZone.Start;
-
-                frameServer.SyncTimestamp = ts;
-                view.LocalSyncTimestamp = ts;
+                frameServer.SyncTimestampRelative = absoluteTimestamp - frameServer.VideoReader.WorkingZone.Start;
+                view.LocalSyncTimestamp = absoluteTimestamp;
             }
         }
          
@@ -603,13 +597,16 @@ namespace Kinovea.ScreenManager
             OnActivated(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Convert from real time in microseconds to absolute timestamps.
+        /// </summary>
         private long RealtimeToTimestamp(long time)
         {
-            // Convert from real time in microseconds to absolute timestamps.
-            double seconds = (double)time / 1000000;
-            seconds = seconds * frameServer.Metadata.HighSpeedFactor;
+            
+            double realtimeSeconds = (double)time / 1000000;
+            double videoSeconds = realtimeSeconds * frameServer.Metadata.HighSpeedFactor;
 
-            double timestamp = seconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+            double timestamp = videoSeconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
             timestamp = Math.Round(timestamp);
 
             long relativeTimestamp = (long)timestamp;
