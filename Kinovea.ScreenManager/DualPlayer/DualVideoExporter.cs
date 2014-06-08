@@ -107,6 +107,8 @@ namespace Kinovea.ScreenManager
             };
             
             double frameInterval = (double)commonTimeline.FrameTime / 1000;
+            frameInterval = Math.Max(frameInterval, 10);
+
             SaveResult result = videoFileWriter.OpenSavingContext(dualSaveFileName, info, frameInterval, false);
 
             if (result != SaveResult.Success)

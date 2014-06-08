@@ -38,8 +38,6 @@ namespace Kinovea.Video
         {
             SyntheticVideo video = new SyntheticVideo();
 
-            log.Debug("Importing Synthetic video.");
-
             r.MoveToContent();
 
             if (!(r.Name == "KinoveaSyntheticVideo"))
