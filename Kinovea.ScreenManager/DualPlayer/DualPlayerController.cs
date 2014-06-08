@@ -29,17 +29,10 @@ namespace Kinovea.ScreenManager
         private bool active;
         private bool synching;
         private bool dynamicSynching;
+        private bool dualSaveInProgress;
 
         private CommonTimeline commonTimeline = new CommonTimeline();   
         private long currentTime;
-
-        // Dual saving
-        private string dualSaveFileName;
-        private bool dualSaveCancelled;
-        private bool dualSaveInProgress;
-        private VideoFileWriter videoFileWriter = new VideoFileWriter();
-        private BackgroundWorker bgWorkerDualSave;
-        private formProgressBar dualSaveProgressBar;
 
         private CommonControlsPlayers view = new CommonControlsPlayers();
         private List<PlayerScreen> players = new List<PlayerScreen>();
@@ -345,11 +338,27 @@ namespace Kinovea.ScreenManager
         }
         private void CCtrl_DualSaveAsked(object sender, EventArgs e)
         {
-            //DualSave();
+            if (!synching)
+                return;
+
+            Pause();
+
+            dualSaveInProgress = true;
+
+            DualVideoExporter exporter = new DualVideoExporter();
+            exporter.Export(commonTimeline, players[0], players[1], view.Merging);
+
+            dualSaveInProgress = false;
+
+            GotoTime(currentTime, true);
         }
         private void CCtrl_DualSnapshotAsked(object sender, EventArgs e)
         {
-            //DualSnapshot();
+            if (!synching)
+                return;
+            
+            Pause();
+            DualSnapshoter.Save(players[0], players[1]);
         }
 
         
@@ -512,248 +521,5 @@ namespace Kinovea.ScreenManager
         {
             return player == players[0] ? players[1] : players[0];
         }
-
-        #region Side by side video save
-        private void DualSave()
-        {
-            // Create and save a composite video with side by side synchronized images.
-            // If merge is active, just save one video.
-            if (!synching)
-                return;
-
-            PlayerScreen ps1 = players[0];
-            PlayerScreen ps2 = players[1];
-            if (ps1 == null || ps2 == null)
-                return;
-
-            Pause();
-
-            // Get file name from user.
-            SaveFileDialog dlgSave = new SaveFileDialog();
-            dlgSave.Title = ScreenManagerLang.dlgSaveVideoTitle;
-            dlgSave.RestoreDirectory = true;
-            dlgSave.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
-            dlgSave.FilterIndex = 1;
-            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
-
-            if (dlgSave.ShowDialog() != DialogResult.OK)
-                return;
-
-            long memoCurrentTime = currentTime;
-            dualSaveCancelled = false;
-            dualSaveFileName = dlgSave.FileName;
-
-            // Instanciate and configure the bgWorker.
-            bgWorkerDualSave = new BackgroundWorker();
-            bgWorkerDualSave.WorkerReportsProgress = true;
-            bgWorkerDualSave.WorkerSupportsCancellation = true;
-            bgWorkerDualSave.DoWork += bgWorkerDualSave_DoWork;
-            bgWorkerDualSave.ProgressChanged += bgWorkerDualSave_ProgressChanged;
-            bgWorkerDualSave.RunWorkerCompleted += bgWorkerDualSave_RunWorkerCompleted;
-
-            // Make sure none of the screen will try to update itself.
-            // Otherwise it will cause access to the other screen image (in case of merge), which can cause a crash.
-            dualSaveInProgress = true;
-            ps1.DualSaveInProgress = true;
-            ps2.DualSaveInProgress = true;
-
-            // Create the progress bar and launch the worker.
-            dualSaveProgressBar = new formProgressBar(true);
-            dualSaveProgressBar.Cancel = dualSave_CancelAsked;
-            bgWorkerDualSave.RunWorkerAsync();
-            dualSaveProgressBar.ShowDialog();
-
-            // If cancelled, delete temporary file.
-            if (dualSaveCancelled)
-                DeleteTemporaryFile(dualSaveFileName);
-
-            // Reset to where we were.
-            dualSaveInProgress = false;
-            ps1.DualSaveInProgress = false;
-            ps2.DualSaveInProgress = false;
-            currentTime = memoCurrentTime;
-            GotoTime(currentTime, true);
-        }
-        private void bgWorkerDualSave_DoWork(object sender, DoWorkEventArgs e)
-        {
-            /*
-            // This is executed in Worker Thread space. (Do not call any UI methods)
-
-            // For each position: get both images, compute the composite, save it to the file.
-            // If blending is activated, only get the image from left screen, since it already contains both images.
-            log.Debug("Saving side by side video.");
-
-            if (!synching)
-                return;
-
-            PlayerScreen ps1 = players[0];
-            PlayerScreen ps2 = players[1];
-            if (ps1 == null && ps2 == null)
-                return;
-
-            // Todo: get frame interval from one of the videos.
-
-            // Get first frame outside the loop, to be able to set video size.
-            commonTime = 0;
-            GotoFrame(commonTime, true);
-
-            Bitmap img1 = ps1.GetFlushedImage();
-            Bitmap img2 = null;
-            Bitmap composite;
-            if (!view.Merging)
-            {
-                img2 = ps2.GetFlushedImage();
-                composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
-            }
-            else
-            {
-                composite = img1;
-            }
-
-            log.Debug(String.Format("Composite size: {0}.", composite.Size));
-
-            // Configure a fake InfoVideo to setup image size.
-            VideoInfo vi = new VideoInfo { OriginalSize = composite.Size };
-            SaveResult result = videoFileWriter.OpenSavingContext(dualSaveFileName, vi, -1, false);
-
-            if (result != SaveResult.Success)
-            {
-                e.Result = 2;
-                return;
-            }
-
-            videoFileWriter.SaveFrame(composite);
-
-            img1.Dispose();
-            if (!view.Merging)
-            {
-                img2.Dispose();
-                composite.Dispose();
-            }
-
-            // Loop all remaining frames in static sync mode, but without refreshing the UI.
-            while (commonTime < maxFrame && !dualSaveCancelled)
-            {
-                commonTime++;
-
-                if (bgWorkerDualSave.CancellationPending)
-                {
-                    e.Result = 1;
-                    dualSaveCancelled = true;
-                    break;
-                }
-
-                // Move both playheads and get the composite image.
-                GotoNext(commonTime, false);
-
-                img1 = ps1.GetFlushedImage();
-                composite = img1;
-                if (!view.Merging)
-                {
-                    img2 = ps2.GetFlushedImage();
-                    composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
-                }
-
-                videoFileWriter.SaveFrame(composite);
-
-                img1.Dispose();
-                if (!view.Merging)
-                {
-                    img2.Dispose();
-                    composite.Dispose();
-                }
-
-                int percent = (int)(((double)(commonTime + 1) / maxFrame) * 100);
-                bgWorkerDualSave.ReportProgress(percent);
-            }
-
-            if (!dualSaveCancelled)
-                e.Result = 0;
-            */
-        }
-        private void bgWorkerDualSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            if (bgWorkerDualSave.CancellationPending)
-                return;
-
-            dualSaveProgressBar.Update(Math.Min(e.ProgressPercentage, 100), 100, true);
-        }
-        private void bgWorkerDualSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            dualSaveProgressBar.Close();
-            dualSaveProgressBar.Dispose();
-
-            if (!dualSaveCancelled && (int)e.Result != 1)
-                videoFileWriter.CloseSavingContext((int)e.Result == 0);
-
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
-        }
-        private void dualSave_CancelAsked(object sender, EventArgs e)
-        {
-            // This will simply set BgWorker.CancellationPending to true,
-            // which we check periodically in the saving loop.
-            // This will also end the bgWorker immediately,
-            // maybe before we check for the cancellation in the other thread. 
-            videoFileWriter.CloseSavingContext(false);
-            dualSaveCancelled = true;
-            bgWorkerDualSave.CancelAsync();
-        }
-        private void DeleteTemporaryFile(string filename)
-        {
-            log.Debug("Side by side video saving cancelled. Deleting temporary file.");
-            if (!File.Exists(filename))
-                return;
-
-            try
-            {
-                File.Delete(filename);
-            }
-            catch (Exception exp)
-            {
-                log.Error("Error while deleting temporary file.");
-                log.Error(exp.Message);
-                log.Error(exp.StackTrace);
-            }
-        }
-        #endregion
-
-        #region Side by side snapshot
-        private void DualSnapshot()
-        {
-            // Retrieve current images and create a composite out of them.
-            if (!synching)
-                return;
-
-            PlayerScreen ps1 = players[0];
-            PlayerScreen ps2 = players[1];
-            if (ps1 == null || ps2 == null)
-                return;
-
-            Pause();
-
-            // get a copy of the images with drawings flushed on.
-            Bitmap leftImage = ps1.GetFlushedImage();
-            Bitmap rightImage = ps2.GetFlushedImage();
-            Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
-
-            // Configure Save dialog.
-            SaveFileDialog dlgSave = new SaveFileDialog();
-            dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
-            dlgSave.RestoreDirectory = true;
-            dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
-            dlgSave.FilterIndex = 1;
-            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
-
-            // Launch the dialog and save image.
-            if (dlgSave.ShowDialog() == DialogResult.OK)
-                ImageHelper.Save(dlgSave.FileName, composite);
-
-            composite.Dispose();
-            leftImage.Dispose();
-            rightImage.Dispose();
-
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
-        }
-        #endregion
     }
 }

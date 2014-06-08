@@ -240,6 +240,8 @@
     <Compile Include="DualCaptureController.cs" />
     <Compile Include="DualPlayer\CommonTimeline.cs" />
     <Compile Include="DualPlayer\DualPlayerController.cs" />
+    <Compile Include="DualPlayer\DualSnapshoter.cs" />
+    <Compile Include="DualPlayer\DualVideoExporter.cs" />
     <Compile Include="DualPlayer\PlayerSyncInfo.cs" />
     <Compile Include="PlayerScreen\ChronoManager.cs" />
     <Compile Include="CommandProcessedEventArgs.cs" />
