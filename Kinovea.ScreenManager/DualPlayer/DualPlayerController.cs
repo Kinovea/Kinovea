@@ -418,6 +418,13 @@ namespace Kinovea.ScreenManager
             players[0].Synched = true;
             players[1].Synched = true;
 
+            if (PreferencesManager.PlayerPreferences.SyncLockSpeed)
+            {
+                double percentage = Math.Min(players[0].RealtimePercentage, players[1].RealtimePercentage);
+                players[0].RealtimePercentage = percentage;
+                players[1].RealtimePercentage = percentage;
+            }
+
             InitializeSync();
 
             players[0].SyncMerge = false;

@@ -287,6 +287,7 @@ namespace Kinovea.ScreenManager
             view.CloseAsked += View_CloseAsked;
             view.SetAsActiveScreen += View_SetAsActiveScreen;
             view.SpeedChanged += View_SpeedChanged;
+            view.KVAImported += View_KVAImported;
             view.PauseAsked += View_PauseAsked;
             view.SelectionChanged += View_SelectionChanged;
             view.ImageChanged += View_ImageChanged;
@@ -328,6 +329,12 @@ namespace Kinovea.ScreenManager
         {
             if (SpeedChanged != null)
                 SpeedChanged(this, EventArgs.Empty);
+        }
+
+        public void View_KVAImported(object sender, EventArgs e)
+        {
+            if (HighSpeedFactorChanged != null)
+                HighSpeedFactorChanged(this, EventArgs.Empty);
         }
 
         public void View_PauseAsked(object sender, EventArgs e)

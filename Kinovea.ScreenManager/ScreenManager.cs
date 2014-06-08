@@ -1226,6 +1226,10 @@ namespace Kinovea.ScreenManager
         }
         private void LoadAnalysis()
         {
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null)
+                return;
+
             DoStopPlaying();
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -1237,7 +1241,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             MetadataSerializer s = new MetadataSerializer();
-            s.Load(((PlayerScreen)activeScreen).FrameServer.Metadata, openFileDialog.FileName, true);
+            s.Load(player.FrameServer.Metadata, openFileDialog.FileName, true);
         }
         private void mnuExportODF_OnClick(object sender, EventArgs e)
         {

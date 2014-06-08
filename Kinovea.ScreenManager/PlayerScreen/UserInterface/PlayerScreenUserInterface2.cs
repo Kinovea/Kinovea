@@ -74,6 +74,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler CloseAsked;
         public event EventHandler SetAsActiveScreen;
         public event EventHandler SpeedChanged;
+        public event EventHandler KVAImported;
         public event EventHandler PauseAsked;
         public event EventHandler ResetAsked;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
@@ -626,9 +627,12 @@ namespace Kinovea.ScreenManager
             ActivateKeyframe(m_iCurrentPosition);
 
             m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.CalibrationHelper.FramesPerSecond / m_FrameServer.VideoReader.Info.FramesPerSeconds;
-            
+                        
             m_FrameServer.SetupMetadata(false);
             m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
+
+            if (KVAImported != null)
+                KVAImported(this, EventArgs.Empty);
             
             UpdateTimedLabels();
             DoInvalidate();
