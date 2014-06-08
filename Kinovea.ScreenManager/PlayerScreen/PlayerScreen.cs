@@ -530,15 +530,8 @@ namespace Kinovea.ScreenManager
         }
         public void GotoTime(long microseconds, bool allowUIUpdate)
         {
-            // Convert from real time to video time then to timestamps.
-            double seconds = (double)microseconds / 1000000;
-            seconds = seconds * frameServer.Metadata.HighSpeedFactor;
-
-            long ts = (long)(seconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
-
-            ts += frameServer.VideoReader.WorkingZone.Start;
-
-            view.ForcePosition(ts, allowUIUpdate);
+            long timestamp = RealtimeToTimestamp(microseconds);
+            view.ForcePosition(timestamp, allowUIUpdate);
         }
         public void ResetSelectionImages(MemoPlayerScreen _memo)
         {
@@ -608,6 +601,21 @@ namespace Kinovea.ScreenManager
         public void AfterLoad()
         {
             OnActivated(EventArgs.Empty);
+        }
+
+        private long RealtimeToTimestamp(long time)
+        {
+            // Convert from real time in microseconds to absolute timestamps.
+            double seconds = (double)time / 1000000;
+            seconds = seconds * frameServer.Metadata.HighSpeedFactor;
+
+            double timestamp = seconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+            timestamp = Math.Round(timestamp);
+
+            long relativeTimestamp = (long)timestamp;
+            long absoluteTimestamp = relativeTimestamp + frameServer.VideoReader.WorkingZone.Start;
+            
+            return absoluteTimestamp;
         }
 
         private void AddDrawingWithMemento(Guid managerId, AbstractDrawing drawing)

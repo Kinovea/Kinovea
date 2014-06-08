@@ -96,25 +96,28 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
-        public bool IsCurrentlyPlaying {
+        public bool IsCurrentlyPlaying 
+        {
             get { return m_bIsCurrentlyPlaying; }
         }
-        public bool InteractiveFiltering {
-            get { 
+        public bool InteractiveFiltering 
+        {
+            get 
+            { 
                 return m_InteractiveEffect != null && 
                        m_InteractiveEffect.Draw != null && 
                        m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching; 
             }
         }
-        public double FrameInterval {
-            get {
+        public double FrameInterval 
+        {
+            get 
+            {
                 return (m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds / (m_fSlowmotionPercentage / 100));
             }
         }
         public double RealtimePercentage
         {
-            // RealtimePercentage expresses the speed percentage relative to real time action.
-            // It takes high speed camera into account.
             get 
             { 
                 return m_fSlowmotionPercentage / m_FrameServer.Metadata.HighSpeedFactor;
@@ -125,13 +128,13 @@ namespace Kinovea.ScreenManager
                 // when the other video changed its speed percentage (user or forced).
                 // We must NOT trigger the event here, or it will impact the other screen in an infinite loop.
                 // Compute back the slow motion percentage relative to the playback framerate.
-                double fPlaybackPercentage = value * m_FrameServer.Metadata.HighSpeedFactor;
-                if(fPlaybackPercentage > 200) fPlaybackPercentage = 200;
-                sldrSpeed.Value = (int)fPlaybackPercentage;
+                double playbackPercentage = value * m_FrameServer.Metadata.HighSpeedFactor;
+                playbackPercentage = Math.Min(playbackPercentage, 200);
+                sldrSpeed.Value = (int)playbackPercentage;
                 
                 // If the other screen is in high speed context, we honor the decimal value.
                 // (When it will be changed from this screen's slider, it will be an integer value).
-                m_fSlowmotionPercentage = fPlaybackPercentage > 0 ? fPlaybackPercentage : 1;
+                m_fSlowmotionPercentage = playbackPercentage > 0 ? playbackPercentage : 1;
                 
                 // Reset timer with new value.
                 if (m_bIsCurrentlyPlaying)
@@ -165,11 +168,6 @@ namespace Kinovea.ScreenManager
                 btnPlayingMode.Enabled = !m_bSynched;
             }
         }
-        public long SelectionDuration
-        {
-            // The duration of the selection in ts.
-            get { return m_iSelDuration; }	
-        }
         
         public long LocalSyncTimestamp
         {
@@ -188,23 +186,11 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        public long LocalTimestamp
-        {
-            get { return m_iCurrentPosition - m_iSelStart; }
-        }
-
         public long LocalTime
         {
             get
             {
-                if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0)
-                    return 0;
-
-                long ts = m_iCurrentPosition - m_iSelStart;
-                double seconds = (double)ts / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-                seconds = seconds / m_FrameServer.Metadata.HighSpeedFactor;
-
-                return (long)(seconds * 1000000);
+                return TimestampToRealtime(m_iCurrentPosition - m_iSelStart);
             }
         }
 
@@ -212,11 +198,7 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                long ts = m_FrameServer.VideoReader.WorkingZone.End - m_FrameServer.VideoReader.WorkingZone.Start;
-                double seconds = (double)ts / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-                seconds = seconds / m_FrameServer.Metadata.HighSpeedFactor;
-
-                return (long)(seconds * 1000000);    
+                return TimestampToRealtime(m_iSelEnd - m_iSelStart);
             }
         }
 
@@ -224,13 +206,7 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0)
-                    return 0;
-
-                double seconds = (double)m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-                seconds = seconds / m_FrameServer.Metadata.HighSpeedFactor;
-                
-                return (long)(seconds * 1000000);
+                return TimestampToRealtime(m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
             
         }
@@ -239,16 +215,7 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0)
-                    return 0;
-
-                long ts = m_iSyncPosition;
-                double seconds = (double)ts / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
-
-                double percentage = m_fSlowmotionPercentage / m_FrameServer.Metadata.HighSpeedFactor;
-                seconds = seconds * percentage / 100;
-
-                return (long)(seconds * 1000000);
+                return TimestampToRealtime(m_iSyncPosition - m_iSelStart);
             }
         }
         
@@ -1372,6 +1339,20 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.StopAllTracking();
             CheckCustomDecodingSize(false);
         }
+        private long TimestampToRealtime(long timestamp)
+        {
+            // This is used in the context of synchronization.
+            // Takes input in timestamps relative to sel start.
+            // convert it into video time then to real time using high speed factor.
+            // returned value is in microseconds.
+            if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0 || m_FrameServer.Metadata.HighSpeedFactor == 0)
+                return 0;
+
+            double videoSeconds = (double)timestamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+            double realSeconds = videoSeconds / m_FrameServer.Metadata.HighSpeedFactor;
+            double realMicroseconds = realSeconds * 1000000;
+            return (long)realMicroseconds;
+        }
         #endregion
 
         #region Video Controls
@@ -2155,14 +2136,14 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void Rendering_Invoked(int _missedFrames)
+        private void Rendering_Invoked(int missedFrames)
         {
             // This is in UI thread space.
             // Rendering in the context of continuous playback (play loop).
             m_TimeWatcher.Restart();
 
             bool tracking = m_FrameServer.Metadata.Tracking;
-            int skip = tracking ? 0 : _missedFrames;
+            int skip = tracking ? 0 : missedFrames;
             
             long estimateNext = m_iCurrentPosition + ((skip + 1) * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
@@ -2192,7 +2173,7 @@ namespace Kinovea.ScreenManager
                     else
                     {
                        lock(m_TimingSync)
-                            m_RenderingDrops = _missedFrames;
+                            m_RenderingDrops = missedFrames;
                     }
                 }
                 else if(m_FrameServer.VideoReader.Current != null)
