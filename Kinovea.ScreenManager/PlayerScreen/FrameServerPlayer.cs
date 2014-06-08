@@ -73,10 +73,10 @@ namespace Kinovea.ScreenManager
                     return videoReader.Current.Image;
             }
         }
-        public long SyncTimestamp
+        public long SyncTimestampRelative
         {
-            get { return syncTimestamp; }
-            set { syncTimestamp = value; }
+            get { return syncTimestampRelative; }
+            set { syncTimestampRelative = value; }
         }
         #endregion
         
@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
         private VideoReader videoReader;
         private HistoryStack historyStack;
         private Metadata metadata;
-        private long syncTimestamp;
+        private long syncTimestampRelative;
         private formProgressBar formProgressBar;
         private BackgroundWorker bgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
         private SaveResult saveResult;
@@ -220,7 +220,7 @@ namespace Kinovea.ScreenManager
             switch (type)
             {
                 case TimeType.Time:
-                    actualTimestamps = isSynched ? timestamps - syncTimestamp : timestamps;
+                    actualTimestamps = isSynched ? timestamps - syncTimestampRelative : timestamps;
                     break;
                 case TimeType.Duration:
                 default:
