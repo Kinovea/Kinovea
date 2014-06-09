@@ -197,7 +197,7 @@ namespace Kinovea.ScreenManager
                 // Initialize menu each time to get translated texts.
                 ReinitializeMenu();
                 contextMenu.Add(mnuMeasurement);
-                contextMenu.Add(mnuAnalysis);
+                //contextMenu.Add(mnuAnalysis);
                 return contextMenu;
             }
         }
