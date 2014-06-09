@@ -664,6 +664,9 @@ namespace Kinovea.ScreenManager
         {
             if (screenList.Count > 0)
                 SetActiveScreen(screenList[0]);
+
+            foreach (PlayerScreen p in playerScreens)
+                p.Synched = false;
         }
         
         public void SwapScreens()
@@ -1908,7 +1911,7 @@ namespace Kinovea.ScreenManager
             foreach (PlayerScreen p in playerScreens)
                 p.Synched = false;
 
-            dualPlayer.PrepareSync();
+            dualPlayer.ResetSync();
         }
         public void AddPlayerScreen()
         {
