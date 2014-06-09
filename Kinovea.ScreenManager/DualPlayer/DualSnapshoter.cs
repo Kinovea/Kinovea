@@ -12,12 +12,36 @@ namespace Kinovea.ScreenManager
 {
     public static class DualSnapshoter
     {
-        public static void Save(PlayerScreen leftPlayer, PlayerScreen rightPlayer)
+        public static void Save(PlayerScreen leftPlayer, PlayerScreen rightPlayer, bool merging)
         {
-            Bitmap leftImage = leftPlayer.GetFlushedImage();
-            Bitmap rightImage = rightPlayer.GetFlushedImage();
-            Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
+            string filename = GetFilename(leftPlayer, rightPlayer);
+            if (string.IsNullOrEmpty(filename))
+                return;
 
+            Bitmap composite;
+
+            Bitmap leftImage = leftPlayer.GetFlushedImage();
+
+            if (!merging)
+            {
+                Bitmap rightImage = rightPlayer.GetFlushedImage();
+                composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
+                rightImage.Dispose();
+            }
+            else
+            {
+                composite = leftImage;
+            }
+            
+            ImageHelper.Save(filename, composite);
+
+            composite.Dispose();
+            
+            NotificationCenter.RaiseRefreshFileExplorer(null, false);
+        }
+
+        private static string GetFilename(PlayerScreen leftPlayer, PlayerScreen rightPlayer)
+        {
             SaveFileDialog dlgSave = new SaveFileDialog();
             dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
             dlgSave.RestoreDirectory = true;
@@ -25,14 +49,10 @@ namespace Kinovea.ScreenManager
             dlgSave.FilterIndex = 1;
             dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(leftPlayer.FilePath), Path.GetFileNameWithoutExtension(rightPlayer.FilePath));
 
-            if (dlgSave.ShowDialog() == DialogResult.OK)
-                ImageHelper.Save(dlgSave.FileName, composite);
+            if (dlgSave.ShowDialog() != DialogResult.OK)
+                return null;
 
-            composite.Dispose();
-            leftImage.Dispose();
-            rightImage.Dispose();
-
-            NotificationCenter.RaiseRefreshFileExplorer(null, false);
+            return dlgSave.FileName;
         }
     }
 }
