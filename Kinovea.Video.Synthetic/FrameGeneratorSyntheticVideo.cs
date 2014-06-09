@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Kinovea.Video.Synthetic
 {
@@ -49,7 +50,7 @@ namespace Kinovea.Video.Synthetic
         
         public Bitmap Generate(long timestamp)
         {
-            Bitmap bitmap = new Bitmap(video.ImageSize.Width, video.ImageSize.Height);
+            Bitmap bitmap = new Bitmap(video.ImageSize.Width, video.ImageSize.Height, PixelFormat.Format32bppPArgb);
 
             using (Graphics g = Graphics.FromImage(bitmap))
             using(SolidBrush backBrush = new SolidBrush(video.BackgroundColor))
