@@ -492,7 +492,7 @@ namespace Kinovea.ScreenManager
 
 
         #region Synchronization
-        public void PrepareSync()
+        public void ResetSync()
         {
             if (!active)
                 return;
