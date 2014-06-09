@@ -78,13 +78,13 @@ namespace Kinovea.ScreenManager
             set { angularAccelerationUnit = value; }
         }
 
-        public double FramesPerSecond
+        public double CaptureFramesPerSecond
         {
             // Frames per second, as in real action reference. (takes high speed camera into account.)
-            get { return framesPerSecond; }
+            get { return captureFramesPerSecond; }
             set 
             {
-                framesPerSecond = value;
+                captureFramesPerSecond = value;
                 AfterCalibrationChanged();
             }
         }
@@ -109,7 +109,7 @@ namespace Kinovea.ScreenManager
         private AngleUnit angleUnit = AngleUnit.Degree;
         private AngularVelocityUnit angularVelocityUnit = AngularVelocityUnit.DegreesPerSecond;
         private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
-        private double framesPerSecond = 25;
+        private double captureFramesPerSecond = 25;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -217,7 +217,7 @@ namespace Kinovea.ScreenManager
         public float GetTime(int frames)
         {
             // TODO: have the function takes a number of timestamps instead for better accuracy.
-            return (float)(frames / framesPerSecond);
+            return (float)(frames / captureFramesPerSecond);
         }
         
         /// <summary>

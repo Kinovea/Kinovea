@@ -149,7 +149,11 @@ namespace Kinovea.ScreenManager
             if (!active || !synching)
                 return;
 
-            SyncLockSpeed(sender as PlayerScreen);
+            PlayerScreen player = sender as PlayerScreen;
+            if (player == null || !PreferencesManager.PlayerPreferences.SyncLockSpeed)
+                return;
+
+            GetOtherPlayer(player).RealtimePercentage = player.RealtimePercentage;
         }
 
         private void Player_HighSpeedFactorChanged(object sender, EventArgs e)
@@ -157,7 +161,12 @@ namespace Kinovea.ScreenManager
             if (!active || !synching)
                 return;
 
-            SyncLockSpeed(sender as PlayerScreen);
+            if (PreferencesManager.PlayerPreferences.SyncLockSpeed)
+            {
+                double percentage = Math.Min(players[0].RealtimePercentage, players[1].RealtimePercentage);
+                players[0].RealtimePercentage = percentage;
+                players[1].RealtimePercentage = percentage;
+            }
 
             // Synchronization must be reinitialized.
             commonTimeline.Initialize(players[0], players[0].LocalSyncTime, players[1], players[1].LocalSyncTime);
@@ -350,7 +359,7 @@ namespace Kinovea.ScreenManager
                 return;
             
             Pause();
-            DualSnapshoter.Save(players[0], players[1]);
+            DualSnapshoter.Save(players[0], players[1], view.Merging);
         }
 
         
@@ -466,14 +475,6 @@ namespace Kinovea.ScreenManager
             
             view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);
             view.UpdateSyncPosition(currentTime); 
-        }
-
-        private void SyncLockSpeed(PlayerScreen player)
-        {
-            if (player == null || !PreferencesManager.PlayerPreferences.SyncLockSpeed)
-                return;
-
-            GetOtherPlayer(player).RealtimePercentage = player.RealtimePercentage;
         }
 
         private void GotoTime(long commonTime, bool allowUIUpdate)

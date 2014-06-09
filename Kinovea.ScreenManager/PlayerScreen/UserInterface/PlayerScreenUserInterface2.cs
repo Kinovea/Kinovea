@@ -129,12 +129,10 @@ namespace Kinovea.ScreenManager
                 // We must NOT trigger the event here, or it will impact the other screen in an infinite loop.
                 // Compute back the slow motion percentage relative to the playback framerate.
                 double playbackPercentage = value * m_FrameServer.Metadata.HighSpeedFactor;
-                playbackPercentage = Math.Min(playbackPercentage, 200);
+                playbackPercentage = Math.Max(1, Math.Min(playbackPercentage, 200));
+                m_fSlowmotionPercentage = playbackPercentage;
+
                 sldrSpeed.Value = (int)playbackPercentage;
-                
-                // If the other screen is in high speed context, we honor the decimal value.
-                // (When it will be changed from this screen's slider, it will be an integer value).
-                m_fSlowmotionPercentage = playbackPercentage > 0 ? playbackPercentage : 1;
                 
                 // Reset timer with new value.
                 if (m_bIsCurrentlyPlaying)
@@ -536,8 +534,12 @@ namespace Kinovea.ScreenManager
                     recoveredMetadata = true;
                 }
 
-                m_fSlowmotionPercentage = m_LaunchDescription.SpeedPercentage;
-                sldrSpeed.Value = (int)m_fSlowmotionPercentage;
+                if (m_LaunchDescription.SpeedPercentage != m_fSlowmotionPercentage)
+                {
+                    m_fSlowmotionPercentage = m_LaunchDescription.SpeedPercentage;
+                    sldrSpeed.Value = (int)m_fSlowmotionPercentage;
+                    UpdateSpeedLabel();
+                }
             }
             else
             {
@@ -593,8 +595,16 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
             ActivateKeyframe(m_iCurrentPosition);
 
-            m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.CalibrationHelper.FramesPerSecond / m_FrameServer.VideoReader.Info.FramesPerSeconds;
-                        
+            
+            double oldHSF = m_FrameServer.Metadata.HighSpeedFactor;
+            m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond / m_FrameServer.VideoReader.Info.FramesPerSeconds;
+
+            if (oldHSF != m_FrameServer.Metadata.HighSpeedFactor)
+            {
+                m_fSlowmotionPercentage = 100;
+                sldrSpeed.Value = (int)m_fSlowmotionPercentage;
+            }
+            
             m_FrameServer.SetupMetadata(false);
             m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
 
