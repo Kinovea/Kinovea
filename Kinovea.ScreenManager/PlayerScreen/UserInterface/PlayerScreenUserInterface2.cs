@@ -3814,13 +3814,18 @@ namespace Kinovea.ScreenManager
             if(drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
                 return;
 
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, m_FrameServer.Metadata.HitDrawing.Id, m_FrameServer.Metadata.HitDrawing.DisplayName, SerializationFilter.Style);
+            // FIXME: memento for coordinate system.
+            bool coordinateSystem = m_FrameServer.Metadata.HitDrawing is DrawingCoordinateSystem;
+
+            HistoryMemento memento = null;
+            if (!coordinateSystem)
+                memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, m_FrameServer.Metadata.HitDrawing.Id, m_FrameServer.Metadata.HitDrawing.DisplayName, SerializationFilter.Style);
             
             FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing.DrawingStyle, DoInvalidate);
             FormsHelper.Locate(fcd);
             fcd.ShowDialog();
 
-            if (fcd.DialogResult == DialogResult.OK)
+            if (!coordinateSystem && fcd.DialogResult == DialogResult.OK)
                 m_FrameServer.HistoryStack.PushNewCommand(memento);
             
             fcd.Dispose();
