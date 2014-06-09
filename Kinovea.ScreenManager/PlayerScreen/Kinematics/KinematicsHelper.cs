@@ -87,7 +87,7 @@ namespace Kinovea.ScreenManager
 
         private void ComputeFilteredCoordinates(TrajectoryKinematics kinematics, CalibrationHelper calibrationHelper)
         {
-            double framerate = calibrationHelper.FramesPerSecond;
+            double framerate = calibrationHelper.CaptureFramesPerSecond;
 
             ButterworthFilter filter = new ButterworthFilter();
             int bestCutoffIndex;
@@ -174,9 +174,9 @@ namespace Kinovea.ScreenManager
 
             double constantVelocitySpan = 40;
             MovingAverage filter = new MovingAverage();
-            kinematics.Speed = filter.FilterSamples(kinematics.Speed, calibrationHelper.FramesPerSecond, constantVelocitySpan, 1);
-            kinematics.HorizontalVelocity = filter.FilterSamples(kinematics.HorizontalVelocity, calibrationHelper.FramesPerSecond, constantVelocitySpan, 1);
-            kinematics.VerticalVelocity = filter.FilterSamples(kinematics.VerticalVelocity, calibrationHelper.FramesPerSecond, constantVelocitySpan, 1);
+            kinematics.Speed = filter.FilterSamples(kinematics.Speed, calibrationHelper.CaptureFramesPerSecond, constantVelocitySpan, 1);
+            kinematics.HorizontalVelocity = filter.FilterSamples(kinematics.HorizontalVelocity, calibrationHelper.CaptureFramesPerSecond, constantVelocitySpan, 1);
+            kinematics.VerticalVelocity = filter.FilterSamples(kinematics.VerticalVelocity, calibrationHelper.CaptureFramesPerSecond, constantVelocitySpan, 1);
         }
 
         private void ComputeRawAccelerations(TrajectoryKinematics kinematics, CalibrationHelper calibrationHelper)
@@ -236,9 +236,9 @@ namespace Kinovea.ScreenManager
 
             double constantAccelerationSpan = 50;
             MovingAverage filter = new MovingAverage();
-            kinematics.Acceleration = filter.FilterSamples(kinematics.Acceleration, calibrationHelper.FramesPerSecond, constantAccelerationSpan, 2);
-            kinematics.HorizontalAcceleration = filter.FilterSamples(kinematics.HorizontalAcceleration, calibrationHelper.FramesPerSecond, constantAccelerationSpan, 2);
-            kinematics.VerticalAcceleration = filter.FilterSamples(kinematics.VerticalAcceleration, calibrationHelper.FramesPerSecond, constantAccelerationSpan, 2);
+            kinematics.Acceleration = filter.FilterSamples(kinematics.Acceleration, calibrationHelper.CaptureFramesPerSecond, constantAccelerationSpan, 2);
+            kinematics.HorizontalAcceleration = filter.FilterSamples(kinematics.HorizontalAcceleration, calibrationHelper.CaptureFramesPerSecond, constantAccelerationSpan, 2);
+            kinematics.VerticalAcceleration = filter.FilterSamples(kinematics.VerticalAcceleration, calibrationHelper.CaptureFramesPerSecond, constantAccelerationSpan, 2);
         }
 
         private void ComputeRotationCircle(TrajectoryKinematics kinematics, CalibrationHelper calibrationHelper)

@@ -573,7 +573,7 @@ namespace Kinovea.ScreenManager
             if (HighSpeedFactorChanged != null)
                 HighSpeedFactorChanged(this, EventArgs.Empty);
 
-            frameServer.Metadata.CalibrationHelper.FramesPerSecond = frameServer.VideoReader.Info.FramesPerSeconds * frameServer.Metadata.HighSpeedFactor;
+            frameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond = frameServer.VideoReader.Info.FramesPerSeconds * frameServer.Metadata.HighSpeedFactor;
 
             view.RefreshImage();
         }

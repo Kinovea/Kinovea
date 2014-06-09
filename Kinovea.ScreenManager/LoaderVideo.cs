@@ -14,6 +14,8 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public static class LoaderVideo
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, int targetScreen)
         {
             if (targetScreen < 0)
@@ -92,6 +94,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private static void LoadVideo(PlayerScreen player, string path, ScreenDescriptionPlayback screenDescription)
         {
+            log.DebugFormat("Loading video {0}.", path);
+            
             NotificationCenter.RaiseStopPlayback(null);
 
             if (player.FrameServer.Loaded)
