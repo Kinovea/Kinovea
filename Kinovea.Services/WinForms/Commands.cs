@@ -33,6 +33,22 @@ namespace Kinovea.Services
         DecreaseSize
     }
 
+    public enum DualPlayerCommands
+    {
+        TogglePlay,
+
+        GotoPreviousImage,
+        GotoFirstImage,
+        GotoPreviousKeyframe,
+
+        GotoNextImage,
+        GotoLastImage,
+        GotoNextKeyframe,
+        
+        GotoSyncPoint,
+        AddKeyframe
+    }
+
     public enum PlayerScreenCommands
     {
         TogglePlay,

@@ -256,10 +256,11 @@ namespace Kinovea.ScreenManager
             view.FullScreen(fullScreen);
         }
         
-        public override void ExecuteCommand(int cmd)
+        public override void ExecuteScreenCommand(int cmd)
         {
-            // propagate command from the other capture screen.
+            // execute local command.
         }
+
         public override void LoadKVA(string path)
         {
             if (!File.Exists(path))

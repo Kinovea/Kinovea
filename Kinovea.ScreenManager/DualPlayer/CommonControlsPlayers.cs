@@ -25,18 +25,23 @@ using System.Drawing;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public partial class CommonControlsPlayers : UserControl
+    public partial class CommonControlsPlayers : KinoveaControl
     {
         #region Events
         public event EventHandler PlayToggled;
         public event EventHandler GotoFirst;
         public event EventHandler GotoPrev;
+        public event EventHandler GotoPrevKeyframe;
         public event EventHandler GotoNext;
         public event EventHandler GotoLast;
+        public event EventHandler GotoNextKeyframe;
+        public event EventHandler GotoSync;
         public event EventHandler SwapAsked;
+        public event EventHandler AddKeyframe;
         public event EventHandler SyncAsked;
         public event EventHandler MergeAsked;
         public event EventHandler<TimeEventArgs> PositionChanged;
@@ -61,6 +66,7 @@ namespace Kinovea.ScreenManager
         private long oldPosition;
         private Button btnSnapShot = new Button();
         private Button btnDualVideo = new Button();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Construction
@@ -68,7 +74,9 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             PostInit();
+            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("DualPlayer");
         }
+
         private void PostInit()
         {
             BackColor = Color.White;
@@ -183,6 +191,59 @@ namespace Kinovea.ScreenManager
             merging = false;
             RefreshMergeTooltip();
         }
+        #endregion
+
+        #region Commands
+
+        protected override bool ExecuteCommand(int cmd)
+        {
+            DualPlayerCommands command = (DualPlayerCommands)cmd;
+
+            switch (command)
+            {
+                case DualPlayerCommands.TogglePlay:
+                    PlayPause();
+                    break;
+                case DualPlayerCommands.GotoPreviousImage:
+                    Previous();
+                    break;
+                case DualPlayerCommands.GotoFirstImage:
+                    First();
+                    break;
+                case DualPlayerCommands.GotoPreviousKeyframe:
+                    if (GotoPrevKeyframe != null)
+                        GotoPrevKeyframe(this, EventArgs.Empty);
+                    break;
+                case DualPlayerCommands.GotoNextImage:
+                    Next();
+                    break;
+                case DualPlayerCommands.GotoLastImage:
+                    Last();
+                    break;
+                case DualPlayerCommands.GotoNextKeyframe:
+                    if (GotoNextKeyframe != null)
+                        GotoNextKeyframe(this, EventArgs.Empty);
+                    break;
+                case DualPlayerCommands.GotoSyncPoint:
+                    if (GotoSync != null)
+                        GotoSync(this, EventArgs.Empty);
+                    break;
+                case DualPlayerCommands.AddKeyframe:
+                    if (AddKeyframe != null)
+                        AddKeyframe(this, EventArgs.Empty);
+                    break;
+                default:
+                    return base.ExecuteCommand(cmd);
+            }
+
+            return true;
+        }
+
+        public void ExecuteDualCommand(int cmd)
+        {
+            ExecuteCommand(cmd);
+        }
+
         #endregion
 
         private void First()

@@ -23,6 +23,10 @@ namespace Kinovea.ScreenManager
         {
             get { return view; }
         }
+        public bool Active
+        {
+            get { return active; }
+        }
         #endregion
 
         #region Members
@@ -36,6 +40,7 @@ namespace Kinovea.ScreenManager
 
         private CommonControlsPlayers view = new CommonControlsPlayers();
         private List<PlayerScreen> players = new List<PlayerScreen>();
+        private HotkeyCommand[] hotkeys;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -46,15 +51,20 @@ namespace Kinovea.ScreenManager
 
             view.PlayToggled += CCtrl_PlayToggled;
             view.GotoFirst += CCtrl_GotoFirst;
-            view.GotoFirst += CCtrl_GotoFirst;
             view.GotoPrev += CCtrl_GotoPrev;
+            view.GotoPrevKeyframe += CCtrl_GotoPrevKeyframe;
             view.GotoNext += CCtrl_GotoNext;
             view.GotoLast += CCtrl_GotoLast;
+            view.GotoNextKeyframe += CCtrl_GotoNextKeyframe;
+            view.GotoSync += CCtrl_GotoSync;
+            view.AddKeyframe += CCtrl_AddKeyframe;
             view.SyncAsked += CCtrl_SyncAsked;
             view.MergeAsked += CCtrl_MergeAsked;
             view.PositionChanged += CCtrl_PositionChanged;
             view.DualSaveAsked += CCtrl_DualSaveAsked;
             view.DualSnapshotAsked += CCtrl_DualSnapshotAsked;
+
+            hotkeys = HotkeySettingsManager.LoadHotkeys("DualPlayer");
         }
         #endregion
 
@@ -362,6 +372,47 @@ namespace Kinovea.ScreenManager
             DualSnapshoter.Save(players[0], players[1], view.Merging);
         }
 
+        private void CCtrl_GotoPrevKeyframe(object sender, EventArgs e)
+        {
+            Pause();
+
+            if (!synching)
+                return;
+
+            players[0].GotoPrevKeyframe();
+            players[1].GotoPrevKeyframe();
+        }
+        private void CCtrl_GotoNextKeyframe(object sender, EventArgs e)
+        {
+            Pause();
+
+            if (!synching)
+                return;
+
+            players[0].GotoNextKeyframe();
+            players[1].GotoNextKeyframe();
+        }
+        private void CCtrl_AddKeyframe(object sender, EventArgs e)
+        {
+            Pause();
+
+            if (!synching)
+                return;
+
+            players[0].AddKeyframe();
+            players[1].AddKeyframe();
+        }
+        private void CCtrl_GotoSync(object sender, EventArgs e)
+        {
+            Pause();
+
+            if (!synching)
+                return;
+            
+            currentTime = commonTimeline.GetCommonTime(players[0], players[0].LocalSyncTime);
+            GotoTime(currentTime, true);
+            UpdateTrkFrame(currentTime);
+        }
         
         #endregion
 
@@ -408,8 +459,37 @@ namespace Kinovea.ScreenManager
             player.HighSpeedFactorChanged -= Player_HighSpeedFactorChanged;
             player.ImageChanged -= Player_ImageChanged;
         }
-
         #endregion
+
+        public void ExecuteDualCommand(HotkeyCommand playerCommand)
+        {
+            // A player has detected that a hotkey it received should actually be handled at the dual player level.
+            // At that point there is still two options, either it's a true dual player command,
+            // something normally bound to controls in the common controls,
+            // or it's a multiplexed command, a command that should simply be forwarded to each player.
+
+            HotkeyCommand dualCommand = hotkeys.FirstOrDefault(hk => hk != null && hk.KeyData == playerCommand.KeyData);
+            if (dualCommand == null)
+                return;
+
+            DualPlayerCommands command = (DualPlayerCommands)dualCommand.CommandCode;
+
+            switch(command)
+            {
+                case DualPlayerCommands.GotoPreviousKeyframe:
+                case DualPlayerCommands.GotoNextKeyframe:
+                case DualPlayerCommands.GotoSyncPoint:
+                case DualPlayerCommands.AddKeyframe:
+                    players[0].ExecuteScreenCommand(playerCommand.CommandCode);
+                    players[1].ExecuteScreenCommand(playerCommand.CommandCode);
+                    break;
+
+                default:
+                    view.ExecuteDualCommand(dualCommand.CommandCode);
+                    break;
+            }
+        }
+
 
         #region Synchronization
         public void PrepareSync()

@@ -295,8 +295,7 @@ namespace Kinovea.ScreenManager
             view.DrawingDeleting += View_DrawingDeleting;
             view.MultiDrawingItemAdding += View_MultiDrawingItemAdding;
             view.MultiDrawingItemDeleting += View_MultiDrawingItemDeleting;
-
-            view.CommandProcessed += (s, e) => OnCommandProcessed(e);
+            view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
             
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
             view.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
@@ -476,31 +475,12 @@ namespace Kinovea.ScreenManager
         {
             view.FullScreen(_bFullScreen);
         }
-        public override void ExecuteCommand(int cmd)
+        
+        public override void ExecuteScreenCommand(int cmd)
         {
-            // Propagate command from the other screen only if it makes sense.
-            PlayerScreenCommands command = (PlayerScreenCommands)cmd;
-
-            switch (command)
-            {
-                // Forwarded commands. (all others are ignored).
-                case PlayerScreenCommands.TogglePlay:
-                case PlayerScreenCommands.ResetViewport:
-                case PlayerScreenCommands.GotoPreviousImage:
-                case PlayerScreenCommands.GotoPreviousImageForceLoop:
-                case PlayerScreenCommands.GotoFirstImage:
-                case PlayerScreenCommands.GotoPreviousKeyframe:
-                case PlayerScreenCommands.GotoNextImage:
-                case PlayerScreenCommands.GotoLastImage:
-                case PlayerScreenCommands.GotoNextKeyframe:
-                case PlayerScreenCommands.GotoSyncPoint:
-                case PlayerScreenCommands.AddKeyframe:
-                    view.ExecuteCommand(cmd, false);
-                    break;
-                default:
-                    break;
-            }
+            view.ExecuteScreenCommand(cmd);
         }
+
         public override void LoadKVA(string path)
         {
             MetadataSerializer s = new MetadataSerializer();
@@ -526,6 +506,18 @@ namespace Kinovea.ScreenManager
         {
             long timestamp = RealtimeToTimestamp(microseconds);
             view.ForcePosition(timestamp, allowUIUpdate);
+        }
+        public void GotoPrevKeyframe()
+        {
+            view.GotoPreviousKeyframe();
+        }
+        public void GotoNextKeyframe()
+        {
+            view.GotoNextKeyframe();
+        }
+        public void AddKeyframe()
+        {
+            view.AddKeyframe();
         }
         public void ResetSelectionImages(MemoPlayerScreen _memo)
         {
