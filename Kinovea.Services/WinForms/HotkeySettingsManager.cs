@@ -25,6 +25,12 @@ namespace Kinovea.Services
             return result;
         }
 
+        public static bool IsHandler(string category, Keys keys)
+        {
+            HotkeyCommand[] handledHotkeys = HotkeySettingsManager.LoadHotkeys(category);
+            return handledHotkeys.Any(hk => hk != null && hk.KeyData == keys);
+        }
+
         public static void Import(Dictionary<string, HotkeyCommand[]> imported)
         {
             if (hotkeys == null)
@@ -115,6 +121,18 @@ namespace Kinovea.Services
                     hk(ThumbnailViewerCameraCommands.LaunchSelected, Keys.Enter), 
                     hk(ThumbnailViewerCameraCommands.RenameSelected, Keys.F2),
                     hk(ThumbnailViewerCameraCommands.Refresh, Keys.F5)
+                    }
+                },
+                { "DualPlayer", new HotkeyCommand[]{
+                    hk(DualPlayerCommands.TogglePlay, Keys.Space),
+                    hk(DualPlayerCommands.GotoPreviousImage, Keys.Left),
+                    hk(DualPlayerCommands.GotoFirstImage, Keys.Home), 
+                    hk(DualPlayerCommands.GotoPreviousKeyframe, Keys.Control | Keys.Left), 
+                    hk(DualPlayerCommands.GotoNextImage, Keys.Right), 
+                    hk(DualPlayerCommands.GotoLastImage, Keys.End), 
+                    hk(DualPlayerCommands.GotoNextKeyframe, Keys.Control | Keys.Right), 
+                    hk(DualPlayerCommands.GotoSyncPoint, Keys.F8), 
+                    hk(DualPlayerCommands.AddKeyframe, Keys.Insert)
                     }
                 },
                 { "PlayerScreen", new HotkeyCommand[]{

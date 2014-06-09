@@ -531,20 +531,15 @@ namespace Kinovea.ScreenManager
             AbstractScreen screen = sender as AbstractScreen;
             SetActiveScreen(screen);
         }
-        private void Screen_CommandProcessed(object sender, CommandProcessedEventArgs e)
+        private void Screen_DualCommandReceived(object sender, EventArgs<HotkeyCommand> e)
         {
-            // Propagate the command to the other screen.
-            AbstractScreen screen = sender as AbstractScreen;
+            // A screen has received a hotkey that must be handled at manager level.
+            if (dualPlayer.Active)
+                dualPlayer.ExecuteDualCommand(e.Value);
 
-            if (screenList.Count != 2 || screen == null)
-                return;
-
-            int otherScreen = sender == screenList[0] ? 1 : 0;
-            
-            if (screenList[0].GetType() == screenList[1].GetType())
-                screenList[otherScreen].ExecuteCommand(e.Command);
+            // TODO: dualCapture.
         }
-        
+
         private void Player_SelectionChanged(object sender, EventArgs<bool> e)
         {
             PrepareSync();
@@ -1905,19 +1900,6 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
-        #region Keyboard Handling
-        private void ActivateOtherScreen()
-        {
-            if (screenList.Count != 2)
-                return;
-            
-            if (activeScreen == screenList[0])
-                SetActiveScreen(screenList[1]);
-            else
-                SetActiveScreen(screenList[0]);
-        }
-        #endregion
-
         #region Screen organization
         private void PrepareSync()
         {
@@ -2003,7 +1985,7 @@ namespace Kinovea.ScreenManager
         {
             screen.CloseAsked += Screen_CloseAsked;
             screen.Activated += Screen_Activated;
-            screen.CommandProcessed += Screen_CommandProcessed;
+            screen.DualCommandReceived += Screen_DualCommandReceived;
 
             if (screen is PlayerScreen)
                 AddPlayerScreenEventHandlers(screen as PlayerScreen);
@@ -2019,7 +2001,7 @@ namespace Kinovea.ScreenManager
         {
             screen.CloseAsked -= Screen_CloseAsked;
             screen.Activated -= Screen_Activated;
-            screen.CommandProcessed -= Screen_CommandProcessed;
+            screen.DualCommandReceived -= Screen_DualCommandReceived;
 
             if (screen is PlayerScreen)
                 RemovePlayerScreenEventHandlers(screen as PlayerScreen);

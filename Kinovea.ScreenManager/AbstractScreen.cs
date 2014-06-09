@@ -42,10 +42,10 @@ namespace Kinovea.ScreenManager
             RaiseEvent(CloseAsked, e);
         }
 
-        public event EventHandler<CommandProcessedEventArgs> CommandProcessed;
-        protected virtual void OnCommandProcessed(CommandProcessedEventArgs e)
+        public event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
+        protected virtual void OnDualCommandReceived(EventArgs<HotkeyCommand> e)
         {
-            RaiseEvent(CommandProcessed, e);
+            RaiseEvent(DualCommandReceived, e);
         }
 
         private void RaiseEvent(EventHandler invoker, EventArgs e)
@@ -105,7 +105,7 @@ namespace Kinovea.ScreenManager
         public abstract void AddImageDrawing(string filename, bool isSvg);
         public abstract void AddImageDrawing(Bitmap bmp);
         public abstract void FullScreen(bool fullScreen);
-        public abstract void ExecuteCommand(int cmd);
+        public abstract void ExecuteScreenCommand(int cmd);
         public abstract void LoadKVA(string path);
     }   
 }

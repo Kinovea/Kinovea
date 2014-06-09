@@ -87,7 +87,8 @@ namespace Kinovea.ScreenManager
         public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdding;
         public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemDeleting;
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
-        public event EventHandler<CommandProcessedEventArgs> CommandProcessed;
+        //public event EventHandler<CommandProcessedEventArgs> DualCommandReceived;
+        public event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
         #endregion
         
         #region Commands encapsulating domain logic implemented in the presenter.
@@ -1143,17 +1144,36 @@ namespace Kinovea.ScreenManager
         #region Commands
         protected override bool ExecuteCommand(int cmd)
         {
+            // Method called by KinoveaControl in the context of preprocessing hotkeys.
+            // If the hotkey can be handled by the dual player, we defer to it instead.
+
             if (m_FrameServer.Metadata.TextEditingInProgress)
                 return false;
 
             if (thumbnails.Any(t => t.Editing))
                 return false;
-            
-            // Command directly comming from hotkey: can propagate to the other screen.
-            return ExecuteCommand(cmd, true);
+
+            if (!m_bSynched)
+                return ExecuteScreenCommand(cmd);
+
+            HotkeyCommand command = Hotkeys.FirstOrDefault(h => h != null && h.CommandCode == cmd);
+            if (command == null)
+                return false;
+
+            bool dualPlayerHandled = HotkeySettingsManager.IsHandler("DualPlayer", command.KeyData);
+
+            if (dualPlayerHandled && DualCommandReceived != null)
+            {
+                DualCommandReceived(this, new EventArgs<HotkeyCommand>(command));
+                return true;
+            }
+            else
+            {
+                return ExecuteScreenCommand(cmd);
+            }
         }
 
-        public bool ExecuteCommand(int cmd, bool propagate)
+        public bool ExecuteScreenCommand(int cmd)
         {
             if (!m_FrameServer.Loaded)
                 return false;
@@ -1264,9 +1284,6 @@ namespace Kinovea.ScreenManager
                 default:
                     return base.ExecuteCommand(cmd);
             }
-
-            if (propagate && CommandProcessed != null)
-                CommandProcessed(this, new CommandProcessedEventArgs(cmd));
 
             return true;
         }
@@ -3404,7 +3421,7 @@ namespace Kinovea.ScreenManager
             EnableDisableKeyframes();
             DoInvalidate();
         }
-        private void GotoNextKeyframe()
+        public void GotoNextKeyframe()
         {
             if (m_FrameServer.Metadata.Count == 0)
                 return;
@@ -3422,7 +3439,7 @@ namespace Kinovea.ScreenManager
             if (next >= 0 && m_FrameServer.Metadata[next].Position <= m_iSelEnd)
                 ThumbBoxClick(thumbnails[next], EventArgs.Empty);
         }
-        private void GotoPreviousKeyframe()
+        public void GotoPreviousKeyframe()
         {
             if (m_FrameServer.Metadata.Count == 0)
                 return;
@@ -3441,7 +3458,7 @@ namespace Kinovea.ScreenManager
                 ThumbBoxClick(thumbnails[prev], EventArgs.Empty);
         }
 
-        private void AddKeyframe()
+        public void AddKeyframe()
         {
             int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
             if (keyframeIndex >= 0)
