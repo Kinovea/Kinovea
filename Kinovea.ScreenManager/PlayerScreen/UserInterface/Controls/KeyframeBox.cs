@@ -102,13 +102,12 @@ namespace Kinovea.ScreenManager
         private void Controls_MouseEnter(object sender, EventArgs e)
         {
             ShowButtons();
-            editing = true;
-            //this.Focus();
         }
         private void Controls_MouseLeave(object sender, EventArgs e)
         {
             // We hide the close button only if we left the whole control.
             Point clientMouse = PointToClient(Control.MousePosition);
+            
             if(!pbThumbnail.ClientRectangle.Contains(clientMouse))
             {
                 HideButtons();
@@ -127,15 +126,18 @@ namespace Kinovea.ScreenManager
         #region Event Handlers - Buttons / Text
         private void btnClose_Click(object sender, EventArgs e)
         {
-            if (CloseThumb != null) CloseThumb(this, e);
+            if (CloseThumb != null) 
+                CloseThumb(this, e);
         }
         private void pbThumbnail_Click(object sender, EventArgs e)
         {
-            if (ClickThumb != null) ClickThumb(this, e);
+            if (ClickThumb != null) 
+                ClickThumb(this, e);
         }
         private void btnComment_Click(object sender, EventArgs e)
         {
-            if (ClickInfos != null) ClickInfos(this, e);
+            if (ClickInfos != null) 
+                ClickInfos(this, e);
         }
         private void TbTitleTextChanged(object sender, EventArgs e)
         {
@@ -144,6 +146,15 @@ namespace Kinovea.ScreenManager
                 keyframe.Title = tbTitle.Text;
                 UpdateToolTip();
             }
+        }
+        private void lblTimecode_Click(object sender, EventArgs e)
+        {
+            editing = true;
+        }
+
+        private void tbTitle_Click(object sender, EventArgs e)
+        {
+            editing = true;
         }
         #endregion
         
@@ -179,6 +190,5 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(pbThumbnail, "");
         }
         #endregion
-        
     }
 }
