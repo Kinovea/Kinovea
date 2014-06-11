@@ -435,15 +435,18 @@ namespace Kinovea.FileBrowser
             // Otherwise the other threads take precedence and the thumbnails are not 
             // shown progressively but all at once, when other operations are over.
                 
-            // Start by updating hidden explorer tab.
-            // Update list and maintain synchronization with the tree.
-            UpdateFileList(currentShortcutItem, lvExplorer, false, false);
+            if (currentExptreeItem == null || currentExptreeItem.Path != currentShortcutItem.Path)
+            {
+                // Maintain synchronization with the explorer tree.
+                UpdateFileList(currentShortcutItem, lvExplorer, false, false);
                 
-            expanding = true;
-            etExplorer.ExpandANode(currentShortcutItem);
-            expanding = false;
-            currentExptreeItem = etExplorer.SelectedItem;
-                
+                expanding = true;
+                etExplorer.ExpandANode(currentShortcutItem);
+                expanding = false;
+
+                currentExptreeItem = etExplorer.SelectedItem;
+            }
+
             // Finally update the shortcuts tab, and refresh thumbs.
             UpdateFileList(currentShortcutItem, lvShortcuts, true, true);
         }
