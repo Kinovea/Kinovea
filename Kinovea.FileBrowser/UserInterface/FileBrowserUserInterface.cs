@@ -51,15 +51,23 @@ namespace Kinovea.FileBrowser
         private CShItem currentShortcutItem; // Current item in shortcuts tab.
         private bool expanding; // True if the exptree is currently auto expanding. To avoid reentry.
         private bool initializing = true;
-        private ContextMenuStrip  popMenu = new ContextMenuStrip();
-        private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
         private ImageList cameraIcons = new ImageList();
         private List<CameraSummary> cameraSummaries = new List<CameraSummary>();
         private bool programmaticTabChange;
         private bool externalSelection;
         private string lastOpenedDirectory;
         private ActiveFileBrowserTab activeTab;
+
+        #region Menu
+        private ContextMenuStrip popMenuFolders = new ContextMenuStrip();
+        private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
+
+        private ContextMenuStrip popMenuFiles = new ContextMenuStrip();
+        private ToolStripMenuItem mnuLaunch = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
+        #endregion
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -111,12 +119,31 @@ namespace Kinovea.FileBrowser
             mnuDeleteShortcut.Click += new EventHandler(mnuDeleteShortcut_Click);
             mnuDeleteShortcut.Visible = false;
             
-            popMenu.Items.AddRange(new ToolStripItem[] { mnuAddToShortcuts, mnuDeleteShortcut});
+            popMenuFolders.Items.AddRange(new ToolStripItem[] { mnuAddToShortcuts, mnuDeleteShortcut});
             
             // The context menus will be configured on a per event basis.
-            etShortcuts.ContextMenuStrip = popMenu;
-            etExplorer.ContextMenuStrip = popMenu;
+            etShortcuts.ContextMenuStrip = popMenuFolders;
+            etExplorer.ContextMenuStrip = popMenuFolders;
+
+            mnuLaunch.Image = Properties.Resources.film_go;
+            mnuLaunch.Click += (s, e) => CommandLaunch();
+            mnuLaunch.Visible = false;
+
+            mnuDelete.Image = Properties.Resources.delete;
+            mnuDelete.Click += (s, e) => CommandDelete();
+            mnuDelete.Visible = false;
+
+            popMenuFiles.Items.AddRange(new ToolStripItem[] 
+            {
+                mnuLaunch, 
+                new ToolStripSeparator(), 
+                mnuDelete
+            });
+
+            lvShortcuts.ContextMenuStrip = popMenuFiles;
+            lvExplorer.ContextMenuStrip = popMenuFiles;
         }
+
         private void IdleDetector(object sender, EventArgs e)
         {
             // Oh, we are idle. The ScreenManager should be loaded now,
@@ -246,7 +273,9 @@ namespace Kinovea.FileBrowser
             // Menus
             mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
             mnuDeleteShortcut.Text = FileBrowserLang.mnuDeleteShortcut;
-            
+            mnuLaunch.Text = "Launch";
+            mnuDelete.Text = "Delete";
+
             // ToolTips
             ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
             ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
@@ -641,7 +670,31 @@ namespace Kinovea.FileBrowser
             
             DoDragDrop(path, DragDropEffects.All);
         }
-        
+
+        private void listViews_MouseDown(object sender, MouseEventArgs e)
+        {
+            ShowHideListMenu(false);
+            
+            ListView lv = sender as ListView;
+            if (lv == null)
+                return;
+
+            if (e.Button != MouseButtons.Right)
+                return;
+
+            ListViewItem lvi = lv.GetItemAt(e.X, e.Y);
+            if (lvi == null)
+                return;
+
+            ShowHideListMenu(true);
+        }
+
+        private void ShowHideListMenu(bool visible)
+        {
+            foreach (ToolStripItem menu in popMenuFiles.Items)
+                menu.Visible = visible;
+        }
+
         private void LaunchItemAt(ListView listView, MouseEventArgs e)
         {
             ListViewItem lvi = listView.GetItemAt(e.X, e.Y);
@@ -796,6 +849,7 @@ namespace Kinovea.FileBrowser
             if (!File.Exists(path))
                 DoRefreshFileList(true);
         }
+        
         #endregion
     }
 }
