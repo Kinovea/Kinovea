@@ -46,6 +46,7 @@ namespace Kinovea.Services
         GotoNextKeyframe,
         
         GotoSyncPoint,
+        ToggleSyncMerge,
         AddKeyframe
     }
 
@@ -68,6 +69,7 @@ namespace Kinovea.Services
         ForwardRound1Percent,
 
         GotoSyncPoint,
+        ToggleSyncMerge,
 
         IncreaseZoom,
         DecreaseZoom,

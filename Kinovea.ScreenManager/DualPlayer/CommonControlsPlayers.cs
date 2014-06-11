@@ -228,6 +228,9 @@ namespace Kinovea.ScreenManager
                     if (GotoSync != null)
                         GotoSync(this, EventArgs.Empty);
                     break;
+                case DualPlayerCommands.ToggleSyncMerge:
+                    ToggleMerge();
+                    break;
                 case DualPlayerCommands.AddKeyframe:
                     if (AddKeyframe != null)
                         AddKeyframe(this, EventArgs.Empty);
@@ -274,7 +277,15 @@ namespace Kinovea.ScreenManager
             if (GotoLast != null)
                 GotoLast(this, EventArgs.Empty);
         }
-        
+        private void ToggleMerge()
+        {
+            merging = !merging;
+
+            if (MergeAsked != null)
+                MergeAsked(this, EventArgs.Empty);
+
+            RefreshMergeTooltip();
+        }
         #region UI Handlers
         private void CommonControls_Resize(object sender, EventArgs e)
         {
@@ -313,12 +324,7 @@ namespace Kinovea.ScreenManager
         }
         private void btnMerge_Click(object sender, EventArgs e)
         {
-            merging = !merging;
-
-            if (MergeAsked != null)
-                MergeAsked(this, EventArgs.Empty);
-
-            RefreshMergeTooltip();
+            ToggleMerge();
         }
         private void btnSnapshot_Click(object sender, EventArgs e)
         {

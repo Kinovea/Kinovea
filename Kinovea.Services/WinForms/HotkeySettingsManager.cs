@@ -132,6 +132,7 @@ namespace Kinovea.Services
                     hk(DualPlayerCommands.GotoLastImage, Keys.End), 
                     hk(DualPlayerCommands.GotoNextKeyframe, Keys.Control | Keys.Right), 
                     hk(DualPlayerCommands.GotoSyncPoint, Keys.F8), 
+                    hk(DualPlayerCommands.ToggleSyncMerge, Keys.F9), 
                     hk(DualPlayerCommands.AddKeyframe, Keys.Insert)
                     }
                 },
@@ -150,6 +151,7 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.ForwardRound10Percent, Keys.PageDown),
                     hk(PlayerScreenCommands.ForwardRound1Percent, Keys.Shift | Keys.PageDown),
                     hk(PlayerScreenCommands.GotoSyncPoint, Keys.F8), 
+                    hk(PlayerScreenCommands.ToggleSyncMerge, Keys.F9), 
                     hk(PlayerScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
                     hk(PlayerScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
                     hk(PlayerScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
