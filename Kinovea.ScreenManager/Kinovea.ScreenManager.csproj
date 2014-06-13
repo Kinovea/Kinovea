@@ -257,6 +257,8 @@
     <Compile Include="PlayerScreen\AbstractDrawingManager.cs" />
     <Compile Include="PlayerScreen\AutoSaver.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractMultiDrawingItem.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingDistortionGrid.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolDistortionGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\MultiDrawingItemEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
