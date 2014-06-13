@@ -871,7 +871,7 @@ namespace Kinovea.ScreenManager
             AddToolButton(ToolManager.CrossMark, drawingTool_Click);
             AddToolButton(ToolManager.Angle, drawingTool_Click);
             AddToolButton(ToolManager.Chrono, drawingTool_Click);
-            AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Grid, ToolManager.Plane}, 0, drawingTool_Click);
+            AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Grid, ToolManager.Plane, ToolManager.DistortionGrid}, 2, drawingTool_Click);
             AddToolButton(ToolManager.Spotlight, drawingTool_Click);
             
             AddToolButton(ToolManager.Magnifier, btnMagnifier_Click);
