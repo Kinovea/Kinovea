@@ -23,7 +23,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-namespace Kinovea.Camera.HTTP
+namespace Kinovea.Camera
 {
     public partial class FormHandshakeResult : Form
     {

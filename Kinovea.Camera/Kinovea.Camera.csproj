@@ -66,6 +66,12 @@
     <Compile Include="Events\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Events\CamerasDiscoveredEventArgs.cs" />
     <Compile Include="Events\CameraSummaryUpdatedEventArgs.cs" />
+    <Compile Include="FormHandshakeResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormHandshakeResult.designer.cs">
+      <DependentUpon>FormHandshakeResult.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormIconPicker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,6 +90,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FormHandshakeResult.resx">
+      <DependentUpon>FormHandshakeResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormIconPicker.resx">
+      <DependentUpon>FormIconPicker.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Icons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Icons.Designer.cs</LastGenOutput>
@@ -94,6 +106,12 @@
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Kinovea.Services</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\counter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dashboard.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
