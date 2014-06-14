@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
     public class DrawingDistortionGrid : AbstractDrawing, IDecorable, IScalable, IKvaSerializable /*IMeasurable, ITrackable*/
     {
         #region Events
-        public event EventHandler ShowMeasurableInfoChanged;
+        public event EventHandler LensCalibrationAsked;
         #endregion
 
         #region Properties
@@ -73,8 +73,8 @@ namespace Kinovea.ScreenManager
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
 
-                //mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
-                //contextMenu.Add(mnuCalibrate);
+                mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
+                contextMenu.Add(mnuCalibrate);
 
                 return contextMenu;
             }
@@ -85,8 +85,10 @@ namespace Kinovea.ScreenManager
         }
 
         public CalibrationHelper CalibrationHelper { get; set; }
-        public bool ShowMeasurableInfo { get; set; }
-        public bool UsedForCalibration { get; set; }
+        public List<PointF> Points
+        {
+            get { return points; }
+        }    
         #endregion
 
         #region Members
@@ -101,9 +103,9 @@ namespace Kinovea.ScreenManager
 
         private ToolStripMenuItem mnuCalibrate = new ToolStripMenuItem();
 
-        private int subdivisions = 3;
+        private int subdivisions = 4;
         private const int minimumSubdivisions = 2;
-        private const int defaultSubdivisions = 8;
+        private const int defaultSubdivisions = 4;
         private const int maximumSubdivisions = 20;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -344,7 +346,8 @@ namespace Kinovea.ScreenManager
 
         private void mnuCalibrate_Click(object sender, EventArgs e)
         {
-            // TODO: display the lens distortion dialog.
+            if (LensCalibrationAsked != null)
+                LensCalibrationAsked(this, EventArgs.Empty);
 
             CallInvalidateFromMenu(sender);
         }
