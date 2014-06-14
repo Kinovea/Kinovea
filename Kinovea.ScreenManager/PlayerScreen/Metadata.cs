@@ -487,6 +487,12 @@ namespace Kinovea.ScreenManager
                 if (drawing is ITrackable)
                     yield return (ITrackable)drawing;
         }
+        public IEnumerable<DrawingDistortionGrid> DistortionGrids()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingDistortionGrid)
+                    yield return (DrawingDistortionGrid)drawing;
+        }
         #endregion
         
         #region Drawings
@@ -802,6 +808,12 @@ namespace Kinovea.ScreenManager
 
                 measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
             }
+
+            if (drawing is DrawingDistortionGrid)
+            {
+                DrawingDistortionGrid d = drawing as DrawingDistortionGrid;
+                d.LensCalibrationAsked += LensCalibrationAsked;
+            }
         }
 
         private void BeforeDrawingDeletion(AbstractDrawing drawing)
@@ -813,6 +825,9 @@ namespace Kinovea.ScreenManager
             IMeasurable measurableDrawing = drawing as IMeasurable;
             if (measurableDrawing != null)
                 measurableDrawing.ShowMeasurableInfoChanged -= MeasurableDrawing_ShowMeasurableInfoChanged;
+
+            if (drawing is DrawingDistortionGrid)
+                ((DrawingDistortionGrid)drawing).LensCalibrationAsked -= LensCalibrationAsked;
         }
 
         public void BeforeKVAImport()
@@ -1146,6 +1161,17 @@ namespace Kinovea.ScreenManager
             string autosaveFile = Path.Combine(tempFolder, "autosave.kva");
             if (File.Exists(autosaveFile))
                 File.Delete(autosaveFile);
+        }
+        private void LensCalibrationAsked(object sender, EventArgs e)
+        {
+            List<List<PointF>> points = new List<List<PointF>>();
+            foreach (DrawingDistortionGrid grid in DistortionGrids())
+                points.Add(grid.Points);
+
+            FormCalibrateDistortion fcd = new FormCalibrateDistortion(points, imageSize);
+            FormsHelper.Locate(fcd);
+            fcd.ShowDialog();
+            fcd.Dispose();
         }
         #endregion
     }

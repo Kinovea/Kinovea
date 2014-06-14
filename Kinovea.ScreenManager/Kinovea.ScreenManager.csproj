@@ -262,6 +262,7 @@
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\MultiDrawingItemEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
+    <Compile Include="PlayerScreen\LensDistortion\CameraCalibrator.cs" />
     <Compile Include="PlayerScreen\Serialization\DrawingSerializer.cs" />
     <Compile Include="PlayerScreen\Serialization\KeyframeSerializer.cs" />
     <Compile Include="PlayerScreen\Export\MetadataExporter.cs" />
@@ -288,6 +289,12 @@
     <Compile Include="PlayerScreen\Tracking\TrackView.cs" />
     <Compile Include="PlayerScreen\Kinematics\TrajectoryKinematics.cs" />
     <Compile Include="PlayerScreen\TrackManager.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormCalibrateDistortion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormCalibrateDistortion.Designer.cs">
+      <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plotting\FormTimeseries.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -768,6 +775,9 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibrateDistortion.resx">
+      <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Plotting\FormTimeseries.resx">
       <DependentUpon>FormTimeseries.cs</DependentUpon>
     </EmbeddedResource>
