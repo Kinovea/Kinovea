@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2013.
+Copyright © Joan Charmant 2014.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -30,237 +30,214 @@ using System.Xml;
 using Kinovea.Camera;
 using Kinovea.Services;
 
-namespace Kinovea.Camera.HTTP
+namespace Kinovea.Camera.FrameGenerator
 {
-    /// <summary>
-    /// Class to discover and manage cameras connected through HTTP.
-    /// </summary>
-    public class CameraManagerHTTP : CameraManager
+    public class CameraManagerFrameGenerator : CameraManager
     {
         #region Properties
-        public override string CameraType 
-        { 
-            get { return "0F8CF704-97FC-11E2-9919-09C611C84021";}
+        public override string CameraType
+        {
+            get { return "904E2A6C-126D-45AF-BF08-6CE3925FF67E"; }
         }
-        public override string CameraTypeFriendlyName 
-        { 
-            get { return "IP Camera"; }
+        public override string CameraTypeFriendlyName
+        {
+            get { return "Camera simulator"; }
         }
         public override bool HasConnectionWizard
         {
-            get { return true;}
+            get { return true; }
         }
         #endregion
-    
+
         #region Members
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private List<string> snapshotting = new List<string>();
         private Bitmap defaultIcon;
-        private string defaultAlias = "IP Camera";
-        private string defaultName = "IP Camera";
+        private string defaultAlias = "Camera simulator";
+        private string defaultName = "Camera simulator";
         #endregion
-        
-        public CameraManagerHTTP()
+
+        public CameraManagerFrameGenerator()
         {
-            defaultIcon = IconLibrary.GetIcon("network");
+            defaultIcon = IconLibrary.GetIcon("dashboard");
         }
 
         public override bool SanityCheck()
         {
             return true;
         }
-        
+
         public override List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs)
         {
             List<CameraSummary> summaries = new List<CameraSummary>();
-            
-            foreach(CameraBlurb blurb in blurbs)
+
+            foreach (CameraBlurb blurb in blurbs)
             {
-                if(blurb.CameraType != CameraType)
+                if (blurb.CameraType != CameraType)
                     continue;
-                    
+
                 string alias = blurb.Alias;
                 string identifier = blurb.Identifier;
                 Bitmap icon = blurb.Icon ?? defaultIcon;
                 Rectangle displayRectangle = blurb.DisplayRectangle;
                 CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
-                if(!string.IsNullOrEmpty(blurb.AspectRatio))
+                if (!string.IsNullOrEmpty(blurb.AspectRatio))
                     aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
                 object specific = SpecificInfoDeserialize(blurb.Specific);
-                
+
                 CameraSummary summary = new CameraSummary(alias, defaultName, identifier, icon, displayRectangle, aspectRatio, specific, this);
                 summaries.Add(summary);
             }
-            
+
             return summaries;
         }
-        
+
         public override void GetSingleImage(CameraSummary summary)
         {
-            if(snapshotting.IndexOf(summary.Identifier) >= 0)
+            if (snapshotting.IndexOf(summary.Identifier) >= 0)
                 return;
-            
-            log.DebugFormat("Retrieve single image.");
-            
+
             SnapshotRetriever retriever = new SnapshotRetriever(this, summary);
             retriever.CameraImageReceived += SnapshotRetriever_CameraImageReceived;
             snapshotting.Add(summary.Identifier);
             ThreadPool.QueueUserWorkItem(retriever.Run);
         }
-        
+
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
             string specific = SpecificInfoSerialize(summary);
             CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), specific);
             return blurb;
         }
-        
+
         public override IFrameGrabber Connect(CameraSummary summary)
         {
-            FrameGrabber grabber = new FrameGrabber(this, summary);
+            FrameGrabber grabber = new FrameGrabber(summary);
             return grabber;
         }
-        
+
         public override bool Configure(CameraSummary summary)
         {
             bool needsReconnection = false;
             FormConfiguration form = new FormConfiguration(summary);
-            if(form.ShowDialog() == DialogResult.OK)
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                if(form.AliasChanged)
+                if (form.AliasChanged)
                     summary.UpdateAlias(form.Alias, form.PickedIcon);
-                
-                if(form.SpecificChanged)
+
+                if (form.SpecificChanged)
                 {
-                    summary.UpdateSpecific(form.Specific);
+                    SpecificInfo info = new SpecificInfo();
+                    info.SelectedFrameRate = form.Framerate;
+                    info.SelectedFrameSize = form.FrameSize;
+                    summary.UpdateSpecific(info);
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
+
                     needsReconnection = true;
                 }
-                
+
                 CameraTypeManager.UpdatedCameraSummary(summary);
             }
-            
+
             form.Dispose();
             return needsReconnection;
         }
-        
+
         public override string GetSummaryAsText(CameraSummary summary)
         {
             string result = string.Format("{0}", summary.Alias);
             return result;
         }
-        
+
         public override Control GetConnectionWizard()
         {
-            if(!HasConnectionWizard)
+            if (!HasConnectionWizard)
                 return null;
-            
+
             ConnectionWizard control = new ConnectionWizard(this);
             return control;
         }
-        
+
         public CameraSummary GetDefaultCameraSummary(string id)
         {
             return new CameraSummary(defaultAlias, defaultName, id, defaultIcon, Rectangle.Empty, CaptureAspectRatio.Auto, null, this);
         }
-        
-        public string BuildURL(SpecificInfo specific)
-        {
-            string url = "";
-            if(string.IsNullOrEmpty(specific.User) && string.IsNullOrEmpty(specific.Password))
-            {
-                if(string.IsNullOrEmpty(specific.Port) || specific.Port == "80")
-                    url = string.Format("http://{0}{1}", specific.Host, specific.Path);
-                else
-                    url = string.Format("http://{0}:{1}{2}", specific.Host, specific.Port, specific.Path);
-            }
-            else
-            {
-                if(string.IsNullOrEmpty(specific.Port) || specific.Port == "80")
-                    url = string.Format("http://{0}:{1}@{2}{3}", specific.User, specific.Password, specific.Host, specific.Path);
-                else
-                    url = string.Format("http://{0}:{1}@{2}:{3}{4}", specific.User, specific.Password, specific.Host, specific.Port, specific.Path);
-            }
-            
-            return url;
-        }
-        
+
         private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if(retriever != null)
+            if (retriever != null)
             {
                 retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
                 snapshotting.Remove(retriever.Identifier);
             }
-            
+
             OnCameraImageReceived(e);
         }
-        
+
         private SpecificInfo SpecificInfoDeserialize(string xml)
         {
-            if(string.IsNullOrEmpty(xml))
+            if (string.IsNullOrEmpty(xml))
                 return null;
-            
+
             SpecificInfo info = null;
-            
+
             try
             {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(new StringReader(xml));
 
                 info = new SpecificInfo();
-                info.User = ReadXML(doc, "/HTTP/User");
-                info.Password = ReadXML(doc, "/HTTP/Password");
-                info.Host = ReadXML(doc, "/HTTP/Host");
-                info.Port = ReadXML(doc, "/HTTP/Port");
-                info.Path = ReadXML(doc, "/HTTP/Path");
-                info.Format = ReadXML(doc, "/HTTP/Format");
+
+                int frameRate = 0;
+                XmlNode xmlFrameRate = doc.SelectSingleNode("/FrameGenerator/SelectedFrameRate");
+                if (xmlFrameRate != null)
+                {
+                    string strFrameRate = xmlFrameRate.InnerText;
+                    frameRate = int.Parse(strFrameRate, CultureInfo.InvariantCulture);
+                }
+                info.SelectedFrameRate = frameRate;
+
+                Size frameSize = Size.Empty;
+                XmlNode xmlFrameSize = doc.SelectSingleNode("/FrameGenerator/SelectedFrameSize");
+                if (xmlFrameSize != null)
+                {
+                    string strFrameSize = xmlFrameSize.InnerText;
+                    frameSize = XmlHelper.ParseSize(strFrameSize);
+                }
+                info.SelectedFrameSize = frameSize;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 log.ErrorFormat(e.Message);
             }
-            
+
             return info;
         }
-        
+
         private string SpecificInfoSerialize(CameraSummary summary)
         {
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info == null)
+            if (info == null)
                 return null;
-                
+
             XmlDocument doc = new XmlDocument();
-            XmlElement xmlRoot = doc.CreateElement("HTTP");
-            
-            AppendXML(doc, xmlRoot, "User", info.User);
-            AppendXML(doc, xmlRoot, "Password", info.Password);
-            AppendXML(doc, xmlRoot, "Host", info.Host);
-            AppendXML(doc, xmlRoot, "Port", info.Port);
-            AppendXML(doc, xmlRoot, "Path", info.Path);
-            AppendXML(doc, xmlRoot, "Format", info.Format);
+            XmlElement xmlRoot = doc.CreateElement("FrameGenerator");
+
+            XmlElement xmlFrameRate = doc.CreateElement("SelectedFrameRate");
+            string framerate = string.Format("{0}", info.SelectedFrameRate);
+            xmlFrameRate.InnerText = framerate;
+            xmlRoot.AppendChild(xmlFrameRate);
+
+            XmlElement xmlFrameSize = doc.CreateElement("SelectedFrameSize");
+            string frameSize = string.Format("{0};{1}", info.SelectedFrameSize.Width, info.SelectedFrameSize.Height);
+            xmlFrameSize.InnerText = frameSize;
+            xmlRoot.AppendChild(xmlFrameSize);
 
             doc.AppendChild(xmlRoot);
+
             return doc.OuterXml;
-        }
-        
-        private void AppendXML(XmlDocument doc, XmlElement parent, string elementName, string elementValue)
-        {
-            XmlElement xml = doc.CreateElement(elementName);
-            xml.InnerText = elementValue;
-            parent.AppendChild(xml);
-        }
-        
-        private string ReadXML(XmlDocument doc, string xpath)
-        {
-            string result = "";
-            XmlNode xml = doc.SelectSingleNode(xpath);
-            if(xml != null)
-                result = xml.InnerText;
-                
-            return result;
         }
     }
 }

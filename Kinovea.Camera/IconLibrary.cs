@@ -83,7 +83,9 @@ namespace Kinovea.Camera
             icons.Add("number08", Properties.Icons.number08);
             icons.Add("number09", Properties.Icons.number09);
             icons.Add("number10", Properties.Icons.number10);
-            
+
+            icons.Add("dashboard", Properties.Icons.dashboard);
+            icons.Add("counter", Properties.Icons.counter);
             icons.Add("construction", Properties.Icons.construction);
             icons.Add("na", Properties.Icons.na);
             

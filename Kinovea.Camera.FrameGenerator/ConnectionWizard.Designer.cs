@@ -18,9 +18,9 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-namespace Kinovea.Camera
+namespace Kinovea.Camera.FrameGenerator
 {
-    partial class FormIconPicker
+    partial class ConnectionWizard
     {
         /// <summary>
         /// Designer variable used to keep track of non-visual components.
@@ -28,7 +28,7 @@ namespace Kinovea.Camera
         private System.ComponentModel.IContainer components = null;
         
         /// <summary>
-        /// Disposes resources used by the form.
+        /// Disposes resources used by the control.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
@@ -48,18 +48,34 @@ namespace Kinovea.Camera
         /// </summary>
         private void InitializeComponent()
         {
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
-            // FormIconPicker
+            // richTextBox1
+            // 
+            this.richTextBox1.BackColor = System.Drawing.Color.White;
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox1.Location = new System.Drawing.Point(12, 14);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.richTextBox1.Size = new System.Drawing.Size(367, 96);
+            this.richTextBox1.TabIndex = 10;
+            this.richTextBox1.Text = "This type of camera is intended for testing purposes.\n\nIt continuously generates " +
+                "images at the specified frame rate, with an absolute timestamp drawn on each fra" +
+                "me.";
+            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            // 
+            // ConnectionWizard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "FormIconPicker";
-            this.Text = "Icons";
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.Controls.Add(this.richTextBox1);
+            this.Name = "ConnectionWizard";
+            this.Size = new System.Drawing.Size(404, 332);
             this.ResumeLayout(false);
 
         }
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }

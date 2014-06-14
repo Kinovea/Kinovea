@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-namespace Kinovea.Camera.HTTP
+namespace Kinovea.Camera
 {
     partial class FormHandshakeResult
     {
@@ -68,9 +68,9 @@ namespace Kinovea.Camera.HTTP
             // 
             // pbImage
             // 
-            this.pbImage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbImage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.pbImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.pbImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.pbImage.Location = new System.Drawing.Point(15, 15);
@@ -81,9 +81,9 @@ namespace Kinovea.Camera.HTTP
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.panel1.Controls.Add(this.pbImage);
             this.panel1.Location = new System.Drawing.Point(12, 12);
@@ -103,10 +103,11 @@ namespace Kinovea.Camera.HTTP
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormHandshakeResult";
-            this.Text = "IP Camera connection test";
+            this.Text = "Camera connection test";
             ((System.ComponentModel.ISupportInitialize)(this.pbImage)).EndInit();
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.PictureBox pbImage;
