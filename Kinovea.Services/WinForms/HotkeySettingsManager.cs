@@ -68,7 +68,9 @@ namespace Kinovea.Services
 
             foreach (HotkeyCommand c in hotkeys[category])
             {
-                if (c.CommandCode == command.CommandCode)
+                // We test by the command name because the command code is subject to change
+                // when we add commands between existing ones.
+                if (c.Name == command.Name)
                 {
                     c.KeyData = command.KeyData;
                     break;
