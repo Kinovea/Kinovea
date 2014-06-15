@@ -12,11 +12,13 @@ namespace Kinovea.ScreenManager
     public partial class FormCalibrateDistortion : Form
     {
         private CameraCalibrator calibrator;
+        private Size imageSize;
 
         public FormCalibrateDistortion(List<List<PointF>> points, Size imageSize)
         {
+            this.imageSize = imageSize;
             calibrator = new CameraCalibrator(points, imageSize);
-
+            
             InitializeComponent();
         }
 
@@ -25,7 +27,9 @@ namespace Kinovea.ScreenManager
             if (!calibrator.Valid)
                 return;
 
-            calibrator.Calibrate();
+            DistortionParameters parameters = calibrator.Calibrate();
+            DistortionHelper distorter = new DistortionHelper(parameters, imageSize);
+
         }
     }
 }

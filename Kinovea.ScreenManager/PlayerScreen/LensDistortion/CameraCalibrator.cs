@@ -13,11 +13,13 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Finds distortion coefficients and intrinsic parameters from image points of pattern.
     ///
-    /// References :
+    /// References:
+    ///
     /// Background and original implementation:
     /// http://www.vision.caltech.edu/bouguetj/calib_doc/
     /// http://docs.opencv.org/doc/tutorials/calib3d/camera_calibration/camera_calibration.html
-    /// Usage in EmguCV:
+    ///
+    /// EmguCV specific:
     /// http://www.emgu.com/wiki/index.php/Camera_Calibration
     /// </summary>
     public class CameraCalibrator
@@ -43,14 +45,16 @@ namespace Kinovea.ScreenManager
             valid = true;
         }
 
-        public void Calibrate()
+        public DistortionParameters Calibrate()
         {
+            // Fixing k3 to zero avoid numeric instability as we don't have a lot of points to work with.
+
             CALIB_TYPE flags = 
                 //CALIB_TYPE.CV_CALIB_FIX_ASPECT_RATIO |
                 //CALIB_TYPE.CV_CALIB_FIX_FOCAL_LENGTH |
                 //CALIB_TYPE.CV_CALIB_FIX_PRINCIPAL_POINT |
                 CALIB_TYPE.CV_CALIB_FIX_K3 |
-                (CALIB_TYPE)16384; // CV_CALIB_RATIONAL_MODEL*/
+                (CALIB_TYPE)16384; // CV_CALIB_RATIONAL_MODEL
 
             int imageCount = allImagePoints.Length;
 
@@ -63,8 +67,8 @@ namespace Kinovea.ScreenManager
 
             IntrinsicCameraParameters icp = new IntrinsicCameraParameters();
 
-            using (Matrix<float> objectPointMatrix = ToMatrix(allObjectPoints))
-            using (Matrix<float> imagePointMatrix = ToMatrix(allImagePoints))
+            using (Matrix<float> objectPointMatrix = EmguHelper.ToMatrix(allObjectPoints))
+            using (Matrix<float> imagePointMatrix = EmguHelper.ToMatrix(allImagePoints))
             using (Matrix<int> pointCountsMatrix = new Matrix<int>(pointCounts))
             using (Matrix<double> rotationVectors = new Matrix<double>(imageCount, 3))
             using (Matrix<double> translationVectors = new Matrix<double>(imageCount, 3))
@@ -91,8 +95,13 @@ namespace Kinovea.ScreenManager
             double cx = icp.IntrinsicMatrix[0, 2];
             double cy = icp.IntrinsicMatrix[1, 2];
 
-            log.DebugFormat("Distortion parameters: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}, p1:{3:0.000}, p2:{4:0.000}.", k1, k2, k3, p1, p2);
+            DistortionParameters parameters = new DistortionParameters(icp);
+            //DistortionParameters parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy);
+
+            log.DebugFormat("Distortion coefficients: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}, p1:{3:0.000}, p2:{4:0.000}.", k1, k2, k3, p1, p2);
             log.DebugFormat("Camera intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", fx, fy, cx, cy);
+
+            return parameters;
         }
 
         private void ImportImagePoints(List<List<PointF>> imagePoints)
@@ -105,12 +114,12 @@ namespace Kinovea.ScreenManager
 
         private void ComputeObjectPoints(List<List<PointF>> imagePoints)
         {
-            // For each input, precompute the 3D coordinates of the pattern.
+            // Precompute the 3D coordinates of the pattern.
             // Z is always 0 as the calibration object is planar.
             // The number of points depends on the number of points in the input.
-            
             // The units are not important.
-            // The pattern is assumed to be squares (chessboard like).
+            // The pattern is assumed to only contain squares (chessboard like).
+
             int width = 100;
             int height = 100;
 
@@ -145,50 +154,6 @@ namespace Kinovea.ScreenManager
                 image++;
             }
 
-        }
-
-
-        private static Matrix<float> ToMatrix(MCvPoint3D32f[][] data)
-        {
-            int elementCount = 0;
-            foreach (MCvPoint3D32f[] d in data) 
-                elementCount += d.Length;
-
-            Matrix<float> res = new Matrix<float>(elementCount, 3);
-
-            Int64 address = res.MCvMat.data.ToInt64();
-
-            foreach (MCvPoint3D32f[] d in data)
-            {
-                int lengthInBytes = d.Length * StructSize.MCvPoint3D32f;
-                GCHandle handle = GCHandle.Alloc(d, GCHandleType.Pinned);
-                Emgu.Util.Toolbox.memcpy(new IntPtr(address), handle.AddrOfPinnedObject(), lengthInBytes);
-                handle.Free();
-                address += lengthInBytes;
-            }
-
-            return res;
-        }
-
-        private static Matrix<float> ToMatrix(PointF[][] data)
-        {
-            int elementCount = 0;
-            foreach (PointF[] d in data) 
-                elementCount += d.Length;
-
-            Matrix<float> res = new Matrix<float>(elementCount, 2);
-            Int64 address = res.MCvMat.data.ToInt64();
-
-            foreach (PointF[] d in data)
-            {
-                int lengthInBytes = d.Length * StructSize.PointF;
-                GCHandle handle = GCHandle.Alloc(d, GCHandleType.Pinned);
-                Emgu.Util.Toolbox.memcpy(new IntPtr(address), handle.AddrOfPinnedObject(), lengthInBytes);
-                handle.Free();
-                address += lengthInBytes;
-            }
-
-            return res;
         }
     }
 }
