@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Fel: Kan ej öppna filen : filtypen stöds ej.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea – Laddningsfel.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Fel: Kan ej öppna filen : hittar ej fil eller filen är tom.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Fel: Kan ej öppna filen : Bildformatet stöds ej.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Fel: Kan ej öppna filen : inkonsekvenser upptäckta. Kontrollera kodningsprocessen.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Fel: Kan ej öppna filen : stream-informationen saknas.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Fel: kan ej öppna filen : okänt fel.</value></data>

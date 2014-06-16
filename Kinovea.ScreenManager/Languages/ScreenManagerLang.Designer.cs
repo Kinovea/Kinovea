@@ -1555,15 +1555,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : Image format is not supported..
-        /// </summary>
-        internal static string LoadMovie_ImageFormatError {
-            get {
-                return ResourceManager.GetString("LoadMovie_ImageFormatError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : inconsistencies found. Please check encoding process..
         /// </summary>
         internal static string LoadMovie_InconsistantMovieError {
@@ -2725,7 +2716,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Vary Playback Speed.
+        ///   Recherche une chaîne localisée semblable à Change Playback Speed.
         /// </summary>
         internal static string ToolTip_sldrSpeed {
             get {

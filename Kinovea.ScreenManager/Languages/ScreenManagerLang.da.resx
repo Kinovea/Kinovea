@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Fejl: Kan ikke åbne filen: usupporteret filtype.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Indlæsningsfejl.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Fejl: Kan ikke åbne filen: Filen ikke fundet eller tom.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Fejl: Kan ikke åbne filen: usupporteret billedformat.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Fejl: Kan ikke åbne filen: Inkonsistens fundet. Check encoding processen.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Fejl: Kan ikke åbne filen: kan ikke finde informationer om stream.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Fejl: Kan ikke åbne filen: ukendt fejl.</value></data>

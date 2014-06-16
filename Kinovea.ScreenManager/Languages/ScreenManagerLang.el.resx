@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Αποτυχία: Αδύνατο το άνοιγμα του αρχείου : Μη υποστηριζόμενος τύπος αρχείου.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Σφάλμα Φόρτωσης.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Αποτυχία: Αδύνατο το άνοιγμα του αρχείου : Το αρχείο δεν βρέθηκε ή είναι κενό.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Αποτυχία: Αδύνατο το άνοιγμα του αρχείου : Μη υποστηριζόμενη μορφή αρχείου.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Αποτυχία: Αδύνατο το άνοιγμα του αρχείου : Βρέθηκαν ασυνέπειες. Παρακαλούμε ελέγξτε την διαδικασία κωδικοποίησης.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Αποτυχία: Αδύνατο το άνοιγμα του αρχείου : Πληροφορία ροής δεν βρέθηκε.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Αποτυχία: Αδύνατο το άνοιγμα του αρχείου : Άγνωστο σφάλμα.</value></data>

@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : サポートされていないファイルタイプ。</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - ロードエラー</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : ファイルが見つからなかったか、ファイルが空です。</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : サポートされていないイメージフォーマット。</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : 問題が発生しました。エンコーディングプロセスを確認して下さい。</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : ストリーム情報が検出されませんでした。</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : 不明なエラー。</value></data>
@@ -361,7 +360,7 @@
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>作業範囲の最初のフレームを現在のフレームにセット</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>作業範囲の最後のフレームを現在のフレームにセット</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>コメントを表示</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Vary Playback Speed</value></data>
+   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>再生スピードを変更 </value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>両方のイメージをコンポジットイメージに保存</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>両方のビデオをコンポジットビデオに保存</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>作業範囲を設定</value></data>

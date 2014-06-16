@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Hata: Dosya açılamıyor : dosya tipi desteklenmiyor.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Yükleme Hatası.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Hata: Dosya açılamıyor : dosya bulunamadı veya boş değil.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Hata: Dosya açılamıyor : İmaj formatı desteklenmiyor.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Hata: Dosya açılamıyor : uyuşmazlıklar bulundu. Lütfen kodlama işlemini kontrol edin.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Hata: Dosya açılamıyor : akış bilgisi bulunamadı.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Hata: Dosya açılamıyor : bilinmeyen hata.</value></data>

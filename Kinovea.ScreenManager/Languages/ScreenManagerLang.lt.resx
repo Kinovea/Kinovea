@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : dokumento formatas nepalaikomas</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - paleisties klaida.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : dokumentas nerastas arba tuščias.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : paveikslėlio formatas nepalaikomas.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : rasti neatitikimai. Patikrinkite kodavimo procesą.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : informacijos šaltinis nerastas.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : nenustatyta klaida.</value></data>

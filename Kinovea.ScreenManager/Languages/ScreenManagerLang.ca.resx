@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Error: No s'ha pogut obrir l'arxiu: tipus no suportat.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea – Error en carregar</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Error: No s'ha pogut obrir l'arxiu: arxiu no trobat o buit.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Error: No s'ha pogut obrir l'arxiu: format d'imatge no suportat.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Error: No s'ha pogut obrir l'arxiu: format d'imatge no suportat.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Error: No s'ha pogut obrir l'arxiu: imformació del flux no trobada.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Error: No s'ha pogut obrir l'arxiu: error desconegut.</value></data>

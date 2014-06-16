@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Advarsel: Kan ikke åpne fil : denne filtypen støttes ikke</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea – Lastefeil</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Advarsel: Kan ikke åpne fil : Filen ikke funnet eller ingen data</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Advarsel: Kan ikke åpne fil : Bildeformat støttes ikke</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Advarsel: Kan ikke åpne fil : </value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Advarsel: Kan ikke åpne fil : streamin informasjon ikke funnet</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Advarsel: Kan ikke åpne fil : ukjent feil</value></data>

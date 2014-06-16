@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Carga de archivo imposible: este tipo de archivo no es compatible.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Error al cargar.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Imposible cargar el archivo: no se encuentra el archivo. </value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Imposible cargar el archivo:el formato de las imàgenes no es compatible.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Imposible cargar el archivo: incongruencias en el archivo. Por favor, compruebe el proceso de codificación.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Imposible cargar el archivo: no se encuentran los flujos de información .</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Imposible cargar el archivo: error desconocido ..</value></data>
@@ -242,8 +241,8 @@
    <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Imàgenes Descodificadas : </value></data>
    <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Progresiòn de la descarga.</value></data>
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Total desconocido</value></data>
-   <data name="LockSelectionLock" xml:space="preserve"><value>Vérouiller les Bornes de la Zone de Travail</value></data>
-   <data name="LockSelectionUnlock" xml:space="preserve"><value>Dévérouiller los terminales de la zona de trabajo</value></data>
+   <data name="LockSelectionLock" xml:space="preserve"><value>Bloquear la zona de trabajo </value></data>
+   <data name="LockSelectionUnlock" xml:space="preserve"><value>Desbloquear la zona de trabajo </value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Cuadrícula de Perspectiva </value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configurar</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Modo Cuenta Atràs</value></data>

@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Eroare la deschiderea fişierului : tipul fişierului nu este suportat.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea – Eroare la încărcare.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Eroare la deschidere : fişier lipsă.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Eroare la deschidere : formatul imaginilor nu este suportat.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Eroare la deschidere : există neconcordanţe. Vă rugăm să verificaţi procesul de encodare.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Eroare la deschidere : nu sunt găsite informaţiile referitoare la fluxul video.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Eroare necunoscută la deschidere.</value></data>

@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Greška: Nije moguće otvoriti datoteku : tip datoteke nije podržan.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Greška pri učitavanju.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Greška: Nije moguće otvoriti datoteku : datoteka nije pronađena, ili je prazna.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Greška: Nije moguće otvoriti datoteku : format slike nije podržan.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Greška: Nije moguće otvoriti datoteku : pronađene nedoslednosti. Molimo vas da proverite proces kodiranja. </value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Greška : Nije moguće otvoriti datoteku : informacije o toku nisu pronađene .</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Greška : Nije moguće otvoriti datoteku : nepoznata greška .</value></data>
