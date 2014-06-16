@@ -119,7 +119,7 @@ namespace Kinovea.ScreenManager
             double timeStretchFactor = captureFPS / videoFPS;
             string format = "{0:0.000}";
 
-            if (timeStretchFactor == 1)
+            if (timeStretchFactor % 1 == 0)
                 format = "{0:0}";
 
             string text = ScreenManagerLang.dlgConfigureSpeed_lblTimeStretchFactor;
