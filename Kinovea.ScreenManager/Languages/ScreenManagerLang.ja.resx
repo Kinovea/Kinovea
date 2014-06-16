@@ -110,9 +110,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>グリッドの設定</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>透明度の設定</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>透明度: {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>キャプチャタイムの毎秒のフレーム数 :\n(ex: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>ディスプレイタイムの毎秒のフレーム数 : {0:0.00} fps.</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>ビデオはオリジナルよりも {0:0} 倍遅い</value></data>
+   
+   
+   
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>オリジナルスピードに設定</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>リセット</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>ターゲットマーカーを表示</value></data>

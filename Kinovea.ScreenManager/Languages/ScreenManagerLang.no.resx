@@ -110,9 +110,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Konfigurer rutenett</value></data>
    
    
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Antall bilder per sekund ved opptak :\n(ex: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Antall bilder per sekund ved visning: {0:0.00} bps</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Video er {0:0} langsommere enn originalt</value></data>
+   
+   
+   
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Konfigurer opptakshastighet</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Tilbakestill</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Vis markør</value></data>

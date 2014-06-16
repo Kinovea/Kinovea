@@ -116,9 +116,16 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateSlowFactorText()
         {
-            int slowingFactor = (int)(captureFPS / videoFPS);
-            lblSlowFactor.Visible = slowingFactor > 1;
-            lblSlowFactor.Text = string.Format(ScreenManagerLang.dlgConfigureSpeed_lblSlowFactor, slowingFactor);
+            double timeStretchFactor = captureFPS / videoFPS;
+            string format = "{0:0.000}";
+
+            if (timeStretchFactor == 1)
+                format = "{0:0}";
+
+            string text = ScreenManagerLang.dlgConfigureSpeed_lblTimeStretchFactor;
+            string formattingText = string.Format(text, format);
+            string finalText = string.Format(formattingText, timeStretchFactor);
+            lblTimeStretchFactor.Text = finalText;
         }
         private bool IsNumerical(char key)
         {
