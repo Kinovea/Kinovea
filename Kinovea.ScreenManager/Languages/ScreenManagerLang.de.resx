@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Format wird nicht unterstützt.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea – Ladefehler.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Datei nicht gefunden.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Bilddateiformat nicht zulässig.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Unregelmäßigkeiten gefunden. Bitte Kodierungsprozeß überprüfen!</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Videostream Information nicht gefunden.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Fehler beim Öffnen der Datei – unbekannter Fehler.</value></data>

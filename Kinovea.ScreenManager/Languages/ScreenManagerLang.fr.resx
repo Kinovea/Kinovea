@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Chargement du fichier impossible : ce type du fichier n'est pas supporté.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Erreur de Chargement.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Chargement du fichier impossible : fichier introuvable ou vide.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Chargement du fichier impossible : le format des images n'est pas supporté.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Chargement du fichier impossible : incohérences dans le fichier. Veuillez vérifier le processus d'encodage.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Chargement du fichier impossible : informations de flux non trouvées.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Chargement du fichier impossible : erreur inconnue.</value></data>

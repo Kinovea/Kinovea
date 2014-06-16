@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Błąd przy próbie otwarcia pliku : typ pliku nie jest obsługiwany.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - błąd podczas ładowania.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Błąd przy próbie otwarcia pliku : nie znaleziono pliku.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Błąd przy próbie otwarcia pliku : obraz nie jest obługiwany.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Błąd przy próbie otwarcia pliku : napotkano na niezgodność. Sprawdź proces kodowania.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Błąd podczas próby otwarcia pliku : nie znaleziono informacji o strumieniu.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Błąd podczas próby otwarcia pliku : nieznany błąd.</value></data>

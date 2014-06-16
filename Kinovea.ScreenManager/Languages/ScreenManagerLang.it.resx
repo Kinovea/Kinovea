@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Errore : Impossibile aprire file : tipo file non supportato.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea – Errore nel caricamento.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Errore : Impossibile aprire file : file vuoto/non trovato.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Errore : Impossibile aprire file : formato Immagini non supportato.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Errore : Impossibile aprire file : trovate incongruenze. Verifica processo di Codifica.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Errore : Impossibile aprire file : mancano informazioni del flusso video.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Errore : Impossibile aprire file : errore sconosciuto.</value></data>

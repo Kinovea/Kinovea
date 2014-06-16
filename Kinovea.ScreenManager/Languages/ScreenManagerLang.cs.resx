@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: typ souboru není podporován.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - chyba při nahrávání.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: soubornenalezen nebo je prázdný.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: nepodporovaný záznam obrazu</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: zjištěny nesrovnalosti. Zkontrolujte kódování.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: stream informace nenalezena.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: neznámá chyba.</value></data>

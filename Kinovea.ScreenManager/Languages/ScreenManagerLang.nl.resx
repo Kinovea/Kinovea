@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Fout bij het openen van het bestand : bestandstype wordt niet ondersteund.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Foutmelding</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Fout bij openen van bestand ; bestand niet gevonden.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Fout bij openen van het bestand : Afbeeldingsvorm wordt niet ondersteund.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Fout bij het openen van het bestand : inconsistentie gevonden. Controleer alstublieft het encoding proces.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Fout bij het openen van het bestand : informatie van voortgang niet gevonden.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Fout bij openen van bestand : onbekende fout.</value></data>

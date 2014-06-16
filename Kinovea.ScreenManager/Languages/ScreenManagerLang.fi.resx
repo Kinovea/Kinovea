@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Tiedoston avaus epäonnistui: ei-tuettu tiedostomuoto.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea – Latausvirhe.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Tiedoston avaus epäonnistui: tiedostoa ei löytynyt.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Tiedoston avaus epäonnistui: ei-tuettu kuvamuoto.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Tiedoston avaus epäonnistui: epäjohdonmukaisuuksia havaittu. Tarkista koodausprosessi.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Tiedoston avaus epäonnistui: stream-tietoja ei löytynyt.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Tiedoston avaus epäonnistui: tuntematon virhe.</value></data>

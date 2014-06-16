@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: тип файла не поддерживается</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - ошибка загрузки.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: файл не найден или пустой.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: Формат изображения не поддерживается.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Ошибка: невозможно открыть файл: обнаружено несоответствие: Пожалуйста, проконтролируйте процесс кодировки.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: потоковая информация не найдена</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: неизвестная ошибка</value></data>

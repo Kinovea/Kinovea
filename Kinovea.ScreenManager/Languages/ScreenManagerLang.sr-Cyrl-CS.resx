@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Грешка: Није могуће отворити датотеку : тип датотеке није подржан.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Киновеа - Грешка при учитавању.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Грешка: Није могуће отворити датотеку : датотека није пронађена, или је празна.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Грешка: Није могуће отворити датотеку : формат слике није подржан.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Грешка: Није могуће отворити датотеку : пронађене недоследности. Молимо вас да проверите процес кодирања. </value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Грешка : Није могуће отворити датотеку : информације о току нису пронађене .</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Грешка : Није могуће отворити датотеку : непозната грешка .</value></data>

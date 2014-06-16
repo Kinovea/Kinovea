@@ -233,7 +233,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>失败: 无法打开文件 : 文件类型不支持.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>载入出错.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>失败: 无法打开文件 : 文件不存在或为空.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>失败: 无法打开文件 : 图像格式不支持.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>失败: 无法打开文件 : 发现不一致的地方. 请检查编码过程.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>失败: 无法打开文件 : 无法找到视频流相关信息.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>失败: 无法打开文件 : 未知错误.</value></data>
