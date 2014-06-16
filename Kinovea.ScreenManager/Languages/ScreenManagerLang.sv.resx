@@ -110,9 +110,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Inställningar rutverk</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Inställningar transparens</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Transparens: {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Antal bilder per sekund vid inspelning :\n(ex: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Antal bilder per sekund vid uppspelning : {0:0.00} bps.</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Videon är {0:0} gånger långsammare än original.</value></data>
+   
+   
+   
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Konfigurera original hastighet</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Återställning</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Visa Kryssmarkören</value></data>

@@ -110,9 +110,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>그리드 구성</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>투명도 구성</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value> 투명도: {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>캡처할 때의 초당 프레임 수:\n(ex: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>디스플레이 때의 초당 프레임 수 : {0:0.00} fps.</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>비디오는 원본보다 {0:0}배 더 느림</value></data>
+   
+   
+   
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>원래 속도의 구성 </value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>초기화</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>타깃 표식 보이기</value></data>

@@ -475,7 +475,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Number of frames per second at capture time :\n(ex: 300).
+        ///   Recherche une chaîne localisée semblable à Capture framerate (ex:300) :.
         /// </summary>
         internal static string dlgConfigureSpeed_lblFPSCaptureTime {
             get {
@@ -484,7 +484,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Number of frames per seconds at display time : {0:0.00} fps..
+        ///   Recherche une chaîne localisée semblable à Video framerate : {0:0.00} fps..
         /// </summary>
         internal static string dlgConfigureSpeed_lblFPSDisplayTime {
             get {
@@ -493,11 +493,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Video is {0:0} times slower than original..
+        ///   Recherche une chaîne localisée semblable à Time stretch factor : {0}x..
         /// </summary>
-        internal static string dlgConfigureSpeed_lblSlowFactor {
+        internal static string dlgConfigureSpeed_lblTimeStretchFactor {
             get {
-                return ResourceManager.GetString("dlgConfigureSpeed_lblSlowFactor", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureSpeed_lblTimeStretchFactor", resourceCulture);
             }
         }
         

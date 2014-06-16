@@ -110,9 +110,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configurer la Grille</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configurer l'opacité</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacité : {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Nombre d'images par seconde lors de la capture :\n(par ex:300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Nombre d'images par seconde à la lecture : {0:0.00} ips.</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>La vidéo est {0:0} fois plus lente que l'original</value></data>
+   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Fréquence de capture (ex : 300) :</value></data>
+   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Fréquence de la vidéo : {0:0.00} ips.</value></data>
+   <data name="dlgConfigureSpeed_lblTimeStretchFactor" xml:space="preserve"><value>Facteur d'étirement temporel : {0}x.</value></data>
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configurer la vitesse d'origine</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Remettre à zéro</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Montrer le Marqueur de Cible</value></data>

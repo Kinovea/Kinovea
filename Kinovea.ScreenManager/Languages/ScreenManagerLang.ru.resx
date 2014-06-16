@@ -110,9 +110,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Конфигурация сетки</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Настройка прозрачности</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Прозрачность : {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Кадров в секунду по времени съемки:\n(ex: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Количество кадров в секунду по времени воспроизведения : {0:0.00} fps.</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Видео в {0:0} раз медленнее чем оригинал</value></data>
+   
+   
+   
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Конфигурация оригинальной скорости</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Сброс параметров</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Показать целевые маркеры</value></data>

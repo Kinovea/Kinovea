@@ -110,9 +110,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configurar la graella</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configurar l'opacitat</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacitat : {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Número de fotogrames per segon a l'hora de la captura.</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Número de fotogrames per segon a l'hora de la reproducció.</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>El vídeo és {0:0} vegades més lent que l'original</value></data>
+   
+   
+   
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configurar la velocitat d'orígen</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Restablir</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Mostrar el marcador de l'objectiu</value></data>
