@@ -20,11 +20,15 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System.Drawing;
 using System.Windows.Forms;
+using Kinovea.Services;
+using System;
 
 namespace Kinovea.ScreenManager
 {
     public interface ICaptureScreenView
     {
+        event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
+
         string CurrentImageFilename { get; }
         string CurrentVideoFilename { get; }
 

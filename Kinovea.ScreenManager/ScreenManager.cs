@@ -134,8 +134,7 @@ namespace Kinovea.ScreenManager
             view = new ScreenManagerUserInterface();
             view.FileLoadAsked += View_FileLoadAsked;
             view.AutoLaunchAsked += View_AutoLaunchAsked;
-            AddCommonControlsPlayersEventHandlers();
-            AddCommonControlsCaptureEventHandlers();
+            AddCommonControlsEventHandlers();
 
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
@@ -536,8 +535,8 @@ namespace Kinovea.ScreenManager
             // A screen has received a hotkey that must be handled at manager level.
             if (dualPlayer.Active)
                 dualPlayer.ExecuteDualCommand(e.Value);
-
-            // TODO: dualCapture.
+            else if (dualCapture.Active)
+                dualCapture.ExecuteDualCommand(e.Value);
         }
 
         private void Player_SelectionChanged(object sender, EventArgs<bool> e)
@@ -573,38 +572,14 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Common controls event handlers
-        private void AddCommonControlsPlayersEventHandlers()
+        private void AddCommonControlsEventHandlers()
         {
             dualPlayer.View.SwapAsked += CCtrl_SwapAsked;
-        }
-        private void AddCommonControlsCaptureEventHandlers()
-        {
             dualCapture.View.SwapAsked += CCtrl_SwapAsked;
-            dualCapture.View.GrabbingChanged += CCtrl_GrabbingChanged;
-            dualCapture.View.SnapshotAsked += CCtrl_SnapshotAsked;
-            dualCapture.View.RecordingChanged += CCtrl_RecordingChanged;
         }
-        
         private void CCtrl_SwapAsked(object sender, EventArgs e)
         {
             mnuSwapScreensOnClick(null, EventArgs.Empty);	
-        }
-
-        // TODO: move the next three to DualCaptureController.
-        private void CCtrl_GrabbingChanged(object sender, EventArgs<bool> e)
-        {
-            foreach (CaptureScreen screen in captureScreens)
-                screen.ForceGrabbingStatus(e.Value);
-        }
-        private void CCtrl_SnapshotAsked(object sender, EventArgs e)
-        {
-            foreach (CaptureScreen screen in captureScreens)
-                screen.PerformSnapshot();
-        }
-        private void CCtrl_RecordingChanged(object sender, EventArgs<bool> e)
-        {
-            foreach (CaptureScreen screen in captureScreens)
-                screen.ForceRecordingStatus(e.Value);
         }
         #endregion
         

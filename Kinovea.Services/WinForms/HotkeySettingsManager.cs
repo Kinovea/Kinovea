@@ -172,6 +172,12 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.Close, Keys.Control | Keys.F4)
                     }
                 },
+                { "DualCapture", new HotkeyCommand[]{
+                    hk(DualCaptureCommands.ToggleGrabbing, Keys.Space),
+                    hk(DualCaptureCommands.ToggleRecording, Keys.Control | Keys.Return),
+                    hk(DualCaptureCommands.TakeSnapshot, Keys.Shift | Keys.Return)
+                    }
+                },
                 { "CaptureScreen", new HotkeyCommand[]{
                     hk(CaptureScreenCommands.ToggleGrabbing, Keys.Space), 
                     hk(CaptureScreenCommands.ToggleRecording, Keys.Control | Keys.Return), 
