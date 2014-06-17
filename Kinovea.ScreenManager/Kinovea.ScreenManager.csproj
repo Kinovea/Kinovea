@@ -237,7 +237,7 @@
     <Compile Include="CaptureScreen\Views\ViewPort.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DualCaptureController.cs" />
+    <Compile Include="DualCapture\DualCaptureController.cs" />
     <Compile Include="DualPlayer\CommonTimeline.cs" />
     <Compile Include="DualPlayer\DualPlayerController.cs" />
     <Compile Include="DualPlayer\DualSnapshoter.cs" />
@@ -310,10 +310,10 @@
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoNull.cs" />
     <Compile Include="UndoRedo\HistoryMenuManager.cs" />
     <Compile Include="UndoRedo\HistoryStack.cs" />
-    <Compile Include="UserInterface\CommonControlsCapture.cs">
+    <Compile Include="DualCapture\CommonControlsCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserInterface\CommonControlsCapture.Designer.cs">
+    <Compile Include="DualCapture\CommonControlsCapture.Designer.cs">
       <DependentUpon>CommonControlsCapture.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\FormCrashRecovery.cs">
@@ -853,7 +853,7 @@
     <EmbeddedResource Include="Thumbnails\ThumbnailViewerFiles.resx">
       <DependentUpon>ThumbnailViewerFiles.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\CommonControlsCapture.resx">
+    <EmbeddedResource Include="DualCapture\CommonControlsCapture.resx">
       <DependentUpon>CommonControlsCapture.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>

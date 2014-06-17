@@ -93,6 +93,13 @@ namespace Kinovea.Services
         Close
     }
 
+    public enum DualCaptureCommands
+    {
+        ToggleGrabbing,
+        ToggleRecording,
+        TakeSnapshot
+    }
+
     public enum CaptureScreenCommands
     {
         ToggleGrabbing,

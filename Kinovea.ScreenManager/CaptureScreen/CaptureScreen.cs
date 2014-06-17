@@ -91,6 +91,15 @@ namespace Kinovea.ScreenManager
         {
             get { return historyStack; }
         }
+        public bool Shared
+        {
+            get { return shared; }
+        }
+        public bool Synched
+        {
+            get { return synched; }
+            set { synched = value; }
+        }
         #endregion
         
         #region Members
@@ -110,6 +119,7 @@ namespace Kinovea.ScreenManager
         private double availableMemory;
         private double frameMemory;
         private bool shared;
+        private bool synched;
         
         private CameraSummary summary;
         private Metadata metadata;
@@ -136,6 +146,7 @@ namespace Kinovea.ScreenManager
         {
             log.Debug("Constructing a CaptureScreen.");
             view = new CaptureScreenView(this);
+            view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
             
             viewportController = new ViewportController();
             view.SetViewport(viewportController.View);
