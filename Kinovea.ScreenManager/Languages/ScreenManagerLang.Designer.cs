@@ -817,56 +817,38 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Informations.
+        ///   Recherche une chaîne localisée semblable à Export all images..
         /// </summary>
-        internal static string dlgRafaleExport_GroupInfos {
+        internal static string dlgRafaleExport_ExportAll {
             get {
-                return ResourceManager.GetString("dlgRafaleExport_GroupInfos", resourceCulture);
+                return ResourceManager.GetString("dlgRafaleExport_ExportAll", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Blend drawings onto images..
+        ///   Recherche une chaîne localisée semblable à Export one image every {0} images..
         /// </summary>
-        internal static string dlgRafaleExport_LabelBlend {
+        internal static string dlgRafaleExport_ExportFrameDecimation {
             get {
-                return ResourceManager.GetString("dlgRafaleExport_LabelBlend", resourceCulture);
+                return ResourceManager.GetString("dlgRafaleExport_ExportFrameDecimation", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à one frame every {0} hundredth of seconds..
+        ///   Recherche une chaîne localisée semblable à Export one image every {0:0}ms..
         /// </summary>
-        internal static string dlgRafaleExport_LabelFrequencyHundredth {
+        internal static string dlgRafaleExport_ExportTimeDecimationMilliseconds {
             get {
-                return ResourceManager.GetString("dlgRafaleExport_LabelFrequencyHundredth", resourceCulture);
+                return ResourceManager.GetString("dlgRafaleExport_ExportTimeDecimationMilliseconds", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Frequency of image export :.
+        ///   Recherche une chaîne localisée semblable à Export one image every {0:0.00}s..
         /// </summary>
-        internal static string dlgRafaleExport_LabelFrequencyRoot {
+        internal static string dlgRafaleExport_ExportTimeDecimationSeconds {
             get {
-                return ResourceManager.GetString("dlgRafaleExport_LabelFrequencyRoot", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à one frame every {0:0.00} seconds..
-        /// </summary>
-        internal static string dlgRafaleExport_LabelFrequencySeconds {
-            get {
-                return ResourceManager.GetString("dlgRafaleExport_LabelFrequencySeconds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à The suffix will be automatically appended to image file names. ( &quot;file&quot; =&gt; &quot;file-00.00.jpg&quot;).
-        /// </summary>
-        internal static string dlgRafaleExport_LabelInfoSuffix {
-            get {
-                return ResourceManager.GetString("dlgRafaleExport_LabelInfoSuffix", resourceCulture);
+                return ResourceManager.GetString("dlgRafaleExport_ExportTimeDecimationSeconds", resourceCulture);
             }
         }
         
@@ -880,20 +862,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Total images to export : {0:0} images..
+        ///   Recherche une chaîne localisée semblable à Total : {0:0} images..
         /// </summary>
         internal static string dlgRafaleExport_LabelTotalFrames {
             get {
                 return ResourceManager.GetString("dlgRafaleExport_LabelTotalFrames", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Duration covered by the exported sequence of images : {0:0.00} seconds..
-        /// </summary>
-        internal static string dlgRafaleExport_LabelTotalSeconds {
-            get {
-                return ResourceManager.GetString("dlgRafaleExport_LabelTotalSeconds", resourceCulture);
             }
         }
         

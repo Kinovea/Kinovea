@@ -151,15 +151,12 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Коментари...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Киновеа видео анализа (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Вчитај податок за клучните слики</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Информации</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Мешај ги цртежите во сликите.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>Еден фрејм на секој {0} стоти дел од секундата.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Фреквенција на експорт на слика:</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>Еден фрејм на секоја {0:0.00} секунда.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>Наставката ќе биде додадена на името од сликата на датотеката. ( "file" =&gt; "file-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Експорт само на клучните слики.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Вкупно слики за експорт : {0:0} слики</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Времетраењето опфатено со експортираната секвенца на сликите : {0:0.00} секунди</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Зачувај ја секвенцата од сликите</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Киновеа видео анализа (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Земи во предвид забавено движење. (Current =</value></data>

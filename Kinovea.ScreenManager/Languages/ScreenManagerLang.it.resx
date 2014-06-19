@@ -151,15 +151,12 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commenti...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analisi (*.kva)|*.kva|XML (*.xml)|*.xml|Tutti I Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Carica le Immagini Chiave e loro Dati</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informazioni</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Apponi i Disegni sulle immagini.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>Un fotogramma ogni {0} centesimi di secondo.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Frequenza di registrazione immagini :</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>un fotogramma ogni {0:0.00} secondi.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>L'estensione sara' automaticam. aggiunta al nome del File Immagini. ("file" =&gt; "file-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Esporta solo le Immagini Chiave.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Totale delle immagini da esportare : {0:0} immagini.</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Durata della sequenza di Immagini esportata : {0:0.00} secondi.</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Salva una sequenza di Immagini</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea Video Analisi (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Nel salvataggio tieni conto del Rallentatore. (Attuale = </value></data>

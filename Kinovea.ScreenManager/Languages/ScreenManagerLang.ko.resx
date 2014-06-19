@@ -151,15 +151,12 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>주석…</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea 비디오 분석 (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>키 이미지'자료 가져오기</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>정보</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>그림을 이미지 위에 혼합</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>매 {0} 백분의 1초 마다 한 프레임</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>내보내는 이미지의 재생속도(frequency):</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>매 {0:0.00}초 마다 한 프레임</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>접미사가 이미지 파일명에 첨부됨( "file" =&gt; "file-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>키 이미지'만 내보냄</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>전체 내보낸 이미지 수: {0:0} 이미지</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>내보낸 연속 이미지가 지속되는 시간간격 : {0:0.00}초</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>연속 이미지를 저장</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea 비디오 분석 (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>느린 재생을 고려하라(현재=</value></data>

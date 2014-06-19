@@ -151,15 +151,12 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Komentarai...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Įkelti paveiklėlių žymių duomenis</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informacija</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Sulieti piešinius paveiksle</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>vieną kadrą kas {0} šimtąją sekundės.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Paveikslėlių dažnis ekportavimui :</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>vienas kadras kas {0:0.00} sekunde.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>Numeracija bus automatiškai pridėta prie dokumento pavadinimo. ( "file" =&gt; "file-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Eksportuoti tik pažymėtus paveikslus</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Viso paveikslėlių eksportuota : {0:0} paveikslėliai.</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Trukmė ekportuojamų paveikslėlių yra : {0:0.00} sekundžių.</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Išsaugoti vaizdų seką</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea vaizdo analizė (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Naudoti letą judesį. (Esamas = </value></data>

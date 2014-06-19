@@ -151,15 +151,12 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Komentarze...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Analiza wideo Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Wczytaj kluczowe Obrazy</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informacje</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Połącz rysunki w obrazy</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>Jedna klatka co {0} setne sekundy.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Częstotliwość eksportu obrazu :</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>Jedna klatka co {0:0.00} sekundy.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>Przyrostek zostanie automatycznie dodany do nazwy pliku obrazu. ( "plik" =&gt; "plik-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Eksportuj tylko kluczowe Obrazy</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Wszystkich obrazów do eksportu : {0:0}</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Czas trwania eksportowanej sekwencji obrazów : {0:0.00} sekund</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Zapisz sekwencje obrazów</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Weź pod uwagę zwolnienia. (Aktualne=</value></data>
