@@ -286,6 +286,12 @@
     <Compile Include="PlayerScreen\Tracking\TrackView.cs" />
     <Compile Include="PlayerScreen\Kinematics\TrajectoryKinematics.cs" />
     <Compile Include="PlayerScreen\TrackManager.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.Designer.cs">
+      <DependentUpon>FormRafaleExport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plotting\FormTimeseries.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -584,12 +590,6 @@
     <Compile Include="PlayerScreen\UserInterface\FormProgressBar.Designer.cs">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.Designer.cs">
-      <DependentUpon>FormRafaleExport.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormVideoExport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -766,6 +766,9 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormRafaleExport.resx">
+      <DependentUpon>FormRafaleExport.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Plotting\FormTimeseries.resx">
       <DependentUpon>FormTimeseries.cs</DependentUpon>
     </EmbeddedResource>
@@ -946,10 +949,6 @@
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormKeyframeComments.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormRafaleExport.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormVideoExport.resx">
       <SubType>Designer</SubType>
