@@ -4414,13 +4414,12 @@ namespace Kinovea.ScreenManager
             StopPlaying();
             OnPauseAsked();
             
-            // Launch sequence saving configuration dialog
-            formRafaleExport fre = new formRafaleExport(
-                this, 
-                m_FrameServer.Metadata, 
-                m_FrameServer.VideoReader.FilePath, 
-                m_iSelDuration, 
-                m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
+            FormRafaleExport fre = new FormRafaleExport(
+                this,
+                m_FrameServer.Metadata,
+                m_FrameServer.VideoReader.FilePath,
+                m_FrameServer.VideoReader.Info);
+
             fre.ShowDialog();
             fre.Dispose();
             m_FrameServer.AfterSave();
