@@ -210,7 +210,11 @@ namespace Kinovea.FileBrowser
 
             lastOpenedDirectory = Path.GetDirectoryName(e.File);
             
+            
             if (activeTab == ActiveFileBrowserTab.Shortcuts && currentShortcutItem != null && currentShortcutItem.Path == lastOpenedDirectory)
+                return;
+
+            if (e.File.StartsWith("."))
                 return;
 
             ReloadShortcuts();
