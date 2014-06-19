@@ -151,15 +151,12 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Komentari...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video analiza (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Učitati podatke ključne slike</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informacije</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Dodaj crteže preko slika.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>Jedan okvir svakih {0} stotinki sekunde.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Učestalost izvoza slika :</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>Jedan okvir svake {0:0.00} sekunde .</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>Sufiks će automatski biti dodat na imenima datoteka slika . ( "datoteka" =&gt; "datoteka-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Izvezi samo ključnu sliku.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Ukupno slika za izvoz : {0:0} slika.</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Vreme potrebno za izvoz niza slika : {0:0.00} sekundi .</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Sačuvaj redosled slika</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea video analiza (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Uzmi u obzir usporeni snimak. (Aktuelno = </value></data>

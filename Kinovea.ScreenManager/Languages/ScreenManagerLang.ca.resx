@@ -151,15 +151,12 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comentaris...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Anàlisis de Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Carregar dades de imatges clau</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informacions</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Fusionar els dibuixos a les imatges.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>un fotograma cada {0} centèsimes de segon</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Freqüència d'enregistrament:</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>un fotograma cada {0:0.00} segons.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>El sufix serà afegit automàticament als arxius d'imatges. ( “arxiu” =&gt; “arxiu-00.00.jpg”)</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Exportar només les imatges clau.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Nombre total d'imatges a exportar: {0:0} imatges</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Duració de la seqüència d'imatges exportades: {0:0.00} segons.</value></data>
+   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Total : {0:0} imatges</value></data>
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Desar una seqüència d'imatges</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Anàlisis de vídeo de Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Tenir en compte l'Slow Motion (Actual =</value></data>

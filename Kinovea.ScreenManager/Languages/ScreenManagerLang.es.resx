@@ -151,15 +151,12 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentarios...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Análisis Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|Todos los archivos (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Cargar datos de las imagenes clave</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informationes</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Superponer dibujos en las imágenes.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>una imagen cada {0} centésimas de segundo.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Frecuencia de grabación:</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>una imagen todos los {0:0.00} segundos.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>El sufijo se añadirán automáticamente a las imágenes. ( "archivo" =&gt; "archivo-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Guardar sólo imàgenes clave.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Número total de imágenes exportadas : {0:0} imágenes.</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Duraciòn cubierta por la secuencia de las imágenes exportadas: {0:0.00} segundos.</value></data>
+   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Total : {0:0} imágenes.</value></data>
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Guardar una secuencia de imágenes</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Analisis Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Guardar con el ralentizado (Actual = </value></data>

@@ -91,22 +91,22 @@ namespace Kinovea.ScreenManager
             int frames = (int)Math.Round((float)totalFrames / decimationFrames);
 
             if (decimationFrames == 1)
-                lblFrameDecimation.Text = string.Format("Export all images.");
+                lblFrameDecimation.Text = ScreenManagerLang.dlgRafaleExport_ExportAll;
             else
-                lblFrameDecimation.Text = string.Format("Export one image every {0} images.", decimationFrames, frames);
+                lblFrameDecimation.Text = string.Format(ScreenManagerLang.dlgRafaleExport_ExportFrameDecimation, decimationFrames);
 
             double decimationTime = decimationFrames * frameInterval;
             if (decimationTime >= 1000)
             {
                 decimationTime /= 1000;
-                lblTimeDecimation.Text = string.Format("Export one image every {0:0.00}s.", decimationTime);
+                lblTimeDecimation.Text = string.Format(ScreenManagerLang.dlgRafaleExport_ExportTimeDecimationSeconds, decimationTime);
             }
             else
             {
-                lblTimeDecimation.Text = string.Format("Export one image every {0:0}ms.", decimationTime);
+                lblTimeDecimation.Text = string.Format(ScreenManagerLang.dlgRafaleExport_ExportTimeDecimationMilliseconds, decimationTime);
             }
 
-            lblTotalFrames.Text = string.Format("Total : {0} images.", frames);
+            lblTotalFrames.Text = string.Format(ScreenManagerLang.dlgRafaleExport_LabelTotalFrames, frames);
         }
 
         private void chkKeyframesOnly_CheckedChanged(object sender, EventArgs e)

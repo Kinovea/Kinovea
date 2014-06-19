@@ -151,15 +151,12 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>コメント…</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinoveaビデオアナラシス(*.kva)|*.kva|XML (*.xml)|*.xml|すべてのファイル(*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>キーイメージデータを開く</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>情報</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>ドローイングをイメージにブレンド</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>毎 {0} 1/100秒毎に1フレーム</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>イメージエクスポートのフリーケンシー</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>毎 {0:0.00} 秒毎に1フレーム</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>接頭語がイメージファイル名に自動的に付与される。( "file" =&gt; "file-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>キーイメージのみをエクスポート</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>エクスポートするイメージ数 : {0:0} 。</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>イメージのエクスポートシーケンスの時間 : {0:0.00} 秒。</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>イメージシーケンスを保存</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinoveaビデオアナラシス (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>スローモーションをアカウントに追加 (Current =</value></data>

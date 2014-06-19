@@ -151,15 +151,12 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comentarii...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Analiză Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|Toate fişierele (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Încarcă datele cadrelor cheie </value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informaţii</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Suprapune desenele peste cadre.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>un cadru la fiecare {0} sutimi de secunda.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Frecvenţa exportului de cadre :</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>un cadru la fiecare {0:0.00} secunde.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>Sufixul va fi adăugat automat la numele cadrelor. ( "cadru" =&gt; "cadru-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Exporta doar cadrele cheie.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Numărul total al cadrelor de exportat : {0:0} imagini.</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Durata acoperită de secvenţa de cadre exportată : {0:0.00} secunde.</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Salvează o succesiune de cadre</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Analiză Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Ţine cont de mişcarea cu încetinitorul. (Curent = </value></data>
