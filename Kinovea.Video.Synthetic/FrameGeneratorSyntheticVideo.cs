@@ -35,11 +35,13 @@ namespace Kinovea.Video.Synthetic
         }
 
         private SyntheticVideo video;
+        private Bitmap errorBitmap;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public FrameGeneratorSyntheticVideo(SyntheticVideo video)
         {
             this.video = video;
+            errorBitmap = new Bitmap(640, 480);
         }
 
         #region IFrameGenerator implementation
@@ -50,25 +52,34 @@ namespace Kinovea.Video.Synthetic
         
         public Bitmap Generate(long timestamp)
         {
-            Bitmap bitmap = new Bitmap(video.ImageSize.Width, video.ImageSize.Height, PixelFormat.Format32bppPArgb);
+            Bitmap bitmap = null;
 
-            using (Graphics g = Graphics.FromImage(bitmap))
-            using(SolidBrush backBrush = new SolidBrush(video.BackgroundColor))
+            try
             {
-                g.FillRectangle(backBrush, g.ClipBounds);
+                bitmap = new Bitmap(video.ImageSize.Width, video.ImageSize.Height, PixelFormat.Format32bppPArgb);
 
-                if (video.FrameNumber)
+                using (Graphics g = Graphics.FromImage(bitmap))
+                using (SolidBrush backBrush = new SolidBrush(video.BackgroundColor))
                 {
-                    using (SolidBrush foreBrush = new SolidBrush(video.BackgroundColor.Invert()))
-                    using (Font font = new Font("Arial", 24, FontStyle.Regular))
+                    g.FillRectangle(backBrush, g.ClipBounds);
+
+                    if (video.FrameNumber)
                     {
-                        string text = string.Format("Current frame : {0}", timestamp);
-                        g.DrawString(text, font, foreBrush, new PointF(25, 25));
+                        using (SolidBrush foreBrush = new SolidBrush(video.BackgroundColor.Invert()))
+                        using (Font font = new Font("Arial", 24, FontStyle.Regular))
+                        {
+                            string text = string.Format("Current frame : {0}", timestamp);
+                            g.DrawString(text, font, foreBrush, new PointF(25, 25));
+                        }
                     }
                 }
             }
+            catch
+            {
+                log.ErrorFormat("Erro while generating frame for synthetic video.");
+            }
 
-            return bitmap;
+            return bitmap ?? errorBitmap;
         }
 
         public Bitmap Generate(long timestamp, Size maxWidth)
