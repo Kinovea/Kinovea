@@ -134,6 +134,15 @@ namespace Kinovea.ScreenManager
             return points;
         }
 
+        public QuadrilateralF Undistort(QuadrilateralF quad)
+        {
+            return new QuadrilateralF(
+                Undistort(quad.A),
+                Undistort(quad.B),
+                Undistort(quad.C),
+                Undistort(quad.D));
+        }
+
         /// <summary>
         /// Builds a full scale image with distortion vectors.
         /// If distort is true, the vectors go from undistorted space to distorted space.

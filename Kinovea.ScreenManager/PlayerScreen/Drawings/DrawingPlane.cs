@@ -168,46 +168,75 @@ namespace Kinovea.ScreenManager
             double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
             if(opacityFactor <= 0)
                return;
-            
+
             QuadrilateralF quad = transformer.Transform(quadImage);
             
             using(penEdges = styleHelper.GetPen(opacityFactor, 1.0))
             using(SolidBrush br = styleHelper.GetBrush(opacityFactor))
             {
-                // Handlers
                 foreach (PointF p in quad)
                     canvas.FillEllipse(br, p.Box(4));
 
-                //foreach (PointF p in quad)
-                   //canvas.DrawEllipse(penEdges, p.Box(3));
-
-                // Grid
                 if (planeIsConvex)
                 {
-                    projectiveMapping.Update(quadPlane, quadImage);
+                    if (distorter != null && distorter.Initialized)
+                    {
+                        QuadrilateralF undistortedQuadImage = distorter.Undistort(quadImage);
+                        projectiveMapping.Update(quadPlane, undistortedQuadImage);
+                    }
+                    else
+                    {
+                        projectiveMapping.Update(quadPlane, quadImage);
+                    }
                     
                     int start = 0;
                     int end = styleHelper.GridDivisions;
                     int total = styleHelper.GridDivisions;
-                    
+
                     // Rows
                     for (int i = start; i <= end; i++)
                     {
                         float v = i * ((float)planeHeight / total);
+                        
                         PointF p1 = projectiveMapping.Forward(new PointF(0, v));
                         PointF p2 = projectiveMapping.Forward(new PointF(planeWidth, v));
-                        
-                        canvas.DrawLine(penEdges, transformer.Transform(p1), transformer.Transform(p2));
+
+                        if (distorter != null && distorter.Initialized)
+                        {
+                            p1 = distorter.Distort(p1);
+                            p2 = distorter.Distort(p2);
+
+                            List<PointF> curve = distorter.DistortLine(p1, p2);
+                            List<Point> transformed = transformer.Transform(curve);
+                            canvas.DrawCurve(penEdges, transformed.ToArray());
+                        }
+                        else
+                        {
+                            canvas.DrawLine(penEdges, transformer.Transform(p1), transformer.Transform(p2));
+                        }
                     }
                 
                     // Columns
                     for (int i = start ; i <= end; i++)
                     {
                         float h = i * (planeWidth / total);
+
                         PointF p1 = projectiveMapping.Forward(new PointF(h, 0));
                         PointF p2 = projectiveMapping.Forward(new PointF(h, planeHeight));
-                        
-                        canvas.DrawLine(penEdges, transformer.Transform(p1), transformer.Transform(p2));
+
+                        if (distorter != null && distorter.Initialized)
+                        {
+                            p1 = distorter.Distort(p1);
+                            p2 = distorter.Distort(p2);
+
+                            List<PointF> curve = distorter.DistortLine(p1, p2);
+                            List<Point> transformed = transformer.Transform(curve);
+                            canvas.DrawCurve(penEdges, transformed.ToArray());
+                        }
+                        else
+                        {
+                            canvas.DrawLine(penEdges, transformer.Transform(p1), transformer.Transform(p2));
+                        }
                     }
                 }
                 else
