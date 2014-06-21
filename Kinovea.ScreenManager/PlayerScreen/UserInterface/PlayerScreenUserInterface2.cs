@@ -2578,13 +2578,17 @@ namespace Kinovea.ScreenManager
         private void CreateNewDrawing(Guid managerId)
         {
             m_FrameServer.Metadata.UnselectAll();
-            
+
+            IImageToViewportTransformer transformer = m_FrameServer.Metadata.CoordinateSystem;
+            bool zooming = m_FrameServer.Metadata.CoordinateSystem.Zooming;
+            DistortionHelper distorter = m_FrameServer.Metadata.CalibrationHelper.DistortionHelper;
+
             bool editingLabel = false;
             if (m_ActiveTool == ToolManager.Label)
             {
                 foreach (DrawingText label in m_FrameServer.Metadata.Labels())
                 {
-                    int hit = label.HitTest(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.CoordinateSystem, m_FrameServer.Metadata.CoordinateSystem.Zooming);
+                    int hit = label.HitTest(m_DescaledMouse.ToPoint(), m_iCurrentPosition, distorter, transformer, zooming);
                     if (hit < 0)
                         continue;
                     
@@ -3197,6 +3201,8 @@ namespace Kinovea.ScreenManager
         }
         private void FlushDrawingsOnGraphics(Graphics canvas, CoordinateSystem transformer, int keyFrameIndex, long time)
         {
+            DistortionHelper distorter = m_FrameServer.Metadata.CalibrationHelper.DistortionHelper;
+
             // Prepare for drawings
             canvas.SmoothingMode = SmoothingMode.AntiAlias;
             canvas.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
@@ -3204,19 +3210,19 @@ namespace Kinovea.ScreenManager
             foreach (DrawingChrono chrono in m_FrameServer.Metadata.ChronoManager.Drawings)
             {
                 bool selected = m_FrameServer.Metadata.HitDrawing == chrono;
-                chrono.Draw(canvas, transformer, selected, time);
+                chrono.Draw(canvas, distorter, transformer, selected, time);
             }
 
             foreach (DrawingTrack track in m_FrameServer.Metadata.TrackManager.Drawings)
             {
                 bool selected = m_FrameServer.Metadata.HitDrawing == track;
-                track.Draw(canvas, transformer, selected, time);
+                track.Draw(canvas, distorter, transformer, selected, time);
             }
 
             foreach (AbstractDrawing drawing in m_FrameServer.Metadata.ExtraDrawings)
             {
                 bool selected = m_FrameServer.Metadata.HitDrawing == drawing;
-                drawing.Draw(canvas, transformer, selected, time);
+                drawing.Draw(canvas, distorter, transformer, selected, time);
             }
             
             if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled)
@@ -3233,7 +3239,7 @@ namespace Kinovea.ScreenManager
                     for (int drawingIndex = keyframe.Drawings.Count - 1; drawingIndex >= 0; drawingIndex--)
                     {
                         bool selected = keyframe.Drawings[drawingIndex] == m_FrameServer.Metadata.HitDrawing;
-                        keyframe.Drawings[drawingIndex].Draw(canvas, transformer, selected, time);
+                        keyframe.Drawings[drawingIndex].Draw(canvas, distorter, transformer, selected, time);
                     }
                 }
             }
@@ -3245,7 +3251,7 @@ namespace Kinovea.ScreenManager
                 for (int drawingIndex = keyframe.Drawings.Count - 1; drawingIndex >= 0; drawingIndex--)
                 {
                     bool selected = keyframe.Drawings[drawingIndex] == m_FrameServer.Metadata.HitDrawing;
-                    keyframe.Drawings[drawingIndex].Draw(canvas, transformer, selected, time);
+                    keyframe.Drawings[drawingIndex].Draw(canvas, distorter, transformer, selected, time);
                 }
             }
             else

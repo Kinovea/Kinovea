@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             // We draw a single translucent black rectangle to cover the whole image.
             // (Opacity varies between 0% and 50%, depending on the opacity factor of the closest spotlight in time)
@@ -147,7 +147,7 @@ namespace Kinovea.ScreenManager
             if(selected >= 0 && selected < spotlights.Count)
                 spotlights[selected].MoveHandleTo(point);
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int currentSpot = 0;
             int handle = -1;
