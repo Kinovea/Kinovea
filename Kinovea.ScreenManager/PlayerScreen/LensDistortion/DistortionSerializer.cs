@@ -88,6 +88,9 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
 
+            // Due to numeric instability, we drop k3.
+            k3 = 0;
+
             DistortionParameters parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy);
             return parameters;
         }
