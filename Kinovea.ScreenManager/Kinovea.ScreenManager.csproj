@@ -264,6 +264,7 @@
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="PlayerScreen\LensDistortion\CameraCalibrator.cs" />
     <Compile Include="PlayerScreen\LensDistortion\DistortionHelper.cs" />
+    <Compile Include="PlayerScreen\LensDistortion\DistortionImporterAgisoft.cs" />
     <Compile Include="PlayerScreen\LensDistortion\DistortionParameters.cs" />
     <Compile Include="PlayerScreen\LensDistortion\DistortionSerializer.cs" />
     <Compile Include="PlayerScreen\LensDistortion\EmguHelper.cs" />
