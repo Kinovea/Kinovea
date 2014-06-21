@@ -195,12 +195,24 @@ namespace Kinovea.ScreenManager
         }
         public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
         {
-            calibrationPlane.Initialize(size, quadImage);
+            QuadrilateralF undistorted = new QuadrilateralF(
+                distortionHelper.Undistort(quadImage.A),
+                distortionHelper.Undistort(quadImage.B),
+                distortionHelper.Undistort(quadImage.C),
+                distortionHelper.Undistort(quadImage.D));
+
+            calibrationPlane.Initialize(size, undistorted);
             AfterCalibrationChanged();
         }
         public void CalibrationByPlane_Update(QuadrilateralF quadImage)
         {
-            calibrationPlane.Update(quadImage);
+            QuadrilateralF undistorted = new QuadrilateralF(
+                distortionHelper.Undistort(quadImage.A),
+                distortionHelper.Undistort(quadImage.B),
+                distortionHelper.Undistort(quadImage.C),
+                distortionHelper.Undistort(quadImage.D));
+
+            calibrationPlane.Update(undistorted);
             AfterCalibrationChanged();
         }
         public SizeF CalibrationByPlane_GetRectangleSize()
