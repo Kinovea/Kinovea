@@ -17,16 +17,28 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class DistortionHelper
     {
+        public DistortionParameters Parameters
+        {
+            get { return parameters; }
+        }
+
+        public bool Initialized
+        {
+            get { return initialized; }
+        }
+
+        private bool initialized;
         private DistortionParameters parameters;
         private IntrinsicCameraParameters icp;
         private Size imageSize;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public DistortionHelper(DistortionParameters parameters, Size imageSize)
+        public void Initialize(DistortionParameters parameters, Size imageSize)
         {
             this.parameters = parameters;
             this.imageSize = imageSize;
             icp = parameters.IntrinsicCameraParameters;
+            initialized = true; 
         }
 
         /// <summary>
@@ -34,6 +46,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public PointF Undistort(PointF point)
         {
+            if (!initialized)
+                return point;
+
             double x = 0;
             double y = 0;
 
@@ -61,6 +76,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public PointF Distort(PointF point)
         {
+            if (!initialized)
+                return point;
+
             // Ref:
             // http://docs.opencv.org/modules/imgproc/doc/geometric_transformations.html#cv.InitUndistortRectifyMap
 
@@ -123,6 +141,10 @@ namespace Kinovea.ScreenManager
         public Bitmap GetDistortionMap(bool distort)
         {
             Bitmap bmp = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format24bppRgb);
+
+            if (!initialized)
+                return bmp;
+
             Graphics g = Graphics.FromImage(bmp);
             g.InterpolationMode = InterpolationMode.Bilinear;
             g.PixelOffsetMode = PixelOffsetMode.Half;
@@ -159,6 +181,10 @@ namespace Kinovea.ScreenManager
         public Bitmap GetDistortionGrid()
         {
             Bitmap bmp = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format24bppRgb);
+
+            if (!initialized)
+                return bmp;
+
             Graphics g = Graphics.FromImage(bmp);
             g.InterpolationMode = InterpolationMode.Bilinear;
             //g.PixelOffsetMode = PixelOffsetMode.Half;

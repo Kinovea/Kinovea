@@ -265,6 +265,7 @@
     <Compile Include="PlayerScreen\LensDistortion\CameraCalibrator.cs" />
     <Compile Include="PlayerScreen\LensDistortion\DistortionHelper.cs" />
     <Compile Include="PlayerScreen\LensDistortion\DistortionParameters.cs" />
+    <Compile Include="PlayerScreen\LensDistortion\DistortionSerializer.cs" />
     <Compile Include="PlayerScreen\LensDistortion\EmguHelper.cs" />
     <Compile Include="PlayerScreen\Serialization\DrawingSerializer.cs" />
     <Compile Include="PlayerScreen\Serialization\KeyframeSerializer.cs" />

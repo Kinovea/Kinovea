@@ -47,6 +47,14 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public PointF A
+        {
+            get { return points["a"]; }
+        }
+        public PointF B
+        {
+            get { return points["b"]; }
+        }
         public override string DisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
@@ -374,11 +382,6 @@ namespace Kinovea.ScreenManager
             TrackablePointMoved(this, new TrackablePointMovedEventArgs(name, points[name]));
         }
         #endregion
-        
-        public float Length()
-        {
-            return GeometryHelper.GetDistance(points["a"], points["b"]);
-        }
         
         #region Context menu
         private void mnuShowMeasure_Click(object sender, EventArgs e)

@@ -1168,7 +1168,7 @@ namespace Kinovea.ScreenManager
             foreach (DrawingDistortionGrid grid in DistortionGrids())
                 points.Add(grid.Points);
 
-            FormCalibrateDistortion fcd = new FormCalibrateDistortion(points, imageSize);
+            FormCalibrateDistortion fcd = new FormCalibrateDistortion(points, calibrationHelper);
             FormsHelper.Locate(fcd);
             fcd.ShowDialog();
             fcd.Dispose();

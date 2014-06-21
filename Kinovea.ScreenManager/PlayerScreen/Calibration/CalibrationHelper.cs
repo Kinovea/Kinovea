@@ -93,6 +93,16 @@ namespace Kinovea.ScreenManager
         {
             get { return calibratorType;}
         }
+
+        public DistortionHelper DistortionHelper
+        {
+            get { return distortionHelper; }
+        }
+
+        public Size ImageSize
+        {
+            get { return imageSize; }
+        }
         #endregion
         
         #region Members
@@ -101,6 +111,7 @@ namespace Kinovea.ScreenManager
         private ICalibrator calibrator;
         private CalibrationLine calibrationLine = new CalibrationLine();
         private CalibrationPlane calibrationPlane = new CalibrationPlane();
+        private DistortionHelper distortionHelper = new DistortionHelper();
         private Size imageSize;
         private RectangleF boundingRectangle;
         private LengthUnit lengthUnit = LengthUnit.Pixels;
@@ -138,7 +149,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public PointF GetOrigin()
         {
-            return calibrator.Untransform(PointF.Empty);
+            return distortionHelper.Distort(calibrator.Untransform(PointF.Empty));
         }
 
         /// <summary>
@@ -146,6 +157,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void SetOrigin(PointF p)
         {
+            PointF u = distortionHelper.Undistort(p);
             calibrator.SetOrigin(p);
             AfterCalibrationChanged();
         }
@@ -208,7 +220,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public PointF GetPoint(PointF p)
         {
-            return calibrator.Transform(p);
+            return calibrator.Transform(distortionHelper.Undistort(p));
         }
 
         /// <summary>
@@ -275,6 +287,9 @@ namespace Kinovea.ScreenManager
             return text;
         }
         
+        /// <summary>
+        /// Takes two points in image coordinates and return the length of the segment in real world units.
+        /// </summary>
         public string GetLengthText(PointF p1, PointF p2, bool precise, bool abbreviation)
         {
             float length = GeometryHelper.GetDistance(GetPoint(p1), GetPoint(p2));
@@ -318,15 +333,17 @@ namespace Kinovea.ScreenManager
         #region Inverse transformations (from calibrated space to image space).
         public float GetImageLength(PointF p1, PointF p2)
         {
-            PointF a = calibrator.Untransform(p1);
-            PointF b = calibrator.Untransform(p2);
+            PointF a = distortionHelper.Distort(calibrator.Untransform(p1));
+            PointF b = distortionHelper.Distort(calibrator.Untransform(p2));
+
             return GeometryHelper.GetDistance(a, b);
         }
         
         public float GetImageScalar(float v)
         {
-            PointF a = calibrator.Untransform(PointF.Empty);
-            PointF b = calibrator.Untransform(new PointF(v, 0));
+            PointF a = distortionHelper.Distort(calibrator.Untransform(PointF.Empty));
+            PointF b = distortionHelper.Distort(calibrator.Untransform(new PointF(v, 0)));
+            
             float d = GeometryHelper.GetDistance(a, b);
             return v < 0 ? -d : d;
         }
@@ -336,7 +353,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public PointF GetImagePoint(PointF p)
         {
-            return calibrator.Untransform(p);
+            return distortionHelper.Distort(calibrator.Untransform(p));
         }
 
         /// <summary>
@@ -380,8 +397,10 @@ namespace Kinovea.ScreenManager
             w.WriteAttributeString("Abbreviation", GetLengthAbbreviation());
             w.WriteString(lengthUnit.ToString());
             w.WriteEndElement();
+
+            DistortionSerializer.Serialize(w, distortionHelper.Parameters);
         }
-        public void ReadXml(XmlReader r, PointF scale)
+        public void ReadXml(XmlReader r, PointF scale, Size imageSize)
         {
             r.ReadStartElement();
             
@@ -402,6 +421,10 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Unit":
                         lengthUnit = (LengthUnit) Enum.Parse(typeof(LengthUnit), r.ReadElementContentAsString());
+                        break;
+                    case "CameraCalibration":
+                        DistortionParameters parameters = DistortionSerializer.Deserialize(r);
+                        distortionHelper.Initialize(parameters, imageSize);
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
@@ -435,10 +458,10 @@ namespace Kinovea.ScreenManager
 
             if (calibratorType == CalibratorType.Line)
             {
-                PointF a = calibrator.Transform(PointF.Empty);
-                PointF b = calibrator.Transform(new PointF(imageSize.Width, 0));
-                PointF c = calibrator.Transform(new PointF(imageSize.Width, imageSize.Height));
-                PointF d = calibrator.Transform(new PointF(0, imageSize.Height));
+                PointF a = calibrator.Transform(distortionHelper.Undistort(PointF.Empty));
+                PointF b = calibrator.Transform(distortionHelper.Undistort(new PointF(imageSize.Width, 0)));
+                PointF c = calibrator.Transform(distortionHelper.Undistort(new PointF(imageSize.Width, imageSize.Height)));
+                PointF d = calibrator.Transform(distortionHelper.Undistort(new PointF(0, imageSize.Height)));
                 boundingRectangle = new RectangleF(a.X, a.Y, b.X - a.X, a.Y - d.Y);
             }
             else
@@ -450,12 +473,12 @@ namespace Kinovea.ScreenManager
 
                 CalibrationPlane calibrationPlane2 = new CalibrationPlane();
                 calibrationPlane2.Initialize(calibrationPlane.Size, quadImage);
-                calibrationPlane2.SetOrigin(calibrationPlane.Untransform(PointF.Empty));
+                calibrationPlane2.SetOrigin(distortionHelper.Distort(calibrationPlane.Untransform(PointF.Empty)));
 
-                PointF a = calibrationPlane2.Transform(PointF.Empty);
-                PointF b = calibrationPlane2.Transform(new PointF(imageSize.Width, 0));
-                PointF c = calibrationPlane2.Transform(new PointF(imageSize.Width, imageSize.Height));
-                PointF d = calibrationPlane2.Transform(new PointF(0, imageSize.Height));
+                PointF a = calibrationPlane2.Transform(distortionHelper.Undistort(PointF.Empty));
+                PointF b = calibrationPlane2.Transform(distortionHelper.Undistort(new PointF(imageSize.Width, 0)));
+                PointF c = calibrationPlane2.Transform(distortionHelper.Undistort(new PointF(imageSize.Width, imageSize.Height)));
+                PointF d = calibrationPlane2.Transform(distortionHelper.Undistort(new PointF(0, imageSize.Height)));
                 boundingRectangle = new RectangleF(a.X, a.Y, b.X - a.X, a.Y - d.Y);
             }
         }

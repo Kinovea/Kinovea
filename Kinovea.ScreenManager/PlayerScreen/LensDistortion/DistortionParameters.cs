@@ -32,6 +32,7 @@ namespace Kinovea.ScreenManager
             this.K3 = icp.DistortionCoeffs[4, 0];
             this.P1 = icp.DistortionCoeffs[2, 0];
             this.P2 = icp.DistortionCoeffs[3, 0];
+
             this.Fx = icp.IntrinsicMatrix[0, 0];
             this.Fy = icp.IntrinsicMatrix[1, 1];
             this.Cx = icp.IntrinsicMatrix[0, 2];
@@ -49,6 +50,21 @@ namespace Kinovea.ScreenManager
             this.Fy = fy;
             this.Cx = cx;
             this.Cy = cy;
+
+            IntrinsicCameraParameters icp = new IntrinsicCameraParameters();
+            icp.DistortionCoeffs[0, 0] = k1;
+            icp.DistortionCoeffs[1, 0] = k2;
+            icp.DistortionCoeffs[4, 0] = k3;
+            icp.DistortionCoeffs[2, 0] = p1;
+            icp.DistortionCoeffs[3, 0] = p2;
+
+            icp.IntrinsicMatrix[0, 0] = fx;
+            icp.IntrinsicMatrix[1, 1] = fy;
+            icp.IntrinsicMatrix[0, 2] = cx;
+            icp.IntrinsicMatrix[1, 2] = cy;
+            icp.IntrinsicMatrix[2, 2] = 1;
+
+            this.IntrinsicCameraParameters = icp;
         }
     }
 }
