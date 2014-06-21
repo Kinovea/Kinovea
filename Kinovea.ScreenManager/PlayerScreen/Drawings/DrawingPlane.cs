@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractDrawing implementation
-        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
             if(opacityFactor <= 0)
@@ -220,7 +220,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             if(infosFading.GetOpacityFactor(currentTimestamp) <= 0)
                 return -1;

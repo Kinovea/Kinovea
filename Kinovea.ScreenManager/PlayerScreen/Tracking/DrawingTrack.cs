@@ -306,7 +306,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing implementation
-        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             if (currentTimestamp < beginTimeStamp)
                 return;
@@ -413,7 +413,7 @@ namespace Kinovea.ScreenManager
                     TrackerParametersChanged(this, EventArgs.Empty);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             if (currentTimestamp < beginTimeStamp || currentTimestamp > endTimeStamp)
             {
