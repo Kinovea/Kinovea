@@ -193,7 +193,7 @@ namespace Kinovea.ScreenManager
                         inputSelectionStart = r.ReadElementContentAsLong();
                         break;
                     case "Calibration":
-                        metadata.CalibrationHelper.ReadXml(r, scaling);
+                        metadata.CalibrationHelper.ReadXml(r, scaling, inputImageSize);
                         break;
                     case "Keyframes":
                         ParseKeyframes(r);

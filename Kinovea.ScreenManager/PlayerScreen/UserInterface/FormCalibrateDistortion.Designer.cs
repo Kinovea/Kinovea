@@ -33,16 +33,16 @@
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblP2 = new System.Windows.Forms.Label();
+            this.lblP1 = new System.Windows.Forms.Label();
+            this.lblK3 = new System.Windows.Forms.Label();
+            this.lblK2 = new System.Windows.Forms.Label();
+            this.lblK1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.lblCy = new System.Windows.Forms.Label();
+            this.lblCx = new System.Windows.Forms.Label();
+            this.lblFy = new System.Windows.Forms.Label();
+            this.lblFx = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -90,11 +90,11 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.lblP2);
+            this.groupBox1.Controls.Add(this.lblP1);
+            this.groupBox1.Controls.Add(this.lblK3);
+            this.groupBox1.Controls.Add(this.lblK2);
+            this.groupBox1.Controls.Add(this.lblK1);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(237, 108);
@@ -102,12 +102,57 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Distortion coefficients";
             // 
+            // lblP2
+            // 
+            this.lblP2.AutoSize = true;
+            this.lblP2.Location = new System.Drawing.Point(131, 51);
+            this.lblP2.Name = "lblP2";
+            this.lblP2.Size = new System.Drawing.Size(25, 13);
+            this.lblP2.TabIndex = 4;
+            this.lblP2.Text = "p2 :";
+            // 
+            // lblP1
+            // 
+            this.lblP1.AutoSize = true;
+            this.lblP1.Location = new System.Drawing.Point(131, 28);
+            this.lblP1.Name = "lblP1";
+            this.lblP1.Size = new System.Drawing.Size(25, 13);
+            this.lblP1.TabIndex = 3;
+            this.lblP1.Text = "p1 :";
+            // 
+            // lblK3
+            // 
+            this.lblK3.AutoSize = true;
+            this.lblK3.Location = new System.Drawing.Point(18, 78);
+            this.lblK3.Name = "lblK3";
+            this.lblK3.Size = new System.Drawing.Size(25, 13);
+            this.lblK3.TabIndex = 2;
+            this.lblK3.Text = "k3 :";
+            // 
+            // lblK2
+            // 
+            this.lblK2.AutoSize = true;
+            this.lblK2.Location = new System.Drawing.Point(18, 51);
+            this.lblK2.Name = "lblK2";
+            this.lblK2.Size = new System.Drawing.Size(25, 13);
+            this.lblK2.TabIndex = 1;
+            this.lblK2.Text = "k2 :";
+            // 
+            // lblK1
+            // 
+            this.lblK1.AutoSize = true;
+            this.lblK1.Location = new System.Drawing.Point(18, 28);
+            this.lblK1.Name = "lblK1";
+            this.lblK1.Size = new System.Drawing.Size(25, 13);
+            this.lblK1.TabIndex = 0;
+            this.lblK1.Text = "k1 :";
+            // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.label9);
+            this.groupBox2.Controls.Add(this.lblCy);
+            this.groupBox2.Controls.Add(this.lblCx);
+            this.groupBox2.Controls.Add(this.lblFy);
+            this.groupBox2.Controls.Add(this.lblFx);
             this.groupBox2.Location = new System.Drawing.Point(12, 126);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(237, 96);
@@ -115,86 +160,41 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Camera intrinsics";
             // 
-            // label1
+            // lblCy
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(18, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(25, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "k1 :";
+            this.lblCy.AutoSize = true;
+            this.lblCy.Location = new System.Drawing.Point(131, 49);
+            this.lblCy.Name = "lblCy";
+            this.lblCy.Size = new System.Drawing.Size(24, 13);
+            this.lblCy.TabIndex = 8;
+            this.lblCy.Text = "cy :";
             // 
-            // label2
+            // lblCx
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 51);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(25, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "k2 :";
+            this.lblCx.AutoSize = true;
+            this.lblCx.Location = new System.Drawing.Point(131, 26);
+            this.lblCx.Name = "lblCx";
+            this.lblCx.Size = new System.Drawing.Size(24, 13);
+            this.lblCx.TabIndex = 7;
+            this.lblCx.Text = "cx :";
             // 
-            // label3
+            // lblFy
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 78);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(25, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "k3 :";
+            this.lblFy.AutoSize = true;
+            this.lblFy.Location = new System.Drawing.Point(18, 49);
+            this.lblFy.Name = "lblFy";
+            this.lblFy.Size = new System.Drawing.Size(21, 13);
+            this.lblFy.TabIndex = 6;
+            this.lblFy.Text = "fy :";
             // 
-            // label4
+            // lblFx
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(131, 28);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(25, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "p1 :";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(131, 51);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(25, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "p2 :";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(131, 49);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(24, 13);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "cy :";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(131, 26);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(24, 13);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "cx :";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(18, 49);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(21, 13);
-            this.label8.TabIndex = 6;
-            this.label8.Text = "fy :";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(18, 26);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(21, 13);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "fx :";
+            this.lblFx.AutoSize = true;
+            this.lblFx.Location = new System.Drawing.Point(18, 26);
+            this.lblFx.Name = "lblFx";
+            this.lblFx.Size = new System.Drawing.Size(21, 13);
+            this.lblFx.TabIndex = 5;
+            this.lblFx.Text = "fx :";
             // 
             // FormCalibrateDistortion
             // 
@@ -228,15 +228,15 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblP2;
+        private System.Windows.Forms.Label lblP1;
+        private System.Windows.Forms.Label lblK3;
+        private System.Windows.Forms.Label lblK2;
+        private System.Windows.Forms.Label lblK1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lblCy;
+        private System.Windows.Forms.Label lblCx;
+        private System.Windows.Forms.Label lblFy;
+        private System.Windows.Forms.Label lblFx;
     }
 }
