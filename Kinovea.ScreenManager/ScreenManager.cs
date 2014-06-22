@@ -109,7 +109,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuSVGTools = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
-        
+        private ToolStripMenuItem mnuCameraCalibration = new ToolStripMenuItem();
+
         private ToolStripMenuItem mnuHighspeedCamera = new ToolStripMenuItem();
         #endregion
 
@@ -359,8 +360,12 @@ namespace Kinovea.ScreenManager
             BuildSvgMenu();
             
             mnuCoordinateAxis.Image = Properties.Resources.coordinate_axis;
-            mnuCoordinateAxis.Click += new EventHandler(mnuCoordinateAxis_OnClick);
+            mnuCoordinateAxis.Click += mnuCoordinateAxis_OnClick;
             mnuCoordinateAxis.MergeAction = MergeAction.Append;
+
+            mnuCameraCalibration.Image = Properties.Resources.checkerboard;
+            mnuCameraCalibration.Click += mnuCameraCalibration_OnClick;
+            mnuCameraCalibration.MergeAction = MergeAction.Append;
 
             ConfigureVideoFilterMenus(null);
 
@@ -380,6 +385,7 @@ namespace Kinovea.ScreenManager
             mnuCatchImage.DropDownItems.Add(new ToolStripSeparator());
             mnuCatchImage.DropDownItems.Add(mnuSVGTools);
             mnuCatchImage.DropDownItems.Add(mnuCoordinateAxis);
+            mnuCatchImage.DropDownItems.Add(mnuCameraCalibration);
             #endregion
 
             #region Motion
@@ -856,6 +862,7 @@ namespace Kinovea.ScreenManager
                     mnuMirror.Enabled = true;
                     mnuSVGTools.Enabled = hasSvgFiles;
                     mnuCoordinateAxis.Enabled = true;
+                    mnuCameraCalibration.Enabled = true;
                     
                     mnuDeinterlace.Checked = player.Deinterlaced;
                     mnuMirror.Checked = player.Mirrored;
@@ -890,6 +897,7 @@ namespace Kinovea.ScreenManager
                     mnuMirror.Enabled = false;
                     mnuSVGTools.Enabled = hasSvgFiles;
                     mnuCoordinateAxis.Enabled = false;
+                    mnuCameraCalibration.Enabled = false;
                     
                     mnuDeinterlace.Checked = false;
                     mnuMirror.Checked = false;
@@ -933,6 +941,7 @@ namespace Kinovea.ScreenManager
                 mnuMirror.Enabled = false;
                 mnuSVGTools.Enabled = false;
                 mnuCoordinateAxis.Enabled = false;
+                mnuCameraCalibration.Enabled = false;
                 mnuDeinterlace.Checked = false;
                 mnuMirror.Checked = false;
                 
@@ -1166,6 +1175,7 @@ namespace Kinovea.ScreenManager
             mnuFormat.Text = ScreenManagerLang.mnuFormat;
             mnuMirror.Text = ScreenManagerLang.mnuMirror;
             mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
+            mnuCameraCalibration.Text = "Camera calibration";
             
             mnuSVGTools.Text = ScreenManagerLang.mnuSVGTools;
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
@@ -1807,6 +1817,15 @@ namespace Kinovea.ScreenManager
                 return;
 
             ps.ShowCoordinateSystem();
+        }
+
+        private void mnuCameraCalibration_OnClick(object sender, EventArgs e)
+        {
+            PlayerScreen ps = activeScreen as PlayerScreen;
+            if (ps == null)
+                return;
+
+            ps.ShowCameraCalibration();
         }
         #endregion
 

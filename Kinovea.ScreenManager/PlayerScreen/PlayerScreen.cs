@@ -305,6 +305,7 @@ namespace Kinovea.ScreenManager
             view.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
             
             frameServer.Metadata.AddTrackableDrawingCommand = new RelayCommand<ITrackable>(AddTrackableDrawing);
+            frameServer.Metadata.CameraCalibrationAsked += (s, e) => ShowCameraCalibration();
         }
 
         #region General events handlers
@@ -581,6 +582,15 @@ namespace Kinovea.ScreenManager
         {
             frameServer.Metadata.ShowCoordinateSystem();
             view.RefreshImage();
+        }
+        public void ShowCameraCalibration()
+        {
+            List<List<PointF>> points = frameServer.Metadata.GetCameraCalibrationPoints();
+            
+            FormCalibrateDistortion fcd = new FormCalibrateDistortion(frameServer.CurrentImage, points, frameServer.Metadata.CalibrationHelper);
+            FormsHelper.Locate(fcd);
+            fcd.ShowDialog();
+            fcd.Dispose();
         }
         #endregion
 
