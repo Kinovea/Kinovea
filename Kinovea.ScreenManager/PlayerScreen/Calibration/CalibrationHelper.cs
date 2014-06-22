@@ -158,7 +158,7 @@ namespace Kinovea.ScreenManager
         public void SetOrigin(PointF p)
         {
             PointF u = distortionHelper.Undistort(p);
-            calibrator.SetOrigin(p);
+            calibrator.SetOrigin(u);
             AfterCalibrationChanged();
         }
 
@@ -470,10 +470,15 @@ namespace Kinovea.ScreenManager
 
             if (calibratorType == CalibratorType.Line)
             {
-                PointF a = calibrator.Transform(distortionHelper.Undistort(PointF.Empty));
-                PointF b = calibrator.Transform(distortionHelper.Undistort(new PointF(imageSize.Width, 0)));
-                PointF c = calibrator.Transform(distortionHelper.Undistort(new PointF(imageSize.Width, imageSize.Height)));
-                PointF d = calibrator.Transform(distortionHelper.Undistort(new PointF(0, imageSize.Height)));
+                Rectangle r = new Rectangle(Point.Empty, imageSize);
+                r = r.Scale(1.5, 1.5);
+                r = r.Translate((int)-(imageSize.Width * 0.25), (int)-(imageSize.Height * 0.25));
+                
+                PointF a = calibrator.Transform(r.Location);
+                PointF b = calibrator.Transform(new PointF(r.Right, 0));
+                PointF c = calibrator.Transform(new PointF(r.Right, r.Bottom));
+                PointF d = calibrator.Transform(new PointF(0, r.Bottom));
+
                 boundingRectangle = new RectangleF(a.X, a.Y, b.X - a.X, a.Y - d.Y);
             }
             else
@@ -485,12 +490,20 @@ namespace Kinovea.ScreenManager
 
                 CalibrationPlane calibrationPlane2 = new CalibrationPlane();
                 calibrationPlane2.Initialize(calibrationPlane.Size, quadImage);
-                calibrationPlane2.SetOrigin(distortionHelper.Distort(calibrationPlane.Untransform(PointF.Empty)));
+                /*calibrationPlane2.SetOrigin(distortionHelper.Distort(calibrationPlane.Untransform(PointF.Empty)));
 
                 PointF a = calibrationPlane2.Transform(distortionHelper.Undistort(PointF.Empty));
                 PointF b = calibrationPlane2.Transform(distortionHelper.Undistort(new PointF(imageSize.Width, 0)));
                 PointF c = calibrationPlane2.Transform(distortionHelper.Undistort(new PointF(imageSize.Width, imageSize.Height)));
-                PointF d = calibrationPlane2.Transform(distortionHelper.Undistort(new PointF(0, imageSize.Height)));
+                PointF d = calibrationPlane2.Transform(distortionHelper.Undistort(new PointF(0, imageSize.Height)));*/
+                
+                calibrationPlane2.SetOrigin(calibrationPlane.Untransform(PointF.Empty));
+
+                PointF a = calibrationPlane2.Transform(PointF.Empty);
+                PointF b = calibrationPlane2.Transform(new PointF(imageSize.Width, 0));
+                PointF c = calibrationPlane2.Transform(new PointF(imageSize.Width, imageSize.Height));
+                PointF d = calibrationPlane2.Transform(new PointF(0, imageSize.Height));
+
                 boundingRectangle = new RectangleF(a.X, a.Y, b.X - a.X, a.Y - d.Y);
             }
         }

@@ -163,18 +163,18 @@ namespace Kinovea.ScreenManager
             if (bounds.Size == SizeF.Empty)
                 return;
 
-            float stepSizeWidth = RulerStepSize(bounds.Width, 12);
+            float stepSizeWidth = RulerStepSize(bounds.Width, 20);
             float stepSizeHeight = stepSizeWidth;
 
             if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
-                stepSizeHeight = RulerStepSize(bounds.Height, 12);
+                stepSizeHeight = RulerStepSize(bounds.Height, 20);
 
             using (Pen penLine = styleHelper.GetBackgroundPen(255))
             {
-                DrawGrid(canvas, transformer, bounds, stepSizeWidth, stepSizeHeight);
+                DrawGrid(canvas, distorter, transformer, bounds, stepSizeWidth, stepSizeHeight);
             }
         }
-        private void DrawGrid(Graphics canvas, IImageToViewportTransformer transformer, RectangleF bounds, float stepWidth, float stepHeight)
+        private void DrawGrid(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, RectangleF bounds, float stepWidth, float stepHeight)
         {
             Pen p = styleHelper.GetBackgroundPen(gridAlpha);
             SolidBrush brushFill = styleHelper.GetBackgroundBrush(defaultBackgroundAlpha);
@@ -190,7 +190,10 @@ namespace Kinovea.ScreenManager
             {
                 p.DashStyle = x == 0 ? DashStyle.Solid : DashStyle.Dash;
                 TextAlignment alignment = x == 0 ? TextAlignment.BottomRight : TextAlignment.Bottom;
-                DrawLine(canvas, transformer, p, new PointF(x, top), new PointF(x, bottom));
+                //DrawLine(canvas, distorter, transformer, p, new PointF(x, top), new PointF(x, bottom));
+                DrawLine(canvas, distorter, transformer, p, new PointF(x, 0), new PointF(x, top));
+                DrawLine(canvas, distorter, transformer, p, new PointF(x, 0), new PointF(x, bottom));
+
                 DrawStepTextForPlane(canvas, transformer, new PointF(x, 0), alignment, x, brushFill, fontBrush, font);
                 x += stepWidth;
             }
@@ -198,7 +201,10 @@ namespace Kinovea.ScreenManager
             while (x >= bounds.Left)
             {
                 p.DashStyle = DashStyle.Dash;
-                DrawLine(canvas, transformer, p, new PointF(x, top), new PointF(x, bottom));
+                //DrawLine(canvas, distorter, transformer, p, new PointF(x, top), new PointF(x, bottom));
+                DrawLine(canvas, distorter, transformer, p, new PointF(x, 0), new PointF(x, top));
+                DrawLine(canvas, distorter, transformer, p, new PointF(x, 0), new PointF(x, bottom));
+
                 DrawStepTextForPlane(canvas, transformer, new PointF(x, 0), TextAlignment.Bottom, x, brushFill, fontBrush, font);
                 x -= stepWidth;
             }
@@ -208,7 +214,10 @@ namespace Kinovea.ScreenManager
             while (y >= bottom)
             {
                 p.DashStyle = y == 0 ? DashStyle.Solid : DashStyle.Dash;
-                DrawLine(canvas, transformer, p, new PointF(bounds.Left, y), new PointF(bounds.Right, y));
+                //DrawLine(canvas, distorter, transformer, p, new PointF(bounds.Left, y), new PointF(bounds.Right, y));
+                DrawLine(canvas, distorter, transformer, p, new PointF(bounds.Left, y), new PointF(0, y));
+                DrawLine(canvas, distorter, transformer, p, new PointF(0, y), new PointF(bounds.Right, y));
+                
                 if (y != 0)
                     DrawStepTextForPlane(canvas, transformer, new PointF(0, y), TextAlignment.Left, y, brushFill, fontBrush, font);
                 y -= stepHeight;
@@ -217,7 +226,10 @@ namespace Kinovea.ScreenManager
             while (y <= top)
             {
                 p.DashStyle = DashStyle.Dash;
-                DrawLine(canvas, transformer, p, new PointF(bounds.Left, y), new PointF(bounds.Right, y));
+                //DrawLine(canvas, distorter, transformer, p, new PointF(bounds.Left, y), new PointF(bounds.Right, y));
+                DrawLine(canvas, distorter, transformer, p, new PointF(bounds.Left, y), new PointF(0, y));
+                DrawLine(canvas, distorter, transformer, p, new PointF(0, y), new PointF(bounds.Right, y));
+
                 DrawStepTextForPlane(canvas, transformer, new PointF(0, y), TextAlignment.Left, y, brushFill, fontBrush, font);
                 y += stepHeight;
             }
@@ -241,11 +253,23 @@ namespace Kinovea.ScreenManager
             canvas.DrawString(label, font, fontBrush, backRectangle.Location);
         }
 
-        private void DrawLine(Graphics canvas, IImageToViewportTransformer transformer, Pen penLine, PointF a, PointF b)
+        private void DrawLine(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penLine, PointF a, PointF b)
         {
-            Point p1 = transformer.Transform(CalibrationHelper.GetImagePoint(a));
-            Point p2 = transformer.Transform(CalibrationHelper.GetImagePoint(b));
-            canvas.DrawLine(penLine, p1, p2);
+            PointF p1 = CalibrationHelper.GetImagePoint(a);
+            PointF p2 = CalibrationHelper.GetImagePoint(b);
+
+            if (distorter != null && distorter.Initialized)
+            {
+                List<PointF> curve = distorter.DistortLine(p1, p2);
+                List<Point> transformed = transformer.Transform(curve);
+                canvas.DrawCurve(penLine, transformed.ToArray());
+            }
+            else
+            {
+                p1 = transformer.Transform(p1);
+                p2 = transformer.Transform(p2);
+                canvas.DrawLine(penLine, p1, p2);
+            }
         }
 
         public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
@@ -261,9 +285,9 @@ namespace Kinovea.ScreenManager
             
             if(showGrid || showGraduations || showAxis)
             {
-                if(IsPointOnHorizontalAxis(point, transformer))
+                if(IsPointOnHorizontalAxis(point, distorter, transformer))
                     result = 2;
-                else if(IsPointOnVerticalAxis(point, transformer))
+                else if(IsPointOnVerticalAxis(point, distorter, transformer))
                     result = 3;
             }
             
@@ -426,28 +450,40 @@ namespace Kinovea.ScreenManager
             
             return textPosition;
         }
-        private bool IsPointOnHorizontalAxis(Point p, IImageToViewportTransformer transformer)
+        private bool IsPointOnHorizontalAxis(Point p, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
+            PointF o = CalibrationHelper.GetImagePoint(PointF.Empty);
             PointF a = CalibrationHelper.GetImagePoint(new PointF(bounds.X, 0));
             PointF b = CalibrationHelper.GetImagePoint(new PointF(bounds.X + bounds.Width, 0));
-            return IsPointOnLine(p, a, b, transformer);
+
+            return IsPointOnLine(p, o, a, distorter, transformer) || IsPointOnLine(p, o, b, distorter, transformer);
         }
-        private bool IsPointOnVerticalAxis(Point p, IImageToViewportTransformer transformer)
+        private bool IsPointOnVerticalAxis(Point p, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
+            PointF o = CalibrationHelper.GetImagePoint(PointF.Empty);
             PointF a = CalibrationHelper.GetImagePoint(new PointF(0, bounds.Y));
             PointF b = CalibrationHelper.GetImagePoint(new PointF(0, bounds.Y - bounds.Height));
-            return IsPointOnLine(p, a, b, transformer);
+            return IsPointOnLine(p, o, a, distorter, transformer) || IsPointOnLine(p, o, b, distorter, transformer);
         }
-        private bool IsPointOnLine(Point p, PointF a, PointF b, IImageToViewportTransformer transformer)
+        private bool IsPointOnLine(Point p, PointF a, PointF b, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             if (a == b)
                 return false;
 
             using (GraphicsPath path = new GraphicsPath())
             {
-                path.AddLine(a, b);
+                if (distorter != null && distorter.Initialized)
+                {
+                    List<PointF> curve = distorter.DistortLine(a, b);
+                    path.AddCurve(curve.ToArray());
+                }
+                else
+                {
+                    path.AddLine(a, b);
+                }
+
                 return HitTester.HitTest(path, p, 1, false, transformer);
             }
         }
