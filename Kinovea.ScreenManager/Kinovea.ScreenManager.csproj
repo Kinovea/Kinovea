@@ -734,7 +734,6 @@
     </Compile>
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScreenManagerState.cs" />
     <Compile Include="UserInterface\FormIconPicker.cs">
       <SubType>Form</SubType>
     </Compile>
