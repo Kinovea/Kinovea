@@ -410,7 +410,7 @@ namespace Kinovea.ScreenManager
             w.WriteString(lengthUnit.ToString());
             w.WriteEndElement();
 
-            DistortionSerializer.Serialize(w, distortionHelper.Parameters);
+            DistortionSerializer.Serialize(w, distortionHelper.Parameters, false, imageSize);
         }
         public void ReadXml(XmlReader r, PointF scale, Size imageSize)
         {
@@ -435,7 +435,7 @@ namespace Kinovea.ScreenManager
                         lengthUnit = (LengthUnit) Enum.Parse(typeof(LengthUnit), r.ReadElementContentAsString());
                         break;
                     case "CameraCalibration":
-                        DistortionParameters parameters = DistortionSerializer.Deserialize(r);
+                        DistortionParameters parameters = DistortionSerializer.Deserialize(r, imageSize);
                         distortionHelper.Initialize(parameters, imageSize);
                         break;
                     default:
