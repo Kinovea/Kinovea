@@ -56,8 +56,8 @@ namespace Kinovea.ScreenManager
         public EventHandler DrawingDeleted;
         public EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdded;
         public EventHandler MultiDrawingItemDeleted;
-
-
+        public EventHandler CameraCalibrationAsked;
+            
         public RelayCommand<ITrackable> AddTrackableDrawingCommand { get; set; }
         public RelayCommand<ITrackable> DeleteTrackableDrawingCommand { get; set; }
         #endregion
@@ -866,6 +866,15 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        public List<List<PointF>> GetCameraCalibrationPoints()
+        {
+            List<List<PointF>> points = new List<List<PointF>>();
+            foreach (DrawingDistortionGrid grid in DistortionGrids())
+                points.Add(grid.Points);
+
+            return points;
+        }
+
         #region Autosave
         public void StartAutosave()
         {
@@ -1164,14 +1173,8 @@ namespace Kinovea.ScreenManager
         }
         private void LensCalibrationAsked(object sender, EventArgs e)
         {
-            List<List<PointF>> points = new List<List<PointF>>();
-            foreach (DrawingDistortionGrid grid in DistortionGrids())
-                points.Add(grid.Points);
-
-            FormCalibrateDistortion fcd = new FormCalibrateDistortion(points, calibrationHelper);
-            FormsHelper.Locate(fcd);
-            fcd.ShowDialog();
-            fcd.Dispose();
+            if (CameraCalibrationAsked != null)
+                CameraCalibrationAsked(this, EventArgs.Empty);
         }
         #endregion
     }

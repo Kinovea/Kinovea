@@ -1094,7 +1094,9 @@
       <Name>Kinovea.Video</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\checkerboard.png" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\function.png" />
   </ItemGroup>

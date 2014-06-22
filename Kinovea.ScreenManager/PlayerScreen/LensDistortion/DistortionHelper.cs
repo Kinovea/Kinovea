@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
+using Emgu.CV.Structure;
 
 namespace Kinovea.ScreenManager
 {
@@ -38,7 +39,7 @@ namespace Kinovea.ScreenManager
             this.parameters = parameters;
             this.imageSize = imageSize;
             icp = parameters.IntrinsicCameraParameters;
-            initialized = true; 
+            initialized = true;
         }
 
         /// <summary>
@@ -187,7 +188,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Builds a full scale image with a distorted grid pattern.
         /// </summary>
-        public Bitmap GetDistortionGrid()
+        public Bitmap GetDistortionGrid(Color background, Color foreground, int steps)
         {
             Bitmap bmp = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format24bppRgb);
 
@@ -196,35 +197,71 @@ namespace Kinovea.ScreenManager
 
             Graphics g = Graphics.FromImage(bmp);
             g.InterpolationMode = InterpolationMode.Bilinear;
-            //g.PixelOffsetMode = PixelOffsetMode.Half;
-            //g.CompositingQuality = CompositingQuality.HighQuality;
-            //g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            g.SmoothingMode = SmoothingMode.AntiAlias; 
+            
+            SolidBrush b = new SolidBrush(background);
+            g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
+            b.Dispose();
 
-            g.FillRectangle(Brushes.White, 0, 0, imageSize.Width, imageSize.Height);
+            Pen p = new Pen(foreground, 1);
 
-            int steps = 50;
-            int stepWidth = (imageSize.Width - 1) / steps;
-            int stepHeight = (imageSize.Height - 1) / steps;
+            float stepWidth = (float)imageSize.Width / steps;
+            float stepHeight = (float)imageSize.Height / steps;
 
-            for (int col = 0; col < imageSize.Width; col += stepWidth)
+            for (int i = 0; i <= steps; i++)
             {
+                int col = (int)Math.Min(imageSize.Width - 1, Math.Round(i * stepWidth));
+                
                 PointF start = new PointF(col, 0);
                 PointF end = new PointF(col, imageSize.Height);
 
                 List<PointF> points = DistortLine(start, end);
-                g.DrawCurve(Pens.Black, points.ToArray());
+                g.DrawCurve(p, points.ToArray());
             }
 
-            for (int row = 0; row < imageSize.Height; row += stepHeight)
+            for (int i = 0; i <= steps; i++)
             {
+                int row = (int)Math.Min(imageSize.Height - 1, Math.Round(i * stepHeight));
+                
                 PointF start = new PointF(0, row);
                 PointF end = new PointF(imageSize.Width, row);
 
                 List<PointF> points = DistortLine(start, end);
-                g.DrawCurve(Pens.Black, points.ToArray());
+                g.DrawCurve(p, points.ToArray());
             }
-            
+
+            p.Dispose();
+
             return bmp;
+        }
+
+        public Bitmap GetUndistortedImage(Bitmap sourceImage)
+        {
+            // The source image is possibly at reduced size, we need to upscale it for the map to work, 
+            // as it's based on the coefficients computed for the full size.
+
+            Matrix<float> mapx;
+            Matrix<float> mapy;
+            icp.InitUndistortMap(imageSize.Width, imageSize.Height, out mapx, out mapy);
+
+            Bitmap source = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format24bppRgb);
+            Graphics g = Graphics.FromImage(source);
+            g.DrawImage(sourceImage, 0, 0, imageSize.Width, imageSize.Height);
+
+            BitmapData sourceImageData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, source.PixelFormat);
+            Image<Bgr, Byte> cvSource = new Image<Bgr, Byte>(sourceImageData.Width, sourceImageData.Height, sourceImageData.Stride, sourceImageData.Scan0);
+
+            Bitmap result = new Bitmap(source.Width, source.Height, PixelFormat.Format24bppRgb);
+            BitmapData resultImageData = result.LockBits(new Rectangle(0, 0, result.Width, result.Height), ImageLockMode.ReadOnly, result.PixelFormat);
+            Image<Bgr, Byte> cvResult = new Image<Bgr, Byte>(resultImageData.Width, resultImageData.Height, resultImageData.Stride, resultImageData.Scan0);
+
+            CvInvoke.cvRemap(cvSource, cvResult, mapx, mapy, 0, new MCvScalar(0));
+
+            source.UnlockBits(sourceImageData);
+            result.UnlockBits(resultImageData);
+
+            return result;
         }
     }
 

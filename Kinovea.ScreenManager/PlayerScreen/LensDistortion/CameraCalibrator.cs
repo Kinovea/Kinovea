@@ -37,6 +37,9 @@ namespace Kinovea.ScreenManager
 
         public CameraCalibrator(List<List<PointF>> imagePoints, Size imageSize)
         {
+            if (imagePoints == null || imagePoints.Count == 0)
+                return;
+
             ImportImagePoints(imagePoints);
             this.imageSize = imageSize;
 
@@ -96,7 +99,6 @@ namespace Kinovea.ScreenManager
             double cy = icp.IntrinsicMatrix[1, 2];
 
             DistortionParameters parameters = new DistortionParameters(icp);
-            //DistortionParameters parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy);
 
             log.DebugFormat("Distortion coefficients: k1:{0:0.000}, k2:{1:0.000}, k3:{2:0.000}, p1:{3:0.000}, p2:{4:0.000}.", k1, k2, k3, p1, p2);
             log.DebugFormat("Camera intrinsics: fx:{0:0.000}, fy:{1:0.000}, cx:{2:0.000}, cy:{3:0.000}", fx, fy, cx, cy);

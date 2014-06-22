@@ -66,5 +66,10 @@ namespace Kinovea.ScreenManager
 
             this.IntrinsicCameraParameters = icp;
         }
+
+        public static DistortionParameters Default
+        {
+            get { return new DistortionParameters(0, 0, 0, 0, 0, 1, 1, 0, 0); }
+        }
     }
 }
