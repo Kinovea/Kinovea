@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Globalization;
+using System.Drawing;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -11,7 +13,7 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void Serialize(XmlWriter w, DistortionParameters p)
+        public static void Serialize(XmlWriter w, DistortionParameters p, bool saveSize, Size imageSize)
         {
             if (p == null)
                 return;
@@ -19,6 +21,9 @@ namespace Kinovea.ScreenManager
             w.WriteStartElement("CameraCalibration");
 
             Action<string, double> write = (element, value) => w.WriteElementString(element, string.Format(CultureInfo.InvariantCulture, "{0}", value));
+
+            if (saveSize)
+                w.WriteElementString("ImageSize", string.Format("{0};{1}", imageSize.Width, imageSize.Height));
 
             write("Fx", p.Fx);
             write("Fy", p.Fy);
@@ -34,10 +39,11 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
         }
 
-        public static DistortionParameters Deserialize(XmlReader r)
+        public static DistortionParameters Deserialize(XmlReader r, Size inputSize)
         {
             r.ReadStartElement();
 
+            Size size = inputSize;
             double k1 = 0;
             double k2 = 0;
             double k3 = 0;
@@ -52,6 +58,9 @@ namespace Kinovea.ScreenManager
             {
                 switch (r.Name)
                 {
+                    case "ImageSize":
+                        size = XmlHelper.ParseSize(r.ReadElementContentAsString());
+                        break;
                     case "Fx":
                         fx = r.ReadElementContentAsDouble();
                         break;
@@ -90,6 +99,17 @@ namespace Kinovea.ScreenManager
 
             // Due to numeric instability, we drop k3.
             k3 = 0;
+
+            if (inputSize.Width != size.Width || inputSize.Height != size.Height)
+            {
+                double xFactor = (double)inputSize.Width / size.Width;
+                double yFactor = (double)inputSize.Height / size.Height;
+
+                fx *= xFactor;
+                fy *= yFactor;
+                cx *= xFactor;
+                cy *= yFactor;
+            }
 
             DistortionParameters parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy);
             return parameters;

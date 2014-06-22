@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using System.Drawing.Drawing2D;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -128,6 +129,47 @@ namespace Kinovea.ScreenManager
         private void btnOK_Click(object sender, EventArgs e)
         {
             calibrationHelper.DistortionHelper.Initialize(distorter.Parameters, calibrationHelper.ImageSize);
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Load camera calibration profile";
+            openFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
+                return;
+
+            DistortionParameters parameters = DistortionImporterKinovea.Import(openFileDialog.FileName, calibrationHelper.ImageSize);
+
+            if (parameters != null)
+            {
+                distorter.Initialize(parameters, calibrationHelper.ImageSize);
+                Populate();
+            }
+        }
+
+        private void btnResetToDefault_Click(object sender, EventArgs e)
+        {
+            DistortionParameters parameters = DistortionParameters.Default;
+            distorter.Initialize(parameters, calibrationHelper.ImageSize);
+            Populate();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Save camera calibration profile";
+            saveFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
+                return;
+
+            DistortionImporterKinovea.Export(saveFileDialog.FileName, distorter.Parameters, calibrationHelper.ImageSize);
         }
     }
 }

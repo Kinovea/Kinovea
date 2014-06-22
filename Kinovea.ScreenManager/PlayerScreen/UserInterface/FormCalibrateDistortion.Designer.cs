@@ -272,6 +272,7 @@
             this.btnResetToDefault.TabIndex = 40;
             this.btnResetToDefault.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnResetToDefault.UseVisualStyleBackColor = true;
+            this.btnResetToDefault.Click += new System.EventHandler(this.btnResetToDefault_Click);
             // 
             // btnSave
             // 
@@ -287,6 +288,7 @@
             this.btnSave.TabIndex = 39;
             this.btnSave.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnImport
             // 
@@ -302,6 +304,7 @@
             this.btnImport.TabIndex = 38;
             this.btnImport.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
             // FormCalibrateDistortion
             // 
