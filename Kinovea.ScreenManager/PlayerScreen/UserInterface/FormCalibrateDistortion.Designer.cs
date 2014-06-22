@@ -44,18 +44,24 @@
             this.lblFx = new System.Windows.Forms.Label();
             this.tabPages = new System.Windows.Forms.TabControl();
             this.tabDistortion = new System.Windows.Forms.TabPage();
-            this.pbDistortion = new System.Windows.Forms.PictureBox();
             this.tabImage = new System.Windows.Forms.TabPage();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuImport = new System.Windows.Forms.ToolStripMenuItem();
+            this.pbDistortion = new System.Windows.Forms.PictureBox();
             this.pbImage = new System.Windows.Forms.PictureBox();
-            this.btnResetToDefault = new System.Windows.Forms.Button();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnImport = new System.Windows.Forms.Button();
+            this.mnuOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuImportAgisoft = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuDefault = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.grpDistortionCoefficients.SuspendLayout();
             this.grpIntrinsics.SuspendLayout();
             this.tabPages.SuspendLayout();
             this.tabDistortion.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbDistortion)).BeginInit();
             this.tabImage.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbDistortion)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -63,7 +69,7 @@
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(386, 257);
+            this.btnOK.Location = new System.Drawing.Point(386, 245);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(99, 24);
             this.btnOK.TabIndex = 31;
@@ -75,7 +81,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(491, 257);
+            this.btnCancel.Location = new System.Drawing.Point(491, 245);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(99, 24);
             this.btnCancel.TabIndex = 32;
@@ -85,7 +91,7 @@
             // btnCalibrate
             // 
             this.btnCalibrate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCalibrate.Location = new System.Drawing.Point(12, 258);
+            this.btnCalibrate.Location = new System.Drawing.Point(12, 246);
             this.btnCalibrate.Name = "btnCalibrate";
             this.btnCalibrate.Size = new System.Drawing.Size(115, 23);
             this.btnCalibrate.TabIndex = 33;
@@ -100,7 +106,7 @@
             this.grpDistortionCoefficients.Controls.Add(this.lblK3);
             this.grpDistortionCoefficients.Controls.Add(this.lblK2);
             this.grpDistortionCoefficients.Controls.Add(this.lblK1);
-            this.grpDistortionCoefficients.Location = new System.Drawing.Point(12, 43);
+            this.grpDistortionCoefficients.Location = new System.Drawing.Point(12, 35);
             this.grpDistortionCoefficients.Name = "grpDistortionCoefficients";
             this.grpDistortionCoefficients.Size = new System.Drawing.Size(237, 108);
             this.grpDistortionCoefficients.TabIndex = 35;
@@ -158,7 +164,7 @@
             this.grpIntrinsics.Controls.Add(this.lblCx);
             this.grpIntrinsics.Controls.Add(this.lblFy);
             this.grpIntrinsics.Controls.Add(this.lblFx);
-            this.grpIntrinsics.Location = new System.Drawing.Point(12, 157);
+            this.grpIntrinsics.Location = new System.Drawing.Point(12, 149);
             this.grpIntrinsics.Name = "grpIntrinsics";
             this.grpIntrinsics.Size = new System.Drawing.Size(237, 86);
             this.grpIntrinsics.TabIndex = 36;
@@ -205,10 +211,10 @@
             // 
             this.tabPages.Controls.Add(this.tabDistortion);
             this.tabPages.Controls.Add(this.tabImage);
-            this.tabPages.Location = new System.Drawing.Point(265, 12);
+            this.tabPages.Location = new System.Drawing.Point(265, 32);
             this.tabPages.Name = "tabPages";
             this.tabPages.SelectedIndex = 0;
-            this.tabPages.Size = new System.Drawing.Size(325, 231);
+            this.tabPages.Size = new System.Drawing.Size(325, 203);
             this.tabPages.TabIndex = 37;
             // 
             // tabDistortion
@@ -217,21 +223,10 @@
             this.tabDistortion.Location = new System.Drawing.Point(4, 22);
             this.tabDistortion.Name = "tabDistortion";
             this.tabDistortion.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDistortion.Size = new System.Drawing.Size(317, 205);
+            this.tabDistortion.Size = new System.Drawing.Size(317, 177);
             this.tabDistortion.TabIndex = 0;
             this.tabDistortion.Text = "Distortion";
             this.tabDistortion.UseVisualStyleBackColor = true;
-            // 
-            // pbDistortion
-            // 
-            this.pbDistortion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(42)))), ((int)(((byte)(42)))));
-            this.pbDistortion.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pbDistortion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbDistortion.Location = new System.Drawing.Point(3, 3);
-            this.pbDistortion.Name = "pbDistortion";
-            this.pbDistortion.Size = new System.Drawing.Size(311, 199);
-            this.pbDistortion.TabIndex = 0;
-            this.pbDistortion.TabStop = false;
             // 
             // tabImage
             // 
@@ -243,6 +238,47 @@
             this.tabImage.TabIndex = 1;
             this.tabImage.Text = "Image";
             this.tabImage.UseVisualStyleBackColor = true;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuFile});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(602, 24);
+            this.menuStrip1.TabIndex = 41;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // mnuFile
+            // 
+            this.mnuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuOpen,
+            this.mnuSave,
+            this.mnuImport,
+            this.mnuDefault,
+            this.mnuQuit});
+            this.mnuFile.Name = "mnuFile";
+            this.mnuFile.Size = new System.Drawing.Size(37, 20);
+            this.mnuFile.Text = "File";
+            // 
+            // mnuImport
+            // 
+            this.mnuImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuImportAgisoft});
+            this.mnuImport.Name = "mnuImport";
+            this.mnuImport.Size = new System.Drawing.Size(159, 22);
+            this.mnuImport.Text = "Import";
+            // 
+            // pbDistortion
+            // 
+            this.pbDistortion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(42)))), ((int)(((byte)(42)))));
+            this.pbDistortion.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pbDistortion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbDistortion.Location = new System.Drawing.Point(3, 3);
+            this.pbDistortion.Name = "pbDistortion";
+            this.pbDistortion.Size = new System.Drawing.Size(311, 171);
+            this.pbDistortion.TabIndex = 0;
+            this.pbDistortion.TabStop = false;
             // 
             // pbImage
             // 
@@ -257,71 +293,58 @@
             this.pbImage.TabStop = false;
             this.pbImage.Click += new System.EventHandler(this.pbImage_Click);
             // 
-            // btnResetToDefault
+            // mnuOpen
             // 
-            this.btnResetToDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnResetToDefault.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnResetToDefault.FlatAppearance.BorderSize = 0;
-            this.btnResetToDefault.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-            this.btnResetToDefault.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-            this.btnResetToDefault.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnResetToDefault.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
-            this.btnResetToDefault.Location = new System.Drawing.Point(224, 12);
-            this.btnResetToDefault.Name = "btnResetToDefault";
-            this.btnResetToDefault.Size = new System.Drawing.Size(25, 25);
-            this.btnResetToDefault.TabIndex = 40;
-            this.btnResetToDefault.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnResetToDefault.UseVisualStyleBackColor = true;
-            this.btnResetToDefault.Click += new System.EventHandler(this.btnResetToDefault_Click);
+            this.mnuOpen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.mnuOpen.Image = global::Kinovea.ScreenManager.Properties.Resources.folder;
+            this.mnuOpen.Name = "mnuOpen";
+            this.mnuOpen.Size = new System.Drawing.Size(159, 22);
+            this.mnuOpen.Text = "Open";
             // 
-            // btnSave
+            // mnuSave
             // 
-            this.btnSave.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSave.FlatAppearance.BorderSize = 0;
-            this.btnSave.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-            this.btnSave.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-            this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSave.Image = global::Kinovea.ScreenManager.Properties.Resources.filesave;
-            this.btnSave.Location = new System.Drawing.Point(43, 12);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(25, 25);
-            this.btnSave.TabIndex = 39;
-            this.btnSave.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.mnuSave.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.mnuSave.Image = global::Kinovea.ScreenManager.Properties.Resources.filesave;
+            this.mnuSave.Name = "mnuSave";
+            this.mnuSave.Size = new System.Drawing.Size(159, 22);
+            this.mnuSave.Text = "Save";
             // 
-            // btnImport
+            // mnuImportAgisoft
             // 
-            this.btnImport.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnImport.FlatAppearance.BorderSize = 0;
-            this.btnImport.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-            this.btnImport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-            this.btnImport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnImport.Image = global::Kinovea.ScreenManager.Properties.Resources.folder;
-            this.btnImport.Location = new System.Drawing.Point(12, 12);
-            this.btnImport.Name = "btnImport";
-            this.btnImport.Size = new System.Drawing.Size(25, 25);
-            this.btnImport.TabIndex = 38;
-            this.btnImport.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnImport.UseVisualStyleBackColor = true;
-            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            this.mnuImportAgisoft.Image = global::Kinovea.ScreenManager.Properties.Resources.ruler_triangle;
+            this.mnuImportAgisoft.Name = "mnuImportAgisoft";
+            this.mnuImportAgisoft.Size = new System.Drawing.Size(152, 22);
+            this.mnuImportAgisoft.Text = "Agisoft Lens";
+            // 
+            // mnuDefault
+            // 
+            this.mnuDefault.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
+            this.mnuDefault.Name = "mnuDefault";
+            this.mnuDefault.Size = new System.Drawing.Size(159, 22);
+            this.mnuDefault.Text = "Restore default";
+            // 
+            // mnuQuit
+            // 
+            this.mnuQuit.Image = global::Kinovea.ScreenManager.Properties.Resources.quit;
+            this.mnuQuit.Name = "mnuQuit";
+            this.mnuQuit.Size = new System.Drawing.Size(159, 22);
+            this.mnuQuit.Text = "Quit";
             // 
             // FormCalibrateDistortion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(602, 293);
-            this.Controls.Add(this.btnResetToDefault);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.btnImport);
+            this.ClientSize = new System.Drawing.Size(602, 281);
             this.Controls.Add(this.tabPages);
             this.Controls.Add(this.grpIntrinsics);
             this.Controls.Add(this.grpDistortionCoefficients);
             this.Controls.Add(this.btnCalibrate);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormCalibrateDistortion";
@@ -332,10 +355,13 @@
             this.grpIntrinsics.PerformLayout();
             this.tabPages.ResumeLayout(false);
             this.tabDistortion.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbDistortion)).EndInit();
             this.tabImage.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbDistortion)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbImage)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -360,8 +386,13 @@
         private System.Windows.Forms.PictureBox pbDistortion;
         private System.Windows.Forms.TabPage tabImage;
         private System.Windows.Forms.PictureBox pbImage;
-        private System.Windows.Forms.Button btnResetToDefault;
-        private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.Button btnImport;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem mnuFile;
+        private System.Windows.Forms.ToolStripMenuItem mnuOpen;
+        private System.Windows.Forms.ToolStripMenuItem mnuSave;
+        private System.Windows.Forms.ToolStripMenuItem mnuImport;
+        private System.Windows.Forms.ToolStripMenuItem mnuImportAgisoft;
+        private System.Windows.Forms.ToolStripMenuItem mnuDefault;
+        private System.Windows.Forms.ToolStripMenuItem mnuQuit;
     }
 }

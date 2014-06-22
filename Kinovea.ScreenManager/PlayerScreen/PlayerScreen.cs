@@ -591,6 +591,8 @@ namespace Kinovea.ScreenManager
             FormsHelper.Locate(fcd);
             fcd.ShowDialog();
             fcd.Dispose();
+
+            view.RefreshImage();
         }
         #endregion
 

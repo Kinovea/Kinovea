@@ -41,6 +41,12 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             LocalizeForm();
 
+            mnuOpen.Click += (s, e) => Open();
+            mnuSave.Click += (s, e) => Save();
+            mnuImportAgisoft.Click += (s, e) => ImportAgisoft();
+            mnuDefault.Click += (s, e) => RestoreDefaults();
+            mnuQuit.Click += (s, e) => Close();
+
             if (currentImage == null)
                 tabPages.TabPages.Remove(tabImage);
 
@@ -57,6 +63,13 @@ namespace Kinovea.ScreenManager
             this.btnCalibrate.Text = "Calibrate camera";
             this.btnOK.Text = ScreenManagerLang.Generic_Apply;
             this.btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            this.mnuFile.Text = "File";
+            this.mnuOpen.Text = "Open";
+            this.mnuSave.Text = "Save";
+            this.mnuImport.Text = "Import";
+            this.mnuImportAgisoft.Text = "Agisoft Lens";
+            this.mnuDefault.Text = "Restore default";
+            this.mnuQuit.Text = "Quit";
         }
 
         private void Populate()
@@ -133,6 +146,11 @@ namespace Kinovea.ScreenManager
 
         private void btnImport_Click(object sender, EventArgs e)
         {
+            Open();
+        }
+
+        private void Open()
+        {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Load camera calibration profile";
             openFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
@@ -153,12 +171,22 @@ namespace Kinovea.ScreenManager
 
         private void btnResetToDefault_Click(object sender, EventArgs e)
         {
+            RestoreDefaults();
+        }
+
+        private void RestoreDefaults()
+        {
             DistortionParameters parameters = DistortionParameters.Default;
             distorter.Initialize(parameters, calibrationHelper.ImageSize);
             Populate();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
+        {
+            Save();
+        }
+
+        private void Save()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "Save camera calibration profile";
@@ -170,6 +198,26 @@ namespace Kinovea.ScreenManager
                 return;
 
             DistortionImporterKinovea.Export(saveFileDialog.FileName, distorter.Parameters, calibrationHelper.ImageSize);
+        }
+
+        private void ImportAgisoft()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Load camera calibration profile";
+            openFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
+                return;
+
+            DistortionParameters parameters = DistortionImporterAgisoft.Import(openFileDialog.FileName, calibrationHelper.ImageSize);
+
+            if (parameters != null)
+            {
+                distorter.Initialize(parameters, calibrationHelper.ImageSize);
+                Populate();
+            }
         }
     }
 }
