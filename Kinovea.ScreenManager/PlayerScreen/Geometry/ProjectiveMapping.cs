@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using AForge.Math;
 
 namespace Kinovea.ScreenManager
 {
@@ -31,21 +32,56 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ProjectiveMapping
     {
+        /// <summary>
+        /// x' = Hx. Finds projected coordinates (image coordinates) from plane coordinate.
+        /// </summary>
+        public Matrix3x3 Matrix
+        {
+            get { return matrix; }
+        }
+
+        /// <summary>
+        /// Finds plane coordinates from projected coordinates.
+        /// </summary>
+        public Matrix3x3 Adjugate
+        {
+            get { return adjugate; }
+        }
+
+        public Matrix3x3 Inverse
+        {
+            get { return inverse; }
+        }
+        
+
         private const double TOLERANCE = 1e-13;
         private double[,] mapMatrix;
         private double[,] unmapMatrix;
+
+        private Matrix3x3 matrix;
+        private Matrix3x3 adjugate;
+        private Matrix3x3 inverse;
+        
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public void Update(QuadrilateralF plane, QuadrilateralF image)
         {
-           double[,] squareToInput = MapSquareToQuad(plane);
-           double[,] squareToOutput = MapSquareToQuad(image);
+            double[,] squareToInput = MapSquareToQuad(plane);
+            double[,] squareToOutput = MapSquareToQuad(image);
 
-           if (squareToOutput == null )
-               return;
+            if (squareToOutput == null )
+                return;
 
-           mapMatrix = MultiplyMatrix(squareToOutput, AdjugateMatrix(squareToInput));
-           unmapMatrix = AdjugateMatrix(mapMatrix);
+            mapMatrix = MultiplyMatrix(squareToOutput, AdjugateMatrix(squareToInput));
+            unmapMatrix = AdjugateMatrix(mapMatrix);
+
+            Vector3 row0 = new Vector3((float)mapMatrix[0, 0], (float)mapMatrix[0, 1], (float)mapMatrix[0, 2]);
+            Vector3 row1 = new Vector3((float)mapMatrix[1, 0], (float)mapMatrix[1, 1], (float)mapMatrix[1, 2]);
+            Vector3 row2 = new Vector3((float)mapMatrix[2, 0], (float)mapMatrix[2, 1], (float)mapMatrix[2, 2]);
+            matrix = Matrix3x3.CreateFromRows(row0, row1, row2);
+            
+            adjugate = matrix.Adjugate();
+            inverse = matrix.Inverse();
         }
         
         /// <summary>
@@ -59,7 +95,7 @@ namespace Kinovea.ScreenManager
            
            return new PointF((float)x, (float)y);
         }
-        
+
         /// <summary>
         /// Maps a quadrilateral from plane coordinates to image coordinates.
         /// </summary>
@@ -95,8 +131,28 @@ namespace Kinovea.ScreenManager
             PointF d = Backward(q.D);
             return new QuadrilateralF(a, b, c, d);
         }
+
+        #region Homogenous coordinates
+
+        /// <summary>
+        /// Maps a vector from plane coordinates to image coordinates.
+        /// </summary>
+        public Vector3 Forward(Vector3 p)
+        {
+            return Matrix3x3.Multiply(matrix, p);
+        }
+
+        /// <summary>
+        /// Maps a vector from image coordinates to plane coordinates.
+        /// </summary>
+        public Vector3 Backward(Vector3 p)
+        {
+            return Matrix3x3.Multiply(adjugate, p);
+        }
         
-        
+        #endregion
+
+
         public Ellipse Ellipse()
         {
             // Maps unit circle in plane (-1;+1) to ellipse in image.
@@ -257,6 +313,8 @@ namespace Kinovea.ScreenManager
 
             return b;
         }
+
+        
         
         
         
