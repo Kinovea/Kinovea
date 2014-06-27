@@ -90,9 +90,10 @@ namespace Kinovea.ScreenManager
             double r2 = x * x + y * y;
 
             //radial distorsion
-            double xDistort = x * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 + parameters.K3 * r2 * r2 * r2);
-            double yDistort = y * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 + parameters.K3 * r2 * r2 * r2);
-
+            // Note: We discard k3 as it yields instability.
+            double xDistort = x * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 /*+ parameters.K3 * r2 * r2 * r2*/);
+            double yDistort = y * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 /*+ parameters.K3 * r2 * r2 * r2*/);
+            
             //tangential distorsion
             xDistort = xDistort + (2 * parameters.P1 * x * y + parameters.P2 * (r2 + 2 * x * x));
             yDistort = yDistort + (parameters.P1 * (r2 + 2 * y * y) + 2 * parameters.P2 * x * y);
@@ -194,7 +195,7 @@ namespace Kinovea.ScreenManager
 
             if (!initialized)
                 return bmp;
-
+            
             Graphics g = Graphics.FromImage(bmp);
             g.InterpolationMode = InterpolationMode.Bilinear;
             g.CompositingQuality = CompositingQuality.HighQuality;

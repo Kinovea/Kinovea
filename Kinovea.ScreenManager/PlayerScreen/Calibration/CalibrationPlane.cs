@@ -53,6 +53,11 @@ namespace Kinovea.ScreenManager
         {
             get { return valid; }
         }
+
+        public ProjectiveMapping ProjectiveMapping
+        {
+            get { return mapping; }
+        }
         
         private bool initialized;
         private SizeF size;

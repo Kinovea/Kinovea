@@ -224,6 +224,10 @@ namespace Kinovea.ScreenManager
         {
             return calibrationPlane.Valid;
         }
+        public ProjectiveMapping CalibrationByPlane_GetProjectiveMapping()
+        {
+            return calibrationPlane.ProjectiveMapping;
+        }
         #endregion
 
         #region Value computers
@@ -467,6 +471,11 @@ namespace Kinovea.ScreenManager
 
             if (!initialized)
                 return;
+
+            PlaneFiller filler = new PlaneFiller(this);
+
+            //for (int i = 0; i < 10; i++)
+                filler.Fill();
 
             if (calibratorType == CalibratorType.Line)
             {

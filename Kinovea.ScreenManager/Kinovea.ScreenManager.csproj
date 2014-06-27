@@ -243,6 +243,8 @@
     <Compile Include="DualPlayer\DualSnapshoter.cs" />
     <Compile Include="DualPlayer\DualVideoExporter.cs" />
     <Compile Include="DualPlayer\PlayerSyncInfo.cs" />
+    <Compile Include="PlayerScreen\Calibration\PlaneFiller.cs" />
+    <Compile Include="PlayerScreen\Calibration\TickLine.cs" />
     <Compile Include="PlayerScreen\ChronoManager.cs" />
     <Compile Include="CommandProcessedEventArgs.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
@@ -262,6 +264,8 @@
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\MultiDrawingItemEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
+    <Compile Include="PlayerScreen\Geometry\ClipResult.cs" />
+    <Compile Include="PlayerScreen\Geometry\LiangBarsky.cs" />
     <Compile Include="PlayerScreen\LensDistortion\CameraCalibrator.cs" />
     <Compile Include="PlayerScreen\LensDistortion\DistortionHelper.cs" />
     <Compile Include="PlayerScreen\LensDistortion\DistortionImporterAgisoft.cs" />
