@@ -6,10 +6,15 @@ using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
-    public class TickLine
+    public class GridAxis
     {
-        public bool IsAxis { get; set; }
         public PointF Start { get; set; }
         public PointF End { get; set; }
+
+        public GridAxis(PointF start, PointF end)
+        {
+            this.Start = start;
+            this.End = end;
+        }
     }
 }

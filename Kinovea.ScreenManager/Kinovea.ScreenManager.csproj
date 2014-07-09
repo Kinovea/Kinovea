@@ -243,8 +243,10 @@
     <Compile Include="DualPlayer\DualSnapshoter.cs" />
     <Compile Include="DualPlayer\DualVideoExporter.cs" />
     <Compile Include="DualPlayer\PlayerSyncInfo.cs" />
-    <Compile Include="PlayerScreen\Calibration\PlaneFiller.cs" />
-    <Compile Include="PlayerScreen\Calibration\TickLine.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\CoordinateSystemGridFinder.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\GridAxis.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\RangeHelper.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\GridLine.cs" />
     <Compile Include="PlayerScreen\ChronoManager.cs" />
     <Compile Include="CommandProcessedEventArgs.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
@@ -259,6 +261,9 @@
     <Compile Include="PlayerScreen\AbstractDrawingManager.cs" />
     <Compile Include="PlayerScreen\AutoSaver.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractMultiDrawingItem.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\CoordinateSystemGrid.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\TextAlignment.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\TickMark.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingDistortionGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolDistortionGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
@@ -357,7 +362,7 @@
     <Compile Include="PlayerScreen\Drawings\DrawingCapabilities.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingCoordinateSystem.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\DrawingCoordinateSystem.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolArrow.cs" />
@@ -1111,6 +1116,7 @@
   <ItemGroup>
     <None Include="Resources\quit.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
