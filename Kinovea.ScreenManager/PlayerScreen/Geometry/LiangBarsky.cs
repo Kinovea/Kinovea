@@ -9,7 +9,8 @@ namespace Kinovea.ScreenManager
     public class LiangBarsky
     {
         /// <summary>
-        /// Implements the Liang-Barsky line clipping algorithm for segments, infinite lines or half lines.
+        /// Implements the Liang-Barsky line clipping algorithm for segments, infinite lines or rays.
+        /// For rays, specify either {t0=double.minValue, t1=1.0}, or {t0=0.0, t1=double.MaxValue}.
         /// </summary>
         public static ClipResult ClipLine(RectangleF rect, PointF a, PointF b, double t0, double t1)
         {

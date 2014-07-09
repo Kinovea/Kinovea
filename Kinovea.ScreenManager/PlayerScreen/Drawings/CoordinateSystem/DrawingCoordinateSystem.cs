@@ -159,7 +159,7 @@ namespace Kinovea.ScreenManager
             if (CalibrationHelper.CalibratorType == CalibratorType.Plane && !CalibrationHelper.CalibrationByPlane_IsValid())
                 return;
 
-            RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
+            /*RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
             if (bounds.Size == SizeF.Empty)
                 return;
 
@@ -172,10 +172,55 @@ namespace Kinovea.ScreenManager
             using (Pen penLine = styleHelper.GetBackgroundPen(255))
             {
                 DrawGrid(canvas, distorter, transformer, bounds, stepSizeWidth, stepSizeHeight);
+            }*/
+
+            CoordinateSystemGrid grid = CalibrationHelper.GetCoordinateSystemGrid();
+            using (Pen penLine = styleHelper.GetBackgroundPen(255))
+            {
+                DrawGrid(canvas, distorter, transformer, grid);
             }
         }
+
+        private void DrawGrid(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, CoordinateSystemGrid grid)
+        {
+            Pen p = styleHelper.GetBackgroundPen(gridAlpha);
+
+            p.DashStyle = DashStyle.Solid;
+            p.Width = 2;
+            
+            if (grid.VerticalAxis != null)
+                DrawImageLine(canvas, distorter, transformer, p, grid.VerticalAxis.Start, grid.VerticalAxis.End);
+
+            if (grid.HorizontalAxis != null)
+                DrawImageLine(canvas, distorter, transformer, p, grid.HorizontalAxis.Start, grid.HorizontalAxis.End);
+
+            p.DashStyle = DashStyle.Dash;
+            p.Width = 1;
+            foreach (GridLine line in grid.GridLines)
+            {
+                DrawImageLine(canvas, distorter, transformer, p, line.Start, line.End);
+            }
+
+            SolidBrush brushFill = styleHelper.GetBackgroundBrush(defaultBackgroundAlpha);
+            SolidBrush fontBrush = styleHelper.GetForegroundBrush(255);
+            Font font = styleHelper.GetFont(1.0F);
+
+            foreach (TickMark tick in grid.TickMarks)
+            {
+                DrawTickMark(canvas, distorter, transformer, tick, brushFill, fontBrush, font);
+            }
+            
+            font.Dispose();
+            fontBrush.Dispose();
+            brushFill.Dispose();
+
+            p.Dispose();
+        }
+
         private void DrawGrid(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, RectangleF bounds, float stepWidth, float stepHeight)
         {
+            // DEPRECATED.
+
             Pen p = styleHelper.GetBackgroundPen(gridAlpha);
             SolidBrush brushFill = styleHelper.GetBackgroundBrush(defaultBackgroundAlpha);
             SolidBrush fontBrush = styleHelper.GetForegroundBrush(255);
@@ -240,8 +285,23 @@ namespace Kinovea.ScreenManager
             p.Dispose();
         }
 
+        private void DrawTickMark(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, TickMark tick, SolidBrush brushFill, SolidBrush fontBrush, Font font)
+        {
+            string label = String.Format("{0}", tick.Value);
+            PointF loc = transformer.Transform(tick.ImageLocation);
+
+            SizeF labelSize = canvas.MeasureString(label, font);
+            PointF textPosition = GetTextPosition(loc, tick.TextAlignment, labelSize);
+            RectangleF backRectangle = new RectangleF(textPosition, labelSize);
+
+            RoundedRectangle.Draw(canvas, backRectangle, brushFill, font.Height / 4, false, false, null);
+            canvas.DrawString(label, font, fontBrush, backRectangle.Location);
+        }
+
         private void DrawStepTextForPlane(Graphics canvas, IImageToViewportTransformer transformer, PointF tickPosition, TextAlignment textAlignment, float tickValue, SolidBrush brushFill, SolidBrush fontBrush, Font font)
         {
+            // DEPRECATED.
+
             string label = String.Format("{0}", tickValue);
             PointF loc = transformer.Transform(CalibrationHelper.GetImagePoint(tickPosition));
 
@@ -251,6 +311,22 @@ namespace Kinovea.ScreenManager
 
             RoundedRectangle.Draw(canvas, backRectangle, brushFill, font.Height / 4, false, false, null);
             canvas.DrawString(label, font, fontBrush, backRectangle.Location);
+        }
+
+        private void DrawImageLine(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penLine, PointF a, PointF b)
+        {
+            if (distorter != null && distorter.Initialized)
+            {
+                List<PointF> curve = distorter.DistortLine(a, b);
+                List<Point> transformed = transformer.Transform(curve);
+                canvas.DrawCurve(penLine, transformed.ToArray());
+            }
+            else
+            {
+                PointF p1 = transformer.Transform(a);
+                PointF p2 = transformer.Transform(b);
+                canvas.DrawLine(penLine, p1, p2);
+            }
         }
 
         private void DrawLine(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penLine, PointF a, PointF b)
@@ -452,20 +528,22 @@ namespace Kinovea.ScreenManager
         }
         private bool IsPointOnHorizontalAxis(Point p, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
-            RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
+            /*RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
             PointF o = CalibrationHelper.GetImagePoint(PointF.Empty);
             PointF a = CalibrationHelper.GetImagePoint(new PointF(bounds.X, 0));
             PointF b = CalibrationHelper.GetImagePoint(new PointF(bounds.X + bounds.Width, 0));
 
-            return IsPointOnLine(p, o, a, distorter, transformer) || IsPointOnLine(p, o, b, distorter, transformer);
+            return IsPointOnLine(p, o, a, distorter, transformer) || IsPointOnLine(p, o, b, distorter, transformer);*/
+            return false;
         }
         private bool IsPointOnVerticalAxis(Point p, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
-            RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
+            /*RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
             PointF o = CalibrationHelper.GetImagePoint(PointF.Empty);
             PointF a = CalibrationHelper.GetImagePoint(new PointF(0, bounds.Y));
             PointF b = CalibrationHelper.GetImagePoint(new PointF(0, bounds.Y - bounds.Height));
-            return IsPointOnLine(p, o, a, distorter, transformer) || IsPointOnLine(p, o, b, distorter, transformer);
+            return IsPointOnLine(p, o, a, distorter, transformer) || IsPointOnLine(p, o, b, distorter, transformer);*/
+            return false;
         }
         private bool IsPointOnLine(Point p, PointF a, PointF b, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
@@ -525,16 +603,6 @@ namespace Kinovea.ScreenManager
             return stepSize;
         }
         #endregion
-        
-        private enum TextAlignment
-        {
-            Top,
-            Left,
-            Right,
-            Bottom,
-            BottomRight
-        }
-
     }
 }
 

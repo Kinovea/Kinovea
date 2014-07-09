@@ -81,7 +81,16 @@ namespace Kinovea.ScreenManager
             matrix = Matrix3x3.CreateFromRows(row0, row1, row2);
             
             adjugate = matrix.Adjugate();
-            inverse = matrix.Inverse();
+
+            try
+            {
+                inverse = matrix.Inverse();
+            }
+            catch (ArgumentException e)
+            {
+                // Singular matrix.
+                inverse = Matrix3x3.Identity;
+            }
         }
         
         /// <summary>
