@@ -10,7 +10,8 @@ using System.IO;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Finds axes and grid lines end points for coordinate system drawings (basic or perspective), clipped to image boundaries.
+    /// Finds axes, grid lines and tick marks for the coordinate system drawings (basic or perspective). 
+    /// Clips to image boundaries and account for vanishing points, lines at infinity and lines behind the camera.
     /// </summary>
     public static class CoordinateSystemGridFinder
     {
@@ -42,7 +43,7 @@ namespace Kinovea.ScreenManager
             PointF d = calibrationHelper.GetPoint(quadImage.D);
             RectangleF plane = new RectangleF(0, 0, b.X - a.X, a.Y - d.Y);
 
-            // Define the extended plane as the reprojection of the whole image. (used for vanishing point replacement and drawing stop condition).
+            // Define the extended plane (for vanishing point replacement and drawing stop condition) as the reprojection of the whole image.
             QuadrilateralF extendedPlane = ReprojectImageBounds(calibrationHelper, new QuadrilateralF(imageBounds));
             
             CalibrationPlane calibrator = new CalibrationPlane();
@@ -51,7 +52,7 @@ namespace Kinovea.ScreenManager
             
             // From this point on we are mostly in the same situation as for plane calibration.
             
-            // stepping is the same in both directions.
+            // stepping size is the same in both directions.
             int targetSteps = 15;
             float width = extendedPlane.B.X - extendedPlane.A.X;
             float step = RangeHelper.FindUsableStepSize(width, targetSteps);
@@ -61,7 +62,6 @@ namespace Kinovea.ScreenManager
             CreateHorizontalGridLines(grid, 0, -step, calibrator, clipWindow, plane, extendedPlane, false, PointF.Empty);
             CreateHorizontalGridLines(grid, step, step, calibrator, clipWindow, plane, extendedPlane, false, PointF.Empty);
 
-            //ExportImage(calibrationHelper, grid);
             return grid;
         }
 
@@ -78,16 +78,18 @@ namespace Kinovea.ScreenManager
             int targetSteps = 15;
             float stepVertical = 1.0f;
             float stepHorizontal = 1.0f;
-            
+
+            // The extended plane is used for vanishing point replacement and iteration stop condition.
             QuadrilateralF extendedPlane;
+
             if (!calibrator.QuadImage.IsRectangle)
             {
-                // If perspective plane, define as 3 times the nominal plane, shifted by half the user plane.
-                // FIXME: find better. This still looks ugly without preventing behind the camera projection.
-                PointF a = new PointF(-calibrator.Size.Width, calibrator.Size.Height * 2);
-                PointF b = new PointF(calibrator.Size.Width * 2, calibrator.Size.Height * 2);
-                PointF c = new PointF(calibrator.Size.Width * 2, -calibrator.Size.Height);
-                PointF d = new PointF(-calibrator.Size.Width, -calibrator.Size.Height);
+                // If perspective plane, define as 2n times the nominal plane centered on origin.
+                float n = 4;
+                PointF a = new PointF(-calibrator.Size.Width * n, calibrator.Size.Height * n);
+                PointF b = new PointF(calibrator.Size.Width * n, calibrator.Size.Height * n);
+                PointF c = new PointF(calibrator.Size.Width * n, -calibrator.Size.Height * n);
+                PointF d = new PointF(-calibrator.Size.Width * n, -calibrator.Size.Height * n);
                 extendedPlane = new QuadrilateralF(a, b, c, d);
 
                 QuadrilateralF quadImage = calibrator.QuadImage;
@@ -102,8 +104,8 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                // In that case we know there is no way to get vanishing point inside the image so we can safely 
-                // use the whole image reprojection as an extended plane.
+                // If flat plane we know there is no way to get any vanishing point inside the image, 
+                // so we can safely use the whole image reprojection as an extended plane.
                 QuadrilateralF quadImageBounds = new QuadrilateralF(imageBounds);
                 PointF a = calibrationHelper.GetPoint(quadImageBounds.A);
                 PointF b = calibrationHelper.GetPoint(quadImageBounds.B);
@@ -118,26 +120,19 @@ namespace Kinovea.ScreenManager
                 stepVertical = RangeHelper.FindUsableStepSize(height, targetSteps);
             }
             
-            // Stepping strategy:
-            // We start at origin and progress horizontally and vertically until we find a gridline that is completely clipped out.
-            // Since we work in undistorted coordinates, we may miss some lines that are only visible when because they bend in.
-
-            
             //-------------------------------------------------------------------------------------------------
             // There is a complication with points behind the camera, as they projects above the vanishing line.
             // The general strategy is the following:
             // Find out if the vanishing point is inside the image. Reminder: parallel lines share the same vanishing point.
             // If it is not inside the image, there is no risk, so we take two points on the line and draw an infinite line that we clip against the image bounds.
             // If it is inside the image:
-            // Project two secure points, points guaranteed to be in front of the camera, we use the dimensions of the quad and the axis to find suitable points.
-            // Projected in the image, these two points and the vanishing point are colinear. 
+            // Take two points on the line and project them in image space. They are colinear with the vanishing point in image space.
             // Find on which side of the quadrilateral the vanishing point is.
-            // If the vanishing point is above the quad, draw a ray from the top of the quad to infinity.
-            // If the vanishing point is below the quad, draw a ray from the bottom of the quad to infinity.
+            // If the vanishing point is above the quad, draw a ray from the top of the extended quad, down to infinity.
+            // If the vanishing point is below the quad, draw a ray from the bottom of the extended quad, up to infinity.
             //
-            // Issues: 
-            // 1. when the vanishing point is just outside the image it gives converging lines, not pretty.
-            // 2. The extended quad, used for drawing stop condition can sometimes lie behind the camera too.
+            // Stepping strategy:
+            // We start at origin and progress horizontally and vertically until we find a gridline that is completely clipped out.
             //-------------------------------------------------------------------------------------------------
 
             // Vertical lines.
@@ -166,7 +161,6 @@ namespace Kinovea.ScreenManager
             CreateHorizontalGridLines(grid, 0, -stepVertical, calibrator, clipWindow, plane, extendedPlane, xVanishVisible, xVanish);
             CreateHorizontalGridLines(grid, stepVertical, stepVertical, calibrator, clipWindow, plane, extendedPlane, xVanishVisible, xVanish);
 
-            //ExportImage(calibrationHelper, grid);
             return grid;
         }
 
@@ -177,8 +171,18 @@ namespace Kinovea.ScreenManager
             bool partlyVisible = true;
             while (partlyVisible && x >= extendedPlane.A.X && x <= extendedPlane.B.X)
             {
-                PointF a = calibrator.Untransform(new PointF(x, 0));
-                PointF b = calibrator.Untransform(new PointF(x, plane.Height));
+                Vector3 pa = calibrator.Project(new PointF(x, 0));
+                Vector3 pb = calibrator.Project(new PointF(x, plane.Height));
+
+                // Discard line if one of the points is behind the camera.
+                if (pa.Z < 0 || pb.Z < 0)
+                {
+                    x += step;
+                    continue;
+                }
+
+                PointF a = new PointF(pa.X / pa.Z, pa.Y / pa.Z);
+                PointF b = new PointF(pb.X / pb.Z, pb.Y / pb.Z);
 
                 ClipResult result;
 
@@ -221,7 +225,7 @@ namespace Kinovea.ScreenManager
                         textAlignment = TextAlignment.Bottom;
                     }
 
-                    if (clipWindow.Contains(a))
+                    if (clipWindow.Contains(a) && TickMarkVisible((int)(x / step)))
                         grid.TickMarks.Add(new TickMark(x, a, textAlignment));
                 }
 
@@ -236,9 +240,18 @@ namespace Kinovea.ScreenManager
             bool partlyVisible = true;
             while (partlyVisible && y >= extendedPlane.D.Y && y <= extendedPlane.A.Y)
             {
-                // Project two secure points.
-                PointF a = calibrator.Untransform(new PointF(0, y));
-                PointF b = calibrator.Untransform(new PointF(plane.Width, y));
+                Vector3 pa = calibrator.Project(new PointF(0, y));
+                Vector3 pb = calibrator.Project(new PointF(plane.Width, y));
+
+                // Discard line if one of the points is behind the camera.
+                if (pa.Z < 0 || pb.Z < 0)
+                {
+                    y += step;
+                    continue;
+                }
+
+                PointF a = new PointF(pa.X / pa.Z, pa.Y / pa.Z);
+                PointF b = new PointF(pb.X / pb.Z, pb.Y / pb.Z);
 
                 ClipResult result;
 
@@ -276,13 +289,20 @@ namespace Kinovea.ScreenManager
                     {
                         grid.GridLines.Add(new GridLine(result.A, result.B));
 
-                        if (clipWindow.Contains(a))
+                        if (clipWindow.Contains(a) && TickMarkVisible((int)(y/step)))
                             grid.TickMarks.Add(new TickMark(y, a, TextAlignment.Left));
                     }
                 }
 
                 y += step;
             }
+        }
+
+        private static bool TickMarkVisible(int step)
+        {
+            // Decimate some tickmarks in the distance to avoid crowding the plot.
+            // Somewhat arbitrary strategy giving increasing spacing: above the fifth gridline away from origin, we only keep lines which are perfect squares.
+            return (step <= 5) || Math.Sqrt(step) % 1 == 0;
         }
 
         private static Vector3 LineFromPoints(PointF p1, PointF p2)
@@ -314,7 +334,6 @@ namespace Kinovea.ScreenManager
         #region Test utils
         private static void ExportImage(CalibrationHelper calibrationHelper, CoordinateSystemGrid grid)
         {
-            // Test
             //Bitmap bitmap = new Bitmap((int)(calibrationHelper.ImageSize.Width + 100), (int)(calibrationHelper.ImageSize.Height + 100), PixelFormat.Format24bppRgb);
             Bitmap bitmap = new Bitmap((int)(calibrationHelper.ImageSize.Width), (int)(calibrationHelper.ImageSize.Height), PixelFormat.Format24bppRgb);
             Graphics g = Graphics.FromImage(bitmap);
