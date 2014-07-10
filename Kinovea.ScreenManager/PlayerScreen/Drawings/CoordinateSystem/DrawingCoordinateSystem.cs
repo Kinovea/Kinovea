@@ -287,9 +287,9 @@ namespace Kinovea.ScreenManager
 
         private void DrawTickMark(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, TickMark tick, SolidBrush brushFill, SolidBrush fontBrush, Font font)
         {
-            string label = String.Format("{0}", tick.Value);
+            string label = String.Format("{0}", Math.Round(tick.Value, 3));
             PointF loc = transformer.Transform(tick.ImageLocation);
-
+            
             SizeF labelSize = canvas.MeasureString(label, font);
             PointF textPosition = GetTextPosition(loc, tick.TextAlignment, labelSize);
             RectangleF backRectangle = new RectangleF(textPosition, labelSize);
