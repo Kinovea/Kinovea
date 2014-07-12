@@ -90,9 +90,8 @@ namespace Kinovea.ScreenManager
             double r2 = x * x + y * y;
 
             //radial distorsion
-            // Note: We discard k3 as it yields instability.
-            double xDistort = x * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 /*+ parameters.K3 * r2 * r2 * r2*/);
-            double yDistort = y * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 /*+ parameters.K3 * r2 * r2 * r2*/);
+            double xDistort = x * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 + parameters.K3 * r2 * r2 * r2);
+            double yDistort = y * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 + parameters.K3 * r2 * r2 * r2);
             
             //tangential distorsion
             xDistort = xDistort + (2 * parameters.P1 * x * y + parameters.P2 * (r2 + 2 * x * x));
@@ -113,24 +112,12 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public List<PointF> DistortLine(PointF start, PointF end)
         {
-            List<PointF> points = new List<PointF>();
-            points.Add(start);
-
             int innerPoints = 5;
             float factor = 1.0f / ((float)innerPoints + 1);
 
-            PointF uStart = Undistort(start);
-            PointF uEnd = Undistort(end);
-            Vector v = new Vector(uStart, uEnd);
-
-            for (int i = 1; i <= innerPoints; i++)
-            {
-                Vector v1 = v * (i * factor);
-                PointF undistorted = uStart + v1;
-                PointF distorted = Distort(undistorted);
-                points.Add(distorted);
-            }
-
+            List<PointF> points = new List<PointF>();
+            points.Add(start);
+            DistortInnerPoints(Undistort(start), Undistort(end), factor, innerPoints, points);
             points.Add(end);
 
             return points;
@@ -143,12 +130,21 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public List<PointF> DistortRectifiedLine(PointF start, PointF end)
         {
-            List<PointF> points = new List<PointF>();
-            points.Add(Distort(start));
-
             int innerPoints = 5;
             float factor = 1.0f / ((float)innerPoints + 1);
 
+            List<PointF> points = new List<PointF>();
+            points.Add(Distort(start));
+            DistortInnerPoints(start, end, factor, innerPoints, points);
+            points.Add(Distort(end));
+
+            return points;
+        }
+
+        private void DistortInnerPoints(PointF start, PointF end, float factor, int innerPoints, List<PointF> points)
+        {
+            // Takes a segment end points in rectified space and fill the passed in list with 
+            // distorted versions of points on the segment.
             Vector v = new Vector(start, end);
 
             for (int i = 1; i <= innerPoints; i++)
@@ -158,10 +154,6 @@ namespace Kinovea.ScreenManager
                 PointF distorted = Distort(undistorted);
                 points.Add(distorted);
             }
-
-            points.Add(Distort(end));
-
-            return points;
         }
 
         public QuadrilateralF Undistort(QuadrilateralF quad)
@@ -220,10 +212,10 @@ namespace Kinovea.ScreenManager
         public Bitmap GetDistortionGrid(Color background, Color foreground, int steps)
         {
             Bitmap bmp = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format24bppRgb);
-
+            
             if (!initialized)
                 return bmp;
-            
+
             Graphics g = Graphics.FromImage(bmp);
             g.InterpolationMode = InterpolationMode.Bilinear;
             g.CompositingQuality = CompositingQuality.HighQuality;
@@ -238,17 +230,19 @@ namespace Kinovea.ScreenManager
             float stepWidth = (float)imageSize.Width / steps;
             float stepHeight = (float)imageSize.Height / steps;
 
+            // Verticals
             for (int i = 0; i <= steps; i++)
             {
                 int col = (int)Math.Min(imageSize.Width - 1, Math.Round(i * stepWidth));
-                
+
                 PointF start = new PointF(col, 0);
                 PointF end = new PointF(col, imageSize.Height);
 
-                List<PointF> points = DistortLine(start, end);
+                List<PointF> points = DistortRectifiedLine(start, end);
                 g.DrawCurve(p, points.ToArray());
             }
 
+            // Horizontals
             for (int i = 0; i <= steps; i++)
             {
                 int row = (int)Math.Min(imageSize.Height - 1, Math.Round(i * stepHeight));
@@ -256,7 +250,7 @@ namespace Kinovea.ScreenManager
                 PointF start = new PointF(0, row);
                 PointF end = new PointF(imageSize.Width, row);
 
-                List<PointF> points = DistortLine(start, end);
+                List<PointF> points = DistortRectifiedLine(start, end);
                 g.DrawCurve(p, points.ToArray());
             }
 

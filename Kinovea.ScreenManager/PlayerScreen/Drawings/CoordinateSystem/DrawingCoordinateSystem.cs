@@ -162,7 +162,6 @@ namespace Kinovea.ScreenManager
             CoordinateSystemGrid grid = CalibrationHelper.GetCoordinateSystemGrid();
             using (Pen penLine = styleHelper.GetBackgroundPen(255))
             {
-                //canvas.DrawEllipse(penLine, transformer.Transform(points["0"]).Box(3));
                 DrawGrid(canvas, distorter, transformer, grid);
             }
         }
@@ -253,9 +252,9 @@ namespace Kinovea.ScreenManager
             {
                 CoordinateSystemGrid grid = CalibrationHelper.GetCoordinateSystemGrid();
 
-                if (IsPointOnRectifiedLine(point, grid.HorizontalAxis.Start, grid.HorizontalAxis.End, distorter, transformer))
+                if (grid.HorizontalAxis != null && IsPointOnRectifiedLine(point, grid.HorizontalAxis.Start, grid.HorizontalAxis.End, distorter, transformer))
                     result = 2;
-                else if(IsPointOnRectifiedLine(point, grid.VerticalAxis.Start, grid.VerticalAxis.End, distorter, transformer))
+                else if (grid.VerticalAxis != null && IsPointOnRectifiedLine(point, grid.VerticalAxis.Start, grid.VerticalAxis.End, distorter, transformer))
                     result = 3;
             }
             
@@ -447,33 +446,6 @@ namespace Kinovea.ScreenManager
         {
             PointF point = CalibrationHelper.GetPoint(p);
             points["0"] = CalibrationHelper.GetImagePoint(new PointF(point.X, 0));
-        }
-
-        /// <summary>
-        /// Utility function to find nice spacing for tick marks.
-        /// </summary>
-        private static float RulerStepSize(float range, float targetSteps)
-        {
-            float minimum = range/targetSteps;
-
-            // Find magnitude of the initial guess.
-            float magnitude = (float)Math.Floor(Math.Log10(minimum));
-            float orderOfMagnitude = (float)Math.Pow(10, magnitude);
-
-            // Reduce the number of steps.
-            float residual = minimum / orderOfMagnitude;
-            float stepSize;
-            
-            if(residual > 5)
-                stepSize = 10 * orderOfMagnitude;
-            else if (residual > 2)
-                stepSize = 5 * orderOfMagnitude;
-            else if (residual > 1)
-                stepSize = 2 * orderOfMagnitude;
-            else
-                stepSize = orderOfMagnitude;
-                
-            return stepSize;
         }
         #endregion
     }
