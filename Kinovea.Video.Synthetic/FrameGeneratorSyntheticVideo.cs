@@ -57,15 +57,29 @@ namespace Kinovea.Video.Synthetic
             {
                 g.FillRectangle(backBrush, g.ClipBounds);
 
+                SolidBrush foreBrush = new SolidBrush(video.BackgroundColor.Invert());
+                
                 if (video.FrameNumber)
                 {
-                    using (SolidBrush foreBrush = new SolidBrush(video.BackgroundColor.Invert()))
                     using (Font font = new Font("Arial", 24, FontStyle.Regular))
                     {
                         string text = string.Format("Current frame : {0}", timestamp);
                         g.DrawString(text, font, foreBrush, new PointF(25, 25));
                     }
                 }
+
+                double t = timestamp / video.FramePerSecond;
+
+                foreach (SyntheticObject o in video.Objects)
+                {
+                    float x = (float)(o.Position.X + (o.VX * t) + (0.5f * o.AX * t * t));
+                    float y = (float)(o.Position.Y + (o.VY * t) + (0.5f * o.AY * t * t));
+                    float r = o.Radius;
+                    RectangleF box = new RectangleF(x - r, y - r, r * 2, r * 2);
+                    g.FillEllipse(foreBrush, box);
+                }
+
+                foreBrush.Dispose();
             }
 
             return bitmap;
