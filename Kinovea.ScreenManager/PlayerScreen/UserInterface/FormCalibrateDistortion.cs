@@ -142,6 +142,7 @@ namespace Kinovea.ScreenManager
         private void btnOK_Click(object sender, EventArgs e)
         {
             calibrationHelper.DistortionHelper.Initialize(distorter.Parameters, calibrationHelper.ImageSize);
+            calibrationHelper.AfterDistortionUpdated();
         }
 
         private void btnImport_Click(object sender, EventArgs e)
