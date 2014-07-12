@@ -12,6 +12,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Finds axes, grid lines and tick marks for the coordinate system drawings (basic or perspective). 
     /// Clips to image boundaries and account for vanishing points, lines at infinity and lines behind the camera.
+    /// All coordinates found are in rectified image space.
     /// </summary>
     public static class CoordinateSystemGridFinder
     {
@@ -34,7 +35,9 @@ namespace Kinovea.ScreenManager
         {
             CoordinateSystemGrid grid = new CoordinateSystemGrid();
             RectangleF imageBounds = new RectangleF(PointF.Empty, calibrationHelper.ImageSize);
-            RectangleF clipWindow = imageBounds;
+            
+            // The clip window is an inflated version of the image to account for distortion.
+            RectangleF clipWindow = imageBounds.CenteredScale(1.3f);
 
             // Create a fake plane to act as the user-defined projected plane.
             QuadrilateralF quadImage = new QuadrilateralF(imageBounds.Deflate(2.0f));
@@ -48,7 +51,12 @@ namespace Kinovea.ScreenManager
             
             CalibrationPlane calibrator = new CalibrationPlane();
             calibrator.Initialize(plane.Size, quadImage);
-            calibrator.SetOrigin(calibrationHelper.GetOrigin());
+            PointF originImage = calibrationHelper.GetOrigin();
+            PointF originRectified = originImage;
+            if (calibrationHelper.DistortionHelper != null && calibrationHelper.DistortionHelper.Initialized)
+                originRectified = calibrationHelper.DistortionHelper.Undistort(originImage);
+
+            calibrator.SetOrigin(originRectified);
             
             // From this point on we are mostly in the same situation as for plane calibration.
             
@@ -57,10 +65,10 @@ namespace Kinovea.ScreenManager
             float width = extendedPlane.B.X - extendedPlane.A.X;
             float step = RangeHelper.FindUsableStepSize(width, targetSteps);
 
-            CreateVerticalGridLines(grid, 0, -step, calibrator, clipWindow, plane, extendedPlane, false, PointF.Empty);
-            CreateVerticalGridLines(grid, step, step, calibrator, clipWindow, plane, extendedPlane, false, PointF.Empty);
-            CreateHorizontalGridLines(grid, 0, -step, calibrator, clipWindow, plane, extendedPlane, false, PointF.Empty);
-            CreateHorizontalGridLines(grid, step, step, calibrator, clipWindow, plane, extendedPlane, false, PointF.Empty);
+            CreateVerticalGridLines(grid, 0, -step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
+            CreateVerticalGridLines(grid, step, step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
+            CreateHorizontalGridLines(grid, 0, -step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
+            CreateHorizontalGridLines(grid, step, step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
 
             return grid;
         }
@@ -81,10 +89,12 @@ namespace Kinovea.ScreenManager
 
             // The extended plane is used for vanishing point replacement and iteration stop condition.
             QuadrilateralF extendedPlane;
+            bool orthogonal;
 
             if (!calibrator.QuadImage.IsRectangle)
             {
                 // If perspective plane, define as 2n times the nominal plane centered on origin.
+                orthogonal = false;
                 float n = 4;
                 PointF a = new PointF(-calibrator.Size.Width * n, calibrator.Size.Height * n);
                 PointF b = new PointF(calibrator.Size.Width * n, calibrator.Size.Height * n);
@@ -106,6 +116,7 @@ namespace Kinovea.ScreenManager
             {
                 // If flat plane we know there is no way to get any vanishing point inside the image, 
                 // so we can safely use the whole image reprojection as an extended plane.
+                orthogonal = true;
                 QuadrilateralF quadImageBounds = new QuadrilateralF(imageBounds);
                 PointF a = calibrationHelper.GetPoint(quadImageBounds.A);
                 PointF b = calibrationHelper.GetPoint(quadImageBounds.B);
@@ -145,8 +156,8 @@ namespace Kinovea.ScreenManager
                 yVanishVisible = clipWindow.Contains(yVanish.ToPoint());
             }
 
-            CreateVerticalGridLines(grid, 0, -stepHorizontal, calibrator, clipWindow, plane, extendedPlane, yVanishVisible, yVanish);
-            CreateVerticalGridLines(grid, stepHorizontal, stepHorizontal, calibrator, clipWindow, plane, extendedPlane, yVanishVisible, yVanish);
+            CreateVerticalGridLines(grid, 0, -stepHorizontal, calibrator, clipWindow, plane, extendedPlane, orthogonal, yVanishVisible, yVanish);
+            CreateVerticalGridLines(grid, stepHorizontal, stepHorizontal, calibrator, clipWindow, plane, extendedPlane, orthogonal, yVanishVisible, yVanish);
 
             // Horizontal lines
             PointF xVanish = new PointF(float.MinValue, 0);
@@ -158,13 +169,13 @@ namespace Kinovea.ScreenManager
                 xVanishVisible = clipWindow.Contains(xVanish.ToPoint());
             }
 
-            CreateHorizontalGridLines(grid, 0, -stepVertical, calibrator, clipWindow, plane, extendedPlane, xVanishVisible, xVanish);
-            CreateHorizontalGridLines(grid, stepVertical, stepVertical, calibrator, clipWindow, plane, extendedPlane, xVanishVisible, xVanish);
+            CreateHorizontalGridLines(grid, 0, -stepVertical, calibrator, clipWindow, plane, extendedPlane, orthogonal, xVanishVisible, xVanish);
+            CreateHorizontalGridLines(grid, stepVertical, stepVertical, calibrator, clipWindow, plane, extendedPlane, orthogonal, xVanishVisible, xVanish);
 
             return grid;
         }
 
-        private static void CreateVerticalGridLines(CoordinateSystemGrid grid, float start, float step, CalibrationPlane calibrator, RectangleF clipWindow, RectangleF plane, QuadrilateralF extendedPlane, bool vanishVisible, PointF vanish)
+        private static void CreateVerticalGridLines(CoordinateSystemGrid grid, float start, float step, CalibrationPlane calibrator, RectangleF clipWindow, RectangleF plane, QuadrilateralF extendedPlane, bool orthogonal, bool vanishVisible, PointF vanish)
         {
             // Progress from origin to the side until grid lines are no longer visible when projected on image.
             float x = start;
@@ -225,7 +236,7 @@ namespace Kinovea.ScreenManager
                         textAlignment = TextAlignment.Bottom;
                     }
 
-                    if (clipWindow.Contains(a) && TickMarkVisible((int)(x / step)))
+                    if (clipWindow.Contains(a) && (orthogonal || TickMarkVisible((int)(x / step))))
                         grid.TickMarks.Add(new TickMark(x, a, textAlignment));
                 }
 
@@ -233,7 +244,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private static void CreateHorizontalGridLines(CoordinateSystemGrid grid, float start, float step, CalibrationPlane calibrator, RectangleF clipWindow, RectangleF plane, QuadrilateralF extendedPlane, bool vanishVisible, PointF vanish)
+        private static void CreateHorizontalGridLines(CoordinateSystemGrid grid, float start, float step, CalibrationPlane calibrator, RectangleF clipWindow, RectangleF plane, QuadrilateralF extendedPlane, bool orthogonal, bool vanishVisible, PointF vanish)
         {
             // Progress from origin to the side until grid lines are no longer visible when projected on image.
             float y = start;
@@ -289,7 +300,7 @@ namespace Kinovea.ScreenManager
                     {
                         grid.GridLines.Add(new GridLine(result.A, result.B));
 
-                        if (clipWindow.Contains(a) && TickMarkVisible((int)(y/step)))
+                        if (clipWindow.Contains(a) && (orthogonal || TickMarkVisible((int)(y/step))))
                             grid.TickMarks.Add(new TickMark(y, a, TextAlignment.Left));
                     }
                 }
@@ -301,7 +312,7 @@ namespace Kinovea.ScreenManager
         private static bool TickMarkVisible(int step)
         {
             // Decimate some tickmarks in the distance to avoid crowding the plot.
-            // Somewhat arbitrary strategy giving increasing spacing: above the fifth gridline away from origin, we only keep lines which are perfect squares.
+            // Uses a somewhat arbitrary strategy to give increasing spacing: above the fifth gridline away from origin, we only keep lines which are perfect squares.
             return (step <= 5) || Math.Sqrt(step) % 1 == 0;
         }
 
@@ -315,7 +326,7 @@ namespace Kinovea.ScreenManager
 
         private static QuadrilateralF ReprojectImageBounds(CalibrationHelper calibrationHelper, QuadrilateralF quadImage)
         {
-            // Project image bounds from image coordinates to plane coordinates, using the line calibration setup. 
+            // Project image bounds from image space to plane space, using the line calibration setup.
             // This can be used to define safe boundaries.
             // The method cannot be used with plane calibration as image points can be above the vanishing line. (reproject behind the camera).
             // The quad passed in is assumed to be a rectangle.
