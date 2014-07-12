@@ -239,11 +239,19 @@ namespace Kinovea.ScreenManager
 
         #region Value computers
         /// <summary>
-        /// Takes a point in image coordinates and returns it in real world coordinates.
+        /// Takes a point in image space and returns it in world space.
         /// </summary>
         public PointF GetPoint(PointF p)
         {
             return calibrator.Transform(distortionHelper.Undistort(p));
+        }
+
+        /// <summary>
+        /// Takes a point in rectified image space and returns it in world space.
+        /// </summary>
+        public PointF GetPointFromRectified(PointF p)
+        {
+            return calibrator.Transform(p);
         }
 
         /// <summary>

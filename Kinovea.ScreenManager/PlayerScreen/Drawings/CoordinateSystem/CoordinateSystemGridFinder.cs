@@ -41,9 +41,9 @@ namespace Kinovea.ScreenManager
 
             // Create a fake plane to act as the user-defined projected plane.
             QuadrilateralF quadImage = new QuadrilateralF(imageBounds.Deflate(2.0f));
-            PointF a = calibrationHelper.GetPoint(quadImage.A);
-            PointF b = calibrationHelper.GetPoint(quadImage.B);
-            PointF d = calibrationHelper.GetPoint(quadImage.D);
+            PointF a = calibrationHelper.GetPointFromRectified(quadImage.A);
+            PointF b = calibrationHelper.GetPointFromRectified(quadImage.B);
+            PointF d = calibrationHelper.GetPointFromRectified(quadImage.D);
             RectangleF plane = new RectangleF(0, 0, b.X - a.X, a.Y - d.Y);
 
             // Define the extended plane (for vanishing point replacement and drawing stop condition) as the reprojection of the whole image.
@@ -114,14 +114,14 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                // If flat plane we know there is no way to get any vanishing point inside the image, 
+                // If flat plane (and no distortion) we know there is no way to get any vanishing point inside the image, 
                 // so we can safely use the whole image reprojection as an extended plane.
                 orthogonal = true;
                 QuadrilateralF quadImageBounds = new QuadrilateralF(imageBounds);
-                PointF a = calibrationHelper.GetPoint(quadImageBounds.A);
-                PointF b = calibrationHelper.GetPoint(quadImageBounds.B);
-                PointF c = calibrationHelper.GetPoint(quadImageBounds.C);
-                PointF d = calibrationHelper.GetPoint(quadImageBounds.D);
+                PointF a = calibrationHelper.GetPointFromRectified(quadImageBounds.A);
+                PointF b = calibrationHelper.GetPointFromRectified(quadImageBounds.B);
+                PointF c = calibrationHelper.GetPointFromRectified(quadImageBounds.C);
+                PointF d = calibrationHelper.GetPointFromRectified(quadImageBounds.D);
                 extendedPlane = new QuadrilateralF(a, b, c, d);
 
                 float width = extendedPlane.B.X - extendedPlane.A.X;
@@ -333,10 +333,10 @@ namespace Kinovea.ScreenManager
             if (calibrationHelper.CalibratorType != CalibratorType.Line)
                 throw new ArgumentException("Unsupported operation.");
 
-            PointF a = calibrationHelper.GetPoint(quadImage.A);
-            PointF b = calibrationHelper.GetPoint(quadImage.B);
-            PointF c = calibrationHelper.GetPoint(quadImage.C);
-            PointF d = calibrationHelper.GetPoint(quadImage.D);
+            PointF a = calibrationHelper.GetPointFromRectified(quadImage.A);
+            PointF b = calibrationHelper.GetPointFromRectified(quadImage.B);
+            PointF c = calibrationHelper.GetPointFromRectified(quadImage.C);
+            PointF d = calibrationHelper.GetPointFromRectified(quadImage.D);
             QuadrilateralF plane = new QuadrilateralF(a, b, c, d);
             
             return plane;
