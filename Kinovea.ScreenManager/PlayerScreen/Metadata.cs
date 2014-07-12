@@ -280,6 +280,7 @@ namespace Kinovea.ScreenManager
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
         private CoordinateSystem coordinateSystem = new CoordinateSystem();
         private TrackabilityManager trackabilityManager = new TrackabilityManager();
+        private Temporizer calibrationChangedTemporizer;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -298,6 +299,8 @@ namespace Kinovea.ScreenManager
             CleanupHash();
 
             SetupTempDirectory(id);
+
+            calibrationChangedTemporizer = new Temporizer(200, TracksCalibrationChanged);
 
             log.Debug("Constructing new Metadata object.");
         }
@@ -1142,7 +1145,10 @@ namespace Kinovea.ScreenManager
         private void AfterCalibrationChanged()
         {
             drawingCoordinateSystem.UpdateOrigin();
-
+            calibrationChangedTemporizer.Call();
+        }
+        private void TracksCalibrationChanged()
+        {
             foreach (DrawingTrack t in Tracks())
                 t.CalibrationChanged();
         }
