@@ -136,6 +136,34 @@ namespace Kinovea.ScreenManager
             return points;
         }
 
+        /// <summary>
+        /// Takes the start and end point of a segment in rectified space and return 
+        /// the same segment as a list of points in distorted space.
+        /// The segment is split in several subsegments that can be drawn with drawCurve.
+        /// </summary>
+        public List<PointF> DistortRectifiedLine(PointF start, PointF end)
+        {
+            List<PointF> points = new List<PointF>();
+            points.Add(Distort(start));
+
+            int innerPoints = 5;
+            float factor = 1.0f / ((float)innerPoints + 1);
+
+            Vector v = new Vector(start, end);
+
+            for (int i = 1; i <= innerPoints; i++)
+            {
+                Vector v1 = v * (i * factor);
+                PointF undistorted = start + v1;
+                PointF distorted = Distort(undistorted);
+                points.Add(distorted);
+            }
+
+            points.Add(Distort(end));
+
+            return points;
+        }
+
         public QuadrilateralF Undistort(QuadrilateralF quad)
         {
             return new QuadrilateralF(
