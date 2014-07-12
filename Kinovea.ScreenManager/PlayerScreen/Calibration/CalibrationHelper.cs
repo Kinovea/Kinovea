@@ -184,6 +184,11 @@ namespace Kinovea.ScreenManager
             return coordinateSystemGrid;
         }
 
+        public void AfterDistortionUpdated()
+        {
+            AfterCalibrationChanged();
+        }
+
         #region Methods specific to a calibration technique
         public void CalibrationByLine_Initialize(float ratio)
         {
