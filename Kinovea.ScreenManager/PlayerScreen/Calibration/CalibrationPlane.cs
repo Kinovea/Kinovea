@@ -206,6 +206,7 @@ namespace Kinovea.ScreenManager
             r.ReadEndElement();
             
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
+            valid = quadImage.IsConvex;
             initialized = true;
         }
         private void ParseQuadrilateral(XmlReader r, PointF scale)
