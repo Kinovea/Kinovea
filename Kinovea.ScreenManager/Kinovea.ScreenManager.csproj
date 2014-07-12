@@ -323,6 +323,7 @@
     </Compile>
     <Compile Include="RecoveryManager.cs" />
     <Compile Include="ScreenRemover.cs" />
+    <Compile Include="Temporizer.cs" />
     <Compile Include="UndoRedo\HistoryMemento.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddDrawing.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddKeyframe.cs" />
