@@ -225,6 +225,8 @@ namespace Kinovea.ScreenManager
         }
         public override void RefreshUICulture() 
         {
+            metadata.CalibrationHelper.AngleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
+            
             view.RefreshUICulture();
             drawingToolbarPresenter.RefreshUICulture();
         }
