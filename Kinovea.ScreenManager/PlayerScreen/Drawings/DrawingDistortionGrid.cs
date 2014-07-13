@@ -122,8 +122,8 @@ namespace Kinovea.ScreenManager
             }
 
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-            infosFading.UseDefault = false;
-            infosFading.AlwaysVisible = true;
+            infosFading.UseDefault = true;
+            infosFading.AlwaysVisible = false;
 
             mnuCalibrate.Click += new EventHandler(mnuCalibrate_Click);
             mnuCalibrate.Image = Properties.Drawings.linecalibrate;
