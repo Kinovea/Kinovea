@@ -188,56 +188,9 @@ namespace Kinovea.ScreenManager
                     {
                         projectiveMapping.Update(quadPlane, quadImage);
                     }
-                    
-                    int start = 0;
-                    int end = styleHelper.GridDivisions;
-                    int total = styleHelper.GridDivisions;
 
-                    // Rows
-                    for (int i = start; i <= end; i++)
-                    {
-                        float v = i * ((float)planeHeight / total);
-                        
-                        PointF p1 = projectiveMapping.Forward(new PointF(0, v));
-                        PointF p2 = projectiveMapping.Forward(new PointF(planeWidth, v));
-
-                        if (distorter != null && distorter.Initialized)
-                        {
-                            p1 = distorter.Distort(p1);
-                            p2 = distorter.Distort(p2);
-
-                            List<PointF> curve = distorter.DistortLine(p1, p2);
-                            List<Point> transformed = transformer.Transform(curve);
-                            canvas.DrawCurve(penEdges, transformed.ToArray());
-                        }
-                        else
-                        {
-                            canvas.DrawLine(penEdges, transformer.Transform(p1), transformer.Transform(p2));
-                        }
-                    }
-                
-                    // Columns
-                    for (int i = start ; i <= end; i++)
-                    {
-                        float h = i * (planeWidth / total);
-
-                        PointF p1 = projectiveMapping.Forward(new PointF(h, 0));
-                        PointF p2 = projectiveMapping.Forward(new PointF(h, planeHeight));
-
-                        if (distorter != null && distorter.Initialized)
-                        {
-                            p1 = distorter.Distort(p1);
-                            p2 = distorter.Distort(p2);
-
-                            List<PointF> curve = distorter.DistortLine(p1, p2);
-                            List<Point> transformed = transformer.Transform(curve);
-                            canvas.DrawCurve(penEdges, transformed.ToArray());
-                        }
-                        else
-                        {
-                            canvas.DrawLine(penEdges, transformer.Transform(p1), transformer.Transform(p2));
-                        }
-                    }
+                    //DrawDiagonals(canvas, penEdges, quadPlane, projectiveMapping, distorter, transformer);
+                    DrawGrid(canvas, penEdges, projectiveMapping, distorter, transformer);
                 }
                 else
                 {
@@ -247,6 +200,55 @@ namespace Kinovea.ScreenManager
                     canvas.DrawLine(penEdges, quad.C, quad.D);
                     canvas.DrawLine(penEdges, quad.D, quad.A);
                 }
+            }
+        }
+        private void DrawDiagonals(Graphics canvas, Pen pen, QuadrilateralF quadPlane, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
+        {
+            DrawDistortedLine(canvas, penEdges, quadPlane.A, quadPlane.B, projectiveMapping, distorter, transformer);
+            DrawDistortedLine(canvas, penEdges, quadPlane.B, quadPlane.C, projectiveMapping, distorter, transformer);
+            DrawDistortedLine(canvas, penEdges, quadPlane.C, quadPlane.D, projectiveMapping, distorter, transformer);
+            DrawDistortedLine(canvas, penEdges, quadPlane.D, quadPlane.A, projectiveMapping, distorter, transformer);
+            
+            DrawDistortedLine(canvas, penEdges, quadPlane.A, quadPlane.C, projectiveMapping, distorter, transformer);
+            DrawDistortedLine(canvas, penEdges, quadPlane.B, quadPlane.D, projectiveMapping, distorter, transformer);
+        }
+        private void DrawGrid(Graphics canvas, Pen pen, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
+        {
+            int start = 0;
+            int end = styleHelper.GridDivisions;
+            int total = styleHelper.GridDivisions;
+
+            // Horizontals
+            for (int i = start; i <= end; i++)
+            {
+                float v = i * ((float)planeHeight / total);
+                DrawDistortedLine(canvas, pen, new PointF(0, v), new PointF(planeWidth, v), projectiveMapping, distorter, transformer);
+            }
+
+            // Verticals
+            for (int i = start; i <= end; i++)
+            {
+                float h = i * (planeWidth / total);
+                DrawDistortedLine(canvas, pen, new PointF(h, 0), new PointF(h, planeHeight), projectiveMapping, distorter, transformer);
+            }
+        }
+        private void DrawDistortedLine(Graphics canvas, Pen pen, PointF a, PointF b, ProjectiveMapping projectiveMapping, DistortionHelper distorter, IImageToViewportTransformer transformer)
+        {
+            a = projectiveMapping.Forward(a);
+            b = projectiveMapping.Forward(b);
+
+            if (distorter != null && distorter.Initialized)
+            {
+                a = distorter.Distort(a);
+                b = distorter.Distort(b);
+
+                List<PointF> curve = distorter.DistortLine(a, b);
+                List<Point> transformed = transformer.Transform(curve);
+                canvas.DrawCurve(penEdges, transformed.ToArray());
+            }
+            else
+            {
+                canvas.DrawLine(pen, transformer.Transform(a), transformer.Transform(b));
             }
         }
         public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
