@@ -151,104 +151,93 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             if(!Visible || CalibrationHelper == null)
                 return;
 
             if (CalibrationHelper.CalibratorType == CalibratorType.Plane && !CalibrationHelper.CalibrationByPlane_IsValid())
                 return;
-
-            RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
-            if (bounds.Size == SizeF.Empty)
-                return;
-
-            float stepSizeWidth = RulerStepSize(bounds.Width, 12);
-            float stepSizeHeight = stepSizeWidth;
-
-            if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
-                stepSizeHeight = RulerStepSize(bounds.Height, 12);
-
+            
+            CoordinateSystemGrid grid = CalibrationHelper.GetCoordinateSystemGrid();
             using (Pen penLine = styleHelper.GetBackgroundPen(255))
             {
-                DrawGrid(canvas, transformer, bounds, stepSizeWidth, stepSizeHeight);
+                DrawGrid(canvas, distorter, transformer, grid);
             }
         }
-        private void DrawGrid(Graphics canvas, IImageToViewportTransformer transformer, RectangleF bounds, float stepWidth, float stepHeight)
+
+        private void DrawGrid(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, CoordinateSystemGrid grid)
         {
             Pen p = styleHelper.GetBackgroundPen(gridAlpha);
+
+            p.DashStyle = DashStyle.Solid;
+            p.Width = 2;
+            
+            if (grid.VerticalAxis != null)
+                DrawGridLine(canvas, distorter, transformer, p, grid.VerticalAxis.Start, grid.VerticalAxis.End);
+
+            if (grid.HorizontalAxis != null)
+                DrawGridLine(canvas, distorter, transformer, p, grid.HorizontalAxis.Start, grid.HorizontalAxis.End);
+
+            p.DashStyle = DashStyle.Dash;
+            p.Width = 1;
+            foreach (GridLine line in grid.GridLines)
+            {
+                DrawGridLine(canvas, distorter, transformer, p, line.Start, line.End);
+            }
+
             SolidBrush brushFill = styleHelper.GetBackgroundBrush(defaultBackgroundAlpha);
             SolidBrush fontBrush = styleHelper.GetForegroundBrush(255);
             Font font = styleHelper.GetFont(1.0F);
 
-            float top = bounds.Y;
-            float bottom = bounds.Y - bounds.Height;
-
-            // Verticals
-            float x = 0;
-            while (x <= bounds.Right)
+            foreach (TickMark tick in grid.TickMarks)
             {
-                p.DashStyle = x == 0 ? DashStyle.Solid : DashStyle.Dash;
-                TextAlignment alignment = x == 0 ? TextAlignment.BottomRight : TextAlignment.Bottom;
-                DrawLine(canvas, transformer, p, new PointF(x, top), new PointF(x, bottom));
-                DrawStepTextForPlane(canvas, transformer, new PointF(x, 0), alignment, x, brushFill, fontBrush, font);
-                x += stepWidth;
+                DrawTickMark(canvas, distorter, transformer, tick, brushFill, fontBrush, font);
             }
-            x = -stepWidth;
-            while (x >= bounds.Left)
-            {
-                p.DashStyle = DashStyle.Dash;
-                DrawLine(canvas, transformer, p, new PointF(x, top), new PointF(x, bottom));
-                DrawStepTextForPlane(canvas, transformer, new PointF(x, 0), TextAlignment.Bottom, x, brushFill, fontBrush, font);
-                x -= stepWidth;
-            }
-
-            // Horizontals
-            float y = 0;
-            while (y >= bottom)
-            {
-                p.DashStyle = y == 0 ? DashStyle.Solid : DashStyle.Dash;
-                DrawLine(canvas, transformer, p, new PointF(bounds.Left, y), new PointF(bounds.Right, y));
-                if (y != 0)
-                    DrawStepTextForPlane(canvas, transformer, new PointF(0, y), TextAlignment.Left, y, brushFill, fontBrush, font);
-                y -= stepHeight;
-            }
-            y = stepHeight;
-            while (y <= top)
-            {
-                p.DashStyle = DashStyle.Dash;
-                DrawLine(canvas, transformer, p, new PointF(bounds.Left, y), new PointF(bounds.Right, y));
-                DrawStepTextForPlane(canvas, transformer, new PointF(0, y), TextAlignment.Left, y, brushFill, fontBrush, font);
-                y += stepHeight;
-            }
-
+            
             font.Dispose();
             fontBrush.Dispose();
             brushFill.Dispose();
+
             p.Dispose();
         }
 
-        private void DrawStepTextForPlane(Graphics canvas, IImageToViewportTransformer transformer, PointF tickPosition, TextAlignment textAlignment, float tickValue, SolidBrush brushFill, SolidBrush fontBrush, Font font)
+        private void DrawTickMark(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, TickMark tick, SolidBrush brushFill, SolidBrush fontBrush, Font font)
         {
-            string label = String.Format("{0}", tickValue);
-            PointF loc = transformer.Transform(CalibrationHelper.GetImagePoint(tickPosition));
+            string label = String.Format("{0}", Math.Round(tick.Value, 3));
+            
+            PointF location;
+            if (distorter != null && distorter.Initialized)
+                location = distorter.Distort(tick.ImageLocation);
+            else
+                location = tick.ImageLocation;
 
+            PointF transformed = transformer.Transform(location);
             SizeF labelSize = canvas.MeasureString(label, font);
-            PointF textPosition = GetTextPosition(loc, textAlignment, labelSize);
+            PointF textPosition = GetTextPosition(transformed, tick.TextAlignment, labelSize);
             RectangleF backRectangle = new RectangleF(textPosition, labelSize);
 
             RoundedRectangle.Draw(canvas, backRectangle, brushFill, font.Height / 4, false, false, null);
             canvas.DrawString(label, font, fontBrush, backRectangle.Location);
         }
 
-        private void DrawLine(Graphics canvas, IImageToViewportTransformer transformer, Pen penLine, PointF a, PointF b)
+        private void DrawGridLine(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penLine, PointF a, PointF b)
         {
-            Point p1 = transformer.Transform(CalibrationHelper.GetImagePoint(a));
-            Point p2 = transformer.Transform(CalibrationHelper.GetImagePoint(b));
-            canvas.DrawLine(penLine, p1, p2);
+            if (distorter != null && distorter.Initialized)
+            {
+                List<PointF> curve = distorter.DistortRectifiedLine(a, b);
+                List<Point> transformed = transformer.Transform(curve);
+                canvas.DrawCurve(penLine, transformed.ToArray());
+            }
+            else
+            {
+                PointF p1 = transformer.Transform(a);
+                PointF p2 = transformer.Transform(b);
+                canvas.DrawLine(penLine, p1, p2);
+            }
         }
 
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             if(!Visible)
@@ -261,9 +250,11 @@ namespace Kinovea.ScreenManager
             
             if(showGrid || showGraduations || showAxis)
             {
-                if(IsPointOnHorizontalAxis(point, transformer))
+                CoordinateSystemGrid grid = CalibrationHelper.GetCoordinateSystemGrid();
+
+                if (grid.HorizontalAxis != null && IsPointOnRectifiedLine(point, grid.HorizontalAxis.Start, grid.HorizontalAxis.End, distorter, transformer))
                     result = 2;
-                else if(IsPointOnVerticalAxis(point, transformer))
+                else if (grid.VerticalAxis != null && IsPointOnRectifiedLine(point, grid.VerticalAxis.Start, grid.VerticalAxis.End, distorter, transformer))
                     result = 3;
             }
             
@@ -426,28 +417,23 @@ namespace Kinovea.ScreenManager
             
             return textPosition;
         }
-        private bool IsPointOnHorizontalAxis(Point p, IImageToViewportTransformer transformer)
-        {
-            RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
-            PointF a = CalibrationHelper.GetImagePoint(new PointF(bounds.X, 0));
-            PointF b = CalibrationHelper.GetImagePoint(new PointF(bounds.X + bounds.Width, 0));
-            return IsPointOnLine(p, a, b, transformer);
-        }
-        private bool IsPointOnVerticalAxis(Point p, IImageToViewportTransformer transformer)
-        {
-            RectangleF bounds = CalibrationHelper.GetBoundingRectangle();
-            PointF a = CalibrationHelper.GetImagePoint(new PointF(0, bounds.Y));
-            PointF b = CalibrationHelper.GetImagePoint(new PointF(0, bounds.Y - bounds.Height));
-            return IsPointOnLine(p, a, b, transformer);
-        }
-        private bool IsPointOnLine(Point p, PointF a, PointF b, IImageToViewportTransformer transformer)
+        private bool IsPointOnRectifiedLine(Point p, PointF a, PointF b, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             if (a == b)
                 return false;
 
             using (GraphicsPath path = new GraphicsPath())
             {
-                path.AddLine(a, b);
+                if (distorter != null && distorter.Initialized)
+                {
+                    List<PointF> curve = distorter.DistortRectifiedLine(a, b);
+                    path.AddCurve(curve.ToArray());
+                }
+                else
+                {
+                    path.AddLine(a, b);
+                }
+
                 return HitTester.HitTest(path, p, 1, false, transformer);
             }
         }
@@ -461,44 +447,7 @@ namespace Kinovea.ScreenManager
             PointF point = CalibrationHelper.GetPoint(p);
             points["0"] = CalibrationHelper.GetImagePoint(new PointF(point.X, 0));
         }
-
-        /// <summary>
-        /// Utility function to find nice spacing for tick marks.
-        /// </summary>
-        private static float RulerStepSize(float range, float targetSteps)
-        {
-            float minimum = range/targetSteps;
-
-            // Find magnitude of the initial guess.
-            float magnitude = (float)Math.Floor(Math.Log10(minimum));
-            float orderOfMagnitude = (float)Math.Pow(10, magnitude);
-
-            // Reduce the number of steps.
-            float residual = minimum / orderOfMagnitude;
-            float stepSize;
-            
-            if(residual > 5)
-                stepSize = 10 * orderOfMagnitude;
-            else if (residual > 2)
-                stepSize = 5 * orderOfMagnitude;
-            else if (residual > 1)
-                stepSize = 2 * orderOfMagnitude;
-            else
-                stepSize = orderOfMagnitude;
-                
-            return stepSize;
-        }
         #endregion
-        
-        private enum TextAlignment
-        {
-            Top,
-            Left,
-            Right,
-            Bottom,
-            BottomRight
-        }
-
     }
 }
 

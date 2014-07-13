@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 
-namespace Kinovea.Video
+namespace Kinovea.Video.Synthetic
 {
     public class SyntheticVideo
     {
@@ -13,6 +13,7 @@ namespace Kinovea.Video
         public int DurationFrames { get; set; }
         public Color BackgroundColor { get; set; }
         public bool FrameNumber { get; set; }
+        public List<SyntheticObject> Objects { get; set; }
 
         public SyntheticVideo()
         {
@@ -21,6 +22,7 @@ namespace Kinovea.Video
             DurationFrames = 100;
             BackgroundColor = Color.White;
             FrameNumber = true;
+            Objects = new List<SyntheticObject>();
         }
     }
 }

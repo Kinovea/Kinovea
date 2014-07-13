@@ -261,26 +261,28 @@ namespace Kinovea.ScreenManager
         private bool IsOnDrawing(Metadata metadata, int activeKeyFrameIndex, Point mouseCoordinates, long currentTimeStamp, bool allFrames)
         {
             bool bIsOnDrawing = false;
-            
+
+            DistortionHelper distorter = metadata.CalibrationHelper.DistortionHelper;
+
             if (allFrames && metadata.Keyframes.Count > 0)
             {
                 int[] zOrder = metadata.GetKeyframesZOrder(currentTimeStamp);
 
                 for (int i = 0; i < zOrder.Length; i++)
                 {
-                    bIsOnDrawing = DrawingHitTest(metadata, zOrder[i], mouseCoordinates, currentTimeStamp, metadata.CoordinateSystem);
+                    bIsOnDrawing = DrawingHitTest(metadata, zOrder[i], mouseCoordinates, currentTimeStamp, distorter, metadata.CoordinateSystem);
                     if (bIsOnDrawing)
                         break;
                 }
             }
             else if (activeKeyFrameIndex >= 0)
             {
-                bIsOnDrawing = DrawingHitTest(metadata, activeKeyFrameIndex, mouseCoordinates, metadata[activeKeyFrameIndex].Position, metadata.CoordinateSystem);
+                bIsOnDrawing = DrawingHitTest(metadata, activeKeyFrameIndex, mouseCoordinates, metadata[activeKeyFrameIndex].Position, distorter, metadata.CoordinateSystem);
             }
 
             return bIsOnDrawing;
         }
-        private bool DrawingHitTest(Metadata metadata, int keyFrameIndex, Point mouseCoordinates, long currentTimeStamp, CoordinateSystem transformer)
+        private bool DrawingHitTest(Metadata metadata, int keyFrameIndex, Point mouseCoordinates, long currentTimeStamp, DistortionHelper distorter, CoordinateSystem transformer)
         {
             bool isOnDrawing = false;
             int hitResult = -1;
@@ -289,7 +291,7 @@ namespace Kinovea.ScreenManager
             Keyframe kf = metadata.Keyframes[keyFrameIndex];
             while (hitResult < 0 && currentDrawing < kf.Drawings.Count)
             {
-                hitResult = kf.Drawings[currentDrawing].HitTest(mouseCoordinates, currentTimeStamp, transformer, transformer.Zooming);
+                hitResult = kf.Drawings[currentDrawing].HitTest(mouseCoordinates, currentTimeStamp, distorter, transformer, transformer.Zooming);
 
                 if (hitResult < 0)
                 {
@@ -325,7 +327,7 @@ namespace Kinovea.ScreenManager
             
             while (hitResult < 0 && currentDrawing < metadata.ExtraDrawings.Count)
             {
-                hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
+                hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
 
                 if (hitResult < 0)
                 {
@@ -355,7 +357,7 @@ namespace Kinovea.ScreenManager
             bool isOnDrawing = false;
             foreach (AbstractDrawing drawing in metadata.ChronoManager.Drawings)
             {
-                int hitResult = drawing.HitTest(point, currentTimestamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
+                int hitResult = drawing.HitTest(point, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
                 if (hitResult < 0)
                     continue;
 
@@ -388,7 +390,7 @@ namespace Kinovea.ScreenManager
                 if (track == null)
                     continue;
 
-                int hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
+                int hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CalibrationHelper.DistortionHelper, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
                 if (hitResult < 0)
                     continue;
 

@@ -103,7 +103,7 @@ namespace Kinovea.ScreenManager
         }
         
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             foreach(AutoNumber number in autoNumbers)
                 number.Draw(canvas, transformer, currentTimestamp, styleHelper);
@@ -116,7 +116,7 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int currentNumber = 0;
             int handle = -1;

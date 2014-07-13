@@ -95,6 +95,10 @@ namespace Kinovea.ScreenManager
         {
             get { return (DrawingToolPlane)Tools["Plane"]; }
         }
+        public static DrawingToolDistortionGrid DistortionGrid
+        {
+            get { return (DrawingToolDistortionGrid)Tools["DistortionGrid"]; }
+        }
         public static DrawingToolSpotlight Spotlight
         {
             get { return (DrawingToolSpotlight)Tools["Spotlight"]; }
@@ -223,6 +227,7 @@ namespace Kinovea.ScreenManager
             tools.Add("Label", new DrawingToolText());
             tools.Add("Grid", new DrawingToolGrid());
             tools.Add("Plane", new DrawingToolPlane());
+            tools.Add("DistortionGrid", new DrawingToolDistortionGrid());
             tools.Add("Spotlight", new DrawingToolSpotlight());
             tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
             tools.Add("Magnifier", new DrawingToolMagnifier());

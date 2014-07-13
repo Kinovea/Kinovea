@@ -47,6 +47,14 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public PointF A
+        {
+            get { return points["a"]; }
+        }
+        public PointF B
+        {
+            get { return points["b"]; }
+        }
         public override string DisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
@@ -147,7 +155,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
             
@@ -156,13 +164,28 @@ namespace Kinovea.ScreenManager
             
             if(opacityFactor <= 0)
                 return;
+
             
+
             Point start = transformer.Transform(points["a"]);
             Point end = transformer.Transform(points["b"]);
             
             using(Pen penEdges = styleHelper.GetPen((int)(opacityFactor * 255), transformer.Scale))
             {
-                canvas.DrawLine(penEdges, start, end);
+                if (distorter != null && distorter.Initialized)
+                {
+                    List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
+                    List<Point> transformedCurve = transformer.Transform(curve);
+
+                    canvas.DrawCurve(penEdges, transformedCurve.ToArray());
+
+                    labelMeasure.SetAttach(curve[curve.Count / 2], true);
+                }
+                else
+                {
+                    canvas.DrawLine(penEdges, start, end);
+                    labelMeasure.SetAttach(GetMiddlePoint(), true);
+                }
                 
                 // Handlers
                 penEdges.Width = selected ? 2 : 1;
@@ -182,7 +205,7 @@ namespace Kinovea.ScreenManager
                 labelMeasure.Draw(canvas, transformer, opacityFactor);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
@@ -195,7 +218,7 @@ namespace Kinovea.ScreenManager
                     result = 1;
                 else if (HitTester.HitTest(points["b"], point, transformer))
                     result = 2;
-                else if (IsPointInObject(point, transformer))
+                else if (IsPointInObject(point, distorter, transformer))
                     result = 0;
             }
             
@@ -212,7 +235,6 @@ namespace Kinovea.ScreenManager
                     else
                         points["a"] = point;
 
-                    labelMeasure.SetAttach(GetMiddlePoint(), true);
                     SignalTrackablePointMoved("a");
                     break;
                 case 2:
@@ -221,7 +243,6 @@ namespace Kinovea.ScreenManager
                     else
                         points["b"] = point;
 
-                    labelMeasure.SetAttach(GetMiddlePoint(), true);
                     SignalTrackablePointMoved("b");
                     break;
                 case 3:
@@ -234,7 +255,6 @@ namespace Kinovea.ScreenManager
         {
             points["a"] = points["a"].Translate(dx, dy);
             points["b"] = points["b"].Translate(dx, dy);
-            labelMeasure.SetAttach(GetMiddlePoint(), true);
             SignalAllTrackablePointsMoved();
         }
         #endregion
@@ -282,7 +302,6 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
             
-            labelMeasure.SetAttach(GetMiddlePoint(), true);
             SignalAllTrackablePointsMoved();
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -356,7 +375,6 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
-            labelMeasure.SetAttach(GetMiddlePoint(), true);
         }
         private void SignalAllTrackablePointsMoved()
         {
@@ -374,11 +392,6 @@ namespace Kinovea.ScreenManager
             TrackablePointMoved(this, new TrackablePointMovedEventArgs(name, points[name]));
         }
         #endregion
-        
-        public float Length()
-        {
-            return GeometryHelper.GetDistance(points["a"], points["b"]);
-        }
         
         #region Context menu
         private void mnuShowMeasure_Click(object sender, EventArgs e)
@@ -419,14 +432,26 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "LineSize", "line size");
             style.Bind(styleHelper, "LineEnding", "arrows");
         }
-        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
+        private bool IsPointInObject(Point point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                if(points["a"] == points["b"])
+                if (points["a"] == points["b"])
+                {
                     areaPath.AddLine(points["a"].X, points["a"].Y, points["a"].X + 2, points["a"].Y + 2);
+                }
                 else
-                    areaPath.AddLine(points["a"], points["b"]);
+                {
+                    if (distorter != null && distorter.Initialized)
+                    {
+                        List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
+                        areaPath.AddCurve(curve.ToArray());
+                    }
+                    else
+                    {
+                        areaPath.AddLine(points["a"], points["b"]);
+                    }
+                }
 
                 return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
             }

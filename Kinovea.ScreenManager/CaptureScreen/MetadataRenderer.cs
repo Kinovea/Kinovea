@@ -48,21 +48,25 @@ namespace Kinovea.ScreenManager
         
         private void RenderExtraDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
         {
+            DistortionHelper distorter = null;
+
             foreach (AbstractDrawing ad in metadata.ChronoManager.Drawings)
-                ad.Draw(canvas, transformer, false, timestamp);
+                ad.Draw(canvas, distorter, transformer, false, timestamp);
 
             foreach (AbstractDrawing ad in metadata.TrackManager.Drawings)
-                ad.Draw(canvas, transformer, false, timestamp);
+                ad.Draw(canvas, distorter, transformer, false, timestamp);
             
             foreach (AbstractDrawing ad in metadata.ExtraDrawings)
-                ad.Draw(canvas, transformer, false, timestamp);
+                ad.Draw(canvas, distorter, transformer, false, timestamp);
         }
         
         private void RenderDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
         {
+            DistortionHelper distorter = metadata.CalibrationHelper.DistortionHelper;
+
             foreach (Keyframe keyframe in metadata.Keyframes)
                 foreach (AbstractDrawing drawing in keyframe.Drawings)
-                    drawing.Draw(canvas, transformer, drawing == metadata.HitDrawing, timestamp);
+                    drawing.Draw(canvas, distorter, transformer, drawing == metadata.HitDrawing, timestamp);
             }
     }
 }

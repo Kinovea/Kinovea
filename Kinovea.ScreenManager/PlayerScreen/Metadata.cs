@@ -56,8 +56,8 @@ namespace Kinovea.ScreenManager
         public EventHandler DrawingDeleted;
         public EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdded;
         public EventHandler MultiDrawingItemDeleted;
-
-
+        public EventHandler CameraCalibrationAsked;
+            
         public RelayCommand<ITrackable> AddTrackableDrawingCommand { get; set; }
         public RelayCommand<ITrackable> DeleteTrackableDrawingCommand { get; set; }
         #endregion
@@ -280,6 +280,7 @@ namespace Kinovea.ScreenManager
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
         private CoordinateSystem coordinateSystem = new CoordinateSystem();
         private TrackabilityManager trackabilityManager = new TrackabilityManager();
+        private Temporizer calibrationChangedTemporizer;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -298,6 +299,8 @@ namespace Kinovea.ScreenManager
             CleanupHash();
 
             SetupTempDirectory(id);
+
+            calibrationChangedTemporizer = new Temporizer(200, TracksCalibrationChanged);
 
             log.Debug("Constructing new Metadata object.");
         }
@@ -486,6 +489,12 @@ namespace Kinovea.ScreenManager
             foreach (AbstractDrawing drawing in AttachedDrawings())
                 if (drawing is ITrackable)
                     yield return (ITrackable)drawing;
+        }
+        public IEnumerable<DrawingDistortionGrid> DistortionGrids()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingDistortionGrid)
+                    yield return (DrawingDistortionGrid)drawing;
         }
         #endregion
         
@@ -802,6 +811,12 @@ namespace Kinovea.ScreenManager
 
                 measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
             }
+
+            if (drawing is DrawingDistortionGrid)
+            {
+                DrawingDistortionGrid d = drawing as DrawingDistortionGrid;
+                d.LensCalibrationAsked += LensCalibrationAsked;
+            }
         }
 
         private void BeforeDrawingDeletion(AbstractDrawing drawing)
@@ -813,6 +828,9 @@ namespace Kinovea.ScreenManager
             IMeasurable measurableDrawing = drawing as IMeasurable;
             if (measurableDrawing != null)
                 measurableDrawing.ShowMeasurableInfoChanged -= MeasurableDrawing_ShowMeasurableInfoChanged;
+
+            if (drawing is DrawingDistortionGrid)
+                ((DrawingDistortionGrid)drawing).LensCalibrationAsked -= LensCalibrationAsked;
         }
 
         public void BeforeKVAImport()
@@ -849,6 +867,15 @@ namespace Kinovea.ScreenManager
                 MetadataSerializer s = new MetadataSerializer();
                 s.Load(this, autosaveFile, true);
             }
+        }
+
+        public List<List<PointF>> GetCameraCalibrationPoints()
+        {
+            List<List<PointF>> points = new List<List<PointF>>();
+            foreach (DrawingDistortionGrid grid in DistortionGrids())
+                points.Add(grid.Points);
+
+            return points;
         }
 
         #region Autosave
@@ -911,7 +938,7 @@ namespace Kinovea.ScreenManager
 
             foreach (DrawingChrono chrono in chronoManager.Drawings)
             {
-                int hit = chrono.HitTest(point, timestamp, coordinateSystem, coordinateSystem.Zooming);
+                int hit = chrono.HitTest(point, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
                 if (hit < 0)
                     continue;
 
@@ -925,7 +952,7 @@ namespace Kinovea.ScreenManager
 
             foreach (DrawingTrack track in trackManager.Drawings)
             {
-                int hit = track.HitTest(point, timestamp, coordinateSystem, coordinateSystem.Zooming);
+                int hit = track.HitTest(point, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
                 if (hit < 0)
                     continue;
 
@@ -940,7 +967,7 @@ namespace Kinovea.ScreenManager
             for(int i = extraDrawings.Count - 1; i >= 0; i--)
             {
                 AbstractDrawing candidate = extraDrawings[i];
-                int hitRes = candidate.HitTest(point, timestamp, coordinateSystem, coordinateSystem.Zooming);
+                int hitRes = candidate.HitTest(point, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
                 if (hitRes < 0)
                     continue;
                 
@@ -1049,7 +1076,7 @@ namespace Kinovea.ScreenManager
             while (hitResult < 0 && currentDrawing < keyframe.Drawings.Count)
             {
                 AbstractDrawing drawing = keyframe.Drawings[currentDrawing];
-                hitResult = drawing.HitTest(mouseLocation, timestamp, coordinateSystem, coordinateSystem.Zooming);
+                hitResult = drawing.HitTest(mouseLocation, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
                 
                 if (hitResult < 0)
                 {
@@ -1118,7 +1145,10 @@ namespace Kinovea.ScreenManager
         private void AfterCalibrationChanged()
         {
             drawingCoordinateSystem.UpdateOrigin();
-
+            calibrationChangedTemporizer.Call();
+        }
+        private void TracksCalibrationChanged()
+        {
             foreach (DrawingTrack t in Tracks())
                 t.CalibrationChanged();
         }
@@ -1146,6 +1176,11 @@ namespace Kinovea.ScreenManager
             string autosaveFile = Path.Combine(tempFolder, "autosave.kva");
             if (File.Exists(autosaveFile))
                 File.Delete(autosaveFile);
+        }
+        private void LensCalibrationAsked(object sender, EventArgs e)
+        {
+            if (CameraCalibrationAsked != null)
+                CameraCalibrationAsked(this, EventArgs.Empty);
         }
         #endregion
     }
