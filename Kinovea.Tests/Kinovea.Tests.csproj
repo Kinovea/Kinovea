@@ -49,7 +49,6 @@
     <Compile Include="HistoryStackTester\HistoryStackSimpleTester.cs" />
     <Compile Include="HistoryStackTester\State.cs" />
     <Compile Include="KSV\KSVFuzzer.cs" />
-    <Compile Include="LensDistortion\DistortionTester.cs" />
     <Compile Include="ProjectiveGeometry\LineClippingTester.cs" />
     <Compile Include="Metadata\KVAFuzzer.cs" />
     <Compile Include="Metadata\TrackableDrawing.cs" />

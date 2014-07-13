@@ -948,7 +948,6 @@ namespace Kinovea.ScreenManager
                 positions.RemoveRange(currentPoint + 1, positions.Count - currentPoint - 1);
 
             endTimeStamp = positions[positions.Count - 1].T;
-            // Todo: we must now refill the last point with a patch image.
 
             UpdateKinematics();
             IntegrateKeyframes();
