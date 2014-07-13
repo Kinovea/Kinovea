@@ -50,13 +50,11 @@ namespace Kinovea.ScreenManager
 
         public DistortionParameters Calibrate()
         {
-            // Fixing k3 to zero avoid numeric instability as we don't have a lot of points to work with.
-
             CALIB_TYPE flags = 
                 //CALIB_TYPE.CV_CALIB_FIX_ASPECT_RATIO |
                 //CALIB_TYPE.CV_CALIB_FIX_FOCAL_LENGTH |
                 //CALIB_TYPE.CV_CALIB_FIX_PRINCIPAL_POINT |
-                CALIB_TYPE.CV_CALIB_FIX_K3 |
+                //CALIB_TYPE.CV_CALIB_FIX_K3 |
                 (CALIB_TYPE)16384; // CV_CALIB_RATIONAL_MODEL
 
             int imageCount = allImagePoints.Length;
