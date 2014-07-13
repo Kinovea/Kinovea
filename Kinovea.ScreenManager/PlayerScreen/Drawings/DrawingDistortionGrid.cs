@@ -200,7 +200,6 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
-            // TODO: allow grabbing of lines to move the whole drawing.
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {

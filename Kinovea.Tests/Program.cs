@@ -15,7 +15,6 @@ namespace Kinovea.Tests
             //TestKVAFuzzer();
             //TestKSVFuzzer();
             //TestHistoryStack();
-            //TestDistortion();
             TestLineClipping();
             
         }
@@ -47,12 +46,6 @@ namespace Kinovea.Tests
             {
                 Console.WriteLine(e);
             }
-        }
-
-        private static void TestDistortion()
-        {
-            DistortionTester tester = new DistortionTester();
-            tester.Test();
         }
 
         private static void TestLineClipping()
