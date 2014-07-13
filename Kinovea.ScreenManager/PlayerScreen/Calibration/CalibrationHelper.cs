@@ -103,6 +103,16 @@ namespace Kinovea.ScreenManager
         {
             get { return imageSize; }
         }
+
+        public int ContentHash
+        {
+            get
+            {
+                int hash = 0;
+                hash ^= distortionHelper.ContentHash;
+                return hash;
+            }
+        }
         #endregion
         
         #region Members
@@ -141,6 +151,22 @@ namespace Kinovea.ScreenManager
             this.imageSize = imageSize;
             SetOrigin(imageSize.Center());
             initialized = true;
+            ComputeCoordinateSystemGrid();
+        }
+
+        public void Reset()
+        {
+            SetOrigin(imageSize.Center());
+            calibratorType = CalibratorType.Line;
+            calibrationLine = new CalibrationLine();
+            calibrator = calibrationLine;
+
+            distortionHelper = new DistortionHelper();
+
+            lengthUnit = LengthUnit.Pixels;
+            speedUnit = SpeedUnit.PixelsPerSecond;
+            accelerationUnit = AccelerationUnit.PixelsPerSecondSquared;
+
             ComputeCoordinateSystemGrid();
         }
         

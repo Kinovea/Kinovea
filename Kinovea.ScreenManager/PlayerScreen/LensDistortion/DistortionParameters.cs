@@ -71,5 +71,21 @@ namespace Kinovea.ScreenManager
         {
             get { return new DistortionParameters(0, 0, 0, 0, 0, 1, 1, 0, 0); }
         }
+
+        public int ContentHash
+        {
+            get
+            {
+                return K1.GetHashCode() ^
+                    K2.GetHashCode() ^
+                    K3.GetHashCode() ^
+                    P1.GetHashCode() ^
+                    P2.GetHashCode() ^
+                    Fx.GetHashCode() ^
+                    Fy.GetHashCode() ^
+                    Cx.GetHashCode() ^
+                    Cy.GetHashCode();
+            }
+        }
     }
 }
