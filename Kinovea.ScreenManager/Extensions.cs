@@ -141,6 +141,7 @@ namespace Kinovea.ScreenManager
         }
         public static RectangleF CenteredScale(this RectangleF rect, float scale)
         {
+            // FIXME: same as .Inflate ?
             // Returns a rectangle centered on the same point but scaled in both dimensions by given factor.
             return new RectangleF(rect.X - (rect.Width * (scale - 1)) / 2, rect.Y - (rect.Height * (scale - 1)) / 2, rect.Width * scale, rect.Height * scale);
         }
@@ -148,6 +149,12 @@ namespace Kinovea.ScreenManager
         {
             return new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
         }
+        public static RectangleF Deflate(this RectangleF rect, float scale)
+        {
+            PointF center = rect.Center();
+            return new RectangleF(center.X - ((rect.Width / 2) / scale), center.Y - ((rect.Height / 2) / scale), rect.Width / scale, rect.Height / scale);
+        }
+
 
         // List<T>
         public static List<double> Subtract(this List<double> a, List<double> b)

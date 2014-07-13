@@ -243,6 +243,10 @@
     <Compile Include="DualPlayer\DualSnapshoter.cs" />
     <Compile Include="DualPlayer\DualVideoExporter.cs" />
     <Compile Include="DualPlayer\PlayerSyncInfo.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\CoordinateSystemGridFinder.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\GridAxis.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\RangeHelper.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\GridLine.cs" />
     <Compile Include="PlayerScreen\ChronoManager.cs" />
     <Compile Include="CommandProcessedEventArgs.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
@@ -257,9 +261,23 @@
     <Compile Include="PlayerScreen\AbstractDrawingManager.cs" />
     <Compile Include="PlayerScreen\AutoSaver.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractMultiDrawingItem.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\CoordinateSystemGrid.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\TextAlignment.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\TickMark.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingDistortionGrid.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolDistortionGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\MultiDrawingItemEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
+    <Compile Include="PlayerScreen\Geometry\ClipResult.cs" />
+    <Compile Include="PlayerScreen\Geometry\LiangBarsky.cs" />
+    <Compile Include="PlayerScreen\LensDistortion\CameraCalibrator.cs" />
+    <Compile Include="PlayerScreen\LensDistortion\DistortionHelper.cs" />
+    <Compile Include="PlayerScreen\LensDistortion\DistortionImporterAgisoft.cs" />
+    <Compile Include="PlayerScreen\LensDistortion\DistortionImporterKinovea.cs" />
+    <Compile Include="PlayerScreen\LensDistortion\DistortionParameters.cs" />
+    <Compile Include="PlayerScreen\LensDistortion\DistortionSerializer.cs" />
+    <Compile Include="PlayerScreen\LensDistortion\EmguHelper.cs" />
     <Compile Include="PlayerScreen\Serialization\DrawingSerializer.cs" />
     <Compile Include="PlayerScreen\Serialization\KeyframeSerializer.cs" />
     <Compile Include="PlayerScreen\Export\MetadataExporter.cs" />
@@ -286,6 +304,12 @@
     <Compile Include="PlayerScreen\Tracking\TrackView.cs" />
     <Compile Include="PlayerScreen\Kinematics\TrajectoryKinematics.cs" />
     <Compile Include="PlayerScreen\TrackManager.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormCalibrateDistortion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormCalibrateDistortion.Designer.cs">
+      <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -305,6 +329,7 @@
     </Compile>
     <Compile Include="RecoveryManager.cs" />
     <Compile Include="ScreenRemover.cs" />
+    <Compile Include="Temporizer.cs" />
     <Compile Include="UndoRedo\HistoryMemento.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddDrawing.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoAddKeyframe.cs" />
@@ -344,7 +369,7 @@
     <Compile Include="PlayerScreen\Drawings\DrawingCapabilities.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingCoordinateSystem.cs" />
+    <Compile Include="PlayerScreen\Drawings\CoordinateSystem\DrawingCoordinateSystem.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolArrow.cs" />
@@ -720,7 +745,6 @@
     </Compile>
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScreenManagerState.cs" />
     <Compile Include="UserInterface\FormIconPicker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -766,6 +790,9 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibrateDistortion.resx">
+      <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormRafaleExport.resx">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </EmbeddedResource>
@@ -1077,10 +1104,19 @@
       <Name>Kinovea.Video</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\checkerboard.png" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\function.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ruler-triangle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\quit.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -32,6 +32,7 @@ namespace Kinovea.Services
         public static string Version { get; private set; }
         public static string SettingsDirectory { get; private set; }
         public static string ColorProfileDirectory { get; private set; }
+        public static string CameraCalibrationDirectory { get; private set; }
         public static string PreferencesFile { get; private set; }
         public static string TempDirectory { get; private set; }
         public static string HelpVideosDirectory { get; private set; }
@@ -47,6 +48,7 @@ namespace Kinovea.Services
             Version = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
             SettingsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + ApplicationName + "\\";
             ColorProfileDirectory = SettingsDirectory + "ColorProfiles\\";
+            CameraCalibrationDirectory = SettingsDirectory + "CameraCalibration\\";
             TempDirectory = SettingsDirectory + "Temp\\";
             PreferencesFile = SettingsDirectory + "Preferences.xml";
             
@@ -67,6 +69,9 @@ namespace Kinovea.Services
         	if(!Directory.Exists(ColorProfileDirectory))
         	   	Directory.CreateDirectory(ColorProfileDirectory);
 
+            if (!Directory.Exists(CameraCalibrationDirectory))
+                Directory.CreateDirectory(CameraCalibrationDirectory);
+            
             if (!Directory.Exists(TempDirectory))
                 Directory.CreateDirectory(TempDirectory);
         }

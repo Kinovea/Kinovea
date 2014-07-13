@@ -24,6 +24,7 @@ using System.Globalization;
 using System.Xml;
 
 using Kinovea.Services;
+using AForge.Math;
 
 namespace Kinovea.ScreenManager
 {
@@ -44,6 +45,9 @@ namespace Kinovea.ScreenManager
             set { size = value;}
         }
 
+        /// <summary>
+        /// Projection of the rectangle defining the world plane onto image space.
+        /// </summary>
         public QuadrilateralF QuadImage
         {
             get { return quadImage; }
@@ -52,6 +56,11 @@ namespace Kinovea.ScreenManager
         public bool Valid
         {
             get { return valid; }
+        }
+
+        public ProjectiveMapping ProjectiveMapping
+        {
+            get { return mapping; }
         }
         
         private bool initialized;
@@ -88,14 +97,34 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Takes a point in real world coordinates and gives it back as an homogenous vector in the projective plane.
+        /// </summary>
+        public Vector3 Project(PointF p)
+        {
+            if (!initialized)
+                return new Vector3(p.X, p.Y, 1.0f);
+
+            PointF c = WorldToCalibrated(p);
+            Vector3 v = new Vector3(c.X, c.Y, 1.0f);
+
+            return mapping.Forward(v);
+        }
+
+        /// <summary>
         /// Takes a point in image coordinates to act as the origin of the current coordinate system.
         /// </summary>
         public void SetOrigin(PointF p)
         {
             origin = mapping.Backward(p);
         }
-        
+
         #endregion
+
+        public Vector3 Project(Vector3 v)
+        {
+            return mapping.Forward(v);
+        }
+
 
         private PointF CalibratedToWorld(PointF p)
         {
@@ -177,6 +206,7 @@ namespace Kinovea.ScreenManager
             r.ReadEndElement();
             
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
+            valid = quadImage.IsConvex;
             initialized = true;
         }
         private void ParseQuadrilateral(XmlReader r, PointF scale)
