@@ -18,6 +18,7 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class DistortionHelper
     {
+        #region Properties
         public DistortionParameters Parameters
         {
             get { return parameters; }
@@ -27,6 +28,14 @@ namespace Kinovea.ScreenManager
         {
             get { return initialized; }
         }
+        public int ContentHash
+        {
+            get
+            {
+                return initialized && parameters != null ? parameters.ContentHash : 0;
+            }
+        }
+        #endregion
 
         private bool initialized;
         private DistortionParameters parameters;

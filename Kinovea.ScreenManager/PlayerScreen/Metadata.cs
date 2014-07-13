@@ -700,15 +700,19 @@ namespace Kinovea.ScreenManager
         
         public void PostSetup()
         {
-            if(initialized)
-                return;
-
             trackabilityManager.Initialize(imageSize);
             calibrationHelper.Initialize(imageSize);
 
-            for(int i = 0; i<totalStaticExtraDrawings;i++)
-                AfterDrawingCreation(extraDrawings[i]);
-            
+            if (!initialized)
+            {
+                for (int i = 0; i < totalStaticExtraDrawings; i++)
+                    AfterDrawingCreation(extraDrawings[i]);
+            }
+            else
+            {
+                AfterDrawingCreation(drawingCoordinateSystem);
+            }
+
             CleanupHash();
             initialized = true;
         }
@@ -766,7 +770,7 @@ namespace Kinovea.ScreenManager
         }
         public int GetContentHash()
         {
-            return GetKeyframesContentHash() ^ GetExtraDrawingsContentHash() ^ trackabilityManager.ContentHash;
+            return GetKeyframesContentHash() ^ GetExtraDrawingsContentHash() ^ trackabilityManager.ContentHash ^ calibrationHelper.ContentHash;
         }
         public void CleanupHash()
         {
@@ -1051,13 +1055,16 @@ namespace Kinovea.ScreenManager
             StopAllTracking();
             extraDrawings.RemoveRange(totalStaticExtraDrawings, extraDrawings.Count - totalStaticExtraDrawings);
             magnifier.ResetData();
+            coordinateSystem.Reset();
+            drawingCoordinateSystem.Visible = false;
+            calibrationHelper.Reset();
             
             foreach(AbstractDrawing extraDrawing in extraDrawings)
             {
                 if(extraDrawing is AbstractMultiDrawing)
                     ((AbstractMultiDrawing)extraDrawing).Clear();
             }
-            
+
             mirrored = false;
             UnselectAll();
         }
