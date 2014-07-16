@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
         {
-            get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
+            get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading | DrawingCapabilities.Track | DrawingCapabilities.DataAnalysis; }
         }
         public override List<ToolStripItem> ContextMenu
         {
@@ -87,6 +87,11 @@ namespace Kinovea.ScreenManager
                 
                 return contextMenu; 
             }
+        }
+        
+        public PointF Location
+        {
+            get { return points["0"]; }
         }
         
         public CalibrationHelper CalibrationHelper { get; set; }
@@ -132,7 +137,7 @@ namespace Kinovea.ScreenManager
             mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
         public DrawingCrossMark(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty,0,0, ToolManager.CrossMark.StylePreset.Clone(), null)
+            : this(Point.Empty, 0, 0, ToolManager.CrossMark.StylePreset.Clone(), null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

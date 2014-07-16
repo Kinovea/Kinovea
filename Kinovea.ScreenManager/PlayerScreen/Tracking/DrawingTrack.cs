@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
         {
-            get { return DrawingCapabilities.None; }
+            get { return DrawingCapabilities.DataAnalysis; }
         }
         public override List<ToolStripItem> ContextMenu
         {

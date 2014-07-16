@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
             {
                 inverse = matrix.Inverse();
             }
-            catch (ArgumentException e)
+            catch
             {
                 // Singular matrix.
                 inverse = Matrix3x3.Identity;

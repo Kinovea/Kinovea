@@ -296,6 +296,7 @@ namespace Kinovea.ScreenManager
             view.MultiDrawingItemAdding += View_MultiDrawingItemAdding;
             view.MultiDrawingItemDeleting += View_MultiDrawingItemDeleting;
             view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
+            view.DataAnalysisAsked += (s, e) => ShowDataAnalysis(e.Value);
             
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
             view.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
@@ -593,6 +594,16 @@ namespace Kinovea.ScreenManager
             fcd.Dispose();
 
             view.RefreshImage();
+        }
+        public void ShowDataAnalysis(AbstractDrawing drawing)
+        {
+            if (drawing is DrawingCrossMark)
+            {
+                FormPointsAnalysis fpa = new FormPointsAnalysis(frameServer.Metadata);
+                FormsHelper.Locate(fpa);
+                fpa.ShowDialog();
+                fpa.Dispose();
+            }
         }
         #endregion
 
