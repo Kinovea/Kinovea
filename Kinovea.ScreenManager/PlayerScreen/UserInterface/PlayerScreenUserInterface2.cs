@@ -88,6 +88,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemDeleting;
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
         public event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
+        public event EventHandler<EventArgs<AbstractDrawing>> DataAnalysisAsked; 
         #endregion
         
         #region Commands encapsulating domain logic implemented in the presenter.
@@ -322,6 +323,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGotoKeyframe = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTrackDrawing = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDataAnalysis = new ToolStripMenuItem();
         private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
         private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
         private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
@@ -1056,6 +1058,8 @@ namespace Kinovea.ScreenManager
             mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
             mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
             mnuTrackDrawing.Click += mnuTrackDrawing_Click;
+            mnuTrackDrawing.Image = Properties.Drawings.track;
+            mnuDataAnalysis.Click += mnuDataAnalysis_Click;
             mnuTrackDrawing.Image = Properties.Drawings.track;
             mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
             mnuDeleteDrawing.Image = Properties.Drawings.delete;
@@ -2411,6 +2415,7 @@ namespace Kinovea.ScreenManager
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
             mnuTrackDrawing.Text = ScreenManagerLang.mnuTrackTrajectory;
+            mnuDataAnalysis.Text = "Data analysis";
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
             
             // 3. Tracking pop menu (Restart, Stop tracking)
@@ -2807,6 +2812,11 @@ namespace Kinovea.ScreenManager
             {
                 mnuTrackDrawing.Checked = ToggleTrackingCommand.CurrentState(drawing);
                 popMenu.Items.Add(mnuTrackDrawing);
+            }
+
+            if ((drawing.Caps & DrawingCapabilities.DataAnalysis) == DrawingCapabilities.DataAnalysis)
+            {
+                popMenu.Items.Add(mnuDataAnalysis);
             }
             
             if(popMenu.Items.Count > 0)
@@ -3883,6 +3893,13 @@ namespace Kinovea.ScreenManager
             ShowNextFrame(m_iCurrentPosition, true);
             ToggleTrackingCommand.Execute(drawing);
             RefreshImage();
+        }
+        private void mnuDataAnalysis_Click(object sender, EventArgs e)
+        {
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+
+            if (DataAnalysisAsked != null)
+                DataAnalysisAsked(this, new EventArgs<AbstractDrawing>(drawing));
         }
         private void mnuDeleteDrawing_Click(object sender, EventArgs e)
         {

@@ -316,6 +316,12 @@
     <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.Designer.cs">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Plotting\FormPointsAnalysis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Plotting\FormPointsAnalysis.Designer.cs">
+      <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plotting\FormTimeseries.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -795,6 +801,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormRafaleExport.resx">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Plotting\FormPointsAnalysis.resx">
+      <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Plotting\FormTimeseries.resx">
       <DependentUpon>FormTimeseries.cs</DependentUpon>
