@@ -39,8 +39,8 @@
             this.plotHorzVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.plotHorzVelocity.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.plotHorzVelocity.KeyboardPanHorizontalStep = 0.1D;
-            this.plotHorzVelocity.KeyboardPanVerticalStep = 0.1D;
+            //this.plotHorzVelocity.KeyboardPanHorizontalStep = 0.1D;
+            //this.plotHorzVelocity.KeyboardPanVerticalStep = 0.1D;
             this.plotHorzVelocity.Location = new System.Drawing.Point(12, 276);
             this.plotHorzVelocity.Name = "plotHorzVelocity";
             this.plotHorzVelocity.PanCursor = System.Windows.Forms.Cursors.Hand;
@@ -56,8 +56,8 @@
             this.plotHorzAcceleration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.plotHorzAcceleration.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.plotHorzAcceleration.KeyboardPanHorizontalStep = 0.1D;
-            this.plotHorzAcceleration.KeyboardPanVerticalStep = 0.1D;
+            //this.plotHorzAcceleration.KeyboardPanHorizontalStep = 0.1D;
+            //this.plotHorzAcceleration.KeyboardPanVerticalStep = 0.1D;
             this.plotHorzAcceleration.Location = new System.Drawing.Point(12, 500);
             this.plotHorzAcceleration.Name = "plotHorzAcceleration";
             this.plotHorzAcceleration.PanCursor = System.Windows.Forms.Cursors.Hand;
@@ -73,8 +73,6 @@
             this.plotCoordinates.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.plotCoordinates.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.plotCoordinates.KeyboardPanHorizontalStep = 0.1D;
-            this.plotCoordinates.KeyboardPanVerticalStep = 0.1D;
             this.plotCoordinates.Location = new System.Drawing.Point(372, 12);
             this.plotCoordinates.Name = "plotCoordinates";
             this.plotCoordinates.PanCursor = System.Windows.Forms.Cursors.Hand;
@@ -90,8 +88,6 @@
             this.plotDurbinWatson.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.plotDurbinWatson.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.plotDurbinWatson.KeyboardPanHorizontalStep = 0.1D;
-            this.plotDurbinWatson.KeyboardPanVerticalStep = 0.1D;
             this.plotDurbinWatson.Location = new System.Drawing.Point(12, 12);
             this.plotDurbinWatson.Name = "plotDurbinWatson";
             this.plotDurbinWatson.PanCursor = System.Windows.Forms.Cursors.Hand;

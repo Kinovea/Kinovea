@@ -1060,7 +1060,7 @@ namespace Kinovea.ScreenManager
             mnuTrackDrawing.Click += mnuTrackDrawing_Click;
             mnuTrackDrawing.Image = Properties.Drawings.track;
             mnuDataAnalysis.Click += mnuDataAnalysis_Click;
-            mnuTrackDrawing.Image = Properties.Drawings.track;
+            mnuDataAnalysis.Image = Properties.Resources.function;
             mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
             mnuDeleteDrawing.Image = Properties.Drawings.delete;
             
