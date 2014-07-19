@@ -142,7 +142,7 @@ namespace Kinovea.ScreenManager
                 metadata.FirstTimeStamp = videoReader.Info.FirstTimeStamp;
             }
 
-            metadata.PostSetup();
+            metadata.PostSetup(init);
             
             log.Debug("Setup metadata.");
         }

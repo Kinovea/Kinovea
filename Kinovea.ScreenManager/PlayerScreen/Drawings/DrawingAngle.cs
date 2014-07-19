@@ -55,7 +55,7 @@ namespace Kinovea.ScreenManager
             {
                 int hash = 0;
                 
-                // The hash of positions will be taken into by trackability manager.
+                // The hash of positions will be taken into account by trackability manager.
                 hash ^= styleHelper.ContentHash;
                 hash ^= infosFading.ContentHash;
                 

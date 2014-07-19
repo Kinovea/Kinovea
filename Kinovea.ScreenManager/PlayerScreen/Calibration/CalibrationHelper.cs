@@ -110,6 +110,7 @@ namespace Kinovea.ScreenManager
             {
                 int hash = 0;
                 hash ^= distortionHelper.ContentHash;
+                hash ^= GetOrigin().GetHashCode();
                 return hash;
             }
         }
