@@ -21,6 +21,11 @@ namespace Kinovea.ScreenManager
         private List<DrawingCrossMark> drawings = new List<DrawingCrossMark>();
         private List<TimedPoint> points = new List<TimedPoint>();
         private Metadata metadata;
+        private RectangleAnnotation rectangleAnnotation;
+        private double memoXMin;
+        private double memoXMax;
+        private double memoYMin;
+        private double memoYMax;
 
         public FormPointsAnalysis(Metadata metadata)
         {
@@ -51,6 +56,7 @@ namespace Kinovea.ScreenManager
             tbTitle.Text = "Scatter plot";
             tbXAxis.Text = "X axis";
             tbYAxis.Text = "Y axis";
+            cbCalibrationPlane.Text = "Calibration plane";
             
             gbExportGraph.Text = "Export graph";
             lblPixels.Text = "pixels";
@@ -115,14 +121,17 @@ namespace Kinovea.ScreenManager
 
             if (metadata.CalibrationHelper.CalibratorType == CalibratorType.Plane)
             {
+                cbCalibrationPlane.Checked = true;
+                cbCalibrationPlane.Enabled = true;
+
                 CalibrationHelper calibrator = metadata.CalibrationHelper;
                 QuadrilateralF quadImage = calibrator.CalibrationByPlane_GetProjectedQuad();
-                PointF a = calibrator.GetPoint(quadImage.A);
-                PointF b = calibrator.GetPoint(quadImage.B);
-                PointF c = calibrator.GetPoint(quadImage.C);
-                PointF d = calibrator.GetPoint(quadImage.D);
+                PointF a = calibrator.GetPointFromRectified(quadImage.A);
+                PointF b = calibrator.GetPointFromRectified(quadImage.B);
+                PointF c = calibrator.GetPointFromRectified(quadImage.C);
+                PointF d = calibrator.GetPointFromRectified(quadImage.D);
 
-                RectangleAnnotation rectangleAnnotation = new RectangleAnnotation();
+                rectangleAnnotation = new RectangleAnnotation();
                 rectangleAnnotation.MinimumX = a.X;
                 rectangleAnnotation.MaximumX = b.X;
                 rectangleAnnotation.MinimumY = d.Y;
@@ -135,7 +144,7 @@ namespace Kinovea.ScreenManager
                 {
                     yDataMaximum = Math.Max(yDataMaximum, a.Y);
                     yDataMinimum = Math.Min(yDataMinimum, d.Y);
-                
+
                     double yPadding = (yDataMaximum - yDataMinimum) * padding;
                     yAxis.Maximum = yDataMaximum + yPadding;
                     yAxis.Minimum = yDataMinimum - yPadding;
@@ -151,8 +160,22 @@ namespace Kinovea.ScreenManager
                     xAxis.Minimum = xDataMinimum - xPadding;
                 }
             }
+            else
+            {
+                cbCalibrationPlane.Checked = false;
+                cbCalibrationPlane.Enabled = false;
+            }
 
             plotScatter.Model = model;
+        }
+
+        private void LabelsChanged(object sender, EventArgs e)
+        {
+            plotScatter.Model.Title = tbTitle.Text;
+            plotScatter.Model.Axes[0].Title = tbXAxis.Text;
+            plotScatter.Model.Axes[1].Title = tbYAxis.Text;
+
+            plotScatter.InvalidatePlot(false);
         }
 
         private void btnExportGraph_Click(object sender, EventArgs e)
@@ -166,27 +189,20 @@ namespace Kinovea.ScreenManager
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;
 
-            // Saving at a specific size will modify the axis zoom. Backup and restore after save.
-            double xmin = plotScatter.Model.Axes[0].ActualMinimum;
-            double xmax = plotScatter.Model.Axes[0].ActualMaximum;
-            double ymin = plotScatter.Model.Axes[1].ActualMinimum;
-            double ymax = plotScatter.Model.Axes[1].ActualMaximum;
-
+            BackupView();
             PngExporter.Export(plotScatter.Model, saveFileDialog.FileName, (int)nudWidth.Value, (int)nudHeight.Value, Brushes.White);
-
-            plotScatter.Zoom(plotScatter.Model.Axes[0], xmin, xmax);
-            plotScatter.Zoom(plotScatter.Model.Axes[1], ymin, ymax);
-
-            plotScatter.RefreshPlot(false);
+            RestoreView();
+            
+            plotScatter.InvalidatePlot(false);
         }
 
-        private void LabelsChanged(object sender, EventArgs e)
+        private void btnImageCopy_Click(object sender, EventArgs e)
         {
-            plotScatter.Model.Title = tbTitle.Text;
-            plotScatter.Model.Axes[0].Title = tbXAxis.Text;
-            plotScatter.Model.Axes[1].Title = tbYAxis.Text;
-
-            plotScatter.RefreshPlot(false);
+            BackupView();
+            Bitmap bmp = PngExporter.ExportToBitmap(plotScatter.Model, (int)nudWidth.Value, (int)nudHeight.Value, Brushes.White);
+            Clipboard.SetImage(bmp);
+            bmp.Dispose();
+            RestoreView();
         }
 
         private void btnExportData_Click(object sender, EventArgs e)
@@ -202,10 +218,14 @@ namespace Kinovea.ScreenManager
 
             using (StreamWriter w = File.CreateText(saveFileDialog.FileName))
             {
+                string unit = UnitHelper.LengthAbbreviation(metadata.CalibrationHelper.LengthUnit);
+                w.WriteLine(string.Format("t (ms);x ({0});y ({1})", unit, unit));
+
                 foreach (TimedPoint point in points)
                 {
                     string time = metadata.TimeCodeBuilder(point.T, TimeType.Time, TimecodeFormat.Milliseconds, false);
-                    w.WriteLine(string.Format("{0};{1};{2}", time, point.X, point.Y));
+                    PointF p = metadata.CalibrationHelper.GetPoint(point.Point);
+                    w.WriteLine(string.Format("{0};{1};{2}", time, p.X, p.Y));
                 }
             }
         }
@@ -214,33 +234,46 @@ namespace Kinovea.ScreenManager
         {
             StringBuilder b = new StringBuilder();
 
+            string unit = UnitHelper.LengthAbbreviation(metadata.CalibrationHelper.LengthUnit);
+            b.AppendLine(string.Format("t (ms);x ({0});y ({1})", unit, unit));
+
             foreach (TimedPoint point in points)
             {
                 string time = metadata.TimeCodeBuilder(point.T, TimeType.Time, TimecodeFormat.Milliseconds, false);
-                b.AppendLine(string.Format("{0};{1};{2}", time, point.X, point.Y));
+                PointF p = metadata.CalibrationHelper.GetPoint(point.Point);
+                b.AppendLine(string.Format("{0};{1};{2}", time, p.X, p.Y));
             }
 
             string text = b.ToString();
             Clipboard.SetText(text);
         }
 
-        private void btnImageCopy_Click(object sender, EventArgs e)
+        private void BackupView()
         {
-            double xmin = plotScatter.Model.Axes[0].ActualMinimum;
-            double xmax = plotScatter.Model.Axes[0].ActualMaximum;
-            double ymin = plotScatter.Model.Axes[1].ActualMinimum;
-            double ymax = plotScatter.Model.Axes[1].ActualMaximum;
+            memoXMin = plotScatter.Model.Axes[0].ActualMinimum;
+            memoXMax = plotScatter.Model.Axes[0].ActualMaximum;
+            memoYMin = plotScatter.Model.Axes[1].ActualMinimum;
+            memoYMax = plotScatter.Model.Axes[1].ActualMaximum;
+        }
 
-            // TODO: use new version of OxyPlot with PNGExporter.ExportToBitmap.
-            Bitmap bmp = new Bitmap(plotScatter.Width, plotScatter.Height);
-            plotScatter.DrawToBitmap(bmp, new Rectangle(Point.Empty, plotScatter.Size));
-            Clipboard.SetImage(bmp);
-            bmp.Dispose();
+        private void RestoreView()
+        {
+            plotScatter.Model.Axes[0].Zoom(memoXMin, memoXMax);
+            plotScatter.Model.Axes[1].Zoom(memoYMin, memoYMax);
+            plotScatter.InvalidatePlot(false);
+        }
 
-            plotScatter.Zoom(plotScatter.Model.Axes[0], xmin, xmax);
-            plotScatter.Zoom(plotScatter.Model.Axes[1], ymin, ymax);
+        private void cbCalibrationPlane_CheckedChanged(object sender, EventArgs e)
+        {
+            if (plotScatter.Model == null)
+                return;
 
-            plotScatter.RefreshPlot(false);
+            if (cbCalibrationPlane.Checked && plotScatter.Model.Annotations.Count == 0)
+                plotScatter.Model.Annotations.Add(rectangleAnnotation);
+            else if (!cbCalibrationPlane.Checked && plotScatter.Model.Annotations.Count == 1) 
+                plotScatter.Model.Annotations.Remove(rectangleAnnotation);
+
+            plotScatter.InvalidatePlot(false);
         }
     }
 }

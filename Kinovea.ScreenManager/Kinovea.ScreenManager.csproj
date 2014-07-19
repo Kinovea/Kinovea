@@ -158,10 +158,12 @@
     <Reference Include="MathNet.Iridium">
       <HintPath>..\Refs\Math.Net\MathNet.Iridium.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot">
+    <Reference Include="OxyPlot, Version=2014.1.1.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\OxyPlot\OxyPlot.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.WindowsForms">
+    <Reference Include="OxyPlot.WindowsForms, Version=2014.1.1.1, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\OxyPlot\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorBindings">
