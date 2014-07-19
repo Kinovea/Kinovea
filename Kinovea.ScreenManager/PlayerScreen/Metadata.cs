@@ -698,10 +698,13 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        public void PostSetup()
+        public void PostSetup(bool init)
         {
-            trackabilityManager.Initialize(imageSize);
-            calibrationHelper.Initialize(imageSize);
+            if (init)
+            {
+                trackabilityManager.Initialize(imageSize);
+                calibrationHelper.Initialize(imageSize);
+            }
 
             if (!initialized)
             {
@@ -716,6 +719,7 @@ namespace Kinovea.ScreenManager
             CleanupHash();
             initialized = true;
         }
+
         public void Reset()
         {
             // Complete reset. (used when over loading a new video)
