@@ -2727,10 +2727,12 @@ namespace Kinovea.ScreenManager
                 {
                     popMenuTrack.Items.Clear();
                     popMenuTrack.Items.Add(mnuConfigureTrajectory);
+                    popMenuTrack.Items.Add(mnuDataAnalysis);
                     
                     bool customMenus = AddDrawingCustomMenus(hitDrawing, popMenuTrack.Items);
                     if (customMenus)
                         popMenuTrack.Items.Add(new ToolStripSeparator());
+                    
                     
                     popMenuTrack.Items.AddRange(new ToolStripItem[] { mnuStopTracking, mnuRestartTracking, new ToolStripSeparator(), mnuDeleteEndOfTrajectory, mnuDeleteTrajectory });
 

@@ -30,6 +30,7 @@
         {
             this.tabControl = new System.Windows.Forms.TabControl();
             this.pagePlot = new System.Windows.Forms.TabPage();
+            this.plotScatter = new OxyPlot.WindowsForms.PlotView();
             this.gbExportGraph = new System.Windows.Forms.GroupBox();
             this.btnImageCopy = new System.Windows.Forms.Button();
             this.btnExportGraph = new System.Windows.Forms.Button();
@@ -41,14 +42,13 @@
             this.btnDataCopy = new System.Windows.Forms.Button();
             this.btnExportData = new System.Windows.Forms.Button();
             this.gbLabels = new System.Windows.Forms.GroupBox();
+            this.cbCalibrationPlane = new System.Windows.Forms.CheckBox();
             this.lblTitle = new System.Windows.Forms.Label();
             this.tbYAxis = new System.Windows.Forms.TextBox();
             this.tbXAxis = new System.Windows.Forms.TextBox();
             this.lblYAxis = new System.Windows.Forms.Label();
             this.lblXAxis = new System.Windows.Forms.Label();
             this.tbTitle = new System.Windows.Forms.TextBox();
-            this.plotScatter = new OxyPlot.WindowsForms.PlotView();
-            this.cbCalibrationPlane = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.pagePlot.SuspendLayout();
             this.gbExportGraph.SuspendLayout();
@@ -80,6 +80,22 @@
             this.pagePlot.TabIndex = 0;
             this.pagePlot.Text = "Plot";
             this.pagePlot.UseVisualStyleBackColor = true;
+            // 
+            // plotScatter
+            // 
+            this.plotScatter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotScatter.BackColor = System.Drawing.Color.White;
+            this.plotScatter.Location = new System.Drawing.Point(16, 15);
+            this.plotScatter.Name = "plotScatter";
+            this.plotScatter.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotScatter.Size = new System.Drawing.Size(474, 485);
+            this.plotScatter.TabIndex = 0;
+            this.plotScatter.Text = "plotView1";
+            this.plotScatter.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotScatter.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotScatter.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // gbExportGraph
             // 
@@ -228,6 +244,19 @@
             this.gbLabels.TabStop = false;
             this.gbLabels.Text = "Labels";
             // 
+            // cbCalibrationPlane
+            // 
+            this.cbCalibrationPlane.AutoSize = true;
+            this.cbCalibrationPlane.Checked = true;
+            this.cbCalibrationPlane.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbCalibrationPlane.Location = new System.Drawing.Point(18, 137);
+            this.cbCalibrationPlane.Name = "cbCalibrationPlane";
+            this.cbCalibrationPlane.Size = new System.Drawing.Size(104, 17);
+            this.cbCalibrationPlane.TabIndex = 6;
+            this.cbCalibrationPlane.Text = "Calibration plane";
+            this.cbCalibrationPlane.UseVisualStyleBackColor = true;
+            this.cbCalibrationPlane.CheckedChanged += new System.EventHandler(this.cbCalibrationPlane_CheckedChanged);
+            // 
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
@@ -283,35 +312,6 @@
             this.tbTitle.Text = "Scatter plot";
             this.tbTitle.TextChanged += new System.EventHandler(this.LabelsChanged);
             // 
-            // plotScatter
-            // 
-            this.plotScatter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotScatter.BackColor = System.Drawing.Color.White;
-            this.plotScatter.Location = new System.Drawing.Point(16, 15);
-            this.plotScatter.Name = "plotScatter";
-            this.plotScatter.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotScatter.Size = new System.Drawing.Size(474, 485);
-            this.plotScatter.TabIndex = 0;
-            this.plotScatter.Text = "plotView1";
-            this.plotScatter.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotScatter.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotScatter.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
-            // 
-            // cbCalibrationPlane
-            // 
-            this.cbCalibrationPlane.AutoSize = true;
-            this.cbCalibrationPlane.Checked = true;
-            this.cbCalibrationPlane.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbCalibrationPlane.Location = new System.Drawing.Point(18, 137);
-            this.cbCalibrationPlane.Name = "cbCalibrationPlane";
-            this.cbCalibrationPlane.Size = new System.Drawing.Size(104, 17);
-            this.cbCalibrationPlane.TabIndex = 6;
-            this.cbCalibrationPlane.Text = "Calibration plane";
-            this.cbCalibrationPlane.UseVisualStyleBackColor = true;
-            this.cbCalibrationPlane.CheckedChanged += new System.EventHandler(this.cbCalibrationPlane_CheckedChanged);
-            // 
             // FormPointsAnalysis
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -326,7 +326,7 @@
             this.Name = "FormPointsAnalysis";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "Data Analysis";
+            this.Text = "Data analysis";
             this.tabControl.ResumeLayout(false);
             this.pagePlot.ResumeLayout(false);
             this.gbExportGraph.ResumeLayout(false);

@@ -17,10 +17,15 @@ namespace Kinovea.ScreenManager
         public int Length { get; private set; }
 
         /// <summary>
+        /// Time coordinates.
+        /// </summary>
+        public long[] Times { get; private set; }
+
+        /// <summary>
         /// Raw coordinates.
         /// </summary>
         public double[] RawXs { get; private set; }
-        
+
         /// <summary>
         /// Raw coordinates.
         /// </summary>
@@ -109,6 +114,7 @@ namespace Kinovea.ScreenManager
 
             Length = samples;
 
+            Times = new long[samples];
             RawXs = new double[samples];
             RawYs = new double[samples];
 

@@ -197,9 +197,12 @@ namespace Kinovea.ScreenManager
                 // Initialize menu each time to get translated texts.
                 ReinitializeMenu();
                 contextMenu.Add(mnuMeasurement);
-                contextMenu.Add(mnuAnalysis);
                 return contextMenu;
             }
+        }
+        public TrajectoryKinematics TrajectoryKinematics
+        {
+            get { return trajectoryKinematics; }
         }
         #endregion
 
@@ -253,8 +256,6 @@ namespace Kinovea.ScreenManager
         // Context menu
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
         private List<ToolStripMenuItem> mnuMeasurementOptions = new List<ToolStripMenuItem>();
-        private ToolStripMenuItem mnuAnalysis = new ToolStripMenuItem();
-        
         
         // Memorization poul
         private TrackView memoTrackView;
@@ -288,14 +289,6 @@ namespace Kinovea.ScreenManager
             }
             
             ReinitializeMenu();
-
-            mnuAnalysis.Click += (s, e) =>
-            {
-                // instanciate form.
-                FormTimeseries fts = new FormTimeseries(trajectoryKinematics, parentMetadata.CalibrationHelper);
-                FormsHelper.MakeTopmost(fts);
-                fts.Show();
-            };
         }
 
         public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
@@ -1423,10 +1416,6 @@ namespace Kinovea.ScreenManager
         private void ReinitializeMenu()
         {
             InitializeMenuMeasurement();
-
-            mnuAnalysis.MergeIndex = 2;
-            mnuAnalysis.Image = Properties.Resources.function;
-            mnuAnalysis.Text = "Data analysis";
         }
         private void InitializeMenuMeasurement()
         {

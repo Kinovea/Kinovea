@@ -22,16 +22,14 @@ namespace Kinovea.ScreenManager
         private List<TimedPoint> points = new List<TimedPoint>();
         private Metadata metadata;
         private RectangleAnnotation rectangleAnnotation;
-        private double memoXMin;
-        private double memoXMax;
-        private double memoYMin;
-        private double memoYMax;
+        private PlotHelper plotHelper;
 
         public FormPointsAnalysis(Metadata metadata)
         {
             this.metadata = metadata;
 
             InitializeComponent();
+            plotHelper = new PlotHelper(plotScatter);
             Localize();
 
             foreach (Keyframe kf in metadata.Keyframes)
@@ -180,29 +178,12 @@ namespace Kinovea.ScreenManager
 
         private void btnExportGraph_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = "Export graph";
-            saveFileDialog.Filter = "PNG (*.png)|*.png";
-            saveFileDialog.FilterIndex = 1;
-            saveFileDialog.RestoreDirectory = true;
-
-            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
-                return;
-
-            BackupView();
-            PngExporter.Export(plotScatter.Model, saveFileDialog.FileName, (int)nudWidth.Value, (int)nudHeight.Value, Brushes.White);
-            RestoreView();
-            
-            plotScatter.InvalidatePlot(false);
+            plotHelper.ExportGraph((int)nudWidth.Value, (int)nudHeight.Value);
         }
 
         private void btnImageCopy_Click(object sender, EventArgs e)
         {
-            BackupView();
-            Bitmap bmp = PngExporter.ExportToBitmap(plotScatter.Model, (int)nudWidth.Value, (int)nudHeight.Value, Brushes.White);
-            Clipboard.SetImage(bmp);
-            bmp.Dispose();
-            RestoreView();
+            plotHelper.CopyGraph((int)nudWidth.Value, (int)nudHeight.Value);
         }
 
         private void btnExportData_Click(object sender, EventArgs e)
@@ -246,21 +227,6 @@ namespace Kinovea.ScreenManager
 
             string text = b.ToString();
             Clipboard.SetText(text);
-        }
-
-        private void BackupView()
-        {
-            memoXMin = plotScatter.Model.Axes[0].ActualMinimum;
-            memoXMax = plotScatter.Model.Axes[0].ActualMaximum;
-            memoYMin = plotScatter.Model.Axes[1].ActualMinimum;
-            memoYMax = plotScatter.Model.Axes[1].ActualMaximum;
-        }
-
-        private void RestoreView()
-        {
-            plotScatter.Model.Axes[0].Zoom(memoXMin, memoXMax);
-            plotScatter.Model.Axes[1].Zoom(memoYMin, memoYMax);
-            plotScatter.InvalidatePlot(false);
         }
 
         private void cbCalibrationPlane_CheckedChanged(object sender, EventArgs e)

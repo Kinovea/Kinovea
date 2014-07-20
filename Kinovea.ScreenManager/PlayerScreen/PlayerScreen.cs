@@ -604,6 +604,13 @@ namespace Kinovea.ScreenManager
                 fpa.ShowDialog();
                 fpa.Dispose();
             }
+            else if (drawing is DrawingTrack)
+            {
+                FormTrackAnalysis fta = new FormTrackAnalysis(frameServer.Metadata, drawing as DrawingTrack);
+                FormsHelper.Locate(fta);
+                fta.ShowDialog();
+                fta.Dispose();
+            }
         }
         #endregion
 
