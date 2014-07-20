@@ -29,12 +29,10 @@ namespace Kinovea.ScreenManager
 {
     public class KinematicsHelper
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public TrajectoryKinematics AnalyzeTrajectory(List<TimedPoint> samples, CalibrationHelper calibrationHelper)
         {
-            // TODO:
-            // Have a List<long> of timestamps parallel to the list of coordinates.
-            // when computing time deltas, use calibrationHelper.GetTime(t1, t2).
-
             TrajectoryKinematics kinematics = new TrajectoryKinematics();
             
             if (samples.Count == 0)
@@ -61,15 +59,16 @@ namespace Kinovea.ScreenManager
 
             try
             {
-                // Angular kinematics are based on the best fit circle.
+                // Angular kinematics based on the best fit circle.
                 ComputeRotationCircle(kinematics, calibrationHelper);
                 ComputeDisplacementAngle(kinematics, calibrationHelper);
                 ComputeAngularVelocities(kinematics, calibrationHelper);
                 ComputeAngularAccelerations(kinematics, calibrationHelper);
             }
-            catch(Exception)
+            catch(Exception e)
             {
-                // log error.
+                log.ErrorFormat("Error while computing angular kinematics from best fit circle on trajectory.");
+                log.ErrorFormat(e.ToString());
             }
             
             return kinematics;
@@ -82,6 +81,7 @@ namespace Kinovea.ScreenManager
                 PointF point = calibrationHelper.GetPoint(input[i].Point);
                 kinematics.RawXs[i] = point.X;
                 kinematics.RawYs[i] = point.Y;
+                kinematics.Times[i] = input[i].T;
             }
         }
 

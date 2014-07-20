@@ -330,6 +330,13 @@
     <Compile Include="Plotting\FormTimeseries.Designer.cs">
       <DependentUpon>FormTimeseries.cs</DependentUpon>
     </Compile>
+    <Compile Include="Plotting\FormTrackAnalysis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Plotting\FormTrackAnalysis.Designer.cs">
+      <DependentUpon>FormTrackAnalysis.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Plotting\PlotHelper.cs" />
     <Compile Include="Properties\Player.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -809,6 +816,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Plotting\FormTimeseries.resx">
       <DependentUpon>FormTimeseries.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Plotting\FormTrackAnalysis.resx">
+      <DependentUpon>FormTrackAnalysis.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Player.resx">
       <Generator>ResXFileCodeGenerator</Generator>
