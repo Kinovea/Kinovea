@@ -2725,18 +2725,20 @@ namespace Kinovea.ScreenManager
                 }
                 else if(hitDrawing is DrawingTrack)
                 {
+                    DrawingTrack track = (DrawingTrack)hitDrawing;
                     popMenuTrack.Items.Clear();
                     popMenuTrack.Items.Add(mnuConfigureTrajectory);
-                    popMenuTrack.Items.Add(mnuDataAnalysis);
+                    
+                    if (track.Status == TrackStatus.Interactive)
+                        popMenuTrack.Items.Add(mnuDataAnalysis);
                     
                     bool customMenus = AddDrawingCustomMenus(hitDrawing, popMenuTrack.Items);
                     if (customMenus)
                         popMenuTrack.Items.Add(new ToolStripSeparator());
                     
-                    
                     popMenuTrack.Items.AddRange(new ToolStripItem[] { mnuStopTracking, mnuRestartTracking, new ToolStripSeparator(), mnuDeleteEndOfTrajectory, mnuDeleteTrajectory });
 
-                    if (((DrawingTrack)hitDrawing).Status == TrackStatus.Edit)
+                    if (track.Status == TrackStatus.Edit)
                     {
                         mnuStopTracking.Visible = true;
                         mnuRestartTracking.Visible = false;
