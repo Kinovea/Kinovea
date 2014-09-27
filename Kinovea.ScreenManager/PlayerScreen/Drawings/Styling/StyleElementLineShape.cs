@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2011.
+Copyright © Joan Charmant 2014.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -29,53 +29,53 @@ using Kinovea.ScreenManager.Languages;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Style element to represent track line shape.
+    /// Style element to represent line shape.
     /// Editor: owner drawn combo box.
     /// </summary>
-    public class StyleElementTrackShape : AbstractStyleElement
+    public class StyleElementLineShape : AbstractStyleElement
     {
         #region Properties
-        public static readonly TrackShape[] Options = { TrackShape.Solid, TrackShape.Dash, TrackShape.SolidSteps, TrackShape.DashSteps };
+        public static readonly LineShape[] Options = { LineShape.Solid, LineShape.Dash, LineShape.Squiggle };
         public override object Value
         {
-            get { return trackShape; }
-            set 
-            { 
-                trackShape = (value is TrackShape) ? (TrackShape)value : TrackShape.Solid;
+            get { return lineShape; }
+            set
+            {
+                lineShape = (value is LineShape) ? (LineShape)value : LineShape.Solid;
                 RaiseValueChanged();
             }
         }
         public override Bitmap Icon
         {
-            get { return Properties.Drawings.trackshape;}
+            get { return Properties.Drawings.trackshape; }
         }
         public override string DisplayName
         {
-            get { return ScreenManagerLang.Generic_TrackShapePicker;}
+            get { return ScreenManagerLang.Generic_TrackShapePicker; }
         }
         public override string XmlName
         {
-            get { return "TrackShape";}
+            get { return "LineShape"; }
         }
         #endregion
-        
+
         #region Members
-        private TrackShape trackShape;
+        private LineShape lineShape;
         private static readonly int lineWidth = 3;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-        
+
         #region Constructor
-        public StyleElementTrackShape(TrackShape givenDefault)
+        public StyleElementLineShape(LineShape givenDefault)
         {
-            trackShape = (Array.IndexOf(Options, givenDefault) >= 0) ? givenDefault : TrackShape.Solid;
+            lineShape = (Array.IndexOf(Options, givenDefault) >= 0) ? givenDefault : LineShape.Solid;
         }
-        public StyleElementTrackShape(XmlReader xmlReader)
+        public StyleElementLineShape(XmlReader xmlReader)
         {
             ReadXML(xmlReader);
         }
         #endregion
-        
+
         #region Public Methods
         public override Control GetEditor()
         {
@@ -83,16 +83,17 @@ namespace Kinovea.ScreenManager
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
             editor.ItemHeight = 15;
             editor.DrawMode = DrawMode.OwnerDrawFixed;
-            for(int i=0;i<Options.Length;i++) 
+            for (int i = 0; i < Options.Length; i++) 
                 editor.Items.Add(new object());
-            editor.SelectedIndex = Array.IndexOf(Options, trackShape);
+            
+            editor.SelectedIndex = Array.IndexOf(Options, lineShape);
             editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             return editor;
         }
         public override AbstractStyleElement Clone()
         {
-            AbstractStyleElement clone = new StyleElementTrackShape(trackShape);
+            AbstractStyleElement clone = new StyleElementLineShape(lineShape);
             clone.Bind(this);
             return clone;
         }
@@ -100,64 +101,63 @@ namespace Kinovea.ScreenManager
         {
             xmlReader.ReadStartElement();
             string s = xmlReader.ReadElementContentAsString("Value", "");
-            
-            TrackShape value = TrackShape.Solid;
+
+            LineShape value = LineShape.Solid;
             try
             {
-                TypeConverter trackShapeConverter = TypeDescriptor.GetConverter(typeof(TrackShape));
-                value = (TrackShape)trackShapeConverter.ConvertFromString(s);
+                TypeConverter trackShapeConverter = TypeDescriptor.GetConverter(typeof(LineShape));
+                value = (LineShape)trackShapeConverter.ConvertFromString(s);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 log.ErrorFormat("An error happened while parsing XML for Track shape. {0}", s);
             }
-            
-            // Restrict to the actual list of "athorized" values.
-            trackShape = (Array.IndexOf(Options, value) >= 0) ? value : TrackShape.Solid;
-            
+
+            // Restrict to the actual list of "authorized" values.
+            lineShape = (Array.IndexOf(Options, value) >= 0) ? value : LineShape.Solid;
+
             xmlReader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter xmlWriter)
         {
-            TypeConverter converter = TypeDescriptor.GetConverter(trackShape);
-            string s = converter.ConvertToString(trackShape);
+            TypeConverter converter = TypeDescriptor.GetConverter(lineShape);
+            string s = converter.ConvertToString(lineShape);
             xmlWriter.WriteElementString("Value", s);
         }
         #endregion
-        
+
         #region Private Methods
         private void editor_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index < 0 || e.Index >= Options.Length)
                 return;
-            
+
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                
-            Pen p = new Pen(Color.Black, lineWidth);
-            p.DashStyle = Options[e.Index].DashStyle;
-                
             int top = e.Bounds.Height / 2;
-                
-            e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
-                
-            if(Options[e.Index].ShowSteps)
+
+            Pen p = new Pen(Color.Black, lineWidth);
+            switch (Options[e.Index])
             {
-                Pen stepPen = new Pen(Color.Black, 2);
-                int margin = (int)(lineWidth * 1.5);
-                int diameter = margin *2;
-                int left = e.Bounds.Width / 2;
-                e.Graphics.DrawEllipse(stepPen, e.Bounds.Left + left - margin, e.Bounds.Top + top - margin, diameter, diameter);
-                stepPen.Dispose();
+                case LineShape.Solid:
+                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
+                    break;
+                case LineShape.Dash:
+                    p.DashStyle = DashStyle.Dash;
+                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
+                    break;
+                case LineShape.Squiggle:
+                    e.Graphics.DrawSquigglyLine(p, e.Bounds.Left - 20, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width + 20, e.Bounds.Top + top);
+                    break;
             }
-                
+            
             p.Dispose();
         }
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
         {
             int index = ((ComboBox)sender).SelectedIndex;
-            if( index >= 0 && index < Options.Length)
+            if (index >= 0 && index < Options.Length)
             {
-                trackShape = Options[index];
+                lineShape = Options[index];
                 RaiseValueChanged();
             }
         }

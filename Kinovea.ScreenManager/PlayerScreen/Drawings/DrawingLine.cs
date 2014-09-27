@@ -165,8 +165,6 @@ namespace Kinovea.ScreenManager
             if(opacityFactor <= 0)
                 return;
 
-            
-
             Point start = transformer.Transform(points["a"]);
             Point end = transformer.Transform(points["b"]);
             
@@ -177,13 +175,42 @@ namespace Kinovea.ScreenManager
                     List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
                     List<Point> transformedCurve = transformer.Transform(curve);
 
-                    canvas.DrawCurve(penEdges, transformedCurve.ToArray());
+                    if (styleHelper.LineShape == LineShape.Squiggle)
+                    {
+                        canvas.DrawSquigglyLine(penEdges, start, end);
+                    }
+                    else if (styleHelper.LineShape == LineShape.Dash)
+                    {
+                        DashStyle oldDashStyle = penEdges.DashStyle;
+                        penEdges.DashStyle = DashStyle.Dash;
+                        canvas.DrawCurve(penEdges, transformedCurve.ToArray());
+                        penEdges.DashStyle = oldDashStyle;
+                    }
+                    else
+                    {
+                        canvas.DrawCurve(penEdges, transformedCurve.ToArray());
+                    }
 
                     labelMeasure.SetAttach(curve[curve.Count / 2], true);
                 }
                 else
                 {
-                    canvas.DrawLine(penEdges, start, end);
+                    if (styleHelper.LineShape == LineShape.Squiggle)
+                    {
+                        canvas.DrawSquigglyLine(penEdges, start, end);
+                    }
+                    else if (styleHelper.LineShape == LineShape.Dash)
+                    {
+                        DashStyle oldDashStyle = penEdges.DashStyle;
+                        penEdges.DashStyle = DashStyle.Dash;
+                        canvas.DrawLine(penEdges, start, end);
+                        penEdges.DashStyle = oldDashStyle;
+                    }
+                    else
+                    {
+                        canvas.DrawLine(penEdges, start, end);
+                    }
+
                     labelMeasure.SetAttach(GetMiddlePoint(), true);
                 }
                 
@@ -430,6 +457,7 @@ namespace Kinovea.ScreenManager
         {
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "line size");
+            style.Bind(styleHelper, "LineShape", "line shape");
             style.Bind(styleHelper, "LineEnding", "arrows");
         }
         private bool IsPointInObject(Point point, DistortionHelper distorter, IImageToViewportTransformer transformer)

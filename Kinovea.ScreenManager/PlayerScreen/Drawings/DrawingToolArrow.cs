@@ -77,6 +77,7 @@ namespace Kinovea.ScreenManager
         {
             defaultStylePreset.Elements.Add("color", new StyleElementColor(Color.LightGreen));
             defaultStylePreset.Elements.Add("line size", new StyleElementLineSize(8));
+            defaultStylePreset.Elements.Add("line shape", new StyleElementLineShape(LineShape.Solid));
             defaultStylePreset.Elements.Add("arrows", new StyleElementLineEnding(LineEnding.EndArrow));
             stylePreset = defaultStylePreset.Clone();
         }
