@@ -62,7 +62,107 @@ namespace Kinovea.ScreenManager
             btnDataCopy.Text = "Copy to Clipboard";
             btnExportData.Text = "Save to file";
 
-            //cmbDataSource.Items.Add(new DataComponent("xs", "Horizontal position"));
+            lblCutoffFrequencies.Text = "Selected cutoff frequencies:";
+
+            if (kinematics.Length < 10)
+            {
+                tabControl.TabPages.Remove(pageAbout);
+            }
+            else
+            {
+                LocalizeInfo();
+                CreateDurbinWatsonPlot();
+            }
+        }
+
+        private void LocalizeInfo()
+        {
+            Font fontHeader = new Font("Microsoft Sans Serif", 9, FontStyle.Bold);
+            Font fontText = new Font("Microsoft Sans Serif", 8.25f, FontStyle.Regular);
+
+            rtbInfo1.BackColor = Color.White;
+            rtbInfo1.SelectionFont = fontHeader;
+            rtbInfo1.AppendText("Filtering\n");
+
+            rtbInfo1.SelectionFont = fontText;
+            StringBuilder b = new StringBuilder();
+            b.AppendLine("The digitized coordinates are passed through a low pass filter to remove noise. The filter is a Butterworth, fourth-order, zero-lag, low-pass filter. Two second-order passes (one forward, one backward) are used to reset the phase shift (Winter, 2009).");
+            b.AppendLine("To initialize the filter the trajectory is extrapolated for 10 data points each side using reflected values around the end points. The extrapolated points are then removed from the filtered results (Smith, 1989).");
+            rtbInfo1.AppendText(b.ToString());
+    
+            rtbInfo1.SelectionFont = fontHeader;
+            rtbInfo1.AppendText("\nCutoff frequency\n");
+
+            rtbInfo1.SelectionFont = fontText;
+            b = new StringBuilder();
+            b.AppendLine("The filter is tested on the data at various cutoff frequencies between 0.5Hz and the Nyquist frequency.");
+            b.AppendLine("The best cutoff frequency is computed by estimating the autocorrelation of residuals and finding the frequency yielding the residuals that are the least autocorrelated. The filtered data set corresponding to this cutoff frequency is kept as the final result (Challis, 1999).");
+            b.AppendLine("The autocorrelation of residuals is estimated using the Durbin-Watson statistic.");
+            rtbInfo1.AppendText(b.ToString());
+
+            rtbInfo2.BackColor = Color.White;
+            rtbInfo2.SelectionFont = fontHeader;
+            rtbInfo2.AppendText("\nReferences\n");
+            rtbInfo2.SelectionFont = fontText;
+            b = new StringBuilder();
+            b.AppendLine("1. Smith G. (1989). Padding point extrapolation techniques for the butterworth digital filter. J. Biomech. Vol. 22, No. s/9, pp. 967-971.");
+            b.AppendLine("2. Challis J. (1999). A procedure for the automatic determination of filter cutoff frequency for the processing of biomechanical data., Journal of Applied Biomechanics, Volume 15, Issue 3.");
+            b.AppendLine("3. Winter, D. A. (2009). Biomechanics and motor control of human movements (4th ed.). Hoboken, New Jersey: John Wiley & Sons, Inc.");
+            rtbInfo2.AppendText(b.ToString());
+        }
+
+        private void CreateDurbinWatsonPlot()
+        {
+            if (kinematics.Xs == null || kinematics.Ys == null)
+            {
+                plotDurbinWatson.Visible = false;
+                return;
+            }
+
+            PlotModel model = new PlotModel();
+            model.TitleFontSize = 12;
+            model.Title = "Residuals autocorrelation";
+
+            LinearAxis xAxis = new LinearAxis();
+            xAxis.Position = AxisPosition.Bottom;
+            xAxis.MajorGridlineStyle = LineStyle.Solid;
+            xAxis.MinorGridlineStyle = LineStyle.Dot;
+            xAxis.Title = "Cutoff frequency (Hz)";
+            xAxis.TitleFontSize = 10;
+            model.Axes.Add(xAxis);
+
+            LinearAxis yAxis = new LinearAxis();
+            yAxis.Position = AxisPosition.Left;
+            yAxis.MajorGridlineStyle = LineStyle.Solid;
+            yAxis.MinorGridlineStyle = LineStyle.Dot;
+            yAxis.Title = "Autocorrelation (norm.)";
+            yAxis.TitleFontSize = 10; 
+            model.Axes.Add(yAxis);
+
+            LineSeries xseries = new LineSeries();
+            xseries.Color = OxyColors.Green;
+            xseries.MarkerType = MarkerType.None;
+            xseries.Smooth = true;
+
+
+            LineSeries yseries = new LineSeries();
+            yseries.Color = OxyColors.Tomato;
+            yseries.MarkerType = MarkerType.None;
+            yseries.Smooth = true;
+            
+            foreach (FilteringResult r in kinematics.FilterResultXs)
+                xseries.Points.Add(new DataPoint(r.CutoffFrequency, r.DurbinWatson));
+
+            foreach (FilteringResult r in kinematics.FilterResultYs)
+                yseries.Points.Add(new DataPoint(r.CutoffFrequency, r.DurbinWatson));
+
+            model.Series.Add(xseries);
+            model.Series.Add(yseries);
+            plotDurbinWatson.Model = model;
+            plotDurbinWatson.BackColor = Color.White;
+
+            lblCutoffX.Text = string.Format("X: {0:0.000} Hz", kinematics.FilterResultXs[kinematics.XCutoffIndex].CutoffFrequency);
+            lblCutoffY.Text = string.Format("Y: {0:0.000} Hz", kinematics.FilterResultYs[kinematics.YCutoffIndex].CutoffFrequency);
         }
 
         private void CreatePlots()
@@ -174,8 +274,6 @@ namespace Kinovea.ScreenManager
         {
             plotHelper.CopyGraph((int)nudWidth.Value, (int)nudHeight.Value);
         }
-
-        
 
         private void cmbDataSource_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -51,6 +51,13 @@
             this.gbSource = new System.Windows.Forms.GroupBox();
             this.cmbDataSource = new System.Windows.Forms.ComboBox();
             this.lblData = new System.Windows.Forms.Label();
+            this.pageAbout = new System.Windows.Forms.TabPage();
+            this.rtbInfo1 = new System.Windows.Forms.RichTextBox();
+            this.rtbInfo2 = new System.Windows.Forms.RichTextBox();
+            this.plotDurbinWatson = new OxyPlot.WindowsForms.PlotView();
+            this.lblCutoffFrequencies = new System.Windows.Forms.Label();
+            this.lblCutoffY = new System.Windows.Forms.Label();
+            this.lblCutoffX = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.pagePlot.SuspendLayout();
             this.gbLabels.SuspendLayout();
@@ -59,6 +66,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
             this.gbSource.SuspendLayout();
+            this.pageAbout.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -67,10 +75,11 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl.Controls.Add(this.pagePlot);
+            this.tabControl.Controls.Add(this.pageAbout);
             this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(768, 547);
+            this.tabControl.Size = new System.Drawing.Size(768, 538);
             this.tabControl.TabIndex = 2;
             // 
             // pagePlot
@@ -109,7 +118,7 @@
             this.gbLabels.Controls.Add(this.lblYAxis);
             this.gbLabels.Controls.Add(this.lblXAxis);
             this.gbLabels.Controls.Add(this.tbTitle);
-            this.gbLabels.Location = new System.Drawing.Point(786, 123);
+            this.gbLabels.Location = new System.Drawing.Point(786, 118);
             this.gbLabels.Name = "gbLabels";
             this.gbLabels.Size = new System.Drawing.Size(212, 138);
             this.gbLabels.TabIndex = 7;
@@ -176,7 +185,7 @@
             this.gbExportData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.gbExportData.Controls.Add(this.btnDataCopy);
             this.gbExportData.Controls.Add(this.btnExportData);
-            this.gbExportData.Location = new System.Drawing.Point(786, 437);
+            this.gbExportData.Location = new System.Drawing.Point(786, 428);
             this.gbExportData.Name = "gbExportData";
             this.gbExportData.Size = new System.Drawing.Size(212, 118);
             this.gbExportData.TabIndex = 6;
@@ -212,7 +221,7 @@
             this.gbExportGraph.Controls.Add(this.label1);
             this.gbExportGraph.Controls.Add(this.nudHeight);
             this.gbExportGraph.Controls.Add(this.nudWidth);
-            this.gbExportGraph.Location = new System.Drawing.Point(786, 276);
+            this.gbExportGraph.Location = new System.Drawing.Point(786, 267);
             this.gbExportGraph.Name = "gbExportGraph";
             this.gbExportGraph.Size = new System.Drawing.Size(212, 155);
             this.gbExportGraph.TabIndex = 5;
@@ -331,18 +340,103 @@
             this.lblData.TabIndex = 5;
             this.lblData.Text = "Data :";
             // 
+            // pageAbout
+            // 
+            this.pageAbout.Controls.Add(this.rtbInfo1);
+            this.pageAbout.Controls.Add(this.lblCutoffX);
+            this.pageAbout.Controls.Add(this.lblCutoffY);
+            this.pageAbout.Controls.Add(this.lblCutoffFrequencies);
+            this.pageAbout.Controls.Add(this.plotDurbinWatson);
+            this.pageAbout.Controls.Add(this.rtbInfo2);
+            this.pageAbout.Location = new System.Drawing.Point(4, 22);
+            this.pageAbout.Name = "pageAbout";
+            this.pageAbout.Padding = new System.Windows.Forms.Padding(3);
+            this.pageAbout.Size = new System.Drawing.Size(760, 512);
+            this.pageAbout.TabIndex = 1;
+            this.pageAbout.Text = "About";
+            this.pageAbout.UseVisualStyleBackColor = true;
+            // 
+            // rtbInfo1
+            // 
+            this.rtbInfo1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbInfo1.BackColor = System.Drawing.Color.Silver;
+            this.rtbInfo1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbInfo1.Location = new System.Drawing.Point(16, 7);
+            this.rtbInfo1.Name = "rtbInfo1";
+            this.rtbInfo1.Size = new System.Drawing.Size(724, 163);
+            this.rtbInfo1.TabIndex = 0;
+            this.rtbInfo1.Text = "";
+            // 
+            // rtbInfo2
+            // 
+            this.rtbInfo2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbInfo2.BackColor = System.Drawing.Color.Silver;
+            this.rtbInfo2.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbInfo2.Location = new System.Drawing.Point(16, 409);
+            this.rtbInfo2.Name = "rtbInfo2";
+            this.rtbInfo2.Size = new System.Drawing.Size(724, 95);
+            this.rtbInfo2.TabIndex = 1;
+            this.rtbInfo2.Text = "";
+            // 
+            // plotDurbinWatson
+            // 
+            this.plotDurbinWatson.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotDurbinWatson.Location = new System.Drawing.Point(16, 176);
+            this.plotDurbinWatson.Name = "plotDurbinWatson";
+            this.plotDurbinWatson.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotDurbinWatson.Size = new System.Drawing.Size(514, 227);
+            this.plotDurbinWatson.TabIndex = 2;
+            this.plotDurbinWatson.Text = "plotView1";
+            this.plotDurbinWatson.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotDurbinWatson.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotDurbinWatson.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // lblCutoffFrequencies
+            // 
+            this.lblCutoffFrequencies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCutoffFrequencies.AutoSize = true;
+            this.lblCutoffFrequencies.Location = new System.Drawing.Point(536, 233);
+            this.lblCutoffFrequencies.Name = "lblCutoffFrequencies";
+            this.lblCutoffFrequencies.Size = new System.Drawing.Size(140, 13);
+            this.lblCutoffFrequencies.TabIndex = 3;
+            this.lblCutoffFrequencies.Text = "Selected cutoff frequencies:";
+            // 
+            // lblCutoffY
+            // 
+            this.lblCutoffY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCutoffY.AutoSize = true;
+            this.lblCutoffY.Location = new System.Drawing.Point(542, 279);
+            this.lblCutoffY.Name = "lblCutoffY";
+            this.lblCutoffY.Size = new System.Drawing.Size(42, 13);
+            this.lblCutoffY.TabIndex = 4;
+            this.lblCutoffY.Text = "Y: 0 Hz";
+            // 
+            // lblCutoffX
+            // 
+            this.lblCutoffX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCutoffX.AutoSize = true;
+            this.lblCutoffX.Location = new System.Drawing.Point(542, 258);
+            this.lblCutoffX.Name = "lblCutoffX";
+            this.lblCutoffX.Size = new System.Drawing.Size(42, 13);
+            this.lblCutoffX.TabIndex = 5;
+            this.lblCutoffX.Text = "X: 0 Hz";
+            // 
             // FormTrackAnalysis
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1010, 571);
+            this.ClientSize = new System.Drawing.Size(1010, 562);
             this.Controls.Add(this.gbSource);
             this.Controls.Add(this.gbLabels);
             this.Controls.Add(this.gbExportData);
             this.Controls.Add(this.gbExportGraph);
             this.Controls.Add(this.tabControl);
-            this.MinimumSize = new System.Drawing.Size(720, 536);
+            this.MinimumSize = new System.Drawing.Size(720, 600);
             this.Name = "FormTrackAnalysis";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -358,6 +452,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).EndInit();
             this.gbSource.ResumeLayout(false);
             this.gbSource.PerformLayout();
+            this.pageAbout.ResumeLayout(false);
+            this.pageAbout.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -387,5 +483,12 @@
         private System.Windows.Forms.GroupBox gbSource;
         private System.Windows.Forms.ComboBox cmbDataSource;
         private System.Windows.Forms.Label lblData;
+        private System.Windows.Forms.TabPage pageAbout;
+        private System.Windows.Forms.RichTextBox rtbInfo1;
+        private System.Windows.Forms.RichTextBox rtbInfo2;
+        private OxyPlot.WindowsForms.PlotView plotDurbinWatson;
+        private System.Windows.Forms.Label lblCutoffX;
+        private System.Windows.Forms.Label lblCutoffY;
+        private System.Windows.Forms.Label lblCutoffFrequencies;
     }
 }
