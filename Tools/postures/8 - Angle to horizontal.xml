@@ -17,10 +17,10 @@
     </Handle>
     <Handle type="Point" reference="1" trackable="true">
       <Impact type="VerticalAlign">
-        <HorizontalAlign point="0"/>
+        <VerticalAlign point="0"/>
       </Impact>
       <Impact type="VerticalAlign">
-        <HorizontalAlign point="2"/>
+        <VerticalAlign point="2"/>
       </Impact>
     </Handle>
     <Handle type="Point" reference="2">
