@@ -270,6 +270,11 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolDistortionGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\MultiDrawingItemEventArgs.cs" />
+    <Compile Include="PlayerScreen\Drawings\GraphicsExtensions.cs" />
+    <Compile Include="PlayerScreen\Drawings\Styling\LineEnding.cs" />
+    <Compile Include="PlayerScreen\Drawings\Styling\LineShape.cs" />
+    <Compile Include="PlayerScreen\Drawings\Styling\StyleElementLineShape.cs" />
+    <Compile Include="PlayerScreen\Drawings\Styling\TrackShape.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="PlayerScreen\Geometry\ClipResult.cs" />
     <Compile Include="PlayerScreen\Geometry\LiangBarsky.cs" />

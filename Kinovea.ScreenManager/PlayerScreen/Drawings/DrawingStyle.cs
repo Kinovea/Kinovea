@@ -86,6 +86,9 @@ namespace Kinovea.ScreenManager
                     case "LineSize":
                         styleElement = new StyleElementLineSize(xmlReader);
                         break;
+                    case "LineShape":
+                        styleElement = new StyleElementLineShape(xmlReader);
+                        break;
                     case "Arrows":
                         styleElement = new StyleElementLineEnding(xmlReader);
                         break;
