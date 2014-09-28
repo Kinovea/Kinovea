@@ -473,14 +473,33 @@ namespace Kinovea.ScreenManager
         }
         private bool IsPointInObject(Point point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
-            using (GraphicsPath areaPath = new GraphicsPath())
-            {
-                if (curve)
-                    areaPath.AddCurve(points.Values.ToArray());
-                else
-                    areaPath.AddLines(points.Values.ToArray());
+            if (points.Count < 1)
+                return false;
 
-                return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
+            using (GraphicsPath path = new GraphicsPath())
+            {
+                if (points.Count == 1)
+                {
+                    path.AddRectangle(points["0"].Box(5));
+                }
+                else
+                {
+                    // If any two points are conflated it throws an exception.
+                    List<PointF> uniquePoints = new List<PointF>();
+                    for(int i = 0; i < points.Count; i++)
+                    {
+                        PointF p = points[i.ToString()];
+                        if (!uniquePoints.Contains(p))
+                            uniquePoints.Add(p);
+                    }
+
+                    if (curve)
+                        path.AddCurve(uniquePoints.ToArray());
+                    else
+                        path.AddLines(uniquePoints.ToArray());
+                }
+
+                return HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);
             }
         }
 
