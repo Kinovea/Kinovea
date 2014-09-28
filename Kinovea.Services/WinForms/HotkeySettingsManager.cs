@@ -163,6 +163,7 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.DeleteKeyframe, Keys.Control | Keys.Delete), 
                     hk(PlayerScreenCommands.DeleteDrawing, Keys.Delete), 
                     hk(PlayerScreenCommands.CopyImage, Keys.Control | Keys.Shift | Keys.C), 
+                    hk(PlayerScreenCommands.ValidateDrawing, Keys.Enter),
                     hk(PlayerScreenCommands.IncreaseSpeed1, Keys.Control | Keys.Up), 
                     hk(PlayerScreenCommands.IncreaseSpeedRoundTo10, Keys.Shift | Keys.Up), 
                     hk(PlayerScreenCommands.IncreaseSpeedRoundTo25, Keys.Up), 

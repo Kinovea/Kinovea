@@ -82,6 +82,7 @@ namespace Kinovea.Services
         DeleteKeyframe,
         DeleteDrawing,
         CopyImage,
+        ValidateDrawing,
 
         IncreaseSpeed1,
         IncreaseSpeedRoundTo10,
