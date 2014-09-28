@@ -71,6 +71,10 @@ namespace Kinovea.ScreenManager
         {
             get { return (DrawingToolLine)Tools["Line"]; }
         }
+        public static DrawingToolPolyline Polyline
+        {
+            get { return (DrawingToolPolyline)Tools["Polyline"]; }
+        }
         public static DrawingToolArrow Arrow
         {
             get { return (DrawingToolArrow)Tools["Arrow"]; }
@@ -221,6 +225,7 @@ namespace Kinovea.ScreenManager
             tools.Add("Circle", new DrawingToolCircle());
             tools.Add("CrossMark", new DrawingToolCrossMark());
             tools.Add("Line", new DrawingToolLine());
+            tools.Add("Polyline", new DrawingToolPolyline());
             tools.Add("Arrow", new DrawingToolArrow());
             tools.Add("Pencil", new DrawingToolPencil());
             tools.Add("GenericPosture", new DrawingToolGenericPosture());

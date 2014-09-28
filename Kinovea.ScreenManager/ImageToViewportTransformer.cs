@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
         {
             return point.Scale((float)scale).Translate(location.X, location.Y).ToPoint();
         }
-        public List<Point> Transform(List<PointF> points)
+        public List<Point> Transform(IEnumerable<PointF> points)
         {
             return points.Select(p => Transform(p)).ToList();
         }

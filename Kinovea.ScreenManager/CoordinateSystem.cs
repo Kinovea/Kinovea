@@ -245,7 +245,7 @@ namespace Kinovea.ScreenManager
 
             return new Point((int)stretchedX, (int)stretchedY);
         }
-        public List<Point> Transform(List<PointF> points)
+        public List<Point> Transform(IEnumerable<PointF> points)
         {
             List<Point> newPoints = new List<Point>();
             foreach(PointF p in points)

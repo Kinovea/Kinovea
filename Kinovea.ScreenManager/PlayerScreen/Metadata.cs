@@ -196,6 +196,17 @@ namespace Kinovea.ScreenManager
             get { return mirrored; }
             set { mirrored = value; }
         }
+        public bool DrawingInitializing
+        {
+            get
+            {
+                IInitializable initializable = hitDrawing as IInitializable;
+                if (initializable == null)
+                    return false;
+
+                return initializable.Initializing;
+            }
+        }
         
         // General infos
         public long AverageTimeStampsPerFrame
@@ -702,6 +713,39 @@ namespace Kinovea.ScreenManager
                 return;
 
             lastUsedTrackerParameters = track.TrackerParameters;
+        }
+        
+        public void InitializeCommit(VideoFrame videoFrame, Point point)
+        {
+            magnifier.InitializeCommit(point);
+
+            IInitializable initializable = hitDrawing as IInitializable;
+            if (initializable == null || !initializable.Initializing)
+                return;
+            
+            string key = initializable.InitializeCommit(point);
+
+            if (string.IsNullOrEmpty(key))
+                return;
+
+            ITrackable trackable = hitDrawing as ITrackable;
+            if (trackable != null)
+                trackabilityManager.AddPoint(trackable, videoFrame, key, point);
+        }
+        public void InitializeEnd(bool cancelCurrentPoint)
+        {
+            IInitializable initializable = hitDrawing as IInitializable;
+            if (initializable == null || !initializable.Initializing)
+                return;
+
+            string key = initializable.InitializeEnd(cancelCurrentPoint);
+
+            if (string.IsNullOrEmpty(key) || !cancelCurrentPoint)
+                return;
+            
+            ITrackable trackable = hitDrawing as ITrackable;
+            if (trackable != null)
+                trackabilityManager.RemovePoint(trackable, key);
         }
         #endregion
         

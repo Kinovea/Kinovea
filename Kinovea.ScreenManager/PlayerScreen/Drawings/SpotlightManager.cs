@@ -84,11 +84,16 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
+        public bool Initializing
+        {
+            get { return initializing; }
+        }
         #endregion
         
         #region Members
         private List<Spotlight> spotlights = new List<Spotlight>();
         private int selected = -1;
+        private bool initializing = true;
         private static readonly int defaultBackgroundAlpha = 150; // <-- opacity of the dim layer. Higher value => darker.
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -206,9 +211,18 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(PointF point, Keys modifiers)
+        public void InitializeMove(PointF point, Keys modifiers)
         {
             MoveHandle(point, -1, modifiers);
+        }
+        public string InitializeCommit(PointF point)
+        {
+            initializing = false;
+            return null;
+        }
+        public string InitializeEnd(bool cancelCurrentPoint)
+        {
+            return null;
         }
         #endregion
         

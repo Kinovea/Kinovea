@@ -105,6 +105,17 @@ namespace Kinovea.ScreenManager
             AfterToggleTracking();
             assigned = true;
         }
+
+        public void AddPoint(TrackingContext context, TrackerParameters parameters, string key, PointF value)
+        {
+            // Some drawings like polyline have a dynamic list of trackable points.
+            trackablePoints.Add(key, new TrackablePoint(context, parameters, value));
+        }
+
+        public void RemovePoint(string key)
+        {
+            trackablePoints.Remove(key);
+        }
   
         public void Track(TrackingContext context)
         {

@@ -77,6 +77,10 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
+        public bool Initializing
+        {
+            get { return initializing; }
+        }
         #endregion
 
         #region Members
@@ -84,6 +88,7 @@ namespace Kinovea.ScreenManager
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private InfosFading infosFading;
+        private bool initializing = true;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -223,9 +228,18 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(PointF point, Keys modifiers)
+        public void InitializeMove(PointF point, Keys modifiers)
         {
             AddPoint(point, modifiers);
+        }
+        public string InitializeCommit(PointF point)
+        {
+            initializing = false;
+            return null;
+        }
+        public string InitializeEnd(bool cancelCurrentPoint)
+        {
+            return null;
         }
         #endregion
         

@@ -867,7 +867,7 @@ namespace Kinovea.ScreenManager
             AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Label, ToolManager.AutoNumbers}, 0, drawingTool_Click);
             AddToolButton(ToolManager.Pencil, drawingTool_Click);
             AddToolButtonPosture();
-            AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, drawingTool_Click);
+            AddToolButtonWithMenu(new AbstractDrawingTool[] { ToolManager.Line, ToolManager.Polyline, ToolManager.Circle }, 0, drawingTool_Click);
             AddToolButton(ToolManager.Arrow, drawingTool_Click);
             AddToolButton(ToolManager.CrossMark, drawingTool_Click);
             AddToolButton(ToolManager.Angle, drawingTool_Click);
@@ -1366,6 +1366,7 @@ namespace Kinovea.ScreenManager
             SetCursor(m_PointerTool.GetCursor(0));
             DisableMagnifier();
             UnzoomDirectZoom(false);
+            m_FrameServer.Metadata.InitializeEnd(true);
             m_FrameServer.Metadata.StopAllTracking();
             CheckCustomDecodingSize(false);
         }
@@ -2573,10 +2574,14 @@ namespace Kinovea.ScreenManager
             {
                 CreateNewDrawing(m_FrameServer.Metadata.ChronoManager.Id);
             }
-            else
+            else 
             {
-                AddKeyframe();
-                CreateNewDrawing(m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex));
+                // Note: if the active drawing is at initialization stage, it will receive the point commit during mouse up.
+                if (!m_FrameServer.Metadata.DrawingInitializing)
+                {
+                    AddKeyframe();
+                    CreateNewDrawing(m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex));
+                }
             }
         }
         private void CreateNewDrawing(Guid managerId)
@@ -2788,7 +2793,31 @@ namespace Kinovea.ScreenManager
         private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
             popMenu.Items.Clear();
-            
+
+            if (!m_FrameServer.Metadata.DrawingInitializing)
+                PrepareDrawingContextMenuCapabilities(drawing, popMenu);
+
+            if (popMenu.Items.Count > 0)
+                popMenu.Items.Add(mnuSepDrawing);
+
+            bool hasExtraMenus = AddDrawingCustomMenus(drawing, popMenu.Items);
+
+            if (!m_FrameServer.Metadata.DrawingInitializing && drawing.InfosFading != null)
+            {
+                bool gotoVisible = (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition));
+                if (gotoVisible)
+                {
+                    popMenu.Items.Add(mnuGotoKeyframe);
+                    hasExtraMenus = true;
+                }
+            }
+
+            if (hasExtraMenus)
+                popMenu.Items.Add(mnuSepDrawing2);
+        }
+
+        private void PrepareDrawingContextMenuCapabilities(AbstractDrawing drawing, ContextMenuStrip popMenu)
+        {
             // Generic context menu from drawing capabilities.
             if((drawing.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
             {
@@ -2822,24 +2851,6 @@ namespace Kinovea.ScreenManager
             {
                 popMenu.Items.Add(mnuDataAnalysis);
             }
-            
-            if(popMenu.Items.Count > 0)
-                popMenu.Items.Add(mnuSepDrawing);
-            
-            bool hasExtraMenus = AddDrawingCustomMenus(drawing, popMenu.Items);
-            
-            if(drawing.InfosFading != null)
-            {
-                bool gotoVisible = (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition));
-                if(gotoVisible)
-                {
-                    popMenu.Items.Add(mnuGotoKeyframe);
-                    hasExtraMenus = true;
-                }
-            }
-            
-            if(hasExtraMenus)
-                popMenu.Items.Add(mnuSepDrawing2);
         }
         private bool AddDrawingCustomMenus(AbstractDrawing drawing, ToolStripItemCollection menuItems)
         {
@@ -2885,23 +2896,31 @@ namespace Kinovea.ScreenManager
                 if (!m_bIsCurrentlyPlaying)
                     DoInvalidate();
             }
+            else if (e.Button == MouseButtons.None && m_FrameServer.Metadata.DrawingInitializing)
+            {
+                IInitializable initializableDrawing = m_FrameServer.Metadata.HitDrawing as IInitializable;
+                if (initializableDrawing != null)
+                {
+                    initializableDrawing.InitializeMove(m_DescaledMouse, ModifierKeys);
+                    DoInvalidate();
+                }
+            }
             else if (e.Button == MouseButtons.Left)
             {
                 if (m_ActiveTool != m_PointerTool)
                 {
-                    // Tools that are not IInitializable should reset to Pointer tool after creation.
-                    
-                    if(m_ActiveTool == ToolManager.Spotlight)
+                    // Tools that are not IInitializable should reset to Pointer tool right after creation.
+
+                    if (m_ActiveTool == ToolManager.Spotlight)
                     {
                         IInitializable initializableDrawing = m_FrameServer.Metadata.SpotlightManager as IInitializable;
-                        initializableDrawing.ContinueSetup(m_DescaledMouse, ModifierKeys);
+                        initializableDrawing.InitializeMove(m_DescaledMouse, ModifierKeys);
                     }
                     else if (!m_bIsCurrentlyPlaying && m_iActiveKeyFrameIndex >= 0 && m_FrameServer.Metadata.HitDrawing != null)
                     {
-                        // Currently setting the second point of a Drawing.
                         IInitializable initializableDrawing = m_FrameServer.Metadata.HitDrawing as IInitializable;
-                        if(initializableDrawing != null)
-                            initializableDrawing.ContinueSetup(m_DescaledMouse, ModifierKeys);
+                        if (initializableDrawing != null)
+                            initializableDrawing.InitializeMove(m_DescaledMouse, ModifierKeys);
                     }
                 }
                 else
@@ -2911,7 +2930,7 @@ namespace Kinovea.ScreenManager
                     {
                         bMovingMagnifier = m_FrameServer.Metadata.Magnifier.Move(m_DescaledMouse.ToPoint());
                     }
-                    
+
                     if (!bMovingMagnifier && m_ActiveTool == m_PointerTool)
                     {
                         if (!m_bIsCurrentlyPlaying)
@@ -2919,27 +2938,27 @@ namespace Kinovea.ScreenManager
                             // Magnifier is not being moved or is invisible, try drawings through pointer tool.
                             // (including chronos, tracks and grids)
                             bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
-                            
+
                             if (!bMovingObject)
                             {
                                 // User is not moving anything: move the whole image.
                                 // This may not have any effect if we try to move outside the original size and not in "free move" mode.
-                                
+
                                 // Get mouse deltas (descaled=in image coords).
                                 double fDeltaX = (double)m_PointerTool.MouseDelta.X;
                                 double fDeltaY = (double)m_PointerTool.MouseDelta.Y;
-                                
-                                if(m_FrameServer.Metadata.Mirrored)
+
+                                if (m_FrameServer.Metadata.Mirrored)
                                 {
                                     fDeltaX = -fDeltaX;
                                 }
-                                
+
                                 m_FrameServer.CoordinateSystem.MoveZoomWindow(fDeltaX, fDeltaY);
                             }
                         }
                     }
                 }
-                
+
                 if (!m_bIsCurrentlyPlaying)
                 {
                     DoInvalidate();
@@ -2962,9 +2981,9 @@ namespace Kinovea.ScreenManager
                 m_FrameServer.Metadata.UpdateTrackPoint(m_FrameServer.CurrentImage);
                 ReportForSyncMerge();
             }
-            
-            m_FrameServer.Metadata.Magnifier.OnMouseUp(m_DescaledMouse.ToPoint());
-            
+
+            m_FrameServer.Metadata.InitializeCommit(m_FrameServer.VideoReader.Current, m_DescaledMouse.ToPoint());
+
             if (m_bTextEdit && m_ActiveTool != m_PointerTool && m_iActiveKeyFrameIndex >= 0)
                 m_bTextEdit = false;
 
@@ -2982,8 +3001,8 @@ namespace Kinovea.ScreenManager
                 if(d != null)
                         d.ResizeFinished();
             }
-            
-            if (m_FrameServer.Metadata.HitDrawing != null)
+
+            if (m_FrameServer.Metadata.HitDrawing != null && !m_FrameServer.Metadata.DrawingInitializing)
                 m_DeselectionTimer.Start();
             
             DoInvalidate();

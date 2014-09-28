@@ -36,7 +36,7 @@ namespace Kinovea.ScreenManager
         // Transform : from image coordinates to screen coordinates.
         Point Transform(Point point);
         Point Transform(PointF point);
-        List<Point> Transform(List<PointF> points);
+        List<Point> Transform(IEnumerable<PointF> points);
         int Transform(int distance);
         Size Transform(Size size);
         Size Transform(SizeF size);

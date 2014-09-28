@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
                 // Setting second point of a drawing.
                 IInitializable drawing = metadata.HitDrawing as IInitializable;
                 if(drawing != null)
-                    drawing.ContinueSetup(imagePoint.ToPoint(), modifiers);
+                    drawing.InitializeMove(imagePoint.ToPoint(), modifiers);
             }
             
             return handled;

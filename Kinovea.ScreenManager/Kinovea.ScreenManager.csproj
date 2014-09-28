@@ -267,7 +267,9 @@
     <Compile Include="PlayerScreen\Drawings\CoordinateSystem\TextAlignment.cs" />
     <Compile Include="PlayerScreen\Drawings\CoordinateSystem\TickMark.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingDistortionGrid.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingPolyline.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolDistortionGrid.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolPolyline.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\MultiDrawingItemEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\GraphicsExtensions.cs" />
@@ -1142,7 +1144,24 @@
   <ItemGroup>
     <None Include="Resources\quit.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\polyline.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\curve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tick_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cross_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plus_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\polyline2.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
