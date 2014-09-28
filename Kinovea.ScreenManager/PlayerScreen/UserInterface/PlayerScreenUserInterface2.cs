@@ -1263,6 +1263,9 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.CopyImage:
                     CopyImageToClipboard();
                     break;
+                case PlayerScreenCommands.ValidateDrawing:
+                    ValidateDrawing();
+                    break;
                 case PlayerScreenCommands.IncreaseSpeed1:
                     ChangeSpeed(1);
                     break;
@@ -1369,6 +1372,14 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.InitializeEnd(true);
             m_FrameServer.Metadata.StopAllTracking();
             CheckCustomDecodingSize(false);
+        }
+        private void ValidateDrawing()
+        {
+            if (m_FrameServer.Metadata.DrawingInitializing)
+            {
+                m_FrameServer.Metadata.InitializeEnd(true);
+                DoInvalidate();
+            }
         }
         private long TimestampToRealtime(long timestamp)
         {
@@ -1527,23 +1538,26 @@ namespace Kinovea.ScreenManager
             // This function is accessed from ScreenManager.
             // Eventually from a worker thread. (no SetAsActiveScreen here).
             //--------------------------------------------------------------
-            if (m_FrameServer.Loaded)
+            if (!m_FrameServer.Loaded)
+                return;
+
+            if (m_FrameServer.Metadata.DrawingInitializing)
+                return;
+
+            if (m_bIsCurrentlyPlaying)
             {
-                if (m_bIsCurrentlyPlaying)
-                {
-                    // Go into Pause mode.
-                    StopPlaying();
-                    OnPauseAsked();
-                    buttonPlay.Image = Player.flatplay;
-                    ActivateKeyframe(m_iCurrentPosition);
-                    ToastPause();
-                }
-                else
-                {
-                    // Go into Play mode
-                    buttonPlay.Image = Resources.flatpause3b;
-                    StartMultimediaTimer((int)GetPlaybackFrameInterval());
-                }
+                // Go into Pause mode.
+                StopPlaying();
+                OnPauseAsked();
+                buttonPlay.Image = Player.flatplay;
+                ActivateKeyframe(m_iCurrentPosition);
+                ToastPause();
+            }
+            else
+            {
+                // Go into Play mode
+                buttonPlay.Image = Resources.flatpause3b;
+                StartMultimediaTimer((int)GetPlaybackFrameInterval());
             }
         }
         public void Common_MouseWheel(object sender, MouseEventArgs e)
