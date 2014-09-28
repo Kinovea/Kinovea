@@ -619,23 +619,31 @@ namespace Kinovea.ScreenManager
         
         private void TruncateFilename()
         {
-            string text = Path.GetFileNameWithoutExtension(m_FileName);
-            using (Graphics g = lblFileName.CreateGraphics())
+            try
             {
-                bool fits = true;
-                float maxWidth = this.Width - paddingHorizontal;
-                while (g.MeasureString(text + "#", lblFileName.Font).Width >= maxWidth)
+                string text = Path.GetFileNameWithoutExtension(m_FileName);
+                using (Graphics g = lblFileName.CreateGraphics())
                 {
-                    text = text.Substring(0, text.Length - 1);
-                    fits = false;
-                    
-                    if (text.Length == 0)
-                        break;
-                    
-                }
+                    bool fits = true;
+                    float maxWidth = this.Width - paddingHorizontal;
+                    while (g.MeasureString(text + "#", lblFileName.Font).Width >= maxWidth)
+                    {
+                        text = text.Substring(0, text.Length - 1);
+                        fits = false;
 
-                lblFileName.Text = fits ? text : text + "…";
+                        if (text.Length == 0)
+                            break;
+
+                    }
+
+                    lblFileName.Text = fits ? text : text + "…";
+                }
             }
+            catch
+            {
+                // An exception is thrown here during closing of the application.
+            }
+            
         }
 
         public void Delete()

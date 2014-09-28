@@ -26,6 +26,15 @@ namespace Kinovea.ScreenManager
 
                 using (Pen pathPen = new Pen(Color.Black, lineSize + enlarger))
                 {
+                    bool conflated = false;
+                    if (path.PathPoints.Length > 1)
+                    {
+                        PointF first = path.PathPoints[0];
+                        conflated = path.PathPoints.Skip(1).All(p => p == first);
+                        if (conflated)
+                            path.AddRectangle(first.Box(5));
+                    }
+            
                     path.Widen(pathPen);
                 }
             }

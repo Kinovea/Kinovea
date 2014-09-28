@@ -88,6 +88,10 @@ namespace Kinovea.ScreenManager
                 return contextMenu; 
             }
         }
+        public bool Initializing
+        {
+            get { return initializing; }
+        }
         public CalibrationHelper CalibrationHelper { get; set; }
         public bool ShowMeasurableInfo { get; set; }
         #endregion
@@ -95,6 +99,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
+        private bool initializing = true;
         
         private AngleHelper angleHelper = new AngleHelper(false, 40, false, "");
         private DrawingStyle style;
@@ -330,9 +335,18 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(PointF point, Keys modifiers)
+        public void InitializeMove(PointF point, Keys modifiers)
         {
             MoveHandle(point, 3, modifiers);
+        }
+        public string InitializeCommit(PointF point)
+        {
+            initializing = false;
+            return null;
+        }
+        public string InitializeEnd(bool cancelCurrentPoint)
+        {
+            return null;
         }
         #endregion
         

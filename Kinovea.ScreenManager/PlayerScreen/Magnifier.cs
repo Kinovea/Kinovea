@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
             canvas.DrawImage(bitmap, transformer.Transform(insert), src, GraphicsUnit.Pixel);
             canvas.DrawRectangle(Pens.White, transformer.Transform(insert));
         }
-        public void OnMouseUp(Point location)
+        public void InitializeCommit(Point location)
         {
             if(Mode == MagnifierMode.Direct)
                 Mode = MagnifierMode.Indirect;

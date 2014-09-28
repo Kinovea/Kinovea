@@ -84,6 +84,27 @@ namespace Kinovea.ScreenManager
             if (trackers.ContainsKey(drawing.Id) && !trackers[drawing.Id].Assigned)
                 trackers[drawing.Id].Assign(drawing);
         }
+
+        public void AddPoint(ITrackable drawing, VideoFrame videoFrame, string key, PointF point)
+        {
+            if (!trackers.ContainsKey(drawing.Id))
+                return;
+
+            TrackingProfile profile = drawing.CustomTrackingProfile ?? trackingProfileManager.Current;
+            TrackerParameters parameters = new TrackerParameters(profile, imageSize);
+
+            TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
+
+            trackers[drawing.Id].AddPoint(context, parameters, key, point);
+        }
+
+        public void RemovePoint(ITrackable drawing, string key)
+        {
+            if (!trackers.ContainsKey(drawing.Id))
+                return;
+
+            trackers[drawing.Id].RemovePoint(key);
+        }
         
         public void CleanUnassigned()
         {

@@ -73,6 +73,10 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
+        public bool Initializing
+        {
+            get { return initializing; }
+        }
         #endregion
 
         #region Members
@@ -80,6 +84,7 @@ namespace Kinovea.ScreenManager
         private PointF center;
         private int radius;
         private bool selected;
+        private bool initializing = true;
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -220,9 +225,18 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(PointF point, Keys modifiers)
+        public void InitializeMove(PointF point, Keys modifiers)
         {
             MoveHandle(point, 1, modifiers);
+        }
+        public string InitializeCommit(PointF point)
+        {
+            initializing = false;
+            return null;
+        }
+        public string InitializeEnd(bool cancelCurrentPoint)
+        {
+            return null;
         }
         #endregion
         
