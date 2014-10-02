@@ -1371,6 +1371,7 @@ namespace Kinovea.ScreenManager
             UnzoomDirectZoom(false);
             m_FrameServer.Metadata.InitializeEnd(true);
             m_FrameServer.Metadata.StopAllTracking();
+            m_FrameServer.Metadata.UnselectAll();
             CheckCustomDecodingSize(false);
         }
         private void ValidateDrawing()
