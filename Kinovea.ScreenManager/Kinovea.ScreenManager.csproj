@@ -273,6 +273,7 @@
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\MultiDrawingItemEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\GraphicsExtensions.cs" />
+    <Compile Include="PlayerScreen\Drawings\Styling\ArrowHelper.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\LineEnding.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\LineShape.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementLineShape.cs" />

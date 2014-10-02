@@ -177,7 +177,9 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Returns a Pen object suitable to draw a line or contour.
-        /// The pen object will integrate the color, line size, line shape, and line endings properties.
+        /// The pen object will integrate the color, line size.
+        /// Line shape is drawn in the drawing to accomodate for squiggly lines.
+        /// Line ending is drawn in the drawing to have better arrows that what is provided by the Pen class.
         /// </summary>
         /// <param name="alpha">Alpha value to multiply the color with</param>
         /// <param name="stretchFactor">zoom value to multiply the line size with</param>
@@ -192,11 +194,6 @@ namespace Kinovea.ScreenManager
             Pen p = new Pen(c, penWidth);
             p.LineJoin = LineJoin.Round;
             
-            // Line endings
-            p.StartCap = lineEnding.StartCap;
-            p.EndCap = lineEnding.EndCap;
-            
-            // Line shape
             p.DashStyle = trackShape.DashStyle;
             
             return p;

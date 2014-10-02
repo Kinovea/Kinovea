@@ -250,6 +250,7 @@ namespace Kinovea.ScreenManager
             }
 
             r.ReadEndElement();
+            initializing = false;
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {

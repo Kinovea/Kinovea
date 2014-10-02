@@ -175,6 +175,7 @@ namespace Kinovea.ScreenManager
             }
             
             xmlReader.ReadEndElement();
+            initializing = false;
         }
         private void ParsePointList(XmlReader xmlReader, PointF scale)
         {
