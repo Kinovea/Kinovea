@@ -1108,6 +1108,8 @@ namespace Kinovea.ScreenManager
             trackabilityManager.Clear();
             keyframes.Clear();
             StopAllTracking();
+            trackManager.Clear();
+            chronoManager.Clear();
             extraDrawings.RemoveRange(totalStaticExtraDrawings, extraDrawings.Count - totalStaticExtraDrawings);
             magnifier.ResetData();
             coordinateSystem.Reset();

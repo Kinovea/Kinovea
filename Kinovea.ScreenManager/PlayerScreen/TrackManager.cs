@@ -43,5 +43,10 @@ namespace Kinovea.ScreenManager
         {
             drawings.RemoveAll(c => c.Id == id);
         }
+
+        public override void Clear()
+        {
+            drawings.Clear();
+        }
     }
 }

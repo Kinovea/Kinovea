@@ -162,6 +162,10 @@ namespace Kinovea.ScreenManager
         {
             drawings.RemoveAll(d => d.Id == id);
         }
+        public override void Clear()
+        {
+            drawings.Clear();
+        }
         #endregion
 
         #region KVA Serialization
