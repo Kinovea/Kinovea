@@ -9,37 +9,14 @@ namespace Kinovea.ScreenManager
     public static class GraphicsExtensions
     {
         public static float tension = 0.9f;
+        public static float halfPeriod = 8;
 
         public static void DrawSquigglyLine(this Graphics graphics, Pen pen, PointF pt1, PointF pt2)
         {
-            float halfPeriod = 8;
-
-            Vector v = new Vector(pt1, pt2);
-            float norm = v.Norm();
-            float ratio = halfPeriod / norm;
-            Vector step = v * ratio;
-            Vector stepUp = new Vector(step.Y / 2, -step.X / 2);
-            Vector stepDown = new Vector(-step.Y / 2, step.X / 2);
-
             List<PointF> pp = new List<PointF>();
             pp.Add(pt1);
 
-            PointF current = new PointF(pt1.X + step.X, pt1.Y + step.Y);
-            pp.Add(current);
-
-            float steps = norm / halfPeriod;
-            for (int i = 0; i < steps - 3; i++)
-            {
-                Vector dir = i % 2 == 0 ? stepUp : stepDown;
-                current = new PointF(current.X + step.X, current.Y + step.Y);
-
-                PointF p = new PointF(current.X + dir.X, current.Y + dir.Y);
-                pp.Add(p);
-            }
-
-            pp.Add(new PointF(current.X + (step.X / 2), current.Y + (step.Y / 2)));
-            pp.Add(pt2);
-
+            AddSquigglePoints(pp, pt1, pt2);
             graphics.DrawCurve(pen, pp.ToArray(), tension);
         }
 
@@ -61,6 +38,52 @@ namespace Kinovea.ScreenManager
             PointF pt2 = new PointF(x2, y2);
             DrawSquigglyLine(graphics, pen, pt1, pt2);
         }
+
+        public static void DrawSquigglyLines(this Graphics graphics, Pen pen, Point[] points)
+        {
+            if (points.Length < 2)
+                return;
+
+            List<PointF> pp = new List<PointF>();
+            pp.Add(points.First());
+
+            for (int i = 0; i < points.Length - 1; i++)
+            {
+                Point a = points[i];
+                Point b = points[i + 1];
+                AddSquigglePoints(pp, a, b);
+            }
+
+            pp.Add(points.Last());
+            graphics.DrawCurve(pen, pp.ToArray(), tension);
+        }
+
+        private static void AddSquigglePoints(List<PointF> points, PointF a, PointF b)
+        {
+            Vector v = new Vector(a, b);
+            float norm = v.Norm();
+            float ratio = halfPeriod / norm;
+            Vector step = v * ratio;
+            Vector stepUp = new Vector(step.Y / 2, -step.X / 2);
+            Vector stepDown = new Vector(-step.Y / 2, step.X / 2);
+
+            PointF current = new PointF(a.X + step.X, a.Y + step.Y);
+            points.Add(current);
+
+            float steps = norm / halfPeriod;
+            for (int i = 0; i < steps - 3; i++)
+            {
+                Vector dir = i % 2 == 0 ? stepUp : stepDown;
+                current = new PointF(current.X + step.X, current.Y + step.Y);
+
+                PointF p = new PointF(current.X + dir.X, current.Y + dir.Y);
+                points.Add(p);
+            }
+
+            points.Add(new PointF(current.X + (step.X / 2), current.Y + (step.Y / 2)));
+            points.Add(b);
+        }
+    
     }
     
 }
