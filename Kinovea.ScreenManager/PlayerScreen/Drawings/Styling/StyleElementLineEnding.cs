@@ -84,7 +84,9 @@ namespace Kinovea.ScreenManager
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
             editor.ItemHeight = 15;
             editor.DrawMode = DrawMode.OwnerDrawFixed;
-            for(int i=0;i<Options.Length;i++) editor.Items.Add(new object());
+            for(int i=0;i<Options.Length;i++) 
+                editor.Items.Add(new object());
+            
             editor.SelectedIndex = Array.IndexOf(Options, lineEnding);
             editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
@@ -132,14 +134,29 @@ namespace Kinovea.ScreenManager
                 return;
             
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                
-            Pen p = new Pen(Color.Black, lineWidth);
-            p.StartCap = Options[e.Index].StartCap;
-            p.EndCap = Options[e.Index].EndCap;
-                
             int top = e.Bounds.Height / 2;
                 
-            e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
+            Pen p = new Pen(Color.Black, lineWidth);
+            switch(Options[e.Index])
+            {
+                case LineEnding.None:
+                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
+                    break;
+                case LineEnding.StartArrow:
+                    p.StartCap = LineCap.ArrowAnchor;
+                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
+                    break;
+                case LineEnding.EndArrow:
+                    p.EndCap = LineCap.ArrowAnchor;
+                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
+                    break;
+                case LineEnding.DoubleArrow:
+                    p.StartCap = LineCap.ArrowAnchor;
+                    p.EndCap = LineCap.ArrowAnchor;
+                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
+                    break;
+            }
+            
             p.Dispose();
         }
         private void editor_SelectedIndexChanged(object sender, EventArgs e)

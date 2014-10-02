@@ -216,6 +216,12 @@ namespace Kinovea.ScreenManager
                         canvas.DrawLines(penEdges, path);
                 }
 
+                if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                    ArrowHelper.Draw(canvas, penEdges, pointList[0], pointList[1]);
+
+                if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                    ArrowHelper.Draw(canvas, penEdges, pointList[pointList.Length - 1], pointList[pointList.Length - 2]);
+
                 // Handlers
                 if (selected)
                 {
@@ -300,8 +306,8 @@ namespace Kinovea.ScreenManager
             }
 
             xmlReader.ReadEndElement();
-
             initializing = false;
+
             SignalAllTrackablePointsMoved();
         }
         private void ParsePointList(XmlReader xmlReader, PointF scale)

@@ -176,56 +176,9 @@ namespace Kinovea.ScreenManager
             using(Pen penEdges = styleHelper.GetPen((int)(opacityFactor * 255), transformer.Scale))
             {
                 if (distorter != null && distorter.Initialized)
-                {
-                    List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
-                    List<Point> transformedCurve = transformer.Transform(curve);
-
-                    if (styleHelper.LineShape == LineShape.Squiggle)
-                    {
-                        canvas.DrawSquigglyLine(penEdges, start, end);
-                    }
-                    else if (styleHelper.LineShape == LineShape.Dash)
-                    {
-                        DashStyle oldDashStyle = penEdges.DashStyle;
-                        penEdges.DashStyle = DashStyle.Dash;
-                        canvas.DrawCurve(penEdges, transformedCurve.ToArray());
-                        penEdges.DashStyle = oldDashStyle;
-                    }
-                    else
-                    {
-                        canvas.DrawCurve(penEdges, transformedCurve.ToArray());
-                    }
-
-                    labelMeasure.SetAttach(curve[curve.Count / 2], true);
-                }
+                    DrawDistorted(canvas, distorter, transformer, penEdges, start, end);
                 else
-                {
-                    if (styleHelper.LineShape == LineShape.Squiggle)
-                    {
-                        canvas.DrawSquigglyLine(penEdges, start, end);
-                    }
-                    else if (styleHelper.LineShape == LineShape.Dash)
-                    {
-                        DashStyle oldDashStyle = penEdges.DashStyle;
-                        penEdges.DashStyle = DashStyle.Dash;
-                        canvas.DrawLine(penEdges, start, end);
-                        penEdges.DashStyle = oldDashStyle;
-                    }
-                    else
-                    {
-                        canvas.DrawLine(penEdges, start, end);
-                    }
-
-                    labelMeasure.SetAttach(GetMiddlePoint(), true);
-                }
-                
-                // Handlers
-                penEdges.Width = selected ? 2 : 1;
-                if(styleHelper.LineEnding.StartCap != LineCap.ArrowAnchor)
-                    canvas.DrawEllipse(penEdges, start.Box(3));
-                
-                if(styleHelper.LineEnding.EndCap != LineCap.ArrowAnchor)
-                    canvas.DrawEllipse(penEdges, end.Box(3));
+                    DrawStraight(canvas, transformer, penEdges, start, end);
             }
 
             if(ShowMeasurableInfo)
@@ -237,6 +190,56 @@ namespace Kinovea.ScreenManager
                 labelMeasure.Draw(canvas, transformer, opacityFactor);
             }
         }
+        private void DrawDistorted(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penEdges, Point start, Point end)
+        {
+            List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
+            List<Point> transformedCurve = transformer.Transform(curve);
+
+            if (styleHelper.LineShape == LineShape.Squiggle)
+            {
+                canvas.DrawSquigglyLine(penEdges, start, end);
+            }
+            else if (styleHelper.LineShape == LineShape.Dash)
+            {
+                DashStyle oldDashStyle = penEdges.DashStyle;
+                penEdges.DashStyle = DashStyle.Dash;
+                canvas.DrawCurve(penEdges, transformedCurve.ToArray());
+                penEdges.DashStyle = oldDashStyle;
+            }
+            else
+            {
+                canvas.DrawCurve(penEdges, transformedCurve.ToArray());
+            }
+
+            labelMeasure.SetAttach(curve[curve.Count / 2], true);
+        }
+        private void DrawStraight(Graphics canvas, IImageToViewportTransformer transformer, Pen penEdges, Point start, Point end)
+        {
+            if (styleHelper.LineShape == LineShape.Squiggle)
+            {
+                canvas.DrawSquigglyLine(penEdges, start, end);
+            }
+            else if (styleHelper.LineShape == LineShape.Dash)
+            {
+                penEdges.DashStyle = DashStyle.Dash;
+                canvas.DrawLine(penEdges, start, end);
+            }
+            else
+            {
+                canvas.DrawLine(penEdges, start, end);
+            }
+
+            labelMeasure.SetAttach(GetMiddlePoint(), true);
+
+            if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                ArrowHelper.Draw(canvas, penEdges, start, end);
+
+            if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                ArrowHelper.Draw(canvas, penEdges, end, start);
+        }
+
+        
+
         public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
@@ -333,6 +336,7 @@ namespace Kinovea.ScreenManager
             }
             
             xmlReader.ReadEndElement();
+            initializing = false;
             
             SignalAllTrackablePointsMoved();
         }

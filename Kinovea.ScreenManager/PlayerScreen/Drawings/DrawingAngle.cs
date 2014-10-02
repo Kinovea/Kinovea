@@ -294,6 +294,7 @@ namespace Kinovea.ScreenManager
             }
             
             xmlReader.ReadEndElement();
+            initializing = false;
 
             points["o"] = points["o"].Scale(scale.X, scale.Y);
             points["a"] = points["a"].Scale(scale.X, scale.Y);
