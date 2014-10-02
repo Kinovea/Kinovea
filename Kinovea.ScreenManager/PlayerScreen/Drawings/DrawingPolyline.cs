@@ -192,28 +192,14 @@ namespace Kinovea.ScreenManager
 
                     if (pointList.Length > 2)
                     {
-                        penEdges.EndCap = LineCap.NoAnchor;
-                        penEdges.DashStyle = styleHelper.LineShape == LineShape.Dash ? DashStyle.Dash : DashStyle.Solid;
-
                         Point[] path = pointList.TakeWhile((p, i) => i <= pointList.Length - 2).ToArray();
-                            
-                        if (curve)
-                            canvas.DrawCurve(penEdges, path);
-                        else
-                            canvas.DrawLines(penEdges, path);
+                        DrawPath(canvas, penEdges, path);
                     }
                 }
                 else
                 {
-                    penEdges.EndCap = LineCap.NoAnchor;
-                    penEdges.DashStyle = styleHelper.LineShape == LineShape.Dash ? DashStyle.Dash : DashStyle.Solid;
-
-                    Point[] path = pointList.TakeWhile((p, i) => i <= pointList.Length - 1).ToArray();
-
-                    if (curve)
-                        canvas.DrawCurve(penEdges, path);
-                    else
-                        canvas.DrawLines(penEdges, path);
+                    Point[] path = pointList.ToArray();
+                    DrawPath(canvas, penEdges, path);
                 }
 
                 if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
@@ -231,8 +217,28 @@ namespace Kinovea.ScreenManager
                 }
                 
             }
-
         }
+        private void DrawPath(Graphics canvas, Pen penEdges, Point[] path)
+        {
+            penEdges.EndCap = LineCap.NoAnchor;
+            penEdges.DashStyle = styleHelper.LineShape == LineShape.Dash ? DashStyle.Dash : DashStyle.Solid;
+                        
+            switch (styleHelper.LineShape)
+            {
+                case LineShape.Squiggle:
+                    canvas.DrawSquigglyLines(penEdges, path);
+                    break;
+                case LineShape.Dash:
+                case LineShape.Solid:
+                    if (curve)
+                        canvas.DrawCurve(penEdges, path);
+                    else
+                        canvas.DrawLines(penEdges, path);
+                    break;
+            }
+        }
+
+
         public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
