@@ -16,5 +16,6 @@ namespace Kinovea.ScreenManager
         public abstract AbstractDrawing GetDrawing(Guid id);
         public abstract void AddDrawing(AbstractDrawing drawing);
         public abstract void RemoveDrawing(Guid id);
+        public abstract void Clear();
     }
 }
