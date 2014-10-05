@@ -28,6 +28,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolChrono : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "Chrono"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolChrono; }

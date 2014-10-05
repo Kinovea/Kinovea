@@ -546,10 +546,10 @@
       <Visible>False</Visible>
       <InProject>false</InProject>
     </XSLTItem>
-    <DrawingsItem Include="$(MSBuildProjectDirectory)\..\Tools\postures\*.xml">
+    <DrawingTools Include="$(MSBuildProjectDirectory)\..\Tools\DrawingTools\**\*.xml">
       <Visible>False</Visible>
       <InProject>false</InProject>
-    </DrawingsItem>
+    </DrawingTools>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -567,6 +567,6 @@
     <Copy SourceFiles="@(XSLTItem)" DestinationFolder="$(OutputPath)xslt" />
     <RemoveDir Directories="$(OutputPath)DrawingTools" />
     <MakeDir Directories="$(OutputPath)DrawingTools" Condition="!Exists('$(OutputPath)DrawingTools')" />
-    <Copy SourceFiles="@(DrawingsItem)" DestinationFolder="$(OutputPath)DrawingTools" />
+    <Copy SourceFiles="@(DrawingTools)" DestinationFolder="$(OutputPath)\DrawingTools\%(RecursiveDir)" />
   </Target>
 </Project>

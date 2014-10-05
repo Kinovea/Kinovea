@@ -29,6 +29,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolLine : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "Line"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
@@ -79,7 +83,7 @@ namespace Kinovea.ScreenManager
         #region Public Methods
         public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            return new DrawingLine(origin, new Point(origin.X + 10, origin.Y), timestamp, averageTimeStampsPerFrame, stylePreset, transformer);
+            return new DrawingLine(origin, timestamp, averageTimeStampsPerFrame, stylePreset, transformer);
         }
         public override Cursor GetCursor(double stretchFactor)
         {

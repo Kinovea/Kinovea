@@ -58,7 +58,6 @@ namespace Kinovea.ScreenManager
                 int iHash = 0;
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= infosFading.ContentHash;
-                iHash ^= curve.GetHashCode();
                 return iHash;
             }
         }
@@ -90,12 +89,6 @@ namespace Kinovea.ScreenManager
                     contextMenu.Add(mnuFinish);
                     contextMenu.Add(mnuCloseMenu);
                 }
-                else
-                {
-                    mnuCurve.Text = "Curve";
-                    mnuCurve.Checked = curve;
-                    contextMenu.Add(mnuCurve);
-                }
                 
                 return contextMenu; 
             }
@@ -110,7 +103,6 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         private bool initializing = true;
-        private bool curve = false;
 
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
@@ -118,7 +110,6 @@ namespace Kinovea.ScreenManager
         private InfosFading infosFading;
 
         // Context menu
-        private ToolStripMenuItem mnuCurve = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFinish = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAddThenFinish = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseMenu = new ToolStripMenuItem();
@@ -144,18 +135,16 @@ namespace Kinovea.ScreenManager
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
-            mnuCurve.Click += mnuCurve_Click;
             mnuFinish.Click += mnuFinish_Click;
             mnuAddThenFinish.Click += mnuAddThenFinish_Click;
             mnuCloseMenu.Click += mnuCloseMenu_Click;
 
-            mnuCurve.Image = Properties.Drawings.curve;
             mnuFinish.Image = Properties.Drawings.tick_small;
             mnuAddThenFinish.Image = Properties.Drawings.plus_small;
             mnuCloseMenu.Image = Properties.Drawings.cross_small;
         }
         public DrawingPolyline(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, 0, 0, ToolManager.Polyline.StylePreset.Clone(), null)
+            : this(Point.Empty, 0, 0, ToolManager.GetStylePreset("Polyline"), null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -230,7 +219,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case LineShape.Dash:
                 case LineShape.Solid:
-                    if (curve)
+                    if (styleHelper.Curved)
                         canvas.DrawCurve(penEdges, path);
                     else
                         canvas.DrawLines(penEdges, path);
@@ -293,9 +282,6 @@ namespace Kinovea.ScreenManager
                 {
                     case "PointList":
                         ParsePointList(xmlReader, scale);
-                        break;
-                    case "Curve":
-                        curve = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
@@ -363,8 +349,6 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteEndElement();
-
-                w.WriteElementString("Curve", curve.ToString().ToLower());
             }
 
             if (ShouldSerializeStyle(filter))
@@ -393,11 +377,23 @@ namespace Kinovea.ScreenManager
         {
             // Contrary to most other drawings, polyline is a multi-step initializable.
             // We add a point and we do not get out of initialization mode.
+            
+            // Only add the point if it's not the same as the last one.
+            // This is mostly to fix a "click" instead of "drag" of first point.
+            if (points.Count < 2)
+                return null;
+
+            string lastCommittedIndex = (points.Count - 2).ToString();
+            PointF lastPoint = points[lastCommittedIndex];
+            if (point == lastPoint)
+                return null;
+
+            // Commit point
             points[(points.Count - 1).ToString()] = point;
 
+            // Create new dangling point
             string key = points.Count.ToString();
             points.Add(key, point);
-
             return key;
         }
         public string InitializeEnd(bool cancelCurrentPoint)
@@ -453,11 +449,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Context menu
-        private void mnuCurve_Click(object sender, EventArgs e)
-        {
-            curve = !curve;
-            CallInvalidateFromMenu(sender);
-        }
         private void mnuFinish_Click(object sender, EventArgs e)
         {
             // TODO: remove point from trackability.
@@ -482,6 +473,7 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "LineSize", "line size");
             style.Bind(styleHelper, "LineShape", "line shape");
             style.Bind(styleHelper, "LineEnding", "arrows");
+            style.Bind(styleHelper, "Curved", "curved");
         }
         private bool IsPointInObject(Point point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
@@ -496,19 +488,18 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    // If any two points are conflated it throws an exception.
-                    List<PointF> uniquePoints = new List<PointF>();
-                    for(int i = 0; i < points.Count; i++)
+                    List<PointF> pp = new List<PointF>();
+                    for (int i = 0; i < points.Count; i++)
                     {
                         PointF p = points[i.ToString()];
-                        if (!uniquePoints.Contains(p))
-                            uniquePoints.Add(p);
+                        if (pp.Count == 0 || p != pp[pp.Count-1])
+                            pp.Add(p);
                     }
-
-                    if (curve)
-                        path.AddCurve(uniquePoints.ToArray());
+                    
+                    if (styleHelper.Curved)
+                        path.AddCurve(pp.ToArray());
                     else
-                        path.AddLines(uniquePoints.ToArray());
+                        path.AddLines(pp.ToArray());
                 }
 
                 return HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);

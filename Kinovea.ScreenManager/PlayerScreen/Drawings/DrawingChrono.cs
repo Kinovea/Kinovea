@@ -185,7 +185,7 @@ namespace Kinovea.ScreenManager
             infosFading.UseDefault = false;
         }
         public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
-            : this(Point.Empty, 0, 1, ToolManager.Chrono.StylePreset.Clone())
+            : this(Point.Empty, 0, 1, ToolManager.GetStylePreset("Chrono"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

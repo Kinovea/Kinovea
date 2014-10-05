@@ -39,92 +39,44 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static Dictionary<string, AbstractDrawingTool> Tools
         {
-            get 
-            {
-                if (object.ReferenceEquals(tools, null))
-                    Initialize();
-                
-                return tools; 
-            }
-        }
-        
-        // Maybe we could find a way to generate this list of properties automatically.
-        // A custom tool in the vein of the ResXFileCodeGenerator that would take an XML file in,
-        // and creates a set of accessor properties.
-        public static DrawingToolAngle Angle
-        {
-            get { return (DrawingToolAngle)Tools["Angle"]; }
-        }
-        public static DrawingToolChrono Chrono
-        {
-            get { return (DrawingToolChrono)Tools["Chrono"]; }
-        }
-        public static DrawingToolCircle Circle
-        {
-            get { return (DrawingToolCircle)Tools["Circle"]; }
-        }
-        public static DrawingToolCrossMark CrossMark
-        {
-            get { return (DrawingToolCrossMark)Tools["CrossMark"]; }
-        }
-        public static DrawingToolLine Line
-        {
-            get { return (DrawingToolLine)Tools["Line"]; }
-        }
-        public static DrawingToolPolyline Polyline
-        {
-            get { return (DrawingToolPolyline)Tools["Polyline"]; }
-        }
-        public static DrawingToolArrow Arrow
-        {
-            get { return (DrawingToolArrow)Tools["Arrow"]; }
-        }
-        public static DrawingToolPencil Pencil
-        {
-            get { return (DrawingToolPencil)Tools["Pencil"]; }
-        }
-        public static DrawingToolGenericPosture GenericPosture
-        {
-            get { return (DrawingToolGenericPosture)Tools["GenericPosture"]; }
-        }
-        public static DrawingToolText Label
-        {
-            get { return (DrawingToolText)Tools["Label"]; }
-        }
-        public static DrawingToolGrid Grid
-        {
-            get { return (DrawingToolGrid)Tools["Grid"]; }
-        }
-        public static DrawingToolPlane Plane
-        {
-            get { return (DrawingToolPlane)Tools["Plane"]; }
-        }
-        public static DrawingToolDistortionGrid DistortionGrid
-        {
-            get { return (DrawingToolDistortionGrid)Tools["DistortionGrid"]; }
-        }
-        public static DrawingToolSpotlight Spotlight
-        {
-            get { return (DrawingToolSpotlight)Tools["Spotlight"]; }
-        }
-        public static DrawingToolAutoNumbers AutoNumbers
-        {
-            get { return (DrawingToolAutoNumbers)Tools["AutoNumbers"]; }
-        }
-        public static DrawingToolMagnifier Magnifier
-        {
-            get { return (DrawingToolMagnifier)Tools["Magnifier"]; }
-        }
-        public static DrawingToolCoordinateSystem CoordinateSystem
-        {
-            get { return (DrawingToolCoordinateSystem)Tools["CoordinateSystem"]; }
+            get { return tools; }
         }
         #endregion
-        
+
         #region Members
         private static Dictionary<string, AbstractDrawingTool> tools = null;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
+
+        public static void LoadTools()
+        {
+            tools = new Dictionary<string, AbstractDrawingTool>();
+
+            // Built-ins
+            tools.Add("Angle", new DrawingToolAngle());
+            tools.Add("Chrono", new DrawingToolChrono());
+            tools.Add("Circle", new DrawingToolCircle());
+            tools.Add("CrossMark", new DrawingToolCrossMark());
+            tools.Add("Line", new DrawingToolLine());
+            tools.Add("Polyline", new DrawingToolPolyline());
+            tools.Add("Pencil", new DrawingToolPencil());
+            tools.Add("Label", new DrawingToolText());
+            tools.Add("Grid", new DrawingToolGrid());
+            tools.Add("Plane", new DrawingToolPlane());
+            tools.Add("DistortionGrid", new DrawingToolDistortionGrid());
+            tools.Add("Spotlight", new DrawingToolSpotlight());
+            tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
+            tools.Add("Magnifier", new DrawingToolMagnifier());
+            tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
+
+            // Externally defined
+            foreach (AbstractDrawingTool customTool in GenericPostureManager.Tools)
+                tools.Add(customTool.DisplayName, customTool);
+            
+            ImportExternalTools();
+
+            LoadPresets();
+        }
         
         public static void SavePresets()
         {
@@ -211,38 +163,21 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+        public static DrawingStyle GetStylePreset(string tool)
+        {
+            if (!Tools.ContainsKey(tool))
+                return new DrawingStyle();
+
+            return Tools[tool].StylePreset.Clone();
+        }
         
         #region Private Methods
-        private static void Initialize()
-        {
-            tools = new Dictionary<string, AbstractDrawingTool>();
-            
-            // The core drawing tools are hard wired.
-            // Maybe in the future we can have a plug-in system with .dll containing extensions tools.
-            // Note that the pointer "tool" is not listed, as each screen must have its own.
-            tools.Add("Angle", new DrawingToolAngle());
-            tools.Add("Chrono", new DrawingToolChrono());
-            tools.Add("Circle", new DrawingToolCircle());
-            tools.Add("CrossMark", new DrawingToolCrossMark());
-            tools.Add("Line", new DrawingToolLine());
-            tools.Add("Polyline", new DrawingToolPolyline());
-            tools.Add("Arrow", new DrawingToolArrow());
-            tools.Add("Pencil", new DrawingToolPencil());
-            tools.Add("GenericPosture", new DrawingToolGenericPosture());
-            tools.Add("Label", new DrawingToolText());
-            tools.Add("Grid", new DrawingToolGrid());
-            tools.Add("Plane", new DrawingToolPlane());
-            tools.Add("DistortionGrid", new DrawingToolDistortionGrid());
-            tools.Add("Spotlight", new DrawingToolSpotlight());
-            tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
-            tools.Add("Magnifier", new DrawingToolMagnifier());
-            tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
-            
-            LoadPresets();
-        }
         private static DrawingStyle ImportPreset(DrawingStyle defaultStyle, DrawingStyle preset)
         {
+            // This is used when importing the presets from XML.
             // Styling options may be added or removed between releases.
+            // Compare the drawing's style elements with the elements in the default preset.
+            // TODO: this should be done for KVA too.
             
             // Add options unknown to the preset.
             foreach(KeyValuePair<string, AbstractStyleElement> pair in defaultStyle.Elements)
@@ -260,6 +195,20 @@ namespace Kinovea.ScreenManager
 
             return preset;
         }
+        
+        private static void ImportExternalTools()
+        {
+            if (!Directory.Exists(Software.StandardToolsDirectory))
+                return;
+
+            foreach (string file in Directory.GetFiles(Software.StandardToolsDirectory))
+            {
+                AbstractDrawingTool tool = DrawingTool.CreateFromFile(file);
+                if (tool != null && !tools.ContainsKey(tool.Name))
+                    tools.Add(tool.Name, tool);
+            }
+        }
+
         #endregion
     }
 }

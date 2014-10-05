@@ -45,7 +45,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override string DisplayName
         {
-            get { return ToolManager.DistortionGrid.DisplayName; }
+            get { return ToolManager.Tools["DistortionGrid"].DisplayName; }
         }
         public override int ContentHash
         {
@@ -129,7 +129,7 @@ namespace Kinovea.ScreenManager
             mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingDistortionGrid(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(0, 0, ToolManager.Grid.StylePreset.Clone())
+            : this(0, 0, ToolManager.GetStylePreset("Grid"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

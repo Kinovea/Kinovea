@@ -28,8 +28,11 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolAngle : AbstractDrawingTool
     {
-        
         #region Properties
+        public override string Name
+        {
+            get { return "Angle"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolAngle2D; }

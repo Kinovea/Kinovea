@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaToolbar>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Player</Name>
+  <Id>21721743-A577-4A98-B0AC-D2C3AF8CF0D9</Id>
+  <entry name="Label">
+    <subentry name="AutoNumbers" />
+  </entry>
+  <entry name="Pencil" />
+  <entry name="%CustomTools%" />
+  <entry name="Line">
+    <subentry name="Polyline" />
+    <subentry name="Circle" />
+  </entry>
+  <entry name="Arrow">
+    <subentry name="DashArrow" />
+    <subentry name="SquigglyArrow" />
+    <subentry name="CurvedArrow" />
+    <subentry name="PolylineArrow" />
+    <subentry name="DashPolyArrow" />
+    <subentry name="SquigglyPolyArrow" />
+  </entry>
+  <entry name="CrossMark" />
+  <entry name="Angle" />
+  <entry name="Chrono" />
+  <entry name="Plane">
+    <subentry name="Grid" />
+    <subentry name="DistortionGrid" />
+  </entry>
+  <entry name="Spotlight" />
+</KinoveaToolbar>

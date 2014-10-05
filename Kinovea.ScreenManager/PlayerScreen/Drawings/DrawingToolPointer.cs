@@ -42,6 +42,10 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public override string Name
+        {
+            get { return "Pointer"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolPointer; }

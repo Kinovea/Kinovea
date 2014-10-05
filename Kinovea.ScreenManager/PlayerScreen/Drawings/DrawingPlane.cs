@@ -49,9 +49,9 @@ namespace Kinovea.ScreenManager
             get 
             {  
                 if(inPerspective)
-                    return ToolManager.Plane.DisplayName;
+                    return ToolManager.Tools["Plane"].DisplayName;
                 else
-                    return ToolManager.Grid.DisplayName;
+                    return ToolManager.Tools["Grid"].DisplayName;
             }
         }
         public override int ContentHash
@@ -156,7 +156,7 @@ namespace Kinovea.ScreenManager
             mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingPlane(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(false, 0, 0, ToolManager.Grid.StylePreset.Clone())
+            : this(false, 0, 0, ToolManager.GetStylePreset("Grid"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

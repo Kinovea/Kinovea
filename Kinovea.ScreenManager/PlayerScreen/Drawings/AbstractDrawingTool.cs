@@ -27,6 +27,15 @@ namespace Kinovea.ScreenManager
     public abstract class AbstractDrawingTool
     {
     	#region Properties
+        /// <summary>
+        /// The internal name of the tool. Used to store and retrieve tools.
+        /// </summary>
+        public abstract string Name
+        {
+            get;
+        }
+
+
     	/// <summary>
         /// The display name of the tool. Used for tooltips and in tool presets config.
         /// </summary>

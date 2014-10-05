@@ -51,7 +51,8 @@ namespace Kinovea.ScreenManager
             {
                 Point a = points[i];
                 Point b = points[i + 1];
-                AddSquigglePoints(pp, a, b);
+                if (a != b)
+                    AddSquigglePoints(pp, a, b);
             }
 
             pp.Add(points.Last());

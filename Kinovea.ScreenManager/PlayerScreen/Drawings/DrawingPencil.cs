@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
             pointList.Add(origin);
             pointList.Add(second);
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-            
+
             styleHelper.Color = Color.Black;
             styleHelper.LineSize = 1;
             if(preset != null)
@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
             }
         }
         public DrawingPencil(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, Point.Empty, 0, 0, ToolManager.Pencil.StylePreset.Clone())
+            : this(Point.Empty, Point.Empty, 0, 0, ToolManager.GetStylePreset("Pencil"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

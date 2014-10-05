@@ -40,7 +40,10 @@ namespace Kinovea.Services
         public static string LocalHelpIndex { get; private set; }
         public static string RemoteHelpIndex { get; private set; }
         public static string XSLTDirectory { get; private set; }
-        
+        public static string ToolbarsDirectory { get; private set; }
+        public static string CustomToolsDirectory { get; private set; }
+        public static string StandardToolsDirectory { get; private set; }
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public static void Initialize(Version version)
@@ -57,7 +60,10 @@ namespace Kinovea.Services
             ManualsDirectory = applicationDirectory + "Manuals\\";
             XSLTDirectory = applicationDirectory + "xslt\\";
             LocalHelpIndex = applicationDirectory + "HelpIndex.xml";
-            
+            ToolbarsDirectory = applicationDirectory + "\\DrawingTools\\Toolbars\\";
+            CustomToolsDirectory = applicationDirectory + "\\DrawingTools\\Custom\\";
+            StandardToolsDirectory = applicationDirectory + "\\DrawingTools\\Standard\\";
+
             RemoteHelpIndex = Experimental ? "http://www.kinovea.org/setup/updatebeta.xml" : "http://www.kinovea.org/setup/update.xml";
         }
         

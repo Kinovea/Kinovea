@@ -218,7 +218,7 @@ namespace Kinovea.ScreenManager
             long currentTimestamp = 0;
             bool editingLabel = false;
             
-            if(screenToolManager.ActiveTool == ToolManager.Label)
+            if(screenToolManager.ActiveTool == ToolManager.Tools["Label"])
                 editingLabel = LabelMouseDown(imagePoint, currentTimestamp, transformer);
 
             if(editingLabel)
@@ -254,7 +254,7 @@ namespace Kinovea.ScreenManager
             
             // Special cases
             // TODO: implement the event handler to metadata DrawingAdded and finish the label in the handler.
-            if(screenToolManager.ActiveTool == ToolManager.Label)
+            if(screenToolManager.ActiveTool == ToolManager.Tools["Label"])
             {
                 if(LabelAdded != null)
                     LabelAdded(this, new DrawingEventArgs(drawing, keyframeId));

@@ -616,17 +616,9 @@ namespace Kinovea.ScreenManager
         {
             drawingToolbarPresenter.AddToolButton(screenToolManager.HandTool, DrawingTool_Click);
             drawingToolbarPresenter.AddSeparator();
-            drawingToolbarPresenter.AddToolButton(ToolManager.Label, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButton(ToolManager.Pencil, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButtonPosture(DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButtonGroup(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButton(ToolManager.Arrow, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButton(ToolManager.CrossMark, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButton(ToolManager.Angle, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButtonGroup(new AbstractDrawingTool[]{ToolManager.Plane, ToolManager.Grid}, 0, DrawingTool_Click);
-            
-            // TODO: magnifier, tool presets.
-            //drawingToolbarPresenter.AddToolButton(ToolManager.Magnifier, MagnifierTool_Click);
+
+            DrawingToolbarImporter importer = new DrawingToolbarImporter();
+            importer.Import("capture.xml", drawingToolbarPresenter, DrawingTool_Click);
         }
         
         private void DrawingTool_Click(object sender, EventArgs e)

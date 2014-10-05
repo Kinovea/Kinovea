@@ -125,7 +125,7 @@ namespace Kinovea.ScreenManager
             if(stylePreset != null)
             {
                 style = stylePreset.Clone();
-                BindStyle();    
+                BindStyle();
             }
             
             // Fading
@@ -135,7 +135,7 @@ namespace Kinovea.ScreenManager
             mnuInvertAngle.Image = Properties.Drawings.angleinvert;
         }
         public DrawingAngle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, Point.Empty, Point.Empty, 0, 0, ToolManager.Angle.StylePreset.Clone())
+            : this(Point.Empty, Point.Empty, Point.Empty, 0, 0, ToolManager.GetStylePreset("Angle"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

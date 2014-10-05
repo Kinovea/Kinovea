@@ -253,8 +253,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region members
-        public PlayerScreenUserInterface view; 
         private Guid id = Guid.NewGuid();
+        public PlayerScreenUserInterface view;
+        private DrawingToolbarPresenter drawingToolbarPresenter = new DrawingToolbarPresenter();
         private HistoryStack historyStack; 
         private FrameServerPlayer frameServer;
         private bool synched;
@@ -267,7 +268,7 @@ namespace Kinovea.ScreenManager
             log.Debug("Constructing a PlayerScreen.");
             historyStack = new HistoryStack();
             frameServer = new FrameServerPlayer(historyStack);
-            view = new PlayerScreenUserInterface(frameServer);
+            view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter);
             
             BindCommands();
         }
@@ -440,6 +441,7 @@ namespace Kinovea.ScreenManager
         public override void RefreshUICulture()
         {
             view.RefreshUICulture();
+            drawingToolbarPresenter.RefreshUICulture();
         }
         public override void PreferencesUpdated()
         {

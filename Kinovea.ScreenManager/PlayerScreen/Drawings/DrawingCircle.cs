@@ -109,7 +109,7 @@ namespace Kinovea.ScreenManager
             }
         }
         public DrawingCircle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty,0,0,0, ToolManager.Circle.StylePreset.Clone())
+            : this(Point.Empty,0,0,0, ToolManager.GetStylePreset("Circle"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

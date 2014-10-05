@@ -32,6 +32,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolDistortionGrid : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "DistortionGrid"; }
+        }
         public override string DisplayName
         {
             get { return "Distortion grid"; }

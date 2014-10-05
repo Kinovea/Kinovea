@@ -30,6 +30,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolSpotlight : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "Spotlight"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolSpotlight; }

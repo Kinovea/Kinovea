@@ -29,6 +29,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolMagnifier : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "Magnifier"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_Magnifier; }

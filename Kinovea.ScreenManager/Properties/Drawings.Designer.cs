@@ -123,6 +123,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap boolean {
+            get {
+                object obj = ResourceManager.GetObject("boolean", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap chronostart {
             get {
                 object obj = ResourceManager.GetObject("chronostart", resourceCulture);
@@ -226,6 +236,36 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap curve {
             get {
                 object obj = ResourceManager.GetObject("curve", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap curvedarrow {
+            get {
+                object obj = ResourceManager.GetObject("curvedarrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap dasharrow {
+            get {
+                object obj = ResourceManager.GetObject("dasharrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap dashpolyarrow {
+            get {
+                object obj = ResourceManager.GetObject("dashpolyarrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -493,6 +533,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap polyarrow {
+            get {
+                object obj = ResourceManager.GetObject("polyarrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap polyline {
             get {
                 object obj = ResourceManager.GetObject("polyline", resourceCulture);
@@ -566,6 +616,16 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap spotlight {
             get {
                 object obj = ResourceManager.GetObject("spotlight", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap squigglyarrow {
+            get {
+                object obj = ResourceManager.GetObject("squigglyarrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
