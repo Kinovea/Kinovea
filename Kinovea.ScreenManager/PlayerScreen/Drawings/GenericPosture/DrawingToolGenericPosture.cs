@@ -32,9 +32,13 @@ namespace Kinovea.ScreenManager
     public class DrawingToolGenericPosture : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return name; }
+        }
         public override string DisplayName
         {
-            get { return displayName;}
+            get { return string.IsNullOrEmpty(displayName) ? name : displayName;}
         }
         public override Bitmap Icon
         {
@@ -67,7 +71,8 @@ namespace Kinovea.ScreenManager
         private DrawingStyle defaultStylePreset = new DrawingStyle();
         private DrawingStyle stylePreset;
         private Guid id;
-        private string displayName = "Generic Posture";
+        private string name = "GenericPosture";
+        private string displayName;
         private Bitmap icon = Properties.Drawings.generic_posture;
         #endregion
         
@@ -82,7 +87,8 @@ namespace Kinovea.ScreenManager
         #region Public Methods
         public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            stylePreset = ToolManager.GenericPosture.stylePreset.Clone();
+            if (ToolManager.Tools.ContainsKey(name))
+                stylePreset = ToolManager.GetStylePreset(name);
             
             GenericPosture posture = GenericPostureManager.Instanciate(id, false);
             return new DrawingGenericPosture(posture, timestamp, averageTimeStampsPerFrame, stylePreset);
@@ -94,9 +100,12 @@ namespace Kinovea.ScreenManager
         public void SetInfo(GenericPosture posture)
         {
             this.id = posture.Id;
-            
-            if(!string.IsNullOrEmpty(posture.Name))
-               displayName = posture.Name;
+
+            if (!string.IsNullOrEmpty(posture.Name))
+            {
+                name = posture.Name;
+                displayName = name;
+            }
             
             if(posture.Icon != null && posture.Icon.Width == 16 && posture.Icon.Height == 16)
               icon = posture.Icon;

@@ -141,11 +141,15 @@ namespace Kinovea.ScreenManager
             // Decoration and binding to mini editors.
             styleHelper.Bicolor = new Bicolor(Color.Empty);
             styleHelper.Font = new Font("Arial", 12, FontStyle.Bold);
-            if (stylePreset != null)
+
+            if (stylePreset == null)
             {
-                style = stylePreset.Clone();
-                BindStyle();
+                stylePreset = new DrawingStyle();
+                stylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
             }
+            
+            style = stylePreset.Clone();
+            BindStyle();
             
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -156,7 +160,7 @@ namespace Kinovea.ScreenManager
             menuFlipVertical.Image = Properties.Drawings.flipvertical;
         }
         public DrawingGenericPosture(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(null, 0, 0, ToolManager.GenericPosture.StylePreset.Clone())
+            : this(null, 0, 0, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

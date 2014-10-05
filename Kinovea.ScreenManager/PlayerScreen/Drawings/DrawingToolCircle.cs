@@ -29,6 +29,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolCircle : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "Circle"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolCircle; }

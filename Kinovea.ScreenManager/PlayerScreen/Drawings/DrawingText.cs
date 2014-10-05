@@ -136,7 +136,7 @@ namespace Kinovea.ScreenManager
             UpdateLabelRectangle();
         }
         public DrawingText(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty,0,0, ToolManager.Label.StylePreset.Clone())
+            : this(Point.Empty,0,0, ToolManager.GetStylePreset("Label"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

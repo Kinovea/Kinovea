@@ -361,7 +361,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public PlayerScreenUserInterface(FrameServerPlayer _FrameServer)
+        public PlayerScreenUserInterface(FrameServerPlayer _FrameServer, DrawingToolbarPresenter drawingToolbarPresenter)
         {
             log.Debug("Constructing the PlayerScreen user interface.");
             
@@ -379,8 +379,8 @@ namespace Kinovea.ScreenManager
 
            
             InitializeComponent();
+            InitializeDrawingTools(drawingToolbarPresenter);
             BuildContextMenus();
-            InitializeDrawingTools();
             AfterSyncAlphaChange();
             m_MessageToaster = new MessageToaster(pbSurfaceScreen);
             
@@ -838,51 +838,44 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Various Inits & Setups
-        private void InitializeDrawingTools()
+        public void InitializeDrawingTools(DrawingToolbarPresenter drawingToolbarPresenter)
         {
             m_PointerTool = new DrawingToolPointer();
             m_ActiveTool = m_PointerTool;
-            
-            stripDrawingTools.Left = 3;
-            
+
+            drawingToolbarPresenter.ForceView(stripDrawingTools);
+
+            drawingToolbarPresenter.AddToolButton(m_PointerTool, drawingTool_Click);
+            drawingToolbarPresenter.AddSeparator();
+
             // Special button: Add key image
             m_btnAddKeyFrame = CreateToolButton();
             m_btnAddKeyFrame.Image = Drawings.addkeyimage;
             m_btnAddKeyFrame.Click += btnAddKeyframe_Click;
             m_btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
-            stripDrawingTools.Items.Add(m_btnAddKeyFrame);
-            
-            // Pointer tool button
-            AddToolButton(m_PointerTool, drawingTool_Click);
-            stripDrawingTools.Items.Add(new ToolStripSeparator());
+            drawingToolbarPresenter.AddSpecialButton(m_btnAddKeyFrame);
             
             // Special button: Key image comments
             m_btnShowComments = CreateToolButton();
             m_btnShowComments.Image = Resources.comments2;
             m_btnShowComments.Click += btnShowComments_Click;
             m_btnShowComments.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
-            stripDrawingTools.Items.Add(m_btnShowComments);
+            drawingToolbarPresenter.AddSpecialButton(m_btnShowComments);
 
-            // All other tools
-            AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Label, ToolManager.AutoNumbers}, 0, drawingTool_Click);
-            AddToolButton(ToolManager.Pencil, drawingTool_Click);
-            AddToolButtonPosture();
-            AddToolButtonWithMenu(new AbstractDrawingTool[] { ToolManager.Line, ToolManager.Polyline, ToolManager.Circle }, 0, drawingTool_Click);
-            AddToolButton(ToolManager.Arrow, drawingTool_Click);
-            AddToolButton(ToolManager.CrossMark, drawingTool_Click);
-            AddToolButton(ToolManager.Angle, drawingTool_Click);
-            AddToolButton(ToolManager.Chrono, drawingTool_Click);
-            AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Grid, ToolManager.Plane, ToolManager.DistortionGrid}, 1, drawingTool_Click);
-            AddToolButton(ToolManager.Spotlight, drawingTool_Click);
-            
-            AddToolButton(ToolManager.Magnifier, btnMagnifier_Click);
+            // All drawing tools.
+            DrawingToolbarImporter importer = new DrawingToolbarImporter();
+            importer.Import("player.xml", drawingToolbarPresenter, drawingTool_Click);
+
+            drawingToolbarPresenter.AddToolButton(ToolManager.Tools["Magnifier"], btnMagnifier_Click);
 
             // Special button: Tool presets
             m_btnToolPresets = CreateToolButton();
             m_btnToolPresets.Image = Resources.SwatchIcon3;
             m_btnToolPresets.Click += btnColorProfile_Click;
             m_btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
-            stripDrawingTools.Items.Add(m_btnToolPresets);
+            drawingToolbarPresenter.AddSpecialButton(m_btnToolPresets);
+
+            stripDrawingTools.Left = 3;
         }
         private ToolStripButton CreateToolButton()
         {
@@ -893,53 +886,6 @@ namespace Kinovea.ScreenManager
             btn.Size = new Size(25, 25);
             btn.AutoToolTip = false;
             return btn;
-        }
-        private void AddToolButton(AbstractDrawingTool _tool, EventHandler _handler)
-        {
-            ToolStripButton btn = CreateToolButton();
-            btn.Image = _tool.Icon;
-            btn.Tag = _tool;
-            btn.Click += _handler;
-            btn.ToolTipText = _tool.DisplayName;
-            stripDrawingTools.Items.Add(btn);
-        }
-        private void AddToolButtonWithMenu(AbstractDrawingTool[] _tools, int selectedIndex, EventHandler _handler)
-        {
-            // Adds a button with a sub menu.
-            // Each menu item will act as a button, and the master button will take the icon of the selected menu.
-            
-            ToolStripButtonWithDropDown btn = new ToolStripButtonWithDropDown();
-            btn.AutoSize = false;
-            btn.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            btn.ImageScaling = ToolStripItemImageScaling.None;
-            btn.Size = new Size(25, 25);
-            btn.AutoToolTip = false;
-
-            for(int i = _tools.Length-1;i>=0;i--)
-            {
-                AbstractDrawingTool tool = _tools[i];
-                ToolStripMenuItem item = new ToolStripMenuItem();
-                item.Image = tool.Icon;
-                item.Text = tool.DisplayName;
-                item.Tag = tool;
-                int indexClosure = _tools.Length - 1 - i;
-                item.Click += (s,e) =>
-                {
-                    btn.SelectedIndex = indexClosure;
-                    _handler(s,e);
-                };
-
-                btn.DropDownItems.Add(item);
-            }
-            
-            btn.SelectedIndex = _tools.Length - 1 - selectedIndex;
-            
-            stripDrawingTools.Items.Add(btn);
-        }
-        private void AddToolButtonPosture()
-        {
-            if(GenericPostureManager.Tools.Count > 0)
-                AddToolButtonWithMenu(GenericPostureManager.Tools.ToArray(), 0, drawingTool_Click);
         }
         private void ResetData()
         {
@@ -2577,15 +2523,15 @@ namespace Kinovea.ScreenManager
                 SetCursor(m_PointerTool.GetCursor(1));
                 m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
             }
-            else if(m_ActiveTool == ToolManager.Spotlight)
+            else if(m_ActiveTool == ToolManager.Tools["Spotlight"])
             {
                 CreateNewMultiDrawingItem(m_FrameServer.Metadata.SpotlightManager);
             }
-            else if(m_ActiveTool == ToolManager.AutoNumbers)
+            else if(m_ActiveTool == ToolManager.Tools["AutoNumbers"])
             {
                 CreateNewMultiDrawingItem(m_FrameServer.Metadata.AutoNumberManager);
             }
-            else if (m_ActiveTool == ToolManager.Chrono)
+            else if (m_ActiveTool == ToolManager.Tools["Chrono"])
             {
                 CreateNewDrawing(m_FrameServer.Metadata.ChronoManager.Id);
             }
@@ -2608,7 +2554,7 @@ namespace Kinovea.ScreenManager
             DistortionHelper distorter = m_FrameServer.Metadata.CalibrationHelper.DistortionHelper;
 
             bool editingLabel = false;
-            if (m_ActiveTool == ToolManager.Label)
+            if (m_ActiveTool == ToolManager.Tools["Label"])
             {
                 foreach (DrawingText label in m_FrameServer.Metadata.Labels())
                 {
@@ -2926,7 +2872,7 @@ namespace Kinovea.ScreenManager
                 {
                     // Tools that are not IInitializable should reset to Pointer tool right after creation.
 
-                    if (m_ActiveTool == ToolManager.Spotlight)
+                    if (m_ActiveTool == ToolManager.Tools["Spotlight"])
                     {
                         IInitializable initializableDrawing = m_FrameServer.Metadata.SpotlightManager as IInitializable;
                         initializableDrawing.InitializeMove(m_DescaledMouse, ModifierKeys);
@@ -3052,7 +2998,7 @@ namespace Kinovea.ScreenManager
                 if (drawing is DrawingText)
                 {
                     ((DrawingText)drawing).SetEditMode(true, m_FrameServer.CoordinateSystem);
-                    m_ActiveTool = ToolManager.Label;
+                    m_ActiveTool = ToolManager.Tools["Label"];
                     m_bTextEdit = true;
                 }
                 else if(drawing is DrawingSVG || drawing is DrawingBitmap)

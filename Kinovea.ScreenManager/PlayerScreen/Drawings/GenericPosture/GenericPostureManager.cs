@@ -67,12 +67,10 @@ namespace Kinovea.ScreenManager
             files = new Dictionary<Guid, string>();
             tools = new List<DrawingToolGenericPosture>();
             
-            string dir = Path.GetDirectoryName(Application.ExecutablePath) + "\\DrawingTools";
-            
-            if(!Directory.Exists(dir))
+            if(!Directory.Exists(Software.CustomToolsDirectory))
                 return;
             
-            string[] fileList = Directory.GetFiles(dir);
+            string[] fileList = Directory.GetFiles(Software.CustomToolsDirectory);
             Array.Sort(fileList, new AlphanumComparator());
             
             foreach (string f in fileList)

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaToolbar>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Capture</Name>
+  <Id>9BBB68D8-85B1-4477-86D6-A16C955F57BA</Id>
+  <entry name="Label" />
+  <entry name="Pencil" />
+  <entry name="%CustomTools%" />
+  <entry name="Line">
+    <subentry name="Circle" />
+  </entry>
+  <entry name="Arrow">
+  </entry>
+  <entry name="CrossMark" />
+  <entry name="Angle" />
+  <entry name="Plane">
+    <subentry name="Grid" />
+  </entry>
+</KinoveaToolbar>

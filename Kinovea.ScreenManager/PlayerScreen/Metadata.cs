@@ -1183,8 +1183,8 @@ namespace Kinovea.ScreenManager
             // These drawings are unique and not attached to any particular key image.
             
             spotlightManager = new SpotlightManager();
-            autoNumberManager = new AutoNumberManager(ToolManager.AutoNumbers.StylePreset.Clone());
-            drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.CoordinateSystem.StylePreset.Clone());
+            autoNumberManager = new AutoNumberManager(ToolManager.GetStylePreset("AutoNumbers"));
+            drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.GetStylePreset("CoordinateSystem"));
             
             extraDrawings.Add(spotlightManager);
             extraDrawings.Add(autoNumberManager);

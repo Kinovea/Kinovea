@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Human model 2</Name>
+  <Id>5723BACC-91B0-4172-8EA0-0BF2A5A27EDE</Id>
+  <PointCount>15</PointCount>
+  
+  <Icon>
+    R0lGODlhEAAQAIABAF+Wyf///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAQABAAAAIjjI+pBrDbnpyhWfcsi7Ay32EOpowfiYgfmKGSSsGT3G7UVAAAOw==
+  </Icon>
+
+  <Segments>
+    <Segment point1="0" point2="1" name="Head" style="Solid" width="2" color="#dc322f"/>
+    <Segment point1="1" point2="2" name="Left arm" style="Solid" width="2" color="#cb4b16"/>
+    <Segment point1="2" point2="3" name="Left forearm" style="Solid" width="2" color="#cb4b16"/>
+    <Segment point1="3" point2="4" name="Left hand" style="Solid" width="2" color="#cb4b16"/>
+    <Segment point1="1" point2="8" name="Trunk" style="Solid" width="2" color="#268bd2"/>
+    <Segment point1="8" point2="9" name="Left thight" style="Solid" width="2" color="#6c71c4"/>
+    <Segment point1="9" point2="10" name="Left leg" style="Solid" width="2" color="#6c71c4"/>
+    <Segment point1="10" point2="11" name="Left foot" style="Solid" width="2" color="#6c71c4"/>
+    <Segment point1="1" point2="5" name="Right arm" style="Solid" width="2" color="#b58900"/>
+    <Segment point1="5" point2="6" name="Right forearm" style="Solid" width="2" color="#b58900"/>
+    <Segment point1="6" point2="7" name="Right hand" style="Solid" width="2" color="#b58900"/>
+    <Segment point1="8" point2="12" name="Right thight" style="Solid" width="2" color="#d33682"/>
+    <Segment point1="12" point2="13" name="Right leg" style="Solid" width="2" color="#d33682"/>
+    <Segment point1="13" point2="14" name="Right foot" style="Solid" width="2" color="#d33682"/>
+  </Segments>
+
+  <Handles>
+    <Handle type="Point" reference="0" color="#dc322f">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="1"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="1" color="#dc322f">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="8"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="1" leg1="8" leg2="0"/>
+        <KeepAngle origin="1" leg1="8" leg2="2"/>
+        <KeepAngle origin="1" leg1="8" leg2="5"/>
+        
+        <KeepAngle origin="2" leg1="1" leg2="3"/>
+        <KeepAngle origin="3" leg1="2" leg2="4"/>
+
+        <KeepAngle origin="5" leg1="1" leg2="6"/>
+        <KeepAngle origin="6" leg1="5" leg2="7"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="2" color="#cb4b16">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="1"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="2" leg1="1" leg2="3"/>
+        <KeepAngle origin="3" leg1="2" leg2="4"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="3" color="#cb4b16">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="2"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="3" leg1="2" leg2="4"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="4" color="#cb4b16">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="3"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="5" color="#b58900">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="1"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="5" leg1="1" leg2="6"/>
+        <KeepAngle origin="6" leg1="5" leg2="7"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="6" color="#b58900">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="5"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="6" leg1="5" leg2="7"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="7" color="#b58900">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="6"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="8" color="#6c71c4">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="1"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="8" leg1="1" leg2="9"/>
+        <KeepAngle origin="8" leg1="1" leg2="12"/>
+        <KeepAngle origin="9" leg1="8" leg2="10"/>
+        <KeepAngle origin="10" leg1="9" leg2="11"/>
+        <KeepAngle origin="12" leg1="8" leg2="13"/>
+        <KeepAngle origin="13" leg1="12" leg2="14"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="9" color="#6c71c4">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="8"/>
+      </Constraint>
+       <Impacts>
+        <KeepAngle origin="9" leg1="8" leg2="10"/>
+        <KeepAngle origin="10" leg1="9" leg2="11"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="10" color="#6c71c4">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="9"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="10" leg1="9" leg2="11"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="11" color="#6c71c4">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="10"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="12" color="#d33682">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="8"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="12" leg1="8" leg2="13"/>
+        <KeepAngle origin="13" leg1="12" leg2="14"/>
+      </Impacts>
+    </Handle>    
+    <Handle type="Point" reference="13" color="#d33682">
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="12"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="13" leg1="12" leg2="14"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="14" color="#d33682">    
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths"> 
+        <DistanceToPoint point="13"/>
+      </Constraint>
+    </Handle>
+  </Handles>
+
+  <Angles>
+    <Angle origin="2" leg1="1" leg2="3" relative="true" radius="25" color="#cb4b16" optionGroup="Display elbows angles"/> 
+    <Angle origin="5" leg1="1" leg2="6" relative="true" radius="25" color="#b58900" optionGroup="Display elbows angles"/> 
+
+    <Angle origin="8" leg1="1" leg2="9" relative="true" radius="30" color="#6c71c4" optionGroup="Display hips angles"/> 
+    <Angle origin="8" leg1="1" leg2="12" relative="true" radius="30" color="#d33682" optionGroup="Display hips angles"/> 
+
+    <Angle origin="9" leg1="8" leg2="10" relative="true" radius="40" color="#6c71c4" optionGroup="Display knee angles"/> 
+    <Angle origin="12" leg1="8" leg2="13" relative="true" radius="40" color="#d33682" optionGroup="Display knee angles"/>
+
+    <Angle origin="10" leg1="9" leg2="11" relative="true" radius="25" color="#6c71c4" optionGroup="Display ankle angles"/>
+    <Angle origin="13" leg1="12" leg2="14" relative="true" radius="25" color="#d33682" optionGroup="Display ankle angles"/>
+  </Angles>
+
+  <DefaultOptions>
+  </DefaultOptions>
+
+  <Capabilities flipHorizontal="true" flipVertical="true" />
+
+  <InitialConfiguration>
+    <Point>185;110</Point>  <!-- Vertex -->
+    <Point>185;170</Point>  <!-- Chin -->
+    
+    <Point>230;250</Point>  <!-- Left elbow -->
+    <Point>240;310</Point>  <!-- Left wrist -->
+    <Point>255;315</Point>  <!-- Left hand -->
+    
+    <Point>140;250</Point>  <!-- Right elbow -->
+    <Point>130;310</Point>  <!-- Right wrist -->
+    <Point>115;315</Point>  <!-- Right hand -->
+    
+    <Point>185;300</Point>  <!-- hip -->
+
+    <Point>210;415</Point>  <!-- Left knee -->
+    <Point>210;515</Point>  <!-- Left ankle -->
+    <Point>240;535</Point>  <!-- Left foot -->
+
+    <Point>160;415</Point>  <!-- Right knee -->
+    <Point>160;515</Point>  <!-- Right ankle -->
+    <Point>130;535</Point>  <!-- Right foot -->
+  </InitialConfiguration>
+
+
+</KinoveaPostureTool>

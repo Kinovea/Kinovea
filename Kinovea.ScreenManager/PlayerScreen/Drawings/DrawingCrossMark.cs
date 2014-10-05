@@ -137,7 +137,7 @@ namespace Kinovea.ScreenManager
             mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
         public DrawingCrossMark(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, 0, 0, ToolManager.CrossMark.StylePreset.Clone(), null)
+            : this(Point.Empty, 0, 0, ToolManager.GetStylePreset("CrossMark"), null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

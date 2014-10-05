@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Kinovea.ScreenManager
 {
@@ -39,6 +40,12 @@ namespace Kinovea.ScreenManager
             view.BackColor = Color.White;
         }
         
+        public void ForceView(ToolStrip view)
+        {
+            // This method will be removed when the Playerscreen refactoring is complete.
+            this.view = view;
+        }
+
         public void AddToolButton(AbstractDrawingTool tool, EventHandler handler)
         {
             ToolStripButton button = CreateToolButton();
@@ -47,6 +54,11 @@ namespace Kinovea.ScreenManager
             button.Click += handler;
             button.ToolTipText = tool.DisplayName;
             
+            view.Items.Add(button);
+        }
+
+        public void AddSpecialButton(ToolStripButton button)
+        {
             view.Items.Add(button);
         }
         
@@ -85,12 +97,6 @@ namespace Kinovea.ScreenManager
             button.SelectedIndex = tools.Length - 1 - selectedIndex;
         
             view.Items.Add(button);
-        }
-        
-        public void AddToolButtonPosture(EventHandler handler)
-        {
-            if(GenericPostureManager.Tools.Count > 0)
-                AddToolButtonGroup(GenericPostureManager.Tools.ToArray(), 0, handler);
         }
         
         public void RefreshUICulture()

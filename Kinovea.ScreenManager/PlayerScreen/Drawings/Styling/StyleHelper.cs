@@ -77,6 +77,11 @@ namespace Kinovea.ScreenManager
             get { return lineEnding; }
             set { lineEnding = value;}
         }
+        public bool Curved
+        {
+            get { return curved; }
+            set { curved = value; }
+        }
         public Font Font
         {
             get { return font; }
@@ -126,6 +131,7 @@ namespace Kinovea.ScreenManager
                 iHash ^= bicolor.ContentHash;
                 iHash ^= lineEnding.GetHashCode();
                 iHash ^= trackShape.GetHashCode();
+                iHash ^= curved.GetHashCode();
                 
                 return iHash;
             }
@@ -140,6 +146,7 @@ namespace Kinovea.ScreenManager
         private Bicolor bicolor;
         private LineEnding lineEnding = LineEnding.None;
         private TrackShape trackShape = TrackShape.Solid;
+        private bool curved;
         private int gridDivisions;
         
         // Internal only
@@ -359,6 +366,16 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
+                case "Curved":
+                    {
+                        if (value is Boolean)
+                        {
+                            curved = (Boolean)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
                 case "Font":
                     {
                         if (value is int)
@@ -415,11 +432,11 @@ namespace Kinovea.ScreenManager
             // The style element might be of an entirely different type than the property.
             bool converted = false;
             object result = null;
-            switch(sourceProperty)
+            switch (sourceProperty)
             {
                 case "Color":
                     {
-                        if(targetType == typeof(Color))
+                        if (targetType == typeof(Color))
                         {
                             result = color;
                             converted = true;
@@ -428,7 +445,7 @@ namespace Kinovea.ScreenManager
                     }
                 case "LineSize":
                     {
-                        if(targetType == typeof(int))
+                        if (targetType == typeof(int))
                         {
                             result = lineSize;
                             converted = true;
@@ -446,7 +463,7 @@ namespace Kinovea.ScreenManager
                     }
                 case "LineEnding":
                     {
-                        if(targetType == typeof(LineEnding))
+                        if (targetType == typeof(LineEnding))
                         {
                             result = lineEnding;
                             converted = true;
@@ -455,16 +472,26 @@ namespace Kinovea.ScreenManager
                     }
                 case "TrackShape":
                     {
-                        if(targetType == typeof(TrackShape))
+                        if (targetType == typeof(TrackShape))
                         {
                             result = trackShape;
                             converted = true;
                         }
                         break;
                     }
+                case "Curved":
+                    {
+                        if (targetType == typeof(Boolean))
+                        {
+                            result = curved;
+                            converted = true;
+                        }
+
+                        break;
+                    }
                 case "Font":
                     {
-                        if(targetType == typeof(int))
+                        if (targetType == typeof(int))
                         {
                             result = (int)font.Size;
                             converted = true;
@@ -473,7 +500,7 @@ namespace Kinovea.ScreenManager
                     }
                 case "Bicolor":
                     {
-                        if(targetType == typeof(Color))
+                        if (targetType == typeof(Color))
                         {
                             result = bicolor.Background;
                             converted = true;
@@ -482,7 +509,7 @@ namespace Kinovea.ScreenManager
                     }
                 case "GridDivisions":
                     {
-                        if(targetType == typeof(int))
+                        if (targetType == typeof(int))
                         {
                             result = gridDivisions;
                             converted = true;
@@ -491,7 +518,7 @@ namespace Kinovea.ScreenManager
                     }
                 default:
                     {
-                        log.DebugFormat("Unknown source property \"{0}\"." , sourceProperty);
+                        log.DebugFormat("Unknown source property \"{0}\".", sourceProperty);
                         break;
                     }
             }

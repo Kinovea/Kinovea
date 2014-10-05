@@ -29,6 +29,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolPencil : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "Pencil"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolPencil; }

@@ -193,7 +193,10 @@
   <ItemGroup>
     <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
-    <Compile Include="CaptureScreen\DrawingToolbarPresenter.cs" />
+    <Compile Include="PlayerScreen\Drawings\Styling\StyleElementCurved.cs" />
+    <Compile Include="PlayerScreen\DrawingToolbar\DrawingTool.cs" />
+    <Compile Include="PlayerScreen\DrawingToolbar\DrawingToolbarImporter.cs" />
+    <Compile Include="PlayerScreen\DrawingToolbar\DrawingToolbarPresenter.cs" />
     <Compile Include="CaptureScreen\ScreenToolManager.cs" />
     <Compile Include="CaptureScreen\CapturedFile.cs" />
     <Compile Include="CaptureScreen\CapturedFiles.cs" />
@@ -395,7 +398,6 @@
     <Compile Include="PlayerScreen\Drawings\CoordinateSystem\DrawingCoordinateSystem.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingToolArrow.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCoordinateSystem.cs" />
@@ -467,7 +469,7 @@
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementPenSize.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementTrackShape.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleHelper.cs" />
-    <Compile Include="PlayerScreen\Drawings\ToolManager.cs" />
+    <Compile Include="PlayerScreen\DrawingToolbar\ToolManager.cs" />
     <Compile Include="PlayerScreen\Export\ExporterODF.cs" />
     <Compile Include="PlayerScreen\Export\ExporterMSXML.cs" />
     <Compile Include="PlayerScreen\Export\ExporterTrajectoryText.cs" />
@@ -1162,6 +1164,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\polyline2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\boolean.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dasharrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\polyarrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\squigglyarrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\curvedarrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dashpolyarrow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

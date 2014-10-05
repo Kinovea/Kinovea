@@ -156,11 +156,10 @@ namespace Kinovea.ScreenManager
                     continue;
 
                 ConstructorInfo ci = t.GetConstructor(new[] { typeof(XmlReader), typeof(PointF), typeof(TimestampMapper), typeof(Metadata)});
-                object[] parameters = parameters = new object[] { r, scaling, timestampMapper, metadata };
-
                 if (ci == null)
                     break;
  
+                object[] parameters = new object[] { r, scaling, timestampMapper, metadata };
                 drawing = (AbstractDrawing)Activator.CreateInstance(t, parameters);
                 drawingRead = drawing != null;
 

@@ -101,11 +101,14 @@ namespace Kinovea.Root
             
             VideoTypeManager.LoadVideoReaders();
             CameraTypeManager.LoadCameraManagers();
-            
+            ToolManager.LoadTools();
+
             BuildSubTree();
             mainWindow = new KinoveaMainWindow(this);
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
             NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
+
+
 
             log.Debug("Plug sub modules at UI extension points (Menus, ToolBars, StatusBAr, Windows).");
             ExtendMenu(mainWindow.menuStrip);
@@ -122,7 +125,6 @@ namespace Kinovea.Root
         #region Prepare & Launch
         public void Prepare()
         {
-            // Prepare the right strings before we open the curtains.
             log.Debug("Setting current ui culture.");
             Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
             RefreshUICulture();

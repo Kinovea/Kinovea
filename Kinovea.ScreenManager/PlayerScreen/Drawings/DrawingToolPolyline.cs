@@ -1,5 +1,5 @@
 ﻿/*
-Copyright © Joan Charmant 2008.
+Copyright © Joan Charmant 2014.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -29,6 +29,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolPolyline : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "Polyline"; }
+        }
         public override string DisplayName
         {
             get { return "Polyline"; }
@@ -72,6 +76,7 @@ namespace Kinovea.ScreenManager
             defaultStylePreset.Elements.Add("line size", new StyleElementLineSize(2));
             defaultStylePreset.Elements.Add("line shape", new StyleElementLineShape(LineShape.Solid));
             defaultStylePreset.Elements.Add("arrows", new StyleElementLineEnding(LineEnding.None));
+            defaultStylePreset.Elements.Add("curved", new StyleElementCurved(false));
             stylePreset = defaultStylePreset.Clone();
         }
         #endregion

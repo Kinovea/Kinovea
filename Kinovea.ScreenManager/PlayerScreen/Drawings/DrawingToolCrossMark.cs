@@ -29,6 +29,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolCrossMark : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "CrossMark"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolCross2D; }

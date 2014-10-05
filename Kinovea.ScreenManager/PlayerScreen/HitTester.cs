@@ -26,7 +26,10 @@ namespace Kinovea.ScreenManager
 
                 using (Pen pathPen = new Pen(Color.Black, lineSize + enlarger))
                 {
-                    path.Widen(pathPen);
+                    if (path.PathPoints.Length == 1)
+                        path.AddEllipse(path.PathPoints[0].Box(5));
+                    else
+                        path.Widen(pathPen);
                 }
             }
             

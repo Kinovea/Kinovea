@@ -30,6 +30,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolCoordinateSystem : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "CoordinateSystem"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.mnuCoordinateSystem; }

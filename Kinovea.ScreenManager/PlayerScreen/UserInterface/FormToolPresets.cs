@@ -72,24 +72,23 @@ namespace Kinovea.ScreenManager
             // Load the list
             lstPresets.Items.Clear();
             int preselected = -1;
+
             foreach(AbstractDrawingTool tool in ToolManager.Tools.Values)
             {
-                if(tool.StylePreset != null && tool.StylePreset.Elements.Count > 0)
-                {
-                    lstPresets.Items.Add(tool);
+                if (tool.StylePreset == null || tool.StylePreset.Elements.Count == 0)
+                    continue;
+                
+                lstPresets.Items.Add(tool);
 
-                    if(_memorize)
-                        tool.StylePreset.Memorize();
+                if(_memorize)
+                    tool.StylePreset.Memorize();
 
-                    if(tool == m_Preselect || (tool is DrawingToolGenericPosture && m_Preselect is DrawingToolGenericPosture))
-                        preselected = lstPresets.Items.Count - 1;
-                }
+                if(tool == m_Preselect)
+                    preselected = lstPresets.Items.Count - 1;
             }
                 
             if(lstPresets.Items.Count > 0)
-            {
                 lstPresets.SelectedIndex = preselected >= 0 ? preselected : 0;
-            }
         }
         private void LoadPreset(AbstractDrawingTool _preset)
         {
@@ -111,7 +110,6 @@ namespace Kinovea.ScreenManager
             // Initialize the horizontal layout with a minimal value, 
             // it will be fixed later if some of the entries have long text.
             int minimalWidth = btnApply.Width + btnCancel.Width + 10;
-            //m_iEditorsLeft = Math.Max(minimalWidth - 20 - editorSize.Width, m_iEditorsLeft);
             m_iEditorsLeft = minimalWidth - 20 - editorSize.Width;
             
             int mimimalHeight = grpConfig.Height;
@@ -121,8 +119,6 @@ namespace Kinovea.ScreenManager
             {
                 AbstractStyleElement styleElement = pair.Value;
                 m_Elements.Add(styleElement);
-                
-                //styleElement.ValueChanged += element_ValueChanged;
                 
                 Button btn = new Button();
                 btn.Image = styleElement.Icon;
@@ -163,26 +159,21 @@ namespace Kinovea.ScreenManager
             {
                 if(!(c is Label) && !(c is Button))
                 {
-                    if(c.Left < m_iEditorsLeft) c.Left = m_iEditorsLeft;
+                    if(c.Left < m_iEditorsLeft) 
+                        c.Left = m_iEditorsLeft;
                 }
             }
             
-            //grpConfig.Height = Math.Max(lastEditorBottom + 20, grpConfig.Height);
-            //grpConfig.Width = Math.Max(m_iEditorsLeft + editorSize.Width + 20, grpConfig.Width);
             grpConfig.Height = Math.Max(lastEditorBottom + 20, 110);
             grpConfig.Width = m_iEditorsLeft + editorSize.Width + 20;
+            grpConfig.Left = btnToolIcon.Left;
             lstPresets.Height = grpConfig.Bottom - lstPresets.Top;
             
-            btnApply.Top = grpConfig.Bottom + 10;
-            btnApply.Left = grpConfig.Right - (btnCancel.Width + 10 + btnApply.Width);
-            btnCancel.Top = btnApply.Top;
-            btnCancel.Left = btnApply.Right + 10;
-            
             int borderLeft = this.Width - this.ClientRectangle.Width;
-            this.Width = borderLeft + btnCancel.Right + 10;
+            this.Width = borderLeft + grpConfig.Right + 10;
             
             int borderTop = this.Height - this.ClientRectangle.Height;
-            this.Height = borderTop + btnApply.Bottom + 10;
+            this.Height = borderTop + grpConfig.Bottom + btnApply.Height + 20;
         }
         private void LstPresetsSelectedIndexChanged(object sender, EventArgs e)
         {

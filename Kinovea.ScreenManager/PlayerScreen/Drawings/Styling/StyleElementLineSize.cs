@@ -86,7 +86,9 @@ namespace Kinovea.ScreenManager
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
             editor.ItemHeight = Options[Options.Length-1] + 4;
             editor.DrawMode = DrawMode.OwnerDrawFixed;
-            foreach(int i in Options) editor.Items.Add(new object());
+            foreach(int i in Options) 
+                editor.Items.Add(new object());
+            
             editor.SelectedIndex = Array.IndexOf(Options, penSize);
             editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);

@@ -32,6 +32,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolGrid : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "Grid"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.mnuGrid; }

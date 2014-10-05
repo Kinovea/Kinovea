@@ -30,6 +30,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolText : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "Label"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolText; }
