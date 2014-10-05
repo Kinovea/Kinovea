@@ -111,9 +111,9 @@ namespace Kinovea.ScreenManager
             text = " ";
             background.Rectangle = new Rectangle(p, Size.Empty);
             
-            // Decoration & binding with editors
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
+
             if(stylePreset != null)
             {
                 style = stylePreset.Clone();

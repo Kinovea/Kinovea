@@ -113,20 +113,27 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingAngle(Point o, Point a, Point b, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
+        public DrawingAngle(Point o, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
         {
+            int length = 50;
+            if (transformer != null)
+                length = transformer.Untransform(50);
+
+            Point a = new Point(o.X, o.Y - length);
+            Point b = new Point(o.X + length, o.Y);
+
             points.Add("o", o);
             points.Add("a", a);
             points.Add("b", b);
 
-            // Decoration and binding to mini editors.
             styleHelper.Bicolor = new Bicolor(Color.Empty);
             styleHelper.Font = new Font("Arial", 12, FontStyle.Bold);
-            if(stylePreset != null)
-            {
-                style = stylePreset.Clone();
-                BindStyle();
-            }
+
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("Angle");
+
+            style = preset.Clone();
+            BindStyle();
             
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -135,7 +142,7 @@ namespace Kinovea.ScreenManager
             mnuInvertAngle.Image = Properties.Drawings.angleinvert;
         }
         public DrawingAngle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, Point.Empty, Point.Empty, 0, 0, ToolManager.GetStylePreset("Angle"))
+            : this(Point.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

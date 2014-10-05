@@ -99,12 +99,22 @@ namespace Kinovea.ScreenManager
         public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             ConstructorInfo ci = drawingType.GetConstructor(new[] { typeof(Point), typeof(long), typeof(long), typeof(DrawingStyle), typeof(IImageToViewportTransformer) });
-            if (ci == null)
-                return null;
+            if (ci != null)
+            {
+                object[] parameters = new object[] { origin, timestamp, averageTimeStampsPerFrame, currentStyle, transformer };
+                AbstractDrawing drawing = (AbstractDrawing)Activator.CreateInstance(drawingType, parameters);
+                return drawing;
+            }
+            
+            ci = drawingType.GetConstructor(new[] { typeof(Point), typeof(long), typeof(long), typeof(DrawingStyle)});
+            if (ci != null)
+            {
+                object[] parameters = new object[] { origin, timestamp, averageTimeStampsPerFrame, currentStyle};
+                AbstractDrawing drawing = (AbstractDrawing)Activator.CreateInstance(drawingType, parameters);
+                return drawing;
+            }
 
-            object[] parameters = new object[] { origin, timestamp, averageTimeStampsPerFrame, currentStyle, transformer };
-            AbstractDrawing drawing = (AbstractDrawing)Activator.CreateInstance(drawingType, parameters);
-            return drawing;
+            return null;
         }
         public override Cursor GetCursor(double stretchFactor)
         {

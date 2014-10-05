@@ -94,22 +94,27 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingCircle(Point center, int radius, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset)
+        public DrawingCircle(Point center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
         {
             this.center = center;
+
+            if (transformer != null)
+                this.radius = transformer.Untransform(25);
+
             this.radius = Math.Min(radius, 10);
             this.infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-            
+
             styleHelper.Color = Color.Empty;
             styleHelper.LineSize = 1;
-            if(preset != null)
-            {
-                style = preset.Clone();
-                BindStyle();
-            }
+
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("Circle");
+            
+            style = preset.Clone();
+            BindStyle();
         }
         public DrawingCircle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty,0,0,0, ToolManager.GetStylePreset("Circle"))
+            : this(Point.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

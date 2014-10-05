@@ -128,20 +128,20 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingLine(Point start, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
+        public DrawingLine(Point start, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
         {
             points["a"] = start;
             points["b"] = new Point(start.X + 10, start.Y);
             labelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black, transformer);
-            
-            // Decoration
+
             styleHelper.Color = Color.DarkSlateGray;
             styleHelper.LineSize = 1;
-            if(preset != null)
-            {
-                style = preset.Clone();
-                BindStyle();
-            }
+
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("Line");
+            
+            style = preset.Clone();
+            BindStyle();
             
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
@@ -153,7 +153,7 @@ namespace Kinovea.ScreenManager
             mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingLine(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, 0, 0, ToolManager.GetStylePreset("Line"), null)
+            : this(Point.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

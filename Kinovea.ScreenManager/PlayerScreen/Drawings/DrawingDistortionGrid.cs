@@ -111,16 +111,15 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingDistortionGrid(long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset)
+        public DrawingDistortionGrid(Point point, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
         {
-            // Decoration
             styleHelper.Color = Color.Empty;
-            if (preset != null)
-            {
-                style = preset.Clone();
-                BindStyle();
-            }
-
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("DistortionGrid");
+            
+            style = preset.Clone();
+            BindStyle();
+            
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             infosFading.UseDefault = true;
             infosFading.AlwaysVisible = false;
@@ -129,7 +128,7 @@ namespace Kinovea.ScreenManager
             mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingDistortionGrid(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(0, 0, ToolManager.GetStylePreset("Grid"))
+            : this(Point.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
