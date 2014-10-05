@@ -40,6 +40,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public Guid Id { get; private set;}
         public string Name { get; private set;}
+        public string DisplayName { get; private set;}
         public Bitmap Icon { get; private set;}
         
         public List<PointF> Points { get; private set; }
@@ -70,6 +71,7 @@ namespace Kinovea.ScreenManager
         {
             Id = Guid.Empty;
             Name = "";
+            DisplayName = "";
             Icon = null;
             this.FromKVA = fromKVA;
             
@@ -134,6 +136,9 @@ namespace Kinovea.ScreenManager
                         case "Name":
                             Name = r.ReadElementContentAsString();
                             break;
+                        case "DisplayName":
+                            DisplayName = r.ReadElementContentAsString();
+                            break;
                         case "Icon":
                             ParseIcon(r);
                             break;
@@ -176,6 +181,9 @@ namespace Kinovea.ScreenManager
                             break;
                         case "Name":
                             Name = r.ReadElementContentAsString();
+                            break;
+                        case "DisplayName":
+                            DisplayName = r.ReadElementContentAsString();
                             break;
                         case "PointCount":
                             ParsePointCount(r);

@@ -178,6 +178,25 @@
    
    
    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – kan ikke lage slideshow</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Et slidehow er en sekvens nøkkelbilder som er lagret I et videoformat.\n Vennligst legg til nøkkelbilder før du genererer slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Kan ikke lage video</value></data>
@@ -194,6 +213,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importerer bilder...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Utseende</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Bruk</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Avbryt</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Lukk vindu</value></data>
@@ -309,6 +329,9 @@
    
    
    
+   
+   
+   
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tomt</value></data>
    
    
@@ -326,7 +349,7 @@
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Vinkel</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stoppeklokke</value></data>
    
-   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Kryss markering</value></data>
+   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Markering</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Linje</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Blyant</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Flytt</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
-   
    
    
    

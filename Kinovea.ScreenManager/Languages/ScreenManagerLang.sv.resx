@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Spara bildsekvens</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Spara Video</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Kan inte koppla till videoenhet</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Hittar ingen enhet att koppla upp.\nKontrollera att enheten är rätt kopplad till datorn.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Skriv över fil</value></data>
@@ -194,6 +213,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importera bilder...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Utseende</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Använd</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Ångra</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Stäng</value></data>
@@ -308,6 +328,9 @@
    
    
    
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Senaste använda färger:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tomt</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Översikt...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertera...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisk kontrast...</value></data>
-   
    
    
    

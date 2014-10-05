@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Bewaar beeldmateriaal</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Bewaar video</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Kan niet verbinden met video apparaat.</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Kan geen apparaat vinden om mee te verbinden.\n Zorg er voor dat het apparaat verbonden is met de computer.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overschrijf bestand</value></data>
@@ -195,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Verschijning</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Toepassen</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Pijlen:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuleer</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Sluiten</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Kleur:</value></data>
@@ -308,6 +328,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Raster</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Stappen</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Verberg</value></data>
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Recent gebruikte kleuren:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Leeg</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
@@ -326,7 +349,7 @@
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Hoek</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopwatch/tijdas</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Cirkel</value></data>
-   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Kruis markeerder</value></data>
+   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Markeerder</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Lijn</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Potlood</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Verplaats</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overzicht…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Keer om….</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisch contrast…</value></data>
-   
    
    
    

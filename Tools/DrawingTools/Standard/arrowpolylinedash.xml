@@ -2,8 +2,8 @@
 <KinoveaDrawingTool>
   <FormatVersion>1.0</FormatVersion>
   <Id>D6B6A849-5638-429D-AD01-0D8856D7F4FC</Id>
-  <Name>DashPolyArrow</Name>
-  <DisplayName></DisplayName>
+  <Name>ArrowPolylineDash</Name>
+  <DisplayName>DrawingName_ArrowPolylineDash</DisplayName>
   <Icon>dashpolyarrow</Icon>
   <DrawingClass>DrawingPolyline</DrawingClass>
   <Attached>true</Attached>

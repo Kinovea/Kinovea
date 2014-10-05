@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Сохранить последовательность </value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Сохранить видео</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Невозможно подключиться к видео устройству</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Невозможно найти подсоединенные устройства.\n Пожалуйста, убедитесь, что устройство подключено к компьютеру</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Перезаписать файл</value></data>
@@ -195,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Видимость</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Применить</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Стрелки</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Отмена</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Закрыть </value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Цвета:</value></data>
@@ -308,6 +328,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Сетка</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Деления</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Скрыть</value></data>
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Недавно используемые цвета:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Пусто</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Буфер: {0}%</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Раскадровка…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Реверс…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Авто контраст…</value></data>
-   
    
    
    

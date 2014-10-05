@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
         }
         public override string DisplayName
         {
-            get { return "Curved"; }
+            get { return ScreenManagerLang.Generic_Curved; }
         }
         public override string XmlName
         {

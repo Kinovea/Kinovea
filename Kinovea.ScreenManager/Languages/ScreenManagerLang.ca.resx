@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Desar la seqüència d'imatges</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Desar el vídeo</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>No s'ha pogut connectar al dispositiu de vídeo</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>No s'ha trobat cap dispositiu al qual connectar. Si us plau, asseguri's de que el dispositiu està degudament endollat. </value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobreescriure l'arixiu</value></data>
@@ -195,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Aparença</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Aplicar</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Fletxes :</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Tancar</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color :</value></data>
@@ -308,6 +328,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Graella</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Graduacions</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Amagar</value></data>
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Colors emprats recentment:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Buit</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Memòria Cau : {0}%</value></data>
@@ -326,7 +349,7 @@
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angle</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronòmetre</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Cercle</value></data>
-   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marca de creu</value></data>
+   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marca</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Línia</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Llapis</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Maure</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resum...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverteix</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast Automàtic</value></data>
-   
    
    
    

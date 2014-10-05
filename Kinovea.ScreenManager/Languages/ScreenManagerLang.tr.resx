@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Sekans Kaydet</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Video Kaydet</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Video aygıtına bağlanamıyor</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Bağlanacak bir aygıt bulunamadı.\nLütfen aygıtın bilgisayara uygun şekilde bağlı olduğundan emin olun.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Dosyanın üzerine yaz</value></data>
@@ -194,6 +213,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Kareleri import ediyor...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Görünüm</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Uygula</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>İptal Et</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Kapat</value></data>
@@ -308,6 +328,9 @@
    
    
    
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Yeni kullanılmış renkler:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Boş</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Tampon bellek: {0}%</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Göz Atma...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Geri...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Oto Kontrast...</value></data>
-   
    
    
    

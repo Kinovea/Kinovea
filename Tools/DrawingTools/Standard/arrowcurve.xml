@@ -2,8 +2,8 @@
 <KinoveaDrawingTool>
   <FormatVersion>1.0</FormatVersion>
   <Id>E77A4AAA-DC19-4031-9429-7B337A26746B</Id>
-  <Name>CurvedArrow</Name>
-  <DisplayName></DisplayName>
+  <Name>ArrowCurve</Name>
+  <DisplayName>DrawingName_ArrowCurve</DisplayName>
   <Icon>curvedarrow</Icon>
   <DrawingClass>DrawingPolyline</DrawingClass>
   <Attached>true</Attached>

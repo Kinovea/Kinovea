@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
-  <Name>Horizontal distance</Name>
+  <Name>HorizontalDistance</Name>
+  <DisplayName>DrawingName_DistanceHorizontal</DisplayName>
   <Id>a30ba939-0852-4dcc-85c7-52eeff080b39</Id>
   <PointCount>5</PointCount>
   <Segments>

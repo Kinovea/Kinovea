@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
-  <Name>Human model</Name>
+  <Name>HumanModel</Name>
+  <DisplayName>DrawingName_HumanModel</DisplayName>
   <Id>5723BACC-91B0-4172-8EA0-0BF2A5A27EDA</Id>
   <PointCount>20</PointCount>
   

@@ -1006,6 +1006,177 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Angle to horizontal.
+        /// </summary>
+        internal static string DrawingName_AngleToHorizontal {
+            get {
+                return ResourceManager.GetString("DrawingName_AngleToHorizontal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Angle to vertical.
+        /// </summary>
+        internal static string DrawingName_AngleToVertical {
+            get {
+                return ResourceManager.GetString("DrawingName_AngleToVertical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Archery.
+        /// </summary>
+        internal static string DrawingName_Archery {
+            get {
+                return ResourceManager.GetString("DrawingName_Archery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Arrow – Curve.
+        /// </summary>
+        internal static string DrawingName_ArrowCurve {
+            get {
+                return ResourceManager.GetString("DrawingName_ArrowCurve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Arrow – Dash.
+        /// </summary>
+        internal static string DrawingName_ArrowDash {
+            get {
+                return ResourceManager.GetString("DrawingName_ArrowDash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Arrow – Polyline.
+        /// </summary>
+        internal static string DrawingName_ArrowPolyline {
+            get {
+                return ResourceManager.GetString("DrawingName_ArrowPolyline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Arrow – Polyline dash.
+        /// </summary>
+        internal static string DrawingName_ArrowPolylineDash {
+            get {
+                return ResourceManager.GetString("DrawingName_ArrowPolylineDash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Arrow – Polyline squiggly.
+        /// </summary>
+        internal static string DrawingName_ArrowPolylineSquiggly {
+            get {
+                return ResourceManager.GetString("DrawingName_ArrowPolylineSquiggly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Arrow – Squiggly.
+        /// </summary>
+        internal static string DrawingName_ArrowSquiggly {
+            get {
+                return ResourceManager.GetString("DrawingName_ArrowSquiggly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Bike fit.
+        /// </summary>
+        internal static string DrawingName_Bikefit {
+            get {
+                return ResourceManager.GetString("DrawingName_Bikefit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Distance (horizontal).
+        /// </summary>
+        internal static string DrawingName_DistanceHorizontal {
+            get {
+                return ResourceManager.GetString("DrawingName_DistanceHorizontal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Distortion grid.
+        /// </summary>
+        internal static string DrawingName_DistortionGrid {
+            get {
+                return ResourceManager.GetString("DrawingName_DistortionGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Genu.
+        /// </summary>
+        internal static string DrawingName_Genu {
+            get {
+                return ResourceManager.GetString("DrawingName_Genu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Goniometer.
+        /// </summary>
+        internal static string DrawingName_Goniometer {
+            get {
+                return ResourceManager.GetString("DrawingName_Goniometer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Human model.
+        /// </summary>
+        internal static string DrawingName_HumanModel {
+            get {
+                return ResourceManager.GetString("DrawingName_HumanModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Human model (2).
+        /// </summary>
+        internal static string DrawingName_HumanModel2 {
+            get {
+                return ResourceManager.GetString("DrawingName_HumanModel2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Polyline.
+        /// </summary>
+        internal static string DrawingName_Polyline {
+            get {
+                return ResourceManager.GetString("DrawingName_Polyline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Posture.
+        /// </summary>
+        internal static string DrawingName_Posture {
+            get {
+                return ResourceManager.GetString("DrawingName_Posture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Profile.
+        /// </summary>
+        internal static string DrawingName_Profile {
+            get {
+                return ResourceManager.GetString("DrawingName_Profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Couldn&apos;t find any device to connect to.\nPlease make sure the device is properly plugged to the computer..
         /// </summary>
         internal static string Error_Capture_CannotConnect_Text {
@@ -1254,6 +1425,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string Generic_Configuration {
             get {
                 return ResourceManager.GetString("Generic_Configuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Curve:.
+        /// </summary>
+        internal static string Generic_Curved {
+            get {
+                return ResourceManager.GetString("Generic_Curved", resourceCulture);
             }
         }
         
@@ -2050,6 +2230,33 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Close this menu.
+        /// </summary>
+        internal static string mnuPolyline_CloseMenu {
+            get {
+                return ResourceManager.GetString("mnuPolyline_CloseMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Finish polyline at previous point.
+        /// </summary>
+        internal static string mnuPolyline_FinishAtPrevious {
+            get {
+                return ResourceManager.GetString("mnuPolyline_FinishAtPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Finish polyline here.
+        /// </summary>
+        internal static string mnuPolyline_FinishHere {
+            get {
+                return ResourceManager.GetString("mnuPolyline_FinishHere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Restart Path Edition.
         /// </summary>
         internal static string mnuRestartTracking {
@@ -2410,7 +2617,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Cross Marker.
+        ///   Recherche une chaîne localisée semblable à Marker.
         /// </summary>
         internal static string ToolTip_DrawingToolCross2D {
             get {

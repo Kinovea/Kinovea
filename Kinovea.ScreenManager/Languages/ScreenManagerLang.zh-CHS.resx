@@ -178,6 +178,25 @@
    
    
    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>无法创建幻灯片.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>一张幻灯片是在视频文件内保存的一系列关键图像序列.\n 请在生成幻灯片之前添加一些关键图像.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>不能建立暂停视频</value></data>
@@ -194,6 +213,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>正在导入帧...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>外观</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>提交</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>取消</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>关闭</value></data>
@@ -309,6 +329,9 @@
    
    
    
+   
+   
+   
    <data name="statusEmptyScreen" xml:space="preserve"><value>空</value></data>
    
    
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>马赛克...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>反向...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>自动对比度...</value></data>
-   
    
    
    

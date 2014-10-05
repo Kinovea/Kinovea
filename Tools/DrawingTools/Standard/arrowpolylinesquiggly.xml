@@ -2,8 +2,8 @@
 <KinoveaDrawingTool>
   <FormatVersion>1.0</FormatVersion>
   <Id>53C2ACEF-E02F-4FF7-A7B7-3A5D9952E331</Id>
-  <Name>SquigglyPolyArrow</Name>
-  <DisplayName>Squiggly poly arrow</DisplayName>
+  <Name>ArrowPolylineSquiggly</Name>
+  <DisplayName>DrawingName_ArrowPolylineSquiggly</DisplayName>
   <Icon>squigglyarrow</Icon>
   <DrawingClass>DrawingPolyline</DrawingClass>
   <Attached>true</Attached>

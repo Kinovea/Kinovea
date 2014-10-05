@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaDrawingTool>
   <FormatVersion>1.0</FormatVersion>
-  <Id>D060322B-1376-4936-A2C3-64477E9489E0</Id>
-  <Name>PolylineArrow</Name>
-  <DisplayName></DisplayName>
-  <Icon>polyarrow</Icon>
-  <DrawingClass>DrawingPolyline</DrawingClass>
+  <Id>332E83D6-146A-4EC4-8251-89380BF075C2</Id>
+  <Name>ArrowDash</Name>
+  <DisplayName>DrawingName_ArrowDash</DisplayName>
+  <Icon>dasharrow</Icon>
+  <DrawingClass>DrawingLine</DrawingClass>
   <Attached>true</Attached>
   <KeepToolAfterDrawingCreation>true</KeepToolAfterDrawingCreation>
   <KeepToolAfterFrameChange>true</KeepToolAfterFrameChange>
@@ -17,13 +17,10 @@
       <Value>2</Value>
     </LineSize>
     <LineShape Key="line shape">
-      <Value>Solid</Value>
+      <Value>Dash</Value>
     </LineShape>
     <Arrows Key="arrows">
       <Value>EndArrow</Value>
     </Arrows>
-    <Curved Key="curved">
-      <Value>false</Value>
-    </Curved>
   </DefaultStyle>
 </KinoveaDrawingTool>

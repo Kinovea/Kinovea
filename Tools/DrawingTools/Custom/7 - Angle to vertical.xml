@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
-  <Name>Angle to vertical</Name>
+  <Name>AngleToVertical</Name>
+  <DisplayName>DrawingName_AngleToVertical</DisplayName>
   <Id>B0D88F59-FA46-4B8A-A2B3-F28A66FE2163</Id>
   <PointCount>4</PointCount>
   <Segments>

@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Guardar la secuencia de imàgenes </value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Guardar el video.</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>No se puede connectar a la cámara</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>No se encontró la cámara.\nPor favor compruebe que la cámara está conectada al ordenador.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobrescribir archivo</value></data>
@@ -194,6 +213,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importar imagenes...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Apariencia</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Aplicar</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Cerrar</value></data>
@@ -308,6 +328,9 @@
    
    
    
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Colores usados recientemente</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>vacio</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
@@ -326,7 +349,7 @@
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angulo</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronómetro</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Círculo</value></data>
-   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marcador en Cruz </value></data>
+   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marcador</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Linea</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Lapiz</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Desplazamiento</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resumen</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertido...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste...</value></data>
-   
    
    
    

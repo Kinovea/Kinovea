@@ -11,6 +11,8 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolbarImporter
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// Imports the hierarchy of tools to use in the screen.
         /// </summary>
@@ -85,6 +87,10 @@ namespace Kinovea.ScreenManager
             {
                 AbstractDrawingTool tool = ToolManager.Tools[toolName];
                 list.Add(tool);
+            }
+            else
+            {
+                log.ErrorFormat("Cannot find {0}.", toolName);
             }
         }
     }
