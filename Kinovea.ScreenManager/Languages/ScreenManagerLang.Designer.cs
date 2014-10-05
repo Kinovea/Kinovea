@@ -2212,7 +2212,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Perspective Grid.
+        ///   Recherche une chaîne localisée semblable à Perspective grid.
         /// </summary>
         internal static string mnuPerspectiveGrid {
             get {

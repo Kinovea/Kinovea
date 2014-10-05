@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
             this.btnDefault.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
             this.btnDefault.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDefault.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
-            this.btnDefault.Location = new System.Drawing.Point(448, 12);
+            this.btnDefault.Location = new System.Drawing.Point(475, 12);
             this.btnDefault.Name = "btnDefault";
             this.btnDefault.Size = new System.Drawing.Size(25, 25);
             this.btnDefault.TabIndex = 18;
@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
             // 
             this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnApply.Location = new System.Drawing.Point(268, 296);
+            this.btnApply.Location = new System.Drawing.Point(295, 296);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(99, 24);
             this.btnApply.TabIndex = 76;
@@ -127,7 +127,7 @@ namespace Kinovea.ScreenManager
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(373, 296);
+            this.btnCancel.Location = new System.Drawing.Point(400, 296);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(99, 24);
             this.btnCancel.TabIndex = 77;
@@ -144,7 +144,7 @@ namespace Kinovea.ScreenManager
             this.btnToolIcon.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.btnToolIcon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnToolIcon.ForeColor = System.Drawing.Color.Black;
-            this.btnToolIcon.Location = new System.Drawing.Point(199, 43);
+            this.btnToolIcon.Location = new System.Drawing.Point(218, 43);
             this.btnToolIcon.Name = "btnToolIcon";
             this.btnToolIcon.Size = new System.Drawing.Size(25, 25);
             this.btnToolIcon.TabIndex = 32;
@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
             // 
             this.lblToolName.AutoSize = true;
             this.lblToolName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblToolName.Location = new System.Drawing.Point(234, 48);
+            this.lblToolName.Location = new System.Drawing.Point(253, 48);
             this.lblToolName.Name = "lblToolName";
             this.lblToolName.Size = new System.Drawing.Size(73, 16);
             this.lblToolName.TabIndex = 80;
@@ -168,9 +168,9 @@ namespace Kinovea.ScreenManager
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpConfig.Controls.Add(this.lblFirstElement);
             this.grpConfig.Controls.Add(this.btnFirstElement);
-            this.grpConfig.Location = new System.Drawing.Point(198, 85);
+            this.grpConfig.Location = new System.Drawing.Point(215, 85);
             this.grpConfig.Name = "grpConfig";
-            this.grpConfig.Size = new System.Drawing.Size(274, 202);
+            this.grpConfig.Size = new System.Drawing.Size(284, 202);
             this.grpConfig.TabIndex = 81;
             this.grpConfig.TabStop = false;
             // 
@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.lvPresets.Location = new System.Drawing.Point(13, 48);
             this.lvPresets.Name = "lvPresets";
-            this.lvPresets.Size = new System.Drawing.Size(166, 239);
+            this.lvPresets.Size = new System.Drawing.Size(196, 239);
             this.lvPresets.SmallImageList = this.iconList;
             this.lvPresets.TabIndex = 82;
             this.lvPresets.UseCompatibleStateImageBehavior = false;
@@ -220,7 +220,7 @@ namespace Kinovea.ScreenManager
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(485, 332);
+            this.ClientSize = new System.Drawing.Size(512, 332);
             this.Controls.Add(this.lvPresets);
             this.Controls.Add(this.grpConfig);
             this.Controls.Add(this.lblToolName);
