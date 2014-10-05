@@ -8,13 +8,13 @@
   </entry>
   <entry name="Pencil" />
   <entry name="HumanModel">
+    <subentry name="HumanModel2" />
     <subentry name="Bikefit" />
     <subentry name="Archery" />
     <subentry name="HorizontalDistance" />
     <subentry name="Profile" />
     <subentry name="Genu" />
     <subentry name="Posture" />
-    <subentry name="HumanModel2" />
   </entry>
   <entry name="Line">
     <subentry name="Polyline" />

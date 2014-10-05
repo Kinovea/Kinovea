@@ -260,7 +260,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Total unknown</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lock the Working Zone Boundaries</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Unlock the Working Zone Boundaries</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspective Grid</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspective grid</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configure</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Countdown Mode</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Delete Stopwatch</value></data>
