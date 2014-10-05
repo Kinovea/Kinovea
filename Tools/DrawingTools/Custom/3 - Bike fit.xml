@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
-  <Name>Bike fit</Name>
+  <Name>Bikefit</Name>
+  <DisplayName>DrawingName_Bikefit</DisplayName>
   <Id>02a52d37-4694-4b90-a6d4-58d2a399638c</Id>
   <PointCount>8</PointCount>
   <Segments>

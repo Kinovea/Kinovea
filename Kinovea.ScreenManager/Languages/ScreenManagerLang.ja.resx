@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>シーケンスの保存</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>ビデオを保存</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>ビデオデバイスと接続できません</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>接続可能デバイスが検出されません。\nデバイスが正しくコンピューターに接続されていることを確認して下さい。</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>ファイル上書き</value></data>
@@ -195,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>外観</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>適用</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>矢印:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>キャンセル</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>閉じる</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>色</value></data>
@@ -308,6 +328,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>グリッド</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>目盛り</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>隠す</value></data>
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>最近使用されたカラー:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>空</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>バッファ: {0}%</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>概要…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>逆再生…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>オートコントラスト…</value></data>
-   
    
    
    

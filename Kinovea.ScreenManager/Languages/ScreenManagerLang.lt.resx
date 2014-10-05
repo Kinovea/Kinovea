@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Išsaugoti seką</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Išsaugoti video</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Negaliu prisijungti prie vaizdo įrenginio</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Negaliu rasti prijungto įrenginio prie.\nPrašau patikrinti ar teisingai prijungtas irenginys.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Vaizdo perrašymas</value></data>
@@ -194,6 +213,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importuotju kadrus...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Išvaizda</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Vykdyti</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Nutraukti</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Uždaryti</value></data>
@@ -308,6 +328,9 @@
    
    
    
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Vėliausiai naudotos spalvos:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tuščia</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buferis: {0}%</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Apžvalga...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reversas...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatinis kontrastas...</value></data>
-   
    
    
    

@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>연속 이미지를 저장</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>비디오 저장</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>비디오 장치에 연결할 수 없음</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>연결할 장치를 찾을 수 없음.\n장치가 컴퓨터에 잘 연결되었는지 확인바람.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>파일 덮어쓰기</value></data>
@@ -195,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>모양새</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>적용</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>화살표:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>취소</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>닫기</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>색상:</value></data>
@@ -308,6 +328,9 @@
    
    
    
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>최근 사용된 색상:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>비어있음</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>버퍼: {0}%</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>개관(overview)…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>반대(reverse)…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value></data>
-   
    
    
    

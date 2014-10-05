@@ -178,6 +178,25 @@
    
    
    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - nie można utworzyć pokazu slajdów.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Pokaz slajdów jest to sekwencja kluczowy obrazów zapisanych w formacie wideo.\n Dodaj proszę kilka kluczowych obrazów przed generacją pokazu.</value></data>
    
@@ -194,6 +213,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importowanie klatek...</value></data>
    
    <data name="Generic_Apply" xml:space="preserve"><value>Zastosuj</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Anuluj</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Zamknij</value></data>
@@ -309,6 +329,9 @@
    
    
    
+   
+   
+   
    <data name="statusEmptyScreen" xml:space="preserve"><value>Pusty</value></data>
    
    
@@ -367,7 +390,6 @@
    
    
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Kontrast...</value></data>
-   
    
    
    

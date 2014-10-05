@@ -375,6 +375,9 @@ namespace Kinovea.ScreenManager
                     case "Countdown":
                         countdown = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
+                    case "UserDuration":
+                        xmlReader.ReadOuterXml();
+                        break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);

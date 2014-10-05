@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Redosled čuvanja</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Sačuvaj video</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Nije moguće povezivanje sa video uređajem</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Ni jedan uređaj za priključivanje nije pronađen.\nMolimo uverite se da je uređaj ispravno priključen za računar.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Zamena datoteka</value></data>
@@ -195,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Izgled</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Primeni</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Strelice:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Otkaži</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Zatvori</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Boja:</value></data>
@@ -308,6 +328,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Koordinatna mreža</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Stepenovanje</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Sakriti</value></data>
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Nedavno korišćene boje :</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Prazno</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>bafer: {0}%</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Pregled...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverzija...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatsko podešavanje kontrasta...</value></data>
-   
    
    
    

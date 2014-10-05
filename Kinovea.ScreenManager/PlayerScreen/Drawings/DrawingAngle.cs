@@ -293,6 +293,9 @@ namespace Kinovea.ScreenManager
                     case "InfosFading":
                         infosFading.ReadXml(xmlReader);
                         break;
+                    case "Measure":
+                        xmlReader.ReadOuterXml();
+                        break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);

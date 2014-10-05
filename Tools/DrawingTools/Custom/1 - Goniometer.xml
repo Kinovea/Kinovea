@@ -2,6 +2,7 @@
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
   <Name>Goniometer</Name>
+  <DisplayName>DrawingName_Goniometer</DisplayName>
   <Id>02ea93f9-ba00-424b-8c87-07e156e0252f</Id>
   <PointCount>4</PointCount>
   <Segments>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
-  <Name>Angle to horizontal</Name>
+  <Name>AngleToHorizontal</Name>
+  <DisplayName>DrawingName_AngleToHorizontal</DisplayName>
   <Id>ef479716-77e3-4b00-82d4-e44882eb304f</Id>
   <PointCount>4</PointCount>
   <Segments>

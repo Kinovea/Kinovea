@@ -92,8 +92,6 @@ namespace Kinovea.ScreenManager
                 }
             }
             
-            log.DebugFormat("Parsed computed point \"{0}\" successfully.", Name);
-            
             r.ReadEndElement();
             
             CheckTotalWeight();

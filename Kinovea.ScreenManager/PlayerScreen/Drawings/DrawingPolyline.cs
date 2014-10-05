@@ -82,9 +82,9 @@ namespace Kinovea.ScreenManager
                 
                 if (initializing)
                 {
-                    mnuAddThenFinish.Text = "Finish polyline here";
-                    mnuFinish.Text = "Finish polyline at previous point";
-                    mnuCloseMenu.Text = "Close this menu";
+                    mnuAddThenFinish.Text = ScreenManagerLang.mnuPolyline_FinishHere;
+                    mnuFinish.Text = ScreenManagerLang.mnuPolyline_FinishAtPrevious;
+                    mnuCloseMenu.Text = ScreenManagerLang.mnuPolyline_CloseMenu;
                     contextMenu.Add(mnuAddThenFinish);
                     contextMenu.Add(mnuFinish);
                     contextMenu.Add(mnuCloseMenu);

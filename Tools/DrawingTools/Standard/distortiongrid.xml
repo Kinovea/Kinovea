@@ -3,7 +3,7 @@
   <FormatVersion>1.0</FormatVersion>
   <Id>14D5CCFB-0A43-42EC-924F-4CB39945C1E5</Id>
   <Name>DistortionGrid</Name>
-  <DisplayName></DisplayName>
+  <DisplayName>DrawingName_DistortionGrid</DisplayName>
   <Icon>plane</Icon>
   <DrawingClass>DrawingDistortionGrid</DrawingClass>
   <Attached>true</Attached>

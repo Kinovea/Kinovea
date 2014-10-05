@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Save Sequence</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Save Video</value></data>
+   <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Arrow – Dash</value></data>
+   <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Arrow – Squiggly</value></data>
+   <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Arrow – Curve</value></data>
+   <data name="DrawingName_ArrowPolyline" xml:space="preserve"><value>Arrow – Polyline</value></data>
+   <data name="DrawingName_ArrowPolylineDash" xml:space="preserve"><value>Arrow – Polyline dash</value></data>
+   <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve"><value>Arrow – Polyline squiggly</value></data>
+   <data name="DrawingName_Polyline" xml:space="preserve"><value>Polyline</value></data>
+   <data name="DrawingName_DistortionGrid" xml:space="preserve"><value>Distortion grid</value></data>
+   <data name="DrawingName_Goniometer" xml:space="preserve"><value>Goniometer</value></data>
+   <data name="DrawingName_Posture" xml:space="preserve"><value>Posture</value></data>
+   <data name="DrawingName_Bikefit" xml:space="preserve"><value>Bike fit</value></data>
+   <data name="DrawingName_Profile" xml:space="preserve"><value>Profile</value></data>
+   <data name="DrawingName_Genu" xml:space="preserve"><value>Genu</value></data>
+   <data name="DrawingName_Archery" xml:space="preserve"><value>Archery</value></data>
+   <data name="DrawingName_AngleToVertical" xml:space="preserve"><value>Angle to vertical</value></data>
+   <data name="DrawingName_AngleToHorizontal" xml:space="preserve"><value>Angle to horizontal</value></data>
+   <data name="DrawingName_DistanceHorizontal" xml:space="preserve"><value>Distance (horizontal)</value></data>
+   <data name="DrawingName_HumanModel" xml:space="preserve"><value>Human model</value></data>
+   <data name="DrawingName_HumanModel2" xml:space="preserve"><value>Human model (2)</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Cannot connect to video device</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Couldn't find any device to connect to.\nPlease make sure the device is properly plugged to the computer.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>File overwrite</value></data>
@@ -195,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Appearance</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Apply</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Arrows:</value></data>
+   <data name="Generic_Curved" xml:space="preserve"><value>Curve:</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancel</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Close</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color:</value></data>
@@ -308,6 +328,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Grid</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Tick marks</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Hide</value></data>
+   <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Finish polyline here</value></data>
+   <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Finish polyline at previous point</value></data>
+   <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Close this menu</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Recently used colors:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Empty</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
@@ -326,7 +349,7 @@
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angle</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopwatch</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Circle</value></data>
-   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Cross Marker</value></data>
+   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marker</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Line</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Pencil</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Move</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overview...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reverse...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto Contrast...</value></data>
-   
    
    
    

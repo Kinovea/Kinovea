@@ -38,7 +38,18 @@ namespace Kinovea.ScreenManager
         }
         public override string DisplayName
         {
-            get { return string.IsNullOrEmpty(displayName) ? name : displayName;}
+            get 
+            { 
+                if (string.IsNullOrEmpty(displayName))
+                    return name;
+
+                string localized = ScreenManagerLang.ResourceManager.GetString(displayName);
+
+                if (string.IsNullOrEmpty(localized))
+                    return name;
+
+                return localized;
+            }
         }
         public override Bitmap Icon
         {
@@ -102,10 +113,10 @@ namespace Kinovea.ScreenManager
             this.id = posture.Id;
 
             if (!string.IsNullOrEmpty(posture.Name))
-            {
                 name = posture.Name;
-                displayName = name;
-            }
+
+            if (!string.IsNullOrEmpty(posture.DisplayName))
+                displayName = posture.DisplayName;
             
             if(posture.Icon != null && posture.Icon.Width == 16 && posture.Icon.Height == 16)
               icon = posture.Icon;

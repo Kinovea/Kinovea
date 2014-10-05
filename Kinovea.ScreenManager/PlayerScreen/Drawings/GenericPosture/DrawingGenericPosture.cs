@@ -560,8 +560,6 @@ namespace Kinovea.ScreenManager
                 
                 try
                 {
-                    log.DebugFormat("before fill pie, box:{0}, start:{1}, sweep:{2}", box, (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
-
                     brushFill.Color = angle.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, angle.Color);
                     canvas.FillPie(brushFill, box, (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
                 

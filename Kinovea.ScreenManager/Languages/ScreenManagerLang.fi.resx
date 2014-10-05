@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Tallenna kuvausjakso</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Tallenna video</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Ei voida kytkeä videolaitteeseen</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>EI löytynyt kytkettävää laitetta.\nVarmista että laite on kytketty tietokoneeseen oikein.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Tiedoston korvaaminen</value></data>
@@ -194,6 +213,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Tuodaan kuvia...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Ulkoasu</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Sovella</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Peruuta</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Sulje</value></data>
@@ -308,6 +328,9 @@
    
    
    
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Äsken käytetyt värit:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tyhjä</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Puskuri: {0}%</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Katsaus...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Käänteinen...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automaattinen tarkennus...</value></data>
-   
    
    
    

@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Gem sekvens</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Gem Video</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Kan ikke forbinde til videokamera</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Kunne ikke finde et tilsluttet kamera.\nKontroller at kameraet er sluttet korrekt til PC.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overskriv fil</value></data>
@@ -195,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Fremtoning</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Anvend</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Pile:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuller</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Luk</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Farve:</value></data>
@@ -308,6 +328,9 @@
    
    
    
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Tidligere anvendte farver:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tom</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer; {0}%</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overblik…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Omvendt rækkefølge…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast…</value></data>
-   
    
    
    

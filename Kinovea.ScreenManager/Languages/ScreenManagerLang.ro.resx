@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Salvează Secvenţa</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salvează Video</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Aparatul video nu poate fi conectat.</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Nu s-a găsit niciun dispozitiv conectat.\nVă rugăm verificaţi ca dispozitivul să fie conectat correspunzător la calculator.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Suprascrie fişierul</value></data>
@@ -194,6 +213,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Import cadre...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Aspect</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Aplică</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Renunţă</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Închide</value></data>
@@ -308,6 +328,9 @@
    
    
    
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Culori folosite recent :</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Gol</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
@@ -326,7 +349,7 @@
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Unghi</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronometru</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Cerc</value></data>
-   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marker cruce</value></data>
+   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marker</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Linie</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Creion</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Mutare</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Privire de ansamblu</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inversează...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast automat...</value></data>
-   
    
    
    

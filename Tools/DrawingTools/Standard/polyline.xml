@@ -3,7 +3,7 @@
   <FormatVersion>1.0</FormatVersion>
   <Id>79916555-63D6-494D-98AE-85F71F6C6E59</Id>
   <Name>Polyline</Name>
-  <DisplayName></DisplayName>
+  <DisplayName>DrawingName_Polyline</DisplayName>
   <Icon>polyline2</Icon>
   <DrawingClass>DrawingPolyline</DrawingClass>
   <Attached>true</Attached>

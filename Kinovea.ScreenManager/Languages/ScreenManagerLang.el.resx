@@ -172,6 +172,25 @@
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Αποθήκευση Ακολουθίας</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Αποθήκευση Video</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Αδύνατη η σύνδεση στην συσκευή εικόνας</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Δεν βρέθηκε συσκευή για σύνδεση.\n Παρακαλούμε βεβαιωθείτε ότι η συσκευή είναι κατάλληλα συνδεδεμένη στον υπολογιστή.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Επικάλυψη αρχείου</value></data>
@@ -194,6 +213,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Εισαγωγή Πλαισίων…</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Εμφάνιση</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Εφαρμογή</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Κλείσιμο</value></data>
@@ -308,6 +328,9 @@
    
    
    
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Πρόσφατα χρησιμοποιημένα χρώματα:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Άδειο</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Ενδιάμεση μνήμη: {0}%</value></data>
@@ -367,7 +390,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Περίληψη…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Αντιστροφή…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Αυτόματη Αντίθεση...</value></data>
-   
    
    
    
