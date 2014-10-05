@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
+using System.Linq;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
@@ -50,10 +50,15 @@ namespace Kinovea.ScreenManager
             m_Preselect = _preselect;
             InitializeComponent();
             LocalizeForm();
-            LoadPresets(true);
+            
         }
         #endregion
-        
+
+        private void FormToolPresets_Load(object sender, EventArgs e)
+        {
+            LoadPresets(true);
+        }
+
         #region Private Methods
         private void LocalizeForm()
         {
@@ -69,31 +74,34 @@ namespace Kinovea.ScreenManager
         }
         private void LoadPresets(bool _memorize)
         {
-            // Load the list
-            lstPresets.Items.Clear();
-            int preselected = -1;
+            lvPresets.Items.Clear();
 
-            foreach(AbstractDrawingTool tool in ToolManager.Tools.Values)
+            IEnumerable<AbstractDrawingTool> tools = ToolManager.Tools.Values.OrderBy(t => t.DisplayName);
+            foreach(AbstractDrawingTool tool in tools)
             {
                 if (tool.StylePreset == null || tool.StylePreset.Elements.Count == 0)
                     continue;
                 
-                lstPresets.Items.Add(tool);
+                iconList.Images.Add(tool.Name, tool.Icon);
+                ListViewItem item = new ListViewItem(tool.DisplayName, tool.Name);
+                item.Tag = tool;
 
                 if(_memorize)
                     tool.StylePreset.Memorize();
 
                 if(tool == m_Preselect)
-                    preselected = lstPresets.Items.Count - 1;
-            }
+                    item.Selected = true;
                 
-            if(lstPresets.Items.Count > 0)
-                lstPresets.SelectedIndex = preselected >= 0 ? preselected : 0;
+                lvPresets.Items.Add(item);
+                int t = lvPresets.SelectedItems.Count;
+            }
+
+            if (lvPresets.Items.Count > 0 && lvPresets.SelectedItems.Count == 0)
+                lvPresets.Items[0].Selected = true;
         }
         private void LoadPreset(AbstractDrawingTool _preset)
         {
             // Load a single preset
-            // The layout is dynamic. The groupbox and the whole form is resized when needed on a "GrowOnly" basis.
             
             // Tool title and icon
             btnToolIcon.BackColor = Color.Transparent;
@@ -107,8 +115,6 @@ namespace Kinovea.ScreenManager
             
             Size editorSize = new Size(60,20);
             
-            // Initialize the horizontal layout with a minimal value, 
-            // it will be fixed later if some of the entries have long text.
             int minimalWidth = btnApply.Width + btnCancel.Width + 10;
             m_iEditorsLeft = minimalWidth - 20 - editorSize.Width;
             
@@ -137,7 +143,6 @@ namespace Kinovea.ScreenManager
                 
                 if(lbl.Left + labelSize.Width + 25 > m_iEditorsLeft)
                 {
-                    // dynamic horizontal layout for high dpi and verbose languages.
                     m_iEditorsLeft = (int)(lbl.Left + labelSize.Width + 25);
                 }
                 
@@ -154,7 +159,7 @@ namespace Kinovea.ScreenManager
             
             helper.Dispose();
             
-            // Recheck all mini editors for the left positionning.
+            // Recheck all mini editors to realign them on the leftmost.
             foreach(Control c in grpConfig.Controls)
             {
                 if(!(c is Label) && !(c is Button))
@@ -163,25 +168,21 @@ namespace Kinovea.ScreenManager
                         c.Left = m_iEditorsLeft;
                 }
             }
-            
-            grpConfig.Height = Math.Max(lastEditorBottom + 20, 110);
-            grpConfig.Width = m_iEditorsLeft + editorSize.Width + 20;
-            grpConfig.Left = btnToolIcon.Left;
-            lstPresets.Height = grpConfig.Bottom - lstPresets.Top;
-            
-            int borderLeft = this.Width - this.ClientRectangle.Width;
-            this.Width = borderLeft + grpConfig.Right + 10;
-            
-            int borderTop = this.Height - this.ClientRectangle.Height;
-            this.Height = borderTop + grpConfig.Bottom + btnApply.Height + 20;
         }
         private void LstPresetsSelectedIndexChanged(object sender, EventArgs e)
         {
-            AbstractDrawingTool preset = lstPresets.SelectedItem as AbstractDrawingTool;
-            if(preset != null)
-            {
-                LoadPreset(preset);
-            }
+            
+        }
+        private void lvPresets_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvPresets.SelectedItems.Count != 1)
+                return;
+
+            AbstractDrawingTool preset = lvPresets.SelectedItems[0].Tag as AbstractDrawingTool;
+            if (preset == null)
+                return;
+            
+            LoadPreset(preset);
         }
         private void BtnDefaultClick(object sender, EventArgs e)
         {
@@ -267,7 +268,6 @@ namespace Kinovea.ScreenManager
             m_bManualClose = true;	
         }
         #endregion
-        
         #endregion
     }
 }
