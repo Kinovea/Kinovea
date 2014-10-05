@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>06544972-A78B-4BF6-AA52-FC355477915D</Id>
+  <Name>Angle</Name>
+  <DisplayName>ToolTip_DrawingToolAngle2D</DisplayName>
+  <Icon>angle</Icon>
+  <DrawingClass>DrawingAngle</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>false</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="line color">
+      <Value>255;0;153;153</Value>
+    </Color>
+  </DefaultStyle>
+</KinoveaDrawingTool>

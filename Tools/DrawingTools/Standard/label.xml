@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>14D5CCFB-0A43-42EC-924F-4CB39945C1E5</Id>
+  <Name>Label</Name>
+  <DisplayName>ToolTip_DrawingToolText</DisplayName>
+  <Icon>label</Icon>
+  <DrawingClass>DrawingText</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>false</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="back color">
+      <Value>255;0;0;0</Value>
+    </Color>
+    <FontSize Key="font size">
+      <Value>12</Value>
+    </FontSize>
+  </DefaultStyle>
+</KinoveaDrawingTool>

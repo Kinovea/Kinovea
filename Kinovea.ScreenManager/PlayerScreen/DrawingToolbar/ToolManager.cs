@@ -53,26 +53,22 @@ namespace Kinovea.ScreenManager
             tools = new Dictionary<string, AbstractDrawingTool>();
 
             // Built-ins
-            tools.Add("Angle", new DrawingToolAngle());
-            tools.Add("Chrono", new DrawingToolChrono());
-            tools.Add("Circle", new DrawingToolCircle());
+            // These tools cannot be easily externalized at the moment due to some specificities like a custom cursor or ctor parameters.
             tools.Add("CrossMark", new DrawingToolCrossMark());
-            tools.Add("Line", new DrawingToolLine());
-            tools.Add("Polyline", new DrawingToolPolyline());
             tools.Add("Pencil", new DrawingToolPencil());
-            tools.Add("Label", new DrawingToolText());
             tools.Add("Grid", new DrawingToolGrid());
             tools.Add("Plane", new DrawingToolPlane());
-            tools.Add("DistortionGrid", new DrawingToolDistortionGrid());
+            
             tools.Add("Spotlight", new DrawingToolSpotlight());
             tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
             tools.Add("Magnifier", new DrawingToolMagnifier());
             tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
 
-            // Externally defined
+            // Custom tools (externally defined).
             foreach (AbstractDrawingTool customTool in GenericPostureManager.Tools)
                 tools.Add(customTool.DisplayName, customTool);
             
+            // Standard tools externally defined.
             ImportExternalTools();
 
             LoadPresets();

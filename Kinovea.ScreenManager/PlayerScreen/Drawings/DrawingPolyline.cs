@@ -118,21 +118,20 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingPolyline(Point start, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
+        public DrawingPolyline(Point start, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
         {
             points["0"] = start;
             points["1"] = start;
-            
-            // Decoration
+
             styleHelper.Color = Color.DarkSlateGray;
             styleHelper.LineSize = 1;
-            if (preset != null)
-            {
-                style = preset.Clone();
-                BindStyle();
-            }
 
-            // Fading
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("Polyline");
+            
+            style = preset.Clone();
+            BindStyle();
+            
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
             mnuFinish.Click += mnuFinish_Click;
@@ -144,7 +143,7 @@ namespace Kinovea.ScreenManager
             mnuCloseMenu.Image = Properties.Drawings.cross_small;
         }
         public DrawingPolyline(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, 0, 0, ToolManager.GetStylePreset("Polyline"), null)
+            : this(Point.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }

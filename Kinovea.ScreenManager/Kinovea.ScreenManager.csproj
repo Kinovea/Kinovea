@@ -271,8 +271,6 @@
     <Compile Include="PlayerScreen\Drawings\CoordinateSystem\TickMark.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingDistortionGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingPolyline.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingToolDistortionGrid.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingToolPolyline.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\KeyframeEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\MultiDrawingItemEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\GraphicsExtensions.cs" />
@@ -398,8 +396,6 @@
     <Compile Include="PlayerScreen\Drawings\CoordinateSystem\DrawingCoordinateSystem.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCoordinateSystem.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolMagnifier.cs" />
@@ -483,12 +479,9 @@
     <Compile Include="PlayerScreen\Drawings\AbstractDrawingTool.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingPencil.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingText.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingToolAngle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCrossMark.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingToolLine.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPencil.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPointer.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingToolText.cs" />
     <Compile Include="PlayerScreen\Geometry\Angle.cs" />
     <Compile Include="PlayerScreen\Geometry\AngleHelper.cs" />
     <Compile Include="PlayerScreen\Geometry\Ellipse.cs" />

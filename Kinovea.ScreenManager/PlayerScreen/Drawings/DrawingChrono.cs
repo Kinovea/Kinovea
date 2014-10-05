@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingChrono(Point p, long start, long averageTimeStampsPerFrame, DrawingStyle preset)
+        public DrawingChrono(Point p, long start, long averageTimeStampsPerFrame, DrawingStyle preset = null)
         {
             // Core
             visibleTimestamp = start;
@@ -165,14 +165,15 @@ namespace Kinovea.ScreenManager
             mainBackground.Rectangle = new Rectangle(p, Size.Empty);
 
             timecode = "error";
-            
+
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
-            if(preset != null)
-            {
-                style = preset.Clone();
-                BindStyle();
-            }
+
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("Chrono");
+            
+            style = preset.Clone();
+            BindStyle();
             
             label = "";
             showLabel = true;
@@ -185,7 +186,7 @@ namespace Kinovea.ScreenManager
             infosFading.UseDefault = false;
         }
         public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
-            : this(Point.Empty, 0, 1, ToolManager.GetStylePreset("Chrono"))
+            : this(Point.Empty, 0, 1, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
