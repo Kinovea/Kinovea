@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
 
             rtbInfo1.SelectionFont = fontText;
             StringBuilder b = new StringBuilder();
-            b.AppendLine("The digitized coordinates are passed through a low pass filter to remove noise. The filter is a Butterworth, fourth-order, zero-lag, low-pass filter. Two second-order passes (one forward, one backward) are used to reset the phase shift (Winter, 2009).");
+            b.AppendLine("The digitized coordinates are passed through a low pass filter to remove noise. The filter does two passes of a second-order Butterworth filter. The two passes (one forward, one backward) are used to reset the phase shift (Winter, 2009).");
             b.AppendLine("To initialize the filter the trajectory is extrapolated for 10 data points each side using reflected values around the end points. The extrapolated points are then removed from the filtered results (Smith, 1989).");
             rtbInfo1.AppendText(b.ToString());
     
