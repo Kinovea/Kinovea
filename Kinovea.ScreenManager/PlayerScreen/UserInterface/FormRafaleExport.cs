@@ -119,7 +119,7 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgSaveSequenceTitle;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = ScreenManagerLang.dlgSaveFilter;
+            saveFileDialog.Filter = ScreenManagerLang.FileFilter_SaveImage;
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(fullPath);
 

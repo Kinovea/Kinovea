@@ -78,7 +78,7 @@ namespace Kinovea.ScreenManager
             SaveFileDialog dlgSave = new SaveFileDialog();
             dlgSave.Title = ScreenManagerLang.dlgSaveVideoTitle;
             dlgSave.RestoreDirectory = true;
-            dlgSave.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
+            dlgSave.Filter = ScreenManagerLang.FileFilter_SaveVideo;
             dlgSave.FilterIndex = 1;
             dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(leftPlayer.FilePath), Path.GetFileNameWithoutExtension(rightPlayer.FilePath));
 

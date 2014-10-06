@@ -295,20 +295,74 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Calibrate camera.
+        /// </summary>
+        internal static string dlgCameraCalibration_CalibrateCamera {
+            get {
+                return ResourceManager.GetString("dlgCameraCalibration_CalibrateCamera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Camera intrisics.
+        /// </summary>
+        internal static string dlgCameraCalibration_CameraIntrinsics {
+            get {
+                return ResourceManager.GetString("dlgCameraCalibration_CameraIntrinsics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Distortion.
+        /// </summary>
+        internal static string dlgCameraCalibration_Distortion {
+            get {
+                return ResourceManager.GetString("dlgCameraCalibration_Distortion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Distortion coefficients.
+        /// </summary>
+        internal static string dlgCameraCalibration_DistortionCoefficients {
+            get {
+                return ResourceManager.GetString("dlgCameraCalibration_DistortionCoefficients", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Load camera calibration profile.
+        /// </summary>
+        internal static string dlgCameraCalibration_OpenDialogTitle {
+            get {
+                return ResourceManager.GetString("dlgCameraCalibration_OpenDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save camera calibration profile.
+        /// </summary>
+        internal static string dlgCameraCalibration_SaveDialogTitle {
+            get {
+                return ResourceManager.GetString("dlgCameraCalibration_SaveDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Camera calibration.
+        /// </summary>
+        internal static string dlgCameraCalibration_Title {
+            get {
+                return ResourceManager.GetString("dlgCameraCalibration_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Colors.
         /// </summary>
         internal static string dlgColorPicker_Title {
             get {
                 return ResourceManager.GetString("dlgColorPicker_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à XML (*.xml)|*.xml;.
-        /// </summary>
-        internal static string dlgColorProfile_FileFilter {
-            get {
-                return ResourceManager.GetString("dlgColorProfile_FileFilter", resourceCulture);
             }
         }
         
@@ -754,29 +808,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;.
-        /// </summary>
-        internal static string dlgExportSpreadsheet_Filter {
-            get {
-                return ResourceManager.GetString("dlgExportSpreadsheet_Filter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Save Data as a Spreadsheet Document.
         /// </summary>
         internal static string dlgExportSpreadsheet_Title {
             get {
                 return ResourceManager.GetString("dlgExportSpreadsheet_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à All supported files (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF.
-        /// </summary>
-        internal static string dlgImportReference_Filter {
-            get {
-                return ResourceManager.GetString("dlgImportReference_Filter", resourceCulture);
             }
         }
         
@@ -795,15 +831,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgKeyframeComment_Title {
             get {
                 return ResourceManager.GetString("dlgKeyframeComment_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;.
-        /// </summary>
-        internal static string dlgLoadAnalysis_Filter {
-            get {
-                return ResourceManager.GetString("dlgLoadAnalysis_Filter", resourceCulture);
             }
         }
         
@@ -876,15 +903,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgRafaleExport_Title {
             get {
                 return ResourceManager.GetString("dlgRafaleExport_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;.
-        /// </summary>
-        internal static string dlgSaveAnalysisFilter {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisFilter", resourceCulture);
             }
         }
         
@@ -970,29 +988,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp.
-        /// </summary>
-        internal static string dlgSaveFilter {
-            get {
-                return ResourceManager.GetString("dlgSaveFilter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Save Sequence.
         /// </summary>
         internal static string dlgSaveSequenceTitle {
             get {
                 return ResourceManager.GetString("dlgSaveSequenceTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; .
-        /// </summary>
-        internal static string dlgSaveVideoFilterAlone {
-            get {
-                return ResourceManager.GetString("dlgSaveVideoFilterAlone", resourceCulture);
             }
         }
         
@@ -1294,6 +1294,60 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à All supported files (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF.
+        /// </summary>
+        internal static string FileFilter_ImportReference {
+            get {
+                return ResourceManager.GetString("FileFilter_ImportReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;.
+        /// </summary>
+        internal static string FileFilter_KVA {
+            get {
+                return ResourceManager.GetString("FileFilter_KVA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp.
+        /// </summary>
+        internal static string FileFilter_SaveImage {
+            get {
+                return ResourceManager.GetString("FileFilter_SaveImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; .
+        /// </summary>
+        internal static string FileFilter_SaveVideo {
+            get {
+                return ResourceManager.GetString("FileFilter_SaveVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;.
+        /// </summary>
+        internal static string FileFilter_Spreadsheet {
+            get {
+                return ResourceManager.GetString("FileFilter_Spreadsheet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à XML (*.xml)|*.xml;.
+        /// </summary>
+        internal static string FileFilter_XML {
+            get {
+                return ResourceManager.GetString("FileFilter_XML", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Progress :.
         /// </summary>
         internal static string FormFileSave_Infos {
@@ -1438,6 +1492,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à File.
+        /// </summary>
+        internal static string Generic_File {
+            get {
+                return ResourceManager.GetString("Generic_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Font size:.
         /// </summary>
         internal static string Generic_FontSizePicker {
@@ -1465,6 +1528,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Import.
+        /// </summary>
+        internal static string Generic_Import {
+            get {
+                return ResourceManager.GetString("Generic_Import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Width:.
         /// </summary>
         internal static string Generic_LineSizePicker {
@@ -1483,11 +1555,38 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open.
+        /// </summary>
+        internal static string Generic_Open {
+            get {
+                return ResourceManager.GetString("Generic_Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Size:.
         /// </summary>
         internal static string Generic_PenSizePicker {
             get {
                 return ResourceManager.GetString("Generic_PenSizePicker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Quit.
+        /// </summary>
+        internal static string Generic_Quit {
+            get {
+                return ResourceManager.GetString("Generic_Quit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Restore default.
+        /// </summary>
+        internal static string Generic_Restore {
+            get {
+                return ResourceManager.GetString("Generic_Restore", resourceCulture);
             }
         }
         

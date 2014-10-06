@@ -36,21 +36,20 @@ namespace Kinovea.ScreenManager
     public partial class FormToolPresets : Form
     {
         #region Members
-        private bool m_bManualClose;
-        private List<AbstractStyleElement> m_Elements = new List<AbstractStyleElement>();
-        private int m_iEditorsLeft;
-        private AbstractDrawingTool m_Preselect;
+        private bool manualClose;
+        private List<AbstractStyleElement> styleElements = new List<AbstractStyleElement>();
+        private int editorsLeft;
+        private AbstractDrawingTool preselect;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
         public FormToolPresets():this(null){}
-        public FormToolPresets(AbstractDrawingTool _preselect)
+        public FormToolPresets(AbstractDrawingTool preselect)
         {
-            m_Preselect = _preselect;
+            this.preselect = preselect;
             InitializeComponent();
             LocalizeForm();
-            
         }
         #endregion
 
@@ -58,8 +57,6 @@ namespace Kinovea.ScreenManager
         {
             LoadPresets(true);
         }
-
-        #region Private Methods
         private void LocalizeForm()
         {
             // Window & Controls
@@ -72,7 +69,7 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnSaveProfile, ScreenManagerLang.dlgColorProfile_ToolTip_SaveProfile);
             toolTips.SetToolTip(btnDefault, ScreenManagerLang.dlgColorProfile_ToolTip_DefaultProfile);
         }
-        private void LoadPresets(bool _memorize)
+        private void LoadPresets(bool memorize)
         {
             lvPresets.Items.Clear();
 
@@ -86,10 +83,10 @@ namespace Kinovea.ScreenManager
                 ListViewItem item = new ListViewItem(tool.DisplayName, tool.Name);
                 item.Tag = tool;
 
-                if(_memorize)
+                if(memorize)
                     tool.StylePreset.Memorize();
 
-                if(tool == m_Preselect)
+                if(tool == preselect)
                     item.Selected = true;
                 
                 lvPresets.Items.Add(item);
@@ -99,32 +96,32 @@ namespace Kinovea.ScreenManager
             if (lvPresets.Items.Count > 0 && lvPresets.SelectedItems.Count == 0)
                 lvPresets.Items[0].Selected = true;
         }
-        private void LoadPreset(AbstractDrawingTool _preset)
+        private void LoadPreset(AbstractDrawingTool preset)
         {
             // Load a single preset
             
             // Tool title and icon
             btnToolIcon.BackColor = Color.Transparent;
-            btnToolIcon.Image = _preset.Icon;
-            lblToolName.Text = _preset.DisplayName;
+            btnToolIcon.Image = preset.Icon;
+            lblToolName.Text = preset.DisplayName;
             
             // Clean up
-            m_Elements.Clear();
+            styleElements.Clear();
             grpConfig.Controls.Clear();
             Graphics helper = grpConfig.CreateGraphics();
             
             Size editorSize = new Size(60,20);
             
             int minimalWidth = btnApply.Width + btnCancel.Width + 10;
-            m_iEditorsLeft = minimalWidth - 20 - editorSize.Width;
+            editorsLeft = minimalWidth - 20 - editorSize.Width;
             
             int mimimalHeight = grpConfig.Height;
             int lastEditorBottom = 10;
             
-            foreach(KeyValuePair<string, AbstractStyleElement> pair in _preset.StylePreset.Elements)
+            foreach(KeyValuePair<string, AbstractStyleElement> pair in preset.StylePreset.Elements)
             {
                 AbstractStyleElement styleElement = pair.Value;
-                m_Elements.Add(styleElement);
+                styleElements.Add(styleElement);
                 
                 Button btn = new Button();
                 btn.Image = styleElement.Icon;
@@ -141,14 +138,14 @@ namespace Kinovea.ScreenManager
                 
                 SizeF labelSize = helper.MeasureString(lbl.Text, lbl.Font);
                 
-                if(lbl.Left + labelSize.Width + 25 > m_iEditorsLeft)
+                if(lbl.Left + labelSize.Width + 25 > editorsLeft)
                 {
-                    m_iEditorsLeft = (int)(lbl.Left + labelSize.Width + 25);
+                    editorsLeft = (int)(lbl.Left + labelSize.Width + 25);
                 }
                 
                 Control miniEditor = styleElement.GetEditor();
                 miniEditor.Size = editorSize;
-                miniEditor.Location = new Point(m_iEditorsLeft, btn.Top);
+                miniEditor.Location = new Point(editorsLeft, btn.Top);
                 
                 lastEditorBottom = miniEditor.Bottom;
                 
@@ -164,14 +161,10 @@ namespace Kinovea.ScreenManager
             {
                 if(!(c is Label) && !(c is Button))
                 {
-                    if(c.Left < m_iEditorsLeft) 
-                        c.Left = m_iEditorsLeft;
+                    if(c.Left < editorsLeft) 
+                        c.Left = editorsLeft;
                 }
             }
-        }
-        private void LstPresetsSelectedIndexChanged(object sender, EventArgs e)
-        {
-            
         }
         private void lvPresets_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -204,7 +197,7 @@ namespace Kinovea.ScreenManager
             // load file to working copy of the profile
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgColorProfile_ToolTip_LoadProfile;
-            openFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
+            openFileDialog.Filter = ScreenManagerLang.FileFilter_XML;
             openFileDialog.FilterIndex = 1;
             openFileDialog.InitialDirectory = Software.ColorProfileDirectory;
 
@@ -224,7 +217,7 @@ namespace Kinovea.ScreenManager
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgColorProfile_ToolTip_SaveProfile;
-            saveFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
+            saveFileDialog.Filter = ScreenManagerLang.FileFilter_XML;
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.InitialDirectory = Software.ColorProfileDirectory;
 
@@ -241,7 +234,7 @@ namespace Kinovea.ScreenManager
         #region Form closing
         private void Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(!m_bManualClose)
+            if(!manualClose)
             {
                 Revert();
             }
@@ -260,14 +253,13 @@ namespace Kinovea.ScreenManager
         private void BtnCancel_Click(object sender, EventArgs e)
         {
             Revert();
-            m_bManualClose = true;
+            manualClose = true;
         }
         private void BtnOK_Click(object sender, EventArgs e)
         {
             ToolManager.SavePresets();
-            m_bManualClose = true;	
+            manualClose = true;	
         }
-        #endregion
         #endregion
     }
 }

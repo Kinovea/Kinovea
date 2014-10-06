@@ -92,7 +92,6 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>스크린 바꾸기</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>명령 조절을 바꿈</value></data>
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>색상</value></data>
-   <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>색상 프로파일…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>기본 색상 프로파일로 돌이킴</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>색상 프로파일 가져오기</value></data>
@@ -145,11 +144,8 @@
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>키 이미지'만 사용한 슬라이드 쇼</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>비디오의 형태</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>데이터를 표 형식 계산기 문서로 저장</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgImportReference_Title" xml:space="preserve"><value>한 이미지를 참조로 가져옴</value></data>
-   <data name="dlgImportReference_Filter" xml:space="preserve"><value>지원되는 동영상 파일들 (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>주석…</value></data>
-   <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea 비디오 분석 (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>키 이미지'자료 가져오기</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>키 이미지'만 내보냄</value></data>
    
@@ -158,7 +154,6 @@
    
    
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>연속 이미지를 저장</value></data>
-   <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea 비디오 분석 (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>느린 재생을 고려하라(현재=</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>선택사항</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>저장 방법</value></data>
@@ -168,10 +163,15 @@
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>분석개체들은 모든 재생기에서 보이지만 수정은 안됨.#'키 이미지'에 첨부된 주석은 저장되지 않음.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>비디오 저장…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>키 이미지'자료 저장</value></data>
-   <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>연속 이미지를 저장</value></data>
-   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>비디오 저장</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    
@@ -230,6 +230,17 @@
    <data name="Generic_Image" xml:space="preserve"><value>이미지</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>비디오</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>이미지 저장</value></data>
+   
+   
+   
+   
+   
+   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
+   <data name="FileFilter_ImportReference" xml:space="preserve"><value>지원되는 동영상 파일들 (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
+   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea 비디오 분석 (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>키 이미지'가 수정되었음.\n닫기 전에 키 이지미 자료를 저장할까요?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>키 이미지' 자료는 저장되지 않았음</value></data>
    
@@ -390,6 +401,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>개관(overview)…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>반대(reverse)…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value></data>
+   
    
    
    

@@ -92,7 +92,6 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Cambiar Pantallas</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Mostrar/Ocultar Controles Comunes</value></data>
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Colores</value></data>
-   <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Perfil Colores...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Perfil de Color Predeterminado</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Cargar Perfil de Color</value></data>
@@ -145,11 +144,8 @@
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Presentación de Diapositivas con las Imágenes Clave</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipo de vídeo</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Guardar los Datos en una Hoja de Cálculo</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgImportReference_Title" xml:space="preserve"><value>Importar un imagen como referencia</value></data>
-   <data name="dlgImportReference_Filter" xml:space="preserve"><value>Todos los archivos soportados (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentarios...</value></data>
-   <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Análisis Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|Todos los archivos (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Cargar datos de las imagenes clave</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Guardar sólo imàgenes clave.</value></data>
    <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Total : {0:0} imágenes.</value></data>
@@ -158,7 +154,6 @@
    
    
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Guardar una secuencia de imágenes</value></data>
-   <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Analisis Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Guardar con el ralentizado (Actual = </value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opciones</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Método para guardar</value></data>
@@ -168,10 +163,15 @@
    
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Guardar el video y los datos de las imàgenes clave…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Guardar los datos de las imàgenes clave .</value></data>
-   <data name="dlgSaveFilter" xml:space="preserve"><value>Imagenes JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Imagenes PNG (*.png)|*.png|Imagenes Bitmap (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Guardar la secuencia de imàgenes </value></data>
-   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Guardar el video.</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    
@@ -230,6 +230,17 @@
    <data name="Generic_Image" xml:space="preserve"><value>Imagen </value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Guardar la imagen.</value></data>
+   
+   
+   
+   
+   
+   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveImage" xml:space="preserve"><value>Imagenes JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Imagenes PNG (*.png)|*.png|Imagenes Bitmap (*.bmp)|*.bmp</value></data>
+   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Todos los archivos soportados (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
+   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   <data name="FileFilter_KVA" xml:space="preserve"><value>Analisis Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Imágenes clave han sido modificados.\n ¿Desea guardar los datos antes de cerrar ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Imágenes clave no guardadas</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Retraso mostrando imágenes: {0:0} s</value></data>
@@ -390,6 +401,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resumen</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertido...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste...</value></data>
+   
    
    
    

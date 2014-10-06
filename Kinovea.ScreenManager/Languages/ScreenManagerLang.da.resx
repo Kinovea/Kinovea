@@ -92,7 +92,6 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Byt om på vinduer</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Vis/skjul almindlig styring</value></data>
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Farver</value></data>
-   <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Farveprofil…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Genskab standard farveprofil</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Indlæs farveprofil</value></data>
@@ -145,11 +144,8 @@
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video slideshow kun med nøglebilleder</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Videotype</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Gem data i et regneark</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgImportReference_Title" xml:space="preserve"><value>Importer et referencebillede</value></data>
-   <data name="dlgImportReference_Filter" xml:space="preserve"><value>Filtyper der understøttes (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Kommentarer…</value></data>
-   <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Indlæs nøglebilleders data</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Eksporter kun nøglebilleder.</value></data>
    
@@ -158,7 +154,6 @@
    
    
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Gem en billedserie.</value></data>
-   <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Tag højde for slow motion. (Nuværende =</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Valgmuligheder</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Lagringsmåde</value></data>
@@ -168,10 +163,15 @@
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Analyseobjekter vil være synlige i alle afspillere, men kan ikke ændres.#Ekstra kommentarer til nøglebilleder vil ikke blive gemt.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Gem Video…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Gem data for nøglebilleder</value></data>
-   <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG billeder (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG billeder (*.png)|*.png|Bitmap billeder (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Gem sekvens</value></data>
-   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Gem Video</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    
@@ -230,6 +230,17 @@
    <data name="Generic_Image" xml:space="preserve"><value>Billede</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Gem billede</value></data>
+   
+   
+   
+   
+   
+   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG billeder (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG billeder (*.png)|*.png|Bitmap billeder (*.bmp)|*.bmp</value></data>
+   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Filtyper der understøttes (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
+   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Nøglebilleder er blevet modificeret.\nØnsker du at gemme nøglebillederne inden der lukkes?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Nøglebilleders data er ikke gemt</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Forsink visning med: {0:0} sek.</value></data>
@@ -390,6 +401,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overblik…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Omvendt rækkefølge…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast…</value></data>
+   
    
    
    

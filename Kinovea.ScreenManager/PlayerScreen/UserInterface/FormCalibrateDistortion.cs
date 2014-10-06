@@ -57,19 +57,22 @@ namespace Kinovea.ScreenManager
 
         private void LocalizeForm()
         {
-            this.Text = "Camera calibration";
-            this.grpDistortionCoefficients.Text = "Distortion coefficients";
-            this.grpIntrinsics.Text = "Camera intrinsics";
-            this.btnCalibrate.Text = "Calibrate camera";
+            this.Text = ScreenManagerLang.dlgCameraCalibration_Title;
+            this.grpDistortionCoefficients.Text = ScreenManagerLang.dlgCameraCalibration_DistortionCoefficients;
+            this.grpIntrinsics.Text = ScreenManagerLang.dlgCameraCalibration_CameraIntrinsics;
+            this.btnCalibrate.Text = ScreenManagerLang.dlgCameraCalibration_CalibrateCamera;
             this.btnOK.Text = ScreenManagerLang.Generic_Apply;
             this.btnCancel.Text = ScreenManagerLang.Generic_Cancel;
-            this.mnuFile.Text = "File";
-            this.mnuOpen.Text = "Open";
-            this.mnuSave.Text = "Save";
-            this.mnuImport.Text = "Import";
+            this.mnuFile.Text = ScreenManagerLang.Generic_File;
+            this.mnuOpen.Text = ScreenManagerLang.Generic_Open;
+            this.mnuSave.Text = ScreenManagerLang.Generic_Save;
+            this.mnuImport.Text = ScreenManagerLang.Generic_Import;
+            this.mnuDefault.Text = ScreenManagerLang.Generic_Restore;
+            this.mnuQuit.Text = ScreenManagerLang.Generic_Quit;
+            tabPages.TabPages["tabDistortion"].Text = ScreenManagerLang.dlgCameraCalibration_Distortion;
+            tabPages.TabPages["tabImage"].Text = ScreenManagerLang.Generic_Image;
+
             this.mnuImportAgisoft.Text = "Agisoft Lens";
-            this.mnuDefault.Text = "Restore default";
-            this.mnuQuit.Text = "Quit";
         }
 
         private void Populate()
@@ -153,8 +156,8 @@ namespace Kinovea.ScreenManager
         private void Open()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Load camera calibration profile";
-            openFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
+            openFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_OpenDialogTitle;
+            openFileDialog.Filter = ScreenManagerLang.FileFilter_XML;
             openFileDialog.FilterIndex = 1;
             openFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
 
@@ -190,8 +193,8 @@ namespace Kinovea.ScreenManager
         private void Save()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = "Save camera calibration profile";
-            saveFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
+            saveFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_SaveDialogTitle;
+            saveFileDialog.Filter = ScreenManagerLang.FileFilter_XML;
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
 
@@ -204,8 +207,8 @@ namespace Kinovea.ScreenManager
         private void ImportAgisoft()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Load camera calibration profile";
-            openFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
+            openFileDialog.Title = ScreenManagerLang.dlgCameraCalibration_OpenDialogTitle;
+            openFileDialog.Filter = ScreenManagerLang.FileFilter_XML;
             openFileDialog.FilterIndex = 1;
             openFileDialog.InitialDirectory = Software.CameraCalibrationDirectory;
 

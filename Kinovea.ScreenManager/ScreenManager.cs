@@ -1150,7 +1150,7 @@ namespace Kinovea.ScreenManager
             mnuFormat.Text = ScreenManagerLang.mnuFormat;
             mnuMirror.Text = ScreenManagerLang.mnuMirror;
             mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
-            mnuCameraCalibration.Text = "Camera calibration";
+            mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "…";
             
             mnuSVGTools.Text = ScreenManagerLang.mnuSVGTools;
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
@@ -1218,7 +1218,7 @@ namespace Kinovea.ScreenManager
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
             openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = ScreenManagerLang.dlgLoadAnalysis_Filter;
+            openFileDialog.Filter = ScreenManagerLang.FileFilter_KVA;
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
                 return;
@@ -1253,7 +1253,7 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = ScreenManagerLang.dlgExportSpreadsheet_Filter;
+            saveFileDialog.Filter = ScreenManagerLang.FileFilter_Spreadsheet;
                     
             saveFileDialog.FilterIndex = ((int)format) + 1;
                         
@@ -1758,7 +1758,7 @@ namespace Kinovea.ScreenManager
             // Display file open dialog and launch the drawing.
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgImportReference_Title;
-            openFileDialog.Filter = ScreenManagerLang.dlgImportReference_Filter;
+            openFileDialog.Filter = ScreenManagerLang.FileFilter_ImportReference;
             openFileDialog.FilterIndex = 1;
 
             if (openFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(openFileDialog.FileName))
