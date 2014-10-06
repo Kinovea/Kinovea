@@ -202,7 +202,7 @@ namespace Kinovea.ScreenManager
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgSaveVideoTitle;
             saveFileDialog.InitialDirectory = Path.GetDirectoryName(m_OriginalFilename);
-            saveFileDialog.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
+            saveFileDialog.Filter = ScreenManagerLang.FileFilter_SaveVideo;
             saveFileDialog.FilterIndex = FilesystemHelper.GetFilterIndex(saveFileDialog.Filter, PreferencesManager.PlayerPreferences.VideoFormat);
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(saveFileDialog.FileName))
@@ -225,7 +225,7 @@ namespace Kinovea.ScreenManager
             saveFileDialog.InitialDirectory = Path.GetDirectoryName(m_OriginalFilename);
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(m_OriginalFilename);
             saveFileDialog.FilterIndex = 1;
-            saveFileDialog.Filter = ScreenManagerLang.dlgSaveAnalysisFilter;
+            saveFileDialog.Filter = ScreenManagerLang.FileFilter_KVA;
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {

@@ -92,7 +92,6 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Zamień ekrany</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Przełącz Wspólne Sterowanie</value></data>
    
-   <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Profil koloru,,,</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Domyślny profil kolorów</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Wczytaj profil koloru</value></data>
@@ -146,10 +145,7 @@
    
    
    
-   
-   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Komentarze...</value></data>
-   <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Analiza wideo Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Wczytaj kluczowe Obrazy</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Eksportuj tylko kluczowe Obrazy</value></data>
    
@@ -158,7 +154,6 @@
    
    
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Zapisz sekwencje obrazów</value></data>
-   <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Weź pod uwagę zwolnienia. (Aktualne=</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opcje</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Metoda zapisu</value></data>
@@ -168,10 +163,15 @@
    
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Zapisz dane wideo albo kluczowych obrazów</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Zapisz dane kluczowych obrazów</value></data>
-   <data name="dlgSaveFilter" xml:space="preserve"><value>Obrazy JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Obrazy PNG (*.png)|*.png|Bitmapy (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Zapisz sekwencję</value></data>
-   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Zapisz wideo</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    
@@ -230,6 +230,17 @@
    
    
    <data name="Generic_SaveImage" xml:space="preserve"><value>Zapisz obraz</value></data>
+   
+   
+   
+   
+   
+   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveImage" xml:space="preserve"><value>Obrazy JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Obrazy PNG (*.png)|*.png|Bitmapy (*.bmp)|*.bmp</value></data>
+   
+   
+   <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    
    
    
@@ -390,6 +401,7 @@
    
    
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Kontrast...</value></data>
+   
    
    
    

@@ -4380,7 +4380,7 @@ namespace Kinovea.ScreenManager
                 SaveFileDialog dlgSave = new SaveFileDialog();
                 dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
                 dlgSave.RestoreDirectory = true;
-                dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
+                dlgSave.Filter = ScreenManagerLang.FileFilter_SaveImage;
                 dlgSave.FilterIndex = FilesystemHelper.GetFilterIndex(dlgSave.Filter, PreferencesManager.PlayerPreferences.ImageFormat);
                 
                 if(InteractiveFiltering)
