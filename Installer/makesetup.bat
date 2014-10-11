@@ -1,0 +1,1 @@
+makensis /DREBUILD kinovea.nsi
