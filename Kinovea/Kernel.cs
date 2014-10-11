@@ -334,8 +334,9 @@ namespace Kinovea.Root
             mnuApplicationFolder.Image = Properties.Resources.bug;
             mnuApplicationFolder.Click += (s, e) =>
             {
-                FilesystemHelper.LocateFile(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\log.txt");
+                FilesystemHelper.LocateFile(Path.Combine(Software.SettingsDirectory, "log.txt"));
             };
+
             mnuWebsite.Image = Properties.Resources.website;
             mnuWebsite.Click += (s,e) => Process.Start("http://www.kinovea.org");
             mnuAbout.Image = Properties.Resources.information;

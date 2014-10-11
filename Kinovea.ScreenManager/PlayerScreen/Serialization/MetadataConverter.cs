@@ -7,6 +7,7 @@ using Kinovea.Services;
 using System.Globalization;
 using System.Xml.Xsl;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Kinovea.ScreenManager
 {
@@ -35,7 +36,7 @@ namespace Kinovea.ScreenManager
                 return result;
             }
 
-            string tempFile = Software.SettingsDirectory + "\\temp.kva";
+            string tempFile = Path.Combine(Software.SettingsDirectory, "temp.kva");
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
 
