@@ -1,0 +1,1 @@
+makensis /DPORTABLE /DREBUILD kinovea.nsi

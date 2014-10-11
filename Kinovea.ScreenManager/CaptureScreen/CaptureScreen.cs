@@ -608,8 +608,7 @@ namespace Kinovea.ScreenManager
         }
         private void LoadCompanionKVA()
         {
-            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
-            string startupFile = folder + "\\capture.kva";
+            string startupFile = Path.Combine(Software.SettingsDirectory, "capture.kva");
             LoadKVA(startupFile);
         }
         private void InitializeTools()

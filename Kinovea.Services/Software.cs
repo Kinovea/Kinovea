@@ -49,13 +49,19 @@ namespace Kinovea.Services
         public static void Initialize(Version version)
         {
             Version = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
-            SettingsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + ApplicationName + "\\";
+            string applicationDirectory = Application.StartupPath + "\\";
+            
+            string portableSettings = Path.Combine(applicationDirectory, "AppData");
+            if (Directory.Exists(portableSettings))
+                SettingsDirectory = portableSettings + "\\";
+            else
+                SettingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ApplicationName) + "\\";
+            
             ColorProfileDirectory = SettingsDirectory + "ColorProfiles\\";
             CameraCalibrationDirectory = SettingsDirectory + "CameraCalibration\\";
             TempDirectory = SettingsDirectory + "Temp\\";
             PreferencesFile = SettingsDirectory + "Preferences.xml";
             
-            string applicationDirectory = Application.StartupPath + "\\";
             HelpVideosDirectory = applicationDirectory + "HelpVideos\\";
             ManualsDirectory = applicationDirectory + "Manuals\\";
             XSLTDirectory = applicationDirectory + "xslt\\";
