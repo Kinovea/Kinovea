@@ -30,15 +30,15 @@ namespace Kinovea.ScreenManager
             get { return pointName; }
         }
         
-        public Point Position
+        public PointF Position
         {
             get { return position;}
         }
         
         private readonly string pointName;
-        private readonly Point position;
+        private readonly PointF position;
         
-        public TrackablePointMovedEventArgs(string pointName, Point position)
+        public TrackablePointMovedEventArgs(string pointName, PointF position)
         {
             this.pointName = pointName;
             this.position = position;

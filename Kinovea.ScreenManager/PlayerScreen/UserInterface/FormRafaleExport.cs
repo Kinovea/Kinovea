@@ -1,177 +1,151 @@
-/*
-Copyright © Joan Charmant 2008.
-joan.charmant@gmail.com 
- 
-This file is part of Kinovea.
-
-Kinovea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2 
-as published by the Free Software Foundation.
-
-Kinovea is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
-*/
-
-using System;
-using System.IO;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
+ï»¿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
-
+using Kinovea.Video;
 using Kinovea.ScreenManager.Languages;
+using System.IO;
 
 namespace Kinovea.ScreenManager
 {
-    public partial class formRafaleExport : Form
+    public partial class FormRafaleExport : Form
     {
-        //----------------------------------------------------------
-        // /!\ The interval slider is in thousandth of seconds. (ms)
-        //----------------------------------------------------------
         #region Members
-        private PlayerScreenUserInterface m_PlayerScreenUserInterface;      // parent
-        private Metadata m_Metadata;
-        private string m_FullPath;
-        private long m_iSelectionDuration;                                 // in timestamps.
-        private double m_fTimestampsPerSeconds;                             // ratio
-        private double m_fDurationInSeconds;
-        private int m_iEstimatedTotal;
+        private PlayerScreenUserInterface playerScreenUserInterface;
+        private Metadata metadata;
+        private VideoInfo info;
+        private string fullPath;
+        private int totalFrames;
+        private int maxDecimationFrames;
+        private int decimationFrames;
+        private double frameInterval;
+        private int defaultDecimationFrames = 10;
+        private int limitDecimationFrames = 500;
+        private List<int> values = new List<int>();
         #endregion
 
-        public formRafaleExport(PlayerScreenUserInterface _psui, Metadata _metadata, string _FullPath, long _iSelDuration, double _tsps)
+        public FormRafaleExport(PlayerScreenUserInterface playerScreenUserInterface, Metadata metadata, string fullPath, VideoInfo info)
         {
-            m_PlayerScreenUserInterface = _psui;
-            m_Metadata = _metadata;
-            m_FullPath = _FullPath;
-            m_iSelectionDuration = _iSelDuration;
-            m_fTimestampsPerSeconds = _tsps;
-            m_fDurationInSeconds = m_iSelectionDuration / m_fTimestampsPerSeconds;
-            m_iEstimatedTotal = 0;
+            this.playerScreenUserInterface = playerScreenUserInterface;
+            this.metadata = metadata;
+            this.fullPath = fullPath;
+            this.info = info;
 
+            frameInterval = info.FrameIntervalMilliseconds;
+            totalFrames = (int)((metadata.SelectionEnd - metadata.SelectionStart) / metadata.AverageTimeStampsPerFrame) + 1;
+            maxDecimationFrames = totalFrames / 2;
+            maxDecimationFrames = Math.Min(limitDecimationFrames, maxDecimationFrames);
+            
             InitializeComponent();
             SetupUICulture();
-            SetupData();
+            Populate();
         }
+
         private void SetupUICulture()
         {
-            // Window
             this.Text = "   " + ScreenManagerLang.dlgRafaleExport_Title;
             
-            // Group Config
             grpboxConfig.Text = ScreenManagerLang.Generic_Configuration;
-            chkBlend.Text = ScreenManagerLang.dlgRafaleExport_LabelBlend;
             chkKeyframesOnly.Text = ScreenManagerLang.dlgRafaleExport_LabelKeyframesOnly;
-            if (m_Metadata.Count > 0)
-            {
-                chkKeyframesOnly.Enabled = true;
-            }
-            else
-            {
-                chkKeyframesOnly.Enabled = false;
-            }
+            chkKeyframesOnly.Enabled = metadata.Count > 0;
             
-            // Group Infos
-            grpboxInfos.Text = ScreenManagerLang.dlgRafaleExport_GroupInfos;
-            lblInfosTotalFrames.Text = ScreenManagerLang.dlgRafaleExport_LabelTotalFrames;
-            lblInfosFileSuffix.Text = ScreenManagerLang.dlgRafaleExport_LabelInfoSuffix;
-            lblInfosTotalSeconds.Text = String.Format(ScreenManagerLang.dlgRafaleExport_LabelTotalSeconds, m_fDurationInSeconds);
-
-            // Buttons
             btnOK.Text = ScreenManagerLang.Generic_Save;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
-        private void SetupData()
+        
+        private void Populate()
         {
-            // trkInterval values are in milliseconds.
-            trkInterval.Minimum = 40;
-            trkInterval.Maximum = 8000;
-            trkInterval.Value = 1000;
-            trkInterval.TickFrequency = 250;
+            values.Clear();
+            int lastFrames = 0;
+            int indexOfDefault = 0;
+            for (int i = 1; i < maxDecimationFrames; i++)
+            {
+                int frames = (int)Math.Round((float)totalFrames / i);
+                if (frames == lastFrames)
+                    continue;
+                
+                lastFrames = frames;
+                values.Add(i);
+
+                if (i >= defaultDecimationFrames && indexOfDefault == 0)
+                    indexOfDefault = values.Count - 1;
+            }
+
+            trkDecimate.Minimum = 0;
+            trkDecimate.Maximum = values.Count - 1;
+            trkDecimate.Value = indexOfDefault;
         }
-        private void trkInterval_ValueChanged(object sender, EventArgs e)
+
+        private void trkDecimate_ValueChanged(object sender, EventArgs e)
         {
-            freqViewer.Interval = trkInterval.Value;
+            decimationFrames = values[trkDecimate.Value];
             UpdateLabels();
         }
-        private void chkKeyframesOnly_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkKeyframesOnly.Checked)
-            {
-                trkInterval.Enabled = false;
-                chkBlend.Checked = true;
-            }
-            else
-            {
-                trkInterval.Enabled = true;
-                chkBlend.Checked = true;
-            }
-            UpdateLabels();
-        }
+
         private void UpdateLabels()
         {
-            // Frequency
-            double fInterval = (double)trkInterval.Value / 1000;
-            lblInfosFrequency.Text = ScreenManagerLang.dlgRafaleExport_LabelFrequencyRoot + " ";
-            if (fInterval < 1)
+            int frames = (int)Math.Round((float)totalFrames / decimationFrames);
+
+            if (decimationFrames == 1)
+                lblFrameDecimation.Text = ScreenManagerLang.dlgRafaleExport_ExportAll;
+            else
+                lblFrameDecimation.Text = string.Format(ScreenManagerLang.dlgRafaleExport_ExportFrameDecimation, decimationFrames);
+
+            double decimationTime = decimationFrames * frameInterval;
+            if (decimationTime >= 1000)
             {
-                int iHundredth = (int)(fInterval * 100);
-                lblInfosFrequency.Text += String.Format(ScreenManagerLang.dlgRafaleExport_LabelFrequencyHundredth, iHundredth);
+                decimationTime /= 1000;
+                lblTimeDecimation.Text = string.Format(ScreenManagerLang.dlgRafaleExport_ExportTimeDecimationSeconds, decimationTime);
             }
             else
             {
-                lblInfosFrequency.Text += String.Format(ScreenManagerLang.dlgRafaleExport_LabelFrequencySeconds, fInterval);
+                lblTimeDecimation.Text = string.Format(ScreenManagerLang.dlgRafaleExport_ExportTimeDecimationMilliseconds, decimationTime);
             }
 
-            // Number of frames
-            double fTotalFrames;
-            if (chkKeyframesOnly.Checked)
-            {
-                fTotalFrames = (double)m_Metadata.Count;   
-            }
-            else
-            {
-                fTotalFrames = (m_fDurationInSeconds * (1 / fInterval)) + 0.5;
-            }
-            m_iEstimatedTotal = (int)fTotalFrames;
-
-            lblInfosTotalFrames.Text = String.Format(ScreenManagerLang.dlgRafaleExport_LabelTotalFrames, fTotalFrames);
+            lblTotalFrames.Text = string.Format(ScreenManagerLang.dlgRafaleExport_LabelTotalFrames, frames);
         }
+
+        private void chkKeyframesOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            grpboxConfig.Enabled = !chkKeyframesOnly.Checked;
+        }
+
         private void btnOK_Click(object sender, EventArgs e)
         {
-            
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgSaveSequenceTitle;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = ScreenManagerLang.dlgSaveFilter;
+            saveFileDialog.Filter = ScreenManagerLang.FileFilter_SaveImage;
             saveFileDialog.FilterIndex = 1;
-            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(m_FullPath);
-            
-            Hide();
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                string filePath = saveFileDialog.FileName;
-                if (filePath.Length > 0)
-                {
-                    long iIntervalTimeStamps = (long)(((double)trkInterval.Value / 1000) * m_fTimestampsPerSeconds);
+            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(fullPath);
 
-                    // Launch the Progress bar dialog that will trigger the export.
-                    // it will call the real function (in PlayerServerUI)
-                    formFramesExport ffe = new formFramesExport(m_PlayerScreenUserInterface, filePath, iIntervalTimeStamps, chkBlend.Checked, chkKeyframesOnly.Checked, m_iEstimatedTotal);
-                    ffe.ShowDialog();
-                    ffe.Dispose();
-                }
-                Close();
-            }
-            else
+            Hide();
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK)
             {
                 Show();
+                return;
             }
+
+            if (string.IsNullOrEmpty(saveFileDialog.FileName))
+            {
+                Close();
+                return;
+            }
+
+            int frames = (int)Math.Round((float)totalFrames / decimationFrames);
+            long interval = info.AverageTimeStampsPerFrame * decimationFrames;
+            formFramesExport ffe = new formFramesExport(playerScreenUserInterface, saveFileDialog.FileName, interval, true, chkKeyframesOnly.Checked, frames);
+            ffe.ShowDialog();
+            ffe.Dispose();
+
+            Close();
         }
+
+
     }
 }

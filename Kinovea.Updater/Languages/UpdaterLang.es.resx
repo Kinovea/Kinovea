@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Actualización…</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>¡Una nueva versión está disponible!</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Porfavor escoga el directorio de destino para el archivo de instalación.</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Escoger Directorio de Destino</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versión actual:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Descargar</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Descargando Nueva Versión…</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Tamaño de Archivo:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Un error ocurrió mientras se buscaban actualizaciones. Porfavor asegúrese que una conexión a Internet está disponible.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Lista de Cambios:</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>Salir</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Buscando nuevas versiones</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>¡Su versión està actualizada!</value></data>
+   
+   
    
    
    

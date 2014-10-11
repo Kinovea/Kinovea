@@ -169,5 +169,28 @@ namespace Kinovea.Services
             return format;
         }
 
+        public static void DeleteOrphanFiles()
+        {
+            // Delete orphaned temporary files.
+            // Called when the user cancels the recovery process or when it itself fails.
+            // We do the recursion manually to avoid deleting and recreating the directory at each launch, 
+            // especially since the normal case is that there's nothing in there.
+            DeleteDirectoryContent(Software.TempDirectory);
+        }
+
+        private static void DeleteDirectoryContent(string path)
+        {
+            if (!Directory.Exists(path))
+                return;
+
+            foreach (string entry in Directory.GetFiles(path))
+                File.Delete(entry);
+
+            foreach (string entry in Directory.GetDirectories(path))
+            {
+                DeleteDirectoryContent(entry);
+                Directory.Delete(entry);
+            }
+        }
     }
 }

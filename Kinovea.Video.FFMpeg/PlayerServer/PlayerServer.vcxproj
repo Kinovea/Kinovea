@@ -144,6 +144,7 @@
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavformat\avformat.h" />
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\avutil.h" />
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\error.h" />
+    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\pixfmt.h" />
     <ClInclude Include="..\..\Refs\FFmpeg\include\libpostproc\postprocess.h" />
     <ClInclude Include="..\..\Refs\FFmpeg\include\libswresample\swresample.h" />
     <ClInclude Include="..\..\Refs\FFmpeg\include\libswscale\swscale.h" />

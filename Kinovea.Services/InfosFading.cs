@@ -122,124 +122,91 @@ namespace Kinovea.Services
             clone.FromInfosFading(this);
             return clone;
         }
-        public void FromInfosFading(InfosFading _origin)
+        public void FromInfosFading(InfosFading origin)
         {
-            this.Enabled = _origin.Enabled;
-            this.UseDefault = _origin.UseDefault;
-            this.AlwaysVisible = _origin.AlwaysVisible;
-            this.FadingFrames = _origin.FadingFrames;
-            this.ReferenceTimestamp = _origin.ReferenceTimestamp;
-            this.AverageTimeStampsPerFrame = _origin.AverageTimeStampsPerFrame;
-            this.MasterFactor = _origin.MasterFactor;
+            this.Enabled = origin.Enabled;
+            this.UseDefault = origin.UseDefault;
+            this.AlwaysVisible = origin.AlwaysVisible;
+            this.FadingFrames = origin.FadingFrames;
+            this.ReferenceTimestamp = origin.ReferenceTimestamp;
+            this.AverageTimeStampsPerFrame = origin.AverageTimeStampsPerFrame;
+            this.MasterFactor = origin.MasterFactor;
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            _xmlWriter.WriteElementString("Enabled", enabled ? "true" : "false");
-            _xmlWriter.WriteElementString("Frames", fadingFrames.ToString());
-            _xmlWriter.WriteElementString("AlwaysVisible", alwaysVisible ? "true" : "false");
-            _xmlWriter.WriteElementString("UseDefault", useDefault ? "true" : "false");
+            w.WriteElementString("Enabled", enabled.ToString().ToLower());
+            w.WriteElementString("Frames", fadingFrames.ToString());
+            w.WriteElementString("AlwaysVisible", alwaysVisible.ToString().ToLower());
+            w.WriteElementString("UseDefault", useDefault.ToString().ToLower());
         }
-        public void ReadXml(XmlReader _xmlReader)
+        public void ReadXml(XmlReader xmlReader)
         {
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "Enabled":
-                        enabled = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        enabled = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "Frames":
-                        fadingFrames = _xmlReader.ReadElementContentAsInt();
+                        fadingFrames = xmlReader.ReadElementContentAsInt();
                         break;
                     case "UseDefault":
-                        useDefault = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        useDefault = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "AlwaysVisible":
-                        alwaysVisible = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        alwaysVisible = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
-            
-            // Sanity check.
-            if (fadingFrames < 1) 
-                fadingFrames = 1;
+            xmlReader.ReadEndElement();
+
+            fadingFrames = Math.Max(fadingFrames, 1);
         }
         #endregion
 
-        public double GetOpacityFactor(long _iTimestamp)
+        public double GetOpacityFactor(long timestamp)
         {
-            double fOpacityFactor = 0.0f;
+            double opacity = 0.0f;
 
             if (!enabled)
             {
-                // No fading.
-                if (_iTimestamp == referenceTimestamp)
-                {
-                    fOpacityFactor = 1.0f;
-                }
-                else
-                {
-                    fOpacityFactor = 0.0f;
-                }
+                opacity = timestamp == referenceTimestamp ? 1.0f : 0.0f;
             }
             else if (useDefault)
             {
-                // Default value
                 InfosFading info = PreferencesManager.PlayerPreferences.DefaultFading;
-                if(info.AlwaysVisible)
-                {
-                    fOpacityFactor = 1.0f;
-                }
-                else
-                {
-                    fOpacityFactor = ComputeOpacityFactor(referenceTimestamp, _iTimestamp, info.FadingFrames);
-                }
+                opacity = info.AlwaysVisible ? 1.0f : ComputeOpacityFactor(referenceTimestamp, timestamp, info.FadingFrames);
             }
             else if (alwaysVisible)
             {
-                // infinite fading. (= persisting drawing)
-                fOpacityFactor = 1.0f;
+                opacity = 1.0f;
             }
             else
             {
-                // Custom value.
-                fOpacityFactor = ComputeOpacityFactor(referenceTimestamp, _iTimestamp, fadingFrames);
+                opacity = ComputeOpacityFactor(referenceTimestamp, timestamp, fadingFrames);
             }
 
-            return fOpacityFactor * masterFactor;
+            return opacity * masterFactor;
         }
-        public bool IsVisible(long _iRefTimestamp, long _iTestTimestamp, int iVisibleFrames)
+        
+        public bool IsVisible(long referenceTimestamp, long testTimestamp, int visibleFrames)
         {
-            // Is a given point visible at all ?
-            // Currently used by trajectory in focus mode to check for kf labels visibility.
-            
-            return ComputeOpacityFactor(_iRefTimestamp, _iTestTimestamp, (long)iVisibleFrames) > 0;
+            return ComputeOpacityFactor(referenceTimestamp, testTimestamp, (long)visibleFrames) > 0;
         }
-        private double ComputeOpacityFactor(long _iRefTimestamp, long _iTestTimestamp, long iFadingFrames)
+        
+        private double ComputeOpacityFactor(long referenceTimestamp, long testTimestamp, long fadingFrames)
         {
-            double fOpacityFactor = 0.0f;
-
-            long iDistanceTimestamps = Math.Abs(_iTestTimestamp - _iRefTimestamp);
-            long iFadingTimestamps = iFadingFrames * averageTimeStampsPerFrame;
-
-            if (iDistanceTimestamps > iFadingTimestamps)
-            {
-                fOpacityFactor = 0.0f;
-            }
-            else
-            {
-                fOpacityFactor = 1.0f - ((double)iDistanceTimestamps / (double)iFadingTimestamps);
-            }
-
-            return fOpacityFactor;
+            long distanceTimestamps = Math.Abs(testTimestamp - referenceTimestamp);
+            long fadingTimestamps = fadingFrames * averageTimeStampsPerFrame;
+            return distanceTimestamps > fadingTimestamps ? 0.0f : 1.0f - ((double)distanceTimestamps / (double)fadingTimestamps);
         }
     }
 }

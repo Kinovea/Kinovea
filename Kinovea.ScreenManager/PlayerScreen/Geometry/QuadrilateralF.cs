@@ -77,6 +77,13 @@ namespace Kinovea.ScreenManager
                 return new QuadrilateralF(1, 1);
             }
         }
+        public static QuadrilateralF CenteredUnitSquare
+        {
+            get
+            {
+                return new QuadrilateralF(new PointF(-1, 1), new PointF(1, 1), new PointF(1, -1), new PointF(-1, -1));
+            }
+        }
         #endregion
         
         #region Members
@@ -103,11 +110,23 @@ namespace Kinovea.ScreenManager
             C = new PointF(width, height);
             D = new PointF(0, height);
         }
-        
+
+        public QuadrilateralF(RectangleF rect)
+        {
+            A = rect.Location;
+            B = new PointF(rect.Right, rect.Top);
+            C = new PointF(rect.Right, rect.Bottom);
+            D = new PointF(rect.Left, rect.Bottom);
+        }
+
         #region Public methods
         public void Translate(float x, float y)
         {
             corners = corners.Select( p => p.Translate(x,y)).ToArray();
+        }
+        public void Scale(float x, float y)
+        {
+            corners = corners.Select(p => p.Scale(x, y)).ToArray();
         }
         public void Expand(float width, float height)
         {

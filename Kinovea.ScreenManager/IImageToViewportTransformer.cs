@@ -33,9 +33,10 @@ namespace Kinovea.ScreenManager
     {
         double Scale { get; }
         
+        // Transform : from image coordinates to screen coordinates.
         Point Transform(Point point);
         Point Transform(PointF point);
-        List<Point> Transform(List<PointF> points);
+        List<Point> Transform(IEnumerable<PointF> points);
         int Transform(int distance);
         Size Transform(Size size);
         Size Transform(SizeF size);
@@ -44,7 +45,9 @@ namespace Kinovea.ScreenManager
         List<Rectangle> Transform(List<Rectangle> rectangles);
         QuadrilateralF Transform(QuadrilateralF quadrilateral);
         
-        Point Untransform(Point point);
+        // Untransform : from screen coordinates to image coordinates.
+        PointF Untransform(Point point);
+        SizeF Untransform(SizeF size);
         int Untransform(int value);
     }
 }

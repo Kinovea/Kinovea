@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
+using System.Linq;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -43,13 +44,16 @@ namespace Kinovea.ScreenManager
         }
         public override int ContentHash
         {
-            get { return 0; }
+            get 
+            { 
+                return autoNumbers.Aggregate(0, (a, n) => a ^ n.GetHashCode()); 
+            }
         } 
         public DrawingStyle DrawingStyle
         {
             get { return style;}
         }
-        public override object SelectedItem {
+        public override AbstractMultiDrawingItem SelectedItem {
             get 
             {
                 if(selected >= 0 && selected < autoNumbers.Count)
@@ -97,28 +101,22 @@ namespace Kinovea.ScreenManager
                 BindStyle();
             }
         }
-        public AutoNumberManager(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, long averageTimeStampsPerFrame)
-            : this(ToolManager.AutoNumbers.StylePreset.Clone())
-        {
-            ReadXml(xmlReader, scale, remapTimestampCallback, averageTimeStampsPerFrame);
-        }
-        
         
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             foreach(AutoNumber number in autoNumbers)
-                number.Draw(canvas, transformer, currentTimestamp);
+                number.Draw(canvas, transformer, currentTimestamp, styleHelper);
         }
-        public override void MoveDrawing(int deltaX, int deltaY, Keys modifierKeys)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
             if(selected >= 0 && selected < autoNumbers.Count)
-                autoNumbers[selected].MouseMove(deltaX, deltaY);
+                autoNumbers[selected].MouseMove(dx, dy);
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int currentNumber = 0;
             int handle = -1;
@@ -138,23 +136,26 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractMultiDrawing Implementation
-        public override void Add(object item)
+        public override AbstractMultiDrawingItem GetNewItem(PointF point, long position, long averageTimeStampsPerFrame)
         {
-            // Used in the context of redo.
-            AutoNumber number = item as AutoNumber;
-            if(number == null)
-                return;
-            
-            autoNumbers.Add(number);
-            selected = autoNumbers.Count - 1;
+            int nextValue = NextValue(position);
+            return new AutoNumber(position, averageTimeStampsPerFrame, point, nextValue);
         }
-        public override void Remove(object item)
+        public override AbstractMultiDrawingItem GetItem(Guid id)
+        {
+            return autoNumbers.FirstOrDefault(n => n.Id == id);
+        }
+        public override void Add(AbstractMultiDrawingItem item)
         {
             AutoNumber number = item as AutoNumber;
             if(number == null)
                 return;
             
-            autoNumbers.Remove(number);
+            selected = InsertSorted(number);
+        }
+        public override void Remove(Guid id)
+        {
+            autoNumbers.RemoveAll(a => a.Id == id);
             selected = -1;
         }
         public override void Clear()
@@ -165,47 +166,44 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
-        public void Add(Point point, long position, long averageTimeStampsPerFrame)
+        public void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
         {
-            // Equivalent to GetNewDrawing() for regular drawing tools.
-            int nextValue = NextValue(position);
-            selected = InsertSorted(new AutoNumber(position, averageTimeStampsPerFrame, point, nextValue, styleHelper));
-        }
-        public void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, long averageTimeStampsPerFrame)
-        {
-            xmlReader.ReadStartElement();
+            Clear();
+
+            r.ReadStartElement();
             
-            while(xmlReader.NodeType == XmlNodeType.Element)
+            while(r.NodeType == XmlNodeType.Element)
             {
-                switch(xmlReader.Name)
+                switch(r.Name)
                 {
                     case "DrawingStyle":
-                        style = new DrawingStyle(xmlReader);
+                        style = new DrawingStyle(r);
                         BindStyle();
                         break;
                     case "AutoNumber":
-                        AutoNumber number = new AutoNumber(xmlReader, scale, remapTimestampCallback, averageTimeStampsPerFrame, styleHelper);
-                        InsertSorted(number);
+                        AbstractMultiDrawingItem item = MultiDrawingItemSerializer.Deserialize(r, scale, timestampMapper, metadata);
+                        AutoNumber number = item as AutoNumber;
+                        if (number != null)
+                            metadata.AddMultidrawingItem(this, number);
                         break;
                     default:
-                        string unparsed = xmlReader.ReadOuterXml();
+                        string unparsed = r.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }	
             
-            xmlReader.ReadEndElement();
+            r.ReadEndElement();
         }
-        public void WriteXml(XmlWriter w)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            w.WriteStartElement("DrawingStyle");
-            style.WriteXml(w);
-            w.WriteEndElement();
-            
             foreach(AutoNumber number in autoNumbers)
+                DrawingSerializer.Serialize(w, number as IKvaSerializable, filter);
+            
+            if ((filter & SerializationFilter.Style) == SerializationFilter.Style)
             {
-                w.WriteStartElement("AutoNumber");
-                number.WriteXml(w);
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
                 w.WriteEndElement();
             }
         }

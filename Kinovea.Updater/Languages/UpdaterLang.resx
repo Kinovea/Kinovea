@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Software Update…</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>A new version is available!</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Please choose the target directory for the installer file.</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Choose Destination Folder</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Current Version :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Download</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Downloading New Version...</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>File Size :</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>An error occurred while checking for updates. Please ensure an Internet connection is available. </value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Change Log :</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>Quit</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Checking for new version.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Your version is up to date !</value></data>
+   
+   
    
    
    

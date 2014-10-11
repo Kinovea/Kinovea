@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Αναβάθμιση Λογισμικού</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Μια νέα έκδοση είναι διαθέσιμη !</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Παρακαλώ επιλέξτε την κατεύθυνση προορισμού του αρχείου εγκατάστασης.</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Επιλογή Φακέλου Προορισμού</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Τρέχουσα Έκδοση :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Καταφόρτωση</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Καταφόρτωση Νέας 'Έκδοσης…</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Μέγεθος Αρχείου :</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Κάποιο σφάλμα συνέβη καθώς γινόταν ο έλεγχος για ενημερώσεις. Παρακαλώ βεβαιωθείτε ότι υπάρχει διαθέσιμη σύνδεση στο διαδίκτυο.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Αλλαγή Ημερολογίου :</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>Παραίτηση</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Γίνεται έλεγχος για νέα έκδοση</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Η έκδοσή σας είναι ενήμερη !</value></data>
+   
+   
    
    
    

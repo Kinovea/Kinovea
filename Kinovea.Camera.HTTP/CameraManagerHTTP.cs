@@ -30,24 +30,17 @@ using System.Xml;
 using Kinovea.Camera;
 using Kinovea.Services;
 
-//using System.Windows.Forms;
-
-
-//using AForge.Video.;
-
-
-
 namespace Kinovea.Camera.HTTP
 {
     /// <summary>
-    /// Class to discover and manage cameras connected through DirectShow.
+    /// Class to discover and manage cameras connected through HTTP.
     /// </summary>
     public class CameraManagerHTTP : CameraManager
     {
         #region Properties
         public override string CameraType 
         { 
-            get { return "4F8CF704-97FC-11E2-9919-09C611C84021";}
+            get { return "0F8CF704-97FC-11E2-9919-09C611C84021";}
         }
         public override string CameraTypeFriendlyName 
         { 

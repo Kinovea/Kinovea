@@ -29,7 +29,20 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public interface ICalibrator
     {
+        /// <summary>
+        /// Takes a point in image coordinates and gives it back in real world coordinates.
+        /// </summary>
         PointF Transform(PointF p);
+        
+        
+        /// <summary>
+        /// Takes a point in real world coordinates and gives it back in image coordinates.
+        /// </summary>
         PointF Untransform(PointF p);
+
+        /// <summary>
+        /// Takes a point in image coordinates to act as the origin.
+        /// </summary>
+        void SetOrigin(PointF p);
     }
 }

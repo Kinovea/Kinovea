@@ -24,6 +24,7 @@ using System.Threading;
 using System.Windows.Forms;
 
 using Kinovea.Services;
+using System.Reflection;
 
 namespace Kinovea.Root
 {
@@ -51,7 +52,8 @@ namespace Kinovea.Root
             if (!Program.FirstInstance)
                 return;
             
-            Software.Initialize(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Software.Initialize(assembly.GetName().Version);
             Software.SanityCheckDirectories();
             Software.LogInfo();
             

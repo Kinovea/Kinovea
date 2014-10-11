@@ -34,10 +34,6 @@ namespace Kinovea.ScreenManager
         {
             return new Point(point.X + x, point.Y + y);
         }
-        public static Point Translate(this Point point, Point translation)
-        {
-            return new Point(point.X + translation.X, point.Y + translation.Y);
-        }
         public static Point Scale(this Point point, double scaleX, double scaleY)
         {
             return new Point((int)(point.X * scaleX), (int)(point.Y * scaleY));
@@ -45,10 +41,6 @@ namespace Kinovea.ScreenManager
         public static Point Scale(this Point point, double scale)
         {
             return new Point((int)(point.X * scale), (int)(point.Y * scale));
-        }
-        public static PointF ToPointF(this Point point)
-        {
-            return new PointF(point.X, point.Y);
         }
         public static Point Subtract(this Point p, Point p2)
         {
@@ -64,18 +56,13 @@ namespace Kinovea.ScreenManager
         }
         
         // PointF
-        // TODO: check if the PointF to Point extensions are really needed.
-        public static Point Translate(this PointF point, int x, int y)
+        public static Point ToPoint(this PointF point)
         {
-            return new Point((int)point.X + x, (int)point.Y + y);
+            return new Point((int)point.X, (int)point.Y);
         }
         public static PointF Translate(this PointF point, float x, float y)
         {
             return new PointF(point.X + x, point.Y + y);
-        }
-        public static Point Translate(this PointF point, Point translation)
-        {
-            return new Point((int)point.X + translation.X, (int)point.Y + translation.Y);
         }
         public static PointF Scale(this PointF point, float scaleX, float scaleY)
         {
@@ -85,15 +72,14 @@ namespace Kinovea.ScreenManager
         {
             return new PointF(point.X * scale, point.Y * scale);
         }
+        public static RectangleF Box(this PointF point, Size size)
+        {
+            return new RectangleF(point.X - size.Width / 2, point.Y - size.Height / 2, size.Width, size.Height);
+        }
+        
         public static Rectangle Box(this PointF point, int radius)
         {
             return new Rectangle((int)point.X - radius, (int)point.Y - radius, radius * 2, radius * 2);
-        }
-        
-        // Color
-        public static Color Invert(this Color color)
-        {
-            return Color.FromArgb(color.A, 255 - color.R, 255 - color.G, 255 - color.B);
         }
         
         // Size
@@ -114,17 +100,26 @@ namespace Kinovea.ScreenManager
         {
             return new Size((int)(s.Width * scale), (int)(s.Height * scale));
         }
-        
-        // SizeF
-        public static Size Scale(this SizeF s, float scale)
+        public static Point Center(this Size size)
         {
-            return new Size((int)(s.Width * scale), (int)(s.Height * scale));
+            return new Point(size.Width / 2, size.Height / 2);
+        }
+
+
+        // SizeF
+        public static Size ToSize(this SizeF s)
+        {
+            return new Size((int)s.Width, (int)s.Height);
+        }
+        public static SizeF Scale(this SizeF s, float scale)
+        {
+            return new SizeF(s.Width * scale, s.Height * scale);
         }
         
         // Rectangle
-        public static Rectangle Translate(this Rectangle r, Point t)
+        public static Rectangle Translate(this Rectangle r, int dx, int dy)
         {
-            return new Rectangle(r.X + t.X, r.Y + t.Y, r.Width, r.Height);
+            return new Rectangle(r.X + dx, r.Y + dy, r.Width, r.Height);
         }
         public static Rectangle Scale(this Rectangle rect, double scaleX, double scaleY)
         {
@@ -134,9 +129,57 @@ namespace Kinovea.ScreenManager
         {
             return new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
         }
+        
+        // RectangleF
         public static PointF Center(this RectangleF rect)
         {
             return new PointF(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
         }
+        public static RectangleF Translate(this RectangleF r, float dx, float dy)
+        {
+            return new RectangleF(r.X + dx, r.Y + dy, r.Width, r.Height);
+        }
+        public static RectangleF CenteredScale(this RectangleF rect, float scale)
+        {
+            // FIXME: same as .Inflate ?
+            // Returns a rectangle centered on the same point but scaled in both dimensions by given factor.
+            return new RectangleF(rect.X - (rect.Width * (scale - 1)) / 2, rect.Y - (rect.Height * (scale - 1)) / 2, rect.Width * scale, rect.Height * scale);
+        }
+        public static Rectangle ToRectangle(this RectangleF rect)
+        {
+            return new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
+        }
+        public static RectangleF Deflate(this RectangleF rect, float scale)
+        {
+            PointF center = rect.Center();
+            return new RectangleF(center.X - ((rect.Width / 2) / scale), center.Y - ((rect.Height / 2) / scale), rect.Width / scale, rect.Height / scale);
+        }
+
+
+        // List<T>
+        public static List<double> Subtract(this List<double> a, List<double> b)
+        {
+            if (a.Count != b.Count)
+                throw new ArgumentException("Lists must have the same number of elements");
+            
+            List<double> result = new List<double>();
+            for (int i = 0; i < a.Count; i++)
+                result.Add(a[i] - b[i]);
+
+            return result;
+        }
+
+        public static double[] Subtract(this double[] a, double[] b)
+        {
+            if (a.Length != b.Length)
+                throw new ArgumentException("Lists must have the same number of elements");
+
+            double[] result = new double[a.Length];
+            for (int i = 0; i < a.Length; i++)
+                result[i] = a[i] - b[i];
+
+            return result;
+        }
+        
     }
 }

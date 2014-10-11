@@ -35,67 +35,44 @@ namespace Kinovea.ScreenManager
 {
     public partial class ScreenManagerUserInterface : UserControl
     {
-        #region Delegates
-        public DelegateUpdateTrackerFrame delegateUpdateTrackerFrame;
-        #endregion
-
+        #region Events
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
+        public event EventHandler AutoLaunchAsked;
+        #endregion
         
         #region Properties
         public bool CommonControlsVisible 
         {
             get { return !splitScreensPanel.Panel2Collapsed; }
         }
-        public bool CommonPlaying
-        {
-            get { return cctrlsPlayers.Playing; }
-            set { cctrlsPlayers.Playing = value; }
-        }
-        public bool Merging
-        {
-            get { return cctrlsPlayers.SyncMerging; }
-            set { cctrlsPlayers.SyncMerging = value; }
-        }
         #endregion
         
         #region Members
         private ThumbnailViewerContainer thumbnailViewerContainer = new ThumbnailViewerContainer();
-        private CommonControlsPlayers cctrlsPlayers = new CommonControlsPlayers();
-        private CommonControlsCapture cctrlsCapture = new CommonControlsCapture();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
-        public ScreenManagerUserInterface(ICommonControlsManager screenManager)
+        public ScreenManagerUserInterface()
         {
             log.Debug("Constructing ScreenManagerUserInterface.");
             InitializeComponent();
-
-            cctrlsPlayers.Dock = DockStyle.Fill;
-            cctrlsPlayers.SetManager(screenManager);
-            cctrlsCapture.Dock = DockStyle.Fill;
-            cctrlsCapture.SetManager(screenManager);
 
             BackColor = Color.White;
             Dock = DockStyle.Fill;
             
             InitializeThumbnailsContainer();
-            
-            delegateUpdateTrackerFrame = UpdateTrkFrame;
 
             thumbnailViewerContainer.BringToFront();
             pnlScreens.BringToFront();
             pnlScreens.Dock = DockStyle.Fill;
-
-            Application.Idle += this.IdleDetector;
         }
         
         #region Public methods
         public void RefreshUICulture()
         {
-            cctrlsPlayers.RefreshUICulture();
             thumbnailViewerContainer.RefreshUICulture();
         }
-        public void ShowCommonControls(bool show, Pair<Type, Type> types)
+        public void ShowCommonControls(bool show, Pair<Type, Type> types, CommonControlsPlayers cctrlsPlayers, CommonControlsCapture cctrlsCapture)
         {
             splitScreensPanel.Panel2Collapsed = !show;
             if (types == null)
@@ -141,26 +118,6 @@ namespace Kinovea.ScreenManager
                     ClearRightScreen();
             }
         }
-        
-        #region Forwarded to common controls
-        public void SetupTrkFrame(long min, long max, long pos)
-        {
-            cctrlsPlayers.SetupTrkFrame(min, max, pos);
-        }
-        public void UpdateTrkFrame(long position)
-        {
-            cctrlsPlayers.UpdateTrkFrame(position);
-        }
-        public void UpdateSyncPosition(long position)
-        {
-            cctrlsPlayers.UpdateSyncPosition(position);
-        }
-        public void DisplayAsPaused()
-        {
-            cctrlsPlayers.Playing = false;
-        }
-        #endregion
-
         #endregion
 
         private void InitializeThumbnailsContainer()
@@ -174,17 +131,11 @@ namespace Kinovea.ScreenManager
             
             this.Controls.Add(thumbnailViewerContainer);
         }
-        private void IdleDetector(object sender, EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            log.Debug("Application is idle in ScreenManagerUserInterface.");
-            
-            // This is a one time only routine.
-            Application.Idle -= new EventHandler(this.IdleDetector);
-            
-            // Launch file.
-            string filePath = CommandLineArgumentManager.Instance().InputFile;
-            if(filePath != null && File.Exists(filePath) && FileLoadAsked != null)
-                FileLoadAsked(this, new FileLoadAskedEventArgs(filePath, -1));
+            log.DebugFormat("In ScreenManager OnLoad");
+            if (LaunchSettingsManager.ScreenDescriptions.Count > 0 && AutoLaunchAsked != null)
+                AutoLaunchAsked(this, EventArgs.Empty);
         }
         private void pnlScreens_Resize(object sender, EventArgs e)
         {

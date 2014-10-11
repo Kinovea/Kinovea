@@ -27,6 +27,15 @@ namespace Kinovea.ScreenManager
     public abstract class AbstractDrawingTool
     {
     	#region Properties
+        /// <summary>
+        /// The internal name of the tool. Used to store and retrieve tools.
+        /// </summary>
+        public abstract string Name
+        {
+            get;
+        }
+
+
     	/// <summary>
         /// The display name of the tool. Used for tooltips and in tool presets config.
         /// </summary>
@@ -91,16 +100,15 @@ namespace Kinovea.ScreenManager
     	/// </summary>
     	/// <param name="_Origin">The image coordinates the drawing should be initialized with</param>
     	/// <param name="_iTimestamp">The time position where the drawing is added</param>
-    	/// <param name="_AverageTimeStampsPerFrame"></param>
     	/// <returns>A new drawing object</returns>
-    	public abstract AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame);
+    	public abstract AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer);
 
     	/// <summary>
     	/// Retrieve the cursor we should dispaly when this tool is the active tool.
     	/// </summary>
     	/// <param name="_fStretchFactor">Current stretchfactor (including zoom)</param>
     	/// <returns>The cursor to use</returns>
-    	public abstract Cursor GetCursor(double _fStretchFactor);
+    	public abstract Cursor GetCursor(double stretchFactor);
     	#endregion
     	
     	#region Public Concrete Methods

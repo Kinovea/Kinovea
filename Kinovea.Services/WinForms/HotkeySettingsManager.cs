@@ -25,6 +25,12 @@ namespace Kinovea.Services
             return result;
         }
 
+        public static bool IsHandler(string category, Keys keys)
+        {
+            HotkeyCommand[] handledHotkeys = HotkeySettingsManager.LoadHotkeys(category);
+            return handledHotkeys.Any(hk => hk != null && hk.KeyData == keys);
+        }
+
         public static void Import(Dictionary<string, HotkeyCommand[]> imported)
         {
             if (hotkeys == null)
@@ -62,7 +68,9 @@ namespace Kinovea.Services
 
             foreach (HotkeyCommand c in hotkeys[category])
             {
-                if (c.CommandCode == command.CommandCode)
+                // We test by the command name because the command code is subject to change
+                // when we add commands between existing ones.
+                if (c.Name == command.Name)
                 {
                     c.KeyData = command.KeyData;
                     break;
@@ -117,6 +125,19 @@ namespace Kinovea.Services
                     hk(ThumbnailViewerCameraCommands.Refresh, Keys.F5)
                     }
                 },
+                { "DualPlayer", new HotkeyCommand[]{
+                    hk(DualPlayerCommands.TogglePlay, Keys.Space),
+                    hk(DualPlayerCommands.GotoPreviousImage, Keys.Left),
+                    hk(DualPlayerCommands.GotoFirstImage, Keys.Home), 
+                    hk(DualPlayerCommands.GotoPreviousKeyframe, Keys.Control | Keys.Left), 
+                    hk(DualPlayerCommands.GotoNextImage, Keys.Right), 
+                    hk(DualPlayerCommands.GotoLastImage, Keys.End), 
+                    hk(DualPlayerCommands.GotoNextKeyframe, Keys.Control | Keys.Right), 
+                    hk(DualPlayerCommands.GotoSyncPoint, Keys.F8), 
+                    hk(DualPlayerCommands.ToggleSyncMerge, Keys.F9), 
+                    hk(DualPlayerCommands.AddKeyframe, Keys.Insert)
+                    }
+                },
                 { "PlayerScreen", new HotkeyCommand[]{
                     hk(PlayerScreenCommands.TogglePlay, Keys.Space), 
                     hk(PlayerScreenCommands.ResetViewport, Keys.Escape), 
@@ -132,6 +153,7 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.ForwardRound10Percent, Keys.PageDown),
                     hk(PlayerScreenCommands.ForwardRound1Percent, Keys.Shift | Keys.PageDown),
                     hk(PlayerScreenCommands.GotoSyncPoint, Keys.F8), 
+                    hk(PlayerScreenCommands.ToggleSyncMerge, Keys.F9), 
                     hk(PlayerScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
                     hk(PlayerScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
                     hk(PlayerScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
@@ -141,6 +163,7 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.DeleteKeyframe, Keys.Control | Keys.Delete), 
                     hk(PlayerScreenCommands.DeleteDrawing, Keys.Delete), 
                     hk(PlayerScreenCommands.CopyImage, Keys.Control | Keys.Shift | Keys.C), 
+                    hk(PlayerScreenCommands.ValidateDrawing, Keys.Enter),
                     hk(PlayerScreenCommands.IncreaseSpeed1, Keys.Control | Keys.Up), 
                     hk(PlayerScreenCommands.IncreaseSpeedRoundTo10, Keys.Shift | Keys.Up), 
                     hk(PlayerScreenCommands.IncreaseSpeedRoundTo25, Keys.Up), 
@@ -148,6 +171,12 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.DecreaseSpeedRoundTo10, Keys.Shift | Keys.Down),
                     hk(PlayerScreenCommands.DecreaseSpeedRoundTo25, Keys.Down),
                     hk(PlayerScreenCommands.Close, Keys.Control | Keys.F4)
+                    }
+                },
+                { "DualCapture", new HotkeyCommand[]{
+                    hk(DualCaptureCommands.ToggleGrabbing, Keys.Space),
+                    hk(DualCaptureCommands.ToggleRecording, Keys.Control | Keys.Return),
+                    hk(DualCaptureCommands.TakeSnapshot, Keys.Shift | Keys.Return)
                     }
                 },
                 { "CaptureScreen", new HotkeyCommand[]{

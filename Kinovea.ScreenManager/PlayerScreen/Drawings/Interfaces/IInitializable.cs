@@ -32,7 +32,26 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Continues to setup the drawing.
         /// </summary>
-        /// <param name="point">The current location of the mouse, in original image scale coordinates</param>
-        void ContinueSetup(Point point, Keys modifiers);
+        void InitializeMove(PointF point, Keys modifiers);
+
+        /// <summary>
+        /// Ends an initialization step.
+        /// The drawing should decide to stay in initialization mode or not.
+        /// Returns the key of the created point for tracking purposes.
+        /// Returns null if this information is irrelevant.
+        /// </summary>
+        string InitializeCommit(PointF point);
+
+        /// <summary>
+        /// Force end the initialization phase.
+        /// Returns the key of the cancelled point for tracking purposes.
+        /// Returns null if this information is irrelevant.
+        /// </summary>
+        string InitializeEnd(bool cancelCurrentPoint);
+
+        /// <summary>
+        /// Whether the drawing is still in initialization mode.
+        /// </summary>
+        bool Initializing { get; }
     }
 }

@@ -3,8 +3,9 @@
 1b. Double check culture Info code at http://msdn.microsoft.com/en-us/library/system.globalization.cultureinfo%28v=vs.71%29.aspx
 2. add line to ooo2resx.xsl
 3. exec deploy.py
-4. add new resx to projects.
+4. add new resx to projects. Right click on Languages folder in solution explorer > Add existing item > pick the new file.
 5. Add entry in Service > LanguageManager (Initialize and new static property.)
-6. Add entry in credits window.
-7. hg add files. (Add on main directory + "<code>.resx" in filter box). => 4 files. 
-	If there are other languages modified, there is the issue of cell merging. All cells in a language column should have a Cell Format > Font > language selected.
+6. Add entry in credits window (Kinovea > UserInterface > FormAbout.cs).
+7. Test
+8. hg add files. (Add on main directory + "<code>.resx" in filter box). => 4 files. 
+    -> If there are other languages modified, there is the issue of cell merging. All cells in a language column should have a Cell Format > Font > language selected.

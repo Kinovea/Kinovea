@@ -41,10 +41,10 @@ namespace Kinovea.ScreenManager
     public class CaptureScreen : AbstractScreen
     {
         #region Properties
-        public override Guid UniqueId
+        public override Guid Id
         {
-            get { return uid; }
-            set { uid = value;}
+            get { return id; }
+            set { id = value;}
         }
         public override bool Full
         {
@@ -87,10 +87,23 @@ namespace Kinovea.ScreenManager
             get { return summary == null ? ImageAspectRatio.Auto : Convert(summary.AspectRatio); }
             set { ChangeAspectRatio(value); }
         }
+        public HistoryStack HistoryStack
+        {
+            get { return historyStack; }
+        }
+        public bool Shared
+        {
+            get { return shared; }
+        }
+        public bool Synched
+        {
+            get { return synched; }
+            set { synched = value; }
+        }
         #endregion
         
         #region Members
-        private Guid uid = System.Guid.NewGuid();
+        private Guid id = Guid.NewGuid();
         private ICaptureScreenView view;
         
         private CameraManager manager;
@@ -106,6 +119,7 @@ namespace Kinovea.ScreenManager
         private double availableMemory;
         private double frameMemory;
         private bool shared;
+        private bool synched;
         
         private CameraSummary summary;
         private Metadata metadata;
@@ -123,6 +137,7 @@ namespace Kinovea.ScreenManager
         private Timer nonGrabbingInteractionTimer = new Timer();
         private DateTime lastImageTime;
         private Averager averager = new Averager(25);
+        private HistoryStack historyStack = new HistoryStack();
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -131,13 +146,14 @@ namespace Kinovea.ScreenManager
         {
             log.Debug("Constructing a CaptureScreen.");
             view = new CaptureScreenView(this);
+            view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
             
             viewportController = new ViewportController();
             view.SetViewport(viewportController.View);
             view.SetCapturedFilesView(capturedFiles.View);
             
             InitializeCaptureFilenames();
-            InitializeTools();
+            InitializeTools();            
             InitializeMetadata();
             
             view.SetToolbarView(drawingToolbarPresenter.View);
@@ -209,6 +225,8 @@ namespace Kinovea.ScreenManager
         }
         public override void RefreshUICulture() 
         {
+            metadata.CalibrationHelper.AngleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
+            
             view.RefreshUICulture();
             drawingToolbarPresenter.RefreshUICulture();
         }
@@ -251,11 +269,22 @@ namespace Kinovea.ScreenManager
             view.FullScreen(fullScreen);
         }
         
-        public override void ExecuteCommand(int cmd)
+        public override void ExecuteScreenCommand(int cmd)
         {
-            // propagate command from the other capture screen.
+            // execute local command.
         }
 
+        public override void LoadKVA(string path)
+        {
+            if (!File.Exists(path))
+                return;
+            
+            MetadataSerializer s = new MetadataSerializer();
+            s.Load(metadata, path, true);
+            
+            if (metadata.Count > 1)
+                metadata.Keyframes.RemoveRange(1, metadata.Keyframes.Count - 1);
+        }
         #endregion
         
         #region Methods called from the view. These could also be events or commands.
@@ -296,6 +325,7 @@ namespace Kinovea.ScreenManager
             {
                 Bitmap displayImage = buffer.Read(displayImageAge);
                 viewportController.Bitmap = displayImage;
+                viewportController.Timestamp = 0;
                 viewportController.Refresh();
             }
         }
@@ -404,6 +434,7 @@ namespace Kinovea.ScreenManager
             }
             
             viewportController.Bitmap = displayImage;
+            viewportController.Timestamp = 0;
             
             if(recording)
                 recorder.EnqueueFrame(CopyImage(displayImage));
@@ -558,15 +589,15 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeMetadata()
         {
-            metadata = new Metadata(null, null);
+            metadata = new Metadata(historyStack, null);
+            // TODO: hook to events raised by metadata.
             
             LoadCompanionKVA();
             
             if(metadata.Count == 0)
             {
-                Keyframe kf = new Keyframe(metadata);
-                kf.Position = 0;
-                metadata.Add(kf);
+                Keyframe kf = new Keyframe(0, "capture", metadata);
+                metadata.AddKeyframe(kf);
             }
             
             metadataRenderer = new MetadataRenderer(metadata);
@@ -579,27 +610,15 @@ namespace Kinovea.ScreenManager
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
             string startupFile = folder + "\\capture.kva";
-            if(File.Exists(startupFile))
-                metadata.Load(startupFile, true);
-                
-            if(metadata.Count > 1)
-                metadata.Keyframes.RemoveRange(1, metadata.Keyframes.Count - 1);
+            LoadKVA(startupFile);
         }
         private void InitializeTools()
         {
             drawingToolbarPresenter.AddToolButton(screenToolManager.HandTool, DrawingTool_Click);
             drawingToolbarPresenter.AddSeparator();
-            drawingToolbarPresenter.AddToolButton(ToolManager.Label, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButton(ToolManager.Pencil, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButtonPosture(DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButtonGroup(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButton(ToolManager.Arrow, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButton(ToolManager.CrossMark, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButton(ToolManager.Angle, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButtonGroup(new AbstractDrawingTool[]{ToolManager.Plane, ToolManager.Grid}, 0, DrawingTool_Click);
-            
-            // TODO: magnifier, tool presets.
-            //drawingToolbarPresenter.AddToolButton(ToolManager.Magnifier, MagnifierTool_Click);
+
+            DrawingToolbarImporter importer = new DrawingToolbarImporter();
+            importer.Import("capture.xml", drawingToolbarPresenter, DrawingTool_Click);
         }
         
         private void DrawingTool_Click(object sender, EventArgs e)

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Goniometer</Name>
+  <DisplayName>DrawingName_Goniometer</DisplayName>
+  <Id>02ea93f9-ba00-424b-8c87-07e156e0252f</Id>
+  <PointCount>4</PointCount>
+  <Segments>
+    <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
+    <Segment point1="1" point2="2" name="" style="Dash" width="2"/>
+    <Segment point1="1" point2="3" name="" style="Solid" width="2"/>
+  </Segments>
+  <Angles>
+    <Angle origin="1" leg1="3" leg2="2" relative="true" tenth="true"/>
+  </Angles>
+  <Handles>
+    <Handle type="Point" reference="0" trackable="true">
+      <Impact type="KeepAngle">
+        <KeepAngle origin="1" leg1="0" leg2="2"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="1" trackable="true">
+      <Impact type="KeepAngle">
+        <KeepAngle origin="1" leg1="0" leg2="2"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="2">
+      <Constraint type="RotationSteps">
+        <RotationSteps origin="1" leg1="0" step="45"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="3" trackable="true"/>
+  </Handles>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEASURBVDhPY/j//z8DJZgizSCLwQaEzloNwtZAPBOI
+    paB8mDgKje5amAHCQE1zgPg/EPcBMScuQ3AZwAjU4AjEz4D4GxDHATEzPpfA5JC9ANKQBsT/gPg2EJsA
+    sQohQ5ANAPkV5HRQOIC8AsOXgOxqIJbDZhi6ASBDpIH4HJohMMNOAsXzgVgCmxeQQ1sfqOAyEGsAcQsQ
+    X8ViYCDIEGwugBnEBDVgNTQstIB0IzR8/gBpIUIGCAAVgDSfAGIjIGZDCgN4eOBzAcglokAMih0bqGtY
+    0QOSkAEgb4DSByhaQenDEFdCwppsobaxA+luIF4GxDrkGAAyXATmdKwGUJKdAaKCL3D3GuN3AAAAAElF
+    TkSuQmCC
+  </Icon>
+  <InitialConfiguration>
+    <Point>100;100</Point>
+    <Point>150;100</Point>
+    <Point>200;100</Point>
+    <Point>180;70</Point>
+  </InitialConfiguration>
+</KinoveaPostureTool>

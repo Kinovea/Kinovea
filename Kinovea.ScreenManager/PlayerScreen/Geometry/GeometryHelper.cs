@@ -86,14 +86,6 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Gets the distance between points A and B.
-        /// </summary>
-        public static float GetDistance(Point a, Point b)
-        {
-            return new Vector(a,b).Norm();
-        }
-        
-        /// <summary>
         /// Returns the signed angle (in radians) between vectors ab and ac.
         /// </summary>
         public static float GetAngle(PointF a, PointF b, PointF c)
@@ -127,20 +119,18 @@ namespace Kinovea.ScreenManager
             if(angle < 0)
                 angle += (float)(2*Math.PI);
             
-            float degrees = angle * (float)MathHelper.RadiansToDegrees;
-            
-            float step = 360 / subdivisions;
-            int section = (int)(degrees / step);
-            if(degrees % step > step / 2)
+            float step = (float)((2 * Math.PI) / subdivisions);
+            int section = (int)(angle / step);
+            if(angle % step > step / 2)
                 section++;
             
-            float deltaAngle = (section * step) - degrees;
+            float deltaAngle = (section * step) - angle;
             
-            return Pivot(pivot, point, deltaAngle * (float)MathHelper.DegreesToRadians);
+            return Pivot(pivot, point, deltaAngle);
         }
         
         /// <summary>
-        /// Returns the point that is at the specified angle relatively to the [origin, leg1] segment.
+        /// Returns the point that is at the specified angle relatively to the [origin, leg1] segment. targetAngle is given in degrees.
         /// </summary>
         public static PointF GetPointAtAngle(PointF pivot, PointF leg1, PointF point, float targetAngle)
         {

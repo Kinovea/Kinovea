@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractVideoFilter Implementation
-        public override void Activate(IWorkingZoneFramesContainer _framesContainer, Action<InteractiveEffect> _setInteractiveEffect)
+        public override void Activate(IWorkingZoneFramesContainer framesContainer, Action<InteractiveEffect> setInteractiveEffect)
         {
             InteractiveEffect effect = new InteractiveEffect();
             
@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
             effect.Draw = (canvas, frames) => Draw(canvas, frames, p);
             effect.MouseWheel = (scroll) => MouseWheel(scroll, p);
             
-            _setInteractiveEffect(effect);
+            setInteractiveEffect(effect);
         }
         protected override void Process(object sender, DoWorkEventArgs e)
         {
@@ -75,31 +75,31 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Interactive Effect methods
-        private void Draw(Graphics _canvas, IWorkingZoneFramesContainer _framesContainer, Parameters _parameters)
+        private void Draw(Graphics canvas, IWorkingZoneFramesContainer framesContainer, Parameters parameters)
         {
-            if(_parameters == null || _framesContainer == null || _framesContainer.Frames == null || _framesContainer.Frames.Count < 1)
+            if(parameters == null || framesContainer == null || framesContainer.Frames == null || framesContainer.Frames.Count < 1)
                 return;
             
-            List<Bitmap> selectedFrames = GetImages(_framesContainer, _parameters.Spots);	
+            List<Bitmap> selectedFrames = GetImages(framesContainer, parameters.Spots);	
             
             if(selectedFrames == null || selectedFrames.Count < 1)
                 return;
             
-            _canvas.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-            _canvas.CompositingQuality = CompositingQuality.HighSpeed;
-            _canvas.InterpolationMode = InterpolationMode.Bilinear;
-            _canvas.SmoothingMode = SmoothingMode.HighQuality;
+            canvas.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+            canvas.CompositingQuality = CompositingQuality.HighSpeed;
+            canvas.InterpolationMode = InterpolationMode.Bilinear;
+            canvas.SmoothingMode = SmoothingMode.HighQuality;
             
             // We reserve n² placeholders, so we have exactly as many images on width than on height.
             // Example: 32 images as input -> 6x6 images with the last 4 not filled.
             // + each image must be scaled down by a factor of 1/6.
             
-            int n = (int)Math.Sqrt(_parameters.Spots);
-            int thumbWidth = (int)_canvas.VisibleClipBounds.Width / n;
-            int thumbHeight = (int)_canvas.VisibleClipBounds.Height / n;
+            int n = (int)Math.Sqrt(parameters.Spots);
+            int thumbWidth = (int)canvas.VisibleClipBounds.Width / n;
+            int thumbHeight = (int)canvas.VisibleClipBounds.Height / n;
                         
-      Rectangle rSrc = new Rectangle(0, 0, selectedFrames[0].Width, selectedFrames[0].Height);
-      Font f = new Font("Arial", GetFontSize(thumbWidth), FontStyle.Bold);
+            Rectangle rSrc = new Rectangle(0, 0, selectedFrames[0].Width, selectedFrames[0].Height);
+            Font f = new Font("Arial", GetFontSize(thumbWidth), FontStyle.Bold);
             
             for(int i=0;i<n;i++)
             {
@@ -111,27 +111,27 @@ namespace Kinovea.ScreenManager
                     
                     Rectangle rDst = new Rectangle(i*thumbWidth, j*thumbHeight, thumbWidth, thumbHeight);
                     
-                    _canvas.DrawImage(selectedFrames[iImageIndex], rDst, rSrc, GraphicsUnit.Pixel);
-                    DrawImageNumber(_canvas, iImageIndex, rDst, f);
+                    canvas.DrawImage(selectedFrames[iImageIndex], rDst, rSrc, GraphicsUnit.Pixel);
+                    DrawImageNumber(canvas, iImageIndex, rDst, f);
                 }
             }
             
             f.Dispose();
         }
-        private void MouseWheel(int _scroll, Parameters _parameters)
+        private void MouseWheel(int scroll, Parameters parameters)
         {
             // Change the number of frames to use for the composite.
-            int n = (int)Math.Sqrt((double)_parameters.Spots);
-            n = _scroll > 0 ? Math.Min(10, n + 1) : Math.Max(2, n - 1);
-            _parameters.Spots = n*n;
+            int n = (int)Math.Sqrt((double)parameters.Spots);
+            n = scroll > 0 ? Math.Min(10, n + 1) : Math.Max(2, n - 1);
+            parameters.Spots = n*n;
         }
         #endregion
         
         #region Private methods
-        private List<Bitmap> GetImages( IWorkingZoneFramesContainer _framesContainer, int _spots)
+        private List<Bitmap> GetImages( IWorkingZoneFramesContainer framesContainer, int spots)
         {
-            float step = (float)_framesContainer.Frames.Count / _spots;
-            List<Bitmap> bitmaps = _framesContainer.Frames.Select(f => f.Image).ToList();
+            float step = (float)framesContainer.Frames.Count / spots;
+            List<Bitmap> bitmaps = framesContainer.Frames.Select(f => f.Image).ToList();
             return bitmaps.Where((bmp, i) => i % step < 1).ToList();
         }
         private int GetFontSize(int width)
@@ -146,35 +146,37 @@ namespace Kinovea.ScreenManager
             
             return fontSize;
         }
-        private void DrawImageNumber(Graphics _canvas, int _index, Rectangle _rDst, Font _font)
+        private void DrawImageNumber(Graphics canvas, int index, Rectangle rDst, Font font)
         {
-            string number = String.Format(" {0}", _index + 1);
-            SizeF bgSize = _canvas.MeasureString(number, _font);
+            string number = String.Format(" {0}", index + 1);
+            SizeF bgSize = canvas.MeasureString(number, font);
             bgSize = new SizeF(bgSize.Width + 6, bgSize.Height + 2);
             
             // 1. Draw background.
             GraphicsPath gp = new GraphicsPath();
             gp.StartFigure();
-            gp.AddLine(_rDst.Left, _rDst.Top, _rDst.Left + bgSize.Width, _rDst.Top);
-            gp.AddLine(_rDst.Left + bgSize.Width, _rDst.Top, _rDst.Left + bgSize.Width, _rDst.Top + (bgSize.Height / 2));
-            gp.AddArc(_rDst.Left, _rDst.Top, bgSize.Width, bgSize.Height, 0, 90);
-            gp.AddLine(_rDst.Left + (bgSize.Width/2), _rDst.Top + bgSize.Height, _rDst.Left, _rDst.Top + bgSize.Height);
+            gp.AddLine(rDst.Left, rDst.Top, rDst.Left + bgSize.Width, rDst.Top);
+            gp.AddLine(rDst.Left + bgSize.Width, rDst.Top, rDst.Left + bgSize.Width, rDst.Top + (bgSize.Height / 2));
+            gp.AddArc(rDst.Left, rDst.Top, bgSize.Width, bgSize.Height, 0, 90);
+            gp.AddLine(rDst.Left + (bgSize.Width/2), rDst.Top + bgSize.Height, rDst.Left, rDst.Top + bgSize.Height);
             gp.CloseFigure();
-            _canvas.FillPath(Brushes.Black, gp);
+            canvas.FillPath(Brushes.Black, gp);
             gp.Dispose();
             
             // 2. Draw image number.
-            _canvas.DrawString(number, _font, Brushes.White, _rDst.Location);
+            canvas.DrawString(number, font, Brushes.White, rDst.Location);
         }
         #endregion
         
         private class Parameters
         {
-            public int Spots {
-                get {return m_Spots; }
-                set {m_Spots = value;}
+            public int Spots 
+            {
+                get {return spots; }
+                set {spots = value;}
             }
-            private int m_Spots = 16;
+            
+            private int spots = 16;
         }
     }
 }

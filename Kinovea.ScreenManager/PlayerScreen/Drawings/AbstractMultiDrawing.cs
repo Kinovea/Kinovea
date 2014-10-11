@@ -5,16 +5,17 @@ Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.p
 */
 #endregion
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// A base class for drawings that are not attached to any particular keyframe because they are managers for sub items.
-    /// TODO: this would be a good candidate for a generic.
     /// </summary>
     public abstract class AbstractMultiDrawing : AbstractDrawing
     {
-        public abstract object SelectedItem
+        public abstract AbstractMultiDrawingItem SelectedItem
         {
             get;
         }
@@ -23,8 +24,10 @@ namespace Kinovea.ScreenManager
             get;
         }
         
-        public abstract void Add(object _item);
-        public abstract void Remove(object _item);
+        public abstract AbstractMultiDrawingItem GetNewItem(PointF point, long position, long averageTimeStampsPerFrame);
+        public abstract AbstractMultiDrawingItem GetItem(Guid id);
+        public abstract void Add(AbstractMultiDrawingItem item);
+        public abstract void Remove(Guid id);
         public abstract void Clear();
     }
 }

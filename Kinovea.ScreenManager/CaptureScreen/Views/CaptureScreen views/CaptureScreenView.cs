@@ -22,6 +22,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -34,6 +35,7 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public partial class CaptureScreenView : KinoveaControl, ICaptureScreenView
     {
+        #region Properties
         public string CurrentImageFilename
         {
             get { return fnbImage.Filename; }
@@ -43,6 +45,11 @@ namespace Kinovea.ScreenManager
         {
             get { return fnbVideo.Filename; }
         }
+        #endregion
+
+        #region Events
+        public event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
+        #endregion
 
         #region Members
         private CaptureScreen presenter;
@@ -271,6 +278,29 @@ namespace Kinovea.ScreenManager
 
         #region Commands
         protected override bool ExecuteCommand(int cmd)
+        {
+            if (!presenter.Synched)
+                return ExecuteScreenCommand(cmd);
+
+            // If we are in dual capture mode, check if the command is handled by the common controls.
+            HotkeyCommand command = Hotkeys.FirstOrDefault(h => h != null && h.CommandCode == cmd);
+            if (command == null)
+                return false;
+
+            bool dualCaptureHandled = HotkeySettingsManager.IsHandler("DualCapture", command.KeyData);
+
+            if (dualCaptureHandled && DualCommandReceived != null)
+            {
+                DualCommandReceived(this, new EventArgs<HotkeyCommand>(command));
+                return true;
+            }
+            else
+            {
+                return ExecuteScreenCommand(cmd);
+            }
+        }
+
+        private bool ExecuteScreenCommand(int cmd)
         {
             CaptureScreenCommands command = (CaptureScreenCommands)cmd;
 

@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>隐藏缩略图</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>显示缩略图</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>反转视频位置</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>在当前帧位置同步视频</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>跳到两个视频的开始位置</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>跳到两个视频的结束位置</value></data>
@@ -95,7 +92,6 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>交换屏幕</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>切换公共控件</value></data>
    
-   
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>颜色配置…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>默认颜色配置</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>载入颜色配置</value></data>
@@ -113,9 +109,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>配置网格</value></data>
    
    
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>捕捉时间内每秒帧数 :\n(ex: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>显示时间内每秒帧数 : {0:0.00} fps.</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>视频比原来慢 {0:0} 倍.</value></data>
+   
+   
+   
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>配置原始速度</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>重设</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>显示目标标记</value></data>
@@ -132,8 +128,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>完整路径</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>当前图像路径</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>路径下标签</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>标记系统原点坐标</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>从右到左的动作</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>片段真实大小 :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>校准测量</value></data>
    
@@ -150,41 +144,53 @@
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>只有关键图像的视频幻灯片.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>视频种类</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>保存数据为电子表格</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
-   
    
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>注释...</value></data>
-   <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>视频分析文件 (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>载入关键图像数据</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>信息</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>图纸上的图像混合.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>每 {0} 百秒一帧.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>图像导出频率 :</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>每 {0:0.00} 秒一帧.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>文件后缀名将被自动更改为. ( "file" =&gt; "file-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>只导出关键图像.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>总共导出图像数量 : {0:0} 张.</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>一系列导出图像所包含的时间 : {0:0.00} 秒.</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>保存为图像序列</value></data>
-   <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>视频分析文件 (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>考虑慢动作. (Current = </value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>选项</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>保存方法</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>只保存关键图像数据.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>合并文件中的视频与关键图像数据.</value></data>
-   
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>永久性地保留视频上的关键图像数据.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>只保存视频.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>保存视频或关键图像数据...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>保存关键图像数据</value></data>
-   <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>保存序列</value></data>
-   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>高清格式 (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>高清格式 (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>保存视频</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>设定坐标系的原点</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    
@@ -208,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>外观</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>提交</value></data>
    
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>取消</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>关闭</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>颜色:</value></data>
@@ -223,6 +230,17 @@
    <data name="Generic_Image" xml:space="preserve"><value>图片</value></data>
    
    <data name="Generic_SaveImage" xml:space="preserve"><value>保存图片</value></data>
+   
+   
+   
+   
+   
+   
+   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
+   
+   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   <data name="FileFilter_KVA" xml:space="preserve"><value>视频分析文件 (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>高清格式 (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>关键帧已被修改.\n关闭前是否保存数据？</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>关键数据尚未保存！</value></data>
    
@@ -243,7 +261,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>失败: 无法打开文件 : 文件类型不支持.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>载入出错.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>失败: 无法打开文件 : 文件不存在或为空.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>失败: 无法打开文件 : 图像格式不支持.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>失败: 无法打开文件 : 发现不一致的地方. 请检查编码过程.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>失败: 无法打开文件 : 无法找到视频流相关信息.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>失败: 无法打开文件 : 未知错误.</value></data>
@@ -255,7 +272,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>锁定工作区界限</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>解锁工作区界限</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>透视网格</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>亮度</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>配置</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>倒计时模式</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>删除秒表</value></data>
@@ -263,7 +279,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>开始数秒</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>停止数秒</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>关闭这个屏幕</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>颜色…</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>颜色</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>颜色和尺寸…</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>持久度...</value></data>
@@ -281,7 +296,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>简单文本轨迹</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>流动性</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>图片格式</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>自动识别</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>强制 4:3</value></data>
@@ -296,11 +310,6 @@
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>载入关键图像数据...</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>放大 x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>放大 x1.5</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>放大 x1.75</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>放大 x2</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>放大 x2.25</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>放大 x2.5</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>切换到直接放大模式</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>关闭放大镜</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>镜像</value></data>
@@ -313,8 +322,6 @@
    
    
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>设置原始速度...</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>设置工作区的最后一帧为当前帧</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>设置工作区的第一帧为当前帧</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>锐化...</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>显示测量</value></data>
@@ -332,22 +339,12 @@
    
    
    
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>发生未知的错误.</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>播放出错</value></data>
    
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>失败: 无法保存文件 : 不支持的编码.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>失败: 无法保存文件 : 初始化解码器时出现问题.</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>保存出错</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>失败: 无法保存文件 : 无法写入文件.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>失败: 无法保存文件 : 编码过程中出现一些问题.</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>失败: 无法保存文件 : 未知错误.</value></data>
+   
+   
+   
    <data name="statusEmptyScreen" xml:space="preserve"><value>空</value></data>
    
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>传统 (h:mm:ss:hundredth)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>帧数</value></data>
-   
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>百分钟</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>万分之一小时</value></data>
    
    
    
@@ -404,8 +401,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>马赛克...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>反向...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>自动对比度...</value></data>
-   
-   
    
    
    

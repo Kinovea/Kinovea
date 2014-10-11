@@ -33,8 +33,19 @@ namespace Kinovea.ScreenManager
     /// All drawings must implement rendering and manipulation methods.
     /// </summary>
     public abstract class AbstractDrawing
-    {   
-        #region Properties
+    {
+        #region Concrete properties
+        public Guid Id
+        {
+            get { return identifier; }
+        }
+        public virtual bool IsValid
+        {
+            get { return true; }
+        }
+        #endregion
+
+        #region Abstract properties
         /// <summary>
         /// Gets or set the fading object for this drawing. 
         /// This is used in opacity calculation for Persistence.
@@ -77,24 +88,28 @@ namespace Kinovea.ScreenManager
             get;
         }
         #endregion
-        
-        #region Abstract Methods
+
+        #region Concrete members
+        protected Guid identifier = Guid.NewGuid();
+        #endregion
+
+        #region Abstract methods
         /// <summary>
         /// Draw this drawing on the provided canvas.
         /// </summary>
-        /// <param name="_canvas">The GDI+ surface on which to draw</param>
-        /// <param name="_transformer">A helper object providing coordinate systems transformation</param>
-        /// <param name="_bSelected">Whether the drawing is currently selected</param>
-        /// <param name="_iCurrentTimestamp">The current time position in the video</param>
-        public abstract void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp);
+        /// <param name="canvas">The GDI+ surface on which to draw</param>
+        /// <param name="transformer">A helper object providing coordinate systems transformation</param>
+        /// <param name="selected">Whether the drawing is currently selected</param>
+        /// <param name="currentTimestamp">The current time position in the video</param>
+        public abstract void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp);
         
         /// <summary>
         /// Evaluates if a particular point is inside the drawing, on a handler, or completely outside the drawing.
         /// </summary>
-        /// <param name="_point">The coordinates at original image scale of the point to evaluate</param>
-        /// <param name="_iCurrentTimestamp">The current time position in the video</param>
+        /// <param name="point">The coordinates at original image scale of the point to evaluate</param>
+        /// <param name="currentTimestamp">The current time position in the video</param>
         /// <returns>-1 : missed. 0 : The drawing as a whole has been hit. n (with n>0) : The id of a manipulation handle that has been hit</returns>
-        public abstract int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer);
+        public abstract int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming);
         
         /// <summary>
         /// Move the specified handle to its new location.
@@ -102,15 +117,16 @@ namespace Kinovea.ScreenManager
         /// <param name="point">The new location of the handle, in original image scale coordinates</param>
         /// <param name="handleNumber">The handle identifier</param>
         /// <param name="modifiers">Modifiers key pressed while moving the handle</param>
-        public abstract void MoveHandle(Point point, int handleNumber, Keys modifiers);
+        public abstract void MoveHandle(PointF point, int handleNumber, Keys modifiers);
         
         /// <summary>
         /// Move the drawing as a whole.
         /// </summary>
-        /// <param name="_deltaX">Change in x coordinates</param>
-        /// <param name="_deltaY">Change in y coordinates</param>
-        /// <param name="_ModifierKeys">Modifiers key pressed while moving the drawing</param>
-        public abstract void MoveDrawing(int dx, int dy, Keys modifierKeys);
+        /// <param name="dx">Change in x coordinates</param>
+        /// <param name="dy">Change in y coordinates</param>
+        /// <param name="modifierKeys">Modifiers key pressed while moving the drawing</param>
+        /// <param name="zooming">Whether the image is currently zoomed in</param>
+        public abstract void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming);
         
         
         
@@ -129,6 +145,22 @@ namespace Kinovea.ScreenManager
                 if (screenInvalidate != null) 
                     screenInvalidate();
             }
+        }
+        public bool ShouldSerializeCore(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.Core) == SerializationFilter.Core;
+        }
+        public bool ShouldSerializeStyle(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.Style) == SerializationFilter.Style;
+        }
+        public bool ShouldSerializeFading(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.Fading) == SerializationFilter.Fading;
+        }
+        public bool ShouldSerializeAll(SerializationFilter filter)
+        {
+            return (filter & SerializationFilter.All) == SerializationFilter.All;
         }
         #endregion
     }

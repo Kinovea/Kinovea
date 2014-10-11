@@ -53,29 +53,85 @@ namespace Kinovea.ScreenManager
             get { return speedUnit; }
             set { speedUnit = value;}
         }
-        
-        public double FramesPerSecond
+
+        public AccelerationUnit AccelerationUnit
+        {
+            get { return accelerationUnit; }
+            set { accelerationUnit = value; }
+        }
+
+        public AngleUnit AngleUnit
+        {
+            get { return angleUnit; }
+            set { angleUnit = value; }
+        }
+
+        public AngularVelocityUnit AngularVelocityUnit
+        {
+            get { return angularVelocityUnit; }
+            set { angularVelocityUnit = value; }
+        }
+
+        public AngularAccelerationUnit AngularAccelerationUnit
+        {
+            get { return angularAccelerationUnit; }
+            set { angularAccelerationUnit = value; }
+        }
+
+        public double CaptureFramesPerSecond
         {
             // Frames per second, as in real action reference. (takes high speed camera into account.)
-            get { return framesPerSecond; }
-            set { framesPerSecond = value; }
+            get { return captureFramesPerSecond; }
+            set 
+            {
+                captureFramesPerSecond = value;
+                AfterCalibrationChanged();
+            }
         }
         
         public CalibratorType CalibratorType
         {
             get { return calibratorType;}
         }
+
+        public DistortionHelper DistortionHelper
+        {
+            get { return distortionHelper; }
+        }
+
+        public Size ImageSize
+        {
+            get { return imageSize; }
+        }
+
+        public int ContentHash
+        {
+            get
+            {
+                int hash = 0;
+                hash ^= distortionHelper.ContentHash;
+                hash ^= GetOrigin().GetHashCode();
+                return hash;
+            }
+        }
         #endregion
         
         #region Members
+        private bool initialized;
         private CalibratorType calibratorType = CalibratorType.Line;
         private ICalibrator calibrator;
         private CalibrationLine calibrationLine = new CalibrationLine();
         private CalibrationPlane calibrationPlane = new CalibrationPlane();
-        
+        private DistortionHelper distortionHelper = new DistortionHelper();
+        private Size imageSize;
+        private CoordinateSystemGrid coordinateSystemGrid;
         private LengthUnit lengthUnit = LengthUnit.Pixels;
-        private SpeedUnit speedUnit = SpeedUnit.PixelsPerFrame;
-        private double framesPerSecond = 25;
+        private SpeedUnit speedUnit = SpeedUnit.PixelsPerSecond;
+        private AccelerationUnit accelerationUnit = AccelerationUnit.PixelsPerSecondSquared;
+        private AngleUnit angleUnit = AngleUnit.Degree;
+        private AngularVelocityUnit angularVelocityUnit = AngularVelocityUnit.DegreesPerSecond;
+        private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
+        private double captureFramesPerSecond = 25;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -83,16 +139,63 @@ namespace Kinovea.ScreenManager
         public CalibrationHelper()
         {
             speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
+            accelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
+            angleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
+            angularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit;
+            angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
             calibrator = calibrationLine;
         }
         #endregion
         
-        #region Methods specific to a calibration technique
+        public void Initialize(Size imageSize)
+        {
+            this.imageSize = imageSize;
+            SetOrigin(imageSize.Center());
+            initialized = true;
+            ComputeCoordinateSystemGrid();
+        }
+
+        public void Reset()
+        {
+            SetOrigin(imageSize.Center());
+            calibratorType = CalibratorType.Line;
+            calibrationLine = new CalibrationLine();
+            calibrator = calibrationLine;
+
+            distortionHelper = new DistortionHelper();
+
+            lengthUnit = LengthUnit.Pixels;
+            speedUnit = SpeedUnit.PixelsPerSecond;
+            accelerationUnit = AccelerationUnit.PixelsPerSecondSquared;
+
+            ComputeCoordinateSystemGrid();
+        }
+        
+        /// <summary>
+        /// Returns the origin of the coordinate system in image coordinates.
+        /// </summary>
+        public PointF GetOrigin()
+        {
+            return distortionHelper.Distort(calibrator.Untransform(PointF.Empty));
+        }
+
+        /// <summary>
+        /// Takes a point in image coordinates to act as the origin of the current coordinate system.
+        /// </summary>
+        public void SetOrigin(PointF p)
+        {
+            PointF u = distortionHelper.Undistort(p);
+            calibrator.SetOrigin(u);
+            AfterCalibrationChanged();
+        }
+
         public void SetCalibratorFromType(CalibratorType type)
         {
+            // Used by calibration dialogs to force a calibration method for further computations.
+            // Each time the user calibrates, we switch to the method he just used.
             calibratorType = type;
-            
-            switch(type)
+
+            switch (type)
             {
                 case CalibratorType.Line:
                     calibrator = calibrationLine;
@@ -102,55 +205,140 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
-        public void CalibrationByLine_SetPixelToUnit(float ratio)
+        
+        public CoordinateSystemGrid GetCoordinateSystemGrid()
         {
-            calibrationLine.SetPixelToUnit(ratio);
+            return coordinateSystemGrid;
         }
-        public void CalibrationByLine_SetOrigin(PointF p)
+
+        public void AfterDistortionUpdated()
         {
-            calibrationLine.SetOrigin(p);
+            AfterCalibrationChanged();
         }
-        public PointF CalibrationByLine_GetOrigin()
+
+        #region Methods specific to a calibration technique
+        public void CalibrationByLine_Initialize(float ratio)
         {
-            return calibrationLine.Origin;
-        }
-        public bool CalibrationByLine_GetIsOriginSet()
-        {
-            return calibrationLine.IsOriginSet;
+            calibrationLine.Initialize(ratio);
+            AfterCalibrationChanged();
         }
         public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
         {
-            calibrationPlane.Initialize(size, quadImage);
+            QuadrilateralF undistorted = new QuadrilateralF(
+                distortionHelper.Undistort(quadImage.A),
+                distortionHelper.Undistort(quadImage.B),
+                distortionHelper.Undistort(quadImage.C),
+                distortionHelper.Undistort(quadImage.D));
+
+            calibrationPlane.Initialize(size, undistorted);
+            AfterCalibrationChanged();
+        }
+        public void CalibrationByPlane_Update(QuadrilateralF quadImage)
+        {
+            QuadrilateralF undistorted = new QuadrilateralF(
+                distortionHelper.Undistort(quadImage.A),
+                distortionHelper.Undistort(quadImage.B),
+                distortionHelper.Undistort(quadImage.C),
+                distortionHelper.Undistort(quadImage.D));
+
+            calibrationPlane.Update(undistorted);
+            AfterCalibrationChanged();
         }
         public SizeF CalibrationByPlane_GetRectangleSize()
         {
+            // Real size of the calibration rectangle. Used to populate the calibration dialog.
             return calibrationPlane.Size;
         }
-        
+        public bool CalibrationByPlane_IsValid()
+        {
+            return calibrationPlane.Valid;
+        }
+        public CalibrationPlane CalibrationByPlane_GetCalibrator()
+        {
+            return calibrationPlane;
+        }
+        public ProjectiveMapping CalibrationByPlane_GetProjectiveMapping()
+        {
+            return calibrationPlane.ProjectiveMapping;
+        }
+        public QuadrilateralF CalibrationByPlane_GetProjectedQuad()
+        {
+            // Projection of the reference rectangle onto image space.
+            // This is the quadrilateral defined by the user.
+            return calibrationPlane.QuadImage;
+        }
         #endregion
-        
-        #region Value extractors
-        public string GetLengthText(PointF p1, PointF p2, bool precise, bool abbreviation)
+
+        #region Value computers
+        /// <summary>
+        /// Takes a point in image space and returns it in world space.
+        /// </summary>
+        public PointF GetPoint(PointF p)
         {
-            float length = GetLength(p1, p2);
-            string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
-            string text = String.Format(valueTemplate, length);
-            
-            if(abbreviation)
-                text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
-            
-            return text;
+            return calibrator.Transform(distortionHelper.Undistort(p));
+        }
+
+        /// <summary>
+        /// Takes a point in rectified image space and returns it in world space.
+        /// </summary>
+        public PointF GetPointFromRectified(PointF p)
+        {
+            return calibrator.Transform(p);
+        }
+
+        /// <summary>
+        /// Takes an interval in frames and returns it in seconds.
+        /// </summary>
+        public float GetTime(int frames)
+        {
+            // TODO: have the function takes a number of timestamps instead for better accuracy.
+            return (float)(frames / captureFramesPerSecond);
         }
         
-        public float GetLength(PointF p1, PointF p2)
+        /// <summary>
+        /// Takes a speed in calibration units/seconds and returns it in the current speed unit.
+        /// </summary>
+        public float ConvertSpeed(float v)
         {
-            PointF a = calibrator.Transform(p1);
-            PointF b = calibrator.Transform(p2);
-            return GeometryHelper.GetDistance(a, b);
+            return UnitHelper.ConvertVelocity(v, lengthUnit, speedUnit);
+        }
+
+        public float ConvertAcceleration(float a)
+        {
+            return UnitHelper.ConvertAcceleration(a, lengthUnit, accelerationUnit);
+        }
+
+        public float ConvertAccelerationFromVelocity(float a)
+        {
+            // Passed acceleration is expressed in units configured for velocity.
+            float magnitude = UnitHelper.ConvertForLengthUnit(a, speedUnit, lengthUnit);
+            return UnitHelper.ConvertAcceleration(magnitude, lengthUnit, accelerationUnit);
+        }
+
+        public float ConvertAngle(float radians)
+        {
+            return angleUnit == AngleUnit.Radian ? radians : (float)(radians * MathHelper.RadiansToDegrees);
+        }
+        public float ConvertAngleFromDegrees(float degrees)
+        {
+            return angleUnit == AngleUnit.Degree ? degrees : (float)(degrees * MathHelper.DegreesToRadians);
+        }
+
+        public float ConvertAngularVelocity(float radiansPerSecond)
+        {
+            return (float)UnitHelper.ConvertAngularVelocity(radiansPerSecond, angularVelocityUnit);
         }
         
+        public float ConvertAngularAcceleration(float radiansPerSecondSquared)
+        {
+            return UnitHelper.ConvertAngularAcceleration(radiansPerSecondSquared, angularAccelerationUnit); 
+        }
+        #endregion
+
+        #region Value as text
         public string GetPointText(PointF p, bool precise, bool abbreviation)
         {
+            // TODO: remove this function in favore of getting the raw value and formatting in the caller ?
             PointF a = GetPoint(p);
             
             string valueTemplate = precise ? "{{{0:0.00};{1:0.00}}}" : "{{{0:0};{1:0}}}";
@@ -162,49 +350,99 @@ namespace Kinovea.ScreenManager
             return text;
         }
         
-        public PointF GetPoint(PointF p)
+        /// <summary>
+        /// Takes two points in image coordinates and return the length of the segment in real world units.
+        /// </summary>
+        public string GetLengthText(PointF p1, PointF p2, bool precise, bool abbreviation)
         {
-            return calibrator.Transform(p);
-        }
-        
-        public string GetSpeedText(PointF p1, PointF p2, int frames)
-        {
-            if((p1.X == p2.X && p1.Y == p2.Y) || frames == 0)
-                return "0" + " " + UnitHelper.SpeedAbbreviation(speedUnit);
+            float length = GeometryHelper.GetDistance(GetPoint(p1), GetPoint(p2));
+            string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
+            string text = String.Format(valueTemplate, length);
             
-            float length = GetLength(p1, p2);
+            if(abbreviation)
+                text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
             
-            // The user may have configured a preferred speed unit but not done any space calibration. Force use of px/f.
-            SpeedUnit unit = (lengthUnit == LengthUnit.Pixels && speedUnit != SpeedUnit.PixelsPerFrame) ? SpeedUnit.PixelsPerFrame : speedUnit;
-            
-            // Convert distance from length units to speed units, in case the user calibrated space in cm but want speed in m/s for example.
-            double length2 = UnitHelper.ConvertLengthForSpeedUnit(length, lengthUnit, unit);
-            
-            double speed = UnitHelper.GetSpeed(length2, frames, framesPerSecond, unit);
-            
-            string text = String.Format("{0:0.00} {1}", speed, UnitHelper.SpeedAbbreviation(unit));
             return text;
         }
-        #endregion
-        
-        #region Inverse transformations (from calibrated space to image space).
-        public float GetImageLength(PointF p1, PointF p2)
-        {
-            PointF a = calibrator.Untransform(p1);
-            PointF b = calibrator.Untransform(p2);
-            return GeometryHelper.GetDistance(a, b);
-        }
-        
-        public PointF GetImagePoint(PointF p)
-        {
-            return calibrator.Untransform(p);
-        }
-        #endregion
-        
+
         public string GetLengthAbbreviation()
         {
             return UnitHelper.LengthAbbreviation(lengthUnit);
         }
+        public string GetSpeedAbbreviation()
+        {
+            SpeedUnit unit = IsCalibrated ? speedUnit : SpeedUnit.PixelsPerSecond;
+            return UnitHelper.SpeedAbbreviation(unit);
+        }
+        public string GetAccelerationAbbreviation()
+        {
+            AccelerationUnit unit = IsCalibrated ? accelerationUnit : AccelerationUnit.PixelsPerSecondSquared;
+            return UnitHelper.AccelerationAbbreviation(unit);
+        }
+        public string GetAngleAbbreviation()
+        {
+            return UnitHelper.AngleAbbreviation(angleUnit);
+        }
+        public string GetAngularVelocityAbbreviation()
+        {
+            return UnitHelper.AngularVelocityAbbreviation(angularVelocityUnit);
+        }
+        public string GetAngularAccelerationAbbreviation()
+        {
+            return UnitHelper.AngularAccelerationAbbreviation(angularAccelerationUnit);
+        }
+        #endregion
+         
+        #region Inverse transformations (from calibrated space to image space).
+        public float GetImageLength(PointF p1, PointF p2)
+        {
+            PointF a = distortionHelper.Distort(calibrator.Untransform(p1));
+            PointF b = distortionHelper.Distort(calibrator.Untransform(p2));
+
+            return GeometryHelper.GetDistance(a, b);
+        }
+        
+        /// <summary>
+        /// Takes a scalar value in world space and return it in image space.
+        /// Not suitable for geometry.
+        /// </summary>
+        public float GetImageScalar(float v)
+        {
+            PointF a = distortionHelper.Distort(calibrator.Untransform(PointF.Empty));
+            PointF b = distortionHelper.Distort(calibrator.Untransform(new PointF(v, 0)));
+            
+            float d = GeometryHelper.GetDistance(a, b);
+            return v < 0 ? -d : d;
+        }
+
+        /// <summary>
+        /// Takes a point in real world coordinates and returns it in image coordinates.
+        /// </summary>
+        public PointF GetImagePoint(PointF p)
+        {
+            return distortionHelper.Distort(calibrator.Untransform(p));
+        }
+
+        /// <summary>
+        /// Takes a circle in real world coordinates and returns a cooresponding ellipse in image coordinates.
+        /// </summary>
+        public Ellipse GetEllipseFromCircle(PointF center, float radius)
+        {
+            if(calibratorType == CalibratorType.Line)
+                return new Ellipse(GetImagePoint(center), GetImageScalar(radius), GetImageScalar(radius), 0);
+            
+            // Get the square enclosing the circle for mapping.
+            PointF a = GetImagePoint(center.Translate(-radius, -radius));
+            PointF b = GetImagePoint(center.Translate(radius, -radius));
+            PointF c = GetImagePoint(center.Translate(radius, radius));
+            PointF d = GetImagePoint(center.Translate(-radius, radius));
+            QuadrilateralF quadImage = new QuadrilateralF(a, b, c, d);
+
+            ProjectiveMapping mapping = new ProjectiveMapping();
+            mapping.Update(QuadrilateralF.CenteredUnitSquare, quadImage);
+            return mapping.Ellipse();
+        }
+        #endregion
        
         #region Serialization
         public void WriteXml(XmlWriter w)
@@ -226,8 +464,10 @@ namespace Kinovea.ScreenManager
             w.WriteAttributeString("Abbreviation", GetLengthAbbreviation());
             w.WriteString(lengthUnit.ToString());
             w.WriteEndElement();
+
+            DistortionSerializer.Serialize(w, distortionHelper.Parameters, false, imageSize);
         }
-        public void ReadXml(XmlReader r)
+        public void ReadXml(XmlReader r, PointF scale, Size imageSize)
         {
             r.ReadStartElement();
             
@@ -238,15 +478,20 @@ namespace Kinovea.ScreenManager
                     case "CalibrationPlane":
                         calibratorType = CalibratorType.Plane;
                         calibrator = calibrationPlane;
-                        calibrationPlane.ReadXml(r);
+                        calibrationPlane.ReadXml(r, scale);
+                        ComputeCoordinateSystemGrid();
                         break;
                     case "CalibrationLine":
                         calibratorType = CalibratorType.Line;
                         calibrator = calibrationLine;
-                        calibrationLine.ReadXml(r);
+                        calibrationLine.ReadXml(r, scale);
                         break;
                     case "Unit":
                         lengthUnit = (LengthUnit) Enum.Parse(typeof(LengthUnit), r.ReadElementContentAsString());
+                        break;
+                    case "CameraCalibration":
+                        DistortionParameters parameters = DistortionSerializer.Deserialize(r, imageSize);
+                        distortionHelper.Initialize(parameters, imageSize);
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
@@ -256,6 +501,25 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
+
+            AfterCalibrationChanged();
+        }
+        #endregion
+
+        #region Private helpers
+        private void AfterCalibrationChanged()
+        {
+            ComputeCoordinateSystemGrid();
+
+            if (CalibrationChanged != null)
+                CalibrationChanged(this, EventArgs.Empty);
+        }
+        private void ComputeCoordinateSystemGrid()
+        {
+            if (!initialized)
+                return;
+
+            coordinateSystemGrid = CoordinateSystemGridFinder.Find(this);
         }
         #endregion
     }

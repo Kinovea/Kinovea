@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.Services;
+using System.Xml.Serialization;
 
 namespace Kinovea.ScreenManager
 {
@@ -32,12 +33,17 @@ namespace Kinovea.ScreenManager
     /// AutoNumber. (MultiDrawingItem of AutoNumberManager)
     /// Describe and draw a single autonumber.
     /// </summary>
-    public class AutoNumber : IKvaSerializable
+    [XmlType("AutoNumber")]
+    public class AutoNumber : AbstractMultiDrawingItem, IKvaSerializable
     {
         #region Properties
         public int Value 
         {
             get { return value;}
+        }
+        public override int ContentHash
+        {
+            get { return value.GetHashCode() ^ background.GetHashCode(); }
         }
         #endregion
 
@@ -46,77 +52,74 @@ namespace Kinovea.ScreenManager
         private RoundedRectangle background = new RoundedRectangle();   // <-- Also used as a simple ellipsis-defining rectangle when value < 10.
         private InfosFading infosFading;
         private int value = 1;
-        private StyleHelper styleHelper;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
-        public AutoNumber(long _iPosition, long _iAverageTimeStampsPerFrame, Point _location, int _value, StyleHelper _styleHelper)
+        public AutoNumber(long position, long averageTimeStampsPerFrame, PointF location, int value)
         {
-            position = _iPosition;
-            background.Rectangle = new Rectangle(_location, Size.Empty);
-            value = _value;
+            this.position = position;
+            background.Rectangle = new RectangleF(location, SizeF.Empty);
+            this.value = value;
 
-            infosFading = new InfosFading(_iPosition, _iAverageTimeStampsPerFrame);
+            infosFading = new InfosFading(position, averageTimeStampsPerFrame);
             infosFading.UseDefault = false;
             infosFading.FadingFrames = 25;
-
-            styleHelper = _styleHelper;
-            
-            SetText(value.ToString());
         }
-        public AutoNumber(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, long _iAverageTimeStampsPerFrame, StyleHelper _styleHelper)
-            : this(0, 0, Point.Empty, 0, _styleHelper)
+
+        public AutoNumber(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
+            : this(0, 0, Point.Empty, 0)
         {
-             ReadXml(_xmlReader, _scale, _remapTimestampCallback);
-             
-             infosFading = new InfosFading(position, _iAverageTimeStampsPerFrame);
+             ReadXml(xmlReader, scale, timestampMapper);
+
+             infosFading = new InfosFading(position, metadata.AverageTimeStampsPerFrame);
              infosFading.UseDefault = false;
              infosFading.FadingFrames = 25;
-             
-             SetText(value.ToString());
         }
         #endregion
         
         #region Public methods
-        public void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, long _timestamp)
+        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, StyleHelper styleHelper)
         {
-            double fOpacityFactor = infosFading.GetOpacityFactor(_timestamp);
+            double fOpacityFactor = infosFading.GetOpacityFactor(timestamp);
             if(fOpacityFactor <= 0)
                 return;
         
             int alpha = (int)(255 * fOpacityFactor);
-            
+
+            //SetText(styleHelper);
+
             using(SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(fOpacityFactor * 255)))
             using(SolidBrush brushFront = styleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
             using(Pen penContour = styleHelper.GetForegroundPen((int)(fOpacityFactor * 255)))
-            using(Font f = styleHelper.GetFont((float)_transformer.Scale))
+            using(Font f = styleHelper.GetFont((float)transformer.Scale))
             {
                 // Note: recompute the background size each time in case font floored.
                 string text = value.ToString();
                 penContour.Width = 2;
-                SizeF textSize = _canvas.MeasureString(text, f);
-                Point bgLocation = _transformer.Transform(background.Rectangle.Location);              
+                SizeF textSize = canvas.MeasureString(text, f);
+                Point bgLocation = transformer.Transform(background.Rectangle.Location);
+                SizeF untransformed = transformer.Untransform(textSize);
+                background.Rectangle = new RectangleF(background.Rectangle.Location, untransformed);
                 
                 Size bgSize;
-                
                 if(value < 10)
                 {
                     bgSize = new Size((int)textSize.Height, (int)textSize.Height);
                     Rectangle rect = new Rectangle(bgLocation, bgSize);
-                    _canvas.FillEllipse(brushBack, rect);
-                    _canvas.DrawEllipse(penContour, rect);
+                    canvas.FillEllipse(brushBack, rect);
+                    canvas.DrawEllipse(penContour, rect);
                 }
                 else
                 {
                     bgSize = new Size((int)textSize.Width, (int)textSize.Height);
                     Rectangle rect = new Rectangle(bgLocation, bgSize);
-                    RoundedRectangle.Draw(_canvas, rect, brushBack, f.Height/4, false, true, penContour);    
+                    RoundedRectangle.Draw(canvas, rect, brushBack, f.Height/4, false, true, penContour);    
                 }
                 
                 int verticalShift = (int)(textSize.Height / 10);
                 Point textLocation = new Point(bgLocation.X + (int)((bgSize.Width - textSize.Width)/2), bgLocation.Y + verticalShift);
-                _canvas.DrawString(text, f, brushFront, textLocation);
+                canvas.DrawString(text, f, brushFront, textLocation);
             }
         }
         public int HitTest(Point point, long currentTimeStamp, IImageToViewportTransformer transformer)
@@ -128,70 +131,78 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
-        public void MouseMove(int _deltaX, int _deltaY)
+        public void MouseMove(float dx, float dy)
         {
-            background.Move(_deltaX, _deltaY);
+            background.Move(dx, dy);
         }
-        public bool IsVisible(long _timestamp)
+        public bool IsVisible(long timestamp)
         {
-            return infosFading.GetOpacityFactor(_timestamp) > 0;
+            return infosFading.GetOpacityFactor(timestamp) > 0;
         }
         #endregion
         
         #region KVA Serialization
-        private void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
-            if(_remapTimestampCallback == null)
+            if(timestampMapper == null)
             {
-                _xmlReader.ReadOuterXml();
+                xmlReader.ReadOuterXml();
                 return;                
             }
+
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
+            xmlReader.ReadStartElement();
             
-            _xmlReader.ReadStartElement();
-            
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "Time":
-                        position = _remapTimestampCallback(_xmlReader.ReadElementContentAsLong(), false);
+                        position = timestampMapper(xmlReader.ReadElementContentAsLong(), false);
                         break;
                     case "Location":
-                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        background.Rectangle = new Rectangle(p.Scale(_scale.X, _scale.Y), Size.Empty);
+                        PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                        background.Rectangle = new RectangleF(p.Scale(scale.X, scale.Y), SizeF.Empty);
                         break;
                     case "Value":
-                        value = _xmlReader.ReadElementContentAsInt();
+                        value = xmlReader.ReadElementContentAsInt();
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            _xmlWriter.WriteElementString("Time", position.ToString());
-            _xmlWriter.WriteElementString("Location", string.Format("{0};{1}", background.X, background.Y));
-            _xmlWriter.WriteElementString("Value", value.ToString());
+            if ((filter & SerializationFilter.Core) == SerializationFilter.Core)
+            {
+                w.WriteElementString("Time", position.ToString());
+                w.WriteElementString("Location", XmlHelper.WritePointF(background.Rectangle.Location));
+                w.WriteElementString("Value", value.ToString());
+            }
         }
         #endregion
         
         #region Private methods
-        private void SetText(string text)
+        private void SetText(StyleHelper styleHelper)
         {
+            string text = value.ToString();
+
             using(Button but = new Button())
             using(Graphics g = but.CreateGraphics())
             using(Font f = styleHelper.GetFont(1.0F))
             {
                 SizeF textSize = g.MeasureString(text, f);
                 
-                int width = value < 10 ? (int)textSize.Height : (int)textSize.Width;
-                int height = (int)textSize.Height;
-                background.Rectangle = new Rectangle(background.Rectangle.Location, new Size(width, height));
+                float width = value < 10 ? textSize.Height : textSize.Width;
+                float height = textSize.Height;
+                background.Rectangle = new RectangleF(background.Rectangle.Location, new SizeF(width, height));
             }
         }
         #endregion

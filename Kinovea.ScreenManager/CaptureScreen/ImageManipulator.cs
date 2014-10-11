@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
             mousePrevious = mouse;
             
             if(manipulationType == ManipulationType.Move)
-                DoMove(deltaStart, sticky, containerSize);
+                DoMove(deltaStart.X, deltaStart.Y, sticky, containerSize);
             else if(manipulationType == ManipulationType.Resize)
                 DoResize(handle, deltaStart, sticky, referenceSize);
         }
@@ -152,9 +152,9 @@ namespace Kinovea.ScreenManager
             expanded = false;
         }
         
-        private void DoMove(Point delta, bool sticky, Size containerSize)
+        private void DoMove(int dx, int dy, bool sticky, Size containerSize)
         {
-            displayRectangle = refDisplayRectangle.Translate(delta);
+            displayRectangle = refDisplayRectangle.Translate(dx, dy);
             if(sticky)
                 displayRectangle.Location = StickToBorders(displayRectangle, containerSize);
         }

@@ -37,17 +37,14 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public partial class formPreviewVideoFilter : Form
     {
-        #region Members
-        private Bitmap m_bmpPreview = null;
-        #endregion
+        private Bitmap bmpPreview = null;
         
-        public formPreviewVideoFilter(Bitmap _bmpPreview, string _windowTitle)
+        public formPreviewVideoFilter(Bitmap bmpPreview, string windowTitle)
         {
-            m_bmpPreview = _bmpPreview;
+            this.bmpPreview = bmpPreview;
             InitializeComponent();
 
-            // Culture
-            this.Text = "   " + _windowTitle;
+            this.Text = "   " + windowTitle;
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
@@ -56,39 +53,19 @@ namespace Kinovea.ScreenManager
             RatioStretch();
             picPreview.Invalidate();
         }
-
         private void picPreview_Paint(object sender, PaintEventArgs e)
         {
-            // Afficher l'image.
-            if (m_bmpPreview != null)
-            {
-                e.Graphics.DrawImage(m_bmpPreview, 0, 0, picPreview.Width, picPreview.Height);
-            }     
+            if (bmpPreview != null)
+                e.Graphics.DrawImage(bmpPreview, 0, 0, picPreview.Width, picPreview.Height);
         }
         private void RatioStretch()
         {
-            // Agrandi la picturebox pour maximisation dans le panel.
-            if (m_bmpPreview != null)
-            {
-                float WidthRatio = (float)m_bmpPreview.Width / pnlPreview.Width;
-                float HeightRatio = (float)m_bmpPreview.Height / pnlPreview.Height;
+            if (bmpPreview == null)
+                return;
 
-                //Redimensionner l'image selon la dimension la plus proche de la taille du panel.
-                if (WidthRatio > HeightRatio)
-                {
-                    picPreview.Width = pnlPreview.Width;
-                    picPreview.Height = (int)((float)m_bmpPreview.Height / WidthRatio);
-                }
-                else
-                {
-                    picPreview.Width = (int)((float)m_bmpPreview.Width / HeightRatio);
-                    picPreview.Height = pnlPreview.Height;
-                }
-
-                //recentrer
-                picPreview.Left = (pnlPreview.Width / 2) - (picPreview.Width / 2);
-                picPreview.Top = (pnlPreview.Height / 2) - (picPreview.Height / 2);
-            }
+            Rectangle r = UIHelper.RatioStretch(bmpPreview.Size, pnlPreview.Size);
+            picPreview.Size = r.Size;
+            picPreview.Location = r.Location;
         }
     }
 }

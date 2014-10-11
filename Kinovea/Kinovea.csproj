@@ -139,8 +139,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\CommandSwitchUICulture.cs" />
-    <Compile Include="Commands\CommandToggleFileExplorer.cs" />
     <Compile Include="UserInterface\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -231,8 +229,10 @@
     <EmbeddedResource Include="Languages\RootLang.fr.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.ja.resx" />
     <EmbeddedResource Include="Languages\RootLang.ko.resx" />
     <EmbeddedResource Include="Languages\RootLang.lt.resx" />
+    <EmbeddedResource Include="Languages\RootLang.mk.resx" />
     <EmbeddedResource Include="Languages\RootLang.nl.resx" />
     <EmbeddedResource Include="Languages\RootLang.no.resx" />
     <EmbeddedResource Include="Languages\RootLang.resx">
@@ -242,6 +242,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\RootLang.ru.resx" />
+    <EmbeddedResource Include="Languages\RootLang.sr-Cyrl-CS.resx" />
     <EmbeddedResource Include="Languages\RootLang.sr-Latn-CS.resx" />
     <EmbeddedResource Include="Languages\RootLang.sv.resx" />
     <EmbeddedResource Include="Languages\RootLang.tr.resx" />
@@ -315,9 +316,9 @@
       <Link>avdevice-55.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFmpeg\bin\avfilter-3.dll">
+    <None Include="..\Refs\FFmpeg\bin\avfilter-4.dll">
       <Visible>False</Visible>
-      <Link>avfilter-3.dll</Link>
+      <Link>avfilter-4.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\FFmpeg\bin\avformat-55.dll">
@@ -545,10 +546,10 @@
       <Visible>False</Visible>
       <InProject>false</InProject>
     </XSLTItem>
-    <DrawingsItem Include="$(MSBuildProjectDirectory)\..\Tools\postures\*.xml">
+    <DrawingTools Include="$(MSBuildProjectDirectory)\..\Tools\DrawingTools\**\*.xml">
       <Visible>False</Visible>
       <InProject>false</InProject>
-    </DrawingsItem>
+    </DrawingTools>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -566,6 +567,6 @@
     <Copy SourceFiles="@(XSLTItem)" DestinationFolder="$(OutputPath)xslt" />
     <RemoveDir Directories="$(OutputPath)DrawingTools" />
     <MakeDir Directories="$(OutputPath)DrawingTools" Condition="!Exists('$(OutputPath)DrawingTools')" />
-    <Copy SourceFiles="@(DrawingsItem)" DestinationFolder="$(OutputPath)DrawingTools" />
+    <Copy SourceFiles="@(DrawingTools)" DestinationFolder="$(OutputPath)\DrawingTools\%(RecursiveDir)" />
   </Target>
 </Project>

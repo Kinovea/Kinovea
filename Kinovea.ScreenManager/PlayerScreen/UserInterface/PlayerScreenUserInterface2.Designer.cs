@@ -423,7 +423,6 @@ namespace Kinovea.ScreenManager
             this.lblTimeCode.Size = new System.Drawing.Size(89, 12);
             this.lblTimeCode.TabIndex = 2;
             this.lblTimeCode.Text = "Position : 0:00:00:00";
-            this.lblTimeCode.DoubleClick += new System.EventHandler(this.lblTimeCode_DoubleClick);
             // 
             // buttonGotoFirst
             // 

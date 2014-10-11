@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>C4E32F5B-F2FC-4A61-9666-151E42ADCA3D</Id>
+  <Name>ArrowSquiggly</Name>
+  <DisplayName>DrawingName_ArrowSquiggly</DisplayName>
+  <Icon>squigglyarrow</Icon>
+  <DrawingClass>DrawingLine</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>true</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>true</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="color">
+      <Value>255;255;127;0</Value>
+    </Color>
+    <LineSize Key="line size">
+      <Value>7</Value>
+    </LineSize>
+    <LineShape Key="line shape">
+      <Value>Squiggle</Value>
+    </LineShape>
+    <Arrows Key="arrows">
+      <Value>EndArrow</Value>
+    </Arrows>
+  </DefaultStyle>
+</KinoveaDrawingTool>

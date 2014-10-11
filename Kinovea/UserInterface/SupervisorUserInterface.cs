@@ -56,12 +56,12 @@ namespace Kinovea.Root
         }
         private void SupervisorUserInterface_Load(object sender, EventArgs e)
         {
-        	if(CommandLineArgumentManager.Instance().HideExplorer || !PreferencesManager.GeneralPreferences.ExplorerVisible)
-        		CollapseExplorer();
-        	else
+            if (!LaunchSettingsManager.ShowExplorer || !PreferencesManager.GeneralPreferences.ExplorerVisible)
+                CollapseExplorer();
+            else
                 ExpandExplorer(true);
 
-        	initialized = true;
+            initialized = true;
         }
         #endregion
 

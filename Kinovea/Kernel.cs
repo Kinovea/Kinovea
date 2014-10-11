@@ -72,13 +72,14 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuMotion = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLanguages = new ToolStripMenuItem();
-        private Dictionary<string, ToolStripMenuItem> m_LanguageMenus = new Dictionary<string, ToolStripMenuItem>();
+        private Dictionary<string, ToolStripMenuItem> languageMenus = new Dictionary<string, ToolStripMenuItem>();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeFrames = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeMilliseconds = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeTimeAndFrames = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimecodeNormalized = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTutorialVideos = new ToolStripMenuItem();
@@ -96,15 +97,18 @@ namespace Kinovea.Root
         #region Constructor
         public RootKernel()
         {
-            CommandLineArgumentManager.Instance().ParseArguments(Environment.GetCommandLineArgs());
+            CommandLineArgumentManager.Instance.ParseArguments(Environment.GetCommandLineArgs());
             
             VideoTypeManager.LoadVideoReaders();
             CameraTypeManager.LoadCameraManagers();
-            
+            ToolManager.LoadTools();
+
             BuildSubTree();
             mainWindow = new KinoveaMainWindow(this);
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
             NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
+
+
 
             log.Debug("Plug sub modules at UI extension points (Menus, ToolBars, StatusBAr, Windows).");
             ExtendMenu(mainWindow.menuStrip);
@@ -121,20 +125,16 @@ namespace Kinovea.Root
         #region Prepare & Launch
         public void Prepare()
         {
-            // Prepare the right strings before we open the curtains.
             log.Debug("Setting current ui culture.");
             Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
             RefreshUICulture();
             CheckLanguageMenu();
             CheckTimecodeMenu();
-            
-            LogInitialConfiguration();
-            
-            if(CommandLineArgumentManager.Instance().InputFile != null)
-                screenManager.PrepareScreen();
         }
         public void Launch()
-        {            
+        {
+            screenManager.RecoverCrash();
+
             log.Debug("Calling Application.Run() to boot up the UI.");
             Application.Run(mainWindow);
         }
@@ -188,9 +188,6 @@ namespace Kinovea.Root
             CheckLanguageMenu();
             CheckTimecodeMenu();
             
-            CommandManager cm = CommandManager.Instance();
-            cm.UpdateMenus();
-
             toolOpenFile.ToolTipText = RootLang.mnuOpenFile;
             
             fileBrowser.RefreshUICulture();
@@ -246,7 +243,7 @@ namespace Kinovea.Root
             #region File
             mnuFile.MergeAction = MergeAction.Append;
             mnuOpenFile.Image = Properties.Resources.folder;
-            mnuOpenFile.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O;
+            mnuOpenFile.ShortcutKeys = Keys.Control | Keys.O;
             mnuOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
             mnuHistory.Image = Properties.Resources.time;
             
@@ -269,21 +266,19 @@ namespace Kinovea.Root
 
             #region Edit
             mnuEdit.MergeAction = MergeAction.Append;
+            
             mnuUndo.Tag = RootLang.ResourceManager;
             mnuUndo.Image = Properties.Resources.arrow_undo;
-            mnuUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            mnuUndo.Click += new EventHandler(menuUndoOnClick);
+            mnuUndo.ShortcutKeys = Keys.Control | Keys.Z;
             mnuUndo.Enabled = false;
+
             mnuRedo.Tag = RootLang.ResourceManager;
             mnuRedo.Image = Properties.Resources.arrow_redo;
-            mnuRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            mnuRedo.Click += new EventHandler(menuRedoOnClick);
+            mnuRedo.ShortcutKeys = Keys.Control | Keys.Y;
             mnuRedo.Enabled = false;
 
-            CommandManager cm = CommandManager.Instance();
-            cm.RegisterUndoMenu(mnuUndo);
-            cm.RegisterRedoMenu(mnuRedo);
-
+            HistoryMenuManager.RegisterMenus(mnuUndo, mnuRedo);
+            
             mnuEdit.DropDownItems.AddRange(new ToolStripItem[] { mnuUndo, mnuRedo });
             #endregion
 
@@ -291,10 +286,10 @@ namespace Kinovea.Root
             mnuToggleFileExplorer.Image = Properties.Resources.explorer;
             mnuToggleFileExplorer.Checked = true;
             mnuToggleFileExplorer.CheckState = System.Windows.Forms.CheckState.Checked;
-            mnuToggleFileExplorer.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            mnuToggleFileExplorer.ShortcutKeys = Keys.F4;
             mnuToggleFileExplorer.Click += new EventHandler(mnuToggleFileExplorerOnClick);
             mnuFullScreen.Image = Properties.Resources.fullscreen;
-            mnuFullScreen.ShortcutKeys = System.Windows.Forms.Keys.F11;
+            mnuFullScreen.ShortcutKeys = Keys.F11;
             mnuFullScreen.Click += new EventHandler(mnuFullScreenOnClick);
             
             mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleFileExplorer, mnuFullScreen, new ToolStripSeparator() });
@@ -307,7 +302,7 @@ namespace Kinovea.Root
                 ToolStripMenuItem mnuLang = new ToolStripMenuItem(lang.Value);
                 mnuLang.Tag = lang.Key;
                 mnuLang.Click += mnuLanguage_OnClick;
-                m_LanguageMenus.Add(lang.Key, mnuLang);
+                languageMenus.Add(lang.Key, mnuLang);
                 mnuLanguages.DropDownItems.Add(mnuLang);
             }
             
@@ -319,19 +314,20 @@ namespace Kinovea.Root
             mnuTimecodeFrames.Click += new EventHandler(mnuTimecodeFrames_OnClick);
             mnuTimecodeMilliseconds.Click += new EventHandler(mnuTimecodeMilliseconds_OnClick);
             mnuTimecodeTimeAndFrames.Click += new EventHandler(mnuTimecodeTimeAndFrames_OnClick);
-            
+            mnuTimecodeNormalized.Click += new EventHandler(mnuTimecodeNormalized_OnClick);
+
             mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeMilliseconds, mnuTimecodeTimeAndFrames});
             
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuLanguages, 
                 mnuTimecode, 
                 new ToolStripSeparator(), 
-                mnuPreferences});                     						
+                mnuPreferences});
             #endregion
 
             #region Help
             mnuHelpContents.Image = Properties.Resources.book_open;
-            mnuHelpContents.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            mnuHelpContents.ShortcutKeys = Keys.F1;
             mnuHelpContents.Click += new EventHandler(mnuHelpContents_OnClick);
             mnuTutorialVideos.Image = Properties.Resources.film;
             mnuTutorialVideos.Click += new EventHandler(mnuTutorialVideos_OnClick);
@@ -414,6 +410,8 @@ namespace Kinovea.Root
             mnuTimecodeFrames.Text = RootLang.TimeCodeFormat_Frames;
             mnuTimecodeMilliseconds.Text = RootLang.TimeCodeFormat_Milliseconds;
             mnuTimecodeTimeAndFrames.Text = RootLang.TimeCodeFormat_TimeAndFrames;
+            //mnuTimecodeTimeAndFrames.Text = RootLang.TimeCodeFormat_Normalized;
+            mnuTimecodeNormalized.Text = "Normalized";
             
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
@@ -444,19 +442,6 @@ namespace Kinovea.Root
         private void menuQuitOnClick(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-        #endregion
-
-        #region Edit
-        private void menuUndoOnClick(object sender, EventArgs e)
-        {
-            CommandManager cm = CommandManager.Instance();
-            cm.Undo();
-        }
-        private void menuRedoOnClick(object sender, EventArgs e)
-        {
-            CommandManager cm = CommandManager.Instance();
-            cm.Redo();
         }
         #endregion
 
@@ -499,24 +484,31 @@ namespace Kinovea.Root
         }
         private void SwitchCulture(string name)
         {
-            IUndoableCommand command = new CommandSwitchUICulture(this, Thread.CurrentThread, new CultureInfo(name), Thread.CurrentThread.CurrentUICulture);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(command);
+            CultureInfo oldCulture = Thread.CurrentThread.CurrentUICulture;
+            CultureInfo newCulture = new CultureInfo(name);
+
+            log.Debug(String.Format("Changing culture from [{0}] to [{1}].", oldCulture.Name, newCulture.Name));
+            
+            PreferencesManager.GeneralPreferences.SetCulture(newCulture.Name);
+            Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
+            PreferencesManager.Save();
+
+            RefreshUICulture();
         }
         private void CheckLanguageMenu()
         {
-            foreach(ToolStripMenuItem mnuLang in m_LanguageMenus.Values)
+            foreach(ToolStripMenuItem mnuLang in languageMenus.Values)
                 mnuLang.Checked = false;
 
             string cultureName = LanguageManager.GetCurrentCultureName();
             
             try
             {
-                m_LanguageMenus[cultureName].Checked = true;    
+                languageMenus[cultureName].Checked = true;    
             }
             catch(KeyNotFoundException)
             {
-                m_LanguageMenus["en"].Checked = true;            
+                languageMenus["en"].Checked = true;            
             }
         }
         private void mnuPreferencesOnClick(object sender, EventArgs e)
@@ -536,6 +528,7 @@ namespace Kinovea.Root
             mnuTimecodeFrames.Checked = false;
             mnuTimecodeMilliseconds.Checked = false;
             mnuTimecodeTimeAndFrames.Checked = false;
+            mnuTimecodeNormalized.Checked = false;
             
             TimecodeFormat tf = PreferencesManager.PlayerPreferences.TimecodeFormat;
             
@@ -552,6 +545,9 @@ namespace Kinovea.Root
                     break;
                 case TimecodeFormat.TimeAndFrames:
                     mnuTimecodeTimeAndFrames.Checked = true;
+                    break;
+                case TimecodeFormat.Normalized:
+                    mnuTimecodeNormalized.Checked = true;
                     break; 
                 default:
                     break;
@@ -573,11 +569,15 @@ namespace Kinovea.Root
         {
             SwitchTimecode(TimecodeFormat.TimeAndFrames);
         }
+        private void mnuTimecodeNormalized_OnClick(object sender, EventArgs e)
+        {
+            SwitchTimecode(TimecodeFormat.Normalized);
+        }
         private void SwitchTimecode(TimecodeFormat _timecode)
         {
             PreferencesManager.PlayerPreferences.TimecodeFormat = _timecode;
             RefreshUICulture();
-            PreferencesManager.Save();	
+            PreferencesManager.Save();
         }
         #endregion
 
@@ -601,9 +601,7 @@ namespace Kinovea.Root
             string resourceUri = GetLocalizedHelpResource(false);
             if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
             {
-                IUndoableCommand clmis = new CommandLoadMovieInScreen(screenManager, resourceUri, -1, true);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(clmis);
+                LoaderVideo.LoadVideoInScreen(screenManager, resourceUri, -1);
             }
             else
             {
@@ -668,12 +666,8 @@ namespace Kinovea.Root
         {
             if (File.Exists(filePath))
             {
-                IUndoableCommand clmis = new CommandLoadMovieInScreen(screenManager, filePath, -1, true);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(clmis);
-
-                ICommand css = new CommandShowScreens(screenManager);
-                CommandManager.LaunchCommand(css);
+                LoaderVideo.LoadVideoInScreen(screenManager, filePath, -1);
+                screenManager.OrganizeScreens();
             }
             else
             {
@@ -682,16 +676,6 @@ namespace Kinovea.Root
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
             }
-        }
-        private void LogInitialConfiguration()
-        {
-            CommandLineArgumentManager am = CommandLineArgumentManager.Instance();
-            
-            log.Debug("Initial configuration:");
-            log.Debug("InputFile : " + am.InputFile);
-            log.Debug("SpeedPercentage : " + am.SpeedPercentage.ToString());
-            log.Debug("StretchImage : " + am.StretchImage.ToString());
-            log.Debug("HideExplorer : " + am.HideExplorer.ToString());
         }
         private string GetLocalizedHelpResource(bool manual)
         {

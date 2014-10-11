@@ -157,7 +157,7 @@ namespace Kinovea.Camera.DirectShow
             catch(Exception)
             {
                 log.ErrorFormat("Error happened while trying to display the device property page for {0}.", summary.Alias);
-            }	
+            }
         }
     }
 }

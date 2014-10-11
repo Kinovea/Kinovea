@@ -20,15 +20,24 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Xml;
+using System.Drawing;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// Objects that can serialize themselves to .kva. 
-	/// Generally should have a static ReadXml method to deserialize too.
-	/// </summary>
-	public interface IKvaSerializable
-	{
-		void WriteXml(XmlWriter xmlWriter);
-	}
+    /// <summary>
+    /// Objects that can serialize themselves to .kva. 
+    /// Generally should have a static ReadXml method to deserialize too.
+    /// 
+    /// Additional non-inheritable contracts:
+    /// - A .NET XmlType attribute with the serialization name of the drawing: [XmlType ("Angle")].
+    /// - A constructor with the following prototype: void ctor(XmlReader, PointF, TimestampMapper, Metadata).
+    /// </summary>
+    public interface IKvaSerializable
+    {
+        Guid Id { get; }
+        
+        void WriteXml(XmlWriter xmlWriter, SerializationFilter filter);
+        void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper);
+    }
 }

@@ -35,6 +35,7 @@ using System.Xml;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
+using System.Xml.Serialization;
 
 namespace Kinovea.ScreenManager
 {
@@ -49,12 +50,17 @@ namespace Kinovea.ScreenManager
     /// In Edit state: dragging the target moves the point's coordinates.
     /// In Interactive state: dragging the target moves to the next point (in time).
     /// </summary>
-    public class DrawingTrack : AbstractDrawing, IDecorable
+    [XmlType ("Track")]
+    public class DrawingTrack : AbstractDrawing, IDecorable, IScalable, IKvaSerializable
     {
+        #region Events
+        public event EventHandler TrackerParametersChanged;
+        #endregion
+
         #region Delegates
         // To ask the UI to display the frame closest to selected pos.
         // used when moving the target in direct interactive mode.
-        public ClosestFrameAction m_ShowClosestFrame;     
+        public ClosestFrameDisplayer ClosestFrameDisplayer;     
         #endregion
 
         #region Properties
@@ -67,82 +73,108 @@ namespace Kinovea.ScreenManager
             get 
             { 
                 // Combine all relevant fields with XOR to get the Hash.
-                int iHash = 0;
-                iHash ^= m_TrackView.GetHashCode();
-                foreach (AbstractTrackPoint p in m_Positions)
-                    iHash ^= p.ContentHash;
+                int hash = 0;
+                hash ^= trackView.GetHashCode();
+                foreach (AbstractTrackPoint p in positions)
+                    hash ^= p.ContentHash;
                 
-                iHash ^= m_iDefaultCrossRadius.GetHashCode();
-                iHash ^= m_StyleHelper.ContentHash;
-                iHash ^= m_MainLabel.GetHashCode();
+                hash ^= defaultCrossRadius.GetHashCode();
+                hash ^= styleHelper.ContentHash;
+                hash ^= mainLabel.GetHashCode();
                 
-                foreach (KeyframeLabel kfl in m_KeyframesLabels)
-                    iHash ^= kfl.GetHashCode();
+                foreach (KeyframeLabel kfl in keyframesLabels)
+                    hash ^= kfl.GetHashCode();
+
+                hash ^= tracker.Parameters.ContentHash;
                 
-                return iHash;
+                return hash;
             }
         }
         public TrackView View
         {
-            get { return m_TrackView; }
-            set { m_TrackView = value; }
+            get { return trackView; }
+            set { trackView = value; }
         }
         public TrackStatus Status
         {
-            get { return m_TrackStatus; }
-            set { m_TrackStatus = value; }
+            get { return trackStatus; }
+            set 
+            { 
+                trackStatus = value;
+                AfterTrackStatusChanged();
+            }
         }
         public TrackExtraData ExtraData
         {
-            get { return m_TrackExtraData; }
+            get { return trackExtraData; }
             set 
             { 
-                m_TrackExtraData = value; 
+                trackExtraData = value; 
                 IntegrateKeyframes();
             }
         }
+        public TrackMarker Marker
+        {
+            get { return trackMarker; }
+            set { trackMarker = value; }
+        }
+        public TrackerParameters TrackerParameters
+        {
+            get { return tracker.Parameters; }
+            set 
+            {
+                if (scalingDone)
+                    return;
+
+                tracker.Parameters = value;
+                UpdateBoundingBoxes();
+            }
+        }
+        public bool DisplayBestFitCircle
+        {
+            get { return displayBestFitCircle; }
+            set { displayBestFitCircle = value; }
+        }
+
         public long BeginTimeStamp
         {
-            get { return m_iBeginTimeStamp; }
+            get { return beginTimeStamp; }
         }
         public long EndTimeStamp
         {
-            get { return m_iEndTimeStamp; }
+            get { return endTimeStamp; }
         }
         public DrawingStyle DrawingStyle
         {
-            get { return m_Style;}
+            get { return style;}
         }
         public Color MainColor
         {    
-            get { return m_StyleHelper.Color; }
+            get { return styleHelper.Color; }
             set 
             { 
-                m_StyleHelper.Color = value;
-                m_MainLabel.BackColor = value;
+                styleHelper.Color = value;
+                style.ReadValue();
+                mainLabel.BackColor = value;
             }
         }
         public string Label
         {
-            get { return m_MainLabelText; }
-            set { m_MainLabelText = value;}
+            get { return mainLabelText; }
+            set { mainLabelText = value;}
         }
         public Metadata ParentMetadata
         {
-            get { return m_ParentMetadata; }    // unused.
+            get { return parentMetadata; }    // unused.
             set 
             { 
-                m_ParentMetadata = value; 
-                m_InfosFading.AverageTimeStampsPerFrame = m_ParentMetadata.AverageTimeStampsPerFrame;
+                parentMetadata = value; 
+                infosFading.AverageTimeStampsPerFrame = parentMetadata.AverageTimeStampsPerFrame;
             }
-        }
-        public bool Untrackable
-        {
-            get { return m_bUntrackable; }
         }
         public bool Invalid 
         {
-            get { return m_Invalid;}
+            get { return invalid;}
         }
         // Fading is not modifiable from outside.
         public override InfosFading  InfosFading
@@ -152,302 +184,338 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
         {
-            get { return DrawingCapabilities.None; }
+            get { return DrawingCapabilities.DataAnalysis; }
         }
         public override List<ToolStripItem> ContextMenu
         {
-            get { return null; }
+            get 
+            {
+                if (trackStatus != TrackStatus.Interactive)
+                    return null;
+
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                // Initialize menu each time to get translated texts.
+                ReinitializeMenu();
+                contextMenu.Add(mnuMeasurement);
+                return contextMenu;
+            }
+        }
+        public TrajectoryKinematics TrajectoryKinematics
+        {
+            get { return trajectoryKinematics; }
         }
         #endregion
 
         #region Members
         
         // Current state.
-        private TrackView m_TrackView = TrackView.Complete;
-        private TrackStatus m_TrackStatus = TrackStatus.Edit;
-        private TrackExtraData m_TrackExtraData = TrackExtraData.None;
-        private int m_iMovingHandler = -1;
-        private bool m_Invalid;                                 // Used for XML import.
+        private TrackView trackView = TrackView.Complete;
+        private TrackStatus trackStatus = TrackStatus.Interactive;
+        private TrackExtraData trackExtraData = TrackExtraData.None;
+        private TrackMarker trackMarker = TrackMarker.Cross;
+        private bool displayBestFitCircle;
+        private int movingHandler = -1;
+        private bool invalid;                                 // Used for XML import.
+        private bool scalingDone;
             
         // Tracker tool.
-        private AbstractTracker m_Tracker;
-        private bool m_bUntrackable;
+        private AbstractTracker tracker;
         
         // Hardwired parameters.
-        private const int m_iDefaultCrossRadius = 4;
-        private const int m_iAllowedFramesOver = 12;  	// Number of frames over which the global fading spans (after end point).
-        private const int m_iFocusFadingFrames = 30;	// Number of frames of the focus section. 
+        private const int defaultCrossRadius = 4;
+        private const int allowedFramesOver = 12;      // Number of frames over which the global fading spans (after end point).
+        private const int focusFadingFrames = 30;    // Number of frames of the focus section. 
        
         // Internal data.
-        private List<AbstractTrackPoint> m_Positions = new List<AbstractTrackPoint>();
-        private List<KeyframeLabel> m_KeyframesLabels = new List<KeyframeLabel>();
+        private List<AbstractTrackPoint> positions = new List<AbstractTrackPoint>();
+        private TrajectoryKinematics trajectoryKinematics = new TrajectoryKinematics();
+        private List<KeyframeLabel> keyframesLabels = new List<KeyframeLabel>();
+        private KinematicsHelper kinematicsHelper = new KinematicsHelper();
+        private IImageToViewportTransformer transformer;
         
-        private long m_iBeginTimeStamp;     			// absolute.
-        private long m_iEndTimeStamp = long.MaxValue; 	// absolute.
-        private int m_iTotalDistance;       			// This is used to normalize timestamps to a par scale with distances.
-        private int m_iCurrentPoint;
+        private long beginTimeStamp;                 // absolute.
+        private long endTimeStamp = long.MaxValue;     // absolute.
+        private int totalDistance;                   // This is used to normalize timestamps to a par scale with distances.
+        private int currentPoint;
 
         // Decoration
-        private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style;
-        private KeyframeLabel m_MainLabel = new KeyframeLabel();
-        private string m_MainLabelText = "Label";
-        private InfosFading m_InfosFading = new InfosFading(long.MaxValue, 1);
-        private const int m_iBaseAlpha = 224;				// alpha of track in most cases.
-        private const int m_iAfterCurrentAlpha = 64;		// alpha of track after the current point when in normal mode.
-        private const int m_iEditModeAlpha = 128;			// alpha of track when in Edit mode.
-        private const int m_iLabelFollowsTrackAlpha = 80;	// alpha of track when in LabelFollows view.
+        private StyleHelper styleHelper = new StyleHelper();
+        private DrawingStyle style;
+        private KeyframeLabel mainLabel = new KeyframeLabel();
+        private string mainLabelText = "Label";
+        private InfosFading infosFading = new InfosFading(long.MaxValue, 1);
+        private const int baseAlpha = 224;                // alpha of track in most cases.
+        private const int afterCurrentAlpha = 64;        // alpha of track after the current point when in normal mode.
+        private const int editModeAlpha = 128;            // alpha of track when in Edit mode.
+        private const int labelFollowsTrackAlpha = 80;    // alpha of track when in LabelFollows view.
+
+        // Configuration
+        private BoundingBox searchWindow = new BoundingBox(10);
+        private BoundingBox blockWindow = new BoundingBox(4);
+
+        // Context menu
+        private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
+        private List<ToolStripMenuItem> mnuMeasurementOptions = new List<ToolStripMenuItem>();
         
         // Memorization poul
-        private TrackView m_MemoTrackView;
-        private string m_MemoLabel;
-        private Metadata m_ParentMetadata;
+        private TrackView memoTrackView;
+        private string memoLabel;
+        private Metadata parentMetadata;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public DrawingTrack(Point _origin, long _t, Bitmap _CurrentImage, Size _imageSize)
+        public DrawingTrack(Point origin, long t, DrawingStyle preset)
         {
-            //-----------------------------------------------------------------------------------------
-            // t is absolute time.
-            // _bmp is the whole picture, if null it means we don't need it.
-            // (Probably because we already have a few points that we are importing from xml.
-            // In this case we'll only need the last frame to reconstruct the last point.)
-            //-----------------------------------------------------------------------------------------
-            
-            // Create the first point
-            if (_CurrentImage != null)
-            {
-                m_Tracker = new TrackerBlock2(_CurrentImage.Width, _CurrentImage.Height);
-                AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, _origin.X, _origin.Y, 1.0f, _t, _CurrentImage, m_Positions);
-                if(atp != null)
-                    m_Positions.Add(atp);
-                else
-                    m_bUntrackable = true;
-            }
-            else
-            {
-                // Happens when loading Metadata from file or demuxing.
-                m_Tracker = new TrackerBlock2(_imageSize.Width, _imageSize.Height);
-                m_Positions.Add(m_Tracker.CreateOrphanTrackPoint(_origin.X, _origin.Y, _t));
-            }
+            tracker = new TrackerBlock2(GetTrackerParameters(new Size(800, 600)));
+            positions.Add(new TrackPointBlock(origin.X, origin.Y, t));
 
-            if(!m_bUntrackable)
-            {
-                m_iBeginTimeStamp = _t;
-                m_iEndTimeStamp = _t;
-                m_MainLabel.SetAttach(_origin, true);
+            beginTimeStamp = t;
+            endTimeStamp = t;
+            mainLabel.SetAttach(origin, true);
                 
-                // We use the InfosFading utility to fade the track away.
-                // The refererence frame will be the last point (at which fading start).
-                // AverageTimeStampsPerFrame will be updated when we get the parent metadata.
-                m_InfosFading.FadingFrames = m_iAllowedFramesOver;
-                m_InfosFading.UseDefault = false;
-                m_InfosFading.Enabled = true;
+            infosFading.FadingFrames = allowedFramesOver;
+            infosFading.UseDefault = false;
+            infosFading.Enabled = true;
+            
+            styleHelper.Color = Color.Black;
+            styleHelper.LineSize = 3;
+            styleHelper.TrackShape = TrackShape.Dash;
+            if (preset != null)
+            {
+                style = preset.Clone();
+                BindStyle();
             }
             
-            // Decoration
-            m_Style = new DrawingStyle();
-            m_Style.Elements.Add("color", new StyleElementColor(Color.SeaGreen));
-            m_Style.Elements.Add("line size", new StyleElementLineSize(3));
-            m_Style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
-            m_StyleHelper.Color = Color.Black;
-            m_StyleHelper.LineSize = 3;
-            m_StyleHelper.TrackShape = TrackShape.Dash;
-            BindStyle();
-            
-            m_StyleHelper.ValueChanged += mainStyle_ValueChanged;
+            ReinitializeMenu();
         }
-        public DrawingTrack(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, Size _imageSize)
-            : this(Point.Empty,0, null, _imageSize)
+
+        public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
+            : this(Point.Empty, 0, null)
         {
-            ReadXml(_xmlReader, _scale, _remapTimestampCallback);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
         #region AbstractDrawing implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            if (_iCurrentTimestamp < m_iBeginTimeStamp)
+            if (currentTimestamp < beginTimeStamp)
                 return;
                 
+            this.transformer = transformer;
+            
             // 0. Compute the fading factor. 
             // Special case from other drawings:
             // ref frame is last point, and we only fade after it, not before.
-            double fOpacityFactor = 1.0;
-            if (m_TrackStatus == TrackStatus.Interactive && _iCurrentTimestamp > m_iEndTimeStamp)
+            double opacityFactor = 1.0;
+            if (trackStatus == TrackStatus.Interactive && currentTimestamp > endTimeStamp)
             {
-                m_InfosFading.ReferenceTimestamp = m_iEndTimeStamp;
-                fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+                infosFading.ReferenceTimestamp = endTimeStamp;
+                opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
             }
             
-            if(fOpacityFactor <= 0)
+            if(opacityFactor <= 0)
                 return;
 
-            m_iCurrentPoint = FindClosestPoint(_iCurrentTimestamp);
-            
+            currentPoint = FindClosestPoint(currentTimestamp);
             
             // Draw various elements depending on combination of view and status.
             // The exact alpha at which the traj will be drawn will be decided in GetTrackPen().
-            if(m_Positions.Count > 1)
+            if(positions.Count > 1)
             {
                 // Key Images titles.
-                if (m_TrackStatus == TrackStatus.Interactive && m_TrackView != TrackView.Label)
-                    DrawKeyframesTitles(_canvas, fOpacityFactor, _transformer);	
+                if (trackStatus == TrackStatus.Interactive && trackView != TrackView.Label)
+                    DrawKeyframesTitles(canvas, opacityFactor, transformer);
                 
                 // Track.
                 int first = GetFirstVisiblePoint();
                 int last = GetLastVisiblePoint();
-                if (m_TrackStatus == TrackStatus.Interactive && m_TrackView == TrackView.Complete)
+                if (trackStatus == TrackStatus.Interactive && trackView == TrackView.Complete)
                 {
-                    DrawTrajectory(_canvas, first, m_iCurrentPoint, true, fOpacityFactor, _transformer);	
-                    DrawTrajectory(_canvas, m_iCurrentPoint, last, false, fOpacityFactor, _transformer);
+                    DrawTrajectory(canvas, first, currentPoint, true, opacityFactor, transformer);
+                    DrawTrajectory(canvas, currentPoint, last, false, opacityFactor, transformer);
                 }
                 else
                 {
-                    DrawTrajectory(_canvas, first, last, false, fOpacityFactor, _transformer);
+                    DrawTrajectory(canvas, first, last, false, opacityFactor, transformer);
                 }
             }
             
-            if(m_Positions.Count > 0)
+            if(positions.Count > 0)
             {
+                // Angular motion
+                if (displayBestFitCircle && trackStatus == TrackStatus.Interactive)
+                    DrawBestFitCircle(canvas, currentPoint, opacityFactor, transformer);
+
                 // Track.
-                if( fOpacityFactor == 1.0 && m_TrackView != TrackView.Label)
-                    DrawMarker(_canvas, fOpacityFactor, _transformer);
+                if( opacityFactor == 1.0 && trackView != TrackView.Label)
+                    DrawMarker(canvas, opacityFactor, transformer);
                 
-                // Search boxes. (only on edit)
-                if ((m_TrackStatus == TrackStatus.Edit) && (fOpacityFactor == 1.0))
-                    m_Tracker.Draw(_canvas, m_Positions[m_iCurrentPoint].Point, _transformer, m_StyleHelper.Color, fOpacityFactor);
-                
+                if (opacityFactor == 1.0)
+                    DrawTrackerHelp(canvas, transformer, styleHelper.Color, opacityFactor);
+
                 // Main label.
-                if (m_TrackStatus == TrackStatus.Interactive && m_TrackView == TrackView.Label ||
-                    m_TrackStatus == TrackStatus.Interactive && m_TrackExtraData != TrackExtraData.None)
+                if (trackStatus == TrackStatus.Interactive && trackView == TrackView.Label ||
+                    trackStatus == TrackStatus.Interactive && trackExtraData != TrackExtraData.None)
                 {
-                    DrawMainLabel(_canvas, m_iCurrentPoint, fOpacityFactor, _transformer);
+                    DrawMainLabel(canvas, currentPoint, opacityFactor, transformer);
                 }
             }
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
-            if (m_TrackStatus == TrackStatus.Edit)
+            if (trackStatus == TrackStatus.Interactive && movingHandler > 1)
             {
-                if(m_iMovingHandler == 1)
-                {
-                    // Update cursor label.
-                    // Image will be reseted at mouse up. (=> UpdateTrackPoint)
-                    m_Positions[m_iCurrentPoint].X += _deltaX;
-                    m_Positions[m_iCurrentPoint].Y += _deltaY;
-                }
+                MoveLabelTo(dx, dy, movingHandler);
+                return;
             }
-            else
+
+            if (movingHandler == 1 && (trackStatus == TrackStatus.Edit || trackStatus == TrackStatus.Configuration))
             {
-                if(m_iMovingHandler > 1)
-                {
-                    // Update coords label.
-                    MoveLabelTo(_deltaX, _deltaY, m_iMovingHandler);
-                }
+                positions[currentPoint].X += dx;
+                positions[currentPoint].Y += dy;
+
+                if (trackStatus == TrackStatus.Configuration)
+                    UpdateBoundingBoxes();
+                return;
             }
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
-            // We come here when moving the target or moving along the trajectory,
-            // and in interactive mode (change current frame).
-            if(m_TrackStatus == TrackStatus.Interactive && (handleNumber == 0 || handleNumber == 1))
+            if (trackStatus == TrackStatus.Interactive && (handleNumber == 0 || handleNumber == 1))
             {
                 MoveCursor(point.X, point.Y);
             }
-        }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
-        {
-            int result = -1;
-
-            if (currentTimestamp < m_iBeginTimeStamp && currentTimestamp > m_iEndTimeStamp)
+            else if (trackStatus == TrackStatus.Configuration)
             {
-                m_iMovingHandler = -1;
+                TrackerParameters old = tracker.Parameters;
+                
+                if (movingHandler > 1 && movingHandler < 6)
+                    searchWindow.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 1, positions[currentPoint].Point);
+                else if (movingHandler >= 6 && movingHandler < 11)
+                    blockWindow.MoveHandleKeepSymmetry(point.ToPoint(), movingHandler - 5, positions[currentPoint].Point);
+
+                TrackerParameters newParams = new TrackerParameters(
+                    old.SimilarityThreshold, old.TemplateUpdateThreshold, old.RefinementNeighborhood, searchWindow.Rectangle.Size, blockWindow.Rectangle.Size, old.ResetOnMove);
+                
+                tracker.Parameters = newParams;
+                UpdateBoundingBoxes();
+                if (TrackerParametersChanged != null)
+                    TrackerParametersChanged(this, EventArgs.Empty);
+            }
+        }
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        {
+            if (currentTimestamp < beginTimeStamp || currentTimestamp > endTimeStamp)
+            {
+                movingHandler = -1;
                 return -1;
             }
-            
-            // We give priority to labels in case a label is on the trajectory, we need to be able to move it around.
-            // If label attach mode, this will tell if we are on the label.
-            if (m_TrackStatus == TrackStatus.Interactive)
-                result = IsOnKeyframesLabels(point, transformer);
-                
-            if (result == -1)
-            {
-                Rectangle rectangleTarget;
-                int boxSide = transformer.Untransform(m_iDefaultCrossRadius + 3);
-                
-                if(m_TrackStatus == TrackStatus.Edit)
-                    rectangleTarget = m_Tracker.GetEditRectangle(m_Positions[m_iCurrentPoint].Point);
-                else
-                    rectangleTarget = m_Positions[m_iCurrentPoint].Box(boxSide);
-                
-                if (rectangleTarget.Contains(point))
-                {
-                    result = 1;
-                }
-                else
-                {
-                    // TODO: investigate why this might crash sometimes.
-                    try
-                    {
-                        int iStart = GetFirstVisiblePoint();
-                        int iEnd = GetLastVisiblePoint();
-                        
-                        // Create path which contains wide line for easy mouse selection
-                        int iTotalVisiblePoints = iEnd - iStart;
-                        Point[] points = new Point[iTotalVisiblePoints];
-                        for (int i = iStart; i < iEnd; i++)
-                            points[i-iStart] = m_Positions[i].Point;
 
-                        using(GraphicsPath areaPath = new GraphicsPath())
-                        {
-                            areaPath.AddCurve(points, 0.5f);
-                            RectangleF bounds = areaPath.GetBounds();
-                            if(!bounds.IsEmpty)
-                            {
-                                using(Pen tempPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7))
-                                {
-                                    areaPath.Widen(tempPen);
-                                }
-                                using(Region areaRegion = new Region(areaPath))
-                                {
-                                    result = areaRegion.IsVisible(point) ? 0 : -1;
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception exp)
-                    {
-                        result = -1;
-                        log.Error("Error while hit testing track.");
-                        log.Error("Exception thrown : " + exp.GetType().ToString() + " in " + exp.Source.ToString() + exp.TargetSite.Name.ToString());
-                        log.Error("Message : " + exp.Message.ToString());
-                        Exception inner = exp.InnerException;
-                        while( inner != null )
-                        {
-                            log.Error("Inner exception : " + inner.Message.ToString());
-                            inner = inner.InnerException;
-                        }
-                    }
-                }
+            int result = -1;
+            switch (trackStatus)
+            {
+                case TrackStatus.Edit:
+                    result = HitTestEdit(point, currentTimestamp, transformer);
+                    break;
+                case TrackStatus.Configuration:
+                    result = HitTestConfiguration(point, currentTimestamp, transformer);
+                    break;
+                case TrackStatus.Interactive:
+                    result = HitTestInteractive(point, currentTimestamp, transformer);
+                    break;
             }
         
-            if(result == 0 && m_TrackStatus == TrackStatus.Interactive)
-            {
-                // Instantly jump to the frame.
+            movingHandler = result;
+            
+            return result;
+        }
+        private int HitTestEdit(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        {
+            // 1: search window.
+            Rectangle search = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow).ToRectangle();
+            if (search.Contains(point))
+                return 1;
+
+            return -1;
+        }
+        private int HitTestConfiguration(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        {
+            // 1: search window, 2-5: search window corners, 6-10: block window corners.
+            int blockWindowHit = blockWindow.HitTest(point, transformer);
+            if (blockWindowHit >= 1)
+                return blockWindowHit + 5;
+            
+            int searchWindowHit = searchWindow.HitTest(point, transformer);
+            if (searchWindowHit >= 0)
+                return searchWindowHit + 1;
+
+            return -1;
+        }
+        private int HitTestInteractive(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        {
+            // 0: track, 1: current point on track, 2: main label, 3+: keyframe label.
+            int result = IsOnKeyframesLabels(point, transformer);
+            if (result >= 0)
+                return result;
+
+            if (HitTester.HitTest(positions[currentPoint].Point, point, transformer))
+                return 1;
+
+            result = HitTestTrajectory(point, transformer);
+            
+            if (result == 0)
                 MoveCursor(point.X, point.Y);
+
+            return result;
+        }
+        private int HitTestTrajectory(Point point, IImageToViewportTransformer transformer)
+        {
+            // 0: track. -1: not on track.
+            int result = -1;
+            
+            try
+            {
+                int iStart = GetFirstVisiblePoint();
+                int iEnd = GetLastVisiblePoint();
+                int iTotalVisiblePoints = iEnd - iStart;
+                Point[] points = new Point[iTotalVisiblePoints];
+                for (int i = iStart; i < iEnd; i++)
+                    points[i - iStart] = positions[i].Point.ToPoint();
+
+                using (GraphicsPath path = new GraphicsPath())
+                {
+                    path.AddCurve(points, 0.5f);
+                    RectangleF bounds = path.GetBounds();
+                    if (!bounds.IsEmpty)
+                    {
+                        bool hit = HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);
+                        result = hit ? 0 : -1;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                result = -1;
+                log.Error("Error while hit testing track.");
+                log.Error("Exception thrown : " + exp.GetType().ToString() + " in " + exp.Source.ToString() + exp.TargetSite.Name.ToString());
+                log.Error("Message : " + exp.Message.ToString());
+                Exception inner = exp.InnerException;
+                while (inner != null)
+                {
+                    log.Error("Inner exception : " + inner.Message.ToString());
+                    inner = inner.InnerException;
+                }
             }
 
-            m_iMovingHandler = result;
-            
             return result;
         }
        #endregion
         
         #region Drawing routines
-        private void DrawTrajectory(Graphics _canvas, int _start, int _end, bool _before, double _fFadingFactor, IImageToViewportTransformer _transformer)
+        private void DrawTrajectory(Graphics canvas, int start, int end, bool before, double fadingFactor, IImageToViewportTransformer transformer)
         {
             // Points are drawn with various alpha values, possibly 0:
             // In edit mode, all segments are drawn at 64 alpha.
@@ -457,56 +525,101 @@ namespace Kinovea.ScreenManager
             // Either we make it vary in alpha for each segment but draw as connected lines.
             // or draw as curve but at the same alpha for all.
             // All segments are drawn at 224, even the after section.
+
+            if (trackStatus == TrackStatus.Configuration)
+                return;
+
+            Point[] points = new Point[end - start + 1];
+            for (int i = 0; i <= end - start; i++)
+                points[i] = transformer.Transform(positions[start + i].Point);
+
+            if (points.Length <= 1)
+                return;
             
-            Point[] points = new Point[_end - _start + 1];
-            for (int i = 0; i <= _end - _start; i++)
-                points[i] = _transformer.Transform(m_Positions[_start + i].Point);
-                
-            if (points.Length > 1)
+            using(Pen trackPen = GetTrackPen(trackStatus, fadingFactor, before))
             {
-                using(Pen trackPen = GetTrackPen(m_TrackStatus, _fFadingFactor, _before))
-                {
-                    // Tension parameter is at 0.5f for bezier effect (smooth curve).
-                    _canvas.DrawCurve(trackPen, points, 0.5f);
+                // Tension parameter is at 0.5f for bezier effect (smooth curve).
+                canvas.DrawCurve(trackPen, points, 0.5f);
                     
-                    if(m_StyleHelper.TrackShape.ShowSteps)
+                if(styleHelper.TrackShape.ShowSteps)
+                {
+                    using(Pen stepPen = new Pen(trackPen.Color, 2))
                     {
-                        using(Pen stepPen = new Pen(trackPen.Color, 2))
-                        {
-                            int margin = (int)(trackPen.Width * 1.5);
-                            foreach(Point p in points)
-                                _canvas.DrawEllipse(stepPen, p.Box(margin));
-                        }
+                        int margin = (int)(trackPen.Width * 1.5);
+                        foreach(Point p in points)
+                            canvas.DrawEllipse(stepPen, p.Box(margin));
                     }
                 }
             }
         }
-        private void DrawMarker(Graphics _canvas,  double _fFadingFactor, IImageToViewportTransformer _transformer)
-        { 
-            int radius = m_iDefaultCrossRadius;
-            Point location = _transformer.Transform(m_Positions[m_iCurrentPoint].Point);
+        private void DrawMarker(Graphics canvas,  double fadingFactor, IImageToViewportTransformer transformer)
+        {
+            int radius = defaultCrossRadius;
+            Point location = transformer.Transform(positions[currentPoint].Point);
             
-            if(m_TrackStatus == TrackStatus.Edit)
+            if (trackMarker == TrackMarker.Cross || trackStatus == TrackStatus.Edit || trackStatus == TrackStatus.Configuration)
             {
-                // Little cross.
-                using(Pen p = new Pen(Color.FromArgb((int)(_fFadingFactor * 255), m_StyleHelper.Color)))
+                using(Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
                 {
-                  _canvas.DrawLine(p, location.X, location.Y - radius, location.X, location.Y + radius);
-                  _canvas.DrawLine(p, location.X - radius, location.Y, location.X + radius, location.Y);
+                  canvas.DrawLine(p, location.X, location.Y - radius, location.X, location.Y + radius);
+                  canvas.DrawLine(p, location.X - radius, location.Y, location.X + radius, location.Y);
                 }
             }
-            else
+            else if (trackMarker == TrackMarker.Circle)
             {
-                // Crash test dummy style target.
+                using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+                {
+                    canvas.DrawEllipse(p, location.Box(radius));
+                }
+            }
+            else if (trackMarker == TrackMarker.Target)
+            {
                 int diameter = radius * 2;
-                _canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 0, 90);
-                _canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 90, 90);
-                _canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 180, 90);
-                _canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 270, 90);
-                _canvas.DrawEllipse(Pens.White, location.Box(radius + 2));
+                canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 0, 90);
+                canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 90, 90);
+                canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 180, 90);
+                canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 270, 90);
+                canvas.DrawEllipse(Pens.White, location.Box(radius + 2));
+            }   
+        }
+        private void DrawTrackerHelp(Graphics canvas, IImageToViewportTransformer transformer, Color color, double opacity)
+        {
+            if (trackStatus == TrackStatus.Edit)
+            {
+                tracker.Draw(canvas, positions[currentPoint], transformer, styleHelper.Color, opacity);
+            }
+            /*else if (trackStatus == TrackStatus.Interactive)
+            {
+                tracker.Draw(canvas, positions[currentPoint], transformer, styleHelper.Color, opacity);
+            }*/
+            else if (trackStatus == TrackStatus.Configuration)
+            {
+                Point location = transformer.Transform(positions[currentPoint].Point);
+                Size searchSize = transformer.Transform(tracker.Parameters.SearchWindow);
+                Size blockSize = transformer.Transform(tracker.Parameters.BlockWindow);
+                Rectangle searchBox = location.Box(searchSize);
+
+                // Dim background.
+                GraphicsPath backgroundPath = new GraphicsPath();
+                backgroundPath.AddRectangle(canvas.ClipBounds);
+                GraphicsPath searchBoxPath = new GraphicsPath();
+                searchBoxPath.AddRectangle(searchBox);
+                backgroundPath.AddPath(searchBoxPath, false);
+                using (SolidBrush brushBackground = new SolidBrush(Color.FromArgb(160, Color.Black)))
+                {
+                    canvas.FillPath(brushBackground, backgroundPath);
+                }
+
+                // Tool
+                using (Pen p = new Pen(Color.FromArgb(255, styleHelper.Color)))
+                using (SolidBrush b = new SolidBrush(p.Color))
+                {
+                    searchWindow.Draw(canvas, searchBox, p, b, 4);
+                    blockWindow.Draw(canvas, location.Box(blockSize), p, b, 3);
+                }
             }
         }
-        private void DrawKeyframesTitles(Graphics _canvas, double _fFadingFactor, IImageToViewportTransformer _transformer)
+        private void DrawKeyframesTitles(Graphics canvas, double fadingFactor, IImageToViewportTransformer transformer)
         {
             //------------------------------------------------------------
             // Draw the Keyframes labels
@@ -514,297 +627,370 @@ namespace Kinovea.ScreenManager
             // Each label is connected to the TrackPosition point.
             // Rescaling for the current image size has already been done.
             //------------------------------------------------------------
-            if (_fFadingFactor >= 0)
+            if (fadingFactor < 0 || trackStatus == TrackStatus.Configuration)
+                return;
+            
+            foreach (KeyframeLabel kl in keyframesLabels)
             {
-                foreach (KeyframeLabel kl in m_KeyframesLabels)
-                {
-                    // In focus mode, only show labels that are in focus section.
-                    if(m_TrackView == TrackView.Complete ||
-                       m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T, kl.Timestamp, m_iFocusFadingFrames)
-                      )
-                    {
-                        kl.Draw(_canvas, _transformer, _fFadingFactor);
-                    }
-                }
+                // In focus mode, only show labels that are in focus section.
+                if(trackView == TrackView.Complete || infosFading.IsVisible(positions[currentPoint].T, kl.Timestamp, focusFadingFrames))
+                    kl.Draw(canvas, transformer, fadingFactor);
             }
         }
-        private void DrawMainLabel(Graphics _canvas, int _iCurrentPoint, double _fFadingFactor, IImageToViewportTransformer _transformer)
+        private void DrawBestFitCircle(Graphics canvas, int currentPoint, double fadingFactor, IImageToViewportTransformer transformer)
+        {
+            if (positions.Count < 3)
+                return;
+
+            PointF rotationCenter = trajectoryKinematics.RotationCenter;
+            double rotationRadius = trajectoryKinematics.RotationRadius;
+
+            // trajectoryPoints values are expressed in user coordinates, so we need to first get them back to image coords, 
+            // and then to convert them for display screen.
+            Point location = transformer.Transform(positions[currentPoint].Point);
+            PointF centerInImage = parentMetadata.CalibrationHelper.GetImagePoint(rotationCenter);
+            Point center = transformer.Transform(centerInImage);
+
+            // Get ellipse.
+            Ellipse ellipseInImage = parentMetadata.CalibrationHelper.GetEllipseFromCircle(rotationCenter, (float)rotationRadius);
+
+            PointF ellipseCenter = transformer.Transform(ellipseInImage.Center);
+            float semiMinorAxis = transformer.Transform((int)ellipseInImage.SemiMinorAxis);
+            float semiMajorAxis = transformer.Transform((int)ellipseInImage.SemiMajorAxis);
+            Ellipse ellipse = new Ellipse(ellipseCenter, semiMajorAxis, semiMinorAxis, ellipseInImage.Rotation);
+            RectangleF rect = new RectangleF(-ellipse.SemiMajorAxis, -ellipse.SemiMinorAxis, ellipse.SemiMajorAxis * 2, ellipse.SemiMinorAxis * 2);
+            float angle = (float)(ellipse.Rotation * MathHelper.RadiansToDegrees);
+            
+            using (Pen p = new Pen(Color.FromArgb((int)(fadingFactor * 255), styleHelper.Color)))
+            {
+                // Center and radius
+                p.Width = 2;
+                canvas.DrawEllipse(p, center.Box(4));
+                p.DashStyle = DashStyle.Dash;
+                canvas.DrawLine(p, center, location);
+                
+                // Ellipse or circle
+                canvas.TranslateTransform(ellipse.Center.X, ellipse.Center.Y);
+                canvas.RotateTransform(angle);
+                
+                canvas.DrawEllipse(p, rect);
+                
+                canvas.RotateTransform(-angle);
+                canvas.TranslateTransform(-ellipse.Center.X, -ellipse.Center.Y);
+            }
+        }
+        private void DrawMainLabel(Graphics canvas, int currentPoint, double fadingFactor, IImageToViewportTransformer transformer)
         {
             // Draw the main label and its connector to the current point.
-            if (_fFadingFactor == 1.0f)
-            {
-                m_MainLabel.SetAttach(m_Positions[_iCurrentPoint].Point, true);
-                
-                if(m_TrackView == TrackView.Label)
-                {
-                    m_MainLabel.SetText(m_MainLabelText);
-                }
-                else
-                {
-                    m_MainLabel.SetText(GetExtraDataText(_iCurrentPoint));
-                }
-                
-                m_MainLabel.Draw(_canvas, _transformer, _fFadingFactor);
-            }
-        }
-        private Pen GetTrackPen(TrackStatus _status, double _fFadingFactor, bool _before)
-        {
-            int iAlpha = 0;
+            if (fadingFactor != 1.0f || trackStatus == TrackStatus.Configuration)
+                return;
             
-            if(_status == TrackStatus.Edit)
+            mainLabel.SetAttach(positions[currentPoint].Point, true);
+                
+            string text = trackView == TrackView.Label ? mainLabelText : GetExtraDataText(currentPoint);
+            mainLabel.SetText(text);
+            mainLabel.Draw(canvas, transformer, fadingFactor);
+        }
+        private Pen GetTrackPen(TrackStatus status, double fadingFactor, bool before)
+        {
+            int alpha = 0;
+            
+            if(status == TrackStatus.Edit)
             {
-                iAlpha = m_iEditModeAlpha;
+                alpha = editModeAlpha;
             }
             else 
             {
-                if(m_TrackView == TrackView.Complete)
+                if(trackView == TrackView.Complete)
                 {
-                    if(_before)
+                    if(before)
                     {
-                        iAlpha = (int)(_fFadingFactor * m_iBaseAlpha);
+                        alpha = (int)(fadingFactor * baseAlpha);
                     }
                     else
                     {
-                        iAlpha = m_iAfterCurrentAlpha;
+                        alpha = afterCurrentAlpha;
                     }
                 }
-                else if(m_TrackView == TrackView.Focus)
+                else if(trackView == TrackView.Focus)
                 {
-                    iAlpha = (int)(_fFadingFactor * m_iBaseAlpha);		
+                    alpha = (int)(fadingFactor * baseAlpha);
                 }
-                else if(m_TrackView == TrackView.Label)
+                else if(trackView == TrackView.Label)
                 {
-                    iAlpha = (int)(_fFadingFactor * m_iLabelFollowsTrackAlpha);
+                    alpha = (int)(fadingFactor * labelFollowsTrackAlpha);
                 }
             }
             
-            return m_StyleHelper.GetPen(iAlpha, 1.0);
+            return styleHelper.GetPen(alpha, 1.0);
         }
         #endregion
 
         #region Extra informations (Speed, distance)
-        private string GetExtraDataText(int _index)
+        public string GetExtraDataOptionText(TrackExtraData data)
         {
-            string displayText = "";
-            switch(m_TrackExtraData)
+            switch (data)
             {
+                case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
+                case TrackExtraData.Position: return "Position";
+                case TrackExtraData.TotalDistance: return "Total distance";
+                case TrackExtraData.Speed: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed;
+                case TrackExtraData.VerticalVelocity: return "Vertical velocity";
+                case TrackExtraData.HorizontalVelocity: return "Horizontal velocity";
+                case TrackExtraData.Acceleration: return "Acceleration";
+                case TrackExtraData.VerticalAcceleration: return "Vertical acceleration";
+                case TrackExtraData.HorizontalAcceleration: return "Horizontal acceleration";
+                case TrackExtraData.AngularDisplacement: return "Angular displacement";
+                case TrackExtraData.AngularVelocity: return "Angular velocity";
+                case TrackExtraData.AngularAcceleration: return "Angular acceleration";
+                case TrackExtraData.CentripetalAcceleration: return "Centripetal acceleration";
+            }
+
+            return "";
+        }
+
+        public bool IsUsingAngularKinematics()
+        {
+            return trackExtraData == TrackExtraData.AngularDisplacement ||
+                trackExtraData == TrackExtraData.AngularVelocity ||
+                trackExtraData == TrackExtraData.AngularAcceleration ||
+                trackExtraData == TrackExtraData.CentripetalAcceleration;
+        }
+
+        private string GetExtraDataText(int index)
+        {
+            CalibrationHelper helper = parentMetadata.CalibrationHelper;
+            CultureInfo culture = CultureInfo.InvariantCulture;
+            string displayText = "###";
+
+            switch(trackExtraData)
+            {
+                case TrackExtraData.Position:
+                    PointF p = trajectoryKinematics.RawCoordinates(index);
+                    displayText = string.Format(culture, "{0:0.00} ; {1:0.00} {2}", p.X, p.Y, helper.GetLengthAbbreviation());
+                    break;
                 case TrackExtraData.TotalDistance:
-                    displayText = GetDistanceText(0, _index);
+                    float d = (float)trajectoryKinematics.TotalDistance[index];
+                    displayText = string.Format(culture, "{0:0.00} {1}", d, helper.GetLengthAbbreviation());
                     break;
                 case TrackExtraData.Speed:
-                    displayText = GetSpeedText(_index - 1, _index);
+                    float v = (float)trajectoryKinematics.Speed[index];
+                    if (!float.IsNaN(v))
+                        displayText = string.Format(culture, "{0:0.00} {1}", v, helper.GetSpeedAbbreviation());
+                    break;
+                case TrackExtraData.HorizontalVelocity:
+                    float hv = (float)trajectoryKinematics.HorizontalVelocity[index];
+                    if (!float.IsNaN(hv))
+                        displayText = string.Format(culture, "{0:0.00} {1}", hv, helper.GetSpeedAbbreviation());
+                    break;
+                case TrackExtraData.VerticalVelocity:
+                    float vv = (float)trajectoryKinematics.VerticalVelocity[index];
+                    if (!float.IsNaN(vv))
+                        displayText = string.Format(culture, "{0:0.00} {1}", vv, helper.GetSpeedAbbreviation());
                     break;
                 case TrackExtraData.Acceleration:
-                    // Todo. GetAccelerationText();
+                    float a = (float)trajectoryKinematics.Acceleration[index];
+                    if (!float.IsNaN(a))
+                        displayText = string.Format(culture, "{0:0.00} {1}", a, helper.GetAccelerationAbbreviation());
+                    break;
+                case TrackExtraData.HorizontalAcceleration:
+                    float ha = (float)trajectoryKinematics.HorizontalAcceleration[index];
+                    if (!float.IsNaN(ha))
+                        displayText = string.Format(culture, "{0:0.00} {1}", ha, helper.GetAccelerationAbbreviation());
+                    break;
+                case TrackExtraData.VerticalAcceleration:
+                    float va = (float)trajectoryKinematics.VerticalAcceleration[index];
+                    if (!float.IsNaN(va))
+                        displayText = string.Format(culture, "{0:0.00} {1}", va, helper.GetAccelerationAbbreviation());
+                    break;
+                case TrackExtraData.AngularDisplacement:
+                    float angle = (float)trajectoryKinematics.DisplacementAngle[index];
+                    displayText = string.Format(culture, "{0:0.00} {1}", angle, helper.GetAngleAbbreviation());
+                    break;
+                case TrackExtraData.AngularVelocity:
+                    float angularVelocity = (float)trajectoryKinematics.AngularVelocity[index];
+                    if (!float.IsNaN(angularVelocity)) 
+                        displayText = string.Format(culture, "{0:0.00} {1}", angularVelocity, helper.GetAngularVelocityAbbreviation());
+                    break;
+                case TrackExtraData.AngularAcceleration:
+                    float angularAcceleration = (float)trajectoryKinematics.AngularAcceleration[index];
+                    if (!float.IsNaN(angularAcceleration))
+                        displayText = string.Format(culture, "{0:0.00} {1}", angularAcceleration, helper.GetAngularAccelerationAbbreviation());
+                    break;
+                case TrackExtraData.CentripetalAcceleration:
+                    float centripetalAcceleration = (float)trajectoryKinematics.CentripetalAcceleration[index];
+                    if (!float.IsNaN(centripetalAcceleration))
+                        displayText = string.Format(culture, "{0:0.00} {1}", centripetalAcceleration, helper.GetAngularAccelerationAbbreviation());
                     break;
                 case TrackExtraData.None:
-                    // keyframe title ?
+                default:
                     break;
-            }	
+            }    
             return displayText;
-        }
-        private string GetDistanceText(int _p1, int _p2)
-        {
-            // Cumulative distance between two points.
-            if(m_Positions.Count < 1)
-                return "";
-            
-            if(_p1 < 0 || _p1 >= m_Positions.Count || _p2 < 0 || _p2 >= m_Positions.Count)
-                return m_ParentMetadata.CalibrationHelper.GetLengthText(PointF.Empty, PointF.Empty, false, true);
-            
-            float length = 0;
-            for(int i = _p1; i < _p2; i++)
-                length += GeometryHelper.GetDistance(m_Positions[i].Point, m_Positions[i+1].Point);
-            
-            return m_ParentMetadata.CalibrationHelper.GetLengthText(PointF.Empty, new PointF(length, 0), true, true);
-        }
-        private string GetSpeedText(int _p1, int _p2)
-        {
-            // return the instant speed at p2.
-            // (that is the distance between p1 and p2 divided by the time to get from p1 to p2).
-            // p2 needs to be after p1.
-            
-            if(m_Positions.Count < 1)
-                return "";
-            
-            if(_p1 < 0 || _p1 >= m_Positions.Count-1 || _p2 < 0 || _p2 >= m_Positions.Count)
-                return m_ParentMetadata.CalibrationHelper.GetSpeedText(PointF.Empty, PointF.Empty, 0);
-            
-            return m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[_p1].Point.ToPointF(), m_Positions[_p2].Point.ToPointF(), _p2 - _p1);
+
+            //float tangentialVelocity = trajectoryPoints[index].TangentialVelocity;
+            //if (!float.IsNaN(tangentialVelocity))
+            //    displayText = string.Format(culture, "{0:0.00} {1}", tangentialVelocity, helper.GetSpeedAbbreviation());
+
+            //float totalArc = trajectoryPoints[index].TotalDisplacementAngle * trajectoryPoints[index].RotationRadius;
+            //displayText = string.Format(culture, "{0:0.00} {1}", totalArc, helper.GetLengthAbbreviation());
         }
         #endregion
     
         #region User manipulation
-        private void MoveCursor(int _X, int _Y)
+        private void MoveCursor(float dx, float dy)
         {
-            if (m_TrackStatus == TrackStatus.Edit)
+            if (trackStatus == TrackStatus.Edit)
             {
                 // Move cursor to new coords
                 // In this case, _X and _Y are delta values.
                 // Image will be reseted at mouse up. (=> UpdateTrackPoint)
-                m_Positions[m_iCurrentPoint].X += _X;
-                m_Positions[m_iCurrentPoint].Y += _Y;
+                positions[currentPoint].X += dx;
+                positions[currentPoint].Y += dy;
             }
             else
             {
                 // Move Playhead to closest frame (x,y,t).
                 // In this case, _X and _Y are absolute values.
-                if (m_ShowClosestFrame != null && m_Positions.Count > 1)
-                    m_ShowClosestFrame(new Point(_X, _Y), m_Positions, m_iTotalDistance, false);
+                if (ClosestFrameDisplayer != null && positions.Count > 1)
+                    ClosestFrameDisplayer(new Point((int)dx, (int)dy), positions, totalDistance, false);
             }
         }
-        private void MoveLabelTo(int _deltaX, int _deltaY, int _iLabelNumber)
+        private void MoveLabelTo(float dx, float dy, int labelNumber)
         {
             // _iLabelNumber coding: 2 = main label, 3+ = keyframes labels.
             
-            if (m_TrackStatus == TrackStatus.Edit || m_TrackView != TrackView.Label)
+            if (trackStatus == TrackStatus.Edit || trackView != TrackView.Label)
             {
-                if(m_TrackExtraData != TrackExtraData.None && _iLabelNumber == 2)
+                if(trackExtraData != TrackExtraData.None && labelNumber == 2)
                 {
                     // Move the main label.
-                    m_MainLabel.MoveLabel(_deltaX, _deltaY);
+                    mainLabel.MoveLabel(dx, dy);
                 }
                 else
                 {
-                    // Move the specified label by specified amount.    
-                    int iLabel = _iLabelNumber - 3;
-                    m_KeyframesLabels[iLabel].MoveLabel(_deltaX, _deltaY);
+                    // Move the specified label by specified amount.
+                    int iLabel = labelNumber - 3;
+                    keyframesLabels[iLabel].MoveLabel(dx, dy);
                 }
             }
-            else if (m_TrackView == TrackView.Label)
+            else if (trackView == TrackView.Label)
             {
-                m_MainLabel.MoveLabel(_deltaX, _deltaY);
+                mainLabel.MoveLabel(dx, dy);
             }
         }
-        private int IsOnKeyframesLabels(Point _point, IImageToViewportTransformer transformer)
+        private int IsOnKeyframesLabels(Point point, IImageToViewportTransformer transformer)
         {
             // Convention: -1 = miss, 2 = on main label, 3+ = on keyframe label.
-            int iHitResult = -1;
-            if (m_TrackView == TrackView.Label)
+            int hitResult = -1;
+            if (trackView == TrackView.Label)
             {
-                if (m_MainLabel.HitTest(_point, transformer))
-                    iHitResult = 2;
+                if (mainLabel.HitTest(point, transformer))
+                    hitResult = 2;
             }
             else
             {
                 // Even when we aren't in TrackView.Label, the main label is visible
                 // if we are displaying the extra data (distance, speed).
-                if (m_TrackExtraData != TrackExtraData.None)
+                if (trackExtraData != TrackExtraData.None)
                 {
-                    if (m_MainLabel.HitTest(_point, transformer))
-                        iHitResult = 2;
-                }	
+                    if (mainLabel.HitTest(point, transformer))
+                        hitResult = 2;
+                }
                 
-                for (int i = 0; i < m_KeyframesLabels.Count; i++)
+                for (int i = 0; i < keyframesLabels.Count; i++)
                 {
-                    bool isVisible = m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T, 
-                                                             m_KeyframesLabels[i].Timestamp, 
-                                                             m_iFocusFadingFrames);
-                    if(m_TrackView == TrackView.Complete || isVisible)
+                    bool isVisible = infosFading.IsVisible(positions[currentPoint].T, 
+                                                             keyframesLabels[i].Timestamp, 
+                                                             focusFadingFrames);
+                    if(trackView == TrackView.Complete || isVisible)
                     {
-                        if (m_KeyframesLabels[i].HitTest(_point, transformer))
+                        if (keyframesLabels[i].HitTest(point, transformer))
                         {
-                            iHitResult = i + 3;
+                            hitResult = i + 3;
                             break;
                         }
                     }
                 }
             }
 
-            return iHitResult;
+            return hitResult;
         }
         private int GetFirstVisiblePoint()
         {
-            if((m_TrackView != TrackView.Complete || m_TrackStatus == TrackStatus.Edit) && m_iCurrentPoint - m_iFocusFadingFrames > 0)
-                return m_iCurrentPoint - m_iFocusFadingFrames;
+            if((trackView != TrackView.Complete || trackStatus == TrackStatus.Edit) && currentPoint - focusFadingFrames > 0)
+                return currentPoint - focusFadingFrames;
             else
                 return 0;
         }
         private int GetLastVisiblePoint()
         {
-            if((m_TrackView != TrackView.Complete || m_TrackStatus == TrackStatus.Edit) && m_iCurrentPoint + m_iFocusFadingFrames < m_Positions.Count - 1)
-                return m_iCurrentPoint + m_iFocusFadingFrames;
+            if((trackView != TrackView.Complete || trackStatus == TrackStatus.Edit) && currentPoint + focusFadingFrames < positions.Count - 1)
+                return currentPoint + focusFadingFrames;
             else
-                return m_Positions.Count - 1;
+                return positions.Count - 1;
         }
         #endregion
         
         #region Context Menu implementation
-        public void ChopTrajectory(long _iCurrentTimestamp)
+        public void ChopTrajectory(long currentTimestamp)
         {
             // Delete end of track.
-            m_iCurrentPoint = FindClosestPoint(_iCurrentTimestamp);
-            if (m_iCurrentPoint < m_Positions.Count - 1)
-                m_Positions.RemoveRange(m_iCurrentPoint + 1, m_Positions.Count - m_iCurrentPoint - 1);
+            currentPoint = FindClosestPoint(currentTimestamp);
+            if (currentPoint < positions.Count - 1)
+                positions.RemoveRange(currentPoint + 1, positions.Count - currentPoint - 1);
 
-            m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T;
-            // Todo: we must now refill the last point with a patch image.
-        }
-        public List<AbstractTrackPoint> GetEndOfTrack(long _iTimestamp)
-        {
-            // Called from CommandDeleteEndOfTrack,
-            // We need to keep the old values in case the command is undone.
-          List<AbstractTrackPoint> endOfTrack = m_Positions.SkipWhile(p => p.T >= _iTimestamp).ToList();
-            return endOfTrack;
-        }
-        public void AppendPoints(long _iCurrentTimestamp, List<AbstractTrackPoint> _ChoppedPoints)
-        {
-            // Called when undoing CommandDeleteEndOfTrack,
-            // revival of the discarded points.
-            if (_ChoppedPoints.Count > 0)
-            {
-                // Some points may have been re added already and we don't want to mix the two lists.
-                // Find the append insertion point, remove extra stuff, and append.
-                int iMatchedPoint = m_Positions.Count - 1;
-                
-                while (m_Positions[iMatchedPoint].T >= _ChoppedPoints[0].T && iMatchedPoint > 0)
-                    iMatchedPoint--;
+            endTimeStamp = positions[positions.Count - 1].T;
 
-                if (iMatchedPoint < m_Positions.Count - 1)
-                    m_Positions.RemoveRange(iMatchedPoint + 1, m_Positions.Count - (iMatchedPoint+1));
-
-                foreach (AbstractTrackPoint trkpos in _ChoppedPoints)
-                    m_Positions.Add(trkpos);
-
-                m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T;
-            }
+            UpdateKinematics();
+            IntegrateKeyframes();
         }
         public void StopTracking()
         {
-            m_TrackStatus = TrackStatus.Interactive;
+            trackStatus = TrackStatus.Interactive;
+            AfterTrackStatusChanged();
         }
         public void RestartTracking()
         {
-            m_TrackStatus = TrackStatus.Edit;
+            trackStatus = TrackStatus.Edit;
+            AfterTrackStatusChanged();
         }
         #endregion
         
         #region Tracking
-        public void TrackCurrentPosition(VideoFrame _current)
+        public void TrackCurrentPosition(VideoFrame current)
         {
             // Match the previous point in current image.
             // New points to trajectories are always created from here, 
-            // the user can only moves existing points.
-            
-            if (_current.Timestamp <= m_Positions.Last().T)
+
+            TrackPointBlock closestFrame = positions.Last() as TrackPointBlock;
+            if (closestFrame == null || current.Timestamp <= closestFrame.T)
                 return;
-            
+
+            if (closestFrame.Template == null)
+            {
+                // Contiuning a track that was imported through kva.
+                PointF location = new PointF(closestFrame.X, closestFrame.Y);
+                AbstractTrackPoint trackPoint = tracker.CreateTrackPoint(true, location, 1.0f, closestFrame.T, current.Image, positions);
+                positions[positions.Count - 1] = trackPoint;
+            }
+
             AbstractTrackPoint p = null;
-            bool bMatched = m_Tracker.Track(m_Positions, _current.Image, _current.Timestamp, out p);
+            bool bMatched = tracker.Track(positions, current.Image, current.Timestamp, out p);
                 
-            if(p==null)
+            if (p == null)
             {
                 StopTracking();
                 return;
             }
             
-            m_Positions.Add(p);
+            positions.Add(p);
 
             if (!bMatched)
                 StopTracking();
             
             // Adjust internal data.
-            m_iEndTimeStamp = m_Positions.Last().T;
+            endTimeStamp = positions.Last().T;
             ComputeFlatDistance();
             IntegrateKeyframes();
         }
@@ -812,279 +998,332 @@ namespace Kinovea.ScreenManager
         {
             // This distance is used to normalize distance vs time in interactive manipulation.
             
-            int iSmallestTop = int.MaxValue;
-            int iSmallestLeft = int.MaxValue;
-            int iHighestBottom = -1;
-            int iHighestRight = -1;
+            int smallestTop = int.MaxValue;
+            int smallestLeft = int.MaxValue;
+            int highestBottom = -1;
+            int highestRight = -1;
 
-            for (int i = 0; i < m_Positions.Count; i++)
+            for (int i = 0; i < positions.Count; i++)
             {
-                if (m_Positions[i].X < iSmallestLeft)
-                    iSmallestLeft = m_Positions[i].X;
+                if (positions[i].X < smallestLeft)
+                    smallestLeft = (int)positions[i].X;
 
-                if (m_Positions[i].X > iHighestRight)
-                    iHighestRight = m_Positions[i].X;
+                if (positions[i].X > highestRight)
+                    highestRight = (int)positions[i].X;
 
-                if (m_Positions[i].Y < iSmallestTop)
-                    iSmallestTop = m_Positions[i].Y;
+                if (positions[i].Y < smallestTop)
+                    smallestTop = (int)positions[i].Y;
                 
-                if (m_Positions[i].Y > iHighestBottom)
-                    iHighestBottom = m_Positions[i].Y;
+                if (positions[i].Y > highestBottom)
+                    highestBottom = (int)positions[i].Y;
             }
 
-            m_iTotalDistance = (int)Math.Sqrt(((iHighestRight - iSmallestLeft) * (iHighestRight - iSmallestLeft))
-                                       + ((iHighestBottom - iSmallestTop) * (iHighestBottom - iSmallestTop)));
+            totalDistance = (int)Math.Sqrt(((highestRight - smallestLeft) * (highestRight - smallestLeft))
+                                       + ((highestBottom - smallestTop) * (highestBottom - smallestTop)));
         }
-        public void UpdateTrackPoint(Bitmap _CurrentImage)
+        public void UpdateTrackPoint(Bitmap currentImage)
         {
             // The user moved a point that had been previously placed.
             // We need to reconstruct tracking data stored in the point, for later tracking.
             // The coordinate of the point have already been updated during the mouse move.
-            if (m_Positions.Count < 2 || m_iCurrentPoint < 0)
+            if (currentImage == null || positions.Count < 1 || currentPoint < 0)
                 return;
             
-            AbstractTrackPoint current = m_Positions[m_iCurrentPoint];
+            AbstractTrackPoint current = positions[currentPoint];
         
             current.ResetTrackData();
-            AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, current.X, current.Y, 1.0f, current.T,  _CurrentImage, m_Positions);
+            AbstractTrackPoint atp = tracker.CreateTrackPoint(true, current.Point, 1.0f, current.T,  currentImage, positions);
             
             if(atp != null)
-                 m_Positions[m_iCurrentPoint] = atp;
+                 positions[currentPoint] = atp;
             
             // Update the mini label (attach, position of label, and text).
-            for (int i = 0; i < m_KeyframesLabels.Count; i++)
+            for (int i = 0; i < keyframesLabels.Count; i++)
             {
-                if(m_KeyframesLabels[i].Timestamp == current.T)
+                if(keyframesLabels[i].Timestamp == current.T)
                 {
-                    m_KeyframesLabels[i].SetAttach(current.Point, true);
-                    if(m_TrackExtraData != TrackExtraData.None)
-                        m_KeyframesLabels[i].SetText(GetExtraDataText(m_KeyframesLabels[i].AttachIndex));
+                    keyframesLabels[i].SetAttach(current.Point, true);
+                    if(trackExtraData != TrackExtraData.None)
+                        keyframesLabels[i].SetText(GetExtraDataText(keyframesLabels[i].AttachIndex));
                     
                     break;
                 }
             }
         }
+        private TrackerParameters GetTrackerParameters(Size size)
+        {
+            double similarityThreshold = 0.5;
+            double templateUpdateThreshold = 0.8;
+            int refinementNeighborhood = 1;
+            Size searchWindow = new Size((int)(size.Width * 0.2), (int)(size.Height * 0.2));
+            Size blockWindow = new Size((int)(size.Width * 0.05), (int)(size.Height * 0.05));
+
+            return new TrackerParameters(similarityThreshold, templateUpdateThreshold, refinementNeighborhood, searchWindow, blockWindow, false);
+        }
         #endregion
         
-        #region XML import/export
-        public void WriteXml(XmlWriter _xmlWriter)
+        #region KVA Serialization
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            _xmlWriter.WriteElementString("TimePosition", m_iBeginTimeStamp.ToString());
-            
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackView));
-            string xmlMode = enumConverter.ConvertToString(m_TrackView);
-            _xmlWriter.WriteElementString("Mode", xmlMode);
-            
-            enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
-            string xmlExtraData = enumConverter.ConvertToString(m_TrackExtraData);
-            _xmlWriter.WriteElementString("ExtraData", xmlExtraData);
-            
-            TrackPointsToXml(_xmlWriter);
-            
-            _xmlWriter.WriteStartElement("DrawingStyle");
-            m_Style.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
-            
-            _xmlWriter.WriteStartElement("MainLabel");
-            _xmlWriter.WriteAttributeString("Text", m_MainLabelText);
-            m_MainLabel.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
-
-            if (m_KeyframesLabels.Count > 0)
+            if (ShouldSerializeCore(filter))
             {
-                _xmlWriter.WriteStartElement("KeyframeLabelList");
-                _xmlWriter.WriteAttributeString("Count", m_KeyframesLabels.Count.ToString());
+                w.WriteElementString("TimePosition", beginTimeStamp.ToString());
 
-                foreach (KeyframeLabel kfl in m_KeyframesLabels)
+                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackView));
+                string xmlMode = enumConverter.ConvertToString(trackView);
+                w.WriteElementString("Mode", xmlMode);
+            
+                enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
+                string xmlExtraData = enumConverter.ConvertToString(trackExtraData);
+                w.WriteElementString("ExtraData", xmlExtraData);
+
+                enumConverter = TypeDescriptor.GetConverter(typeof(TrackMarker));
+                string xmlTrackMarker = enumConverter.ConvertToString(trackMarker);
+                w.WriteElementString("Marker", xmlTrackMarker);
+
+                w.WriteElementString("DisplayBestFitCircle", displayBestFitCircle.ToString().ToLower());
+
+                w.WriteStartElement("TrackerParameters");
+                tracker.Parameters.WriteXml(w);
+                w.WriteEndElement();
+
+                TrackPointsToXml(w);
+
+                w.WriteStartElement("MainLabel");
+                w.WriteAttributeString("Text", mainLabelText);
+
+                // Reset to first point.
+                if (positions.Count > 0)
+                    mainLabel.SetAttach(positions[0].Point, true);
+
+                mainLabel.WriteXml(w);
+                w.WriteEndElement();
+
+                if (positions.Count > 0 && currentPoint < positions.Count)
+                    mainLabel.SetAttach(positions[currentPoint].Point, true);
+
+                if (keyframesLabels.Count > 0)
                 {
-                    _xmlWriter.WriteStartElement("KeyframeLabel");
-                    kfl.WriteXml(_xmlWriter);
-                    _xmlWriter.WriteEndElement();    
+                    w.WriteStartElement("KeyframeLabelList");
+                    w.WriteAttributeString("Count", keyframesLabels.Count.ToString());
+
+                    foreach (KeyframeLabel kfl in keyframesLabels)
+                    {
+                        w.WriteStartElement("KeyframeLabel");
+                        kfl.WriteXml(w);
+                        w.WriteEndElement();
+                    }
+
+                    w.WriteEndElement();
                 }
+            }
 
-                _xmlWriter.WriteEndElement();
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
             }
         }
-        private void TrackPointsToXml(XmlWriter _xmlWriter)
+        private void TrackPointsToXml(XmlWriter w)
         {
-            _xmlWriter.WriteStartElement("TrackPointList");
-            _xmlWriter.WriteAttributeString("Count", m_Positions.Count.ToString());
-            _xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
+            w.WriteStartElement("TrackPointList");
+            w.WriteAttributeString("Count", positions.Count.ToString());
+            w.WriteAttributeString("UserUnitLength", parentMetadata.CalibrationHelper.GetLengthAbbreviation());
             
-            // The coordinate system defaults to the first point,
-            // but can be specified by user.
-            //Point coordOrigin = m_Positions[0].Point;
-
-            //if(m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.X >= 0 || m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.Y >= 0)
-            //if(m_ParentMetadata.CalibrationHelper.IsCalibrated)
-            //    coordOrigin = m_ParentMetadata.CalibrationHelper.CoordinatesOrigin;
-            
-            //CalibrationLine calibrationLine = m_ParentMetadata.CalibrationHelper.GetCalibrationByLineOrigin();
-            
-            if(m_Positions.Count > 0)
+            if(positions.Count > 0)
             {
-                foreach (AbstractTrackPoint tp in m_Positions)
+                foreach (AbstractTrackPoint tp in positions)
                 {
-                    _xmlWriter.WriteStartElement("TrackPoint");
+                    w.WriteStartElement("TrackPoint");
                     
-                    // Data in user units.
-                    // - The origin of the coordinates system is given as parameter.
-                    // - X goes left (same than internal), Y goes up (opposite than internal).
-                    // - Time is absolute.
-                    //double userX = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)tp.X - (double)coordOrigin.X);
-                    //double userY = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)coordOrigin.Y - (double)tp.Y);
+                    PointF p = parentMetadata.CalibrationHelper.GetPoint(tp.Point);
+                    string userT = parentMetadata.TimeCodeBuilder(tp.T, TimeType.Time, TimecodeFormat.Unknown, false);
                     
-                    PointF p = m_ParentMetadata.CalibrationHelper.GetPoint(tp.Point.ToPointF());
-                    string userT = m_ParentMetadata.TimeStampsToTimecode(tp.T, TimecodeFormat.Unknown, false);
-                    
-                    _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
-                    _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
-                    _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", p.Y));
-                    _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
-                    _xmlWriter.WriteAttributeString("UserTime", userT);
+                    w.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
+                    w.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
+                    w.WriteAttributeString("UserY", String.Format("{0:0.00}", p.Y));
+                    w.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
+                    w.WriteAttributeString("UserTime", userT);
             
-                    tp.WriteXml(_xmlWriter);
+                    tp.WriteXml(w);
                     
-                    _xmlWriter.WriteEndElement();
-                }	
+                    w.WriteEndElement();
+                }
             }
-            _xmlWriter.WriteEndElement();
+
+            w.WriteEndElement();
         }
-        public void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
-            m_Invalid = true;
+            invalid = true;
+            tracker = new TrackerBlock2(GetTrackerParameters(new Size(800, 600)));
                 
-            if (_remapTimestampCallback == null)
+            if (timestampMapper == null)
             {
-                string unparsed = _xmlReader.ReadOuterXml();
+                string unparsed = xmlReader.ReadOuterXml();
                 log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 return;
             }
+
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
+            xmlReader.ReadStartElement();
             
-            _xmlReader.ReadStartElement();
-            
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "TimePosition":
-                        m_iBeginTimeStamp = _remapTimestampCallback(_xmlReader.ReadElementContentAsLong(), false);
+                        beginTimeStamp = timestampMapper(xmlReader.ReadElementContentAsLong(), false);
                         break;
                     case "Mode":
                         {
                             TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackView));
-                            m_TrackView = (TrackView)enumConverter.ConvertFromString(_xmlReader.ReadElementContentAsString());
+                            trackView = (TrackView)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
                             break;
                         }
                     case "ExtraData":
                         {
                             TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
-                            m_TrackExtraData = (TrackExtraData)enumConverter.ConvertFromString(_xmlReader.ReadElementContentAsString());
+                            trackExtraData = (TrackExtraData)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
                             break;
                         }
+                    case "Marker":
+                        {
+                            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackMarker));
+                            trackMarker = (TrackMarker)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
+                            break;
+                        }
+                    case "DisplayBestFitCircle":
+                        displayBestFitCircle = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "TrackerParameters":
+                        tracker.Parameters = TrackerParameters.ReadXml(xmlReader, scale);
+                        break;
                     case "TrackPointList":
-                        ParseTrackPointList(_xmlReader, _scale, _remapTimestampCallback);
+                        ParseTrackPointList(xmlReader, scale, timestampMapper);
                         break;
                     case "DrawingStyle":
-                        m_Style = new DrawingStyle(_xmlReader);
+                        style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
                     case "MainLabel":
                         {
-                            m_MainLabelText = _xmlReader.GetAttribute("Text");
-                            m_MainLabel = new KeyframeLabel(_xmlReader, _scale);
+                            mainLabelText = xmlReader.GetAttribute("Text");
+                            mainLabel = new KeyframeLabel(xmlReader, scale);
                             break;
                         }
                     case "KeyframeLabelList":
-                        ParseKeyframeLabelList(_xmlReader, _scale);
+                        ParseKeyframeLabelList(xmlReader, scale);
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
+            scalingDone = true;
             
-            if (m_Positions.Count > 0)
+            if (positions.Count > 0)
             {
-                m_iEndTimeStamp = m_Positions.Last().T;
-                m_MainLabel.SetAttach(m_Positions[0].Point, false);
-                m_MainLabel.SetText(Label);
+                endTimeStamp = positions.Last().T;
+                mainLabel.SetAttach(positions[0].Point, false);
+                mainLabel.SetText(Label);
                 
-                if(m_Positions.Count > 1 || 
-                   m_Positions[0].X != 0 || 
-                   m_Positions[0].Y != 0 || 
-                   m_Positions[0].T != 0)
+                if(positions.Count > 1 || 
+                   positions[0].X != 0 || 
+                   positions[0].Y != 0 || 
+                   positions[0].T != 0)
                 {
-                    m_Invalid = false;
+                    invalid = false;
                 }
             }
         }
-        public void ParseTrackPointList(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
+        public void ParseTrackPointList(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
-            m_Positions.Clear();
-            _xmlReader.ReadStartElement();
+            positions.Clear();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                if(_xmlReader.Name == "TrackPoint")
+                if(xmlReader.Name == "TrackPoint")
                 {
-                    AbstractTrackPoint tp = m_Tracker.CreateOrphanTrackPoint(0, 0, 0);
-                    tp.ReadXml(_xmlReader);
+                    AbstractTrackPoint tp = tracker.CreateOrphanTrackPoint(PointF.Empty, 0);
+                    tp.ReadXml(xmlReader);
                     
-                    // time was stored in relative value, we still need to adjust it.
-                    AbstractTrackPoint adapted = m_Tracker.CreateOrphanTrackPoint(	
-                                                                (int)(_scale.X * tp.X),
-                                                                (int)(_scale.Y * tp.Y),
-                                                                _remapTimestampCallback(tp.T, true));
+                    // Time is stored in absolute timestamps.
+                    AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T, true));
 
-                    m_Positions.Add(adapted);
+                    positions.Add(adapted);
                 }
                 else
                 {
-                    string unparsed = _xmlReader.ReadOuterXml();
+                    string unparsed = xmlReader.ReadOuterXml();
                     log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
-        public void ParseKeyframeLabelList(XmlReader _xmlReader, PointF _scale)
+        public void ParseKeyframeLabelList(XmlReader xmlReader, PointF scale)
         {
-            m_KeyframesLabels.Clear();
+            keyframesLabels.Clear();
 
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                if(_xmlReader.Name == "KeyframeLabel")
+                if(xmlReader.Name == "KeyframeLabel")
                 {
-                    KeyframeLabel kfl = new KeyframeLabel(_xmlReader, _scale);
+                    KeyframeLabel kfl = new KeyframeLabel(xmlReader, scale);
                     
-                    if (m_Positions.Count > 0)
+                    if (positions.Count > 0)
                     {
                         // Match with TrackPositions previously found.
-                        int iMatchedTrackPosition = FindClosestPoint(kfl.Timestamp, m_Positions);
+                        int iMatchedTrackPosition = FindClosestPoint(kfl.Timestamp, positions);
                         kfl.AttachIndex = iMatchedTrackPosition;
                         
-                        kfl.SetAttach(m_Positions[iMatchedTrackPosition].Point, false);
-                        m_KeyframesLabels.Add(kfl);
+                        kfl.SetAttach(positions[iMatchedTrackPosition].Point, false);
+                        keyframesLabels.Add(kfl);
                     }
                 }
                 else
                 {
-                    string unparsed = _xmlReader.ReadOuterXml();
+                    string unparsed = xmlReader.ReadOuterXml();
                     log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
         #endregion
         
+        #region IScalable implementation
+        public void Scale(Size imageSize)
+        {
+            if (scalingDone)
+                return;
+
+            TrackerParameters parameters = GetTrackerParameters(imageSize);
+            tracker = new TrackerBlock2(parameters);
+        }
+        #endregion
+
         #region Miscellaneous public methods
+        public void CalibrationChanged()
+        {
+            UpdateKinematics();
+            IntegrateKeyframes();
+        }
+        public void UpdateKinematics()
+        {
+            List<TimedPoint> samples = positions.Select(p => new TimedPoint(p.X, p.Y, p.T)).ToList();
+            trajectoryKinematics = kinematicsHelper.AnalyzeTrajectory(samples, parentMetadata.CalibrationHelper);
+        }
         public void IntegrateKeyframes()
         {
             //-----------------------------------------------------------------------------------
@@ -1094,22 +1333,22 @@ namespace Kinovea.ScreenManager
             //-----------------------------------------------------------------------------------
 
             // Keep track of matched keyframes so we can remove the others.
-            bool[] matched = new bool[m_KeyframesLabels.Count];
+            bool[] matched = new bool[keyframesLabels.Count];
 
             // Filter out key images that are not in the trajectory boundaries.
-            for (int i = 0; i < m_ParentMetadata.Count; i++)
+            for (int i = 0; i < parentMetadata.Count; i++)
             {
                 // Strictly superior because we don't show the keyframe that was created when the
                 // user added the CrossMarker drawing to make the Track out of it.
-                if (m_ParentMetadata[i].Position > m_iBeginTimeStamp && 
-                    m_ParentMetadata[i].Position <= m_Positions.Last().T)
+                if (parentMetadata[i].Position > beginTimeStamp && 
+                    parentMetadata[i].Position <= positions.Last().T)
                 {
                     // The Keyframe is within the Trajectory interval.
                     // Do we know it already ?
                     int iKnown = - 1;
-                    for(int j=0;j<m_KeyframesLabels.Count;j++)
+                    for(int j=0;j<keyframesLabels.Count;j++)
                     {
-                        if (m_KeyframesLabels[j].Timestamp == m_ParentMetadata[i].Position)
+                        if (keyframesLabels[j].Timestamp == parentMetadata[i].Position)
                         {
                             iKnown = j;
                             matched[j] = true;
@@ -1120,18 +1359,18 @@ namespace Kinovea.ScreenManager
                     if (iKnown >= 0)
                     {
                         // Known Keyframe, Read text again in case it changed
-                        m_KeyframesLabels[iKnown].SetText(m_ParentMetadata[i].Title);
+                        keyframesLabels[iKnown].SetText(parentMetadata[i].Title);
                     }
                     else
                     {
                         // Unknown Keyframe, Configure and add it to list.
                         KeyframeLabel kfl = new KeyframeLabel();
-                        kfl.AttachIndex = FindClosestPoint(m_ParentMetadata[i].Position);
-                        kfl.SetAttach(m_Positions[kfl.AttachIndex].Point, true);
-                        kfl.Timestamp = m_Positions[kfl.AttachIndex].T;                        
-                        kfl.SetText(m_ParentMetadata[i].Title);
+                        kfl.AttachIndex = FindClosestPoint(parentMetadata[i].Position);
+                        kfl.SetAttach(positions[kfl.AttachIndex].Point, true);
+                        kfl.Timestamp = positions[kfl.AttachIndex].T;                        
+                        kfl.SetText(parentMetadata[i].Title);
                         
-                        m_KeyframesLabels.Add(kfl);
+                        keyframesLabels.Add(kfl);
                     }
                 }
             }
@@ -1141,89 +1380,127 @@ namespace Kinovea.ScreenManager
             for (int iLabel = matched.Length - 1; iLabel >= 0; iLabel--)
             {
                 if (!matched[iLabel])
-                    m_KeyframesLabels.RemoveAt(iLabel);
+                    keyframesLabels.RemoveAt(iLabel);
             }
             
             // Reinject the labels in the list for extra data.
-            if(m_TrackExtraData != TrackExtraData.None)
+            if(trackExtraData != TrackExtraData.None)
             {
-                for( int iKfl = 0; iKfl < m_KeyframesLabels.Count; iKfl++)
-                    m_KeyframesLabels[iKfl].SetText(GetExtraDataText(m_KeyframesLabels[iKfl].AttachIndex));
+                for( int iKfl = 0; iKfl < keyframesLabels.Count; iKfl++)
+                    keyframesLabels[iKfl].SetText(GetExtraDataText(keyframesLabels[iKfl].AttachIndex));
             }
             
         }
         public void MemorizeState()
         {
             // Used by formConfigureTrajectory to be able to modify the trajectory in real time.
-            m_MemoTrackView = m_TrackView;
-            m_MemoLabel = m_MainLabelText;
+            memoTrackView = trackView;
+            memoLabel = mainLabelText;
         }
         public void RecallState()
         {
             // Used when the user cancels his modifications on formConfigureTrajectory.
-            // m_StyleHelper has been reverted already as part of style elements framework.
-            // This in turn triggered mainStyle_ValueChanged() event handler so the m_MainLabel has been reverted already too.
-            m_TrackView = m_MemoTrackView;
-            m_MainLabelText = m_MemoLabel;
+            // styleHelper has been reverted already as part of style elements framework.
+            // This in turn triggered mainStyle_ValueChanged() event handler so the mainLabel has been reverted already too.
+            trackView = memoTrackView;
+            mainLabelText = memoLabel;
+        }
+        public PointF GetPosition(long timestamp)
+        {
+            int index = FindClosestPoint(timestamp);
+            return positions[index].Point;
         }
         #endregion
         
         #region Miscellaneous private methods
-        private int FindClosestPoint(long _iCurrentTimestamp)
+        private void ReinitializeMenu()
         {
-            return FindClosestPoint(_iCurrentTimestamp, m_Positions);
+            InitializeMenuMeasurement();
         }
-        private int FindClosestPoint(long _iCurrentTimestamp, List<AbstractTrackPoint> _Positions)
+        private void InitializeMenuMeasurement()
+        {
+            mnuMeasurement.MergeIndex = 1;
+            mnuMeasurement.Image = Properties.Drawings.measure;
+            mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
+
+            // TODO: unhook event handlers ?
+            mnuMeasurement.DropDownItems.Clear();
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.None));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Position));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.TotalDistance));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Speed));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.VerticalVelocity));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.HorizontalVelocity));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Acceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.VerticalAcceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.HorizontalAcceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.AngularDisplacement));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.AngularVelocity));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.AngularAcceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.CentripetalAcceleration));
+        }
+        private ToolStripMenuItem GetMeasurementMenu(TrackExtraData data)
+        {
+            ToolStripMenuItem mnu = new ToolStripMenuItem();
+            mnu.Text = GetExtraDataOptionText(data);
+            mnu.Checked = trackExtraData == data;
+
+            mnu.Click += (s, e) =>
+            {
+                trackExtraData = data;
+                displayBestFitCircle = IsUsingAngularKinematics();
+                IntegrateKeyframes();
+                Action invalidateImage = (Action)mnu.Tag;
+                invalidateImage();
+            };
+
+            return mnu;
+        }
+        private void AfterTrackStatusChanged()
+        {
+            if (trackStatus == TrackStatus.Interactive)
+                UpdateKinematics();
+            else if (trackStatus == TrackStatus.Configuration)
+                UpdateBoundingBoxes();
+        }
+        private void UpdateBoundingBoxes()
+        {
+            searchWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow).ToRectangle();
+            blockWindow.Rectangle = positions[currentPoint].Point.Box(tracker.Parameters.BlockWindow).ToRectangle();
+        }
+        private int FindClosestPoint(long currentTimestamp)
+        {
+            return FindClosestPoint(currentTimestamp, positions);
+        }
+        private int FindClosestPoint(long currentTimestamp, List<AbstractTrackPoint> positions)
         {
             // Find the closest registered timestamp
             // Parameter is given in absolute timestamp.
             long minErr = long.MaxValue;
-            int iClosest = 0;
+            int closest = 0;
 
-            for (int i = 0; i < _Positions.Count; i++)
+            for (int i = 0; i < positions.Count; i++)
             {
-                long err = Math.Abs(_Positions[i].T - _iCurrentTimestamp);
+                long err = Math.Abs(positions[i].T - currentTimestamp);
                 if (err < minErr)
                 {
                     minErr = err;
-                    iClosest = i;
+                    closest = i;
                 }
             }
 
-            return iClosest;
+            return closest;
         }
         private void mainStyle_ValueChanged(object sender, EventArgs e)
         {
-            m_MainLabel.BackColor = m_StyleHelper.Color;	
+            mainLabel.BackColor = styleHelper.Color;
         }
         private void BindStyle()
         {
-            m_Style.Bind(m_StyleHelper, "Color", "color");
-            m_Style.Bind(m_StyleHelper, "LineSize", "line size");
-            m_Style.Bind(m_StyleHelper, "TrackShape", "track shape");
+            style.Bind(styleHelper, "Color", "color");
+            style.Bind(styleHelper, "LineSize", "line size");
+            style.Bind(styleHelper, "TrackShape", "track shape");
         }
         #endregion
     }
-
-    public enum TrackView
-    {
-        Complete,
-        Focus,
-        Label
-    }
-    
-    public enum TrackStatus
-    {
-        Edit,
-        Interactive
-    }
-    
-    public enum TrackExtraData
-    {
-        None,
-        TotalDistance,
-        Speed,
-        Acceleration
-    }
-
 }

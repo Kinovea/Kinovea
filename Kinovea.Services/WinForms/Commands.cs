@@ -33,6 +33,23 @@ namespace Kinovea.Services
         DecreaseSize
     }
 
+    public enum DualPlayerCommands
+    {
+        TogglePlay,
+
+        GotoPreviousImage,
+        GotoFirstImage,
+        GotoPreviousKeyframe,
+
+        GotoNextImage,
+        GotoLastImage,
+        GotoNextKeyframe,
+        
+        GotoSyncPoint,
+        ToggleSyncMerge,
+        AddKeyframe
+    }
+
     public enum PlayerScreenCommands
     {
         TogglePlay,
@@ -52,6 +69,7 @@ namespace Kinovea.Services
         ForwardRound1Percent,
 
         GotoSyncPoint,
+        ToggleSyncMerge,
 
         IncreaseZoom,
         DecreaseZoom,
@@ -64,6 +82,7 @@ namespace Kinovea.Services
         DeleteKeyframe,
         DeleteDrawing,
         CopyImage,
+        ValidateDrawing,
 
         IncreaseSpeed1,
         IncreaseSpeedRoundTo10,
@@ -73,6 +92,13 @@ namespace Kinovea.Services
         DecreaseSpeedRoundTo25,
 
         Close
+    }
+
+    public enum DualCaptureCommands
+    {
+        ToggleGrabbing,
+        ToggleRecording,
+        TakeSnapshot
     }
 
     public enum CaptureScreenCommands

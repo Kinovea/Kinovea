@@ -54,6 +54,10 @@ namespace Kinovea.Root
         private TimecodeFormat timecodeFormat;
         private ImageAspectRatio imageAspectRatio;
         private SpeedUnit speedUnit;
+        private AccelerationUnit accelerationUnit;
+        private AngleUnit angleUnit;
+        private AngularVelocityUnit angularVelocityUnit;
+        private AngularAccelerationUnit angularAccelerationUnit;
         private bool syncLockSpeeds;
         private int workingZoneSeconds;
         private int workingZoneMemory;
@@ -77,6 +81,11 @@ namespace Kinovea.Root
             timecodeFormat = PreferencesManager.PlayerPreferences.TimecodeFormat;
             imageAspectRatio = PreferencesManager.PlayerPreferences.AspectRatio;       
             speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
+            accelerationUnit = PreferencesManager.PlayerPreferences.AccelerationUnit;
+            angleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
+            angularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit;
+            angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
+            
             syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
             
             workingZoneSeconds = PreferencesManager.PlayerPreferences.WorkingZoneSeconds;
@@ -88,22 +97,6 @@ namespace Kinovea.Root
             tabGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
             chkDeinterlace.Text = RootLang.dlgPreferences_DeinterlaceByDefault;
             chkLockSpeeds.Text = RootLang.dlgPreferences_SyncLockSpeeds; 
-            lblTimeMarkersFormat.Text = RootLang.dlgPreferences_LabelTimeFormat + " :";
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Milliseconds);
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
-            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps);	// Debug purposes.
-            
-            // Combo Speed units (MUST be filled in the order of the enum)
-            lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
-            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.MetersPerSecond)));
-            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.KilometersPerHour)));
-            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.FeetPerSecond)));
-            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.MilesPerHour)));
-            //cmbSpeedUnit.Items.Add(RootLang.dlgPreferences_Speed_Knots);		// Is this useful at all ?
                 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
             lblImageFormat.Text = RootLang.dlgPreferences_LabelImageFormat;
@@ -111,6 +104,45 @@ namespace Kinovea.Root
             cmbImageFormats.Items.Add(RootLang.dlgPreferences_Format43);
             cmbImageFormats.Items.Add(RootLang.dlgPreferences_Format169);
             
+            // Units tab
+            lblTimeMarkersFormat.Text = RootLang.dlgPreferences_LabelTimeFormat + " :";
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Milliseconds);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
+            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Normalized);
+            //cmbTimeCodeFormat.Items.Add("Normalized");
+            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps); // Debug purposes.
+            
+            // Combo Speed units (MUST be filled in the order of the enum)
+            //lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
+            lblSpeedUnit.Text = "Speed:";
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.MetersPerSecond)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.KilometersPerHour)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.FeetPerSecond)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.MilesPerHour)));
+            //cmbSpeedUnit.Items.Add(RootLang.dlgPreferences_Speed_Knots); // Is this useful at all ?
+
+            //lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
+            lblAccelerationUnit.Text = "Acceleration:";
+            cmbAccelerationUnit.Items.Add(String.Format("Meters per second squared ({0})", UnitHelper.AccelerationAbbreviation(AccelerationUnit.MetersPerSecondSquared)));
+            cmbAccelerationUnit.Items.Add(String.Format("Feet per second squared ({0})", UnitHelper.AccelerationAbbreviation(AccelerationUnit.FeetPerSecondSquared)));
+
+            lblAngleUnit.Text = "Angle:";
+            cmbAngleUnit.Items.Add(String.Format("Degrees ({0})", UnitHelper.AngleAbbreviation(AngleUnit.Degree)));
+            cmbAngleUnit.Items.Add(String.Format("Radians ({0})", UnitHelper.AngleAbbreviation(AngleUnit.Radian)));
+
+            lblAngularVelocityUnit.Text = "Angular velocity:";
+            cmbAngularVelocityUnit.Items.Add(String.Format("Degrees per second ({0})", UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.DegreesPerSecond)));
+            cmbAngularVelocityUnit.Items.Add(String.Format("Radians per second ({0})", UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.RadiansPerSecond)));
+            cmbAngularVelocityUnit.Items.Add(String.Format("Revolutions per minute ({0})", UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.RevolutionsPerMinute)));
+
+            lblAngularAcceleration.Text = "Angular acceleration:";
+            cmbAngularAccelerationUnit.Items.Add(String.Format("Degrees per second squared ({0})", UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.DegreesPerSecondSquared)));
+            cmbAngularAccelerationUnit.Items.Add(String.Format("Radians per second squared ({0})", UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.RadiansPerSecondSquared)));
+
             // Memory tab
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
             grpSwitchToAnalysis.Text = RootLang.dlgPreferences_GroupAnalysisMode;
@@ -119,8 +151,7 @@ namespace Kinovea.Root
             // Fill in initial values.            
             chkDeinterlace.Checked = deinterlaceByDefault;
             chkLockSpeeds.Checked = syncLockSpeeds;
-            SelectCurrentTimecodeFormat();
-            SelectCurrentSpeedUnit();
+            SelectCurrentUnits();
             SelectCurrentImageFormat();
             
             trkWorkingZoneSeconds.Value = workingZoneSeconds;
@@ -128,16 +159,27 @@ namespace Kinovea.Root
             trkWorkingZoneMemory.Value = workingZoneMemory;
             lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneMemory, trkWorkingZoneMemory.Value);
         }
-        private void SelectCurrentTimecodeFormat()
+        private void SelectCurrentUnits()
         {
-            int selected = (int)timecodeFormat;
-            cmbTimeCodeFormat.SelectedIndex = selected < cmbTimeCodeFormat.Items.Count ? selected : 0;
+            int time = (int)timecodeFormat;
+            cmbTimeCodeFormat.SelectedIndex = time < cmbTimeCodeFormat.Items.Count ? time : 0;
+
+            int speed = (int)speedUnit;
+            cmbSpeedUnit.SelectedIndex = speed < cmbSpeedUnit.Items.Count ? speed : 0;
+
+            int acceleration = (int)accelerationUnit;
+            cmbAccelerationUnit.SelectedIndex = acceleration < cmbAccelerationUnit.Items.Count ? acceleration : 0;
+
+            int angle = (int)angleUnit;
+            cmbAngleUnit.SelectedIndex = angle < cmbAngleUnit.Items.Count ? angle : 0;
+
+            int angularVelocity = (int)angularVelocityUnit;
+            cmbAngularVelocityUnit.SelectedIndex = angularVelocity < cmbAngularVelocityUnit.Items.Count ? angularVelocity : 0;
+
+            int angularAcceleration = (int)angularAccelerationUnit;
+            cmbAngularAccelerationUnit.SelectedIndex = angularAcceleration < cmbAngularAccelerationUnit.Items.Count ? angularAcceleration : 0;
         }
-        private void SelectCurrentSpeedUnit()
-        {
-            int selected = (int)speedUnit;
-            cmbSpeedUnit.SelectedIndex = selected < cmbSpeedUnit.Items.Count ? selected : 0;
-        }
+        
         private void SelectCurrentImageFormat()
         {
             int selected = (int)imageAspectRatio;
@@ -166,6 +208,22 @@ namespace Kinovea.Root
         {
             speedUnit = (SpeedUnit)cmbSpeedUnit.SelectedIndex;
         }
+        private void cmbAccelerationUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            accelerationUnit = (AccelerationUnit)cmbAccelerationUnit.SelectedIndex;
+        }
+        private void cmbAngleUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            angleUnit = (AngleUnit)cmbAngleUnit.SelectedIndex;
+        }
+        private void cmbAngularVelocityUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            angularVelocityUnit = (AngularVelocityUnit)cmbAngularVelocityUnit.SelectedIndex;
+        }
+        private void cmbAngularAccelerationUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            angularAccelerationUnit = (AngularAccelerationUnit)cmbAngularAccelerationUnit.SelectedIndex;
+        }
         private void trkWorkingZoneSeconds_ValueChanged(object sender, EventArgs e)
         {
             lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
@@ -186,6 +244,10 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.TimecodeFormat = timecodeFormat;
             PreferencesManager.PlayerPreferences.AspectRatio = imageAspectRatio;
             PreferencesManager.PlayerPreferences.SpeedUnit = speedUnit;
+            PreferencesManager.PlayerPreferences.AccelerationUnit = accelerationUnit;
+            PreferencesManager.PlayerPreferences.AngleUnit = angleUnit;
+            PreferencesManager.PlayerPreferences.AngularVelocityUnit = angularVelocityUnit;
+            PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;          
             PreferencesManager.PlayerPreferences.WorkingZoneSeconds = workingZoneSeconds;
             PreferencesManager.PlayerPreferences.WorkingZoneMemory = workingZoneMemory;
         }

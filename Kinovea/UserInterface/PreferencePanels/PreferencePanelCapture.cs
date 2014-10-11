@@ -170,14 +170,14 @@ namespace Kinovea.Root
             if(!filenameHelper.ValidateFilename(tbImageDirectory.Text, true))
                 ScreenManagerKernel.AlertInvalidFileName();
             else
-                imageDirectory = tbImageDirectory.Text;	
+                imageDirectory = tbImageDirectory.Text;
         }
         private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
         {
             if(!filenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
                 ScreenManagerKernel.AlertInvalidFileName();
             else
-                videoDirectory = tbVideoDirectory.Text;	
+                videoDirectory = tbVideoDirectory.Text;
         }
         private void cmbImageFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -273,7 +273,7 @@ namespace Kinovea.Root
         }
         private void UpdateMemoryLabel()
         {
-            lblMemoryBuffer.Text = String.Format(RootLang.dlgPreferences_Capture_lblMemoryBuffer, trkMemoryBuffer.Value);	
+            lblMemoryBuffer.Text = String.Format(RootLang.dlgPreferences_Capture_lblMemoryBuffer, trkMemoryBuffer.Value);
         }
         #endregion
         

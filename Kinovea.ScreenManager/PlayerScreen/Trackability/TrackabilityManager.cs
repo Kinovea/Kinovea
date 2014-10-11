@@ -24,6 +24,8 @@ using System.Drawing;
 using System.Linq;
 
 using Kinovea.Video;
+using System.Xml;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -32,23 +34,90 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackabilityManager
     {
+        #region Properties
         public bool Tracking
         {
             get { return trackers.Values.Any((tracker) => tracker.IsTracking); }
         }
-        
+        public int ContentHash
+        {
+            get 
+            {
+                int hash = 0;
+                foreach (DrawingTracker tracker in trackers.Values)
+                {
+                    if (tracker != null)
+                        hash ^= tracker.ContentHash;
+                }
+
+                return hash;
+            }
+        }
+        #endregion
+
+        #region Members
         private Dictionary<Guid, DrawingTracker> trackers = new Dictionary<Guid, DrawingTracker>();
+        private TrackingProfileManager trackingProfileManager = new TrackingProfileManager();
+        private Size imageSize;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+        #endregion
+
+        public void Initialize(Size imageSize)
+        {
+            this.imageSize = imageSize;
+        }
+
         public void Add(ITrackable drawing, VideoFrame videoFrame)
         {
-            if(trackers.ContainsKey(drawing.ID))
+            if(trackers.ContainsKey(drawing.Id))
                return;
             
+            TrackingProfile profile = drawing.CustomTrackingProfile ?? trackingProfileManager.Current;
+            TrackerParameters parameters = new TrackerParameters(profile, imageSize);
+
             TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-            trackers.Add(drawing.ID, new DrawingTracker(drawing, context));
+            trackers.Add(drawing.Id, new DrawingTracker(drawing, context, parameters));
+        }
+
+        public void Assign(ITrackable drawing)
+        {
+            if (trackers.ContainsKey(drawing.Id) && !trackers[drawing.Id].Assigned)
+                trackers[drawing.Id].Assign(drawing);
+        }
+
+        public void AddPoint(ITrackable drawing, VideoFrame videoFrame, string key, PointF point)
+        {
+            if (!trackers.ContainsKey(drawing.Id))
+                return;
+
+            TrackingProfile profile = drawing.CustomTrackingProfile ?? trackingProfileManager.Current;
+            TrackerParameters parameters = new TrackerParameters(profile, imageSize);
+
+            TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
+
+            trackers[drawing.Id].AddPoint(context, parameters, key, point);
+        }
+
+        public void RemovePoint(ITrackable drawing, string key)
+        {
+            if (!trackers.ContainsKey(drawing.Id))
+                return;
+
+            trackers[drawing.Id].RemovePoint(key);
         }
         
+        public void CleanUnassigned()
+        {
+            foreach (KeyValuePair<Guid, DrawingTracker> pair in trackers)
+            {
+                if (pair.Value.Assigned)
+                    continue;
+
+                pair.Value.Dispose();
+                trackers.Remove(pair.Key);
+            }
+        }
+
         public void Clear()
         {
             foreach(DrawingTracker tracker in trackers.Values)
@@ -59,11 +128,11 @@ namespace Kinovea.ScreenManager
         
         public void Remove(ITrackable drawing)
         {
-            if(trackers.Count == 0 || !trackers.ContainsKey(drawing.ID))
+            if(trackers.Count == 0 || !trackers.ContainsKey(drawing.Id))
                 return;
             
-            trackers[drawing.ID].Dispose();
-            trackers.Remove(drawing.ID);
+            trackers[drawing.Id].Dispose();
+            trackers.Remove(drawing.Id);
         }
 
         public void Track(VideoFrame videoFrame)
@@ -78,27 +147,27 @@ namespace Kinovea.ScreenManager
         
         public bool IsTracking(ITrackable drawing)
         {
-            if(!SanityCheck(drawing.ID))
+            if(!SanityCheck(drawing.Id))
                 return false;
             
-            return trackers[drawing.ID].IsTracking;
+            return trackers[drawing.Id].IsTracking;
         }
         
         public void UpdateContext(ITrackable drawing, VideoFrame videoFrame)
         {
-            if(!SanityCheck(drawing.ID))
+            if(!SanityCheck(drawing.Id))
                 return;
             
             TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-            trackers[drawing.ID].Track(context);
+            trackers[drawing.Id].Track(context);
         }
         
         public void ToggleTracking(ITrackable drawing)
         {
-            if(!SanityCheck(drawing.ID))
+            if(!SanityCheck(drawing.Id))
                 return;
            
-            trackers[drawing.ID].ToggleTracking();
+            trackers[drawing.Id].ToggleTracking();
         }
         
         private bool SanityCheck(Guid id)
@@ -114,6 +183,63 @@ namespace Kinovea.ScreenManager
             }
             
             return contains;
+        }
+
+        public void WriteXml(XmlWriter w)
+        {
+            foreach (DrawingTracker tracker in trackers.Values)
+                WriteTracker(w, tracker.ID);
+        }
+
+        public void WriteTracker(XmlWriter w, Guid id)
+        {
+            if (!trackers.ContainsKey(id))
+                return;
+
+            DrawingTracker tracker = trackers[id];
+            if (tracker.Empty)
+                return;
+
+            w.WriteStartElement("TrackableDrawing");
+            w.WriteAttributeString("id", tracker.ID.ToString());
+            w.WriteAttributeString("tracking", tracker.IsTracking.ToString().ToLower());
+            tracker.WriteXml(w);
+            w.WriteEndElement();
+        }
+
+        public void ReadXml(XmlReader r, PointF scale, TimestampMapper timeMapper)
+        {
+            bool isEmpty = r.IsEmptyElement;
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                ReadTracker(r, scale, timeMapper);
+            }
+
+            if (!isEmpty)
+                r.ReadEndElement();
+        }
+
+        public void ReadTracker(XmlReader r, PointF scale, TimestampMapper timeMapper)
+        {
+            if (r.Name == "TrackableDrawing")
+            {
+                DrawingTracker tracker = new DrawingTracker(r, scale, timeMapper);
+                if (trackers.ContainsKey(tracker.ID))
+                {
+                    trackers[tracker.ID].Dispose();
+                    trackers[tracker.ID] = tracker;
+                }
+                else
+                {
+                    trackers.Add(tracker.ID, tracker);
+                }
+            }
+            else
+            {
+                string unparsed = r.ReadOuterXml();
+            }
         }
     }
 }
