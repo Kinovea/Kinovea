@@ -22,35 +22,16 @@ using System;
 
 namespace Kinovea.ScreenManager
 {
-    /// <summary>
-    /// this class stores a state of a PlayerScreen in order to reinstate it later.
-    /// </summary>
     public class MemoPlayerScreen
     {
-        #region Properties
-        public long SelStart
+        public long SelStart { get; private set; }
+        public long SelEnd { get; private set; }
+        
+        public MemoPlayerScreen(long selStart, long selEnd)
         {
-            get { return m_iSelStart; }
-            set { m_iSelStart = value;}
+            this.SelStart = selStart;
+            this.SelEnd = selEnd;
         }
-        public long SelEnd
-        {
-            get { return m_iSelEnd; }
-            set { m_iSelEnd = value; }
-        }
-        #endregion
-
-        #region Members
-        private long m_iSelStart;
-        private long m_iSelEnd;
-        #endregion
-
-        public MemoPlayerScreen(long _iSelStart, long _iSelEnd)
-        {
-            m_iSelStart = _iSelStart;
-            m_iSelEnd = _iSelEnd;
-        }
-
     }
 }
 

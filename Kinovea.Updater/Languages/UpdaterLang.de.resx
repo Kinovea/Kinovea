@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Auf Updates prüfen...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Eine neue Version ist verfügbar ! </value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Bitte wählen Sie den Ordner, in dem das Programm installiert wird. </value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Wählen Sie das Zielverzeichnis. </value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Aktuelle Version : </value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Herunterladen </value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Herunterladen der neuen Version... </value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Größe der Datei: </value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Ein Fehler ist aufgetreten, während der Prüfung. Bitte stellen Sie sicher, dass die Internet-Verbindung betriebsbereit ist. </value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Liste der Änderungen: </value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>Beenden </value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Prüfung auf Updates. </value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Ihre Version ist auf dem neuesten Stand! </value></data>
+   
+   
    
    
    

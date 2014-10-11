@@ -30,6 +30,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolCoordinateSystem : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "CoordinateSystem"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.mnuCoordinateSystem; }
@@ -72,11 +76,11 @@ namespace Kinovea.ScreenManager
             defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.Red));
             stylePreset = defaultStylePreset.Clone();
         }
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
            return null;
         }
-        public override Cursor GetCursor(double _fStretchFactor)
+        public override Cursor GetCursor(double stretchFactor)
         {
             return Cursors.Cross;
         }

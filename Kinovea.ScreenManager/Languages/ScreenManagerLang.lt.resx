@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>Slėpti miniatiūras</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>Rodyti miniatiūras</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Apvesti vaizdą</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Sinchronizuoti vaizdą su esamu kadru</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Į pradžią abu vaizdo šaltinius</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Į pabaigą abu vaizdo šaltinius</value></data>
@@ -95,7 +92,6 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Sukeisti ekranus</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Perjungti bendrą kontrolę</value></data>
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Spalvos</value></data>
-   <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Spalvos profilis...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Atkurti numatytajį spalvos profilį</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Įkelti spalvos profilį</value></data>
@@ -113,9 +109,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Tinklelio nustatymai</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Keisti permatomumą</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Permatomumas: {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Kadrų skaičius per sekundę užfiksuotame laike :\n (ex: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Kadrų skaičius per sekunde, rodomas laikas: {0:0.00} k/s</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Rodomas video {0:0} kartus lėčiau nei originalas.</value></data>
+   
+   
+   
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Keisti greitį</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Atkurti</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Rodyti žymę</value></data>
@@ -132,8 +128,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Rodyti visą kelią</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Rodyti busimą kelią</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Atraštė sekanti kelią</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Originali koordinačių sistema</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Judesys iš dešinės į kairę</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmento dydis :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Nustatyti dydį</value></data>
    
@@ -150,41 +144,53 @@
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Vaizdo demonstracija tik su pažymėtais paveikslėliais</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Vaizdo tipas</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Išsaugoti duomenis kaip skaičiuoklės dokumentą</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgImportReference_Title" xml:space="preserve"><value>Importuoti kaip nuorodą paveikslėlio</value></data>
-   <data name="dlgImportReference_Filter" xml:space="preserve"><value>Visi palaikomi failai (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Komentarai...</value></data>
-   <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Įkelti paveiklėlių žymių duomenis</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informacija</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Sulieti piešinius paveiksle</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>vieną kadrą kas {0} šimtąją sekundės.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Paveikslėlių dažnis ekportavimui :</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>vienas kadras kas {0:0.00} sekunde.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>Numeracija bus automatiškai pridėta prie dokumento pavadinimo. ( "file" =&gt; "file-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Eksportuoti tik pažymėtus paveikslus</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Viso paveikslėlių eksportuota : {0:0} paveikslėliai.</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Trukmė ekportuojamų paveikslėlių yra : {0:0.00} sekundžių.</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Išsaugoti vaizdų seką</value></data>
-   <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea vaizdo analizė (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Naudoti letą judesį. (Esamas = </value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Nustatymai</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Išsaugojimo metodas</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Išsaugoti tik paveikslėlių žymių duomenis.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Derinti vaizdo ir paveikslėlių žymių duomenis dokumente.</value></data>
-   
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Pastoviai rodyti paveikslėlių žymių duomenis vaizde.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Išsaugoti tik video</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Išsaugoti video arba pažymėtus vaizdus</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Išsaugoti pažymėtų vaizdų duomenis</value></data>
-   <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Išsaugoti seką</value></data>
-   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Išsaugoti video</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Nustatyti koordinačių sistemos pradžią</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Negaliu prisijungti prie vaizdo įrenginio</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Negaliu rasti prijungto įrenginio prie.\nPrašau patikrinti ar teisingai prijungtas irenginys.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Vaizdo perrašymas</value></data>
@@ -208,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Išvaizda</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Vykdyti</value></data>
    
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Nutraukti</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Uždaryti</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Spalva :</value></data>
@@ -223,6 +230,17 @@
    <data name="Generic_Image" xml:space="preserve"><value>Paveikslėlis</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Vaizdas</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Išsaugoti paveikslėlį</value></data>
+   
+   
+   
+   
+   
+   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
+   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Visi palaikomi failai (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
+   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea vaizdo analizė (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Paveikslėlių žymės yra pakeistos.\nAr norite išsaugoti žymes prieš uždarant programą?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Paveiklėlių žymės neišsaugotos</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Vėlavimo rodinys: {0:0} s</value></data>
@@ -243,7 +261,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : dokumento formatas nepalaikomas</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - paleisties klaida.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : dokumentas nerastas arba tuščias.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : paveikslėlio formatas nepalaikomas.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : rasti neatitikimai. Patikrinkite kodavimo procesą.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : informacijos šaltinis nerastas.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : nenustatyta klaida.</value></data>
@@ -255,7 +272,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>Užrakinti darbo zonos ribas</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Atrakinti darbo zonos ribas</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Pagrindinis tinklelis</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>Šviesumas...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Nustatyti</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Atgalinis rėžimas</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Panaikinti chronometrą</value></data>
@@ -263,7 +279,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Paleisti chronometrą</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stabdyti chronometrą</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Uždaryti langą</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Spalvos...</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Spalva</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Spalva ir dydis</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Išlaikymas...</value></data>
@@ -281,7 +296,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Versti trajektorijas į paprastą tekstą</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>Fluidify</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Paveikslėlio formatas</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Automatinis radimas</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Formatas 4:3</value></data>
@@ -296,11 +310,6 @@
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Įkelti pažymėtų paveikslėlių duomenis...</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Didinimas x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>Didinimas x1.5</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>Didinimas x1.75</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>Didinimas x2</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>Didinimas x2.25</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>Didinimas x2.5</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Perjungti tiesioginį didinimą</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Uždaryti padidinimo stiklą</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Veidrodis</value></data>
@@ -313,8 +322,6 @@
    
    <data name="mnuSendPic" xml:space="preserve"><value>Siusti paveikslėlį į kitą vaizdą</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Greitaeigė kamera</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Nustatyti paskutinį kadrą darbinei zonai</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Nustatyti pirmutinį kadrą darbinei zonai</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Ryškumas...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Rodyti koordinates</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Rodyti dydį</value></data>
@@ -332,22 +339,12 @@
    
    
    
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Įvyko nežinoma klaida.</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - grojimo klaida.</value></data>
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Vėliausiai naudotos spalvos:</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Klaida: Negaliu irašyti dokumento : nepalaikomas kodavimas.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Klaida: Nepavyko irašyti dokumento : problema naudojant kodavimą.</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - išsaugojimo klaida.</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Klaida: Negaliu irašyti dokumento : negaliu irašyti į dokumentą</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Klaida: Negaliu irašyti dokumento : nežinoma klaida kodavimo procese. </value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Klaida: Negaliu įrašyti dokumento : nežinoma klaida.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tuščia</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buferis: {0}%</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Standartinis (h:mm:ss:šimtosios)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kadrų numeriai</value></data>
-   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Viso milisekundžių</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Šimtosios minutės</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dešimt tūkstantoji valandos</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pausė</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Didinti: {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Atjungta</value></data>
@@ -404,8 +401,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Apžvalga...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reversas...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatinis kontrastas...</value></data>
-   
-   
    
    
    

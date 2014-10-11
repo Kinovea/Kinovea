@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Archery</Name>
+  <DisplayName>DrawingName_Archery</DisplayName>
+  <Id>1d2241d6-ae9a-43c9-b6ef-c298e744a839</Id>
+  <PointCount>7</PointCount>
+  <Segments>
+    <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
+    <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
+    <Segment point1="2" point2="3" name="" style="Solid" width="2"/>
+    <Segment point1="3" point2="4" name="" style="Solid" width="2"/>
+    <Segment point1="0" point2="4" name="" style="Solid" width="2"/>
+    <Segment point1="0" point2="6" name="" style="Dash" width="2"/>
+    <Segment point1="4" point2="5" name="" style="Dash" width="2"/>
+  </Segments>
+  <Angles>
+    <Angle origin="0" leg1="1" leg2="6" relative="true" radius="30"/>
+    <Angle origin="4" leg1="3" leg2="5" relative="true" radius="30"/>
+  </Angles>
+  <Handles>
+    <Handle type="Point" reference="0">
+      <Impacts>
+        <Align pointToAlign="6" point1="0" point2="4"/>
+        <Align pointToAlign="5" point1="0" point2="4"/>
+      </Impacts>
+    </Handle>    
+    <Handle type="Point" reference="1"/>
+    <Handle type="Point" reference="2"/>
+    <Handle type="Point" reference="3"/>
+    
+    <Handle type="Point" reference="4">
+      <Impacts>
+        <Align pointToAlign="6" point1="4" point2="0"/>
+        <Align pointToAlign="5" point1="4" point2="0"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="5">
+      <Constraint type="LineSlide">
+        <LineSlide point1="0" point2="4" position="AfterSegment"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="6">
+      <Constraint type="LineSlide">
+        <LineSlide point1="0" point2="4" position="BeforeSegment"/>
+      </Constraint>
+    </Handle>
+  </Handles>
+  <HitZone>
+    <Polygon points="0;1;2;3;4"/>
+  </HitZone>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAG7SURBVDhPpZM7S0JhGMf9DC1NTi3tfYWGloZconAp
+    DLpQixYVXaTES1qJ1xITK0sd1DSlLLAW7wrSIC0RBRFU1FJRFDw97+t59WinFoc/55zn/J/fy3N5RX2d
+    VlEz+i9ZguBdTkZ8tgkdVAWcRIsiIjSNot5RIKAyxlp5XlEdAH9aWJJ80AP6hQhYNEegmgqCTOJkwE/0
+    tHOH1QAY7CXJ0i472A1xQEOdYqEczI37GeRFCHBPAOtLUZoY3M/DhjYDJmUati1ZiEeKcBwuwFi/m0FU
+    pCesBDFJlvU4IX5YgIi/ALrJJPgdZUiEb8C0mAOrOk3BbluCAa74ACkBTA97qcm5loEtfQke7j6oSulH
+    0MiTFBwN5BjglQ8YoICRCmBzBQGGGuAiWwEEPXkgveAa/cYHkBlXS/C5cjQh4LqE89gtmJV5WJ1N0T7s
+    2M8Y4JoPIL14JhDjcqxSqzkLOkWSgozzKTjw5Wl/eE00NAK62RgdxtPqCGOBAn1vGOPTrzFyAS9bJMXQ
+    Hh2pTR8H9UyIv0jf6OkQBHDBCTR8/bHKpG6x4Co3XJQW/Naisiiy/1EUuVy/Ll9TV5kAfwBCwAz3d0TO
+    FAAAAABJRU5ErkJggg==
+  </Icon>
+  <InitialConfiguration>
+    <Point>197;184</Point>
+    <Point>90;167</Point>
+    <Point>304;143</Point>
+    <Point>368;162</Point>
+    <Point>315;185</Point>
+    <Point>409;185</Point>
+    <Point>78;182</Point>
+  </InitialConfiguration>
+</KinoveaPostureTool>

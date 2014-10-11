@@ -25,9 +25,6 @@ using System.Threading;
 
 namespace Kinovea.Services
 {
-    /// <summary>
-    /// Description of LanguageManager.
-    /// </summary>
     public static class LanguageManager
     {
         public static Dictionary<string, string> Languages
@@ -128,11 +125,23 @@ namespace Kinovea.Services
         {
             get { return languages["sr-Latn-CS"]; }
         }
+        public static string SerbianCyrl
+        {
+            get { return languages["sr-Cyrl-CS"]; }
+        }
+        public static string Japanese
+        {
+            get { return languages["ja"]; }
+        }
+        public static string Macedonian
+        {
+            get { return languages["mk"]; }
+        }
         #endregion
         
         private static Dictionary<string, string> languages = null;
         
-        public static void Initialize()
+        private static void Initialize()
         {
             // Alphabetical order by native name. (Check Wikipedia order if in doubt).
             languages = new Dictionary<string, string>();
@@ -148,11 +157,14 @@ namespace Kinovea.Services
             languages.Add("it", "Italiano");
             languages.Add("lt", "Lietuvių");
             languages.Add("nl", "Nederlands");
+            languages.Add("ja", "日本語");
             languages.Add("no", "Norsk");
+            languages.Add("mk", "Македонски");
             languages.Add("pl", "Polski");
             languages.Add("pt", "Português");
             languages.Add("ro", "Română");
             languages.Add("ru", "Русский");
+            languages.Add("sr-Cyrl-CS", "Српски");
             languages.Add("sr-Latn-CS", "Srpski");
             languages.Add("fi", "Suomi");
             languages.Add("sv", "Svenska");

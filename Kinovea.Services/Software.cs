@@ -32,6 +32,7 @@ namespace Kinovea.Services
         public static string Version { get; private set; }
         public static string SettingsDirectory { get; private set; }
         public static string ColorProfileDirectory { get; private set; }
+        public static string CameraCalibrationDirectory { get; private set; }
         public static string PreferencesFile { get; private set; }
         public static string TempDirectory { get; private set; }
         public static string HelpVideosDirectory { get; private set; }
@@ -39,7 +40,10 @@ namespace Kinovea.Services
         public static string LocalHelpIndex { get; private set; }
         public static string RemoteHelpIndex { get; private set; }
         public static string XSLTDirectory { get; private set; }
-        
+        public static string ToolbarsDirectory { get; private set; }
+        public static string CustomToolsDirectory { get; private set; }
+        public static string StandardToolsDirectory { get; private set; }
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public static void Initialize(Version version)
@@ -47,16 +51,19 @@ namespace Kinovea.Services
             Version = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
             SettingsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + ApplicationName + "\\";
             ColorProfileDirectory = SettingsDirectory + "ColorProfiles\\";
-            PreferencesFile = SettingsDirectory + "Preferences.xml";
+            CameraCalibrationDirectory = SettingsDirectory + "CameraCalibration\\";
             TempDirectory = SettingsDirectory + "Temp\\";
+            PreferencesFile = SettingsDirectory + "Preferences.xml";
             
             string applicationDirectory = Application.StartupPath + "\\";
-            
             HelpVideosDirectory = applicationDirectory + "HelpVideos\\";
             ManualsDirectory = applicationDirectory + "Manuals\\";
             XSLTDirectory = applicationDirectory + "xslt\\";
             LocalHelpIndex = applicationDirectory + "HelpIndex.xml";
-            
+            ToolbarsDirectory = applicationDirectory + "\\DrawingTools\\Toolbars\\";
+            CustomToolsDirectory = applicationDirectory + "\\DrawingTools\\Custom\\";
+            StandardToolsDirectory = applicationDirectory + "\\DrawingTools\\Standard\\";
+
             RemoteHelpIndex = Experimental ? "http://www.kinovea.org/setup/updatebeta.xml" : "http://www.kinovea.org/setup/update.xml";
         }
         
@@ -67,6 +74,12 @@ namespace Kinovea.Services
         	
         	if(!Directory.Exists(ColorProfileDirectory))
         	   	Directory.CreateDirectory(ColorProfileDirectory);
+
+            if (!Directory.Exists(CameraCalibrationDirectory))
+                Directory.CreateDirectory(CameraCalibrationDirectory);
+            
+            if (!Directory.Exists(TempDirectory))
+                Directory.CreateDirectory(TempDirectory);
         }
         
         public static void LogInfo()

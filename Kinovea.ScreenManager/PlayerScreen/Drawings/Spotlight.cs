@@ -26,6 +26,7 @@ using System.Globalization;
 using System.Xml;
 
 using Kinovea.Services;
+using System.Xml.Serialization;
 
 namespace Kinovea.ScreenManager
 {
@@ -33,22 +34,26 @@ namespace Kinovea.ScreenManager
     /// SpotLight. (MultiDrawingItem of SpotlightManager)
     /// Describe and draw a single spotlight.
     /// </summary>
-    public class Spotlight : IKvaSerializable, ITrackable
+    [XmlType ("Spotlight")]
+    public class Spotlight : AbstractMultiDrawingItem, IKvaSerializable, ITrackable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
         #endregion
-        
+
+        #region Properties
+        public override int ContentHash
+        {
+            get { return position.GetHashCode() ^ radius.GetHashCode() ^ points["o"].GetHashCode(); }
+        }
+        #endregion
+
         #region Members
         private long position;
-        
-        private Guid id = Guid.NewGuid();
-        private Dictionary<string, Point> points = new Dictionary<string, Point>();
+        private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
-        
         private int radius;
         private Rectangle rescaledRect;
-        
         private static readonly int minimalRadius = 10;
         private static readonly int borderWidth = 2;
         private static readonly DashStyle dashStyle = DashStyle.Dash;
@@ -57,21 +62,21 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public Spotlight(long _iPosition, long _iAverageTimeStampsPerFrame, Point _center)
+        public Spotlight(long position, long averageTimeStampsPerFrame, PointF center)
         {
-            position = _iPosition;
-            points["o"] = _center;
+            this.position = position;
+            points["o"] = center;
             radius = minimalRadius;
-            infosFading = new InfosFading(_iPosition, _iAverageTimeStampsPerFrame);
+            infosFading = new InfosFading(position, averageTimeStampsPerFrame);
             infosFading.UseDefault = false;
             infosFading.FadingFrames = 25;
         }
-        public Spotlight(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, long _iAverageTimeStampsPerFrame)
+        public Spotlight(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
             : this(0, 0, Point.Empty)
         {
-             ReadXml(_xmlReader, _scale, _remapTimestampCallback);
+             ReadXml(xmlReader, scale, timestampMapper);
              
-             infosFading = new InfosFading(position, _iAverageTimeStampsPerFrame);
+             infosFading = new InfosFading(position, metadata.AverageTimeStampsPerFrame);
              infosFading.UseDefault = false;
              infosFading.FadingFrames = 25;
         }
@@ -124,34 +129,34 @@ namespace Kinovea.ScreenManager
             double opacity = infosFading.GetOpacityFactor(timeStamp);
             if(tracking || opacity > 0)
             {
-                if(IsPointOnHandler(point))
+                if(IsPointOnHandler(point, transformer))
                     result = 1;
-                else if (IsPointInObject(point))
+                else if (IsPointInObject(point, transformer))
                     result = 0;
             }
             return result;
         }
-        public void MouseMove(int deltaX, int deltaY)
+        public void MouseMove(float dx, float dy)
         {
-            points["o"] = new Point(points["o"].X + deltaX, points["o"].Y + deltaY);
+            points["o"] = points["o"].Translate(dx, dy);
             SignalTrackablePointMoved();
         }
-        public void MoveHandleTo(Point point)
+        public void MoveHandleTo(PointF point)
         {
             // Point coordinates are descaled.
             // User is dragging the outline of the circle, figure out the new radius at this point.
-            int shiftX = Math.Abs(point.X - points["o"].X);
-            int shiftY = Math.Abs(point.Y - points["o"].Y);
+            float shiftX = Math.Abs(point.X - points["o"].X);
+            float shiftY = Math.Abs(point.Y - points["o"].Y);
             radius = Math.Max((int)Math.Sqrt((shiftX*shiftX) + (shiftY*shiftY)), minimalRadius);
         }
         #endregion
         
         #region ITrackable implementation and support.
-        public Guid ID
+        public TrackingProfile CustomTrackingProfile
         {
-            get { return id; }
+            get { return null; }
         }
-        public Dictionary<string, Point> GetTrackablePoints()
+        public Dictionary<string, PointF> GetTrackablePoints()
         {
             return points;
         }
@@ -159,7 +164,7 @@ namespace Kinovea.ScreenManager
         {
             this.tracking = tracking;
         }
-        public void SetTrackablePointValue(string name, Point value)
+        public void SetTrackablePointValue(string name, PointF value)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
@@ -176,47 +181,33 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Private methods
-        private bool IsPointInObject(Point point)
+        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
         {
-            bool hit = false;
-            using(GraphicsPath areaPath = new GraphicsPath())
+            using(GraphicsPath path = new GraphicsPath())
             {
-                areaPath.AddEllipse(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2);
-                using(Region areaRegion = new Region(areaPath))
-                {
-                    hit = areaRegion.IsVisible(point);
-                }
+                path.AddEllipse(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2);
+                return HitTester.HitTest(path, point, 0, true, transformer);
             }
-            return hit;
         }
-        private bool IsPointOnHandler(Point point)
+        private bool IsPointOnHandler(Point point, IImageToViewportTransformer transformer)
         {
-            bool hit = false;
-            using(GraphicsPath areaPath = new GraphicsPath())
+            using(GraphicsPath path = new GraphicsPath())
             {
-                areaPath.AddArc(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2, 0, 360);
-                using(Pen areaPen = new Pen(Color.Black, 10))
-                {
-                    areaPath.Widen(areaPen);
-                }
-                using(Region r = new Region(areaPath))
-                {
-                    hit = r.IsVisible(point);
-                }
+                path.AddArc(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2, 0, 360);
+                return HitTester.HitTest(path, point, 2, false, transformer);
             }
-            return hit;
         }
         #endregion
         
         #region KVA Serialization
-        private void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper timeStampMapper)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timeStampMapper)
         {
-            if(timeStampMapper == null)
-            {
-                xmlReader.ReadOuterXml();
-                return;                
-            }
+            if (timeStampMapper == null)
+                timeStampMapper = (t, b) => t;
             
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
             xmlReader.ReadStartElement();
             
             while(xmlReader.NodeType == XmlNodeType.Element)
@@ -227,11 +218,13 @@ namespace Kinovea.ScreenManager
                         position = timeStampMapper(xmlReader.ReadElementContentAsLong(), false);
                         break;
                     case "Center":
-                        Point p = XmlHelper.ParsePoint(xmlReader.ReadElementContentAsString());
+                        PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
                         points["o"] = p.Scale(scale.X, scale.Y);
                         break;
                     case "Radius":
                         radius = xmlReader.ReadElementContentAsInt();
+                        float minScale = Math.Min(scale.X, scale.Y);
+                        radius = (int)(radius * minScale);
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
@@ -241,12 +234,16 @@ namespace Kinovea.ScreenManager
             }
             
             xmlReader.ReadEndElement();
+            SignalTrackablePointMoved();
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            xmlWriter.WriteElementString("Time", position.ToString());
-            xmlWriter.WriteElementString("Center", string.Format(CultureInfo.InvariantCulture, "{0};{1}", points["o"].X, points["o"].Y));
-            xmlWriter.WriteElementString("Radius", radius.ToString());
+            if ((filter & SerializationFilter.Core) == SerializationFilter.Core)
+            {
+                w.WriteElementString("Time", position.ToString());
+                w.WriteElementString("Center", XmlHelper.WritePointF(points["o"]));
+                w.WriteElementString("Radius", radius.ToString());
+            }
         }
         #endregion
     }

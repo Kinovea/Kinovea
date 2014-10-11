@@ -57,8 +57,9 @@ namespace Kinovea.Camera
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "FormIconPicker";
-            this.Text = "FormIconPicker";
+            this.Text = "Icons";
             this.ResumeLayout(false);
+
         }
     }
 }

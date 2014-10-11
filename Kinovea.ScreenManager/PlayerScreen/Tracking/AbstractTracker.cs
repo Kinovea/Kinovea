@@ -31,6 +31,9 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public abstract class AbstractTracker
     {
+        public abstract TrackerParameters Parameters { get; set; }
+
+
         #region Abstract Methods
         
         /// <summary>
@@ -49,7 +52,7 @@ namespace Kinovea.ScreenManager
         /// This function should store algorithm related infos in the created track point,
         /// to be used later for tracking the next point.
         /// </summary>
-        public abstract AbstractTrackPoint CreateTrackPoint(bool manual, int x, int y, double similarity, long t, Bitmap bmp, List<AbstractTrackPoint> previousPoints);
+        public abstract AbstractTrackPoint CreateTrackPoint(bool manual, PointF p, double similarity, long t, Bitmap bmp, List<AbstractTrackPoint> previousPoints);
         
         /// <summary>
         /// Creates a bare bone TrackPoint.
@@ -57,18 +60,18 @@ namespace Kinovea.ScreenManager
         /// Can't be used to track the next point. 
         /// Will have to be updated later with algo related info.
         /// </summary>
-        public abstract AbstractTrackPoint CreateOrphanTrackPoint(int x, int y, long t);
+        public abstract AbstractTrackPoint CreateOrphanTrackPoint(PointF p, long t);
 
         /// <summary>
         /// Draw a visual representation of the tracking taking place.
         /// This may only make sense for users having an idea of how the tracking works.
         /// </summary>
-        public abstract void Draw(Graphics canvas, Point point, IImageToViewportTransformer transformer, Color color, double opacityFactor);
+        public abstract void Draw(Graphics canvas, AbstractTrackPoint point, IImageToViewportTransformer transformer, Color color, double opacityFactor);
         
         /// <summary>
         /// Retrieve the target rectangle for easy mouse manipulation.
         /// </summary>
-        public abstract Rectangle GetEditRectangle(Point position);
+        public abstract RectangleF GetEditRectangle(PointF position);
         
         #endregion
     }

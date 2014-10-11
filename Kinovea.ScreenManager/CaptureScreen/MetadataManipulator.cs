@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -40,11 +41,14 @@ namespace Kinovea.ScreenManager
         {
             get { return metadata.HitDrawing;}
         }
+        
         #endregion
         
         #region Members
         private Metadata metadata;
         private ScreenToolManager screenToolManager;
+        private long fixedTimestamp;
+        private int fixedKeyframe;
         #endregion
         
         public MetadataManipulator(Metadata metadata, ScreenToolManager screenToolManager)
@@ -52,7 +56,17 @@ namespace Kinovea.ScreenManager
             this.metadata = metadata;
             this.screenToolManager = screenToolManager;
         }
-    
+        
+        public void SetFixedTimestamp(long timestamp)
+        {
+            this.fixedTimestamp = timestamp;
+        }
+
+        public void SetFixedKeyframe(int index)
+        {
+            this.fixedKeyframe = index;
+        }
+
         public bool OnMouseLeftDown(Point mouse, Point imageLocation, float imageZoom)
         {
             if(metadata == null || screenToolManager == null)
@@ -64,19 +78,19 @@ namespace Kinovea.ScreenManager
             
             bool handled = false;
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            Point imagePoint = transformer.Untransform(mouse);
+            PointF imagePoint = transformer.Untransform(mouse);
             
             metadata.AllDrawingTextToNormalMode();
             
             if(screenToolManager.IsUsingHandTool)
             {
                 // TODO: Change cursor.
-                handled = screenToolManager.HandTool.OnMouseDown(metadata, 0, imagePoint, 0, false);
+                handled = screenToolManager.HandTool.OnMouseDown(metadata, fixedKeyframe, imagePoint, fixedTimestamp, false);
             }
             else
             {
                 handled = true;
-                CreateNewDrawing(imagePoint, transformer);
+                CreateNewDrawing(imagePoint.ToPoint(), transformer);
             }
             
             return handled;
@@ -89,7 +103,7 @@ namespace Kinovea.ScreenManager
             
             bool handled = false;
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            Point imagePoint = transformer.Untransform(mouse);
+            PointF imagePoint = transformer.Untransform(mouse);
             
             if(screenToolManager.IsUsingHandTool)
             {
@@ -101,13 +115,13 @@ namespace Kinovea.ScreenManager
                 // Setting second point of a drawing.
                 IInitializable drawing = metadata.HitDrawing as IInitializable;
                 if(drawing != null)
-                    drawing.ContinueSetup(imagePoint, modifiers);
+                    drawing.InitializeMove(imagePoint.ToPoint(), modifiers);
             }
             
             return handled;
         }
         
-        public void OnMouseUp()
+        public void OnMouseUp(Bitmap bitmap)
         {
             // TODO: Handle magnifier.
             // TODO: Memorize the action we just finished to enable undo.
@@ -117,6 +131,7 @@ namespace Kinovea.ScreenManager
             if(screenToolManager.IsUsingHandTool)
             {
                 screenToolManager.HandTool.OnMouseUp();
+                metadata.UpdateTrackPoint(bitmap);
                 // On Poke.
                 // magnifier on mouse up.
                 
@@ -147,11 +162,10 @@ namespace Kinovea.ScreenManager
                 return false;
             
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            Point imagePoint = transformer.Untransform(mouse);
+            PointF imagePoint = transformer.Untransform(mouse);
             
             int keyframeIndex = 0;
-            long timestamp = 0;
-            return metadata.IsOnDrawing(keyframeIndex, imagePoint, timestamp);
+            return metadata.IsOnDrawing(keyframeIndex, imagePoint.ToPoint(), fixedTimestamp);
         }
         
         public Cursor GetCursor(float scale)
@@ -161,7 +175,35 @@ namespace Kinovea.ScreenManager
         
         public void DeleteHitDrawing()
         {
-            metadata.DeleteHitDrawing();
+            Keyframe keyframe = metadata.HitKeyframe;
+            AbstractDrawing drawing = metadata.HitDrawing;
+
+            if (keyframe == null || drawing == null)
+                return;
+
+            HistoryMemento memento = new HistoryMementoDeleteDrawing(metadata, keyframe.Id, drawing.Id, drawing.DisplayName);
+            metadata.DeleteDrawing(keyframe.Id, drawing.Id);
+            metadata.HistoryStack.PushNewCommand(memento);
+        }
+
+        public void ConfigureDrawing(AbstractDrawing drawing, Action refresh)
+        {
+            Keyframe keyframe = metadata.HitKeyframe;
+            IDecorable decorable = drawing as IDecorable;
+            if (keyframe == null || drawing == null || decorable == null)
+                return;
+
+            HistoryMemento memento = new HistoryMementoModifyDrawing(metadata, keyframe.Id, drawing.Id, drawing.DisplayName, SerializationFilter.Style);
+
+            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorable.DrawingStyle, refresh);
+            FormsHelper.Locate(fcd);
+            fcd.ShowDialog();
+
+            if (fcd.DialogResult == DialogResult.OK)
+                metadata.HistoryStack.PushNewCommand(memento);
+
+            fcd.Dispose();
+            
         }
         
         public void DeselectTool()
@@ -176,7 +218,7 @@ namespace Kinovea.ScreenManager
             long currentTimestamp = 0;
             bool editingLabel = false;
             
-            if(screenToolManager.ActiveTool == ToolManager.Label)
+            if(screenToolManager.ActiveTool == ToolManager.Tools["Label"])
                 editingLabel = LabelMouseDown(imagePoint, currentTimestamp, transformer);
 
             if(editingLabel)
@@ -190,7 +232,7 @@ namespace Kinovea.ScreenManager
             bool hitExisting = false;
             foreach(DrawingText label in metadata.Labels())
             {
-                int hit = label.HitTest(imagePoint, currentTimestamp, transformer);
+                int hit = label.HitTest(imagePoint, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, transformer, metadata.CoordinateSystem.Zooming);
                 if(hit >= 0)
                 {
                     hitExisting = true;
@@ -203,14 +245,19 @@ namespace Kinovea.ScreenManager
         
         private void AddDrawing(Point imagePoint, int keyframeIndex, int timestampPerFrame, ImageToViewportTransformer transformer)
         {
-            AbstractDrawing drawing = screenToolManager.ActiveTool.GetNewDrawing(imagePoint, keyframeIndex, timestampPerFrame);
-            metadata.AddDrawing(drawing, keyframeIndex);
+            AbstractDrawing drawing = screenToolManager.ActiveTool.GetNewDrawing(imagePoint, keyframeIndex, timestampPerFrame, transformer);
+            Guid keyframeId = metadata.GetKeyframeId(keyframeIndex);
+
+            HistoryMementoAddDrawing memento = new HistoryMementoAddDrawing(metadata, keyframeId, drawing.Id, drawing.DisplayName);
+            metadata.AddDrawing(keyframeId, drawing);
+            metadata.HistoryStack.PushNewCommand(memento);
             
             // Special cases
-            if(screenToolManager.ActiveTool == ToolManager.Label)
+            // TODO: implement the event handler to metadata DrawingAdded and finish the label in the handler.
+            if(screenToolManager.ActiveTool == ToolManager.Tools["Label"])
             {
                 if(LabelAdded != null)
-                    LabelAdded(this, new DrawingEventArgs(drawing, keyframeIndex));
+                    LabelAdded(this, new DrawingEventArgs(drawing, keyframeId));
                 
                 ((DrawingText)drawing).SetEditMode(true, transformer);
             }

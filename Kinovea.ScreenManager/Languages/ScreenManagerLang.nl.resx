@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>Verberg Thumbnails</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>Toon Thumbnails</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Draai Video posities om</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Synchroniseer de videos op de huidige frames</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Ga terug naar het begin van beide videos</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Spring naar het eind van beide videos</value></data>
@@ -95,7 +92,6 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Wissel schermen</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Open/sluiten standaard bediening</value></data>
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Kleuren</value></data>
-   <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Kleurprofiel…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Herstel naar basis kleurenprofiel</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Laad een kleurenprofiel</value></data>
@@ -113,9 +109,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configureer grid</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configureer doorzichtigheid</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Doorzichtigheid: {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Aantal beelden per seconde bij opname :\n(ex: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Aantal beelden per seconde bij afspelen : {0:0.00} fps.</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Video is {0:0} malen langzamer dan origineel.</value></data>
+   
+   
+   
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configureer originele snelheid</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Herstel</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Toon Doel Markeerder</value></data>
@@ -132,11 +128,9 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Compleet Trajectpad</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Trajectpad sectie rond huidig beeld</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label volgt het Trajectpad</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Originele systeem coördinaten</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Beweging rechts-naar-links</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Werkelijke afmetingen van het segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Fixeer de afmeting</value></data>
-   
+   <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Vlak Calibratie</value></data>
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Huidige selectie:</value></data>
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Eigenschappen</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Geen andere optie beschikbaar</value></data>
@@ -150,41 +144,53 @@
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video diashow met alleen de Kernbeelden.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Videotype</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Bewaar de gegevens als een databestanddocument</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgImportReference_Title" xml:space="preserve"><value>Importeer een afbeelding als referentie</value></data>
-   <data name="dlgImportReference_Filter" xml:space="preserve"><value>Alle ondersteunde bestandtypes (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentaar…</value></data>
-   <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml|Alle bestanden (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Laad de Kernbeeldgegevens</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informatie</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Meng tekenvormen op de beelden</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>Enkel frame iedere {0} honderdste van een seconde</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Frequentie van beeldexport :</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>Enkel frame iedere {0:0.00} van een seconde</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>De extensie wordt automatisch gekoppeld aan de bestandsnaam. ( "file" =&gt; "file-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Exporteer alleen Kernbeelden.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Totaal aantal beelden te exporteren : {0:0}.</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Duur van het geëxporteerde beeldmateriaal {0:0.00} seconden.</value></data>
+   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Totaal : {0:0}.</value></data>
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Bewaar een volgorde van de beelden.</value></data>
-   <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Houdt rekening met Slow Motion. (Huidig =</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opties</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Opslagmethode</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Bewaar alleen de Kernbeeldgegevens.</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Alleen de beschrijving van de tekeningen en andere onderdelen van de analyse worden opgeslagen.#Het bestand kan later in een video worden geïmporteerd.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Bewaar video en Kernbeeldgegevens in een enkel bestand.</value></data>
-   
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Markeer permanent de Kernbeeld gegevens op de video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>De onderdelen van de analyse zijn zichtbaar in de afspelers, maar niet meer bewerkbaar.# Extra commentaar verbonden aan de Kernbeelden worden niet opgeslagen.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Bewaar alleen video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Bewaar video of Kernbeeldgegevens…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Bewaar Kernbeeldgegegevens.</value></data>
-   <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG afbeeldingen (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG afbeeldingen (*.png)|*.png|Bitmap afbeeldingen (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Bewaar beeldmateriaal</value></data>
-   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv;</value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Bewaar video</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Specificeer de originele trajectpad coördinaten</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Kan niet verbinden met video apparaat.</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Kan geen apparaat vinden om mee te verbinden.\n Zorg er voor dat het apparaat verbonden is met de computer.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overschrijf bestand</value></data>
@@ -208,12 +214,13 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Verschijning</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Toepassen</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Pijlen:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuleer</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Sluiten</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Kleur:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuratie</value></data>
-   
-   
+   <data name="Generic_Calibration" xml:space="preserve"><value>Calibratie</value></data>
+   <data name="Generic_GridDivisionsPicker" xml:space="preserve"><value>Verdeling:</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Lettergrootte:</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Breedte:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Doorzichtigheid</value></data>
@@ -223,6 +230,17 @@
    <data name="Generic_Image" xml:space="preserve"><value>Beeld</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Bewaar afbeelding</value></data>
+   
+   
+   
+   
+   
+   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG afbeeldingen (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG afbeeldingen (*.png)|*.png|Bitmap afbeeldingen (*.bmp)|*.bmp</value></data>
+   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Alle ondersteunde bestandtypes (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
+   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Kernbeelden zijn veranderd. \nWilt u de veranderde kernbeelden opslaan voor afsluiten ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Kernbeelden niet opgeslagen</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Vertraag weergave met: {0:0} s</value></data>
@@ -232,7 +250,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Snelheid :</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Positie</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Werkgebied :</value></data>
-   
+   <data name="LengthUnit_Millimeters" xml:space="preserve"><value>Millimeters</value></data>
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Centimeters</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>Meters</value></data>
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Inches</value></data>
@@ -243,7 +261,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Fout bij het openen van het bestand : bestandstype wordt niet ondersteund.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Foutmelding</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Fout bij openen van bestand ; bestand niet gevonden.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Fout bij openen van het bestand : Afbeeldingsvorm wordt niet ondersteund.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Fout bij het openen van het bestand : inconsistentie gevonden. Controleer alstublieft het encoding proces.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Fout bij het openen van het bestand : informatie van voortgang niet gevonden.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Fout bij openen van bestand : onbekende fout.</value></data>
@@ -255,7 +272,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>Werkgebiedgrenzen vergrendelen</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Werkgebiedgrenzen ontgrendelen</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspectief raster</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>Helderheid…</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configureer</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Aftelmodus</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Verwijder Stopwatch</value></data>
@@ -263,7 +279,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Start Stopwatch</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stop Stopwatch</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Sluit dit scherm</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Kleuren…</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Kleur</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Kleur en formaat...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistentie...</value></data>
@@ -281,7 +296,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Trajectory naar simpele tekst</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>Vloeiend</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Beeldtype</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Automatische detectie</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Forceer 4:3</value></data>
@@ -296,11 +310,6 @@
    <data name="mnuFlipVertically" xml:space="preserve"><value>Spiegel verticaal</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Laad kernbeeldgegevens…</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>Zoom x2.25</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>Zoom x2.5</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Schakel naar Direct Zoom</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Sluit Vergrootglas</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Spiegel</value></data>
@@ -310,11 +319,9 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Herstart Trajectpad Editor</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Fixeer de afmeting</value></data>
-   
+   <data name="mnuCalibrate" xml:space="preserve"><value>Calibreer…</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Zend beeld naar de andere video</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>High Speed camera...</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Maak laatste frame van het werkgebied nu het huidige frame</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Maak eerste frame van het werkgebied nu het huidige frame</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Verscherp…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Toon coördinaten</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Toon afmeting</value></data>
@@ -332,22 +339,12 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Raster</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Stappen</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Verberg</value></data>
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Een onbekende fout is opgetreden</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Afspeelfout.</value></data>
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Recent gebruikte kleuren:</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Fout bij opslaan van het bestand : niet ondersteunde encoding.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Fout bij het opslaan van het bestand : probleem met het initialiseren van de encoder.</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - Fout bij opslaan.</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Fout bij het opslaan van het bestand : kan niet schrijven naar een bestand.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Fout bij het opslaan van het bestand : een fout kwam voor bij het codeerproces.</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Fout bij het opslaan van het bestand : onbekende fout.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Leeg</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassiek (h:mm:ss:hundredth)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frames nummers</value></data>
-   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Totaal in millisecondes</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Honderdsten van een minuut</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een minuut</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pauze</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zoom: {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Niet verbonden</value></data>
@@ -363,7 +360,7 @@
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Hoek</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopwatch/tijdas</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Cirkel</value></data>
-   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Kruis markeerder</value></data>
+   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Markeerder</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Lijn</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Potlood</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Verplaats</value></data>
@@ -404,8 +401,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overzicht…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Keer om….</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisch contrast…</value></data>
-   
-   
    
    
    

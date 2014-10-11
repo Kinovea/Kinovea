@@ -48,6 +48,8 @@ namespace Kinovea.FileBrowser
             InitializeComponent();
             
             cameraManagers = CameraTypeManager.CameraManagers.Where(m => m.HasConnectionWizard).ToList();
+            cameraManagers.Sort((a, b) => a.CameraType.CompareTo(b.CameraType));
+
             Populate();
         }
         

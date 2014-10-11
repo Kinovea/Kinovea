@@ -49,6 +49,12 @@ namespace Kinovea.ScreenManager
             get { return bitmap;}
             set { bitmap = value;}
         }
+
+        public long Timestamp
+        {
+            get { return timestamp; }
+            set { timestamp = value; }
+        }
         
         public Rectangle DisplayRectangle
         {
@@ -83,6 +89,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private Viewport view;
         private Bitmap bitmap;
+        private long timestamp;
         private Rectangle displayRectangle;
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
@@ -126,7 +133,7 @@ namespace Kinovea.ScreenManager
             if(metadataRenderer == null)
                 return;
             
-            metadataRenderer.Render(canvas, location, zoom);
+            metadataRenderer.Render(canvas, location, zoom, timestamp);
         }
         
         public bool OnMouseLeftDown(Point mouse, Point imageLocation, float imageZoom)
@@ -150,7 +157,7 @@ namespace Kinovea.ScreenManager
             if(metadataManipulator == null)
                 return;
             
-            metadataManipulator.OnMouseUp();
+            metadataManipulator.OnMouseUp(bitmap);
             Refresh();
         }
         
@@ -254,10 +261,8 @@ namespace Kinovea.ScreenManager
             if(drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
                 return;
 
-            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing.DrawingStyle, Refresh);
-            FormsHelper.Locate(fcd);
-            fcd.ShowDialog();
-            fcd.Dispose();
+            metadataManipulator.ConfigureDrawing(metadataManipulator.HitDrawing, Refresh);
+            
             Refresh();
         }
         private void mnuConfigureOpacity_Click(object sender, EventArgs e)
@@ -272,8 +277,6 @@ namespace Kinovea.ScreenManager
         }
         private void mnuDeleteDrawing_Click(object sender, EventArgs e)
         {
-            // FIXME: undo is temporarily disabled until the player also uses Viewport.
-            // Undo and redo needs to know the exact position of the drawing in the list of drawings for this keyframe.
             metadataManipulator.DeleteHitDrawing();
             Refresh();
         }

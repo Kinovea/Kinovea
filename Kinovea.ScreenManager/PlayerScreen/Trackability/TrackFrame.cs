@@ -20,6 +20,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Xml;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -28,39 +30,81 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackFrame
     {
+        #region Properties
         public long Time
         {
             get { return time; }
         }
-        
-        public Point Location
+
+        public PointF Location
         {
             get { return location; }
         }
-        
+
         public Bitmap Template
         {
             get { return template; }
         }
-        
+
         public PositionningSource PositionningSource
         {
             get { return positionningSource; }
         }
+        public int ContentHash
+        {
+            get
+            {
+                int hash = 0;
+                hash ^= time.GetHashCode();
+                hash ^= location.GetHashCode();
+                hash ^= positionningSource.GetHashCode();
+                return hash;
+            }
+        }
+        #endregion
 
         private long time;
-        private Point location;
+        private PointF location;
         private Bitmap template;
         private PositionningSource positionningSource;
                 
-        public TrackFrame(long time, Point location, Bitmap template, PositionningSource positionningSource)
+        public TrackFrame(long time, PointF location, Bitmap template, PositionningSource positionningSource)
         {
             this.time = time;
             this.location = location;
             this.template = template;
             this.positionningSource = positionningSource;
         }
-        
+
+        public TrackFrame(XmlReader r, PointF scale, TimestampMapper timestampMapper)
+        {
+            bool isEmpty = r.IsEmptyElement;
+
+            long time = 0;
+            PositionningSource source = PositionningSource.Manual;
+            PointF location = PointF.Empty;
+
+            if (r.MoveToAttribute("time"))
+                time = timestampMapper(r.ReadContentAsLong(), false);
+
+            if (r.MoveToAttribute("source"))
+                source = (PositionningSource)Enum.Parse(typeof(PositionningSource), r.ReadContentAsString());
+
+            if (r.MoveToAttribute("location"))
+            {
+                location = XmlHelper.ParsePointF(r.ReadContentAsString());
+                location = location.Scale(scale.X, scale.Y);
+            }
+
+            r.ReadStartElement();
+
+            if (!isEmpty)
+                r.ReadEndElement();
+
+            this.time = time;
+            this.location = location;
+            this.positionningSource = source;
+        }
         
     }
 }

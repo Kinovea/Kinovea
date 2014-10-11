@@ -43,29 +43,47 @@ using Kinovea.Video;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Main class responsible for KVA import, export, and add/remove drawings.
+    /// Main class representing the analysis document.
     /// </summary>
     public class Metadata
     {
         #region Events and commands
+        public EventHandler KVAImported;
+        public EventHandler<KeyframeEventArgs> KeyframeAdded;
+        public EventHandler KeyframeDeleted;
+        public EventHandler<DrawingEventArgs> DrawingAdded;
+        public EventHandler<DrawingEventArgs> DrawingModified; 
+        public EventHandler DrawingDeleted;
+        public EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdded;
+        public EventHandler MultiDrawingItemDeleted;
+        public EventHandler CameraCalibrationAsked;
+            
         public RelayCommand<ITrackable> AddTrackableDrawingCommand { get; set; }
         public RelayCommand<ITrackable> DeleteTrackableDrawingCommand { get; set; }
         #endregion
         
         #region Properties
-        public TimeCodeBuilder TimeStampsToTimecode
+        public TimeCodeBuilder TimeCodeBuilder
         {
-            get { return timeStampsToTimecode; }
+            get { return timecodeBuilder; }
+        }
+        public HistoryStack HistoryStack
+        {
+            get { return historyStack; }
         }
         public bool IsDirty
         {
             get 
             {
-                int currentHash = GetKeyframesContentHash() ^ GetExtraDrawingsContentHash();
-
-                log.DebugFormat("IsDirty. Content hashes = reference:{0}, current:{1}.",referenceHash, currentHash);
-                return currentHash != referenceHash;
+                int currentHash = GetContentHash();
+                bool dirty = currentHash != referenceHash;
+                log.DebugFormat("Dirty:{0}, reference hash:{1}, current:{2}.", dirty.ToString(), referenceHash, currentHash);
+                return dirty;
             }
+        }
+        public bool KVAImporting
+        {
+            get { return kvaImporting; }
         }
         public string GlobalTitle
         {
@@ -114,15 +132,18 @@ namespace Kinovea.ScreenManager
                 // This is used to know if there is anything to burn on the images when saving.
                 // All kind of objects should be taken into account here, even those
                 // that we currently don't save to the .kva but only draw on the image.
-                // TODO: detect if any extradrawing is dirty.
                 return keyframes.Count > 0 ||
+                        spotlightManager.Count > 0 ||
+                        autoNumberManager.Count > 0 ||
+                        chronoManager.Drawings.Count > 0 ||
+                        trackManager.Drawings.Count > 0 ||
                         extraDrawings.Count > totalStaticExtraDrawings ||
                         magnifier.Mode != MagnifierMode.None;
             }
         }
         public bool Tracking 
         {
-            get { return Tracks().Any(t => t.Status == TrackStatus.Edit) || TrackabilityManager.Tracking; }
+            get { return TrackManager.Tracking || TrackabilityManager.Tracking; }
         }
         public bool HasTrack 
         {
@@ -132,29 +153,19 @@ namespace Kinovea.ScreenManager
         {
             get { return Labels().Any(l => l.Editing); }
         }
-        public int SelectedDrawingFrame
-        {
-            get { return hitDrawingFrameIndex; }
-            set { hitDrawingFrameIndex = value; }
-        }
-        public int SelectedDrawing
-        {
-            get {return hitDrawingIndex; }
-            set { hitDrawingIndex = value; }
-        }
         public List<AbstractDrawing> ExtraDrawings
         {
             get { return extraDrawings;}
-        }
-        public int SelectedExtraDrawing
-        {
-            get { return hitExtraDrawingIndex; }
-            set { hitExtraDrawingIndex = value; }
         }
         public AbstractDrawing HitDrawing
         {
             get { return hitDrawing;}
         }
+        public Keyframe HitKeyframe
+        {
+            get { return hitKeyframe; }
+        }
+        
         public Magnifier Magnifier
         {
             get { return magnifier;}
@@ -168,10 +179,33 @@ namespace Kinovea.ScreenManager
         {
             get { return autoNumberManager;}
         }
+        public DrawingCoordinateSystem DrawingCoordinateSystem
+        {
+            get { return drawingCoordinateSystem; }
+        }
+        public ChronoManager ChronoManager
+        {
+            get { return chronoManager; }
+        }
+        public TrackManager TrackManager
+        {
+            get { return trackManager; }
+        }
         public bool Mirrored
         {
             get { return mirrored; }
             set { mirrored = value; }
+        }
+        public bool DrawingInitializing
+        {
+            get
+            {
+                IInitializable initializable = hitDrawing as IInitializable;
+                if (initializable == null)
+                    return false;
+
+                return initializable.Initializing;
+            }
         }
         
         // General infos
@@ -180,16 +214,36 @@ namespace Kinovea.ScreenManager
             get { return averageTimeStampsPerFrame; }
             set { averageTimeStampsPerFrame = value;}
         }
+        public double AverageTimeStampsPerSecond
+        {
+            get { return averageTimeStampsPerSecond; }
+            set { averageTimeStampsPerSecond = value; }
+        }
         public long FirstTimeStamp
         {
-            //get { return m_iFirstTimeStamp; }
+            get { return firstTimeStamp; }
             set { firstTimeStamp = value; }
         }
         public long SelectionStart
         {
-            //get { return m_iSelectionStart; }
+            get { return selectionStart; }
             set { selectionStart = value; }
-        }         
+        }
+        public long SelectionEnd
+        {
+            get { return selectionEnd; }
+            set { selectionEnd = value; }
+        }
+
+        /// <summary>
+        /// The ratio between the capture framerate and the video framerate.
+        /// A value of 10 means that the video is 10 times slower than real time, and that 10 times as much frames are packed in a given unit of real time.
+        /// </summary>
+        public double HighSpeedFactor
+        {
+            get { return highSpeedFactor; }
+            set { highSpeedFactor = value; }
+        }
         public CalibrationHelper CalibrationHelper 
         {
             get { return calibrationHelper; }
@@ -201,92 +255,205 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private TimeCodeBuilder timeStampsToTimecode;
-        private ClosestFrameAction showClosestFrameCallback;
+        private Guid id = Guid.NewGuid();
+        private TimeCodeBuilder timecodeBuilder;
+        private bool kvaImporting;
         
+        // Folders
         private string fullPath;
-        
+        private string tempFolder;
+        private AutoSaver autoSaver;
+
+        private HistoryStack historyStack;
         private List<Keyframe> keyframes = new List<Keyframe>();
-        private int hitDrawingFrameIndex = -1;
-        private int hitDrawingIndex = -1;
+        private Keyframe hitKeyframe;
         private AbstractDrawing hitDrawing;
         
         // Drawings not attached to any key image.
         private List<AbstractDrawing> extraDrawings = new List<AbstractDrawing>();
-        private int hitExtraDrawingIndex = -1;
         private int totalStaticExtraDrawings;           // TODO: might be removed when even Chronos and tracks are represented by a single manager object.
         private Magnifier magnifier = new Magnifier();
         private SpotlightManager spotlightManager;
         private AutoNumberManager autoNumberManager;
         private DrawingCoordinateSystem drawingCoordinateSystem;
+        private ChronoManager chronoManager = new ChronoManager();
+        private TrackManager trackManager = new TrackManager();
+
+        private TrackerParameters lastUsedTrackerParameters;
         
         private bool mirrored;
         private bool showingMeasurables;
         private bool initialized;
         
-        private string globalTitle = " ";
+        private string globalTitle;
         private Size imageSize = new Size(0,0);
         private long averageTimeStampsPerFrame = 1;
+        private double averageTimeStampsPerSecond = 1;
         private long firstTimeStamp;
         private long selectionStart;
-        private int duplicateFactor = 1;
+        private long selectionEnd;
+        private double highSpeedFactor = 1.0;
         private int referenceHash;
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
         private CoordinateSystem coordinateSystem = new CoordinateSystem();
         private TrackabilityManager trackabilityManager = new TrackabilityManager();
-        
-        // Read from XML, used for adapting the data to the current video
-        private Size inputImageSize = new Size(0, 0);
-        private long inputAverageTimeStampsPerFrame;    // The one read from the XML
-        private long inputFirstTimeStamp;
-        private long inputSelectionStart;
-        private string inputFileName;
+        private Temporizer calibrationChangedTemporizer;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public Metadata(TimeCodeBuilder _TimeStampsToTimecodeCallback, ClosestFrameAction _ShowClosestFrameCallback)
-        { 
-            timeStampsToTimecode = _TimeStampsToTimecodeCallback;
-            showClosestFrameCallback = _ShowClosestFrameCallback;
+        public Metadata(HistoryStack historyStack, TimeCodeBuilder timecodeBuilder)
+        {
+            this.historyStack = historyStack;
+            this.timecodeBuilder = timecodeBuilder;
             
             calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
             
+            autoSaver = new AutoSaver(this);
+            
             CreateStaticExtraDrawings();
             CleanupHash();
-            
+
+            SetupTempDirectory(id);
+
+            calibrationChangedTemporizer = new Temporizer(200, TracksCalibrationChanged);
+
             log.Debug("Constructing new Metadata object.");
         }
-        public Metadata(string _kvaString,  VideoInfo _info, TimeCodeBuilder _TimeStampsToTimecodeCallback, ClosestFrameAction _ShowClosestFrameCallback)
-            : this(_TimeStampsToTimecodeCallback, _ShowClosestFrameCallback)
+        public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder, ClosestFrameDisplayer closestFrameDisplayer)
+            : this(historyStack, timecodeBuilder)
         {
-            // Deserialization constructor
-            imageSize = _info.AspectRatioSize;
-            AverageTimeStampsPerFrame = _info.AverageTimeStampsPerFrame;
-            fullPath = _info.FilePath;
-            Load(_kvaString, false);
+            imageSize = info.AspectRatioSize;
+            averageTimeStampsPerFrame = info.AverageTimeStampsPerFrame;
+            averageTimeStampsPerSecond = info.AverageTimeStampsPerSeconds;
+            fullPath = info.FilePath;
+
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.Load(this, kvaString, false);
         }
         #endregion
 
         #region Public Interface
         
-        #region Key images
-        public void Clear()
+        #region Keyframes
+        public Keyframe GetKeyframe(Guid id)
         {
-            keyframes.Clear();
+            return keyframes.FirstOrDefault(kf => kf.Id == id);
         }
-        public void Add(Keyframe _kf)
+        public void AddKeyframe(Keyframe keyframe)
         {
-            keyframes.Add(_kf);
-        }
-        public void Sort()
-        {
+            keyframes.Add(keyframe);
             keyframes.Sort();
+            SelectKeyframe(keyframe);
+            UpdateTrajectoriesForKeyframes();
+            
+            if (KeyframeAdded != null)
+                KeyframeAdded(this, new KeyframeEventArgs(keyframe.Id));
         }
-        public void RemoveAt(int _index)
+        public void DeleteKeyframe(Guid id)
         {
-            keyframes.RemoveAt(_index);
+            foreach (Keyframe keyframe in keyframes)
+            {
+                if (keyframe.Id != id)
+                    continue;
+
+                foreach (AbstractDrawing drawing in keyframe.Drawings)
+                    BeforeDrawingDeletion(drawing);
+            }
+
+            keyframes.RemoveAll(k => k.Id == id);
+            UpdateTrajectoriesForKeyframes();
+            
+            if (KeyframeDeleted != null)
+                KeyframeDeleted(this, new KeyframeEventArgs(id));
+        }
+        public void SelectKeyframe(Keyframe keyframe)
+        {
+            hitKeyframe = keyframe;
+        }
+        public void EnableDisableKeyframes()
+        {
+            foreach(Keyframe keyframe in keyframes)
+            {
+                keyframe.TimeCode = timecodeBuilder(keyframe.Position - selectionStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+                keyframe.Disabled = keyframe.Position < selectionStart || keyframe.Position > selectionEnd;
+            }
+        }
+        public int GetKeyframeIndex(long position)
+        {
+            for (int i = 0; i < keyframes.Count; i++)
+                if (keyframes[i].Position == position)
+                    return i;
+
+            return -1;
+        }
+        public Guid GetKeyframeId(int keyframeIndex)
+        {
+            return keyframes[keyframeIndex].Id;
+        }
+
+        /// <summary>
+        /// Returns the id of the keyframe the drawing is attached to.
+        /// </summary>
+        public Guid FindAttachmentKeyframeId(AbstractDrawing drawing)
+        {
+            Keyframe foundKeyframe = null;
+            foreach (Keyframe k in keyframes)
+            {
+                foreach (AbstractDrawing d in k.Drawings)
+                {
+                    if (d.Id != drawing.Id)
+                        continue;
+
+                    foundKeyframe = k;
+                    break;
+                }
+
+                if (foundKeyframe != null)
+                    break;
+            }
+
+            return foundKeyframe == null ? Guid.Empty : foundKeyframe.Id;
+
+        }
+        public int GetKeyframeIndex(Guid id)
+        {
+            // Temporary function to accomodate clients of the old API where we used indices to reference keyframes and drawings.
+            for (int i = 0; i < keyframes.Count; i++)
+                if (keyframes[i].Id == id)
+                    return i;
+
+            return -1;
+        }
+        public void MergeInsertKeyframe(Keyframe keyframe)
+        {
+            bool processed = false;
+
+            for (int i = 0; i < keyframes.Count; i++)
+            {
+                Keyframe k = keyframes[i];
+
+                if (keyframe.Position < k.Position)
+                {
+                    keyframes.Insert(i, keyframe);
+                    processed = true;
+                    break;
+                }
+                else if (keyframe.Position == k.Position)
+                {
+                    foreach (AbstractDrawing ad in keyframe.Drawings)
+                    {
+                        k.Drawings.Add(ad);
+                    }
+
+                    processed = true;
+                    break;
+                }
+            }
+
+            if (!processed)
+                keyframes.Add(keyframe);
         }
         #endregion
         
@@ -297,8 +464,8 @@ namespace Kinovea.ScreenManager
         }
         public IEnumerable<DrawingTrack> Tracks()
         {
-            foreach (AbstractDrawing drawing in extraDrawings)
-                if(drawing is DrawingTrack)
+            foreach (AbstractDrawing drawing in TrackManager.Drawings)
+                if (drawing is DrawingTrack)
                     yield return (DrawingTrack)drawing;
         }
         public IEnumerable<AbstractDrawing> AttachedDrawings()
@@ -327,157 +494,283 @@ namespace Kinovea.ScreenManager
                 if (drawing is DrawingSVG)
                     yield return (DrawingSVG)drawing;
         }
+        public IEnumerable<ITrackable> TrackableDrawings()
+        {
+            foreach (AbstractDrawing drawing in extraDrawings)
+            {
+                if (drawing is ITrackable)
+                    yield return (ITrackable)drawing;
+
+                // TODO: multi drawings.
+            }
+
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is ITrackable)
+                    yield return (ITrackable)drawing;
+        }
+        public IEnumerable<DrawingDistortionGrid> DistortionGrids()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingDistortionGrid)
+                    yield return (DrawingDistortionGrid)drawing;
+        }
         #endregion
         
-        #region Add/Delete drawings
-        public int GetKeyframeIndex(long position)
+        #region Drawings
+        public AbstractDrawingManager GetDrawingManager(Guid managerId)
         {
-            for (int i = 0; i < keyframes.Count; i++)
-                if (keyframes[i].Position == position)
-                    return i;
-
-            return -1;
-        }
-        public void AddDrawing(AbstractDrawing drawing, int keyframeIndex)
-        {
-            keyframes[keyframeIndex].AddDrawing(drawing);
-            hitDrawingFrameIndex = keyframeIndex;
-            hitDrawingIndex = 0;
-            hitDrawing = drawing;
-            PostDrawingCreationHooks(drawing);
-        }
-        public void AddImageDrawing(string filename, bool isSVG, long time)
-        {
-            // TODO: Use a drawing tool to do that ?
-            
-            if(!File.Exists(filename))
-                return;
-            
-            AllDrawingTextToNormalMode();
-                
-            AbstractDrawing drawing = null;
-            if(isSVG)
-            {
-                try
-                {
-                    drawing = new DrawingSVG(imageSize.Width, imageSize.Height, time, averageTimeStampsPerFrame, filename);
-                }
-                catch
-                {
-                    // An error occurred during the creation. TODO: inform the user.
-                    // example : external DTD an no network or invalid svg file.
-                }
-            }
+            if (managerId == chronoManager.Id)
+                return chronoManager;
+            else if (managerId == trackManager.Id)
+                return trackManager;
             else
-            {
-                drawing = new DrawingBitmap(imageSize.Width, imageSize.Height, time, averageTimeStampsPerFrame, filename);
-            }
-            
-            if(drawing != null)
-            {
-                keyframes[hitDrawingFrameIndex].AddDrawing(drawing);
-                hitDrawingIndex = 0;
-                hitDrawing = drawing;
-                PostDrawingCreationHooks(drawing);
-            }
-            
-            UnselectAll();
+                return GetKeyframe(managerId);
         }
-        public void AddImageDrawing(Bitmap bmp, long time)
+
+        public AbstractDrawing GetDrawing(Guid managerId, Guid drawingId)
         {
-            AllDrawingTextToNormalMode();
-            DrawingBitmap drawing = new DrawingBitmap(imageSize.Width, imageSize.Height, time, averageTimeStampsPerFrame, bmp);
-            
-            keyframes[hitDrawingFrameIndex].AddDrawing(drawing);
-            hitDrawingIndex = 0;
-            hitDrawing = drawing;
-            PostDrawingCreationHooks(drawing);
-                
-            UnselectAll();
-        }
-        public void AddChrono(DrawingChrono _chrono)
-        {
-            _chrono.ParentMetadata = this;
-            extraDrawings.Add(_chrono);
-            hitExtraDrawingIndex = extraDrawings.Count - 1;
-        }
-        public void AddTrack(DrawingTrack _track, ClosestFrameAction _showClosestFrame, Color _color)
-        {
-            _track.ParentMetadata = this;
-            _track.Status = TrackStatus.Edit;
-            _track.m_ShowClosestFrame = _showClosestFrame;
-            _track.MainColor = _color;
-            extraDrawings.Add(_track);
-            hitExtraDrawingIndex = extraDrawings.Count - 1;
+            AbstractDrawingManager manager = null;
+
+            if (managerId == chronoManager.Id)
+                manager = chronoManager;
+            else if (managerId == trackManager.Id)
+                manager = trackManager;
+            else
+                manager = GetKeyframe(managerId);
+
+            if (manager == null)
+                return null;
+
+            return manager.GetDrawing(drawingId);
         }
         
-        public void DeleteHitDrawing()
+        /// <summary>
+        /// General method to add a drawing on a manager (keyframe-attched, chrono, track).
+        /// </summary>
+        public void AddDrawing(Guid managerId, AbstractDrawing drawing)
         {
-            // TODO: handle multi drawings and trackable drawings.
-            // Create command so we can undo.
-            if(hitDrawing == null)
+            if (drawing == null)
+                return;
+
+            Keyframe keyframe = GetKeyframe(managerId);
+            if (keyframe != null)
+            {
+                AddDrawing(keyframe, drawing);
+                return;
+            }
+
+            if (chronoManager.Id == managerId && drawing is DrawingChrono)
+            {
+                AddChrono(drawing as DrawingChrono);
+                return;
+            }
+
+            if (trackManager.Id == managerId && drawing is DrawingTrack)
+            {
+                AddTrack(drawing as DrawingTrack);
+                return;
+            }
+        }
+        
+        /// <summary>
+        /// Adds a drawing to the specified keyframe.
+        /// </summary>
+        public void AddDrawing(Keyframe keyframe, AbstractDrawing drawing)
+        {
+            if (keyframe == null || drawing == null || !drawing.IsValid)
+                return;
+
+            keyframe.AddDrawing(drawing);
+            drawing.InfosFading.ReferenceTimestamp = keyframe.Position;
+            drawing.InfosFading.AverageTimeStampsPerFrame = averageTimeStampsPerFrame;
+
+            SelectKeyframe(keyframe);
+            SelectDrawing(drawing);
+
+            AfterDrawingCreation(drawing);
+
+            if (DrawingAdded != null)
+                DrawingAdded(this, new DrawingEventArgs(drawing, keyframe.Id));
+        }
+        
+        /// <summary>
+        /// Adds a new item to a multi drawing.
+        /// </summary>
+        public void AddMultidrawingItem(AbstractMultiDrawing multidrawing, AbstractMultiDrawingItem item)
+        {
+            multidrawing.Add(item);
+            SelectDrawing(multidrawing);
+
+            if (MultiDrawingItemAdded != null)
+                MultiDrawingItemAdded(this, new MultiDrawingItemEventArgs(item, multidrawing));
+        }
+        
+        /// <summary>
+        /// Adds a new chronometer drawing.
+        /// </summary>
+        public void AddChrono(DrawingChrono chrono)
+        {
+            chronoManager.AddDrawing(chrono);
+            chrono.ParentMetadata = this;
+            
+            hitDrawing = chrono;
+
+            AfterDrawingCreation(chrono);
+
+            if (DrawingAdded != null)
+                DrawingAdded(this, new DrawingEventArgs(chrono, chronoManager.Id));
+        }
+
+        /// <summary>
+        /// Adds a new track drawing.
+        /// </summary>
+        public void AddTrack(DrawingTrack track)
+        {
+            trackManager.AddDrawing(track);
+
+            track.ParentMetadata = this;
+            
+            if (lastUsedTrackerParameters != null)
+                track.TrackerParameters = lastUsedTrackerParameters;
+            
+            track.TrackerParametersChanged += Track_TrackerParametersChanged;
+
+            hitDrawing = track;
+            
+            AfterDrawingCreation(track);
+
+            if (DrawingAdded != null)
+                DrawingAdded(this, new DrawingEventArgs(track, trackManager.Id));
+        }
+
+        public void ModifiedDrawing(Guid managerId, Guid drawingId)
+        {
+            AbstractDrawing drawing = GetDrawing(managerId, drawingId);
+            DrawingTrack track = drawing as DrawingTrack;
+            if (track != null)
+            {
+                track.UpdateKinematics();
+                track.IntegrateKeyframes();
+            }
+
+            if (DrawingModified != null)
+                DrawingModified(this, new DrawingEventArgs(drawing, managerId));
+        }
+        
+        public void DeleteDrawing(Guid managerId, Guid drawingId)
+        {
+            // Remove event handlers from the drawing as well as all associated data like tracking data,
+            // and finally remove the drawing itself.
+
+            AbstractDrawingManager manager = null;
+
+            if (managerId == chronoManager.Id)
+                manager = chronoManager;
+            else if (managerId == trackManager.Id)
+                manager = trackManager;
+            else
+                manager = GetKeyframe(managerId);
+
+            if (manager == null)
                 return;
                 
-            keyframes[hitDrawingFrameIndex].Drawings.Remove(hitDrawing);
+            AbstractDrawing drawing = manager.GetDrawing(drawingId);
+            if (drawing == null)
+                return;
+
+            BeforeDrawingDeletion(drawing);
             
-            /*
-            
-            Block of code originally in the screens.
-            
-            if(drawing is AbstractMultiDrawing)
-            {
-                IUndoableCommand cds = new CommandDeleteMultiDrawingItem(this, metadataManipulator.Metadata);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(cds);
-            }
-            else
-            {
-                ITrackable trackable = drawing as ITrackable;
-                if(trackable != null && TrackableDrawingDeleted != null)
-                    TrackableDrawingDeleted(this, new TrackableDrawingEventArgs(trackable));
-                
-                IUndoableCommand cdd = new CommandDeleteDrawing(DoInvalidate, m_FrameServer.Metadata, m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Position, m_FrameServer.Metadata.SelectedDrawing);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(cdd);
-                DoInvalidate();
-            }*/
-        }
-        public void DeleteDrawing(int _frameIndex, int _drawingIndex)
-        {
-            // TODO: remove hooks.
-            keyframes[_frameIndex].Drawings.RemoveAt(_drawingIndex);
+            manager.RemoveDrawing(drawingId);
             UnselectAll();
+            
+            if (DrawingDeleted != null)
+                DrawingDeleted(this, EventArgs.Empty);
         }
-        public void DeleteTrackableDrawing(ITrackable drawing)
+        
+        public void DeleteMultiDrawingItem(AbstractMultiDrawing manager, Guid itemId)
         {
-            // TODO: when removal of all regular drawings is handled here in Metadata, we can set this method to private.
-            // We'll also need to unhook from measurableDrawing.ShowMeasurableInfoChanged. 
+            ITrackable item = manager.GetItem(itemId) as ITrackable;
+            if (item != null)
+                DeleteTrackableDrawing(item);
+
+            manager.Remove(itemId);
+            UnselectAll();
+
+            if (MultiDrawingItemDeleted != null)
+                MultiDrawingItemDeleted(this, EventArgs.Empty);
+        }
+        
+        private void DeleteTrackableDrawing(ITrackable drawing)
+        {
             trackabilityManager.Remove(drawing);
         }
-        public void UndeleteDrawing(int frameIndex, int drawingIndex, AbstractDrawing drawing)
+
+        private void Track_TrackerParametersChanged(object sender, EventArgs e)
         {
-            if(frameIndex >= keyframes.Count)
+            // Remember these track parameters to bootstrap the next trackable.
+            DrawingTrack track = sender as DrawingTrack;
+            if (track == null)
+                return;
+
+            lastUsedTrackerParameters = track.TrackerParameters;
+        }
+        
+        public void InitializeCommit(VideoFrame videoFrame, Point point)
+        {
+            magnifier.InitializeCommit(point);
+
+            IInitializable initializable = hitDrawing as IInitializable;
+            if (initializable == null || !initializable.Initializing)
                 return;
             
-            keyframes[frameIndex].Drawings.Insert(drawingIndex, drawing);
-            hitDrawingFrameIndex = frameIndex;
-            hitDrawingIndex = drawingIndex;
-            hitDrawing = drawing;
-            PostDrawingCreationHooks(drawing);
+            string key = initializable.InitializeCommit(point);
+
+            if (string.IsNullOrEmpty(key))
+                return;
+
+            ITrackable trackable = hitDrawing as ITrackable;
+            if (trackable != null)
+                trackabilityManager.AddPoint(trackable, videoFrame, key, point);
+        }
+        public void InitializeEnd(bool cancelCurrentPoint)
+        {
+            IInitializable initializable = hitDrawing as IInitializable;
+            if (initializable == null || !initializable.Initializing)
+                return;
+
+            string key = initializable.InitializeEnd(cancelCurrentPoint);
+
+            if (string.IsNullOrEmpty(key) || !cancelCurrentPoint)
+                return;
+            
+            ITrackable trackable = hitDrawing as ITrackable;
+            if (trackable != null)
+                trackabilityManager.RemovePoint(trackable, key);
         }
         #endregion
         
-        public void PostSetup()
+        public void PostSetup(bool init)
         {
-            if(initialized)
-                return;
-            
-            for(int i = 0; i<totalStaticExtraDrawings;i++)
-                PostDrawingCreationHooks(extraDrawings[i]);
-            
+            if (init)
+            {
+                trackabilityManager.Initialize(imageSize);
+                calibrationHelper.Initialize(imageSize);
+            }
+
+            if (!initialized)
+            {
+                for (int i = 0; i < totalStaticExtraDrawings; i++)
+                    AfterDrawingCreation(extraDrawings[i]);
+            }
+            else
+            {
+                AfterDrawingCreation(drawingCoordinateSystem);
+            }
+
             CleanupHash();
             initialized = true;
         }
+
         public void Reset()
         {
             // Complete reset. (used when over loading a new video)
@@ -485,15 +778,18 @@ namespace Kinovea.ScreenManager
 
             globalTitle = "";
             imageSize = new Size(0, 0);
-            inputImageSize = new Size(0, 0);
             fullPath = "";
             averageTimeStampsPerFrame = 1;
             firstTimeStamp = 0;
-            inputAverageTimeStampsPerFrame = 0;
-            inputFirstTimeStamp = 0;
-
+            
             ResetCoreContent();
+            autoSaver.Stop();
+            EmptyTempDirectory();
             CleanupHash();
+        }
+        public void Close()
+        {
+            DeleteTempDirectory();
         }
         public void ShowCoordinateSystem()
         {
@@ -501,44 +797,41 @@ namespace Kinovea.ScreenManager
         }
         public void UpdateTrajectoriesForKeyframes()
         {
-            // Called when keyframe added, removed or title changed
-            foreach(DrawingTrack t in Tracks())
-                t.IntegrateKeyframes();
+            foreach (DrawingTrack t in Tracks())
+                t.CalibrationChanged();
         }
         public void AllDrawingTextToNormalMode()
         {
             foreach (DrawingText label in Labels())
                 label.SetEditMode(false, null);
         }
-        public void PerformTracking(VideoFrame _current)
+        public void PerformTracking(VideoFrame videoframe)
         {
             foreach(DrawingTrack t in Tracks())
                 if (t.Status == TrackStatus.Edit)
-                    t.TrackCurrentPosition(_current);
+                    t.TrackCurrentPosition(videoframe);
         }
         public void StopAllTracking()
         {
             foreach(DrawingTrack t in Tracks())
                 t.StopTracking();
         }
-        public void UpdateTrackPoint(Bitmap _bmp)
+        public void UpdateTrackPoint(Bitmap bitmap)
         {
             // Happens when mouse up and editing a track.
-            if(hitExtraDrawingIndex < 0)
-                return;
-            
-            DrawingTrack t = extraDrawings[hitExtraDrawingIndex] as DrawingTrack;
-            if(t != null && t.Status == TrackStatus.Edit)
-                t.UpdateTrackPoint(_bmp);
+            DrawingTrack t = hitDrawing as DrawingTrack;
+            if(t != null && (t.Status == TrackStatus.Edit || t.Status == TrackStatus.Configuration))
+                t.UpdateTrackPoint(bitmap);
+        }
+        public int GetContentHash()
+        {
+            return GetKeyframesContentHash() ^ GetExtraDrawingsContentHash() ^ trackabilityManager.ContentHash ^ calibrationHelper.ContentHash;
         }
         public void CleanupHash()
         {
-            referenceHash = GetKeyframesContentHash() ^ GetExtraDrawingsContentHash();
+            referenceHash = GetContentHash();
+            autoSaver.Clear();
             log.Debug(String.Format("Metadata content hash reset:{0}.", referenceHash));
-        }
-        public List<Bitmap> GetFullImages()
-        {
-            return keyframes.Select(kf => kf.FullFrame).ToList();
         }
         public void ResizeFinished()
         {
@@ -549,17 +842,120 @@ namespace Kinovea.ScreenManager
         }
         public void UnselectAll()
         {
-            hitDrawingIndex = -1;
-            hitDrawingFrameIndex = -1;
-            hitExtraDrawingIndex = -1;
+            hitKeyframe = null;
             hitDrawing = null;
         }
-        public void SelectExtraDrawing(AbstractDrawing drawing)
+        public void SelectDrawing(AbstractDrawing drawing)
         {
-            int index = extraDrawings.FindIndex(d => d == drawing);
-            hitExtraDrawingIndex = index;
             hitDrawing = drawing;
         }
+        public void AfterDrawingCreation(AbstractDrawing drawing)
+        {
+            // When passing here, it is possible that the drawing has already been initialized.
+            // (for example, when undeleting a drawing).
+
+            if (drawing is IScalable)
+                ((IScalable)drawing).Scale(this.ImageSize);
+
+            if (drawing is ITrackable && AddTrackableDrawingCommand != null)
+                AddTrackableDrawingCommand.Execute(drawing as ITrackable);
+
+            if (drawing is IMeasurable)
+            {
+                IMeasurable measurableDrawing = drawing as IMeasurable;
+                measurableDrawing.CalibrationHelper = calibrationHelper;
+
+                if (!measurableDrawing.ShowMeasurableInfo)
+                    measurableDrawing.ShowMeasurableInfo = showingMeasurables;
+
+                measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
+            }
+
+            if (drawing is DrawingDistortionGrid)
+            {
+                DrawingDistortionGrid d = drawing as DrawingDistortionGrid;
+                d.LensCalibrationAsked += LensCalibrationAsked;
+            }
+        }
+
+        private void BeforeDrawingDeletion(AbstractDrawing drawing)
+        {
+            ITrackable trackableDrawing = drawing as ITrackable;
+            if (trackableDrawing != null)
+                DeleteTrackableDrawing(trackableDrawing);
+
+            IMeasurable measurableDrawing = drawing as IMeasurable;
+            if (measurableDrawing != null)
+                measurableDrawing.ShowMeasurableInfoChanged -= MeasurableDrawing_ShowMeasurableInfoChanged;
+
+            if (drawing is DrawingDistortionGrid)
+                ((DrawingDistortionGrid)drawing).LensCalibrationAsked -= LensCalibrationAsked;
+        }
+
+        public void BeforeKVAImport()
+        {
+            kvaImporting = true;
+            StopAllTracking();
+            UnselectAll();
+        }
+        public void AfterKVAImport()
+        {
+            foreach (ITrackable drawing in TrackableDrawings())
+                trackabilityManager.Assign(drawing);
+
+            trackabilityManager.CleanUnassigned();
+            
+            AfterCalibrationChanged();
+            kvaImporting = false;
+
+            if (KVAImported != null)
+                KVAImported(this, EventArgs.Empty);
+        }
+        public void AfterManualExport()
+        {
+            CleanupHash();
+            DeleteAutosaveFile();
+        }
+        public void Recover(Guid id)
+        {
+            DeleteTempDirectory();
+            SetupTempDirectory(id);
+            string autosaveFile = Path.Combine(tempFolder, "autosave.kva");
+            if (File.Exists(autosaveFile))
+            {
+                MetadataSerializer s = new MetadataSerializer();
+                s.Load(this, autosaveFile, true);
+            }
+        }
+
+        public List<List<PointF>> GetCameraCalibrationPoints()
+        {
+            List<List<PointF>> points = new List<List<PointF>>();
+            foreach (DrawingDistortionGrid grid in DistortionGrids())
+                points.Add(grid.Points);
+
+            return points;
+        }
+
+        #region Autosave
+        public void StartAutosave()
+        {
+            autoSaver.FreshStart();
+        }
+        public void PauseAutosave()
+        {
+            autoSaver.Stop();
+        }
+        public void UnpauseAutosave()
+        {
+            autoSaver.Start();
+        }
+        public void PerformAutosave()
+        {
+            MetadataSerializer serializer = new MetadataSerializer();
+            serializer.SaveToFile(this, Path.Combine(tempFolder, "autosave.kva"));
+        }
+        #endregion
         
         #region Objects Hit Tests
         // Note: these hit tests are for right click only.
@@ -591,25 +987,52 @@ namespace Kinovea.ScreenManager
 
             return hit;
         }
-        public AbstractDrawing IsOnExtraDrawing(Point _MouseLocation, long _iTimestamp)
+        public AbstractDrawing IsOnExtraDrawing(Point point, long timestamp)
         {
             // Check if the mouse is on one of the drawings not attached to any key image.
             // Returns the drawing on which we stand (or null if none), and select it on the way.
             // the caller will then check its type and decide which action to perform.
             
             AbstractDrawing result = null;
-            
-            for(int i=extraDrawings.Count-1;i>=0;i--)
+
+            foreach (DrawingChrono chrono in chronoManager.Drawings)
+            {
+                int hit = chrono.HitTest(point, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
+                if (hit < 0)
+                    continue;
+
+                result = chrono;
+                hitDrawing = chrono;
+                break;
+            }
+
+            if (result != null)
+                return result;
+
+            foreach (DrawingTrack track in trackManager.Drawings)
+            {
+                int hit = track.HitTest(point, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
+                if (hit < 0)
+                    continue;
+
+                result = track;
+                hitDrawing = track;
+                break;
+            }
+
+            if (result != null)
+                return result;
+
+            for(int i = extraDrawings.Count - 1; i >= 0; i--)
             {
                 AbstractDrawing candidate = extraDrawings[i];
-                int hitRes = candidate.HitTest(_MouseLocation, _iTimestamp, coordinateSystem);
-                if(hitRes >= 0)
-                {
-                    hitExtraDrawingIndex = i;
-                    result = candidate;
-                    hitDrawing = candidate;
-                    break;
-                }
+                int hitRes = candidate.HitTest(point, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
+                if (hitRes < 0)
+                    continue;
+                
+                result = candidate;
+                hitDrawing = candidate;
+                break;
             }
             
             return result;
@@ -677,729 +1100,28 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #endregion
-        
-        #region Serialization
-        
-        #region Reading
-        public void Load(string _kva, bool _bIsFile)
-        {
-            // _kva parameter can either be a file or a string.
-            StopAllTracking();
-            UnselectAll();
-            
-            string kva = ConvertIfNeeded(_kva, _bIsFile);
-            
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
-            settings.IgnoreWhitespace = true;
-            settings.CloseInput = true;
-
-            XmlReader reader = null;
-            if(_bIsFile)
-                reader = XmlReader.Create(kva, settings);
-            else
-               reader = XmlReader.Create(new StringReader(kva), settings);
-            
-            try
-            {
-                ReadXml(reader);
-            }
-            catch(Exception e)
-            {
-                log.Error("An error happened during the parsing of the KVA metadata");
-                log.Error(e);
-            }
-            finally
-            {
-                if(reader != null) 
-                    reader.Close();
-            }
-            
-            if(calibrationHelper.CalibratorType == CalibratorType.Line && !calibrationHelper.CalibrationByLine_GetIsOriginSet())
-            {
-                PointF origin = new Point(imageSize.Width / 2, imageSize.Height / 2);
-                calibrationHelper.CalibrationByLine_SetOrigin(origin);
-            }
-            
-            UpdateTrajectoriesForKeyframes();
-            drawingCoordinateSystem.UpdateOrigin();
-        }
-        private string ConvertIfNeeded(string _kva, bool _bIsFile)
-        {
-            // _kva parameter can either be a filepath or the xml string. We return the same kind of string as passed in.
-            string result = _kva;
-            
-            XmlDocument kvaDoc = new XmlDocument();
-            if(_bIsFile)
-                kvaDoc.Load(_kva);
-            else
-                kvaDoc.LoadXml(_kva);
-            
-            string tempFile = Software.SettingsDirectory + "\\temp.kva";
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            
-            XmlNode formatNode = kvaDoc.DocumentElement.SelectSingleNode("descendant::FormatVersion");
-            double format;
-            bool read = double.TryParse(formatNode.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out format);
-            if(!read)
-            {
-                log.ErrorFormat("The format couldn't be read. No conversion will be attempted. Read:{0}", formatNode.InnerText);
-                return result;
-            }
-                  
-            if(format < 2.0 && format >= 1.3)
-            {
-                log.DebugFormat("Older format detected ({0}). Starting conversion", format); 
-                
-                try
-                {
-                    XslCompiledTransform xslt = new XslCompiledTransform();
-                    string stylesheet = Application.StartupPath + "\\xslt\\kva-1.5to2.0.xsl";
-                    xslt.Load(stylesheet);
-                    
-                    if(_bIsFile)
-                    {
-                        using (XmlWriter xw = XmlWriter.Create(tempFile, settings))
-                        {
-                            xslt.Transform(kvaDoc, xw);
-                        } 
-                        result = tempFile;
-                    }
-                    else
-                    {
-                        StringBuilder builder = new StringBuilder();
-                        using(XmlWriter xw = XmlWriter.Create(builder, settings))
-                        {    
-                            xslt.Transform(kvaDoc, xw);
-                        }
-                        result = builder.ToString();
-                    }
-                    
-                    log.DebugFormat("Older format converted.");
-                }
-                catch(Exception)
-                {
-                    log.ErrorFormat("An error occurred during KVA conversion. Conversion aborted.", format.ToString());
-                }
-            }
-            else if(format <= 1.2)
-            {
-                log.ErrorFormat("Format too old ({0}). No conversion will be attempted.", format.ToString());
-            }
-            
-            return result;
-        }
-        private void ReadXml(XmlReader r)
-        {
-            log.Debug("Importing Metadata from Kva XML.");
-
-            r.MoveToContent();
-            
-            if(!(r.Name == "KinoveaVideoAnalysis"))
-                return;
-            
-            r.ReadStartElement();
-            r.ReadElementContentAsString("FormatVersion", "");
-            
-            while(r.NodeType == XmlNodeType.Element)
-            {
-                switch(r.Name)
-                {
-                    case "Producer":
-                        r.ReadElementContentAsString();
-                        break;
-                    case "OriginalFilename":
-                        inputFileName = r.ReadElementContentAsString();
-                        break;
-                    case "GlobalTitle":
-                        globalTitle = r.ReadElementContentAsString();
-                        break;
-                    case "ImageSize":
-                        Point p = XmlHelper.ParsePoint(r.ReadElementContentAsString());
-                        inputImageSize = new Size(p);
-                        break;
-                    case "AverageTimeStampsPerFrame":
-                        inputAverageTimeStampsPerFrame = r.ReadElementContentAsLong();
-                        break;
-                    case "FirstTimeStamp":
-                        inputFirstTimeStamp = r.ReadElementContentAsLong();
-                        break;
-                    case "SelectionStart":
-                        inputSelectionStart = r.ReadElementContentAsLong();
-                        break;
-                    case "DuplicationFactor":
-                        duplicateFactor = r.ReadElementContentAsInt();
-                        break;
-                    case "Calibration":
-                        CalibrationHelper.ReadXml(r);
-                        break;
-                    case "Keyframes":
-                        ParseKeyframes(r);
-                        break;
-                    case "Tracks":
-                        ParseTracks(r);
-                        break;
-                    case "Chronos":
-                        ParseChronos(r);
-                        break;
-                    case "Spotlights":
-                        ParseSpotlights(r);
-                        break;
-                    case "AutoNumbers":
-                        ParseAutoNumbers(r);
-                        break;
-                    default:
-                        // We still need to properly skip the unparsed nodes.
-                        string unparsed = r.ReadOuterXml();
-                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                        break;
-                }
-            }
-            
-            r.ReadEndElement();
-        }
-        private void ParseKeyframes(XmlReader r)
-        {
-            // TODO: catch empty tag <Keyframes/>.
-            
-            r.ReadStartElement();
-            
-            while(r.NodeType == XmlNodeType.Element)
-            {
-                if(r.Name == "Keyframe")
-                {
-                    ParseKeyframe(r);
-                }
-                else
-                {
-                    string unparsed = r.ReadOuterXml();
-                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                }
-            }
-            
-            r.ReadEndElement();
-        }
-        private void ParseKeyframe(XmlReader r)
-        {
-            // This will not create a fully functionnal Keyframe.
-            // Must be followed by a call to PostImportMetadata()
-            Keyframe kf = new Keyframe(this);
-            
-            r.ReadStartElement();
-            
-            while(r.NodeType == XmlNodeType.Element)
-            {
-                switch(r.Name)
-                {
-                    case "Position":
-                        int iInputPosition = r.ReadElementContentAsInt();
-                        kf.Position = DoRemapTimestamp(iInputPosition, false);
-                        break;
-                    case "Title":
-                        kf.Title = r.ReadElementContentAsString();
-                        break;
-                    case "Comment":
-                        kf.CommentRtf = r.ReadElementContentAsString();
-                        break;
-                    case "Drawings":
-                        ParseDrawings(r, kf);
-                        break;
-                    default:
-                        string unparsed = r.ReadOuterXml();
-                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                        break;
-                }
-            }
-            
-            r.ReadEndElement();
-            
-            // Merge: insert key frame at the right place or merge drawings if there's already a keyframe.
-            bool merged = false;
-            for(int i = 0; i<keyframes.Count; i++)
-            {
-                if(kf.Position < keyframes[i].Position)
-                {
-                    keyframes.Insert(i, kf);
-                    merged = true;
-                    break;
-                }
-                else if(kf.Position == keyframes[i].Position)
-                {
-                    foreach(AbstractDrawing ad in kf.Drawings)
-                    {
-                        keyframes[i].Drawings.Add(ad);
-                    }
-                    merged = true;
-                    break;
-                }
-            }
-            
-            if(!merged)
-            {
-                keyframes.Add(kf);
-            }
-        }
-        private void ParseDrawings(XmlReader r, Keyframe _keyframe)
-        {
-            // TODO: catch empty tag <Drawings/>.
-            
-            r.ReadStartElement();
-            
-            while(r.NodeType == XmlNodeType.Element)
-            {
-                AbstractDrawing drawing = ParseDrawing(r);
-                    
-                if (drawing != null)
-                {
-                    _keyframe.Drawings.Insert(0, drawing);
-                    _keyframe.Drawings[0].InfosFading.ReferenceTimestamp = _keyframe.Position;
-                    _keyframe.Drawings[0].InfosFading.AverageTimeStampsPerFrame = averageTimeStampsPerFrame;
-                    PostDrawingCreationHooks(drawing);
-                }
-            }
-            
-            r.ReadEndElement();
-        }
-        private AbstractDrawing ParseDrawing(XmlReader r)
-        {
-            AbstractDrawing drawing = null;
-            
-            // Find the right class to instanciate.
-            // The class must derive from AbstractDrawing and have the corresponding [XmlType] C# attribute.
-            bool drawingRead = false;
-            Assembly a = Assembly.GetExecutingAssembly();
-            foreach(Type t in a.GetTypes())
-            {
-                if(t.BaseType == typeof(AbstractDrawing))
-                {
-                    object[] attributes = t.GetCustomAttributes(typeof(XmlTypeAttribute), false);
-                    if(attributes.Length > 0 && ((XmlTypeAttribute)attributes[0]).TypeName == r.Name)
-                    {
-                        // Verify that the drawing has a constructor with the right parameter list.
-                        ConstructorInfo ci = t.GetConstructor(new[] {typeof(XmlReader), typeof(PointF), this.GetType()});
-                        
-                        if(ci != null)
-                        {
-                            PointF scaling = GetScaling();
-                            
-                            // Instanciate the drawing.
-                            object[] parameters = new object[]{r, scaling, this};
-                            drawing = (AbstractDrawing)Activator.CreateInstance(t, parameters);
-                        
-                            if(drawing != null)
-                               drawingRead = true;
-                        }
-                       
-                        break;
-                    }
-                }
-            }
-            
-            if(!drawingRead)
-            {
-                string unparsed = r.ReadOuterXml();
-                log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);   
-            }
-            
-            return drawing;
-        }
-        private void ParseChronos(XmlReader r)
-        {
-            // TODO: catch empty tag <Chronos/>.
-            
-            r.ReadStartElement();
-            
-            while(r.NodeType == XmlNodeType.Element)
-            {
-                // When we have other Chrono tools (cadence tool), make this dynamic
-                // on a similar model than for attached drawings. (see ParseDrawing())
-                if(r.Name == "Chrono")
-                {
-                    DrawingChrono dc = new DrawingChrono(r, GetScaling(), DoRemapTimestamp);
-                    
-                    if (dc != null)
-                        AddChrono(dc);
-                }
-                else
-                {
-                    string unparsed = r.ReadOuterXml();
-                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                }
-            }
-            
-            r.ReadEndElement();
-        }
-        private void ParseTracks(XmlReader _xmlReader)
-        {
-             // TODO: catch empty tag <Tracks/>.
-            
-            _xmlReader.ReadStartElement();
-            
-            while(_xmlReader.NodeType == XmlNodeType.Element)
-            {
-                if(_xmlReader.Name == "Track")
-                {
-                    DrawingTrack trk = new DrawingTrack(_xmlReader, GetScaling(), DoRemapTimestamp, imageSize);
-                    
-                    if (!trk.Invalid)
-                    {
-                        AddTrack(trk, showClosestFrameCallback, trk.MainColor);
-                        trk.Status = TrackStatus.Interactive;
-                    }
-                }
-                else
-                {
-                    string unparsed = _xmlReader.ReadOuterXml();
-                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                }
-            }
-            
-            _xmlReader.ReadEndElement();
-        }
-        private void ParseSpotlights(XmlReader _xmlReader)
-        {
-            _xmlReader.ReadStartElement();
-            
-            while(_xmlReader.NodeType == XmlNodeType.Element)
-            {
-                if(_xmlReader.Name == "Spotlight")
-                {
-                    Spotlight spotlight = new Spotlight(_xmlReader, GetScaling(), DoRemapTimestamp, averageTimeStampsPerFrame);
-                    spotlightManager.Add(spotlight);
-                }
-                else
-                {
-                    string unparsed = _xmlReader.ReadOuterXml();
-                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                }
-            }
-            
-            _xmlReader.ReadEndElement();
-        }
-        private void ParseAutoNumbers(XmlReader _xmlReader)
-        {
-            int index = extraDrawings.IndexOf(autoNumberManager);
-            autoNumberManager = new AutoNumberManager(_xmlReader, GetScaling(), DoRemapTimestamp, averageTimeStampsPerFrame);
-            extraDrawings.RemoveAt(index);
-            extraDrawings.Insert(index, autoNumberManager);
-        }
-        private PointF GetScaling()
-        {
-            PointF scaling = new PointF(1.0f, 1.0f);
-            if(!imageSize.IsEmpty && !inputImageSize.IsEmpty)
-            {
-                scaling.X = (float)imageSize.Width / (float)inputImageSize.Width;
-                scaling.Y = (float)imageSize.Height / (float)inputImageSize.Height;    
-            }
-            return scaling;       
-        }
-        #endregion
-        
-        #region Writing
-        public String ToXmlString(int _iDuplicateFactor)
-        {
-            // The duplicate factor is used in the context of extreme slow motion (causing the output to be less than 8fps).
-            // In that case there is frame duplication and we store this information in the metadata when it is embedded in the file.
-            // On input, it will be used to adjust the key images positions.
-            // We change the global variable so it can be used during xml export, but it's only temporary.
-            // It is possible that an already duplicated clip is further slowed down.
-            int memoDuplicateFactor = duplicateFactor;
-            duplicateFactor *= _iDuplicateFactor;
-            
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = false;
-            settings.CloseOutput = true;
-            
-            StringBuilder builder = new StringBuilder();
-            using(XmlWriter w = XmlWriter.Create(builder, settings))
-            {
-                try
-                {
-                   WriteXml(w);
-                }
-                catch(Exception e)
-                {
-                    log.Error("An error happened during the writing of the kva string");
-                    log.Error(e);
-                }
-            }
-            
-            duplicateFactor = memoDuplicateFactor;
-            
-            return builder.ToString();
-        }
-        public void ToXmlFile(string _file)
-        {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.CloseOutput = true;
-            
-            using(XmlWriter w = XmlWriter.Create(_file, settings))
-            {
-                try
-                {
-                   WriteXml(w);
-                   CleanupHash();
-                }
-                catch(Exception e)
-                {
-                    log.Error("An error happened during the writing of the kva file");
-                    log.Error(e);
-                }
-            }
-        }
-        private void WriteXml(XmlWriter w)
-        {
-            // Convert the metadata to XML.
-            // The XML Schema for the format should be available in the "tools/Schema/" folder of the source repository.
-            
-            // The format contains both core infos to deserialize back to Metadata and helpers data for XSLT exports, 
-            // so these exports have more user friendly values. (timecode vs timestamps, cm vs pixels, etc.)
-            
-            // Notes: 
-            // Doubles must be written with the InvariantCulture. ("1.52" not "1,52").
-            // Booleans must be converted to proper XML Boolean type ("true" not "True").
-            
-            w.WriteStartElement("KinoveaVideoAnalysis");
-            WriteGeneralInformation(w);
-            
-            // Keyframes
-            if (ActiveKeyframes() > 0)
-            {
-                w.WriteStartElement("Keyframes");
-                foreach (Keyframe kf in keyframes.Where(kf => !kf.Disabled))
-                {
-                    w.WriteStartElement("Keyframe");
-                    kf.WriteXml(w);
-                    w.WriteEndElement();
-                }
-                w.WriteEndElement();
-            }
-            
-            WriteChronos(w);
-            WriteTracks(w);
-            WriteSpotlights(w);
-            WriteAutoNumbers(w);
-            
-            w.WriteEndElement();
-        }
-        private void WriteChronos(XmlWriter w)
-        {
-            bool atLeastOne = false;
-            foreach(AbstractDrawing ad in extraDrawings)
-            {
-                DrawingChrono dc = ad as DrawingChrono;
-                if(dc != null)
-                {
-                    if(!atLeastOne)
-                    {
-                        w.WriteStartElement("Chronos");
-                        atLeastOne = true;
-                    }
-                    
-                    w.WriteStartElement("Chrono");
-                    dc.WriteXml(w);
-                    w.WriteEndElement();
-                }
-            }
-            if(atLeastOne)
-            {
-                w.WriteEndElement();
-            }
-        }
-        private void WriteTracks(XmlWriter w)
-        {
-            bool atLeastOne = false;
-            foreach(AbstractDrawing ad in extraDrawings)
-            {
-                DrawingTrack trk = ad as DrawingTrack;
-                if(trk != null)
-                {
-                    if(!atLeastOne)
-                    {
-                        w.WriteStartElement("Tracks");
-                        atLeastOne = true;
-                    }
-                    
-                    w.WriteStartElement("Track");
-                    trk.WriteXml(w);
-                    w.WriteEndElement();
-                }
-            }
-            if(atLeastOne)
-            {
-                w.WriteEndElement();
-            }
-        }
-        private void WriteSpotlights(XmlWriter w)
-        {
-            if(spotlightManager.Count == 0)
-                return;
-            
-            w.WriteStartElement("Spotlights");
-            spotlightManager.WriteXml(w);
-            w.WriteEndElement();
-        }
-        private void WriteAutoNumbers(XmlWriter w)
-        {
-            if(autoNumberManager.Count == 0)
-                return;
-            
-            w.WriteStartElement("AutoNumbers");
-            autoNumberManager.WriteXml(w);
-            w.WriteEndElement();
-        }
-          
-        private void WriteGeneralInformation(XmlWriter w)
-        {
-            w.WriteElementString("FormatVersion", "2.0");
-            w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
-            w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(fullPath));
-            
-            if(!string.IsNullOrEmpty(globalTitle))
-                w.WriteElementString("GlobalTitle", globalTitle);
-            
-            w.WriteElementString("ImageSize", imageSize.Width + ";" + imageSize.Height);
-            w.WriteElementString("AverageTimeStampsPerFrame", averageTimeStampsPerFrame.ToString());
-            w.WriteElementString("FirstTimeStamp", firstTimeStamp.ToString());
-            w.WriteElementString("SelectionStart", selectionStart.ToString());
-            
-            if(duplicateFactor > 1)
-                w.WriteElementString("DuplicationFactor", duplicateFactor.ToString());
-            
-            // Calibration
-            WriteCalibrationHelp(w);
-        }
-        private void WriteCalibrationHelp(XmlWriter w)
-        {
-            w.WriteStartElement("Calibration");
-            CalibrationHelper.WriteXml(w);
-            w.WriteEndElement();
-        }
-        #endregion
-        
-        #endregion
-        
-        public void Export(string _filePath, MetadataExportFormat _format)
-        {
-            switch(_format)
-            {
-                case MetadataExportFormat.ODF:
-                    ExporterODF exporterODF = new ExporterODF();
-                    exporterODF.Export(_filePath, this);
-                    break;
-                    
-                case MetadataExportFormat.MSXML:
-                    ExporterMSXML exporterMSXML = new ExporterMSXML();
-                    exporterMSXML.Export(_filePath, this);
-                    break;
-                 case MetadataExportFormat.XHTML:
-                    ExporterXHTML exporterXHTML = new ExporterXHTML();
-                    exporterXHTML.Export(_filePath, this);
-                    break;
-                 case MetadataExportFormat.TrajectoryText:
-                    ExporterTrajectoryText exporterTrajText = new ExporterTrajectoryText();
-                    exporterTrajText.Export(_filePath, this);
-                    break;
-            }
-        }
    
         #region Lower level Helpers
-        public long DoRemapTimestamp(long _iInputTimestamp, bool bRelative)
-        {
-            //-----------------------------------------------------------------------------------------
-            // In the general case:
-            // The Input position was stored as absolute position, in the context of the original video.
-            // It must be adapted in several ways:
-            //
-            // 1. Timestamps (TS) of first frames may differ.
-            // 2. A selection might have been in place, 
-            //      in that case we use relative TS if different file and absolute TS if same file.
-            // 3. TS might be expressed in completely different timebase.
-            //
-            // In the specific case of trajectories, the individual positions are stored relative to 
-            // the start of the trajectory.
-            //-----------------------------------------------------------------------------------------
-
-            // Vérifier qu'en arrivant ici on a bien : 
-            // le nom du fichier courant, 
-            // (on devrait aussi avoir le first ts courant mais on ne l'a pas.
-
-            // le nom du fichier d'origine, le first ts d'origine, le ts de début  de selection d'origine.
-
-            long iOutputTimestamp = 0;
-
-            if (inputAverageTimeStampsPerFrame != 0)
-            {
-                if ((inputFirstTimeStamp != firstTimeStamp) ||
-                      (inputAverageTimeStampsPerFrame != averageTimeStampsPerFrame) ||
-                      (inputFileName != Path.GetFileNameWithoutExtension(fullPath)))
-                {
-                    //----------------------------------------------------
-                    // Different contexts or different files.
-                    // We use the relative positions and adapt the context
-                    //----------------------------------------------------
-
-                    // 1. Translate the input position into frame number (subject to rounding error)
-                    // 2. Translate the frame number back into output position.
-                    int iFrameNumber;
-
-                    if (bRelative)
-                    {
-                        iFrameNumber = (int)(_iInputTimestamp / inputAverageTimeStampsPerFrame);
-                        iFrameNumber *= duplicateFactor;
-                        iOutputTimestamp = (int)(iFrameNumber * averageTimeStampsPerFrame);
-                    }
-                    else
-                    {
-                        if (inputSelectionStart - inputFirstTimeStamp > 0)
-                        {
-                            // There was a selection.
-                            iFrameNumber = (int)((_iInputTimestamp - inputSelectionStart) / inputAverageTimeStampsPerFrame);
-                            iFrameNumber *= duplicateFactor;
-                        }
-                        else
-                        {
-                            iFrameNumber = (int)((_iInputTimestamp - inputFirstTimeStamp) / inputAverageTimeStampsPerFrame);
-                            iFrameNumber *= duplicateFactor;
-                        }
-                        
-                        iOutputTimestamp = (int)(iFrameNumber * averageTimeStampsPerFrame) + firstTimeStamp;
-                    }
-                }
-                else
-                {
-                    //--------------------
-                    // Same context.
-                    //--------------------
-                    iOutputTimestamp = _iInputTimestamp;
-                }
-            }
-            else
-            {
-                // hmmm ?
-                iOutputTimestamp = _iInputTimestamp;
-            }
-            
-            return iOutputTimestamp;
-        }
         private void ResetCoreContent()
         {
             // Semi reset: we keep Image size and AverageTimeStampsPerFrame
             trackabilityManager.Clear();
             keyframes.Clear();
             StopAllTracking();
+            trackManager.Clear();
+            chronoManager.Clear();
             extraDrawings.RemoveRange(totalStaticExtraDrawings, extraDrawings.Count - totalStaticExtraDrawings);
             magnifier.ResetData();
+            coordinateSystem.Reset();
+            drawingCoordinateSystem.Visible = false;
+            calibrationHelper.Reset();
             
             foreach(AbstractDrawing extraDrawing in extraDrawings)
             {
                 if(extraDrawing is AbstractMultiDrawing)
                     ((AbstractMultiDrawing)extraDrawing).Clear();
             }
-            
+
             mirrored = false;
             UnselectAll();
         }
@@ -1408,36 +1130,30 @@ namespace Kinovea.ScreenManager
             // Look for a hit in all drawings of a particular Key Frame.
             // Important side effect : the drawing being hit becomes Selected. This is then used for right click menu.
 
-            bool hit = false;
+            bool isOnDrawing = false;
             Keyframe keyframe = keyframes[keyFrameIndex];
-            hitDrawingFrameIndex = -1;
-            hitDrawingIndex = -1;
-            hitDrawing = null;
+
+            UnselectAll();
             
-            int drawingIndex = 0;
-            int hitRes = -1;
-            while (hitRes < 0 && drawingIndex < keyframe.Drawings.Count)
+            int currentDrawing = 0;
+            int hitResult = -1;
+            while (hitResult < 0 && currentDrawing < keyframe.Drawings.Count)
             {
-                AbstractDrawing drawing = keyframe.Drawings[drawingIndex];
-                hitRes = drawing.HitTest(mouseLocation, timestamp, coordinateSystem);
-                if (hitRes >= 0)
+                AbstractDrawing drawing = keyframe.Drawings[currentDrawing];
+                hitResult = drawing.HitTest(mouseLocation, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
+                
+                if (hitResult < 0)
                 {
-                    hit = true;
-                    hitDrawingIndex = drawingIndex;
-                    hitDrawingFrameIndex = keyFrameIndex;
-                    hitDrawing = drawing;
+                    currentDrawing++;
+                    continue;
                 }
-                else
-                {
-                    drawingIndex++;
-                }
+
+                isOnDrawing = true;
+                SelectDrawing(drawing);
+                SelectKeyframe(keyframe);
             }
 
-            return hit;
-        }
-        private int ActiveKeyframes()
-        {
-            return keyframes.Count(kf => !kf.Disabled);
+            return isOnDrawing;
         }
         private int GetKeyframesContentHash()
         {
@@ -1450,6 +1166,12 @@ namespace Kinovea.ScreenManager
         private int GetExtraDrawingsContentHash()
         {
             int hash = 0;
+            foreach (DrawingChrono chrono in chronoManager.Drawings)
+                hash ^= chrono.ContentHash;
+
+            foreach (DrawingTrack track in trackManager.Drawings)
+                hash ^= track.ContentHash;
+
             foreach (AbstractDrawing ad in extraDrawings)
                 hash ^= ad.ContentHash;
 
@@ -1461,15 +1183,15 @@ namespace Kinovea.ScreenManager
             // These drawings are unique and not attached to any particular key image.
             
             spotlightManager = new SpotlightManager();
-            autoNumberManager = new AutoNumberManager(ToolManager.AutoNumbers.StylePreset.Clone());
-            drawingCoordinateSystem = new DrawingCoordinateSystem(new Point(-1,-1), ToolManager.CoordinateSystem.StylePreset.Clone());
+            autoNumberManager = new AutoNumberManager(ToolManager.GetStylePreset("AutoNumbers"));
+            drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.GetStylePreset("CoordinateSystem"));
             
             extraDrawings.Add(spotlightManager);
             extraDrawings.Add(autoNumberManager);
             extraDrawings.Add(drawingCoordinateSystem);
-            
-            // m_iStaticExtraDrawings is used to differenciate between static extra drawings
-            // like multidrawing managers and dynamic extra drawings like tracks and chronos.
+
+            // totalStaticExtraDrawings is used to differenciate between static extra drawings like multidrawing managers
+            // and dynamic extra drawings like tracks and chronos.
             totalStaticExtraDrawings = extraDrawings.Count;
             
             spotlightManager.TrackableDrawingAdded += (s, e) =>
@@ -1482,33 +1204,47 @@ namespace Kinovea.ScreenManager
         }
         private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
-            UpdateTrajectoriesForKeyframes();
+            AfterCalibrationChanged();
+        }
+        private void AfterCalibrationChanged()
+        {
+            drawingCoordinateSystem.UpdateOrigin();
+            calibrationChangedTemporizer.Call();
+        }
+        private void TracksCalibrationChanged()
+        {
+            foreach (DrawingTrack t in Tracks())
+                t.CalibrationChanged();
         }
         private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs e)
         {
             showingMeasurables = !showingMeasurables;
         }
-        private void PostDrawingCreationHooks(AbstractDrawing drawing)
+        private void SetupTempDirectory(Guid id)
         {
-            // When passing here, it is possible that the drawing has already been initialized.
-            // (for example, when undeleting a drawing).
-            
-            if(drawing is IScalable)
-                ((IScalable)drawing).Scale(this.ImageSize);
-            
-            if(drawing is ITrackable && AddTrackableDrawingCommand != null)
-                AddTrackableDrawingCommand.Execute(drawing as ITrackable);
-            
-            if(drawing is IMeasurable)
-            {
-                IMeasurable measurableDrawing = drawing as IMeasurable;
-                measurableDrawing.CalibrationHelper = calibrationHelper;
-                
-                if(!measurableDrawing.ShowMeasurableInfo)
-                    measurableDrawing.ShowMeasurableInfo = showingMeasurables;
-                
-                measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
-            }            
+            tempFolder = Path.Combine(Software.TempDirectory, id.ToString());
+            if (!Directory.Exists(tempFolder))
+                Directory.CreateDirectory(tempFolder);
+        }
+        private void DeleteTempDirectory()
+        {
+            if (Directory.Exists(tempFolder))
+                Directory.Delete(tempFolder, true);
+        }
+        private void EmptyTempDirectory()
+        {
+            DeleteAutosaveFile();
+        }
+        private void DeleteAutosaveFile()
+        {
+            string autosaveFile = Path.Combine(tempFolder, "autosave.kva");
+            if (File.Exists(autosaveFile))
+                File.Delete(autosaveFile);
+        }
+        private void LensCalibrationAsked(object sender, EventArgs e)
+        {
+            if (CameraCalibrationAsked != null)
+                CameraCalibrationAsked(this, EventArgs.Empty);
         }
         #endregion
     }

@@ -32,9 +32,24 @@ namespace Kinovea.ScreenManager
     public class DrawingToolGenericPosture : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return name; }
+        }
         public override string DisplayName
         {
-            get { return displayName;}
+            get 
+            { 
+                if (string.IsNullOrEmpty(displayName))
+                    return name;
+
+                string localized = ScreenManagerLang.ResourceManager.GetString(displayName);
+
+                if (string.IsNullOrEmpty(localized))
+                    return name;
+
+                return localized;
+            }
         }
         public override Bitmap Icon
         {
@@ -54,49 +69,54 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingStyle StylePreset
         {
-            get { return m_StylePreset;}
-            set { m_StylePreset = value;}
+            get { return stylePreset;}
+            set { stylePreset = value;}
         }
         public override DrawingStyle DefaultStylePreset
         {
-            get { return m_DefaultStylePreset;}
+            get { return defaultStylePreset;}
         }
         #endregion
         
         #region Members
-        private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
-        private DrawingStyle m_StylePreset;
+        private DrawingStyle defaultStylePreset = new DrawingStyle();
+        private DrawingStyle stylePreset;
         private Guid id;
-        private string displayName = "Generic Posture";
+        private string name = "GenericPosture";
+        private string displayName;
         private Bitmap icon = Properties.Drawings.generic_posture;
         #endregion
         
         #region Constructor
         public DrawingToolGenericPosture()
         {
-            m_DefaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
-            m_StylePreset = m_DefaultStylePreset.Clone();
+            defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
+            stylePreset = defaultStylePreset.Clone();
         }
         #endregion
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            m_StylePreset = ToolManager.GenericPosture.m_StylePreset.Clone();
+            if (ToolManager.Tools.ContainsKey(name))
+                stylePreset = ToolManager.GetStylePreset(name);
             
             GenericPosture posture = GenericPostureManager.Instanciate(id, false);
-            return new DrawingGenericPosture(posture, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+            return new DrawingGenericPosture(posture, timestamp, averageTimeStampsPerFrame, stylePreset);
         }
-        public override Cursor GetCursor(double _fStretchFactor)
+        public override Cursor GetCursor(double stretchFactor)
         {
             return Cursors.Cross;
         }
         public void SetInfo(GenericPosture posture)
         {
             this.id = posture.Id;
-            
-            if(!string.IsNullOrEmpty(posture.Name))
-               displayName = posture.Name;
+
+            if (!string.IsNullOrEmpty(posture.Name))
+                name = posture.Name;
+
+            if (!string.IsNullOrEmpty(posture.DisplayName))
+                displayName = posture.DisplayName;
             
             if(posture.Icon != null && posture.Icon.Width == 16 && posture.Icon.Height == 16)
               icon = posture.Icon;

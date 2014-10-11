@@ -30,32 +30,28 @@ namespace Kinovea.ScreenManager
     public class ExporterTrajectoryText
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
-        public void Export(string path, Metadata metadata)
+
+        public void Export(string path, XmlDocument kva)
         {
-            string kvaString = metadata.ToXmlString(1);
-            XmlDocument kvaDoc = new XmlDocument();
-			kvaDoc.LoadXml(kvaString);
-			
-			string stylesheet = Application.StartupPath + "\\xslt\\kva2txt-en.xsl";
-			XslCompiledTransform xslt = new XslCompiledTransform();
-			xslt.Load(stylesheet);
-			
-			try
-			{
-			    using(StreamWriter sw = new StreamWriter(path))
-        		{
-		           	xslt.Transform(kvaDoc, null, sw);
-				}
-			}
-			catch(Exception ex)
-			{
-				log.Error("Exception thrown during export to MSXML.");
+            string stylesheet = Application.StartupPath + "\\xslt\\kva2txt-en.xsl";
+            XslCompiledTransform xslt = new XslCompiledTransform();
+            xslt.Load(stylesheet);
+            
+            try
+            {
+                using(StreamWriter sw = new StreamWriter(path))
+                {
+                    xslt.Transform(kva, null, sw);
+                }
+            }
+            catch(Exception ex)
+            {
+                log.Error("Exception thrown during export to MSXML.");
                 log.Error(ex.Message);
                 log.Error(ex.Source);
                 log.Error(ex.StackTrace);
-			}
-			
+            }
+            
         }
     }
 }

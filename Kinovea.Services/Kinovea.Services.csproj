@@ -130,13 +130,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphanumComparator.cs" />
-    <Compile Include="CommandLine\CommandLineArgumentException.cs" />
-    <Compile Include="CommandLine\CommandLineArgumentManager.cs" />
-    <Compile Include="CommandLine\CommandLineArgumentParser.cs" />
+    <Compile Include="Infrastructure\EventArgs`1.cs" />
+    <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentException.cs" />
+    <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentManager.cs" />
+    <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentParser.cs" />
     <Compile Include="Events\CurrentDirectoryChangedEventArgs.cs" />
     <Compile Include="Events\ExplorerTabEventArgs.cs" />
     <Compile Include="Events\StatusUpdatedEventArgs.cs" />
+    <Compile Include="LaunchSettings\IScreenDescription.cs" />
+    <Compile Include="LaunchSettings\LaunchSettingsManager.cs" />
+    <Compile Include="LaunchSettings\ScreenDescriptionCapture.cs" />
+    <Compile Include="LaunchSettings\ScreenDescriptionPlayback.cs" />
+    <Compile Include="LaunchSettings\ScreenType.cs" />
     <Compile Include="Pair.cs" />
+    <Compile Include="Preferences\AccelerationUnit.cs" />
+    <Compile Include="Preferences\AngleUnit.cs" />
+    <Compile Include="Preferences\AngularAccelerationUnit.cs" />
+    <Compile Include="Preferences\AngularVelocityUnit.cs" />
+    <Compile Include="TimestampMapper.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
     <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
@@ -167,7 +178,6 @@
     <Compile Include="Infrastructure\ToggleCommand.cs" />
     <Compile Include="LanguageIdentifier.cs" />
     <Compile Include="LanguageManager.cs" />
-    <Compile Include="UndoRedo\ICommand.cs" />
     <Compile Include="UndoRedo\IUndoableCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Preferences\ActiveFileBrowserTab.cs" />

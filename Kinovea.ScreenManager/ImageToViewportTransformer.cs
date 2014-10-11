@@ -52,13 +52,13 @@ namespace Kinovea.ScreenManager
         #region Transform
         public Point Transform(Point point)
         {
-            return point.Scale(scale).Translate(location);
+            return point.Scale(scale).Translate(location.X, location.Y);
         }
         public Point Transform(PointF point)
         {
-            return point.Scale((float)scale).Translate(location);
+            return point.Scale((float)scale).Translate(location.X, location.Y).ToPoint();
         }
-        public List<Point> Transform(List<PointF> points)
+        public List<Point> Transform(IEnumerable<PointF> points)
         {
             return points.Select(p => Transform(p)).ToList();
         }
@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
         }
         public Size Transform(SizeF size)
         {
-            return size.Scale((float)scale);
+            return size.Scale((float)scale).ToSize();
         }
         public Rectangle Transform(Rectangle rectangle)
         {
@@ -97,9 +97,16 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Untransform
-        public Point Untransform(Point point)
+        public PointF Untransform(Point point)
         {
-            return point.Translate(-location.X, -location.Y).Scale(1/scale);
+            Point p = point.Translate(-location.X, -location.Y);
+            double unscale = 1.0 / scale;
+            return new PointF((float)(p.X * unscale), (float)(p.Y * unscale));
+        }
+        public SizeF Untransform(SizeF size)
+        {
+            double unscale = 1.0 / scale;
+            return new SizeF((float)(size.Width * unscale), (float)(size.Height * unscale));
         }
         public int Untransform(int distance)
         {

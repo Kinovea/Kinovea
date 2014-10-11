@@ -111,9 +111,9 @@ namespace Kinovea.ScreenManager
             text = " ";
             background.Rectangle = new Rectangle(p, Size.Empty);
             
-            // Decoration & binding with editors
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
+
             if(stylePreset != null)
             {
                 style = stylePreset.Clone();
@@ -135,15 +135,15 @@ namespace Kinovea.ScreenManager
             textBox.TextChanged += TextBox_TextChanged;
             UpdateLabelRectangle();
         }
-        public DrawingText(XmlReader xmlReader, PointF scale, Metadata parent)
-            : this(Point.Empty,0,0, ToolManager.Label.StylePreset.Clone())
+        public DrawingText(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
+            : this(Point.Empty,0,0, ToolManager.GetStylePreset("Label"))
         {
-            ReadXml(xmlReader, scale);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
             if (opacityFactor <= 0 || editing)
@@ -157,14 +157,16 @@ namespace Kinovea.ScreenManager
                 SizeF textSize = canvas.MeasureString(text, fontText);
                 Point bgLocation = transformer.Transform(background.Rectangle.Location);
                 Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
+
+                SizeF untransformed = transformer.Untransform(textSize);
+                background.Rectangle = new RectangleF(background.Rectangle.Location, untransformed);
                 
-                //Rectangle rect = _transformer.Transform(m_Background.Rectangle);
                 Rectangle rect = new Rectangle(bgLocation, bgSize);
                 RoundedRectangle.Draw(canvas, rect, brushBack, fontText.Height/4, false, false, null);
                 canvas.DrawString(text, fontText, brushText, rect.Location);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
@@ -173,23 +175,27 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {	
             // Invisible handler to change font size.
-            int wantedHeight = point.Y - background.Rectangle.Location.Y;
+            int wantedHeight = (int)(point.Y - background.Rectangle.Location.Y);
             styleHelper.ForceFontSize(wantedHeight, text);
+            style.ReadValue();
             UpdateLabelRectangle();
         }
-        public override void MoveDrawing(int deltaX, int deltaY, Keys modifierKeys)
+        public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
-            background.Move(deltaX, deltaY);
+            background.Move(dx, dy);
             RelocateEditbox();
         }
         #endregion
 
         #region KVA Serialization
-        private void ReadXml(XmlReader xmlReader, PointF scale)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
             xmlReader.ReadStartElement();
             
             while(xmlReader.NodeType == XmlNodeType.Element)
@@ -200,9 +206,8 @@ namespace Kinovea.ScreenManager
                         text = xmlReader.ReadElementContentAsString();
                         break;
                     case "Position":
-                        Point p = XmlHelper.ParsePoint(xmlReader.ReadElementContentAsString());
-                        Point location = new Point((int)((float)p.X * scale.X), (int)((float)p.Y * scale.Y));
-                        background.Rectangle = new Rectangle(location, Size.Empty);
+                        PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                        background.Rectangle = new RectangleF(p.Scale(scale.X, scale.Y), SizeF.Empty);
                         break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
@@ -221,18 +226,27 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadEndElement();
             UpdateLabelRectangle();
         }
-        public void WriteXml(XmlWriter xmlWriter)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            xmlWriter.WriteElementString("Text", text);
-            xmlWriter.WriteElementString("Position", String.Format(CultureInfo.InvariantCulture, "{0};{1}", background.Rectangle.X, background.Rectangle.Y));
-            
-            xmlWriter.WriteStartElement("DrawingStyle");
-            style.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement();
-            
-            xmlWriter.WriteStartElement("InfosFading");
-            infosFading.WriteXml(xmlWriter);
-            xmlWriter.WriteEndElement(); 
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteElementString("Text", text);
+                w.WriteElementString("Position", XmlHelper.WritePointF(background.Rectangle.Location));
+            }
+
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
         }
         #endregion
         
@@ -241,10 +255,13 @@ namespace Kinovea.ScreenManager
             this.editing = editing;
 
             if(imageToViewportTransformer == null)
-               imageToViewportTransformer = transformer; 
+               imageToViewportTransformer = transformer;
 
             if (editing)
+            {
                 RelocateEditbox(); // This is needed because the container top-left corner may have changed 
+                textBox.Text = text;
+            }
             
             textBox.Visible = editing;
         }
@@ -263,7 +280,6 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Bicolor", "back color");
             style.Bind(styleHelper, "Font", "font size");
         }
-
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
             text = textBox.Text;
@@ -277,7 +293,7 @@ namespace Kinovea.ScreenManager
             using(Font f = styleHelper.GetFont(1F))
             {
                 SizeF textSize = g.MeasureString(text, f);
-                background.Rectangle = new Rectangle(background.Rectangle.Location, new Size((int)textSize.Width, (int)textSize.Height));
+                background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
                 
                 // Also update the edit box size. (Use a fixed font though).
                 // The extra space is to account for blank new lines.

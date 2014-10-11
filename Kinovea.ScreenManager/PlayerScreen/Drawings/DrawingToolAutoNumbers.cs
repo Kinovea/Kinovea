@@ -30,6 +30,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolAutoNumbers : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "AutoNumbers"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolAutonumbers; }
@@ -73,11 +77,11 @@ namespace Kinovea.ScreenManager
             defaultStylePreset.Elements.Add("font size", new StyleElementFontSize(16));
             stylePreset = defaultStylePreset.Clone();
         }
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
            return null;
         }
-        public override Cursor GetCursor(double _fStretchFactor)
+        public override Cursor GetCursor(double stretchFactor)
         {
             // Would be cool to have a real cursor with the actual next number in it.
             return Cursors.Cross;

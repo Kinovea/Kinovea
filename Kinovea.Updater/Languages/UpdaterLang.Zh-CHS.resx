@@ -70,10 +70,8 @@
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>检查更新...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>有新版本！</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>请选择安装目录.</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>选择目标文件夹</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>现在的版本:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>下载</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>正在下载新版本…</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>文件大小:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>检查更新出错. 请确认有效的网络连接.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>更改日志:</value></data>
@@ -83,6 +81,8 @@
    <data name="Updater_Quit" xml:space="preserve"><value>退出</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>检查更新.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>您的版本已经是最新的!</value></data>
+   
+   
    
    
    

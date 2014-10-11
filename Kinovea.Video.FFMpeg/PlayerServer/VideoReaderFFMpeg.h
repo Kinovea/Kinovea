@@ -78,159 +78,160 @@ using namespace Kinovea::Video;
 
 namespace Kinovea { namespace Video { namespace FFMpeg
 {
-	[SupportedExtensions(
+    [SupportedExtensions(
         ".3gp;.asf;.avi;.dv;.flv;.f4v;\
-		.m1v;.m2p;.m2t;.m2ts;.mts;.m2v;.m4v;.ts;.ts1;.ts2;.avr;\
-		.mkv;.mod;.mov;.moov;.mpg;.mpeg;.tod;.mxf;\
-		.mp4;.mpv;.ogg;.ogm;.ogv;.qt;.rm;.swf;.vob;.webm;.wmv;\
-		*"
-	)]
-	public ref class VideoReaderFFMpeg : VideoReader
-	{
-	// Properties (VideoReader subclassing).
-	public: 
-		virtual property VideoCapabilities Flags {
-			VideoCapabilities get() override { 
-				return	m_Capabilities; 
-			}
+        .m1v;.m2p;.m2t;.m2ts;.mts;.m2v;.m4v;.ts;.ts1;.ts2;.avr;\
+        .mkv;.mod;.mov;.moov;.mpg;.mpeg;.tod;.mxf;\
+        .mp4;.mpv;.ogg;.ogm;.ogv;.qt;.rm;.swf;.vob;.webm;.wmv;\
+        *"
+    )]
+    public ref class VideoReaderFFMpeg : VideoReader
+    {
+    // Properties (VideoReader subclassing).
+    public: 
+        virtual property VideoCapabilities Flags {
+            VideoCapabilities get() override { 
+                return	m_Capabilities; 
+            }
         }
-		virtual property VideoDecodingMode DecodingMode {
-			VideoDecodingMode get() override { 
-				return	m_DecodingMode; 
-			}
+        virtual property VideoDecodingMode DecodingMode {
+            VideoDecodingMode get() override { 
+                return	m_DecodingMode; 
+            }
         }
         virtual property bool Loaded {
             bool get() override { return m_bIsLoaded; }
         }
         virtual property VideoInfo Info {
-			VideoInfo get() override { return m_VideoInfo; }
+            VideoInfo get() override { return m_VideoInfo; }
         }
         virtual property IWorkingZoneFramesContainer^ WorkingZoneFrames {
-		    IWorkingZoneFramesContainer^ get() override { 
-				if(m_DecodingMode == VideoDecodingMode::Caching)
-					return m_Cache;
-				else 
-					return nullptr;
-			}
-		}
-		virtual property VideoSection WorkingZone {
-			// Return the internal working zone.
-			VideoSection get() override { return m_WorkingZone; }
+            IWorkingZoneFramesContainer^ get() override { 
+                if(m_DecodingMode == VideoDecodingMode::Caching)
+                    return m_Cache;
+                else 
+                    return nullptr;
+            }
         }
-		virtual property VideoSection PreBufferingSegment {
-			VideoSection get() override {
-				if(m_DecodingMode == VideoDecodingMode::PreBuffering)
-					return m_PreBuffer->Segment;
-				else 
-					return VideoSection::Empty; 
-			}
+        virtual property VideoSection WorkingZone {
+            // Return the internal working zone.
+            VideoSection get() override { return m_WorkingZone; }
         }
-		virtual property VideoFrame^ Current {
-			VideoFrame^ get() override { 
-				return m_FramesContainer != nullptr ? m_FramesContainer->CurrentFrame : nullptr; 
-			}
-		}
-		virtual property int Drops {
-			int get() override {
-				return m_DecodingMode == VideoDecodingMode::PreBuffering ? m_PreBuffer->Drops : 0;
-			}
-		}
-		virtual property bool CanDrawUnscaled {
-			bool get() override {
-				return m_CanDrawUnscaled;
-			}
-		}
+        virtual property VideoSection PreBufferingSegment {
+            VideoSection get() override {
+                if(m_DecodingMode == VideoDecodingMode::PreBuffering)
+                    return m_PreBuffer->Segment;
+                else 
+                    return VideoSection::Empty; 
+            }
+        }
+        virtual property VideoFrame^ Current {
+            VideoFrame^ get() override { 
+                return m_FramesContainer != nullptr ? m_FramesContainer->CurrentFrame : nullptr; 
+            }
+        }
+        virtual property int Drops {
+            int get() override {
+                return m_DecodingMode == VideoDecodingMode::PreBuffering ? m_PreBuffer->Drops : 0;
+            }
+        }
+        virtual property bool CanDrawUnscaled {
+            bool get() override {
+                return m_CanDrawUnscaled;
+            }
+        }
 
-	// Public Methods (VideoReader subclassing).
-	public:
-		virtual OpenVideoResult Open(String^ _filePath) override;
-		virtual void Close() override;
-		virtual bool MoveNext(int _skip, bool _decodeIfNecessary) override;
-		virtual bool MoveTo(int64_t _timestamp) override;
-		virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, Size _maxSize) override;
-		virtual void PostLoad() override;
-		virtual String^ ReadMetadata() override;
-		virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
-		virtual bool ChangeDeinterlace(bool _deint) override;
-		virtual void ChangeDecodingSize(Size _size) override;
-		virtual void DisableCustomDecodingSize() override;
-		virtual void BeforePlayloop() override;
-		virtual void BeforeFrameEnumeration() override;
-		virtual void AfterFrameEnumeration() override;
-		virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn) override;
-		virtual void ResetDrops() override;
+    // Public Methods (VideoReader subclassing).
+    public:
+        virtual OpenVideoResult Open(String^ _filePath) override;
+        virtual void Close() override;
+        virtual bool MoveNext(int _skip, bool _decodeIfNecessary) override;
+        virtual bool MoveTo(int64_t _timestamp) override;
+        virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, Size _maxSize) override;
+        virtual void PostLoad() override;
+        virtual String^ ReadMetadata() override;
+        virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
+        virtual bool ChangeDeinterlace(bool _deint) override;
+        virtual void ChangeDecodingSize(Size _size) override;
+        virtual void DisableCustomDecodingSize() override;
+        virtual void BeforePlayloop() override;
+        virtual void BeforeFrameEnumeration() override;
+        virtual void AfterFrameEnumeration() override;
+        virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn) override;
+        virtual void ResetDrops() override;
 
-	// Construction / Destruction.
-	public:
-		VideoReaderFFMpeg();
-		~VideoReaderFFMpeg();
-	protected:
-		!VideoReaderFFMpeg();
+    // Construction / Destruction.
+    public:
+        VideoReaderFFMpeg();
+        ~VideoReaderFFMpeg();
+    protected:
+        !VideoReaderFFMpeg();
 
-	// Members
-	private:
-		// General
-		VideoCapabilities m_Capabilities;
-		VideoDecodingMode m_DecodingMode;
-		bool m_bIsLoaded;
-		bool m_bIsVeryShort;
-		VideoInfo m_VideoInfo;
-		VideoSection m_WorkingZone;
-		Object^ m_Locker;
-		ThreadCanceler^ m_PreBufferingThreadCanceler;
-		VideoSection m_SectionToCache;
-		bool m_Prepend;
-		Size m_DecodingSize;
-		bool m_CanDrawUnscaled;
+    // Members
+    private:
+        // General
+        VideoCapabilities m_Capabilities;
+        VideoDecodingMode m_DecodingMode;
+        bool m_bIsLoaded;
+        bool m_bIsVeryShort;
+        bool m_bFirstFrameRead;
+        VideoInfo m_VideoInfo;
+        VideoSection m_WorkingZone;
+        Object^ m_Locker;
+        ThreadCanceler^ m_PreBufferingThreadCanceler;
+        VideoSection m_SectionToCache;
+        bool m_Prepend;
+        Size m_DecodingSize;
+        bool m_CanDrawUnscaled;
 
-		// Frame containers
-		IVideoFramesContainer^ m_FramesContainer;
-		SingleFrame^ m_SingleFrameContainer;
-		PreBuffer^ m_PreBuffer;
-		Cache^ m_Cache;
-		
+        // Frame containers
+        IVideoFramesContainer^ m_FramesContainer;
+        SingleFrame^ m_SingleFrameContainer;
+        PreBuffer^ m_PreBuffer;
+        Cache^ m_Cache;
         
-		// FFMpeg specifics
-		int m_iVideoStream;
-		int m_iAudioStream;
-		int m_iMetadataStream;
-		AVFormatContext* m_pFormatCtx;
-		AVCodecContext* m_pCodecCtx;
-		TimestampInfo m_TimestampInfo;
-		static const enum AVPixelFormat m_PixelFormatFFmpeg = AV_PIX_FMT_BGRA;
-		static const int DecodingQuality = SWS_FAST_BILINEAR;
+        
+        // FFMpeg specifics
+        int m_iVideoStream;
+        int m_iAudioStream;
+        int m_iMetadataStream;
+        AVFormatContext* m_pFormatCtx;
+        AVCodecContext* m_pCodecCtx;
+        TimestampInfo m_TimestampInfo;
+        static const enum AVPixelFormat m_PixelFormatFFmpeg = AV_PIX_FMT_BGRA;
+        static const int DecodingQuality = SWS_FAST_BILINEAR;
 
-		// Others
-		bool m_WasPrebuffering;
-		LoopWatcher^ m_LoopWatcher;
-		Thread^ m_PreBufferingThread;
-		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
+        // Others
+        bool m_WasPrebuffering;
+        LoopWatcher^ m_LoopWatcher;
+        Thread^ m_PreBufferingThread;
+        static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 
-	// Private methods
-	private:
+    // Private methods
+    private:
 
-		void DataInit();
-		OpenVideoResult Load(String^ _filePath, bool _forSummary);
-		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode, bool _approximate);
-		int SeekTo(int64_t _target);
-		void SetTimestampFromPacket(int64_t _dts, int64_t _pts, bool _bDecoded);
-		bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
-		static void DisposeFrame(VideoFrame^ _frame);
-		static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
-		void SetAspectRatioSize(ImageAspectRatio _ratio);
-		Size FixSize(Size _size);
-		void ResetDecodingSize();
-		void PreBufferingWorker(Object^ _canceler);
-		bool WorkingZoneFitsInMemory(VideoSection _newZone, int _maxSeconds, int _maxMemory);
-		bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
-		void SwitchDecodingMode(VideoDecodingMode _mode);
-		void SwitchToBestAfterCaching();
-		void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
-		void StartPreBuffering();
-		void StopPreBuffering();
+        void DataInit();
+        OpenVideoResult Load(String^ _filePath, bool _forSummary);
+        ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode, bool _approximate);
+        int SeekTo(int64_t _target);
+        void SetTimestampFromPacket(int64_t _dts, int64_t _pts, bool _bDecoded);
+        bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
+        static void DisposeFrame(VideoFrame^ _frame);
+        static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
+        void SetAspectRatioSize(ImageAspectRatio _ratio);
+        Size FixSize(Size _size);
+        void ResetDecodingSize();
+        void PreBufferingWorker(Object^ _canceler);
+        bool WorkingZoneFitsInMemory(VideoSection _newZone, int _maxSeconds, int _maxMemory);
+        bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
+        void SwitchDecodingMode(VideoDecodingMode _mode);
+        void SwitchToBestAfterCaching();
+        void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
+        void StartPreBuffering();
+        void StopPreBuffering();
 
-		void DumpInfo();
-		static void DumpStreamsInfos(AVFormatContext* _pFormatCtx);
-		static void DumpFrameType(int _type);
-	};
+        void DumpInfo();
+        static void DumpStreamsInfos(AVFormatContext* _pFormatCtx);
+        static void DumpFrameType(int _type);
+    };
 }}}

@@ -23,28 +23,28 @@ using namespace System;
 
 namespace Kinovea { namespace Video { namespace FFMpeg
 {
-	// This structure helps determine what is in the FFMpeg internal buffer, 
-	// and what is the timestamp of the final frame we are pushing to the Cache.
-	public value class TimestampInfo
-	{
+    // This structure helps determine what is in the FFMpeg internal buffer, 
+    // and what is the timestamp of the final frame we are pushing to the Cache.
+    public value class TimestampInfo
+    {
 
-	public :
-		int64_t CurrentTimestamp;
-		int64_t BufferedPTS;		// Read but NOT decoded by libav.
-		int64_t LastDecodedPTS;		// Last *decoded* frame by libav.
+    public :
+        int64_t CurrentTimestamp;
+        int64_t BufferedPTS;		// Read but NOT decoded by libav.
+        int64_t LastDecodedPTS;		// Last *decoded* frame by libav.
 
-	public :
-		TimestampInfo(int64_t _current, int64_t _buffered, int64_t _decoded)
-		{
-			CurrentTimestamp = _current;
-			BufferedPTS = _buffered;
-			LastDecodedPTS = _decoded;
-		}
-
-	public:
-		static property TimestampInfo Empty {
-			TimestampInfo get() { return TimestampInfo(-1, int64_t::MaxValue, -1); }
+    public :
+        TimestampInfo(int64_t _current, int64_t _buffered, int64_t _decoded)
+        {
+            CurrentTimestamp = _current;
+            BufferedPTS = _buffered;
+            LastDecodedPTS = _decoded;
         }
-	};
+
+    public:
+        static property TimestampInfo Empty {
+            TimestampInfo get() { return TimestampInfo(-1, int64_t::MaxValue, -1); }
+        }
+    };
 
 }}}

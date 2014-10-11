@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
             this.Tenth = tenth;
             this.Symbol = symbol;
         }
-        public void Update(PointF o, PointF a, PointF b, int radius, Color color, CalibrationHelper calibration)
+        public void Update(PointF o, PointF a, PointF b, int radius, Color color, CalibrationHelper calibration, IImageToViewportTransformer transformer)
         {
             if(o == a || o == b)
                 return;
@@ -59,11 +59,12 @@ namespace Kinovea.ScreenManager
             
             if(calibration != null && calibration.CalibratorType == CalibratorType.Plane)
             {
+                // FIXME: use a single method to compute angles. Currently we have one method here and another in GeometryHelper.
                 PointF calibratedO = calibration.GetPoint(o);
                 PointF calibratedA = calibration.GetPoint(a);
                 PointF calibratedB = calibration.GetPoint(b);
-                
-                CalibratedAngle = ComputeAngle(calibratedO, calibratedA, calibratedB);
+
+                CalibratedAngle = ComputeAngle(calibratedO, calibratedB, calibratedA);
             }
             else
             {
@@ -71,11 +72,14 @@ namespace Kinovea.ScreenManager
             }
             
             ComputeBoundingBox(o, a, b, (float)radius);
-            ComputeTextPosition(Angle);
+            ComputeTextPosition(Angle, transformer);
             ComputeHitRegion(BoundingBox, Angle);
         }
         public bool Hit(Point p)
         {
+            if (hitRegion == null)
+                return false;
+
            if (BoundingBox == Rectangle.Empty)
                 return false;
             else
@@ -139,11 +143,12 @@ namespace Kinovea.ScreenManager
             
             BoundingBox = o.Box((int)radius);
         }
-        private void ComputeTextPosition(Angle angle)
+        private void ComputeTextPosition(Angle angle, IImageToViewportTransformer transformer)
         {
+            int imageTextDistance = transformer.Untransform(textDistance);
             double bissect = (angle.Start + angle.Sweep/2) * MathHelper.DegreesToRadians;
-            int adjacent = (int)(Math.Cos(bissect) * textDistance);
-            int opposed = (int)(Math.Sin(bissect) * textDistance);
+            int adjacent = (int)(Math.Cos(bissect) * imageTextDistance);
+            int opposed = (int)(Math.Sin(bissect) * imageTextDistance);
             
             TextPosition = new Point(adjacent, opposed);
         }
@@ -154,12 +159,12 @@ namespace Kinovea.ScreenManager
             
             try
             {
-                using (GraphicsPath gp = new GraphicsPath())
+                using (GraphicsPath path = new GraphicsPath())
                 {
-                    gp.AddPie(BoundingBox, angle.Start, angle.Sweep);
+                    path.AddPie(BoundingBox, angle.Start, angle.Sweep);
                     if(hitRegion != null)
                         hitRegion.Dispose();
-                    hitRegion = new Region(gp);
+                    hitRegion = new Region(path);
                 }
             }
             catch(Exception)

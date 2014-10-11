@@ -35,21 +35,31 @@ using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
-    public class PlayerScreen : AbstractScreen, IPlayerScreenUIHandler
+    public class PlayerScreen : AbstractScreen
     {
+        #region Events
+        public event EventHandler SpeedChanged;
+        public event EventHandler HighSpeedFactorChanged;
+        public event EventHandler PauseAsked;
+        public event EventHandler<EventArgs<bool>> SelectionChanged;
+        public event EventHandler<EventArgs<Bitmap>> ImageChanged;
+        public event EventHandler<EventArgs<Bitmap>> SendImage;
+        public event EventHandler ResetAsked;
+        #endregion
+
         #region Properties
         public override bool Full
         {
-            get { return frameServer.Loaded; }	
+            get { return frameServer.Loaded; }
         }
         public override UserControl UI
         {
             get { return view; }	
         }
-        public override Guid UniqueId
+        public override Guid Id
         {
-            get { return uniqueId; }
-            set { uniqueId = value; }
+            get { return id; }
+            set { id = value; }
         }
         public override string FileName
         {
@@ -119,25 +129,44 @@ namespace Kinovea.ScreenManager
                     return frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
             }
         }
-        public long CurrentFrame
+        
+        public long LocalTime
+        {
+            get { return view.LocalTime; }
+        }
+
+        public long LocalLastTime
         {
             get
             {
-                // Get the approximate frame we should be on.
-                // Only as accurate as the framerate is stable regarding to the timebase.
-                
-                // SyncCurrentPosition timestamp is already relative to selection start).
-                return (long)((double)view.SyncCurrentPosition / frameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+                return view.LocalLastTime;
             }
         }
-        public long EstimatedFrames
+
+        public long LocalFrameTime
         {
-            get 
+            get
             {
-                // Used to compute the total duration of the common track bar.
-                return frameServer.VideoReader.EstimatedFrames;
+                return view.LocalFrameTime;
             }
         }
+
+        public long LocalSyncTime
+        {
+            get
+            {
+                return view.LocalSyncTime;
+            }
+
+            set
+            {
+                long absoluteTimestamp = RealtimeToTimestamp(value);
+
+                frameServer.SyncTimestampRelative = absoluteTimestamp - frameServer.VideoReader.WorkingZone.Start;
+                view.LocalSyncTimestamp = absoluteTimestamp;
+            }
+        }
+         
         public double FrameInterval
         {
             get 
@@ -156,15 +185,16 @@ namespace Kinovea.ScreenManager
         }
         public bool Synched
         {
-            //get { return m_PlayerScreenUI.m_bSynched; }
-            set { view.Synched = value;}
+            get { return synched; }
+            set 
+            { 
+                view.Synched = value;
+                synched = value;
+            }
         }
-        public long SyncPosition
-        {
-            // Reference timestamp for synchronization, expressed in local timebase.
-            get { return view.SyncPosition; }
-            set { view.SyncPosition = value; }
-        }
+        
+        
+        
         public long Position
         {
             // Used to feed SyncPosition. 
@@ -216,24 +246,29 @@ namespace Kinovea.ScreenManager
         public bool InteractiveFiltering {
             get {return view.InteractiveFiltering;}
         }
+        public HistoryStack HistoryStack
+        {
+            get { return historyStack; }
+        }
         #endregion
 
         #region members
-        public PlayerScreenUserInterface view; // <-- FIXME: Rely on a IPlayerScreenUI or IPlayerScreenView rather than the concrete implementation.
-        
-        private IScreenHandler screenManager;
-        private FrameServerPlayer frameServer = new FrameServerPlayer();
-        private Guid uniqueId;
+        private Guid id = Guid.NewGuid();
+        public PlayerScreenUserInterface view;
+        private DrawingToolbarPresenter drawingToolbarPresenter = new DrawingToolbarPresenter();
+        private HistoryStack historyStack; 
+        private FrameServerPlayer frameServer;
+        private bool synched;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public PlayerScreen(IScreenHandler _screenHandler)
+        public PlayerScreen()
         {
             log.Debug("Constructing a PlayerScreen.");
-            screenManager = _screenHandler;
-            uniqueId = System.Guid.NewGuid();
-            view = new PlayerScreenUserInterface(frameServer, this);
+            historyStack = new HistoryStack();
+            frameServer = new FrameServerPlayer(historyStack);
+            view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter);
             
             BindCommands();
         }
@@ -243,78 +278,142 @@ namespace Kinovea.ScreenManager
         {
             // Provides implementation for behaviors triggered from the view, either as commands or as event handlers.
             // Fixme: those using FrameServer.Metadata work only because the Metadata object is never replaced during the PlayerScreen life.
-            
-            
-            // Refactoring in progress.
-            // Moving code out the UI. The UI should raise an event instead, which we handle here.
-            // For example when adding a drawing, the UI raise an event that we handle here, then the Metadata performs the actual code,
-            // and the post init for trackable drawings is handled there by calling a command that is implemented here.
-            
-            // Event handlers
-            view.DrawingAdded += (s, e) => frameServer.Metadata.AddDrawing(e.Drawing, e.KeyframeIndex);
-            view.CommandProcessed += (s, e) => OnCommandProcessed(e);
+
+            view.CloseAsked += View_CloseAsked;
+            view.SetAsActiveScreen += View_SetAsActiveScreen;
+            view.SpeedChanged += View_SpeedChanged;
+            view.KVAImported += View_KVAImported;
+            view.PauseAsked += View_PauseAsked;
+            view.SelectionChanged += View_SelectionChanged;
+            view.ImageChanged += View_ImageChanged;
+            view.SendImage += View_SendImage;
+            view.ResetAsked += View_ResetAsked;
+
+            // Requests for metadata modification coming from the view, these should push a memento on the history stack.
+            view.KeyframeAdding += View_KeyframeAdding;
+            view.KeyframeDeleting += View_KeyframeDeleting;
+            view.DrawingAdding += View_DrawingAdding;
+            view.DrawingDeleting += View_DrawingDeleting;
+            view.MultiDrawingItemAdding += View_MultiDrawingItemAdding;
+            view.MultiDrawingItemDeleting += View_MultiDrawingItemDeleting;
+            view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
+            view.DataAnalysisAsked += (s, e) => ShowDataAnalysis(e.Value);
             
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
             view.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
-            
-            // For magnifier AND other drawings. Remove as soon as possible, when delete drawing is handled in metadata.
-            // Currently all the code for delete drawing is in the UI. It should be in Metadata.
-            view.TrackableDrawingDeleted += (s, e) => frameServer.Metadata.DeleteTrackableDrawing(e.TrackableDrawing);
-            
             
             // Commands
             view.ToggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
             view.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
             
             frameServer.Metadata.AddTrackableDrawingCommand = new RelayCommand<ITrackable>(AddTrackableDrawing);
-            
+            frameServer.Metadata.CameraCalibrationAsked += (s, e) => ShowCameraCalibration();
         }
-        
-        #region IPlayerScreenUIHandler (and IScreenUIHandler) implementation
-        
-        // TODO: turn all these dependencies into commands.
-        
-        public void ScreenUI_CloseAsked()
+
+        #region General events handlers
+        private void View_CloseAsked(object sender, EventArgs e)
         {
-            screenManager.Screen_CloseAsked(this);
+            OnCloseAsked(EventArgs.Empty);
         }
-        public void ScreenUI_SetAsActiveScreen()
+        
+        public void View_SetAsActiveScreen(object sender, EventArgs e)
         {
             OnActivated(EventArgs.Empty);
         }
-        public void ScreenUI_UpdateStatusBarAsked()
+
+        public void View_SpeedChanged(object sender, EventArgs e)
         {
-            screenManager.Screen_UpdateStatusBarAsked(this);
+            if (SpeedChanged != null)
+                SpeedChanged(this, EventArgs.Empty);
         }
 
-        public void PlayerScreenUI_SpeedChanged(bool _bIntervalOnly)
+        public void View_KVAImported(object sender, EventArgs e)
         {
-            // Used for synchronisation handling.
-            screenManager.Player_SpeedChanged(this, _bIntervalOnly);
+            if (HighSpeedFactorChanged != null)
+                HighSpeedFactorChanged(this, EventArgs.Empty);
         }
-        public void PlayerScreenUI_PauseAsked()
+
+        public void View_PauseAsked(object sender, EventArgs e)
         {
-            screenManager.Player_PauseAsked(this);
+            if (PauseAsked != null)
+                PauseAsked(this, EventArgs.Empty);
         }
-        public void PlayerScreenUI_SelectionChanged(bool _bInitialization)
+        
+        public void View_SelectionChanged(object sender, EventArgs<bool> e)
         {
-            // Used for synchronisation handling.
-            screenManager.Player_SelectionChanged(this, _bInitialization);
+            if (SelectionChanged != null)
+                SelectionChanged(this, e);
         }
-        public void PlayerScreenUI_ImageChanged(Bitmap _image)
+        
+        public void View_ImageChanged(object sender, EventArgs<Bitmap> e)
         {
-            screenManager.Player_ImageChanged(this, _image);
+            if (ImageChanged != null)
+                ImageChanged(this, e);
         }
-        public void PlayerScreenUI_SendImage(Bitmap _image)
+
+        public void View_SendImage(object sender, EventArgs<Bitmap> e)
         {
-            screenManager.Player_SendImage(this, _image);
+            if (SendImage != null)
+                SendImage(this, e);
         }
-        public void PlayerScreenUI_Reset()
+
+        public void View_ResetAsked(object sender, EventArgs e)
         {
-            screenManager.Player_Reset(this);
+            if (ResetAsked != null)
+                ResetAsked(this, e);
         }
         #endregion
+
+        #region Requests for Metadata modification coming from the view
+        private void View_KeyframeAdding(object sender, TimeEventArgs e)
+        {
+            if (frameServer.CurrentImage == null)
+                return;
+
+            long time = e.Time;
+            string timecode = frameServer.TimeStampsToTimecode(time - frameServer.VideoReader.WorkingZone.Start, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, synched);
+            Keyframe keyframe = new Keyframe(time, timecode, frameServer.Metadata);
+
+            HistoryMementoAddKeyframe memento = new HistoryMementoAddKeyframe(frameServer.Metadata, keyframe.Id);
+            frameServer.Metadata.AddKeyframe(keyframe);
+            historyStack.PushNewCommand(memento);
+        }
+
+        private void View_KeyframeDeleting(object sender, KeyframeEventArgs e)
+        {
+            HistoryMemento memento = new HistoryMementoDeleteKeyframe(frameServer.Metadata, e.KeyframeId);
+            frameServer.Metadata.DeleteKeyframe(e.KeyframeId);
+            historyStack.PushNewCommand(memento);
+        }
+
+        private void View_DrawingAdding(object sender, DrawingEventArgs e)
+        {
+            AddDrawingWithMemento(e.ManagerId, e.Drawing);
+        }
+
+        private void View_DrawingDeleting(object sender, DrawingEventArgs e)
+        {
+            // Temporary function. This code should be done by metadata manipulator.
+            HistoryMemento memento = new HistoryMementoDeleteDrawing(frameServer.Metadata, e.ManagerId, e.Drawing.Id, e.Drawing.DisplayName);
+            frameServer.Metadata.DeleteDrawing(e.ManagerId, e.Drawing.Id);
+            historyStack.PushNewCommand(memento);
+        }
+
+        private void View_MultiDrawingItemAdding(object sender, MultiDrawingItemEventArgs e)
+        {
+            HistoryMemento memento = new HistoryMementoAddMultiDrawingItem(frameServer.Metadata, e.Manager, e.Item.Id);
+            frameServer.Metadata.AddMultidrawingItem(e.Manager, e.Item);
+            historyStack.PushNewCommand(memento);
+        }
         
+        private void View_MultiDrawingItemDeleting(object sender, MultiDrawingItemEventArgs e)
+        {
+            HistoryMemento memento = new HistoryMementoDeleteMultiDrawingItem(frameServer.Metadata, e.Manager, e.Item.Id, SerializationFilter.All);
+            frameServer.Metadata.DeleteMultiDrawingItem(e.Manager, e.Item.Id);
+            historyStack.PushNewCommand(memento);
+        }
+        #endregion
+
         #region AbstractScreen Implementation
         public override void DisplayAsActiveScreen(bool _bActive)
         {
@@ -331,6 +430,8 @@ namespace Kinovea.ScreenManager
         }
         public override void AfterClose()
         {
+            frameServer.Metadata.Close();
+            
             if(!frameServer.Loaded)
                 return;
             
@@ -340,6 +441,7 @@ namespace Kinovea.ScreenManager
         public override void RefreshUICulture()
         {
             view.RefreshUICulture();
+            drawingToolbarPresenter.RefreshUICulture();
         }
         public override void PreferencesUpdated()
         {
@@ -350,59 +452,76 @@ namespace Kinovea.ScreenManager
         }
         public override void AddImageDrawing(string filename, bool isSvg)
         {
+            if (!File.Exists(filename))
+                return;
+
             view.BeforeAddImageDrawing();
-            frameServer.Metadata.AddImageDrawing(filename, isSvg, frameServer.VideoReader.Current.Timestamp);
-            view.AfterAddImageDrawing();
+            
+            if (frameServer.Metadata.HitKeyframe == null)
+                return;
+
+            AbstractDrawing drawing = null;
+            if (isSvg)
+                drawing = new DrawingSVG(frameServer.VideoReader.Current.Timestamp, frameServer.VideoReader.Info.AverageTimeStampsPerFrame, filename);
+            else
+                drawing = new DrawingBitmap(frameServer.VideoReader.Current.Timestamp, frameServer.VideoReader.Info.AverageTimeStampsPerFrame, filename);
+
+            if (drawing != null)
+                AddDrawingWithMemento(frameServer.Metadata.HitKeyframe.Id, drawing);
         }
         public override void AddImageDrawing(Bitmap bmp)
         {
             view.BeforeAddImageDrawing();
-            frameServer.Metadata.AddImageDrawing(bmp, frameServer.VideoReader.Current.Timestamp);
-            view.AfterAddImageDrawing();
+            AbstractDrawing drawing = new DrawingBitmap(frameServer.VideoReader.Current.Timestamp, frameServer.VideoReader.Info.AverageTimeStampsPerFrame, bmp);
+            frameServer.Metadata.AddDrawing(frameServer.Metadata.HitKeyframe.Id, drawing);
         }
         public override void FullScreen(bool _bFullScreen)
         {
             view.FullScreen(_bFullScreen);
         }
-        public override void ExecuteCommand(int cmd)
+        
+        public override void ExecuteScreenCommand(int cmd)
         {
-            // Propagate command from the other screen only if it makes sense.
-            PlayerScreenCommands command = (PlayerScreenCommands)cmd;
+            view.ExecuteScreenCommand(cmd);
+        }
 
-            switch (command)
-            {
-                // Forwarded commands. (all others are ignored).
-                case PlayerScreenCommands.TogglePlay:
-                case PlayerScreenCommands.ResetViewport:
-                case PlayerScreenCommands.GotoPreviousImage:
-                case PlayerScreenCommands.GotoPreviousImageForceLoop:
-                case PlayerScreenCommands.GotoFirstImage:
-                case PlayerScreenCommands.GotoPreviousKeyframe:
-                case PlayerScreenCommands.GotoNextImage:
-                case PlayerScreenCommands.GotoLastImage:
-                case PlayerScreenCommands.GotoNextKeyframe:
-                case PlayerScreenCommands.GotoSyncPoint:
-                case PlayerScreenCommands.AddKeyframe:
-                    view.ExecuteCommand(cmd, false);
-                    break;
-                default:
-                    break;
-            }
+        public override void LoadKVA(string path)
+        {
+            MetadataSerializer s = new MetadataSerializer();
+            s.Load(frameServer.Metadata, path, true);
         }
         #endregion
         
         #region Other public methods called from the ScreenManager
+        public void StartPlaying()
+        {
+            if (!IsPlaying)
+                view.OnButtonPlay();
+        }
         public void StopPlaying()
         {
             view.StopPlaying();
         }
-        public void GotoNextFrame(bool _bAllowUIUpdate)
+        public void GotoNextFrame(bool allowUIUpdate)
         {
-            view.SyncSetCurrentFrame(-1, _bAllowUIUpdate);
+            view.ForceCurrentFrame(-1, allowUIUpdate);
         }
-        public void GotoFrame(long _frame, bool _bAllowUIUpdate)
+        public void GotoTime(long microseconds, bool allowUIUpdate)
         {
-            view.SyncSetCurrentFrame(_frame, _bAllowUIUpdate);
+            long timestamp = RealtimeToTimestamp(microseconds);
+            view.ForcePosition(timestamp, allowUIUpdate);
+        }
+        public void GotoPrevKeyframe()
+        {
+            view.GotoPreviousKeyframe();
+        }
+        public void GotoNextKeyframe()
+        {
+            view.GotoNextKeyframe();
+        }
+        public void AddKeyframe()
+        {
+            view.AddKeyframe();
         }
         public void ResetSelectionImages(MemoPlayerScreen _memo)
         {
@@ -430,7 +549,29 @@ namespace Kinovea.ScreenManager
         }
         public void ConfigureHighSpeedCamera()
         {
-            view.DisplayConfigureSpeedBox(true);
+            if (!frameServer.Loaded)
+                return;
+            
+            formConfigureSpeed fcs = new formConfigureSpeed(frameServer.VideoReader.Info.FramesPerSeconds, frameServer.Metadata.HighSpeedFactor);
+            fcs.StartPosition = FormStartPosition.CenterScreen;
+
+            if (fcs.ShowDialog() != DialogResult.OK)
+            {
+                fcs.Dispose();
+                return;
+            }
+
+            frameServer.Metadata.HighSpeedFactor = fcs.HighSpeedFactor;
+            fcs.Dispose();
+
+            view.UpdateTimedLabels();
+
+            if (HighSpeedFactorChanged != null)
+                HighSpeedFactorChanged(this, EventArgs.Empty);
+
+            frameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond = frameServer.VideoReader.Info.FramesPerSeconds * frameServer.Metadata.HighSpeedFactor;
+
+            view.RefreshImage();
         }
         public long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
         {
@@ -445,6 +586,34 @@ namespace Kinovea.ScreenManager
             frameServer.Metadata.ShowCoordinateSystem();
             view.RefreshImage();
         }
+        public void ShowCameraCalibration()
+        {
+            List<List<PointF>> points = frameServer.Metadata.GetCameraCalibrationPoints();
+            
+            FormCalibrateDistortion fcd = new FormCalibrateDistortion(frameServer.CurrentImage, points, frameServer.Metadata.CalibrationHelper);
+            FormsHelper.Locate(fcd);
+            fcd.ShowDialog();
+            fcd.Dispose();
+
+            view.RefreshImage();
+        }
+        public void ShowDataAnalysis(AbstractDrawing drawing)
+        {
+            if (drawing is DrawingCrossMark)
+            {
+                FormPointsAnalysis fpa = new FormPointsAnalysis(frameServer.Metadata);
+                FormsHelper.Locate(fpa);
+                fpa.ShowDialog();
+                fpa.Dispose();
+            }
+            else if (drawing is DrawingTrack)
+            {
+                FormTrackAnalysis fta = new FormTrackAnalysis(frameServer.Metadata, drawing as DrawingTrack);
+                FormsHelper.Locate(fta);
+                fta.ShowDialog();
+                fta.Dispose();
+            }
+        }
         #endregion
 
         public void AfterLoad()
@@ -452,6 +621,33 @@ namespace Kinovea.ScreenManager
             OnActivated(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Convert from real time in microseconds to absolute timestamps.
+        /// </summary>
+        private long RealtimeToTimestamp(long time)
+        {
+            
+            double realtimeSeconds = (double)time / 1000000;
+            double videoSeconds = realtimeSeconds * frameServer.Metadata.HighSpeedFactor;
+
+            double timestamp = videoSeconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+            timestamp = Math.Round(timestamp);
+
+            long relativeTimestamp = (long)timestamp;
+            long absoluteTimestamp = relativeTimestamp + frameServer.VideoReader.WorkingZone.Start;
+            
+            return absoluteTimestamp;
+        }
+
+        private void AddDrawingWithMemento(Guid managerId, AbstractDrawing drawing)
+        {
+            // Temporary function.
+            // Once the player screen ui uses the viewport, this event handler should be removed.
+            // The code here should also be in the metadata manipulator until this function is removed.
+            HistoryMemento memento = new HistoryMementoAddDrawing(frameServer.Metadata, managerId, drawing.Id, drawing.DisplayName);
+            frameServer.Metadata.AddDrawing(managerId, drawing);
+            historyStack.PushNewCommand(memento);
+        }
         private void AddTrackableDrawing(ITrackable trackableDrawing)
         {
             frameServer.Metadata.TrackabilityManager.Add(trackableDrawing, frameServer.VideoReader.Current);

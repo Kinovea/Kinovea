@@ -23,8 +23,14 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Rectangle rectangle;
-        private static Size minimalSize = new Size(50,50);
+        private Size minimalSize = new Size(50,50);
         #endregion
+
+        public BoundingBox(){}
+        public BoundingBox(int side)
+        {
+            minimalSize = new Size(side, side);
+        }
 
         public void Draw(Graphics canvas, Rectangle rect, Pen pen, SolidBrush brush, int widen)
         {
@@ -43,15 +49,13 @@ namespace Kinovea.ScreenManager
             Point botRight = new Point(rectangle.Right, rectangle.Bottom);
             Point botLeft = new Point(rectangle.Left, rectangle.Bottom);
 
-            int boxSide = transformer.Untransform(6);
-
-            if (topLeft.Box(boxSide).Contains(point))
+            if (HitTester.HitTest(topLeft, point, transformer))
                 result = 1;
-            else if (topRight.Box(boxSide).Contains(point))
+            else if (HitTester.HitTest(topRight, point, transformer))
                 result = 2;
-            else if (botRight.Box(boxSide).Contains(point))
+            else if (HitTester.HitTest(botRight, point, transformer))
                 result = 3;
-            else if (botLeft.Box(boxSide).Contains(point))
+            else if (HitTester.HitTest(botLeft, point, transformer))
                 result = 4;
             else if (rectangle.Contains(point))
                 result = 0;
@@ -60,11 +64,12 @@ namespace Kinovea.ScreenManager
         }
         public void MoveHandle(Point point, int handleNumber, Size originalSize, bool keepAspectRatio)
         {
-            if(keepAspectRatio)
+            if (keepAspectRatio)
                 MoveHandleKeepAspectRatio(point, handleNumber, originalSize);
             else
                 MoveHandleFree(point, handleNumber);
         }
+        
         public void Move(int deltaX, int deltaY)
         {
             rectangle = new Rectangle(rectangle.X + deltaX, rectangle.Y + deltaY, rectangle.Width, rectangle.Height);
@@ -169,6 +174,29 @@ namespace Kinovea.ScreenManager
                 default:
                     break;
             }
+        }
+        public void MoveHandleKeepSymmetry(Point point, int handleNumber, PointF center)
+        {
+            Rectangle target = Rectangle.Empty;
+            Vector shift = new Vector(point, center);
+
+            switch (handleNumber)
+            {
+                case 1:
+                    target = new Rectangle(point.X, point.Y, (int)(shift.X * 2), (int)(shift.Y * 2));
+                    break;
+                case 2:
+                    target = new Rectangle(point.X + (int)(-shift.X * 2), point.Y, (int)(-shift.X * 2), (int)(shift.Y * 2));
+                    break;
+                case 3:
+                    target = new Rectangle(point.X + (int)(-shift.X * 2), point.Y + (int)(-shift.Y * 2), (int)(-shift.X * 2), (int)(-shift.Y * 2));
+                    break;
+                case 4:
+                    target = new Rectangle(point.X, point.Y + (int)(shift.X * 2), (int)(shift.X * 2), (int)(-shift.Y * 2));
+                    break;
+            }
+            
+            ApplyWithConstraints(target);
         }
         private void MoveHandleFree(Point point, int handleNumber)
         {

@@ -29,6 +29,10 @@ namespace Kinovea.ScreenManager
     public class DrawingToolMagnifier : AbstractDrawingTool
     {
         #region Properties
+        public override string Name
+        {
+            get { return "Magnifier"; }
+        }
         public override string DisplayName
         {
             get { return ScreenManagerLang.ToolTip_Magnifier; }
@@ -61,11 +65,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             return null;
         }
-        public override Cursor GetCursor(double _fStretchFactor)
+        public override Cursor GetCursor(double stretchFactor)
         {
             return null;
         }

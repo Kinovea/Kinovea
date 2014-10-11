@@ -200,7 +200,7 @@ td {
 			<td class="keyimages-title" colspan="3">Lines</td>
 		</tr>
 		<tr>
-				<td class="header">Length (<xsl:value-of select="../CalibrationHelp/LengthUnit/@UserUnitLength"/>)</td>
+				<td class="header">Length (<xsl:value-of select="../Calibration/Unit/@Abbreviation"/>)</td>
 				<td class="header">Time</td>
 				<td class="header">Key Image</td>
     </tr>
@@ -221,7 +221,7 @@ td {
 			<td class="keyimages-title" colspan="3">Angles</td>
 		</tr>
 		<tr>
-				<td class="header">Value</td>
+				<td class="header">Value (°)</td>
 				<td class="header">Time</td>
 				<td class="header">Key Image</td>
     </tr>

@@ -44,6 +44,26 @@ namespace Kinovea.Services
             get { return speedUnit; }
             set { speedUnit = value; }
         }
+        public AccelerationUnit AccelerationUnit
+        {
+            get { return accelerationUnit; }
+            set { accelerationUnit = value; }
+        }
+        public AngleUnit AngleUnit
+        {
+            get { return angleUnit; }
+            set { angleUnit = value; }
+        }
+        public AngularVelocityUnit AngularVelocityUnit
+        {
+            get { return angularVelocityUnit; }
+            set { angularVelocityUnit = value; }
+        }
+        public AngularAccelerationUnit AngularAccelerationUnit
+        {
+            get { return angularAccelerationUnit; }
+            set { angularAccelerationUnit = value; }
+        }
         public ImageAspectRatio AspectRatio
         {
             get { return aspectRatio; }
@@ -102,6 +122,10 @@ namespace Kinovea.Services
         
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
         private SpeedUnit speedUnit = SpeedUnit.MetersPerSecond;
+        private AccelerationUnit accelerationUnit = AccelerationUnit.MetersPerSecondSquared;
+        private AngleUnit angleUnit = AngleUnit.Degree;
+        private AngularVelocityUnit angularVelocityUnit = AngularVelocityUnit.DegreesPerSecond;
+        private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
         private ImageAspectRatio aspectRatio = ImageAspectRatio.Auto;
         private bool deinterlaceByDefault;
         private int workingZoneSeconds = 12;
@@ -124,6 +148,10 @@ namespace Kinovea.Services
         {
             writer.WriteElementString("TimecodeFormat", timecodeFormat.ToString());
             writer.WriteElementString("SpeedUnit", speedUnit.ToString());
+            writer.WriteElementString("AccelerationUnit", accelerationUnit.ToString());
+            writer.WriteElementString("AngleUnit", angleUnit.ToString());
+            writer.WriteElementString("AngularVelocityUnit", angularVelocityUnit.ToString());
+            writer.WriteElementString("AngularAccelerationUnit", angularAccelerationUnit.ToString());
             writer.WriteElementString("AspectRatio", aspectRatio.ToString());
             writer.WriteElementString("DeinterlaceByDefault", deinterlaceByDefault ? "true" : "false");
             writer.WriteElementString("WorkingZoneSeconds", workingZoneSeconds.ToString());
@@ -169,6 +197,18 @@ namespace Kinovea.Services
                         break;
                     case "SpeedUnit":
                         speedUnit = (SpeedUnit) Enum.Parse(typeof(SpeedUnit), reader.ReadElementContentAsString());
+                        break;
+                    case "AccelerationUnit":
+                        accelerationUnit = (AccelerationUnit)Enum.Parse(typeof(AccelerationUnit), reader.ReadElementContentAsString());
+                        break;
+                    case "AngleUnit":
+                        angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), reader.ReadElementContentAsString());
+                        break;
+                    case "AngularVelocityUnit":
+                        angularVelocityUnit = (AngularVelocityUnit)Enum.Parse(typeof(AngularVelocityUnit), reader.ReadElementContentAsString());
+                        break;
+                    case "AngularAccelerationUnit":
+                        angularAccelerationUnit = (AngularAccelerationUnit)Enum.Parse(typeof(AngularAccelerationUnit), reader.ReadElementContentAsString());
                         break;
                     case "AspectRatio":
                         aspectRatio = (ImageAspectRatio) Enum.Parse(typeof(ImageAspectRatio), reader.ReadElementContentAsString());

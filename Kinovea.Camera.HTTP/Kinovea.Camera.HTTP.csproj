@@ -74,12 +74,6 @@
     <Compile Include="FormConfiguration.Designer.cs">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormHandshakeResult.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormHandshakeResult.Designer.cs">
-      <DependentUpon>FormHandshakeResult.cs</DependentUpon>
-    </Compile>
     <Compile Include="FrameGrabber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnapshotRetriever.cs" />
@@ -91,9 +85,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormConfiguration.resx">
       <DependentUpon>FormConfiguration.Designer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormHandshakeResult.resx">
-      <DependentUpon>FormHandshakeResult.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

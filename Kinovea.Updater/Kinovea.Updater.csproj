@@ -153,10 +153,13 @@
     <EmbeddedResource Include="Languages\UpdaterLang.da.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.el.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.fi.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.ja.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.ko.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.lt.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.mk.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.no.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.ru.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.sr-Cyrl-CS.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.sr-Latn-CS.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.sv.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.tr.resx" />

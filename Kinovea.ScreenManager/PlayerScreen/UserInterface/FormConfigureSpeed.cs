@@ -28,45 +28,36 @@ using System.Windows.Forms;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// This dialog let the user specify the original speed of the camera used.
-    /// This is used when the camera was filming at say, 1000 fps, 
-    /// and the resulting movie created at 24 fps. 
-    /// 
-    /// The result of this dialog is only a change in the way we compute the times.
-    /// The value stored in the PlayerScreen UI is not updated in real time. 
+    /// Configure capture speed of video.
+    /// The capture FPS is only updated when the user actually enters something in the textbox.
+    /// FIXME: store capture speed everywhere instead of precomputing the "slowFactor" ratio.
     /// </summary>
     public partial class formConfigureSpeed : Form
     {
         #region Properties
-        public double SlowFactor
+        public double HighSpeedFactor
         {
             get 
-            { 
-                if (m_fRealWorldFps < 1)
-                {
-                    // Fall back to original.
-                    return m_fSlowFactor;
-                }
-                else
-                {
-                    return m_fRealWorldFps / m_fVideoFps;
-                }
+            {
+                return captureFPS < 1 ? memoHighSpeedFactor : captureFPS / videoFPS;
             }
         }
         #endregion
         
         #region Members
-        private double m_fVideoFps;					// This is the fps read in the video. (ex: 24 fps)
-        private double m_fRealWorldFps;				// The current fps modified value (ex: 1000 fps).
-        private double m_fSlowFactor;					// The current slow factor. (if we already used the dialog)
+        private readonly double videoFPS;				
+        private double captureFPS;
+        private double memoHighSpeedFactor;
+        private const double maxCaptureFPS = 10000;
+        private const double minCaptureFPS = 1;
+        private bool internalUpdate;
         #endregion
-        
-        #region Construction & Initialization
-        public formConfigureSpeed(double _fFps, double _fSlowFactor)
+
+        public formConfigureSpeed(double videoFPS, double memoHighSpeedFactor)
         {
-            m_fSlowFactor = _fSlowFactor;
-            m_fVideoFps = _fFps;
-            m_fRealWorldFps = m_fVideoFps * m_fSlowFactor;
+            this.videoFPS = videoFPS;
+            this.memoHighSpeedFactor = memoHighSpeedFactor;
+            captureFPS = videoFPS * memoHighSpeedFactor;
             
             InitializeComponent();
             LocalizeForm();
@@ -77,62 +68,68 @@ namespace Kinovea.ScreenManager
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblFPSCaptureTime.Text = ScreenManagerLang.dlgConfigureSpeed_lblFPSCaptureTime.Replace("\\n", "\n");
+            lblCaptureFPS.Text = ScreenManagerLang.dlgConfigureSpeed_lblFPSCaptureTime.Replace("\\n", "\n");
             toolTips.SetToolTip(btnReset, ScreenManagerLang.dlgConfigureSpeed_ToolTip_Reset);
             
-            // Update text box with current value. (Will update computed values too)
-            tbFPSRealWorld.Text = String.Format("{0:0.00}", m_fRealWorldFps);
-        }
-        #endregion
+            lblVideoFPS.Text = string.Format(ScreenManagerLang.dlgConfigureSpeed_lblFPSDisplayTime, videoFPS);
 
-        #region User choices handlers
-        private void UpdateValues()
-        {
-            lblFPSDisplayTime.Text = String.Format(ScreenManagerLang.dlgConfigureSpeed_lblFPSDisplayTime, m_fVideoFps);
-            int timesSlower = (int)(m_fRealWorldFps / m_fVideoFps);
-            lblSlowFactor.Visible = timesSlower > 1;
-            lblSlowFactor.Text = String.Format(ScreenManagerLang.dlgConfigureSpeed_lblSlowFactor, timesSlower);
+            UpdateCaptureFPSText();
+            UpdateSlowFactorText();
         }
-        private void tbFPSRealWorld_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                // FIXME: check how this play with culture variations on decimal separator.
-                m_fRealWorldFps = double.Parse(tbFPSRealWorld.Text);
-                if (m_fRealWorldFps > 2000)
-                {
-                    tbFPSRealWorld.Text = "2000";
-                }
-                else if (m_fRealWorldFps < 1)
-                {
-                    m_fRealWorldFps = m_fVideoFps;
-                }
-            }
-            catch
-            {
-                // Failed : do nothing. 
-            }
 
-            UpdateValues();
-        }
-        private void tbFPSRealWorld_KeyPress(object sender, KeyPressEventArgs e)
+        private void tbCaptureFPS_TextChanged(object sender, EventArgs e)
         {
-            // We only accept numbers, points and coma in there.
-            char key = e.KeyChar;
-            if (((key < '0') || (key > '9')) && (key != ',') && (key != '.') && (key != '\b'))
-            {
+            if (internalUpdate)
+                return;
+
+            // Text is parsed using the current culture.
+            double result;
+            bool parsed = double.TryParse(tbCaptureFPS.Text, out result);
+            if (!parsed)
+                return;
+
+            captureFPS = Math.Min(maxCaptureFPS, result);
+
+            if (captureFPS < minCaptureFPS)
+                captureFPS = videoFPS;
+
+            if (captureFPS != result)
+                UpdateCaptureFPSText();
+
+            UpdateSlowFactorText();            
+        }
+        private void tbCaptureFPS_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!IsNumerical(e.KeyChar))
                 e.Handled = true;
-            }
         }
         private void btnReset_Click(object sender, EventArgs e)
         {
-            // Fall back To original.
-            tbFPSRealWorld.Text = String.Format("{0:0.00}", m_fVideoFps);
-            
-            // Force proper reset of values, as the text may lack full precision.
-            m_fRealWorldFps = m_fVideoFps;
-            m_fSlowFactor = 1.0;
+            captureFPS = videoFPS;
+            UpdateCaptureFPSText();
         }
-        #endregion
+        private void UpdateCaptureFPSText()
+        {
+            internalUpdate = true;
+            tbCaptureFPS.Text = String.Format("{0:0.00}", captureFPS);
+            internalUpdate = false;
+        }
+        private void UpdateSlowFactorText()
+        {
+            double timeStretchFactor = captureFPS / videoFPS;
+            string format = "{0:0.000}";
+
+            if (timeStretchFactor % 1 == 0)
+                format = "{0:0}";
+
+            string text = ScreenManagerLang.dlgConfigureSpeed_lblTimeStretchFactor;
+            string formattingText = string.Format(text, format);
+            string finalText = string.Format(formattingText, timeStretchFactor);
+            lblTimeStretchFactor.Text = finalText;
+        }
+        private bool IsNumerical(char key)
+        {
+            return (key >= '0' && key <= '9') || key == ',' || key == '.' || key == '\b';
+        }
     }
 }

@@ -235,7 +235,7 @@
     <Cell ss:MergeAcross="2" ss:StyleID="keyimages-title"><Data ss:Type="String">Lines</Data></Cell>
   </Row>
   <Row>
-    <Cell ss:StyleID="header"><Data ss:Type="String">Length (<xsl:value-of select="../CalibrationHelp/LengthUnit/@UserUnitLength"/>)</Data></Cell>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Length (<xsl:value-of select="../Calibration/Unit/@Abbreviation"/>)</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Time</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Key Image</Data></Cell>
   </Row>
@@ -256,7 +256,7 @@
     <Cell ss:MergeAcross="2" ss:StyleID="keyimages-title"><Data ss:Type="String">Angles</Data></Cell>
   </Row>
   <Row>
-    <Cell ss:StyleID="header"><Data ss:Type="String">Value</Data></Cell>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Value (°)</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Time</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Key Image</Data></Cell>
   </Row>

@@ -38,6 +38,7 @@ namespace Kinovea.ScreenManager
     public class StyleElementLineSize : AbstractStyleElement
     {
         #region Properties
+        public static readonly int[] Options = { 1, 2, 3, 4, 5, 7, 9, 11, 13 };
         public override object Value
         {
             get { return penSize; }
@@ -62,7 +63,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private static readonly int[] options = { 1, 2, 3, 4, 5, 7, 9, 11, 13 };
         private static readonly int defaultSize = 3;
         private int penSize;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public StyleElementLineSize(int givenDefault)
         {
-            penSize = (Array.IndexOf(options, givenDefault) >= 0) ? givenDefault : defaultSize;
+            penSize = (Array.IndexOf(Options, givenDefault) >= 0) ? givenDefault : defaultSize;
         }
         public StyleElementLineSize(XmlReader xmlReader)
         {
@@ -84,10 +84,12 @@ namespace Kinovea.ScreenManager
         {
             ComboBox editor = new ComboBox();
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
-            editor.ItemHeight = options[options.Length-1] + 4;
+            editor.ItemHeight = Options[Options.Length-1] + 4;
             editor.DrawMode = DrawMode.OwnerDrawFixed;
-            foreach(int i in options) editor.Items.Add(new object());
-            editor.SelectedIndex = Array.IndexOf(options, penSize);
+            foreach(int i in Options) 
+                editor.Items.Add(new object());
+            
+            editor.SelectedIndex = Array.IndexOf(Options, penSize);
             editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             return editor;
@@ -115,7 +117,7 @@ namespace Kinovea.ScreenManager
             }
             
             // Restrict to the actual list of "athorized" values.
-            penSize = (Array.IndexOf(options, value) >= 0) ? value : defaultSize;
+            penSize = (Array.IndexOf(Options, value) >= 0) ? value : defaultSize;
             
             xmlReader.ReadEndElement();
         }
@@ -128,19 +130,19 @@ namespace Kinovea.ScreenManager
         #region Private Methods
         private void editor_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index < 0 || e.Index >= options.Length)
+            if (e.Index < 0 || e.Index >= Options.Length)
                 return;
             
-            int itemPenSize = options[e.Index];
+            int itemPenSize = Options[e.Index];
             int top = (e.Bounds.Height - itemPenSize) / 2;
             e.Graphics.FillRectangle(Brushes.Black, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Width, itemPenSize);
         }
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
         {
             int index = ((ComboBox)sender).SelectedIndex;
-            if( index >= 0 && index < options.Length)
+            if( index >= 0 && index < Options.Length)
             {
-                penSize = options[index];
+                penSize = Options[index];
                 RaiseValueChanged();
             }
         }

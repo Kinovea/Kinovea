@@ -137,7 +137,7 @@ namespace Kinovea.FileBrowser
             this.lblFolders.Name = "lblFolders";
             this.lblFolders.Size = new System.Drawing.Size(305, 20);
             this.lblFolders.TabIndex = 2;
-            this.lblFolders.Text = "Dossiers :   ";
+            this.lblFolders.Text = "Folders :   ";
             this.lblFolders.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lvExplorer
@@ -163,6 +163,7 @@ namespace Kinovea.FileBrowser
             this.lvExplorer.View = System.Windows.Forms.View.Details;
             this.lvExplorer.SelectedIndexChanged += new System.EventHandler(this.listViews_SelectedIndexChanged);
             this.lvExplorer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lvExplorer_MouseDoubleClick);
+            this.lvExplorer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listViews_MouseDown);
             this.lvExplorer.MouseEnter += new System.EventHandler(this.lvExplorer_MouseEnter);
             // 
             // imgListFiles
@@ -184,7 +185,7 @@ namespace Kinovea.FileBrowser
             this.lblVideoFiles.Name = "lblVideoFiles";
             this.lblVideoFiles.Size = new System.Drawing.Size(305, 20);
             this.lblVideoFiles.TabIndex = 1;
-            this.lblVideoFiles.Text = "Fichiers Vidéo :   ";
+            this.lblVideoFiles.Text = "Video files :   ";
             this.lblVideoFiles.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tabPageShortcuts
@@ -319,6 +320,7 @@ namespace Kinovea.FileBrowser
             this.lvShortcuts.View = System.Windows.Forms.View.Details;
             this.lvShortcuts.SelectedIndexChanged += new System.EventHandler(this.listViews_SelectedIndexChanged);
             this.lvShortcuts.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lvShortcuts_MouseDoubleClick);
+            this.lvShortcuts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listViews_MouseDown);
             this.lvShortcuts.MouseEnter += new System.EventHandler(this.lvShortcuts_MouseEnter);
             // 
             // tabPageCameras
@@ -406,8 +408,10 @@ namespace Kinovea.FileBrowser
             this.ResumeLayout(false);
 
         }
-        private System.Windows.Forms.Button btnManual;
+
         private System.Windows.Forms.ListView lvCameras;
+        
+        private System.Windows.Forms.Button btnManual;
         public System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage tabPageCameras;
         private System.Windows.Forms.ImageList imgListFiles;
@@ -418,18 +422,19 @@ namespace Kinovea.FileBrowser
         private System.Windows.Forms.ImageList imgListTabs;
         private System.Windows.Forms.Button btnDeleteShortcut;
         private System.Windows.Forms.Button btnAddShortcut;
+        private ExpTreeLib.ExpTree etExplorer;
         public System.Windows.Forms.TabPage tabPageShortcuts;
         public System.Windows.Forms.Label lblFavFiles;
         public System.Windows.Forms.Label lblFavFolders;
-        private System.Windows.Forms.ListView lvShortcuts;
-
-        #endregion
-
-        private ExpTreeLib.ExpTree etExplorer;
-        private System.Windows.Forms.ListView lvExplorer;
         public System.Windows.Forms.Label lblVideoFiles;
         public System.Windows.Forms.Label lblFolders;
         public System.Windows.Forms.TabPage tabPageClassic;
         public System.Windows.Forms.TabControl tabControl;
+
+        #endregion
+        private System.Windows.Forms.ListView lvExplorer;
+        private System.Windows.Forms.ListView lvShortcuts;
+
+
     }
 }

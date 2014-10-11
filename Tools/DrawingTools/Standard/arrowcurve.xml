@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>E77A4AAA-DC19-4031-9429-7B337A26746B</Id>
+  <Name>ArrowCurve</Name>
+  <DisplayName>DrawingName_ArrowCurve</DisplayName>
+  <Icon>curvedarrow</Icon>
+  <DrawingClass>DrawingPolyline</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>true</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>true</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="color">
+      <Value>255;0;153;0</Value>
+    </Color>
+    <LineSize Key="line size">
+      <Value>1</Value>
+    </LineSize>
+    <LineShape Key="line shape">
+      <Value>Solid</Value>
+    </LineShape>
+    <Arrows Key="arrows">
+      <Value>EndArrow</Value>
+    </Arrows>
+    <Curved Key="curved">
+      <Value>true</Value>
+    </Curved>
+  </DefaultStyle>
+</KinoveaDrawingTool>

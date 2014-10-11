@@ -88,15 +88,6 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Choose Destination Folder.
-        /// </summary>
-        internal static string Updater_ChooseDestinationFolder {
-            get {
-                return ResourceManager.GetString("Updater_ChooseDestinationFolder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Current Version :.
         /// </summary>
         internal static string Updater_CurrentVersion {
@@ -111,15 +102,6 @@ namespace Kinovea.Updater.Languages {
         internal static string Updater_Download {
             get {
                 return ResourceManager.GetString("Updater_Download", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Downloading New Version....
-        /// </summary>
-        internal static string Updater_Downloading {
-            get {
-                return ResourceManager.GetString("Updater_Downloading", resourceCulture);
             }
         }
         

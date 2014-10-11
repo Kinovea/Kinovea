@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>Hide Thumbnails</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>Show Thumbnails</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Invert Video Positions</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Synchronize Videos on the Current Frames</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Go Back to Beginning for Both Videos</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Jump to End for Both Videos</value></data>
@@ -95,7 +92,6 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Swap Screens</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Toggle Common Controls</value></data>
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Colors</value></data>
-   <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Color Profile...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Reset to default Color Profile</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Load color profile</value></data>
@@ -113,9 +109,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configure Grid</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configure Opacity</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacity: {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Number of frames per second at capture time :\n(ex: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Number of frames per seconds at display time : {0:0.00} fps.</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Video is {0:0} times slower than original.</value></data>
+   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Capture framerate (ex:300) :</value></data>
+   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Video framerate : {0:0.00} fps.</value></data>
+   <data name="dlgConfigureSpeed_lblTimeStretchFactor" xml:space="preserve"><value>Time stretch factor : {0}x.</value></data>
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configure original speed</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Reset</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Show the Target Marker</value></data>
@@ -132,8 +128,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Complete Path</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Path section around current image</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label following the Path</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Coordinates system origin</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Right-to-left motion</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Real size of the segment :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Line calibration</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Plane calibration</value></data>
@@ -150,41 +144,53 @@
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video slideshow with only the Key Images.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Type of video</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Save Data as a Spreadsheet Document</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgImportReference_Title" xml:space="preserve"><value>Import an image as reference</value></data>
-   <data name="dlgImportReference_Filter" xml:space="preserve"><value>All supported files (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comments...</value></data>
-   <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Load Key Images Data</value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informations</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Blend drawings onto images.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>one frame every {0} hundredth of seconds.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Frequency of image export :</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>one frame every {0:0.00} seconds.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>The suffix will be automatically appended to image file names. ( "file" =&gt; "file-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Export Key Images only.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Total images to export : {0:0} images.</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Duration covered by the exported sequence of images : {0:0.00} seconds.</value></data>
+   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Total : {0:0} images.</value></data>
+   <data name="dlgRafaleExport_ExportAll" xml:space="preserve"><value>Export all images.</value></data>
+   <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve"><value>Export one image every {0} images.</value></data>
+   <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve"><value>Export one image every {0:0.00}s.</value></data>
+   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve"><value>Export one image every {0:0}ms.</value></data>
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Save a Sequence of Images</value></data>
-   <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Take Slow Motion into account. (Current = </value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Options</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Save Method</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Save only the analysis</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Only the description of drawings and other analysis objects will be saved.#The file can be imported in a video later.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Save video with analysis modifiable</value></data>
-   <data name="dlgSaveAnalysisOrVideo_HintMuxed" xml:space="preserve"><value>When opened in Kinovea, the drawings and other analysis objects will still be modifiable.#When opened in other players, the drawings and analysis objects will not be visible.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Save video with analysis permanently applied on the video</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Analysis objects will be visible in all players but not modifiable.#Extra comments attached to key images will not be saved.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Save video only.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Save Video...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Save Key Images Data</value></data>
-   <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Save Sequence</value></data>
-   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Save Video</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Set coordinates system origin</value></data>
+   <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Camera calibration</value></data>
+   <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Distortion coefficients</value></data>
+   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve"><value>Camera intrisics</value></data>
+   <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve"><value>Calibrate camera</value></data>
+   <data name="dlgCameraCalibration_Distortion" xml:space="preserve"><value>Distortion</value></data>
+   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve"><value>Load camera calibration profile</value></data>
+   <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Save camera calibration profile</value></data>
+   <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Arrow – Dash</value></data>
+   <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Arrow – Squiggly</value></data>
+   <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Arrow – Curve</value></data>
+   <data name="DrawingName_ArrowPolyline" xml:space="preserve"><value>Arrow – Polyline</value></data>
+   <data name="DrawingName_ArrowPolylineDash" xml:space="preserve"><value>Arrow – Polyline dash</value></data>
+   <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve"><value>Arrow – Polyline squiggly</value></data>
+   <data name="DrawingName_Polyline" xml:space="preserve"><value>Polyline</value></data>
+   <data name="DrawingName_DistortionGrid" xml:space="preserve"><value>Distortion grid</value></data>
+   <data name="DrawingName_Goniometer" xml:space="preserve"><value>Goniometer</value></data>
+   <data name="DrawingName_Posture" xml:space="preserve"><value>Posture</value></data>
+   <data name="DrawingName_Bikefit" xml:space="preserve"><value>Bike fit</value></data>
+   <data name="DrawingName_Profile" xml:space="preserve"><value>Profile</value></data>
+   <data name="DrawingName_Genu" xml:space="preserve"><value>Genu</value></data>
+   <data name="DrawingName_Archery" xml:space="preserve"><value>Archery</value></data>
+   <data name="DrawingName_AngleToVertical" xml:space="preserve"><value>Angle to vertical</value></data>
+   <data name="DrawingName_AngleToHorizontal" xml:space="preserve"><value>Angle to horizontal</value></data>
+   <data name="DrawingName_DistanceHorizontal" xml:space="preserve"><value>Distance (horizontal)</value></data>
+   <data name="DrawingName_HumanModel" xml:space="preserve"><value>Human model</value></data>
+   <data name="DrawingName_HumanModel2" xml:space="preserve"><value>Human model (2)</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Cannot connect to video device</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Couldn't find any device to connect to.\nPlease make sure the device is properly plugged to the computer.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>File overwrite</value></data>
@@ -208,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Appearance</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Apply</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Arrows:</value></data>
+   <data name="Generic_Curved" xml:space="preserve"><value>Curve:</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancel</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Close</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color:</value></data>
@@ -223,6 +230,17 @@
    <data name="Generic_Image" xml:space="preserve"><value>Image</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Save image</value></data>
+   <data name="Generic_File" xml:space="preserve"><value>File</value></data>
+   <data name="Generic_Open" xml:space="preserve"><value>Open</value></data>
+   <data name="Generic_Import" xml:space="preserve"><value>Import</value></data>
+   <data name="Generic_Restore" xml:space="preserve"><value>Restore default</value></data>
+   <data name="Generic_Quit" xml:space="preserve"><value>Quit</value></data>
+   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
+   <data name="FileFilter_ImportReference" xml:space="preserve"><value>All supported files (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
+   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Key images have been modified.\nDo you want to save key images data before closing ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Key images data not saved</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Delay display by: {0:0} s</value></data>
@@ -243,7 +261,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Failure: Unable to open the file : file type is not supported.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Loading Error.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Failure: Unable to open the file : file not found or empty.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Failure: Unable to open the file : Image format is not supported.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Failure: Unable to open the file : inconsistencies found. Please check encoding process.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Failure: Unable to open the file : stream information not found.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Failure: Unable to open the file : unknown error.</value></data>
@@ -254,8 +271,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Total unknown</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lock the Working Zone Boundaries</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Unlock the Working Zone Boundaries</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspective Grid</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>Brightness...</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspective grid</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configure</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Countdown Mode</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Delete Stopwatch</value></data>
@@ -263,7 +279,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Start Stopwatch</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stop Stopwatch</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Close This Screen</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Colors...</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Color</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Color and Size...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistence...</value></data>
@@ -281,7 +296,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Trajectories to simple text</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>Fluidify</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Image Format</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Auto Detection</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Force 4:3</value></data>
@@ -296,11 +310,6 @@
    <data name="mnuFlipVertically" xml:space="preserve"><value>Flip vertically</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Load Key Images Data...</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>Zoom x2.25</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>Zoom x2.5</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Switch to Direct Zoom</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Close Magnifier</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Mirror</value></data>
@@ -313,8 +322,6 @@
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrate...</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Send image to the other video</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>High-speed camera...</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Set the Last Frame of Working Zone to the Current Frame</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Set the First Frame of Working Zone to the Current Frame</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Sharpen...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Display coordinates</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Display Measure</value></data>
@@ -332,22 +339,12 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Grid</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Tick marks</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Hide</value></data>
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>An Unknown Error Occurred.</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Playing Error.</value></data>
+   <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Finish polyline here</value></data>
+   <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Finish polyline at previous point</value></data>
+   <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Close this menu</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Recently used colors:</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Failure: Unable to save file : unsupported encoding.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Failure: Unable to save file : problem while initializing encoder.</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - Saving error.</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Failure: Unable to save file : Unable to write to the file.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Failure: Unable to save file : some error happened during encoding process.</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Failure: Unable to save file : unknown error.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Empty</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Classic (h:mm:ss:hundredth)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frames Numbers</value></data>
-   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total milliseconds</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundredth of a minute</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Ten thousandth of an hour</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pause</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zoom: {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Disconnected</value></data>
@@ -363,7 +360,7 @@
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angle</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopwatch</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Circle</value></data>
-   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Cross Marker</value></data>
+   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marker</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Line</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Pencil</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Move</value></data>
@@ -394,7 +391,7 @@
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Set the First Frame of Working Zone to the Current Frame</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Set the Last Frame of Working Zone to the Current Frame</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Show Comments</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Vary Playback Speed</value></data>
+   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Change Playback Speed</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Save both images to a composite image</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Save both videos into a composite video</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Set the Working Zone</value></data>
@@ -404,8 +401,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overview...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reverse...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto Contrast...</value></data>
-   
-   
    
    
    

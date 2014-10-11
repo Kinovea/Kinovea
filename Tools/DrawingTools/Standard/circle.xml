@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>E6D0362B-0FA9-45F9-B936-334EA273A9E4</Id>
+  <Name>Circle</Name>
+  <DisplayName>ToolTip_DrawingToolCircle</DisplayName>
+  <Icon>circle</Icon>
+  <DrawingClass>DrawingCircle</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>true</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>true</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="color">
+      <Value>255;0;0;0</Value>
+    </Color>
+    <PenSize Key="pen size">
+      <Value>3</Value>
+    </PenSize>
+  </DefaultStyle>
+</KinoveaDrawingTool>

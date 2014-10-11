@@ -67,9 +67,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnHideThumbView" xml:space="preserve"><value>Ascunde miniaturile</value></data>
-   <data name="btnShowThumbView" xml:space="preserve"><value>Arată miniaturile</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Inversează poziţia fişierelor video</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Sincronizează fişierele video în cadrele curente </value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Mergi înapoi la început pentru ambele fişiere video</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Mergi la sfârşitul ambelor fişiere video</value></data>
@@ -95,7 +92,6 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Inversează ferestrele</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Afişează / Ascunde controalele comune</value></data>
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Culori</value></data>
-   <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Profil culori...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Restaurează Profilul de culori iniţial</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Încarcă profil culori</value></data>
@@ -113,9 +109,9 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configurează grila</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configurează opacitatea</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacitate : {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Numărul de cadre pe secundă în timpul capturii :\n(ex: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Numărul de cadre pe secundă în timpul rulării : {0:0.00} fps.</value></data>
-   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Fişierul video este de {0:0} ori mai lent decât originalul.</value></data>
+   
+   
+   
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configurează viteza originală</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Reseteză</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Arată markerul ţintă</value></data>
@@ -132,8 +128,6 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Traiectorie completa</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Sectiune de traiectorie in jurul cadrului curent</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Eticheta de-a lungul traiectoriei</value></data>
-   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Originea sistemului de coordonate</value></data>
-   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Miscare de la dreapta la stanga</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Marimea reala a segmentului :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Calibrare</value></data>
    
@@ -150,41 +144,53 @@
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Prezentare tip sideshow doar a cadrelor cheie</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipul fisierului video</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Salveaza datele ca tabel</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgImportReference_Title" xml:space="preserve"><value>Importaţi o imagine ca referinţă</value></data>
-   <data name="dlgImportReference_Filter" xml:space="preserve"><value>Toate fişierele suportate (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comentarii...</value></data>
-   <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Analiză Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|Toate fişierele (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Încarcă datele cadrelor cheie </value></data>
-   <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informaţii</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Suprapune desenele peste cadre.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>un cadru la fiecare {0} sutimi de secunda.</value></data>
-   <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Frecvenţa exportului de cadre :</value></data>
-   <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>un cadru la fiecare {0:0.00} secunde.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>Sufixul va fi adăugat automat la numele cadrelor. ( "cadru" =&gt; "cadru-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Exporta doar cadrele cheie.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Numărul total al cadrelor de exportat : {0:0} imagini.</value></data>
-   <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Durata acoperită de secvenţa de cadre exportată : {0:0.00} secunde.</value></data>
+   
+   
+   
+   
+   
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Salvează o succesiune de cadre</value></data>
-   <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Analiză Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Ţine cont de mişcarea cu încetinitorul. (Curent = </value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opţiuni</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Metoda de salvare</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Salvează doar datele cadrelor cheie</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Salvează video şi cadrele cheie într-un singur fişier</value></data>
-   
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Imprima permanent datele cadrelor cheie pe fisierul video</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Salvează doar video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Salvează video sau cadre cheie...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Salvează datele cadrelor cheie</value></data>
-   <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Salvează Secvenţa</value></data>
-   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salvează Video</value></data>
-   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Specificati originea sistemului de coordonate</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Aparatul video nu poate fi conectat.</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Nu s-a găsit niciun dispozitiv conectat.\nVă rugăm verificaţi ca dispozitivul să fie conectat correspunzător la calculator.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Suprascrie fişierul</value></data>
@@ -208,6 +214,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Aspect</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Aplică</value></data>
    
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Renunţă</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Închide</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Culoare :</value></data>
@@ -223,6 +230,17 @@
    <data name="Generic_Image" xml:space="preserve"><value>Imagine</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video </value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Salvează cadrul</value></data>
+   
+   
+   
+   
+   
+   <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp</value></data>
+   <data name="FileFilter_ImportReference" xml:space="preserve"><value>Toate fişierele suportate (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
+   <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   <data name="FileFilter_KVA" xml:space="preserve"><value>Analiză Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Cadrele cheie au fost modificate.\n Doriţi să salvaţi datele cadrelor cheie înainte de a inchide ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Cadrele cheie nu au fost salvate</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Întârziere afişaj cu: {0:0} s</value></data>
@@ -243,7 +261,6 @@
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Eroare la deschiderea fişierului : tipul fişierului nu este suportat.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea – Eroare la încărcare.</value></data>
    <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Eroare la deschidere : fişier lipsă.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Eroare la deschidere : formatul imaginilor nu este suportat.</value></data>
    <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Eroare la deschidere : există neconcordanţe. Vă rugăm să verificaţi procesul de encodare.</value></data>
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Eroare la deschidere : nu sunt găsite informaţiile referitoare la fluxul video.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Eroare necunoscută la deschidere.</value></data>
@@ -255,7 +272,6 @@
    <data name="LockSelectionLock" xml:space="preserve"><value>Blochează marginile zonei de lucru</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Deblochează marginile zonei de lucru</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Grilă de perspectivă</value></data>
-   <data name="mnuBrightness" xml:space="preserve"><value>Luminozitate...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configurator</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Mod contorizare la zero</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Şterge Cronometru</value></data>
@@ -263,7 +279,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Start Cronometru</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stop Cronometru</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Închide această fereastră</value></data>
-   <data name="mnuColors" xml:space="preserve"><value>Culori...</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Culoare</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Culoare şi mărime...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistenţă...</value></data>
@@ -281,7 +296,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Traiectorii ca text simplu</value></data>
-   <data name="mnuFluidify" xml:space="preserve"><value>Fluidificator</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Format de imagine</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Detectie automata</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Forteaza format 4:3</value></data>
@@ -296,11 +310,6 @@
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Încarc datele cadrelor cheie...</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
-   <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
-   <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
-   <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
-   <data name="mnuMagnifier225" xml:space="preserve"><value>Zoom x2.25</value></data>
-   <data name="mnuMagnifier250" xml:space="preserve"><value>Zoom x2.5</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Schimbă în Zoom Direct</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Închide modul Lupă</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Oglindă</value></data>
@@ -313,8 +322,6 @@
    
    <data name="mnuSendPic" xml:space="preserve"><value>Trimite imaginea către alt fişier video</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Cameră de mare viteză...</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Setaţi sfârşitul zonei de lucru pe cadrul curent</value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Setaţi începutul zonei de lucru pe cadrul curent</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Accentuare de contururi...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Afişează coordonatele</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afiseaza indicator</value></data>
@@ -332,22 +339,12 @@
    
    
    
-   <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>A intervenit o eroare necunoscută.</value></data>
-   <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – Eroare la rulare.</value></data>
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Culori folosite recent :</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Eroare la salvare : encodarea nu este suportată.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Eroare la salvare : au aparut probleme cu iniţializarea encoderului.</value></data>
-   <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea – Eroare la salvare.</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Eroare la salvare : nu se poate scrie fişierul.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Eroare la salvare : au intervenit erori pe timpul procesului de encodare.</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Eroare necunoscută la salvare.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Gol</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clasic (h:mm:ss:sutimi)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numerele cadrelor</value></data>
-   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total în milisecunde</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sutimi de minut</value></data>
-   <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zece miimi de oră</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pauză</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zoom: {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Deconectat</value></data>
@@ -363,7 +360,7 @@
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Unghi</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronometru</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Cerc</value></data>
-   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marker cruce</value></data>
+   <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marker</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Linie</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Creion</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Mutare</value></data>
@@ -404,8 +401,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Privire de ansamblu</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inversează...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast automat...</value></data>
-   
-   
    
    
    

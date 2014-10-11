@@ -51,23 +51,23 @@ namespace Kinovea.ScreenManager
             get 
             { 
                 int hash = 0;
-                foreach (Point p in m_PointList)
+                foreach (PointF p in pointList)
                     hash ^= p.GetHashCode();
             
-                hash ^= m_StyleHelper.ContentHash;
-                hash ^= m_InfosFading.ContentHash;
+                hash ^= styleHelper.ContentHash;
+                hash ^= infosFading.ContentHash;
 
                 return hash;
             }
         } 
         public DrawingStyle DrawingStyle
         {
-            get { return m_Style;}
+            get { return style;}
         }
         public override InfosFading InfosFading
         {
-            get { return m_InfosFading; }
-            set { m_InfosFading = value; }
+            get { return infosFading; }
+            set { infosFading = value; }
         }
         public override DrawingCapabilities Caps
         {
@@ -77,63 +77,68 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
+        public bool Initializing
+        {
+            get { return initializing; }
+        }
         #endregion
 
         #region Members
-        private List<Point> m_PointList = new List<Point>();
-        private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style;
-        private InfosFading m_InfosFading;
+        private List<PointF> pointList = new List<PointF>();
+        private StyleHelper styleHelper = new StyleHelper();
+        private DrawingStyle style;
+        private InfosFading infosFading;
+        private bool initializing = true;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
-        public DrawingPencil(Point _origin, Point _second, long _iTimestamp, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingPencil(Point origin, Point second, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset)
         {
-            m_PointList.Add(_origin);
-            m_PointList.Add(_second);
-            m_InfosFading = new InfosFading(_iTimestamp, _AverageTimeStampsPerFrame);
-            
-            m_StyleHelper.Color = Color.Black;
-            m_StyleHelper.LineSize = 1;
-            if(_preset != null)
+            pointList.Add(origin);
+            pointList.Add(second);
+            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
+
+            styleHelper.Color = Color.Black;
+            styleHelper.LineSize = 1;
+            if(preset != null)
             {
-                m_Style = _preset.Clone();
+                style = preset.Clone();
                 BindStyle();
             }
         }
-        public DrawingPencil(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(Point.Empty, Point.Empty, 0, 0, ToolManager.Pencil.StylePreset.Clone())
+        public DrawingPencil(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
+            : this(Point.Empty, Point.Empty, 0, 0, ToolManager.GetStylePreset("Pencil"))
         {
-            ReadXml(_xmlReader, _scale);
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            double fOpacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
             if(fOpacityFactor <= 0)
                 return;
             
-            using(Pen penLine = m_StyleHelper.GetPen(fOpacityFactor, _transformer.Scale))
+            using(Pen penLine = styleHelper.GetPen(fOpacityFactor, transformer.Scale))
             {
-                Point[] points = m_PointList.Select(p => _transformer.Transform(p)).ToArray();
-                _canvas.DrawCurve(penLine, points, 0.5f);
+                Point[] points = transformer.Transform(pointList).ToArray();
+                canvas.DrawCurve(penLine, points, 0.5f);
             }
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+        public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
-            m_PointList = m_PointList.Select(p => p.Translate(_deltaX, _deltaY)).ToList();
+            pointList = pointList.Select(p => p.Translate(dx, dy)).ToList();
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
-            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
-            if (opacity > 0 && IsPointInObject(point))
+            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
+            if (opacity > 0 && IsPointInObject(point, transformer))
                 result = 0;
                 
             return result;
@@ -141,138 +146,143 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region KVA Serialization
-        private void ReadXml(XmlReader _xmlReader, PointF _scale)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
-            _xmlReader.ReadStartElement();
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "PointList":
-                        ParsePointList(_xmlReader, _scale);
+                        ParsePointList(xmlReader, scale);
                         break;
                     case "DrawingStyle":
-                        m_Style = new DrawingStyle(_xmlReader);
+                        style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
                     case "InfosFading":
-                        m_InfosFading.ReadXml(_xmlReader);
+                        infosFading.ReadXml(xmlReader);
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
+            initializing = false;
         }
-        private void ParsePointList(XmlReader _xmlReader, PointF _scale)
+        private void ParsePointList(XmlReader xmlReader, PointF scale)
         {
-            m_PointList.Clear();
+            pointList.Clear();
             
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                if(_xmlReader.Name == "Point")
+                if(xmlReader.Name == "Point")
                 {
-                    Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                    Point adapted = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    m_PointList.Add(adapted);
+                    PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                    PointF adapted = p.Scale(scale.X, scale.Y);
+                    pointList.Add(adapted);
                 }
                 else
                 {
-                    string unparsed = _xmlReader.ReadOuterXml();
+                    string unparsed = xmlReader.ReadOuterXml();
                     log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            _xmlWriter.WriteStartElement("PointList");
-            _xmlWriter.WriteAttributeString("Count", m_PointList.Count.ToString());
-            foreach (Point p in m_PointList)
-                _xmlWriter.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
+            if (ShouldSerializeCore(filter))
+            {
+                w.WriteStartElement("PointList");
+                w.WriteAttributeString("Count", pointList.Count.ToString());
+                foreach (PointF p in pointList)
+                    w.WriteElementString("Point", XmlHelper.WritePointF(p));
 
-            _xmlWriter.WriteEndElement();
-            
-            _xmlWriter.WriteStartElement("DrawingStyle");
-            m_Style.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
-            
-            _xmlWriter.WriteStartElement("InfosFading");
-            m_InfosFading.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement(); 
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeStyle(filter))
+            {
+                w.WriteStartElement("DrawingStyle");
+                style.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
         }
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(Point point, Keys modifiers)
+        public void InitializeMove(PointF point, Keys modifiers)
         {
             AddPoint(point, modifiers);
+        }
+        public string InitializeCommit(PointF point)
+        {
+            initializing = false;
+            return null;
+        }
+        public string InitializeEnd(bool cancelCurrentPoint)
+        {
+            return null;
         }
         #endregion
         
         #region Lower level helpers
         private void BindStyle()
         {
-            m_Style.Bind(m_StyleHelper, "Color", "color");
-            m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
+            style.Bind(styleHelper, "Color", "color");
+            style.Bind(styleHelper, "LineSize", "pen size");
         }
-        private void AddPoint(Point _coordinates, Keys modifiers)
+        private void AddPoint(PointF point, Keys modifiers)
         {
-            Point newPoint = Point.Empty;
-            int pointsUsedToComputeDirection = Math.Min(10, m_PointList.Count);
+            PointF newPoint = PointF.Empty;
+            int pointsUsedToComputeDirection = Math.Min(10, pointList.Count);
             
             if((modifiers & Keys.Shift) == Keys.Shift)
             {
                 // Checks whether the mouse motion is more horizontal or vertical, and only keep this component of the motion.
-                int dx = Math.Abs(_coordinates.X - m_PointList[m_PointList.Count - pointsUsedToComputeDirection].X);
-                int dy = Math.Abs(_coordinates.Y - m_PointList[m_PointList.Count - pointsUsedToComputeDirection].Y);
+                float dx = Math.Abs(point.X - pointList[pointList.Count - pointsUsedToComputeDirection].X);
+                float dy = Math.Abs(point.Y - pointList[pointList.Count - pointsUsedToComputeDirection].Y);
                 if(dx > dy)
-                    newPoint = new Point(_coordinates.X, m_PointList[m_PointList.Count - 1].Y);
+                    newPoint = new PointF(point.X, pointList[pointList.Count - 1].Y);
                 else
-                    newPoint = new Point(m_PointList[m_PointList.Count - 1].X, _coordinates.Y);
+                    newPoint = new PointF(pointList[pointList.Count - 1].X, point.Y);
             }
             else
             {
-                newPoint = _coordinates;
+                newPoint = point;
             }
             
-            m_PointList.Add(newPoint);
+            pointList.Add(newPoint);
         }
-        private bool IsPointInObject(Point _point)
+        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
         {
-            bool hit = false;
-            using(GraphicsPath areaPath = new GraphicsPath())
+            using(GraphicsPath path = new GraphicsPath())
             {
-                areaPath.AddCurve(m_PointList.ToArray(), 0.5f);
-            
-                RectangleF bounds = areaPath.GetBounds();
-                if(!bounds.IsEmpty)
-                {
-                    using(Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7))
-                    {
-                        areaPen.StartCap = LineCap.Round;
-                        areaPen.EndCap = LineCap.Round;
-                        areaPen.LineJoin = LineJoin.Round;
-                        areaPath.Widen(areaPen);
-                    }
-                    using(Region areaRegion = new Region(areaPath))
-                    {
-                        hit = areaRegion.IsVisible(_point);
-                    }
-                }
-                else
-                {
-                    hit = false;
-                }
+                path.AddCurve(pointList.ToArray(), 0.5f);
+                RectangleF bounds = path.GetBounds();
+                if (bounds.IsEmpty)
+                    return false;
+
+                return HitTester.HitTest(path, point, styleHelper.LineSize, false, transformer);
             }
-            return hit;
         }
         #endregion
     }

@@ -31,29 +31,22 @@ using Kinovea.ScreenManager.Languages;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// This dialog let the user specify how many real-world-units long is this line.
-    /// This will have an impact on all lines stored in this metadata.
-    /// Note that it is not possible to map pixels to pixels. 
-    /// Pixel are used exclusively internally. 
+    /// This dialog lets the user specify a mapping between pixels (undistorted) and real world units.
+    /// This type of calibration assumes all points are on the same plane, orthogonal to the camera optical axis.
     /// </summary>
     public partial class FormCalibrateLine : Form
     {
         #region Members
         private CalibrationHelper calibrationHelper;
-        private DrawingLine2D line;
-        private float pixelLength;
-        private float calibratedLength;
+        private DrawingLine line;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Construction & Initialization
-        public FormCalibrateLine(CalibrationHelper calibrationHelper, DrawingLine2D line)
+        public FormCalibrateLine(CalibrationHelper calibrationHelper, DrawingLine line)
         {
             this.calibrationHelper = calibrationHelper;
             this.line = line;
-            
-            pixelLength = this.line.Length();
-            calibratedLength = pixelLength;
             
             InitializeComponent();
             LocalizeForm();
@@ -80,8 +73,8 @@ namespace Kinovea.ScreenManager
         {
             if(calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Line)
             {
-                calibratedLength = calibrationHelper.GetLength(PointF.Empty, new PointF(pixelLength, 0));
-                tbMeasure.Text = String.Format("{0:0.00}", calibratedLength);
+                string text = calibrationHelper.GetLengthText(line.A, line.B, true, false);
+                tbMeasure.Text = text;
                 
                 cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
             }
@@ -116,13 +109,16 @@ namespace Kinovea.ScreenManager
                 float length = float.Parse(tbMeasure.Text);
                 if(length <= 0)
                     return;
-                
+
+                PointF a = calibrationHelper.DistortionHelper.Undistort(line.A);
+                PointF b = calibrationHelper.DistortionHelper.Undistort(line.B);
+                float pixelLength = GeometryHelper.GetDistance(a, b);
+
                 float ratio = length / pixelLength;
                 
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Line);
-
-                calibrationHelper.CalibrationByLine_SetPixelToUnit(ratio);
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
+                calibrationHelper.CalibrationByLine_Initialize(ratio);
             }
             catch
             {

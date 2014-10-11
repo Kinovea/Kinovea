@@ -27,7 +27,7 @@ using System.Globalization;
 using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
-{	
+{
     /// <summary>
     /// A class to encapsulate the various styling primitive a drawing may need for rendering, 
     /// and provide some utility functions to get a Pen, Brush, Font or Color object according to client opacity or zoom.
@@ -67,10 +67,20 @@ namespace Kinovea.ScreenManager
             get { return lineSize; }
             set { lineSize = value;}
         }
+        public LineShape LineShape
+        {
+            get { return lineShape; }
+            set { lineShape = value; }
+        }
         public LineEnding LineEnding
         {
             get { return lineEnding; }
             set { lineEnding = value;}
+        }
+        public bool Curved
+        {
+            get { return curved; }
+            set { curved = value; }
         }
         public Font Font
         {
@@ -121,6 +131,7 @@ namespace Kinovea.ScreenManager
                 iHash ^= bicolor.ContentHash;
                 iHash ^= lineEnding.GetHashCode();
                 iHash ^= trackShape.GetHashCode();
+                iHash ^= curved.GetHashCode();
                 
                 return iHash;
             }
@@ -130,10 +141,12 @@ namespace Kinovea.ScreenManager
         #region Members
         private Color color;
         private int lineSize;
+        private LineShape lineShape;
         private Font font = new Font("Arial", 12, FontStyle.Regular);
         private Bicolor bicolor;
         private LineEnding lineEnding = LineEnding.None;
         private TrackShape trackShape = TrackShape.Solid;
+        private bool curved;
         private int gridDivisions;
         
         // Internal only
@@ -160,7 +173,7 @@ namespace Kinovea.ScreenManager
         /// <returns>Pen object initialized with the current value of color and width = 1.0</returns>
         public Pen GetPen(int alpha)
         {
-            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;			
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
             
             return NormalPen(new Pen(c, 1.0f));
         }
@@ -171,7 +184,9 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Returns a Pen object suitable to draw a line or contour.
-        /// The pen object will integrate the color, line size, line shape, and line endings properties.
+        /// The pen object will integrate the color, line size.
+        /// Line shape is drawn in the drawing to accomodate for squiggly lines.
+        /// Line ending is drawn in the drawing to have better arrows that what is provided by the Pen class.
         /// </summary>
         /// <param name="alpha">Alpha value to multiply the color with</param>
         /// <param name="stretchFactor">zoom value to multiply the line size with</param>
@@ -186,11 +201,6 @@ namespace Kinovea.ScreenManager
             Pen p = new Pen(c, penWidth);
             p.LineJoin = LineJoin.Round;
             
-            // Line endings
-            p.StartCap = lineEnding.StartCap;
-            p.EndCap = lineEnding.EndCap;
-            
-            // Line shape
             p.DashStyle = trackShape.DashStyle;
             
             return p;
@@ -220,7 +230,7 @@ namespace Kinovea.ScreenManager
         #region Font property
         public Font GetFont(float stretchFactor)
         {
-            float fFontSize = GetRescaledFontSize(stretchFactor);			
+            float fFontSize = GetRescaledFontSize(stretchFactor);
             return new Font(font.Name, fFontSize, font.Style);
         }
         public Font GetFontDefaultSize(int fontSize)
@@ -252,7 +262,7 @@ namespace Kinovea.ScreenManager
                 {
                     smallestDiff = diff;
                     bestCandidate = size;
-                }	
+                }
             }
             
             g.Dispose();
@@ -305,50 +315,70 @@ namespace Kinovea.ScreenManager
         {
             // Check type and import value if compatible with the target prop.
             bool imported = false;
-            switch(targetProperty)
+            switch (targetProperty)
             {
                 case "Color":
                     {
-                        if(value is Color)
+                        if (value is Color)
                         {
                             color = (Color)value;
                             imported = true;
                         }
-                        break;	
+                        break;
                     }
                 case "LineSize":
                     {
-                        if(value is int)
+                        if (value is int)
                         {
                             lineSize = (int)value;
                             imported = true;
                         }
-                        
+
+                        break;
+                    }
+                case "LineShape":
+                    {
+                        if (value is LineShape)
+                        {
+                            lineShape = (LineShape)value;
+                            imported = true;
+                        }
+
                         break;
                     }
                 case "LineEnding":
                     {
-                        if(value is LineEnding)
+                        if (value is LineEnding)
                         {
                             lineEnding = (LineEnding)value;
                             imported = true;
                         }
-                        
+
                         break;
                     }
                 case "TrackShape":
                     {
-                        if(value is TrackShape)
+                        if (value is TrackShape)
                         {
                             trackShape = (TrackShape)value;
                             imported = true;
                         }
-                        
+
+                        break;
+                    }
+                case "Curved":
+                    {
+                        if (value is Boolean)
+                        {
+                            curved = (Boolean)value;
+                            imported = true;
+                        }
+
                         break;
                     }
                 case "Font":
                     {
-                        if(value is int)
+                        if (value is int)
                         {
                             // Recreate the font changing just the size.
                             string fontName = font.Name;
@@ -361,16 +391,16 @@ namespace Kinovea.ScreenManager
                     }
                 case "Bicolor":
                     {
-                        if(value is Color)
+                        if (value is Color)
                         {
                             bicolor.Background = (Color)value;
                             imported = true;
                         }
-                        break;	
+                        break;
                     }
                 case "GridDivisions":
                     {
-                        if(value is int)
+                        if (value is int)
                         {
                             gridDivisions = (int)value;
                             imported = true;
@@ -379,7 +409,7 @@ namespace Kinovea.ScreenManager
                     }
                 default:
                     {
-                        log.DebugFormat("Unknown target property \"{0}\"." , targetProperty);
+                        log.DebugFormat("Unknown target property \"{0}\".", targetProperty);
                         break;
                     }
             }
@@ -402,29 +432,38 @@ namespace Kinovea.ScreenManager
             // The style element might be of an entirely different type than the property.
             bool converted = false;
             object result = null;
-            switch(sourceProperty)
+            switch (sourceProperty)
             {
                 case "Color":
                     {
-                        if(targetType == typeof(Color))
+                        if (targetType == typeof(Color))
                         {
                             result = color;
                             converted = true;
                         }
-                        break;	
+                        break;
                     }
                 case "LineSize":
                     {
-                        if(targetType == typeof(int))
+                        if (targetType == typeof(int))
                         {
                             result = lineSize;
                             converted = true;
                         }
                         break;
                     }
+                case "LineShape":
+                    {
+                        if (targetType == typeof(LineShape))
+                        {
+                            result = lineShape;
+                            converted = true;
+                        }
+                        break;
+                    }
                 case "LineEnding":
                     {
-                        if(targetType == typeof(LineEnding))
+                        if (targetType == typeof(LineEnding))
                         {
                             result = lineEnding;
                             converted = true;
@@ -433,16 +472,26 @@ namespace Kinovea.ScreenManager
                     }
                 case "TrackShape":
                     {
-                        if(targetType == typeof(TrackShape))
+                        if (targetType == typeof(TrackShape))
                         {
                             result = trackShape;
                             converted = true;
                         }
                         break;
                     }
+                case "Curved":
+                    {
+                        if (targetType == typeof(Boolean))
+                        {
+                            result = curved;
+                            converted = true;
+                        }
+
+                        break;
+                    }
                 case "Font":
                     {
-                        if(targetType == typeof(int))
+                        if (targetType == typeof(int))
                         {
                             result = (int)font.Size;
                             converted = true;
@@ -451,16 +500,16 @@ namespace Kinovea.ScreenManager
                     }
                 case "Bicolor":
                     {
-                        if(targetType == typeof(Color))
+                        if (targetType == typeof(Color))
                         {
                             result = bicolor.Background;
                             converted = true;
                         }
-                        break;	
+                        break;
                     }
                 case "GridDivisions":
                     {
-                        if(targetType == typeof(int))
+                        if (targetType == typeof(int))
                         {
                             result = gridDivisions;
                             converted = true;
@@ -469,9 +518,9 @@ namespace Kinovea.ScreenManager
                     }
                 default:
                     {
-                        log.DebugFormat("Unknown source property \"{0}\"." , sourceProperty);
+                        log.DebugFormat("Unknown source property \"{0}\".", sourceProperty);
                         break;
-                    }	
+                    }
             }
             
             if(!converted)
@@ -540,189 +589,8 @@ namespace Kinovea.ScreenManager
         }
     }
     
-    /// <summary>
-    /// A simple wrapper around two LineCap values.
-    /// Used to describe arrow endings and possibly other endings.
-    /// </summary>
-    [TypeConverter(typeof(LineEndingConverter))]
-    public struct LineEnding
-    {
-        public readonly LineCap StartCap;
-        public readonly LineCap EndCap;
-        
-        #region Static properties
-        private static LineEnding none = new LineEnding(LineCap.Round, LineCap.Round);
-        public static LineEnding None
-        {
-            get { return none;}
-        }
-        private static LineEnding startArrow = new LineEnding(LineCap.ArrowAnchor, LineCap.Round);
-        public static LineEnding StartArrow
-        {
-            get { return startArrow;}
-        }
-        private static LineEnding endArrow = new LineEnding(LineCap.Round, LineCap.ArrowAnchor);
-        public static LineEnding EndArrow
-        {
-            get { return endArrow;}
-        }
-        private static LineEnding doubleArrow = new LineEnding(LineCap.ArrowAnchor, LineCap.ArrowAnchor);
-        public static LineEnding DoubleArrow
-        {
-            get { return doubleArrow;}
-        }
-        #endregion
-        
-        public LineEnding(LineCap start, LineCap end)
-        {
-            StartCap = start;
-            EndCap = end;
-        }
-    }
     
-    /// <summary>
-    /// Converter class for LineEnding. 
-    /// Support: string.
-    /// </summary>
-    public class LineEndingConverter : TypeConverter
-    {
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-        {
-            return sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
-        }
-
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-        {
-            return destinationType == typeof(string) ? true : base.CanConvertTo(context, destinationType);
-        }	
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-        {
-            if(!(value is string))
-                return base.ConvertFrom(context, culture, value);
-            
-            string stringValue = value as string;
-                
-            if (string.IsNullOrEmpty(stringValue))
-                return LineEnding.None;
-                
-            string[] split = stringValue.Split(new Char[] { ';' });
-                
-            if(split.Length != 2)
-                return LineEnding.None;
-                
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LineCap));
-            LineCap start = (LineCap)enumConverter.ConvertFromString(context, culture, split[0]);
-            LineCap end = (LineCap)enumConverter.ConvertFromString(context, culture, split[1]);
-                
-            return new LineEnding(start, end);
-        }
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-        {
-            if (destinationType != typeof(string))
-                return base.ConvertTo(context, culture, value, destinationType);
-
-            LineEnding lineEnding = (LineEnding)value;
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LineCap));
-            string result = String.Format("{0};{1}", 
-                enumConverter.ConvertToString(context, culture, (LineCap)lineEnding.StartCap), 
-                enumConverter.ConvertToString(context, culture, (LineCap)lineEnding.EndCap));
-            return result;
-        }
-    }
     
-    /// <summary>
-    /// A simple wrapper around a dash style and the presence of time ticks.
-    /// Used to describe line shape for tracks.
-    /// </summary>
-    [TypeConverter(typeof(TrackShapeConverter))]
-    public struct TrackShape
-    {
-        public readonly DashStyle DashStyle;
-        public readonly bool ShowSteps;
-        
-        #region Static Properties
-        private static TrackShape solid = new TrackShape(DashStyle.Solid, false);
-        public static TrackShape Solid
-        {
-            get { return solid;}
-        }
-        private static TrackShape dash = new TrackShape(DashStyle.Dash, false);
-        public static TrackShape Dash
-        {
-            get { return dash;}
-        }
-        private static TrackShape solidSteps = new TrackShape(DashStyle.Solid, true);
-        public static TrackShape SolidSteps
-        {
-            get { return solidSteps;}
-        }
-        private static TrackShape dashSteps = new TrackShape(DashStyle.Dash, true);
-        public static TrackShape DashSteps
-        {
-            get { return dashSteps;}
-        }
-        #endregion
-        
-        public TrackShape(DashStyle style, bool steps)
-        {
-            DashStyle = style;
-            ShowSteps = steps;
-        }
-    }
     
-    /// <summary>
-    /// Converter class for TrackShape.
-    /// Support: string.
-    /// </summary>
-    public class TrackShapeConverter : TypeConverter
-    {
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-        {
-            return sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
-        }
-        
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-        {
-            return destinationType == typeof(string) ? true : base.CanConvertTo(context, destinationType);
-        }
-    
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-        {
-            if(!(value is string))
-                return base.ConvertFrom(context, culture, value);
-            
-            string stringValue = value as string;
-                
-            if (string.IsNullOrEmpty(stringValue))
-                return TrackShape.Solid;
-                
-            string[] split = stringValue.Split(new Char[] { ';' });
-                
-            if(split.Length != 2)
-                return TrackShape.Solid;
-                
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DashStyle));
-            DashStyle dash = (DashStyle)enumConverter.ConvertFromString(context, culture, split[0]);
-                
-            TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
-            bool steps = (bool)boolConverter.ConvertFromString(context, culture, split[1]);
-                
-            return new TrackShape(dash, steps);
-        }
-
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-        {
-            if (destinationType != typeof(string))
-                return base.ConvertTo(context, culture, value, destinationType);
-            
-            TrackShape trackShape = (TrackShape)value;
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DashStyle));
-            string result = String.Format("{0};{1}",
-                enumConverter.ConvertToString(context, culture, (DashStyle)trackShape.DashStyle), 
-                trackShape.ShowSteps?"true":"false");
-                
-            return result;
-        }
-    }	
         
 }

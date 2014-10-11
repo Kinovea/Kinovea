@@ -40,6 +40,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public Guid Id { get; private set;}
         public string Name { get; private set;}
+        public string DisplayName { get; private set;}
         public Bitmap Icon { get; private set;}
         
         public List<PointF> Points { get; private set; }
@@ -51,6 +52,7 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureComputedPoint> ComputedPoints { get; private set;}
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
+        public TrackingProfile CustomTrackingProfile { get; private set; }
         public GenericPostureCapabilities Capabilities { get; private set;}
         public Dictionary<string, bool> OptionGroups { get; private set;}
         
@@ -69,6 +71,7 @@ namespace Kinovea.ScreenManager
         {
             Id = Guid.Empty;
             Name = "";
+            DisplayName = "";
             Icon = null;
             this.FromKVA = fromKVA;
             
@@ -82,6 +85,7 @@ namespace Kinovea.ScreenManager
             ComputedPoints = new List<GenericPostureComputedPoint>();
             HitZones = new List<GenericPostureAbstractHitZone>();
             Capabilities = GenericPostureCapabilities.None;
+            CustomTrackingProfile = null;
             OptionGroups = new Dictionary<string, bool>();
             
             if(string.IsNullOrEmpty(descriptionFile))
@@ -132,6 +136,9 @@ namespace Kinovea.ScreenManager
                         case "Name":
                             Name = r.ReadElementContentAsString();
                             break;
+                        case "DisplayName":
+                            DisplayName = r.ReadElementContentAsString();
+                            break;
                         case "Icon":
                             ParseIcon(r);
                             break;
@@ -165,12 +172,18 @@ namespace Kinovea.ScreenManager
     			{
                     switch(r.Name)
     				{
-                        case "Name":
                         case "Icon":
                              r.ReadOuterXml();
                             break;
+
                         case "Id":
                             Id = new Guid(r.ReadElementContentAsString());
+                            break;
+                        case "Name":
+                            Name = r.ReadElementContentAsString();
+                            break;
+                        case "DisplayName":
+                            DisplayName = r.ReadElementContentAsString();
                             break;
                         case "PointCount":
                             ParsePointCount(r);
@@ -199,6 +212,9 @@ namespace Kinovea.ScreenManager
                         case "HitZone":
     						ParseHitZone(r);
     						break;
+                        case "TrackingProfile":
+                            ParseTrackingProfile(r);
+                            break;
                         case "DefaultOptions":
     						ParseDefaultOptions(r);
     						break;
@@ -370,6 +386,60 @@ namespace Kinovea.ScreenManager
             
             r.ReadEndElement();
         }
+        private void ParseTrackingProfile(XmlReader r)
+        {
+            TrackingProfile classic = new TrackingProfile();
+            double similarityThreshold = classic.SimilarityThreshold;
+            double updateThreshold = classic.TemplateUpdateThreshold;
+            Size searchWindow = classic.SearchWindow;
+            Size blockWindow = classic.BlockWindow;
+            TrackerParameterUnit searchWindowUnit = classic.SearchWindowUnit;
+            TrackerParameterUnit blockWindowUnit = classic.BlockWindowUnit;
+            bool resetOnMove = classic.ResetOnMove;
+
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "SimilarityThreshold":
+                        similarityThreshold = r.ReadElementContentAsDouble();
+                        break;
+                    case "UpdateTemplateThreshold":
+                        updateThreshold = r.ReadElementContentAsDouble();
+                        break;
+                    case "SearchWindow":
+                        if (r.MoveToAttribute("unit"))
+                            searchWindowUnit = (TrackerParameterUnit)Enum.Parse(typeof(TrackerParameterUnit), r.ReadContentAsString());
+
+                        r.ReadStartElement();
+                        searchWindow = XmlHelper.ParseSize(r.ReadContentAsString());
+                        r.ReadEndElement();
+                        break;
+                    case "BlockWindow":
+                        if (r.MoveToAttribute("unit"))
+                            blockWindowUnit = (TrackerParameterUnit)Enum.Parse(typeof(TrackerParameterUnit), r.ReadContentAsString());
+
+                        r.ReadStartElement();
+                        blockWindow = XmlHelper.ParseSize(r.ReadContentAsString());
+                        r.ReadEndElement();
+                        break;
+                    case "ResetOnMove":
+                        resetOnMove = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    default:
+                        string outerXml = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                        break;
+                }
+            }
+            
+            r.ReadEndElement();
+
+            string name = Guid.NewGuid().ToString();
+            CustomTrackingProfile = new TrackingProfile(name, similarityThreshold, updateThreshold, searchWindow, blockWindow, searchWindowUnit, blockWindowUnit, resetOnMove);
+        }
         private void ParseHitZone(XmlReader r)
         {
             r.ReadStartElement();
@@ -437,7 +507,7 @@ namespace Kinovea.ScreenManager
                 {
                     if(index < Points.Count)
                     {
-                        Points[index] = XmlHelper.ParsePoint(r.ReadElementContentAsString());
+                        Points[index] = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         index++;
                     }
                     else
@@ -496,31 +566,29 @@ namespace Kinovea.ScreenManager
         }
         #endregion
    
-        public Dictionary<string, Point> GetTrackablePoints()
+        public Dictionary<string, PointF> GetTrackablePoints()
         {
-            Dictionary<string, Point> trackablePoints = new Dictionary<string, Point>();
+            Dictionary<string, PointF> trackablePoints = new Dictionary<string, PointF>();
             
-            // TODO: generalize the use of PointF.
             foreach(int index in trackableIndices)
-            {
-                Point p = new Point((int)Points[index].X, (int)Points[index].Y);
-                trackablePoints.Add(index.ToString(), p);
-            }
+                trackablePoints.Add(index.ToString(), Points[index]);
             
             return trackablePoints;
         }
         
         public void SignalAllTrackablePointsMoved(EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
         {
-            // TODO: generalize the use of PointF.
             foreach(int index in trackableIndices)
-            {
-                Point p = new Point((int)Points[index].X, (int)Points[index].Y);
-                trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), p));
-            }
+                trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), Points[index]));
         }
-              
-        public void SetTrackablePointValue(string name, Point value, CalibrationHelper calibrationHelper)
+
+        public void SignalTrackablePointMoved(int handleIndex, EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
+        {
+            int index = Handles[handleIndex].Reference;
+            trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), Points[index]));
+        }
+
+        public void SetTrackablePointValue(string name, PointF value, CalibrationHelper calibrationHelper)
         {
             // Value coming from tracking.
             int pointIndex = int.Parse(name);

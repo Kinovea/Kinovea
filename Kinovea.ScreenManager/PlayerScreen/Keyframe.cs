@@ -1,5 +1,6 @@
+#region License
 /*
-Copyright © Joan Charmant 2008.
+Copyright © Joan Charmant 2008
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -15,13 +16,14 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
+#endregion
 
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -31,83 +33,65 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class Keyframe : IComparable
+    public class Keyframe : AbstractDrawingManager, IComparable
     {
         #region Properties
+        public override Guid Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+        public bool Initialized
+        {
+            get { return initialized; }
+        }
         public long Position
         {
-            get { return m_Position; }
-            set { m_Position = value;}
+            get { return position; }
+            set { position = value;}
         }
         public Bitmap Thumbnail
         {
-            get { return m_Thumbnail; }
-            //set { m_Thumbnail = value; }
+            get { return thumbnail; }
         }
         public Bitmap DisabledThumbnail
         {
-            get { return m_DisabledThumbnail; }
-            set { m_DisabledThumbnail = value; }
+            get { return disabledThumbnail; }
         }
         public List<AbstractDrawing> Drawings
         {
-            get { return m_Drawings; }
-            set { m_Drawings = value;}
+            get { return drawings; }
         }
         public Bitmap FullFrame
         {
-            get { return m_FullFrame; }
-            set { m_FullFrame = value; }
+            get { return fullFrame; }
         }
-        public string CommentRtf
+        public string Comments
         {
-            get { return m_CommentRtf; }
-            set { m_CommentRtf = value; }
+            get { return comments; }
+            set { comments = value; }
         }
-        /// <summary>
-        /// The title of a keyframe is dynamic.
-        /// It is the timecode until the user actually manually changes it.
-        /// </summary>
-        public String Title
+        public string Title
         {
             get 
-            { 
-                if(m_Title != null)
-                {
-                    if(m_Title.Length > 0)
-                    {
-                        return m_Title;
-                    }
-                    else 
-                    {
-                        return m_Timecode;
-                    }
-                }
-                else
-                {
-                    return m_Timecode;
-                }
+            {
+                return string.IsNullOrEmpty(title) ? timecode : title;
             }
             set 
             { 
-                m_Title = value;
-                m_ParentMetadata.UpdateTrajectoriesForKeyframes();
+                title = value;
+                metadata.UpdateTrajectoriesForKeyframes();
             }
         }
-        public String TimeCode
+        public string TimeCode
         {
-            get { return m_Timecode; }
-            set { m_Timecode = value; }
+            get { return timecode; }
+            set { timecode = value; }
         }
         public bool Disabled
         {
-            get { return m_bDisabled; }
-            set { m_bDisabled = value; }
-        }
-        public Metadata ParentMetadata
-        {
-            get { return m_ParentMetadata; }    // unused.
-            set { m_ParentMetadata = value; }
+            get { return disabled; }
+            set { disabled = value; }
         }
         public int ContentHash
         {
@@ -116,128 +100,182 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private long m_Position = -1;            // Position is absolute in all timestamps.
-        private string  m_Title = "";
-        private string m_Timecode = "";
-        private string m_CommentRtf;
-        private Bitmap m_Thumbnail;
-        private Bitmap m_DisabledThumbnail;
-        private List<AbstractDrawing> m_Drawings = new List<AbstractDrawing>();
-        private Bitmap m_FullFrame;
-        private bool m_bDisabled;
-        private Metadata m_ParentMetadata;
+        private Guid id = Guid.NewGuid();
+        private bool initialized;
+        private long position = -1;            // Position is absolute in all timestamps.
+        private string title;
+        private string timecode;
+        private string comments;
+        private Bitmap fullFrame;
+        private Bitmap thumbnail;
+        private Bitmap disabledThumbnail;
+        private List<AbstractDrawing> drawings = new List<AbstractDrawing>();
+        private bool disabled;
+        private Metadata metadata;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public Keyframe(Metadata _ParentMetadata)
+        public Keyframe(long position, string timecode, Metadata metadata)
         {
-            // Used only during parsing to hold dummy Keyframe while it is loaded.
-            // Must be followed by a call to PostImportMetadata()
-            m_ParentMetadata = _ParentMetadata;
+            this.position = position;
+            this.timecode = timecode;
+            this.metadata = metadata;
         }
-        public Keyframe(long _position, string _timecode, Bitmap _image, Metadata _ParentMetadata)
+        public Keyframe(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
+            : this(0, "", metadata)
         {
-            // Title is a variable default.
-            // as long as it's null, it takes the value of timecode.
-            // which is updated when selection change.
-            // as soon as the user put value in title, we use it instead.
-            m_Position = _position;
-            m_Timecode = _timecode;
-            m_Thumbnail = new Bitmap(_image, 100, 75);
-            m_FullFrame = ImageHelper.ConvertToJPG(_image, 90);
-            m_ParentMetadata = _ParentMetadata;
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
         #region Public Interface
-        public void ImportImage(Bitmap _image)
+        public void Initialize(long position, Bitmap image)
         {
-            m_Thumbnail = new Bitmap(_image, 100, 75);
-            m_FullFrame = ImageHelper.ConvertToJPG(_image, 90);
+            this.position = position;
+            
+            if (image != null)
+            {
+                this.thumbnail = new Bitmap(image, 100, 75);
+                this.fullFrame = ImageHelper.ConvertToJPG(image, 90);
+                this.disabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(thumbnail);
+            }
+            
+            initialized = true;
         }
-        public void GenerateDisabledThumbnail()
+        #endregion
+
+        #region AbstractDrawingManager implementation
+        public override AbstractDrawing GetDrawing(Guid id)
         {
-            m_DisabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(m_Thumbnail);
+            return drawings.FirstOrDefault(d => d.Id == id);
         }
-        public void AddDrawing(AbstractDrawing obj)
+        public override void AddDrawing(AbstractDrawing drawing)
         {
             // insert to the top of z-order except for grids.
-            if(obj is DrawingPlane)
-                m_Drawings.Add(obj);
+            if (drawing is DrawingPlane)
+                drawings.Add(drawing);
             else
-                m_Drawings.Insert(0, obj);
+                drawings.Insert(0, drawing);
         }
+        public override void RemoveDrawing(Guid id)
+        {
+            drawings.RemoveAll(d => d.Id == id);
+        }
+        public override void Clear()
+        {
+            drawings.Clear();
+        }
+        #endregion
+
+        #region KVA Serialization
         public void WriteXml(XmlWriter w)
         {
             w.WriteStartElement("Position");
-            string userTime = m_ParentMetadata.TimeStampsToTimecode(m_Position, TimecodeFormat.Unknown, false);
+            string userTime = metadata.TimeCodeBuilder(position - metadata.SelectionStart, TimeType.Time, TimecodeFormat.Unknown, false);
             w.WriteAttributeString("UserTime", userTime);
-            w.WriteString(m_Position.ToString());
+            w.WriteString(position.ToString());
             w.WriteEndElement();
-            
-            if(!string.IsNullOrEmpty(Title))
+
+            if (!string.IsNullOrEmpty(Title))
                 w.WriteElementString("Title", Title);
-            
-            if(!string.IsNullOrEmpty(m_CommentRtf))
-                w.WriteElementString("Comment", m_CommentRtf);
-            
-            if (m_Drawings.Count > 0)
+
+            if (!string.IsNullOrEmpty(comments))
+                w.WriteElementString("Comment", comments);
+
+            if (drawings.Count == 0)
+                return;
+
+            w.WriteStartElement("Drawings");
+            foreach (AbstractDrawing drawing in drawings)
             {
-                w.WriteStartElement("Drawings");
-                foreach (AbstractDrawing drawing in m_Drawings)
-                {
-                    IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
-                    if(serializableDrawing != null)
-                    {
-                        // The XML name for this drawing should be stored in its [XMLType] C# attribute.
-                        Type t = serializableDrawing.GetType();
-                        object[] attributes = t.GetCustomAttributes(typeof(XmlTypeAttribute), false);
-                    
-                        if(attributes.Length > 0)
-                        {
-                            string xmlName = ((XmlTypeAttribute)attributes[0]).TypeName;
-                            
-                            w.WriteStartElement(xmlName);
-                            serializableDrawing.WriteXml(w);
-                            w.WriteEndElement();
-                        }
-                    }
-                }
-                w.WriteEndElement();
+                IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
+                if (serializableDrawing == null)
+                    continue;
+
+                DrawingSerializer.Serialize(w, serializableDrawing, SerializationFilter.All);
             }
+            w.WriteEndElement();
         }
+        private void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper)
+        {
+            if (r.MoveToAttribute("id"))
+                id = new Guid(r.ReadContentAsString());
+
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "Position":
+                        int inputPosition = r.ReadElementContentAsInt();
+                        position = timestampMapper(inputPosition, false);
+                        break;
+                    case "Title":
+                        title = r.ReadElementContentAsString();
+                        break;
+                    case "Comment":
+                        comments = r.ReadElementContentAsString();
+                        break;
+                    case "Drawings":
+                        ParseDrawings(r, scale);
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+
+            r.ReadEndElement();
+        }
+        private void ParseDrawings(XmlReader r, PointF scale)
+        {
+            bool isEmpty = r.IsEmptyElement;
+            
+            r.ReadStartElement();
+
+            if (isEmpty)
+                return;
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, TimeHelper.IdentityTimestampMapper, metadata);
+                metadata.AddDrawing(this, drawing);
+            }
+
+            r.ReadEndElement();
+        }
+        
         #endregion
 
         #region IComparable Implementation
         public int CompareTo(object obj)
         {
             if(obj is Keyframe)
-            {
-                return this.m_Position.CompareTo(((Keyframe)obj).m_Position);
-            }
+                return this.position.CompareTo(((Keyframe)obj).position);
             else
-            {
                 throw new ArgumentException("Impossible comparison");
-            }
         }
         #endregion
 
         #region LowerLevel Helpers
         private int GetContentHash()
         {
-            int iHashCode = 0;
-            foreach (AbstractDrawing drawing in m_Drawings)
-                iHashCode ^= drawing.ContentHash;
+            int hash = 0;
+            foreach (AbstractDrawing drawing in drawings)
+                hash ^= drawing.ContentHash;
 
-            if(m_CommentRtf != null)
-                iHashCode ^= m_CommentRtf.GetHashCode();
+            if(comments != null)
+                hash ^= comments.GetHashCode();
             
-            if(m_Title != null)
-                iHashCode ^= m_Title.GetHashCode();
+            if(!string.IsNullOrEmpty(title))
+                hash ^= title.GetHashCode();
             
-            iHashCode ^= m_Timecode.GetHashCode();
+            hash ^= timecode.GetHashCode();
 
-            return iHashCode;
+            return hash;
         }
         #endregion
     }

@@ -29,7 +29,7 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public static void MoveHandle(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point, Keys modifiers)
+        public static void MoveHandle(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, PointF point, Keys modifiers)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat(e.ToString());
             }
         }
-        private static void MovePointHandle(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point, Keys modifiers)
+        private static void MovePointHandle(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, PointF point, Keys modifiers)
         {
             // Constraints. (position of the point managed by this handle).
             GenericPostureAbstractConstraint constraint = posture.Handles[handle].Constraint;
@@ -145,7 +145,7 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        private static void MoveSegmentHandle(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point)
+        private static void MoveSegmentHandle(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, PointF point)
         {
             int start = posture.Segments[posture.Handles[handle].Reference].Start;
             int end = posture.Segments[posture.Handles[handle].Reference].End;
@@ -206,7 +206,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private static void MoveEllipseHandle(GenericPosture posture, int handle, Point point)
+        private static void MoveEllipseHandle(GenericPosture posture, int handle, PointF point)
         {
             // Constraints. (position of the point managed by this handle).
             GenericPostureAbstractConstraint constraint = posture.Handles[handle].Constraint;
@@ -227,23 +227,23 @@ namespace Kinovea.ScreenManager
         }
         
         #region Constraints
-        private static void MovePointHandleFreely(GenericPosture posture, int handle, Point point)
+        private static void MovePointHandleFreely(GenericPosture posture, int handle, PointF point)
         {
             posture.Points[posture.Handles[handle].Reference] = point;
         }
-        private static void MoveSegmentHandleFreely(GenericPosture posture, int handle, Point point)
+        private static void MoveSegmentHandleFreely(GenericPosture posture, int handle, PointF point)
         {
             Vector v = new Vector(posture.Handles[handle].GrabPoint, point);
             TranslateSegmentHandle(posture, handle, v);
         }
-        private static void MoveEllipseHandleFreely(GenericPosture posture, int handle, Point point)
+        private static void MoveEllipseHandleFreely(GenericPosture posture, int handle, PointF point)
         {
             PointF center = posture.Points[posture.Ellipses[posture.Handles[handle].Reference].Center];
             Vector v = new Vector(center, point);
             float radius = v.Norm();
             posture.Ellipses[posture.Handles[handle].Reference].Radius = (int)radius;
         }
-        private static void MovePointHandleAlongLine(GenericPosture posture, int handle, Point point, GenericPostureConstraintLineSlide constraint)
+        private static void MovePointHandleAlongLine(GenericPosture posture, int handle, PointF point, GenericPostureConstraintLineSlide constraint)
         {
             if(constraint == null)
             {
@@ -256,7 +256,7 @@ namespace Kinovea.ScreenManager
             
             posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetClosestPoint(start, end, point, constraint.AllowedPosition, constraint.Margin);
         }
-        private static void MovePointHandleAlongVertical(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point)
+        private static void MovePointHandleAlongVertical(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, PointF point)
         {
             /*PointF source = calibrationHelper.GetPoint(posture.Points[posture.Handles[handle].Reference]);
             PointF target = calibrationHelper.GetPoint(point.ToPointF());
@@ -268,23 +268,23 @@ namespace Kinovea.ScreenManager
             
             posture.Points[posture.Handles[handle].Reference] = new PointF(posture.Points[posture.Handles[handle].Reference].X, point.Y);
         }
-        private static void MovePointHandleAlongHorizontal(GenericPosture posture, int handle, Point point)
+        private static void MovePointHandleAlongHorizontal(GenericPosture posture, int handle, PointF point)
         {
             posture.Points[posture.Handles[handle].Reference] = new PointF(point.X, posture.Points[posture.Handles[handle].Reference].Y);
         }
-        private static void MoveSegmentHandleAlongHorizontal(GenericPosture posture, int handle, Point point)
+        private static void MoveSegmentHandleAlongHorizontal(GenericPosture posture, int handle, PointF point)
         {
             Vector moved = new Vector(posture.Handles[handle].GrabPoint, point);
             Vector v = new Vector(moved.X, 0);
             TranslateSegmentHandle(posture, handle, v);
         }
-        private static void MoveSegmentHandleAlongVertical(GenericPosture posture, int handle, Point point)
+        private static void MoveSegmentHandleAlongVertical(GenericPosture posture, int handle, PointF point)
         {
             Vector moved = new Vector(posture.Handles[handle].GrabPoint, point);
             Vector v = new Vector(0, moved.Y);
             TranslateSegmentHandle(posture, handle, v);
         }
-        private static void MovePointHandleAtDistance(GenericPosture posture, int handle, Point point, GenericPostureConstraintDistanceToPoint constraint, Keys modifiers)
+        private static void MovePointHandleAtDistance(GenericPosture posture, int handle, PointF point, GenericPostureConstraintDistanceToPoint constraint, Keys modifiers)
         {
             if(constraint == null)
             {
@@ -318,7 +318,7 @@ namespace Kinovea.ScreenManager
             posture.Points[start] = posture.Points[start] + vector;
             posture.Points[end] = posture.Points[end] + vector;
         }
-        private static void MovePointHandleByRotationSteps(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point, GenericPostureConstraintRotationSteps constraint)
+        private static void MovePointHandleByRotationSteps(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, PointF point, GenericPostureConstraintRotationSteps constraint)
         {
             if(constraint == null)
                 return;
@@ -332,7 +332,7 @@ namespace Kinovea.ScreenManager
             int constraintAngleSubdivisions = 360/constraint.Step;
             posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetPointAtClosestRotationStep(parent, leg1, point, constraintAngleSubdivisions);
         }
-        private static void MovePointHandleAlongPerpendicular(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point, GenericPostureConstraintPerpendicularSlide constraint)
+        private static void MovePointHandleAlongPerpendicular(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, PointF point, GenericPostureConstraintPerpendicularSlide constraint)
         {
             if(constraint == null)
                 return;
@@ -352,7 +352,7 @@ namespace Kinovea.ScreenManager
             
             posture.Points[posture.Handles[handle].Reference] = result;
         }
-        private static void MovePointHandleAlongParallel(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point, GenericPostureConstraintParallelSlide constraint)
+        private static void MovePointHandleAlongParallel(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, PointF point, GenericPostureConstraintParallelSlide constraint)
         {
             if(constraint == null)
                 return;

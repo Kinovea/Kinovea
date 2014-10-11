@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaToolbar>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Player</Name>
+  <Id>93A56D9C-6B02-41AF-BF9B-33B1CAA1ADA3</Id>
+  <entry name="Label">
+    <subentry name="AutoNumbers" />
+  </entry>
+  <entry name="Pencil" />
+  <entry name="HumanModel">
+    <subentry name="HumanModel2" />
+    <subentry name="Bikefit" />
+    <subentry name="Archery" />
+    <subentry name="HorizontalDistance" />
+    <subentry name="Profile" />
+    <subentry name="Genu" />
+    <subentry name="Posture" />
+  </entry>
+  <entry name="Line">
+    <subentry name="Polyline" />
+    <subentry name="Circle" />
+  </entry>
+  <entry name="Arrow">
+    <subentry name="ArrowDash" />
+    <subentry name="ArrowSquiggly" />
+    <subentry name="ArrowCurve" />
+    <subentry name="ArrowPolyline" />
+    <subentry name="ArrowPolylineDash" />
+    <subentry name="ArrowPolylineSquiggly" />
+  </entry>
+  <entry name="CrossMark" />
+  <entry name="Angle">
+    <subentry name="Goniometer" />
+    <subentry name="AngleToHorizontal" />
+    <subentry name="AngleToVertical" />    
+  </entry>
+  <entry name="Chrono" />
+  <entry name="Plane">
+    <subentry name="Grid" />
+    <subentry name="DistortionGrid" />
+  </entry>
+  <entry name="Spotlight" />
+</KinoveaToolbar>

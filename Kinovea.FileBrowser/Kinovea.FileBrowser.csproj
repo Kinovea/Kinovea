@@ -123,11 +123,12 @@
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\CommandDeleteShortcut.cs" />
     <Compile Include="FileBrowser.cs" />
     <Compile Include="UserInterface\FormCameraWizard.cs">
       <SubType>Form</SubType>
@@ -157,11 +158,14 @@
     <EmbeddedResource Include="Languages\FileBrowserLang.da.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.el.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.fi.resx" />
+    <EmbeddedResource Include="Languages\FileBrowserLang.ja.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.ko.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.lt.resx" />
+    <EmbeddedResource Include="Languages\FileBrowserLang.mk.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.nl.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.no.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.ru.resx" />
+    <EmbeddedResource Include="Languages\FileBrowserLang.sr-Cyrl-CS.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.sr-Latn-CS.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.sv.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.tr.resx" />
@@ -224,9 +228,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
       <Project>{2BF373B8-5D33-4FCF-8C30-5E8CAF6777E7}</Project>
@@ -240,6 +242,15 @@
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
       <Name>Kinovea.Video</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\film_go.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\textfield.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

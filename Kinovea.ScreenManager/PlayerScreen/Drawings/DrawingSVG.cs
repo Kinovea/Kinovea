@@ -33,15 +33,18 @@ using Kinovea.Services;
 using SharpVectors.Dom.Svg;
 using SharpVectors.Dom.Svg.Rendering;
 using SharpVectors.Renderer.Gdi;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingSVG : AbstractDrawing
+    [XmlType("SVG")]
+    public class DrawingSVG : AbstractDrawing, IScalable, IKvaSerializable
     {
         #region Properties
         public override string DisplayName
         {
-            get {  return "SVG Drawing"; }
+            get {  return "SVG Image"; }
         }
         public override int ContentHash
         {
@@ -49,8 +52,8 @@ namespace Kinovea.ScreenManager
         }
         public override InfosFading InfosFading
         {
-            get { return m_InfosFading; }
-            set { m_InfosFading = value; }
+            get { return infosFading; }
+            set { infosFading = value; }
         }
         public override DrawingCapabilities Caps
         {
@@ -60,139 +63,169 @@ namespace Kinovea.ScreenManager
         {
             get { return null; }
         }
+        public override bool IsValid
+        {
+            get { return valid; }
+        }
         #endregion
 
         #region Members
+        private bool valid;
+        private string filename;
         // SVG
-        private GdiRenderer m_Renderer  = new GdiRenderer();
-        private SvgWindow m_SvgWindow;
-        private bool m_bLoaded;
-        private Bitmap m_svgRendered;
+        private GdiRenderer renderer  = new GdiRenderer();
+        private SvgWindow svgWindow;
+        private bool loaded;
+        private Bitmap svgRendered;
         // Position
         // The drawing scale is used to keep track of the user transform on the drawing, outside of the image transform context.
         // Drawing original dimensions are used to compute the drawing scale.
-        private float m_fDrawingScale = 1.0f;			// The current scale of the drawing if it were rendered on the original sized image.
-        private float m_fInitialScale = 1.0f;			// The scale we apply upon loading to make sure the image fits the screen.
-        private float m_fDrawingRenderingScale = 1.0f;  // The scale of the drawing taking drawing transform AND image transform into account.
-        private int m_iOriginalWidth;					// After initial scaling.
-        private int m_iOriginalHeight;
-        private BoundingBox m_BoundingBox = new BoundingBox();
-        private bool m_bSizeInPercentage;               // A property of some SVG files.
-        private bool m_bFinishedResizing;
-        private Size m_videoSize;
-        private static readonly int m_snapMargin = 0;
+        private float drawingScale = 1.0f;			// The current scale of the drawing if it were rendered on the original sized image.
+        private float initialScale = 1.0f;			// The scale we apply upon loading to make sure the image fits the screen.
+        private float drawingRenderingScale = 1.0f;  // The scale of the drawing taking drawing transform AND image transform into account.
+        private int originalWidth;					// After initial scaling.
+        private int originalHeight;
+        private BoundingBox boundingBox = new BoundingBox();
+        private bool sizeInPercentage;               // A property of some SVG files.
+        private bool finishedResizing;
+        private Size videoSize;
+        private static readonly int snapMargin = 0;
         // Decoration
-        private InfosFading m_InfosFading;
-        private ColorMatrix m_FadingColorMatrix = new ColorMatrix();
-        private ImageAttributes m_FadingImgAttr = new ImageAttributes();
-        private Pen m_PenBoundingBox;
-        private SolidBrush m_BrushBoundingBox;
+        private InfosFading infosFading;
+        private ColorMatrix fadingColorMatrix = new ColorMatrix();
+        private ImageAttributes fadingImgAttr = new ImageAttributes();
+        private Pen penBoundingBox;
+        private SolidBrush brushBoundingBox;
         // Instru
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public DrawingSVG(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame, string _filename)
+        public DrawingSVG(long timestamp, long averageTimeStampsPerFrame, string filename)
         {
-            m_videoSize = new Size(_iWidth, _iHeight);
+            this.filename = filename;
+            renderer.BackColor = Color.Transparent;
+            svgWindow = new SvgWindow(100, 100, renderer);
             
-            // Init and import an SVG.
-            m_Renderer.BackColor = Color.Transparent;
+            if (!string.IsNullOrEmpty(filename))
+                LoadSVG(filename);
             
-            // Rendering window. The width and height will be updated later.
-            m_SvgWindow = new SvgWindow(100, 100, m_Renderer);
-            
-            // FIXME: some files have external DTD that will be attempted to be loaded.
-            // See files created from Amaya for example.
-            m_SvgWindow.Src = _filename;
-            m_bLoaded = true;
-            
-            if(m_SvgWindow.Document.RootElement.Width.BaseVal.UnitType == SvgLengthType.Percentage)
-            {
-                m_bSizeInPercentage = true;
-                m_iOriginalWidth = (int)(m_SvgWindow.Document.RootElement.ViewBox.BaseVal.Width * (m_SvgWindow.Document.RootElement.Width.BaseVal.Value/100));
-                m_iOriginalHeight = (int)(m_SvgWindow.Document.RootElement.ViewBox.BaseVal.Height * (m_SvgWindow.Document.RootElement.Height.BaseVal.Value/100));	
-            }
-            else
-            {
-                m_bSizeInPercentage = false;
-                m_iOriginalWidth = (int)m_SvgWindow.Document.RootElement.Width.BaseVal.Value;
-                m_iOriginalHeight  = (int)m_SvgWindow.Document.RootElement.Height.BaseVal.Value;		        
-            }
-            
-            // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
-            m_fInitialScale = (float) (((float)_iHeight * 0.75) / m_iOriginalHeight);
-            m_iOriginalWidth = (int) ((float)m_iOriginalWidth * m_fInitialScale);
-            m_iOriginalHeight = (int) ((float)m_iOriginalHeight * m_fInitialScale);
-            
-            m_BoundingBox.Rectangle = new Rectangle((_iWidth - m_iOriginalWidth)/2, (_iHeight - m_iOriginalHeight)/2, m_iOriginalWidth, m_iOriginalHeight);
-
-            // Render on first draw call.
-            m_bFinishedResizing = true;
-            
-            // Fading
-            m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
-            m_InfosFading.UseDefault = false;
-            m_InfosFading.AlwaysVisible = true;            
-            
-            // This is used to set the opacity factor.
-            m_FadingColorMatrix.Matrix00 = 1.0f;
-            m_FadingColorMatrix.Matrix11 = 1.0f;
-            m_FadingColorMatrix.Matrix22 = 1.0f;
-            m_FadingColorMatrix.Matrix33 = 1.0f;	// Change alpha value here for fading. (i.e: 0.5f).
-            m_FadingColorMatrix.Matrix44 = 1.0f;
-            m_FadingImgAttr.SetColorMatrix(m_FadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-            
-            m_PenBoundingBox = new Pen(Color.White, 1);
-            m_PenBoundingBox.DashStyle = DashStyle.Dash;
-            m_BrushBoundingBox = new SolidBrush(m_PenBoundingBox.Color);
+            Initialize(timestamp, averageTimeStampsPerFrame);
+        }
+        public DrawingSVG(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
+            : this(0, 0, "")
+        {
+            ReadXml(xmlReader, scale, timestampMapper);
         }
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (fOpacityFactor <= 0 || !m_bLoaded)
+            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
+            if (opacityFactor <= 0 || !loaded)
                 return;
 
-            Rectangle rect = _transformer.Transform(m_BoundingBox.Rectangle);
+            Rectangle rect = transformer.Transform(boundingBox.Rectangle);
             
-            if(m_bFinishedResizing)
+            if(finishedResizing)
             {
-                m_bFinishedResizing = false;
-                RenderAtNewScale(rect.Size, _transformer.Scale);
+                finishedResizing = false;
+                RenderAtNewScale(rect.Size, transformer.Scale);
             }
-            
-            if (m_svgRendered != null)
-            {
-                m_FadingColorMatrix.Matrix33 = (float)fOpacityFactor;
-                m_FadingImgAttr.SetColorMatrix(m_FadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                _canvas.DrawImage(m_svgRendered, rect, 0, 0, m_svgRendered.Width, m_svgRendered.Height, GraphicsUnit.Pixel, m_FadingImgAttr);
 
-                if (_bSelected)
-                    m_BoundingBox.Draw(_canvas, rect, m_PenBoundingBox, m_BrushBoundingBox, 4);
-            }
+            if (svgRendered == null)
+                return;
+
+            fadingColorMatrix.Matrix33 = (float)opacityFactor;
+            fadingImgAttr.SetColorMatrix(fadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+            canvas.DrawImage(svgRendered, rect, 0, 0, svgRendered.Width, svgRendered.Height, GraphicsUnit.Pixel, fadingImgAttr);
+
+            if (selected)
+                boundingBox.Draw(canvas, rect, penBoundingBox, brushBoundingBox, 4);
         }
-        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
-            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             if (opacity > 0)
-                result = m_BoundingBox.HitTest(point, transformer);
+                result = boundingBox.HitTest(point, transformer);
             
             return result;
         }
-        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
-            m_BoundingBox.MoveHandle(point, handleNumber, new Size(m_iOriginalWidth, m_iOriginalHeight), true);
+            boundingBox.MoveHandle(point.ToPoint(), handleNumber, new Size(originalWidth, originalHeight), true);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
-            m_BoundingBox.MoveAndSnap(_deltaX, _deltaY, m_videoSize, m_snapMargin);
+            boundingBox.MoveAndSnap((int)dx, (int)dy, videoSize, snapMargin);
         }
         #endregion
-       
+
+        #region IScalable
+        public void Scale(Size size)
+        {
+            videoSize = size;
+
+            // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
+            initialScale = (float)(((float)videoSize.Height * 0.75) / originalHeight);
+            originalWidth = (int)((float)originalWidth * initialScale);
+            originalHeight = (int)((float)originalHeight * initialScale);
+
+            boundingBox.Rectangle = new Rectangle((videoSize.Width - originalWidth) / 2, (videoSize.Height - originalHeight) / 2, originalWidth, originalHeight);
+
+            // Render on first draw call.
+            finishedResizing = true;
+        }
+        #endregion
+
+        #region KVA Serialization
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
+        {
+            if (xmlReader.MoveToAttribute("id"))
+                identifier = new Guid(xmlReader.ReadContentAsString());
+
+            xmlReader.ReadStartElement();
+
+            while (xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch (xmlReader.Name)
+                {
+                    case "File":
+                        filename = xmlReader.ReadElementContentAsString();
+                        break;
+                    case "InfosFading":
+                        infosFading.ReadXml(xmlReader);
+                        break;
+                    default:
+                        string unparsed = xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+
+            xmlReader.ReadEndElement();
+
+            LoadSVG(filename);
+        }
+        public void WriteXml(XmlWriter w, SerializationFilter filter)
+        {
+            if (ShouldSerializeCore(filter))
+                w.WriteElementString("File", filename);
+
+            if (ShouldSerializeFading(filter))
+            {
+                w.WriteStartElement("InfosFading");
+                infosFading.WriteXml(w);
+                w.WriteEndElement();
+            }
+            
+            // TODO: opacity value
+            // TODO: bounding box.
+        }
+        #endregion
+
         public void ResizeFinished()
         {
             // While the user was resizing the drawing or the image, we didn't update / render the SVG image.
@@ -200,34 +233,87 @@ namespace Kinovea.ScreenManager
             
             // However we do not know the final scale until we get back in Draw(),
             // So we just switch a flag on and we'll call the rendering from there.
-            m_bFinishedResizing = true;
+            finishedResizing = true;
         }
         
         #region Lower level helpers
-        private void RenderAtNewScale(Size _size, double _fScreenScaling)
+        private void LoadSVG(string filename)
+        {
+            if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
+            {
+                log.ErrorFormat("Error while loading SVG file. File not found.");
+                return;
+            }
+
+            try
+            {
+                svgWindow.Src = filename;
+                loaded = true;
+                valid = true;
+
+                if (svgWindow.Document.RootElement.Width.BaseVal.UnitType == SvgLengthType.Percentage)
+                {
+                    sizeInPercentage = true;
+                    originalWidth = (int)(svgWindow.Document.RootElement.ViewBox.BaseVal.Width * (svgWindow.Document.RootElement.Width.BaseVal.Value / 100));
+                    originalHeight = (int)(svgWindow.Document.RootElement.ViewBox.BaseVal.Height * (svgWindow.Document.RootElement.Height.BaseVal.Value / 100));
+                }
+                else
+                {
+                    sizeInPercentage = false;
+                    originalWidth = (int)svgWindow.Document.RootElement.Width.BaseVal.Value;
+                    originalHeight = (int)svgWindow.Document.RootElement.Height.BaseVal.Value;
+                }
+            }
+            catch(Exception e)
+            {
+                // FIXME: some files have external DTD that will be attempted to be loaded.
+                // See files created from Amaya for example.
+                // FIXME: we could also have an error placeholder image as a way to inform the user.
+                log.ErrorFormat("Error while loading SVG file. {0}", e.Message);
+            }
+        }
+        private void Initialize(long timestamp, long averageTimeStampsPerFrame)
+        {
+            // Fading
+            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
+            infosFading.UseDefault = false;
+            infosFading.AlwaysVisible = true;
+
+            // This is used to set the opacity factor.
+            fadingColorMatrix.Matrix00 = 1.0f;
+            fadingColorMatrix.Matrix11 = 1.0f;
+            fadingColorMatrix.Matrix22 = 1.0f;
+            fadingColorMatrix.Matrix33 = 1.0f;	// Change alpha value here for fading. (i.e: 0.5f).
+            fadingColorMatrix.Matrix44 = 1.0f;
+            fadingImgAttr.SetColorMatrix(fadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+            penBoundingBox = new Pen(Color.White, 1);
+            penBoundingBox.DashStyle = DashStyle.Dash;
+            brushBoundingBox = new SolidBrush(penBoundingBox.Color);
+        }
+        private void RenderAtNewScale(Size size, double screenScaling)
         {
             // Depending on the complexity of the SVG, this can be a costly operation.
-            // We should only do that when mouse move is over,
-            // and use the interpolated version during the change.
+            // We should only do that when mouse move is finished,
+            // and use an interpolated version during the change.
             
-            // Compute the final drawing sizes,
-            // taking both the drawing transformation and the image scaling into account.
-            m_fDrawingScale = (float)m_BoundingBox.Rectangle.Width / (float)m_iOriginalWidth;
-            m_fDrawingRenderingScale = (float)(_fScreenScaling * m_fDrawingScale * m_fInitialScale);
+            // Compute the final drawing sizes, taking both the drawing transformation and the image scaling into account.
+            drawingScale = (float)boundingBox.Rectangle.Width / (float)originalWidth;
+            drawingRenderingScale = (float)(screenScaling * drawingScale * initialScale);
             
-            if(m_svgRendered == null || m_fDrawingRenderingScale != m_SvgWindow.Document.RootElement.CurrentScale)
+            if(svgRendered == null || drawingRenderingScale != svgWindow.Document.RootElement.CurrentScale)
             {
-                // In the case of percentage, CurrentScale is always 100%. But since there is a cache for the transformation matrix,
-                // we need to set it anyway to clear the cache.
-                m_SvgWindow.Document.RootElement.CurrentScale = m_bSizeInPercentage ? 1.0f : (float)m_fDrawingRenderingScale;
+                // In the case of percentage, CurrentScale is always 100%. 
+                // But since there is a cache for the transformation matrix, we need to set it anyway to clear the cache.
+                svgWindow.Document.RootElement.CurrentScale = sizeInPercentage ? 1.0f : (float)drawingRenderingScale;
 
-                m_SvgWindow.InnerWidth = _size.Width;
-                m_SvgWindow.InnerHeight = _size.Height;
+                svgWindow.InnerWidth = size.Width;
+                svgWindow.InnerHeight = size.Height;
                 
-                m_svgRendered = m_Renderer.Render(m_SvgWindow.Document as SvgDocument);
+                svgRendered = renderer.Render(svgWindow.Document as SvgDocument);
                 
                 log.Debug(String.Format("Rendering SVG ({0};{1}), Initial scaling to fit video: {2:0.00}. User scaling: {3:0.00}. Video image scaling: {4:0.00}, Final transformation: {5:0.00}.",
-                                        m_iOriginalWidth, m_iOriginalHeight, m_fInitialScale, m_fDrawingScale, _fScreenScaling, m_fDrawingRenderingScale));
+                                        originalWidth, originalHeight, initialScale, drawingScale, screenScaling, drawingRenderingScale));
             }
         }
         #endregion
