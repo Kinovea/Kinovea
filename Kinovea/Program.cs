@@ -91,7 +91,7 @@ namespace Kinovea.Root
             string trace = String.Format("Stack: {0}", ex.StackTrace);
             
             string dumpFile = string.Format("Unhandled Crash - {0}.txt", Guid.NewGuid());
-            using (StreamWriter sw = File.AppendText(Software.SettingsDirectory + dumpFile))
+            using (StreamWriter sw = File.AppendText(Path.Combine(Software.SettingsDirectory, dumpFile)))
             {
                 sw.WriteLine(message);
                 sw.WriteLine(source);
