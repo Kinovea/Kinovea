@@ -53,13 +53,28 @@ namespace Kinovea.Services
         Slow,
 
         /// <summary>
-        /// A consumer thread that compress images using the LZ4 algorithm, without writing data to disk.
+        /// A consumer thread that compress images using the LZ4 algorithm. 
+        /// Does not write anything to disk.
         /// </summary>
         LZ4,
 
         /// <summary>
-        /// A long lived consumer thread that stores the frame number to disk.
+        /// A consumer thread that compress images using .NET JPEG encoder.
+        /// Does not write anything to disk.
         /// </summary>
-        FrameNumberToDisk,
+        JPEG1,
+
+        /// <summary>
+        /// A consumer thread that compress images using libjpeg-turbo encoder.
+        /// Does not write anything to disk.
+        /// </summary>
+        JPEG2,
+
+        /// <summary>
+        /// A consumer thread that stores the frame number and datetime of arrival to a text file.
+        /// </summary>
+        FrameNumber,
+
+
     }
 }
