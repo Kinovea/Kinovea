@@ -29,10 +29,18 @@ namespace Kinovea.Camera
     {
         public readonly CameraSummary Summary;
         public readonly Bitmap Image;
+        public readonly byte[] Buffer;
+
         public CameraImageReceivedEventArgs(CameraSummary summary, Bitmap image)
         {
             this.Summary = summary;
             this.Image = image;
+        }
+
+        public CameraImageReceivedEventArgs(CameraSummary summary, byte[] buffer)
+        {
+            this.Summary = summary;
+            this.Buffer = buffer;
         }
     }
 }

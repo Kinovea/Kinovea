@@ -122,14 +122,38 @@
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="OxyPlot">
+      <HintPath>..\Refs\OxyPlot\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.WindowsForms">
+      <HintPath>..\Refs\OxyPlot\OxyPlot.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphanumComparator.cs" />
+    <Compile Include="Diagnostics\Averager.cs" />
+    <Compile Include="Diagnostics\BenchmarkCounterBandwidth.cs" />
+    <Compile Include="Diagnostics\BenchmarkCounterIntervals.cs" />
+    <Compile Include="Diagnostics\BenchmarkCounterValues.cs" />
+    <Compile Include="Diagnostics\BenchmarkExporter.cs" />
+    <Compile Include="Diagnostics\BenchmarkMode.cs" />
+    <Compile Include="Diagnostics\BenchmarkReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Diagnostics\BenchmarkReport.Designer.cs">
+      <DependentUpon>BenchmarkReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Diagnostics\WMI\LogicalDisk.cs" />
+    <Compile Include="Diagnostics\WMI\DriveType.cs" />
+    <Compile Include="Diagnostics\IBenchmarkCounter.cs" />
+    <Compile Include="Diagnostics\WMI\PhysicalDisk.cs" />
+    <Compile Include="Diagnostics\WMI\WMI.cs" />
     <Compile Include="Infrastructure\EventArgs`1.cs" />
     <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentException.cs" />
     <Compile Include="LaunchSettings\CommandLine\CommandLineArgumentManager.cs" />
@@ -215,6 +239,11 @@
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
       <Name>Kinovea.Video</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Diagnostics\BenchmarkReport.resx">
+      <DependentUpon>BenchmarkReport.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

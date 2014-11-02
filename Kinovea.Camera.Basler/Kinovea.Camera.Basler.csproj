@@ -41,7 +41,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <OutputPath>..\Kinovea\bin\x86\Debug\</OutputPath>
+    <OutputPath>..\Capteo\Capteo\bin\x86\Debug\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\Kinovea\bin\x86\Release\</OutputPath>
@@ -86,13 +86,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CaptureBenchmark\Kinovea.Pipeline\Kinovea.Pipeline.csproj">
+      <Project>{32380CE3-AA6A-465B-BB0C-BF0708B2B3A5}</Project>
+      <Name>Kinovea.Pipeline</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
       <Project>7EC5DEBF-DF52-40F5-A9FE-1B2007B6116D</Project>
       <Name>Kinovea.Camera</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
-      <Name>Services</Name>
+      <Name>Kinovea.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

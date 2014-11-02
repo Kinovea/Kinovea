@@ -21,8 +21,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.Services
 {
+    /// <summary>
+    /// Sliding average.
+    /// </summary>
     public class Averager
     {
         public double Average

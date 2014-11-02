@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
+      <HintPath>..\Refs\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging, Version=2.2.0.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
+      <HintPath>..\Refs\AForge.Imaging.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
@@ -49,6 +55,8 @@
     <Compile Include="HistoryStackTester\HistoryStackSimpleTester.cs" />
     <Compile Include="HistoryStackTester\State.cs" />
     <Compile Include="KSV\KSVFuzzer.cs" />
+    <Compile Include="Performance\ImageCopy.cs" />
+    <Compile Include="Performance\Performance.cs" />
     <Compile Include="ProjectiveGeometry\LineClippingTester.cs" />
     <Compile Include="Metadata\KVAFuzzer.cs" />
     <Compile Include="Metadata\TrackableDrawing.cs" />
