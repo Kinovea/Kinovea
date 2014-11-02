@@ -69,12 +69,14 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Consumers\ConsumerJPEG.cs" />
     <Compile Include="Consumers\ConsumerLZ4.cs" />
     <Compile Include="Consumers\ConsumerFrameNumber.cs" />
     <Compile Include="MemoryLayout\CacheLineStorageBool.cs" />

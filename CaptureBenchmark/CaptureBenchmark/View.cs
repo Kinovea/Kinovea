@@ -118,10 +118,19 @@ namespace CaptureBenchmark
             timer.Start();
         }
 
-        private void btnToText_Click(object sender, EventArgs e)
+        private void btnFrameNumber_Click(object sender, EventArgs e)
         {
             if (StartBenchmark != null)
-                StartBenchmark(this, new EventArgs<BenchmarkMode>(BenchmarkMode.FrameNumberToDisk));
+                StartBenchmark(this, new EventArgs<BenchmarkMode>(BenchmarkMode.FrameNumber));
+
+            start = DateTime.Now;
+            timer.Start();
+        }
+
+        private void btnJPEG1_Click(object sender, EventArgs e)
+        {
+            if (StartBenchmark != null)
+                StartBenchmark(this, new EventArgs<BenchmarkMode>(BenchmarkMode.JPEG1));
 
             start = DateTime.Now;
             timer.Start();

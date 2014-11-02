@@ -16,11 +16,6 @@ namespace CaptureBenchmark
         private IFrameGrabber grabber;
 
         private List<IFrameConsumer> consumers = new List<IFrameConsumer>();
-        private ConsumerNoop noop = new ConsumerNoop();
-        private ConsumerOccasionallySlow occasionallySlow = new ConsumerOccasionallySlow();
-        private ConsumerSlow slow = new ConsumerSlow();
-        private ConsumerLZ4 lz4 = new ConsumerLZ4();
-        private ConsumerFrameNumber frameNumbers = new ConsumerFrameNumber();
         private BenchmarkMode benchmarkMode = BenchmarkMode.None;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -29,11 +24,6 @@ namespace CaptureBenchmark
             view.Load += view_Load;
             view.StartBenchmark += view_StartBenchmark;
             view.StopBenchmark += view_StopBenchmark;
-
-            // Start long lived thread.
-
-            //Thread thread = new Thread(longLived.Run) { IsBackground = true };
-            //thread.Start();
         }
 
         private void view_StartBenchmark(object sender, EventArgs<BenchmarkMode> e)
@@ -57,19 +47,22 @@ namespace CaptureBenchmark
                     break;
 
                 case BenchmarkMode.Noop:
-                    consumers.Add(noop);
+                    consumers.Add(new ConsumerNoop());
                     break;
                 case BenchmarkMode.OccasionallySlow:
-                    consumers.Add(occasionallySlow);
+                    consumers.Add(new ConsumerOccasionallySlow());
                     break;
                 case BenchmarkMode.Slow:
-                    consumers.Add(slow);
+                    consumers.Add(new ConsumerSlow());
                     break;
                 case BenchmarkMode.LZ4:
-                    consumers.Add(lz4);
+                    consumers.Add(new ConsumerLZ4());
                     break;
-                case BenchmarkMode.FrameNumberToDisk:
-                    consumers.Add(frameNumbers);
+                case BenchmarkMode.JPEG1:
+                    consumers.Add(new ConsumerJPEG());
+                    break;
+                case BenchmarkMode.FrameNumber:
+                    consumers.Add(new ConsumerFrameNumber());
                     break;
 
                 default:
@@ -234,8 +227,7 @@ namespace CaptureBenchmark
             extra.Add("Session information:");
 
             extra.Add(string.Format("- Mode: {0}", benchmarkMode.ToString()));
-            extra.Add(string.Format("- Capture speed: {0:0.000} FPS", grabber.Framerate));
-            extra.Add(string.Format("- Frame interval: {0:0.000} ms", 1000f / grabber.Framerate));
+            extra.Add(string.Format("- Capture frequency: {0:0.000} Hz (Budget: {1:0.000} ms)", grabber.Framerate, 1000f / grabber.Framerate));
             //extra.Add(string.Format("- Frame Size: {0}×{1}×{2} B", width, height, depth);
             extra.Add(string.Format("- Bandwidth: {0:0.000} MB/s", ((float)pipeline.FrameLength / (1024 * 1024)) * grabber.Framerate));
             extra.Add("");
