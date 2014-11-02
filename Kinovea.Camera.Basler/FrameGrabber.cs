@@ -23,9 +23,10 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
-using Kinovea.Base;
 using PylonC.NET;
 using PylonC.NETSupportLibrary;
+using Kinovea.Base;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.Basler
 {
@@ -34,7 +35,8 @@ namespace Kinovea.Camera.Basler
     /// </summary>
     public class FrameGrabber : IFrameGrabber
     {
-        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        //public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler<EventArgs<byte[]>> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
         
         #region Property
@@ -47,6 +49,13 @@ namespace Kinovea.Camera.Basler
         {
             get { return actualSize; }
         }
+
+        public int Depth
+        {
+            get { return 1; }
+        }
+
+
         
         public float Framerate
         {
@@ -104,8 +113,8 @@ namespace Kinovea.Camera.Basler
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
         }
-        
-        public void Close()
+
+        private void Close()
         {
             // Close and destroy.
             SpecificInfo specific = summary.Specific as SpecificInfo;
@@ -116,7 +125,7 @@ namespace Kinovea.Camera.Basler
             log.DebugFormat("bitmap creation avg : {0}", watcher.Average);
         }
         
-        public void SoftwareTrigger()
+        private void SoftwareTrigger()
         {
             if(!grabbing)
                 return;
@@ -138,6 +147,7 @@ namespace Kinovea.Camera.Basler
                 return;
            
             framerate = imageProvider.GetFrameRate();
+            actualSize = Size.Empty;
         }
         
         private void CreateDevice()
@@ -167,20 +177,31 @@ namespace Kinovea.Camera.Basler
         
         private void ImageProvider_ImageReadyEvent()
         {
-            watcher.LoopStart();
+            // Consume the Pylon queue (no copy).
             ImageProvider.Image pylonImage = imageProvider.GetLatestImage();
-            
-            if(pylonImage == null)
+            if (pylonImage == null)
                 return;
+
+            if (actualSize == Size.Empty)
+                actualSize = new Size(pylonImage.Width, pylonImage.Height);
             
-            image = CreateBitmap(pylonImage);
+            // At that point we have a reference on the Pylon-owned bytes.
+            // Rather than using Pylon's BitmapFactory to build a Bitmap from the bytes, we transmit the bytes directly downstream.
             
-            actualSize = image.Size;
+            if (FrameProduced != null)
+                FrameProduced(this, new EventArgs<byte[]>(pylonImage.Buffer));
             
-            if(CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
-                
-            watcher.LoopEnd();
+            // When we are back from the event handler, the bytes have been copied to the shared queue.
+            imageProvider.ReleaseImage();
+
+            //----------
+            //if(CameraImageReceived != null)
+            //    CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, pylonImage.Buffer));
+
+            //image = CreateBitmap(pylonImage);
+            //actualSize = image.Size;
+            //if(CameraImageReceived != null)
+            //    CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
         }
 
         private void ImageProvider_GrabErrorEvent(Exception grabException, string additionalErrorMessage)

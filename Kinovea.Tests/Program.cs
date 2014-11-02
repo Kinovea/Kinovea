@@ -15,8 +15,10 @@ namespace Kinovea.Tests
             //TestKVAFuzzer();
             //TestKSVFuzzer();
             //TestHistoryStack();
-            TestLineClipping();
-            
+            //TestLineClipping();
+
+            // Performance
+            //ImageCopy.Test();
         }
         private static void TestKVAFuzzer()
         {

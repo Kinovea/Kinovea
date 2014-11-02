@@ -567,7 +567,7 @@ namespace PylonC.NETSupportLibrary
         {
             try
             {
-                Thread.CurrentThread.Name = "Grabbing";
+                Thread.CurrentThread.Name = "Grabber - BaslerPylon";
                 
                 SetupGrab();
                 OnGrabbingStartedEvent();

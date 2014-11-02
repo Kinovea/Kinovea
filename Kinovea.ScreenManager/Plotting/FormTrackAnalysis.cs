@@ -20,7 +20,6 @@ namespace Kinovea.ScreenManager
         private TrajectoryKinematics kinematics;
         private Color color;
         private PlotHelper plotHelper;
-        private Dictionary<string, PlotModel> plots = new Dictionary<string, PlotModel>();
         private bool manualUpdate;
         private PlotObject currentPlot;
 

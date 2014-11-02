@@ -22,6 +22,7 @@ using System;
 using System.Drawing;
 using AForge.Video;
 using AForge.Video.DirectShow;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -30,7 +31,8 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public class FrameGrabber : IFrameGrabber
     {
-        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        //public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler<EventArgs<byte[]>> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
         
         #region Property
@@ -42,6 +44,11 @@ namespace Kinovea.Camera.DirectShow
         public Size Size
         {
             get { return actualSize; }
+        }
+
+        public int Depth
+        {
+            get { return 3; }
         }
         
         public float Framerate
@@ -95,7 +102,7 @@ namespace Kinovea.Camera.DirectShow
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
         }
-        
+
         private void ConfigureDevice()
         {
             SpecificInfo info = summary.Specific as SpecificInfo;
@@ -127,8 +134,11 @@ namespace Kinovea.Camera.DirectShow
             else
                 g.DrawImage(e.Frame, 0, 0, e.Frame.Width, finalHeight);
             
-            if(CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+            //if(CameraImageReceived != null)
+              //  CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+
+            //if (FrameProduced != null)
+                //FrameProduced(this, new EventArgs<byte[]>(pylonImage.Buffer));
         }
         
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
