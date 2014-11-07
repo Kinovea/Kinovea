@@ -46,19 +46,20 @@ namespace Kinovea.Camera.DirectShow
         
         public float Framerate
         {
-            get { return device.DesiredFrameRate;}
+            get 
+            {
+                if (device.VideoResolution != null)
+                    return device.VideoResolution.AverageFrameRate;
+                else
+                    return 30F;
+            }
         }
-        /*public string ErrorDescription
-        {
-            get { return errorDescription;}
-        }*/
         #endregion
         
         #region Members
         private Bitmap image;
         private string moniker;
         private CameraSummary summary;
-        private int finalHeight;
         private object locker = new object();
         private VideoCaptureDevice device;
         private bool grabbing;
@@ -99,15 +100,20 @@ namespace Kinovea.Camera.DirectShow
         private void ConfigureDevice()
         {
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info != null)
+            if (info == null)
+                return;
+
+            // TODO: use a better model to enumerate and select the capture filter output pin media type.
+            // AForge grouping of media types is a bit too aggressive.
+            VideoCapabilities[] capabilities = device.VideoCapabilities;
+            foreach (VideoCapabilities capability in capabilities)
             {
-                device.DesiredFrameSize = info.SelectedFrameSize;
-                device.DesiredFrameRate = info.SelectedFrameRate;
-                log.DebugFormat("Device desired configuration: {0} @ {1} fps", device.DesiredFrameSize, device.DesiredFrameRate);
-            }
-            else
-            {
-                
+                if (capability.AverageFrameRate != info.SelectedFrameRate || capability.FrameSize != info.SelectedFrameSize)
+                    continue;
+
+                device.VideoResolution = capability;
+                log.DebugFormat("Device desired configuration: {0} @ {1} fps", device.VideoResolution.FrameSize, device.VideoResolution.AverageFrameRate);
+                break;
             }
         }
         

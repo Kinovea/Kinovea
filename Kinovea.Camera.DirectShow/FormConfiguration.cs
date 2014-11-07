@@ -120,7 +120,7 @@ namespace Kinovea.Camera.DirectShow
             else
             {
                 selectedFrameSize = device.VideoCapabilities[0].FrameSize;
-                selectedFrameRate = device.VideoCapabilities[0].FrameRate;
+                selectedFrameRate = device.VideoCapabilities[0].AverageFrameRate;
             }
             
             for(int i = 0; i<device.VideoCapabilities.Length; i++)
@@ -130,14 +130,14 @@ namespace Kinovea.Camera.DirectShow
                 capabilities.Add(capability);
                 cmbCapabilities.Items.Add(CapabilityToString(capability));
                 
-                if(capability.FrameSize == selectedFrameSize && capability.FrameRate == selectedFrameRate)
+                if(capability.FrameSize == selectedFrameSize && capability.AverageFrameRate == selectedFrameRate)
                     cmbCapabilities.SelectedIndex = i;
             }
         }
         
         private string CapabilityToString(VideoCapabilities capability)
         {
-            return string.Format("{0}×{1} @ {2} fps", capability.FrameSize.Width, capability.FrameSize.Height, capability.FrameRate);
+            return string.Format("{0}×{1} @ {2} fps", capability.FrameSize.Width, capability.FrameSize.Height, capability.AverageFrameRate);
         }
         
         private void CmbCapabilitiesSelectedIndexChanged(object sender, EventArgs e)

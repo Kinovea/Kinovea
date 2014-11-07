@@ -115,32 +115,14 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AForge" Condition=" '$(Configuration)' == 'Release' ">
-      <HintPath>..\Refs\AForge.dll</HintPath>
+    <Reference Include="AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
+      <HintPath>..\Refs\AForge\AForge.dll</HintPath>
     </Reference>
-    <Reference Include="AForge" Condition=" '$(Configuration)' == 'Debug' ">
-      <HintPath>..\Refs\AForge.dll</HintPath>
+    <Reference Include="AForge.Imaging, Version=2.2.5.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
+      <HintPath>..\Refs\AForge\AForge.Imaging.dll</HintPath>
     </Reference>
-    <Reference Include="AForge" Condition=" '$(Configuration)' == 'DebugExternals' ">
-      <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Core\bin\Debug\AForge.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Imaging" Condition=" '$(Configuration)' == 'Release' ">
-      <HintPath>..\Refs\AForge.Imaging.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Imaging" Condition=" '$(Configuration)' == 'Debug' ">
-      <HintPath>..\Refs\AForge.Imaging.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Imaging" Condition=" '$(Configuration)' == 'DebugExternals' ">
-      <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Imaging\bin\Debug\AForge.Imaging.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Math" Condition=" '$(Configuration)' == 'Release' ">
-      <HintPath>..\Refs\AForge.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Math" Condition=" '$(Configuration)' == 'Debug' ">
-      <HintPath>..\Refs\AForge.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Math" Condition=" '$(Configuration)' == 'DebugExternals' ">
-      <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Math\bin\Debug\AForge.Math.dll</HintPath>
+    <Reference Include="AForge.Math, Version=2.2.5.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
+      <HintPath>..\Refs\AForge\AForge.Math.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV">
       <HintPath>..\Refs\Emgu.CV.dll</HintPath>
