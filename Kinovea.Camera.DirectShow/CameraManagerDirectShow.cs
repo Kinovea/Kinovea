@@ -185,8 +185,9 @@ namespace Kinovea.Camera.DirectShow
                 if(form.SpecificChanged)
                 {
                     SpecificInfo info = new SpecificInfo();
-                    info.SelectedFrameRate = form.Capability.FrameRate;
+                    info.SelectedFrameRate = form.Capability.AverageFrameRate;
                     info.SelectedFrameSize = form.Capability.FrameSize;
+                    
                     summary.UpdateSpecific(info);
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
 
@@ -239,7 +240,7 @@ namespace Kinovea.Camera.DirectShow
         
         private bool BypassCamera(FilterInfo camera)
         {
-            return camera.Name == "Basler GenICam Source";
+            return false; // camera.Name == "Basler GenICam Source";
         }
         
         private SpecificInfo SpecificInfoDeserialize(string xml)

@@ -62,6 +62,7 @@ namespace Kinovea.Camera.DirectShow
 
         public void Run(object data)
         {
+            log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
             device.Start();
             waitHandle.WaitOne(5000, false);
             
@@ -82,6 +83,7 @@ namespace Kinovea.Camera.DirectShow
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
             // Note: unfortunately some devices need several frames to have a usable image. (e.g: PS3 Eye).
+            log.DebugFormat("New frame received for thumbnail of {0}", summary.Alias);
             image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
             Graphics g = Graphics.FromImage(image);
             g.DrawImageUnscaled(e.Frame, Point.Empty);
@@ -90,7 +92,8 @@ namespace Kinovea.Camera.DirectShow
         
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
-            log.DebugFormat("Error received");
+            log.ErrorFormat("Error received when getting thumbnail for {0}", summary.Alias);
+            log.Error(e.Description);
             waitHandle.Set();
         }
 
