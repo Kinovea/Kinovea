@@ -78,6 +78,8 @@
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
     <Compile Include="FrameGrabber.cs" />
+    <Compile Include="MediaType.cs" />
+    <Compile Include="MediaTypeImporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnapshotRetriever.cs" />
     <Compile Include="SpecificInfo.cs" />

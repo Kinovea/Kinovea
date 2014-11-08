@@ -185,12 +185,13 @@ namespace Kinovea.Camera.DirectShow
                 if(form.SpecificChanged)
                 {
                     SpecificInfo info = new SpecificInfo();
-                    info.SelectedFrameRate = form.Capability.AverageFrameRate;
-                    info.SelectedFrameSize = form.Capability.FrameSize;
+                    if (form.SelectedMediaType != null)
+                    {
+                        info.MediaType = form.SelectedMediaType;
+                        summary.UpdateSpecific(info);
+                    }
                     
-                    summary.UpdateSpecific(info);
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
-
                     needsReconnection = true;
                 }
                 
@@ -207,11 +208,12 @@ namespace Kinovea.Camera.DirectShow
             string alias = summary.Alias;
             
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info != null)
+            if(info != null && info.MediaType != null)
             {
-                Size size = info.SelectedFrameSize;
-                float fps = (float)info.SelectedFrameRate;
-                result = string.Format("{0} - {1}×{2} @ {3}fps", alias, size.Width, size.Height, fps);
+                Size size = info.MediaType.FrameSize;
+                float fps = (float)info.MediaType.SelectedFramerate;
+                string compression = info.MediaType.Compression;
+                result = string.Format("{0} - {1}×{2} @ {3}fps in {4}", alias, size.Width, size.Height, fps, compression);
             }
             else
             {
@@ -240,6 +242,7 @@ namespace Kinovea.Camera.DirectShow
         
         private bool BypassCamera(FilterInfo camera)
         {
+            // Bypass DirectShow filters for industrial camera when we have SDK access.
             return false; // camera.Name == "Basler GenICam Source";
         }
         
@@ -256,24 +259,35 @@ namespace Kinovea.Camera.DirectShow
                 doc.Load(new StringReader(xml));
 
                 info = new SpecificInfo();
-                
-                int frameRate = 0;
-                XmlNode xmlFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFrameRate");
-                if(xmlFrameRate != null)
-                {
-                    string strFrameRate = xmlFrameRate.InnerText;
-                    frameRate = int.Parse(strFrameRate, CultureInfo.InvariantCulture);
-                }
-                info.SelectedFrameRate = frameRate;
-                
+
+                string compression = null;
                 Size frameSize = Size.Empty;
-                XmlNode xmlFrameSize = doc.SelectSingleNode("/DirectShow/SelectedFrameSize");
+                int selectedFramerate = 0;
+                int index = -1;
+                int bpp = 0;
+
+                XmlNode xmlCompression = doc.SelectSingleNode("/DirectShow/Compression");
+                if (xmlCompression != null)
+                    compression = xmlCompression.InnerText;
+
+                XmlNode xmlFrameSize = doc.SelectSingleNode("/DirectShow/FrameSize");
                 if(xmlFrameSize != null)
-                {
-                    string strFrameSize = xmlFrameSize.InnerText;
-                    frameSize = XmlHelper.ParseSize(strFrameSize);
-                }
-                info.SelectedFrameSize = frameSize;
+                    frameSize = XmlHelper.ParseSize(xmlFrameSize.InnerText);
+
+                XmlNode xmlSelectedFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFramerate");
+                if (xmlSelectedFrameRate != null)
+                    selectedFramerate = int.Parse(xmlSelectedFrameRate.InnerText, CultureInfo.InvariantCulture);
+
+                XmlNode xmlIndex = doc.SelectSingleNode("/DirectShow/MediaTypeIndex");
+                if (xmlIndex != null)
+                    index = int.Parse(xmlIndex.InnerText, CultureInfo.InvariantCulture);
+
+                XmlNode xmlBPP = doc.SelectSingleNode("/DirectShow/BitsPerPixel");
+                if (xmlBPP != null)
+                    bpp = int.Parse(xmlBPP.InnerText, CultureInfo.InvariantCulture);
+
+                if (!string.IsNullOrEmpty(compression) && frameSize != Size.Empty && selectedFramerate > 0 && index > 0 && bpp > 0)
+                    info.MediaType = new MediaType(compression, frameSize, selectedFramerate, index, bpp, null);
             }
             catch(Exception e)
             {
@@ -291,17 +305,33 @@ namespace Kinovea.Camera.DirectShow
                 
             XmlDocument doc = new XmlDocument();
             XmlElement xmlRoot = doc.CreateElement("DirectShow");
+
+            if (info.MediaType == null)
+            {
+                doc.AppendChild(xmlRoot);
+                return doc.OuterXml;
+            }
+
+            XmlElement xmlCompression = doc.CreateElement("Compression");
+            xmlCompression.InnerText = info.MediaType.Compression;
+            xmlRoot.AppendChild(xmlCompression);
             
-            XmlElement xmlFrameRate = doc.CreateElement("SelectedFrameRate");
-            string framerate = string.Format("{0}", info.SelectedFrameRate);
-            xmlFrameRate.InnerText = framerate;
-            xmlRoot.AppendChild(xmlFrameRate);
-            
-            XmlElement xmlFrameSize = doc.CreateElement("SelectedFrameSize");
-            string frameSize = string.Format("{0};{1}", info.SelectedFrameSize.Width, info.SelectedFrameSize.Height);
-            xmlFrameSize.InnerText = frameSize;
+            XmlElement xmlFrameSize = doc.CreateElement("FrameSize");
+            xmlFrameSize.InnerText = string.Format("{0};{1}", info.MediaType.FrameSize.Width, info.MediaType.FrameSize.Height);
             xmlRoot.AppendChild(xmlFrameSize);
-            
+
+            XmlElement xmlFramerate = doc.CreateElement("SelectedFramerate");
+            xmlFramerate.InnerText = string.Format("{0}", info.MediaType.SelectedFramerate);
+            xmlRoot.AppendChild(xmlFramerate);
+
+            XmlElement xmlIndex = doc.CreateElement("MediaTypeIndex");
+            xmlIndex.InnerText = string.Format("{0}", info.MediaType.MediaTypeIndex);
+            xmlRoot.AppendChild(xmlIndex);
+
+            XmlElement xmlBPP = doc.CreateElement("BitsPerPixel");
+            xmlBPP.InnerText = string.Format("{0}", info.MediaType.BitsPerPixel);
+            xmlRoot.AppendChild(xmlBPP);
+
             doc.AppendChild(xmlRoot);
             
             return doc.OuterXml;
