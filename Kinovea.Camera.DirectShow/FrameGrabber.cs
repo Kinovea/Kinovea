@@ -20,8 +20,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Linq;
 using AForge.Video;
 using AForge.Video.DirectShow;
+using System.Collections.Generic;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -57,13 +59,14 @@ namespace Kinovea.Camera.DirectShow
         #endregion
         
         #region Members
-        private Bitmap image;
         private string moniker;
-        private CameraSummary summary;
-        private object locker = new object();
         private VideoCaptureDevice device;
+        private List<MediaType> mediaTypes;
+        private CameraSummary summary;
         private bool grabbing;
         private Size actualSize;
+        private Bitmap image;
+        private object locker = new object();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -72,12 +75,15 @@ namespace Kinovea.Camera.DirectShow
             this.moniker = moniker;
             this.summary = summary;
             device = new VideoCaptureDevice(moniker);
+            mediaTypes = MediaTypeImporter.Import(device);
         }
 
         public void Start()
         {
             log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
+            
             ConfigureDevice();
+            
             device.NewFrame += Device_NewFrame;
             device.VideoSourceError += Device_VideoSourceError;
             grabbing = true;
@@ -96,25 +102,28 @@ namespace Kinovea.Camera.DirectShow
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
         }
-        
+
         private void ConfigureDevice()
         {
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if (info == null)
-                return;
-
-            // TODO: use a better model to enumerate and select the capture filter output pin media type.
-            // AForge grouping of media types is a bit too aggressive.
-            VideoCapabilities[] capabilities = device.VideoCapabilities;
-            foreach (VideoCapabilities capability in capabilities)
+            if (info == null || info.MediaType == null)
             {
-                if (capability.AverageFrameRate != info.SelectedFrameRate || capability.FrameSize != info.SelectedFrameSize)
-                    continue;
-
-                device.VideoResolution = capability;
-                log.DebugFormat("Device desired configuration: {0} @ {1} fps", device.VideoResolution.FrameSize, device.VideoResolution.AverageFrameRate);
-                break;
+                log.DebugFormat("The device has never been configured in Kinovea. Use the current configuration.");
+                return;
             }
+
+            // We have a configuration on record. Find the corresponding VideoCapability and apply it.
+            MediaType mt = info.MediaType;
+            VideoCapabilities[] capabilities = device.VideoCapabilities;
+            VideoCapabilities match = capabilities.FirstOrDefault(c => c.Index == mt.MediaTypeIndex);
+            if (match == null)
+            {
+                log.ErrorFormat("Could not match the saved stream configuration.");
+                return;
+            }
+
+            device.VideoResolution = match;
+            log.DebugFormat("Device set to saved configuration: {0}.", mt.ToString());
         }
         
         private void Device_NewFrame(object sender, NewFrameEventArgs e)

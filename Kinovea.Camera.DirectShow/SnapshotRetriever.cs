@@ -29,6 +29,7 @@ namespace Kinovea.Camera.DirectShow
 {
     /// <summary>
     /// Retrieve a single snapshot, simulating a synchronous function. Used for thumbnails.
+    /// We use whatever settings are currently configured in the camera.
     /// </summary>
     public class SnapshotRetriever
     {
@@ -40,12 +41,14 @@ namespace Kinovea.Camera.DirectShow
         }
         
         #region Members
+        private static readonly int timeout = 5000;
         private Bitmap image;
         private string moniker;
         private CameraSummary summary;
         private object locker = new object();
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
         private bool cancelled;
+        private bool hadError;
         private VideoCaptureDevice device;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -64,13 +67,22 @@ namespace Kinovea.Camera.DirectShow
         {
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
             device.Start();
-            waitHandle.WaitOne(5000, false);
+            waitHandle.WaitOne(timeout, false);
             
             device.NewFrame -= Device_NewFrame;
             device.VideoSourceError -= Device_VideoSourceError;
             device.SignalToStop();
-            
-            if(!cancelled && image != null && CameraImageReceived != null)
+
+            if (cancelled || hadError)
+                return;
+
+            if (image == null)
+            {
+                log.DebugFormat("Timeout waiting for thumbnail of {0}", summary.Alias);
+                return;
+            }
+
+            if(CameraImageReceived != null)
                 CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
         }
         
@@ -83,7 +95,6 @@ namespace Kinovea.Camera.DirectShow
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
             // Note: unfortunately some devices need several frames to have a usable image. (e.g: PS3 Eye).
-            log.DebugFormat("New frame received for thumbnail of {0}", summary.Alias);
             image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
             Graphics g = Graphics.FromImage(image);
             g.DrawImageUnscaled(e.Frame, Point.Empty);
@@ -92,8 +103,10 @@ namespace Kinovea.Camera.DirectShow
         
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
-            log.ErrorFormat("Error received when getting thumbnail for {0}", summary.Alias);
+            log.ErrorFormat("Error received trying to get a thumbnail for {0}", summary.Alias);
             log.Error(e.Description);
+            
+            hadError = true;
             waitHandle.Set();
         }
 

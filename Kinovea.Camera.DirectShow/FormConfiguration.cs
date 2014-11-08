@@ -22,9 +22,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 
 using AForge.Video.DirectShow;
 using Kinovea.Camera;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -50,106 +52,154 @@ namespace Kinovea.Camera.DirectShow
             get { return specificChanged; }
         }
         
-        public VideoCapabilities Capability
+        public MediaType SelectedMediaType
         {
-            get { return capabilities[cmbCapabilities.SelectedIndex];}
+            get { return selectedMediaType; }
         }
-        
+
         private bool iconChanged;
         private bool specificChanged;
         private CameraSummary summary;
-        private List<VideoCapabilities> capabilities = new List<VideoCapabilities>();
-        private bool loaded;
+        private VideoCaptureDevice device;
+        private MediaType previousMediaType;
+        private MediaType selectedMediaType;
+        private List<MediaType> mediaTypes;
+        private List<double> possibleFramerates;
+        private bool canStreamConfig;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FormConfiguration(CameraSummary summary)
         {
             this.summary = summary;
-            
+   
             InitializeComponent();
             
             tbAlias.Text = summary.Alias;
             lblSystemName.Text = summary.Name;
             btnIcon.BackgroundImage = summary.Icon;
+            
+            InitializeMediaTypes(summary);
 
-            // TODO: Get moniker from identifier.
-            PopulateCapabilities();
-            loaded = true;
+            if (canStreamConfig)
+                PopulateColorSpaces();
+            else
+                DisableStreamConfig();
+        }
+
+        private void InitializeMediaTypes(CameraSummary summary)
+        {
+            device = new VideoCaptureDevice(summary.Identifier);
+
+            if (device.VideoCapabilities == null || device.VideoCapabilities.Length == 0)
+            {
+                canStreamConfig = false;
+                return;
+            }
+
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if (info != null && info.MediaType != null)
+                previousMediaType = info.MediaType;
+
+            mediaTypes = MediaTypeImporter.Import(device);
+            if (mediaTypes == null || mediaTypes.Count == 0)
+            {
+                canStreamConfig = false;
+                return;
+            }
+
+            canStreamConfig = true;
+        }
+
+        private void DisableStreamConfig()
+        {
+            lblColorSpace.Enabled = false;
+            lblImageSize.Enabled = false;
+            lblFramerate.Enabled = false;
+            cmbColorSpace.Enabled = false;
+            cmbImageSize.Enabled = false;
+            cmbFramerate.Enabled = false;
+        }
+
+        private void PopulateColorSpaces()
+        {
+            // We do not have access to the device object here as we are called from a generic context.
+            // Rebuild the device with its capabilities.
+
+            HashSet<string> compressionOptions = GetCompressionOptions(mediaTypes);
+            foreach (string compression in compressionOptions)
+            {
+                cmbColorSpace.Items.Add(compression);
+                
+                if (previousMediaType != null && previousMediaType.Compression == compression)
+                    cmbColorSpace.SelectedIndex = cmbColorSpace.Items.Count - 1;
+            }
+
+            if (cmbColorSpace.SelectedIndex < 0 && cmbColorSpace.Items.Count > 0)
+                cmbColorSpace.SelectedItem = cmbColorSpace.Items[0];
+        }
+
+        private HashSet<string> GetCompressionOptions(List<MediaType> mediaTypes)
+        {
+            HashSet<string> options = new HashSet<string>();
+            foreach (MediaType mt in mediaTypes)
+                options.Add(mt.Compression);
+
+            return options;
         }
         
-        void BtnIconClick(object sender, EventArgs e)
+        private void btnIcon_Click(object sender, EventArgs e)
         {
             FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5, "Icons");
-            LocateForm(fip);
-            if(fip.ShowDialog() == DialogResult.OK)
+            FormsHelper.Locate(fip);
+            if (fip.ShowDialog() == DialogResult.OK)
             {
                 btnIcon.BackgroundImage = fip.PickedIcon;
                 iconChanged = true;
             }
-            
+
             fip.Dispose();
         }
         
-        private void LocateForm(Form form)
+        private void cmbColorSpace_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Note: function duplicated from ScreenManager which we don't want to depend upon.
-            // Maybe this method would be better in Kinovea.Service.
-            if (Cursor.Position.X + (form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width || 
-                Cursor.Position.Y + form.Height >= SystemInformation.PrimaryMonitorSize.Height)
-                form.StartPosition = FormStartPosition.CenterScreen;
-            else
-                form.Location = new Point(Cursor.Position.X - (form.Width / 2), Cursor.Position.Y - 20);
-        }
-        
-        private void PopulateCapabilities()
-        {
-            VideoCaptureDevice device = new VideoCaptureDevice(summary.Identifier);
-            
-            if(device.VideoCapabilities == null || device.VideoCapabilities.Length == 0)
+            if (!canStreamConfig)
                 return;
-            
-            Size selectedFrameSize = Size.Empty;
-            int selectedFrameRate = 0;
-            
-            SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info != null)
+
+            string selectedCompression = cmbColorSpace.SelectedItem as string;
+            if (selectedCompression == null)
+                return;
+
+            PopulateFrameSizes(selectedCompression);
+        }
+
+        private void PopulateFrameSizes(string selectedCompression)
+        {
+            cmbImageSize.Items.Clear();
+
+            foreach (MediaType mt in mediaTypes)
             {
-                selectedFrameSize = info.SelectedFrameSize;
-                selectedFrameRate = info.SelectedFrameRate;
+                if (mt.Compression != selectedCompression)
+                    continue;
+
+                cmbImageSize.Items.Add(mt);
+                if (selectedMediaType != null)
+                {
+                    if (selectedMediaType.FrameSize == mt.FrameSize)
+                        cmbImageSize.SelectedIndex = cmbImageSize.Items.Count - 1;
+                }
+                else if (previousMediaType != null)
+                {
+                    if (previousMediaType.FrameSize == mt.FrameSize)
+                        cmbImageSize.SelectedIndex = cmbImageSize.Items.Count - 1;
+                }
             }
-            else
-            {
-                selectedFrameSize = device.VideoCapabilities[0].FrameSize;
-                selectedFrameRate = device.VideoCapabilities[0].AverageFrameRate;
-            }
-            
-            for(int i = 0; i<device.VideoCapabilities.Length; i++)
-            {
-                VideoCapabilities capability = device.VideoCapabilities[i];
-                
-                capabilities.Add(capability);
-                cmbCapabilities.Items.Add(CapabilityToString(capability));
-                
-                if(capability.FrameSize == selectedFrameSize && capability.AverageFrameRate == selectedFrameRate)
-                    cmbCapabilities.SelectedIndex = i;
-            }
+
+            if (cmbImageSize.SelectedIndex == -1 && cmbImageSize.Items.Count > 0)
+                cmbImageSize.SelectedIndex = 0;
         }
         
-        private string CapabilityToString(VideoCapabilities capability)
+        private void btnDeviceProperties_Click(object sender, EventArgs e)
         {
-            return string.Format("{0}×{1} @ {2} fps", capability.FrameSize.Width, capability.FrameSize.Height, capability.AverageFrameRate);
-        }
-        
-        private void CmbCapabilitiesSelectedIndexChanged(object sender, EventArgs e)
-        {
-            if(loaded)
-                specificChanged = true;
-        }
-        
-        private void BtnDevicePropertiesClick(object sender, EventArgs e)
-        {
-            VideoCaptureDevice device = new VideoCaptureDevice(summary.Identifier);
-            
             try
             {
                 device.DisplayPropertyPage(this.Handle);
@@ -158,6 +208,43 @@ namespace Kinovea.Camera.DirectShow
             {
                 log.ErrorFormat("Error happened while trying to display the device property page for {0}.", summary.Alias);
             }
+        }
+
+        private void cmbImageSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MediaType mt = cmbImageSize.SelectedItem as MediaType;
+            if (mt == null)
+                return;
+
+            selectedMediaType = mt;
+            specificChanged = true;
+
+            PopulateFramerates();
+        }
+
+        private void PopulateFramerates()
+        {
+            possibleFramerates = MediaTypeImporter.GetSupportedFramerates(device, selectedMediaType);
+            cmbFramerate.Items.Clear();
+
+            foreach (double fps in possibleFramerates)
+            {
+                cmbFramerate.Items.Add(string.Format("{0:0.000}", fps));
+                
+                if (selectedMediaType != null)
+                {
+                    if (selectedMediaType.SelectedFramerate - fps < 0.001)
+                        cmbFramerate.SelectedIndex = cmbFramerate.Items.Count - 1;
+                }
+                else if (previousMediaType != null)
+                {
+                    if (previousMediaType.SelectedFramerate - fps < 0.001)
+                        cmbFramerate.SelectedIndex = cmbFramerate.Items.Count - 1;
+                }
+            }
+
+            if (cmbFramerate.SelectedIndex == -1 && cmbFramerate.Items.Count > 0)
+                cmbImageSize.SelectedIndex = 0;
         }
     }
 }

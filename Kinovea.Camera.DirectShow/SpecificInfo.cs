@@ -29,7 +29,6 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public class SpecificInfo
     {
-        public int SelectedFrameRate { get; set; }
-        public Size SelectedFrameSize { get; set; }
+        public MediaType MediaType { get; set; }
     }
 }
