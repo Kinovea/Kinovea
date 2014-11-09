@@ -11,9 +11,9 @@ namespace Kinovea.Camera.DirectShow
         /// <summary>
         /// Import the capabilities published by the device and convert them to our local representation.
         /// </summary>
-        public static List<MediaType> Import(VideoCaptureDevice device)
+        public static Dictionary<int, MediaType> Import(VideoCaptureDevice device)
         {
-            List<MediaType> result = new List<MediaType>();
+            Dictionary<int, MediaType> result = new Dictionary<int, MediaType>();
 
             VideoCapabilities[] capabilities = device.VideoCapabilities;
             if (capabilities.Length == 0)
@@ -21,23 +21,25 @@ namespace Kinovea.Camera.DirectShow
 
             foreach (VideoCapabilities cap in capabilities)
             {
-                MediaType mt = new MediaType(cap.Compression, cap.FrameSize, cap.AverageFrameRate, cap.Index, cap.BitCount, null);
-                result.Add(mt);
+                MediaType mt = new MediaType(cap.Compression, cap.FrameSize, cap.AverageFrameRate, cap.Index, cap.BitCount);
+                result.Add(mt.MediaTypeIndex, mt);
             }
 
             return result;
         }
 
-        public static List<double> GetSupportedFramerates(VideoCaptureDevice device, MediaType mediaType)
+        public static Dictionary<int, List<float>> GetSupportedFramerates(VideoCaptureDevice device)
         {
-            //VideoCapabilities[] capabilities = device.VideoCapabilities;
-            //VideoCapabilities match = capabilities.FirstOrDefault(c => c.Index == mediaType.MediaTypeIndex);
+            Dictionary<int, List<float>> lists = new Dictionary<int, List<float>>();
 
-            List<double> result = new List<double>();
+            VideoCapabilities[] capabilities = device.VideoCapabilities;
+            if (capabilities.Length == 0)
+                return lists;
 
-            result.Add(mediaType.SelectedFramerate);
+            foreach (VideoCapabilities cap in capabilities)
+                lists.Add(cap.Index, cap.FrameRateList);
             
-            return result;
+            return lists;
         }
     }
 }

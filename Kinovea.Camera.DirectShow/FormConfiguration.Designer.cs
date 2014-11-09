@@ -183,6 +183,7 @@ namespace Kinovea.Camera.DirectShow
             this.cmbFramerate.Name = "cmbFramerate";
             this.cmbFramerate.Size = new System.Drawing.Size(100, 21);
             this.cmbFramerate.TabIndex = 88;
+            this.cmbFramerate.SelectedIndexChanged += new System.EventHandler(this.cmbFramerate_SelectedIndexChanged);
             // 
             // lblFramerate
             // 

@@ -52,19 +52,24 @@ namespace Kinovea.Camera.DirectShow
             get { return specificChanged; }
         }
         
-        public MediaType SelectedMediaType
+        public int SelectedMediaTypeIndex
         {
-            get { return selectedMediaType; }
+            get { return selectedMediaTypeIndex; }
+        }
+
+        public float SelectedFramerate
+        {
+            get { return selectedFramerate; }
         }
 
         private bool iconChanged;
         private bool specificChanged;
         private CameraSummary summary;
         private VideoCaptureDevice device;
-        private MediaType previousMediaType;
-        private MediaType selectedMediaType;
-        private List<MediaType> mediaTypes;
-        private List<double> possibleFramerates;
+        private Dictionary<int, MediaType> mediaTypes;
+        private Dictionary<int, List<float>> possibleFramerates;
+        private int selectedMediaTypeIndex;
+        private float selectedFramerate;
         private bool canStreamConfig;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -97,8 +102,11 @@ namespace Kinovea.Camera.DirectShow
             }
 
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if (info != null && info.MediaType != null)
-                previousMediaType = info.MediaType;
+            if (info != null)
+            {
+                selectedMediaTypeIndex = info.MediaTypeIndex;
+                selectedFramerate = info.SelectedFramerate;
+            }
 
             mediaTypes = MediaTypeImporter.Import(device);
             if (mediaTypes == null || mediaTypes.Count == 0)
@@ -106,6 +114,15 @@ namespace Kinovea.Camera.DirectShow
                 canStreamConfig = false;
                 return;
             }
+
+            // Ensure indexing by selected media type is valid.
+            if (!mediaTypes.ContainsKey(selectedMediaTypeIndex))
+            {
+                selectedMediaTypeIndex = mediaTypes[0].MediaTypeIndex;
+                log.ErrorFormat("Mediatype index not found, using first media type.");
+            }
+
+            possibleFramerates = MediaTypeImporter.GetSupportedFramerates(device);
 
             canStreamConfig = true;
         }
@@ -122,26 +139,27 @@ namespace Kinovea.Camera.DirectShow
 
         private void PopulateColorSpaces()
         {
-            // We do not have access to the device object here as we are called from a generic context.
-            // Rebuild the device with its capabilities.
-
             HashSet<string> compressionOptions = GetCompressionOptions(mediaTypes);
+
+            int match = -1;
             foreach (string compression in compressionOptions)
             {
                 cmbColorSpace.Items.Add(compression);
                 
-                if (previousMediaType != null && previousMediaType.Compression == compression)
-                    cmbColorSpace.SelectedIndex = cmbColorSpace.Items.Count - 1;
+                if (mediaTypes[selectedMediaTypeIndex].Compression == compression)
+                    match = cmbColorSpace.Items.Count - 1;
             }
 
-            if (cmbColorSpace.SelectedIndex < 0 && cmbColorSpace.Items.Count > 0)
-                cmbColorSpace.SelectedItem = cmbColorSpace.Items[0];
+            if (match != -1)
+                cmbColorSpace.SelectedIndex = match;
+            else if (cmbColorSpace.Items.Count > 0)
+                cmbColorSpace.SelectedIndex = 0;
         }
 
-        private HashSet<string> GetCompressionOptions(List<MediaType> mediaTypes)
+        private HashSet<string> GetCompressionOptions(Dictionary<int, MediaType> mediaTypes)
         {
             HashSet<string> options = new HashSet<string>();
-            foreach (MediaType mt in mediaTypes)
+            foreach (MediaType mt in mediaTypes.Values)
                 options.Add(mt.Compression);
 
             return options;
@@ -174,28 +192,33 @@ namespace Kinovea.Camera.DirectShow
 
         private void PopulateFrameSizes(string selectedCompression)
         {
+            // Populate the list of frame sizes with media types that use the current compression.
+            // Select the best match according to the current selection.
+
             cmbImageSize.Items.Clear();
 
-            foreach (MediaType mt in mediaTypes)
+            int indexMatch = -1;
+            int sizeMatch = -1;
+            foreach (MediaType mt in mediaTypes.Values)
             {
                 if (mt.Compression != selectedCompression)
                     continue;
 
                 cmbImageSize.Items.Add(mt);
-                if (selectedMediaType != null)
-                {
-                    if (selectedMediaType.FrameSize == mt.FrameSize)
-                        cmbImageSize.SelectedIndex = cmbImageSize.Items.Count - 1;
-                }
-                else if (previousMediaType != null)
-                {
-                    if (previousMediaType.FrameSize == mt.FrameSize)
-                        cmbImageSize.SelectedIndex = cmbImageSize.Items.Count - 1;
-                }
+
+                if (mt.MediaTypeIndex == selectedMediaTypeIndex)
+                    indexMatch = cmbImageSize.Items.Count - 1;
+                
+                if (mt.FrameSize == mediaTypes[selectedMediaTypeIndex].FrameSize)
+                    sizeMatch = cmbImageSize.Items.Count - 1;
             }
 
-            if (cmbImageSize.SelectedIndex == -1 && cmbImageSize.Items.Count > 0)
-                cmbImageSize.SelectedIndex = 0;
+            if (indexMatch != -1)
+                cmbImageSize.SelectedIndex = indexMatch;
+            else if (sizeMatch != -1)
+                cmbImageSize.SelectedIndex = sizeMatch;
+            else if (cmbImageSize.Items.Count > 0)
+                 cmbImageSize.SelectedIndex = 0;
         }
         
         private void btnDeviceProperties_Click(object sender, EventArgs e)
@@ -216,35 +239,42 @@ namespace Kinovea.Camera.DirectShow
             if (mt == null)
                 return;
 
-            selectedMediaType = mt;
+            selectedMediaTypeIndex = mt.MediaTypeIndex;
             specificChanged = true;
 
-            PopulateFramerates();
+            PopulateFramerates(mt);
         }
 
-        private void PopulateFramerates()
+        private void PopulateFramerates(MediaType mt)
         {
-            possibleFramerates = MediaTypeImporter.GetSupportedFramerates(device, selectedMediaType);
+            List<float> framerates = possibleFramerates[selectedMediaTypeIndex];
             cmbFramerate.Items.Clear();
 
-            foreach (double fps in possibleFramerates)
+            int match = -1;
+            foreach (float framerate in framerates)
             {
-                cmbFramerate.Items.Add(string.Format("{0:0.000}", fps));
+                cmbFramerate.Items.Add(string.Format("{0:0.000}", framerate));
                 
-                if (selectedMediaType != null)
-                {
-                    if (selectedMediaType.SelectedFramerate - fps < 0.001)
-                        cmbFramerate.SelectedIndex = cmbFramerate.Items.Count - 1;
-                }
-                else if (previousMediaType != null)
-                {
-                    if (previousMediaType.SelectedFramerate - fps < 0.001)
-                        cmbFramerate.SelectedIndex = cmbFramerate.Items.Count - 1;
-                }
+                if (selectedFramerate - framerate < 0.001)
+                    match = cmbFramerate.Items.Count - 1;
             }
 
-            if (cmbFramerate.SelectedIndex == -1 && cmbFramerate.Items.Count > 0)
-                cmbImageSize.SelectedIndex = 0;
+            if (match != -1)
+                cmbFramerate.SelectedIndex = match;
+            else if (cmbFramerate.Items.Count > 0)
+                cmbFramerate.SelectedIndex = 0;
+        }
+
+        private void cmbFramerate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = cmbFramerate.SelectedIndex;
+            if (index < 0)
+                return;
+
+            List<float> framerates = possibleFramerates[selectedMediaTypeIndex];
+            selectedFramerate = framerates[index];
+
+            specificChanged = true;
         }
     }
 }
