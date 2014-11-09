@@ -61,7 +61,6 @@ namespace Kinovea.Camera.DirectShow
         #region Members
         private string moniker;
         private VideoCaptureDevice device;
-        private List<MediaType> mediaTypes;
         private CameraSummary summary;
         private bool grabbing;
         private Size actualSize;
@@ -75,7 +74,6 @@ namespace Kinovea.Camera.DirectShow
             this.moniker = moniker;
             this.summary = summary;
             device = new VideoCaptureDevice(moniker);
-            mediaTypes = MediaTypeImporter.Import(device);
         }
 
         public void Start()
@@ -106,24 +104,25 @@ namespace Kinovea.Camera.DirectShow
         private void ConfigureDevice()
         {
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if (info == null || info.MediaType == null)
+            if (info == null || info.MediaTypeIndex < 0)
             {
                 log.DebugFormat("The device has never been configured in Kinovea. Use the current configuration.");
                 return;
             }
 
-            // We have a configuration on record. Find the corresponding VideoCapability and apply it.
-            MediaType mt = info.MediaType;
+            // Initialize device configuration (Extract and cache media types on the output pin).
+            // Double check we have an existing index and set the format.
             VideoCapabilities[] capabilities = device.VideoCapabilities;
-            VideoCapabilities match = capabilities.FirstOrDefault(c => c.Index == mt.MediaTypeIndex);
+            VideoCapabilities match = capabilities.FirstOrDefault(c => c.Index == info.MediaTypeIndex);
             if (match == null)
             {
-                log.ErrorFormat("Could not match the saved stream configuration.");
+                log.ErrorFormat("Could not match the saved media type.");
                 return;
             }
 
-            device.VideoResolution = match;
-            log.DebugFormat("Device set to saved configuration: {0}.", mt.ToString());
+            device.SetMediaTypeAndFramerate(info.MediaTypeIndex, info.SelectedFramerate);
+
+            log.DebugFormat("Device set to saved configuration: {0}.", info.MediaTypeIndex);
         }
         
         private void Device_NewFrame(object sender, NewFrameEventArgs e)

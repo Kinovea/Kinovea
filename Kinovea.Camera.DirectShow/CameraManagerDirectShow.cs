@@ -185,12 +185,10 @@ namespace Kinovea.Camera.DirectShow
                 if(form.SpecificChanged)
                 {
                     SpecificInfo info = new SpecificInfo();
-                    if (form.SelectedMediaType != null)
-                    {
-                        info.MediaType = form.SelectedMediaType;
-                        summary.UpdateSpecific(info);
-                    }
-                    
+                    info.MediaTypeIndex = form.SelectedMediaTypeIndex;
+                    info.SelectedFramerate = form.SelectedFramerate;
+                    summary.UpdateSpecific(info);
+
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
                     needsReconnection = true;
                 }
@@ -208,12 +206,21 @@ namespace Kinovea.Camera.DirectShow
             string alias = summary.Alias;
             
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info != null && info.MediaType != null)
+            if(info != null && info.MediaTypeIndex >= 0)
             {
-                Size size = info.MediaType.FrameSize;
-                float fps = (float)info.MediaType.SelectedFramerate;
-                string compression = info.MediaType.Compression;
-                result = string.Format("{0} - {1}×{2} @ {3}fps in {4}", alias, size.Width, size.Height, fps, compression);
+                VideoCaptureDevice device = new VideoCaptureDevice(summary.Identifier);
+                Dictionary<int, MediaType> mediaTypes = MediaTypeImporter.Import(device);
+                if (mediaTypes.ContainsKey(info.MediaTypeIndex))
+                {
+                    Size size = mediaTypes[info.MediaTypeIndex].FrameSize;
+                    float fps = (float)info.SelectedFramerate;
+                    string compression = mediaTypes[info.MediaTypeIndex].Compression;
+                    result = string.Format("{0} - {1}×{2} @ {3:0.000} fps in {4}.", alias, size.Width, size.Height, fps, compression);
+                }
+                else
+                {
+                    result = string.Format("{0}", alias);
+                }
             }
             else
             {
@@ -260,34 +267,19 @@ namespace Kinovea.Camera.DirectShow
 
                 info = new SpecificInfo();
 
-                string compression = null;
-                Size frameSize = Size.Empty;
-                int selectedFramerate = 0;
+                float selectedFramerate = -1;
                 int index = -1;
-                int bpp = 0;
-
-                XmlNode xmlCompression = doc.SelectSingleNode("/DirectShow/Compression");
-                if (xmlCompression != null)
-                    compression = xmlCompression.InnerText;
-
-                XmlNode xmlFrameSize = doc.SelectSingleNode("/DirectShow/FrameSize");
-                if(xmlFrameSize != null)
-                    frameSize = XmlHelper.ParseSize(xmlFrameSize.InnerText);
 
                 XmlNode xmlSelectedFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFramerate");
                 if (xmlSelectedFrameRate != null)
-                    selectedFramerate = int.Parse(xmlSelectedFrameRate.InnerText, CultureInfo.InvariantCulture);
+                    selectedFramerate = float.Parse(xmlSelectedFrameRate.InnerText, CultureInfo.InvariantCulture);
 
                 XmlNode xmlIndex = doc.SelectSingleNode("/DirectShow/MediaTypeIndex");
                 if (xmlIndex != null)
                     index = int.Parse(xmlIndex.InnerText, CultureInfo.InvariantCulture);
 
-                XmlNode xmlBPP = doc.SelectSingleNode("/DirectShow/BitsPerPixel");
-                if (xmlBPP != null)
-                    bpp = int.Parse(xmlBPP.InnerText, CultureInfo.InvariantCulture);
-
-                if (!string.IsNullOrEmpty(compression) && frameSize != Size.Empty && selectedFramerate > 0 && index > 0 && bpp > 0)
-                    info.MediaType = new MediaType(compression, frameSize, selectedFramerate, index, bpp, null);
+                info.MediaTypeIndex = index;
+                info.SelectedFramerate = selectedFramerate;
             }
             catch(Exception e)
             {
@@ -306,31 +298,20 @@ namespace Kinovea.Camera.DirectShow
             XmlDocument doc = new XmlDocument();
             XmlElement xmlRoot = doc.CreateElement("DirectShow");
 
-            if (info.MediaType == null)
+            if (info.MediaTypeIndex < 0)
             {
                 doc.AppendChild(xmlRoot);
                 return doc.OuterXml;
             }
 
-            XmlElement xmlCompression = doc.CreateElement("Compression");
-            xmlCompression.InnerText = info.MediaType.Compression;
-            xmlRoot.AppendChild(xmlCompression);
-            
-            XmlElement xmlFrameSize = doc.CreateElement("FrameSize");
-            xmlFrameSize.InnerText = string.Format("{0};{1}", info.MediaType.FrameSize.Width, info.MediaType.FrameSize.Height);
-            xmlRoot.AppendChild(xmlFrameSize);
-
-            XmlElement xmlFramerate = doc.CreateElement("SelectedFramerate");
-            xmlFramerate.InnerText = string.Format("{0}", info.MediaType.SelectedFramerate);
-            xmlRoot.AppendChild(xmlFramerate);
-
             XmlElement xmlIndex = doc.CreateElement("MediaTypeIndex");
-            xmlIndex.InnerText = string.Format("{0}", info.MediaType.MediaTypeIndex);
+            xmlIndex.InnerText = string.Format("{0}", info.MediaTypeIndex);
             xmlRoot.AppendChild(xmlIndex);
 
-            XmlElement xmlBPP = doc.CreateElement("BitsPerPixel");
-            xmlBPP.InnerText = string.Format("{0}", info.MediaType.BitsPerPixel);
-            xmlRoot.AppendChild(xmlBPP);
+            XmlElement xmlFramerate = doc.CreateElement("SelectedFramerate");
+            string fps = info.SelectedFramerate.ToString("0.000", CultureInfo.InvariantCulture);
+            xmlFramerate.InnerText = fps;
+            xmlRoot.AppendChild(xmlFramerate);
 
             doc.AppendChild(xmlRoot);
             

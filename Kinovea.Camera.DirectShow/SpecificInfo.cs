@@ -29,6 +29,13 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public class SpecificInfo
     {
-        public MediaType MediaType { get; set; }
+        public int MediaTypeIndex { get; set; }
+        public float SelectedFramerate { get; set; }
+
+        public SpecificInfo()
+        {
+            MediaTypeIndex = -1;
+            SelectedFramerate = -1;
+        }
     }
 }
