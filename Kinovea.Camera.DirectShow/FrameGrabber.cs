@@ -65,6 +65,7 @@ namespace Kinovea.Camera.DirectShow
         private bool grabbing;
         private Size actualSize;
         private Bitmap image;
+        private bool receivedFirstFrame = false;
         private object locker = new object();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -86,6 +87,7 @@ namespace Kinovea.Camera.DirectShow
             device.VideoSourceError += Device_VideoSourceError;
             grabbing = true;
             device.Start();
+
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
         }
@@ -96,6 +98,9 @@ namespace Kinovea.Camera.DirectShow
             device.NewFrame -= Device_NewFrame;
             device.VideoSourceError -= Device_VideoSourceError;
             device.Stop();
+
+            receivedFirstFrame = false;
+            
             grabbing = false;
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
@@ -129,7 +134,13 @@ namespace Kinovea.Camera.DirectShow
         {
             // TODO: see if unsafe deep copy from AForge is faster.
             //log.DebugFormat("New frame received, size:{0}", e.Frame.Size);
-            
+
+            if (!receivedFirstFrame)
+            {
+                SetPostConnectionOptions();
+                receivedFirstFrame = true;
+            }
+
             int finalHeight = SetFinalHeight(e.Frame.Width, e.Frame.Height);
             actualSize = new Size(e.Frame.Width, finalHeight);
             bool anamorphic = e.Frame.Height != finalHeight;
@@ -170,6 +181,17 @@ namespace Kinovea.Camera.DirectShow
             }
             
             return finalHeight;
+        }
+
+        private void SetPostConnectionOptions()
+        {
+            // Some options only work after the graph is actually connected.
+            // For example exposure time. It might be due to a bug in Logitech drivers though.
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if (info == null || !info.HasExposure)
+                return;
+
+            device.SetCameraProperty(CameraControlProperty.Exposure, (int)info.Exposure, CameraControlFlags.Manual);
         }
     }
 }
