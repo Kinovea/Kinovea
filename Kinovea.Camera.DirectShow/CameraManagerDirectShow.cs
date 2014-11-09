@@ -187,6 +187,12 @@ namespace Kinovea.Camera.DirectShow
                     SpecificInfo info = new SpecificInfo();
                     info.MediaTypeIndex = form.SelectedMediaTypeIndex;
                     info.SelectedFramerate = form.SelectedFramerate;
+                    if (form.CanSetExposure)
+                    {
+                        info.HasExposure = true;
+                        info.Exposure = form.SelectedExposure;
+                    }
+                    
                     summary.UpdateSpecific(info);
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
@@ -269,6 +275,8 @@ namespace Kinovea.Camera.DirectShow
 
                 float selectedFramerate = -1;
                 int index = -1;
+                long exposure = 0;
+                bool hasExposure = false;
 
                 XmlNode xmlSelectedFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFramerate");
                 if (xmlSelectedFrameRate != null)
@@ -278,8 +286,18 @@ namespace Kinovea.Camera.DirectShow
                 if (xmlIndex != null)
                     index = int.Parse(xmlIndex.InnerText, CultureInfo.InvariantCulture);
 
+                XmlNode xmlExposure = doc.SelectSingleNode("/DirectShow/Exposure");
+                if (xmlExposure != null)
+                    exposure = long.Parse(xmlExposure.InnerText, CultureInfo.InvariantCulture);
+
+                XmlNode xmlHasExposure = doc.SelectSingleNode("/DirectShow/HasExposure");
+                if (xmlHasExposure != null)
+                    hasExposure = XmlHelper.ParseBoolean(xmlHasExposure.InnerText);
+
                 info.MediaTypeIndex = index;
                 info.SelectedFramerate = selectedFramerate;
+                info.Exposure = exposure;
+                info.HasExposure = hasExposure;
             }
             catch(Exception e)
             {
@@ -312,6 +330,14 @@ namespace Kinovea.Camera.DirectShow
             string fps = info.SelectedFramerate.ToString("0.000", CultureInfo.InvariantCulture);
             xmlFramerate.InnerText = fps;
             xmlRoot.AppendChild(xmlFramerate);
+
+            XmlElement xmlExposure = doc.CreateElement("Exposure");
+            xmlExposure.InnerText = string.Format("{0}", info.Exposure);
+            xmlRoot.AppendChild(xmlExposure);
+
+            XmlElement xmlHasExposure = doc.CreateElement("HasExposure");
+            xmlHasExposure.InnerText = info.HasExposure.ToString().ToLower();
+            xmlRoot.AppendChild(xmlHasExposure);
 
             doc.AppendChild(xmlRoot);
             

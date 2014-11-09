@@ -31,11 +31,15 @@ namespace Kinovea.Camera.DirectShow
     {
         public int MediaTypeIndex { get; set; }
         public float SelectedFramerate { get; set; }
+        public long Exposure { get; set; }
+        public bool HasExposure { get; set; }
 
         public SpecificInfo()
         {
             MediaTypeIndex = -1;
             SelectedFramerate = -1;
+            Exposure = 0;
+            HasExposure = false;
         }
     }
 }

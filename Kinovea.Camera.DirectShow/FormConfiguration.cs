@@ -62,6 +62,16 @@ namespace Kinovea.Camera.DirectShow
             get { return selectedFramerate; }
         }
 
+        public int SelectedExposure
+        {
+            get { return selectedExposure; }
+        }
+
+        public bool CanSetExposure
+        {
+            get { return canExposure; }
+        }
+
         private bool iconChanged;
         private bool specificChanged;
         private CameraSummary summary;
@@ -71,6 +81,13 @@ namespace Kinovea.Camera.DirectShow
         private int selectedMediaTypeIndex;
         private float selectedFramerate;
         private bool canStreamConfig;
+
+        private int minExposure;
+        private int maxExposure;
+        private int selectedExposure;
+        private bool canExposure;
+        private bool updatingExposure;
+        
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FormConfiguration(CameraSummary summary)
@@ -89,8 +106,11 @@ namespace Kinovea.Camera.DirectShow
                 PopulateColorSpaces();
             else
                 DisableStreamConfig();
+
+            PopulateCameraControl();
         }
 
+        #region Mediatype and framerate selection    
         private void InitializeMediaTypes(CameraSummary summary)
         {
             device = new VideoCaptureDevice(summary.Identifier);
@@ -136,7 +156,7 @@ namespace Kinovea.Camera.DirectShow
             cmbImageSize.Enabled = false;
             cmbFramerate.Enabled = false;
         }
-
+        
         private void PopulateColorSpaces()
         {
             HashSet<string> compressionOptions = GetCompressionOptions(mediaTypes);
@@ -275,6 +295,63 @@ namespace Kinovea.Camera.DirectShow
             selectedFramerate = framerates[index];
 
             specificChanged = true;
+        }
+        #endregion
+    
+        private void PopulateCameraControl()
+        {
+            canExposure = false;
+
+            try
+            {
+                int step;
+                int defaultValue;
+                CameraControlFlags flags;
+                bool success = device.GetCameraPropertyRange(CameraControlProperty.Exposure, out minExposure, out maxExposure, out step, out defaultValue, out flags);
+                if (!success || step != 1)
+                    return;
+
+                tbExposure.Minimum = minExposure;
+                tbExposure.Maximum = maxExposure;
+
+                int currentValue;
+                success = device.GetCameraProperty(CameraControlProperty.Exposure, out currentValue, out flags);
+
+                if (!success)
+                    return;
+
+                updatingExposure = true;
+
+                int value = Math.Min(maxExposure, Math.Max(minExposure, currentValue));
+                tbExposure.Value = value;
+
+                updatingExposure = false;
+
+                canExposure = true;
+            }
+            catch
+            {
+                log.ErrorFormat("Error while trying to get camera control properties.");
+            }
+
+            if (!canExposure)
+            {
+                lblExposure.Enabled = false;
+                tbExposure.Enabled = false;
+            }
+            
+        }
+
+        private void tbExposure_ValueChanged(object sender, EventArgs e)
+        {
+            if (updatingExposure)
+                return;
+
+            if (tbExposure.Value < minExposure || tbExposure.Value > maxExposure)
+                return;
+
+            selectedExposure = tbExposure.Value;
+            device.SetCameraProperty(CameraControlProperty.Exposure, selectedExposure, CameraControlFlags.Manual);
         }
     }
 }
