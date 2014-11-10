@@ -33,6 +33,7 @@ namespace Kinovea.Camera.DirectShow
         public float SelectedFramerate { get; set; }
         public long Exposure { get; set; }
         public bool HasExposure { get; set; }
+        public bool UseLogitechExposure { get; set; }
 
         public SpecificInfo()
         {
@@ -40,6 +41,7 @@ namespace Kinovea.Camera.DirectShow
             SelectedFramerate = -1;
             Exposure = 0;
             HasExposure = false;
+            UseLogitechExposure = false;
         }
     }
 }

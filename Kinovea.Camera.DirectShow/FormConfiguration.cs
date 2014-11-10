@@ -72,6 +72,11 @@ namespace Kinovea.Camera.DirectShow
             get { return canExposure; }
         }
 
+        public bool UseLogitechExposure
+        {
+            get { return useLogitechExposure; }
+        }
+
         private bool iconChanged;
         private bool specificChanged;
         private CameraSummary summary;
@@ -86,6 +91,7 @@ namespace Kinovea.Camera.DirectShow
         private int maxExposure;
         private int selectedExposure;
         private bool canExposure;
+        private bool useLogitechExposure;
         private bool updatingExposure;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -275,7 +281,7 @@ namespace Kinovea.Camera.DirectShow
             {
                 cmbFramerate.Items.Add(string.Format("{0:0.000}", framerate));
                 
-                if (selectedFramerate - framerate < 0.001)
+                if (Math.Abs(selectedFramerate - framerate) < 0.001)
                     match = cmbFramerate.Items.Count - 1;
             }
 
@@ -304,30 +310,12 @@ namespace Kinovea.Camera.DirectShow
 
             try
             {
-                int step;
-                int defaultValue;
-                CameraControlFlags flags;
-                bool success = device.GetCameraPropertyRange(CameraControlProperty.Exposure, out minExposure, out maxExposure, out step, out defaultValue, out flags);
-                if (!success || step != 1)
-                    return;
+                useLogitechExposure = device.Logitech_SupportExposureProperty();
 
-                tbExposure.Minimum = minExposure;
-                tbExposure.Maximum = maxExposure;
-
-                int currentValue;
-                success = device.GetCameraProperty(CameraControlProperty.Exposure, out currentValue, out flags);
-
-                if (!success)
-                    return;
-
-                updatingExposure = true;
-
-                int value = Math.Min(maxExposure, Math.Max(minExposure, currentValue));
-                tbExposure.Value = value;
-
-                updatingExposure = false;
-
-                canExposure = true;
+                if (useLogitechExposure)
+                    PopulateLogitechExposure();
+                else
+                    PopulateGenericExposure();
             }
             catch
             {
@@ -339,7 +327,57 @@ namespace Kinovea.Camera.DirectShow
                 lblExposure.Enabled = false;
                 tbExposure.Enabled = false;
             }
+
+            if (!useLogitechExposure)
+                lblExposureValue.Visible = false;
+        }
+
+        private void PopulateLogitechExposure()
+        {
+            // Set min to what is supported by the C920.
+            minExposure = 1;
+            maxExposure = 500;
+            tbExposure.Minimum = minExposure;
+            tbExposure.Maximum = maxExposure;
+
+            int currentValue;
+            bool success = device.Logitech_GetExposure(out currentValue);
+            selectedExposure = Math.Min(maxExposure, Math.Max(minExposure, currentValue));
+            UpdateExposureLabel();
+
+            updatingExposure = true;
+            tbExposure.Value = selectedExposure;
+            updatingExposure = false;
             
+            canExposure = true;
+        }
+
+        private void PopulateGenericExposure()
+        {
+            int step;
+            int defaultValue;
+            CameraControlFlags flags;
+            bool success = device.GetCameraPropertyRange(CameraControlProperty.Exposure, out minExposure, out maxExposure, out step, out defaultValue, out flags);
+            if (!success || step != 1)
+                return;
+
+            tbExposure.Minimum = minExposure;
+            tbExposure.Maximum = maxExposure;
+
+            int currentValue;
+            success = device.GetCameraProperty(CameraControlProperty.Exposure, out currentValue, out flags);
+
+            if (!success)
+                return;
+
+            updatingExposure = true;
+
+            int value = Math.Min(maxExposure, Math.Max(minExposure, currentValue));
+            tbExposure.Value = value;
+
+            updatingExposure = false;
+
+            canExposure = true;
         }
 
         private void tbExposure_ValueChanged(object sender, EventArgs e)
@@ -351,7 +389,35 @@ namespace Kinovea.Camera.DirectShow
                 return;
 
             selectedExposure = tbExposure.Value;
+
+            if (useLogitechExposure)
+                UpdateLogitechExposure();
+            else
+                UpdateGenericExposure();
+        }
+
+        private void UpdateLogitechExposure()
+        {
+            device.Logitech_SetExposure(selectedExposure);
+            
+            int currentValue;
+            bool success = device.Logitech_GetExposure(out currentValue);
+            selectedExposure = Math.Min(maxExposure, Math.Max(minExposure, currentValue));
+            UpdateExposureLabel();
+        }
+
+        private void UpdateGenericExposure()
+        {
             device.SetCameraProperty(CameraControlProperty.Exposure, selectedExposure, CameraControlFlags.Manual);
+        }
+
+        private void UpdateExposureLabel()
+        {
+            // The value from the Logitech LP1 propset is expressed in 100µs units.
+            if (selectedExposure < 10)
+                lblExposureValue.Text = string.Format("{0} µs", selectedExposure * 100);
+            else
+                lblExposureValue.Text = string.Format("{0:0.#} ms", selectedExposure / 10F);
         }
     }
 }
