@@ -191,6 +191,7 @@ namespace Kinovea.Camera.DirectShow
                     {
                         info.HasExposure = true;
                         info.Exposure = form.SelectedExposure;
+                        info.UseLogitechExposure = form.UseLogitechExposure;
                     }
                     
                     summary.UpdateSpecific(info);
@@ -277,6 +278,7 @@ namespace Kinovea.Camera.DirectShow
                 int index = -1;
                 long exposure = 0;
                 bool hasExposure = false;
+                bool useLogitechExposure = false;
 
                 XmlNode xmlSelectedFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFramerate");
                 if (xmlSelectedFrameRate != null)
@@ -294,10 +296,15 @@ namespace Kinovea.Camera.DirectShow
                 if (xmlHasExposure != null)
                     hasExposure = XmlHelper.ParseBoolean(xmlHasExposure.InnerText);
 
+                XmlNode xmlUseLogitechExposure = doc.SelectSingleNode("/DirectShow/UseLogitechExposure");
+                if (xmlUseLogitechExposure != null)
+                    useLogitechExposure = XmlHelper.ParseBoolean(xmlUseLogitechExposure.InnerText);
+
                 info.MediaTypeIndex = index;
                 info.SelectedFramerate = selectedFramerate;
                 info.Exposure = exposure;
                 info.HasExposure = hasExposure;
+                info.UseLogitechExposure = useLogitechExposure;
             }
             catch(Exception e)
             {
@@ -338,6 +345,10 @@ namespace Kinovea.Camera.DirectShow
             XmlElement xmlHasExposure = doc.CreateElement("HasExposure");
             xmlHasExposure.InnerText = info.HasExposure.ToString().ToLower();
             xmlRoot.AppendChild(xmlHasExposure);
+
+            XmlElement xmlUseLogitechExposure = doc.CreateElement("UseLogitechExposure");
+            xmlUseLogitechExposure.InnerText = info.UseLogitechExposure.ToString().ToLower();
+            xmlRoot.AppendChild(xmlUseLogitechExposure);
 
             doc.AppendChild(xmlRoot);
             

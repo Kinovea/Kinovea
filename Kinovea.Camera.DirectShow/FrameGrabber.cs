@@ -191,7 +191,10 @@ namespace Kinovea.Camera.DirectShow
             if (info == null || !info.HasExposure)
                 return;
 
-            device.SetCameraProperty(CameraControlProperty.Exposure, (int)info.Exposure, CameraControlFlags.Manual);
+            if (info.UseLogitechExposure)
+                device.Logitech_SetExposure((int)info.Exposure);
+            else
+                device.SetCameraProperty(CameraControlProperty.Exposure, (int)info.Exposure, CameraControlFlags.Manual);
         }
     }
 }
