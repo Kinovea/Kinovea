@@ -187,10 +187,12 @@ namespace Kinovea.Camera.DirectShow
                     SpecificInfo info = new SpecificInfo();
                     info.MediaTypeIndex = form.SelectedMediaTypeIndex;
                     info.SelectedFramerate = form.SelectedFramerate;
-                    if (form.CanSetExposure)
+                    
+                    if (form.HasExposureControl)
                     {
-                        info.HasExposure = true;
-                        info.Exposure = form.SelectedExposure;
+                        info.HasExposureControl = true;
+                        info.ManualExposure = form.ManualExposure;
+                        info.ExposureValue = form.ExposureValue;
                         info.UseLogitechExposure = form.UseLogitechExposure;
                     }
                     
@@ -257,7 +259,8 @@ namespace Kinovea.Camera.DirectShow
         private bool BypassCamera(FilterInfo camera)
         {
             // Bypass DirectShow filters for industrial camera when we have SDK access.
-            return false; // camera.Name == "Basler GenICam Source";
+            //return camera.Name == "Basler GenICam Source" || camera.Name == "FlyCapture2 Camera";
+            return camera.Name == "FlyCapture2 Camera";
         }
         
         private SpecificInfo SpecificInfoDeserialize(string xml)
@@ -276,8 +279,9 @@ namespace Kinovea.Camera.DirectShow
 
                 float selectedFramerate = -1;
                 int index = -1;
-                long exposure = 0;
-                bool hasExposure = false;
+                bool hasExposureControl = false;
+                bool manualExposure = false;
+                long exposureValue = 0;
                 bool useLogitechExposure = false;
 
                 XmlNode xmlSelectedFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFramerate");
@@ -288,13 +292,18 @@ namespace Kinovea.Camera.DirectShow
                 if (xmlIndex != null)
                     index = int.Parse(xmlIndex.InnerText, CultureInfo.InvariantCulture);
 
-                XmlNode xmlExposure = doc.SelectSingleNode("/DirectShow/Exposure");
-                if (xmlExposure != null)
-                    exposure = long.Parse(xmlExposure.InnerText, CultureInfo.InvariantCulture);
+                // Exposure
+                XmlNode xmlHasExposureControl = doc.SelectSingleNode("/DirectShow/HasExposureControl");
+                if (xmlHasExposureControl != null)
+                    hasExposureControl = XmlHelper.ParseBoolean(xmlHasExposureControl.InnerText);
 
-                XmlNode xmlHasExposure = doc.SelectSingleNode("/DirectShow/HasExposure");
-                if (xmlHasExposure != null)
-                    hasExposure = XmlHelper.ParseBoolean(xmlHasExposure.InnerText);
+                XmlNode xmlManualExposure = doc.SelectSingleNode("/DirectShow/ManualExposure");
+                if (xmlManualExposure != null)
+                    manualExposure = XmlHelper.ParseBoolean(xmlManualExposure.InnerText);
+
+                XmlNode xmlExposureValue = doc.SelectSingleNode("/DirectShow/ExposureValue");
+                if (xmlExposureValue != null)
+                    exposureValue = long.Parse(xmlExposureValue.InnerText, CultureInfo.InvariantCulture);
 
                 XmlNode xmlUseLogitechExposure = doc.SelectSingleNode("/DirectShow/UseLogitechExposure");
                 if (xmlUseLogitechExposure != null)
@@ -302,8 +311,9 @@ namespace Kinovea.Camera.DirectShow
 
                 info.MediaTypeIndex = index;
                 info.SelectedFramerate = selectedFramerate;
-                info.Exposure = exposure;
-                info.HasExposure = hasExposure;
+                info.HasExposureControl = hasExposureControl;
+                info.ManualExposure = manualExposure;
+                info.ExposureValue = exposureValue;
                 info.UseLogitechExposure = useLogitechExposure;
             }
             catch(Exception e)
@@ -338,14 +348,19 @@ namespace Kinovea.Camera.DirectShow
             xmlFramerate.InnerText = fps;
             xmlRoot.AppendChild(xmlFramerate);
 
-            XmlElement xmlExposure = doc.CreateElement("Exposure");
-            xmlExposure.InnerText = string.Format("{0}", info.Exposure);
-            xmlRoot.AppendChild(xmlExposure);
+            // Exposure
+            XmlElement xmlHasExposureControl = doc.CreateElement("HasExposureControl");
+            xmlHasExposureControl.InnerText = info.HasExposureControl.ToString().ToLower();
+            xmlRoot.AppendChild(xmlHasExposureControl);
 
-            XmlElement xmlHasExposure = doc.CreateElement("HasExposure");
-            xmlHasExposure.InnerText = info.HasExposure.ToString().ToLower();
-            xmlRoot.AppendChild(xmlHasExposure);
+            XmlElement xmlManualExposure = doc.CreateElement("ManualExposure");
+            xmlManualExposure.InnerText = info.ManualExposure.ToString().ToLower();
+            xmlRoot.AppendChild(xmlManualExposure);
 
+            XmlElement xmlExposureValue = doc.CreateElement("ExposureValue");
+            xmlExposureValue.InnerText = string.Format("{0}", info.ExposureValue);
+            xmlRoot.AppendChild(xmlExposureValue);
+            
             XmlElement xmlUseLogitechExposure = doc.CreateElement("UseLogitechExposure");
             xmlUseLogitechExposure.InnerText = info.UseLogitechExposure.ToString().ToLower();
             xmlRoot.AppendChild(xmlUseLogitechExposure);
