@@ -62,14 +62,19 @@ namespace Kinovea.Camera.DirectShow
             get { return selectedFramerate; }
         }
 
-        public int SelectedExposure
+        public bool HasExposureControl
         {
-            get { return selectedExposure; }
+            get { return hasExposureControl; }
         }
 
-        public bool CanSetExposure
+        public bool ManualExposure
         {
-            get { return canExposure; }
+            get { return manualExposure; }
+        }
+        
+        public int ExposureValue
+        {
+            get { return selectedExposure; }
         }
 
         public bool UseLogitechExposure
@@ -87,11 +92,12 @@ namespace Kinovea.Camera.DirectShow
         private float selectedFramerate;
         private bool canStreamConfig;
 
+        private bool hasExposureControl;
+        private bool manualExposure;
+        private bool useLogitechExposure;
         private int minExposure;
         private int maxExposure;
         private int selectedExposure;
-        private bool canExposure;
-        private bool useLogitechExposure;
         private bool updatingExposure;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -306,12 +312,12 @@ namespace Kinovea.Camera.DirectShow
     
         private void PopulateCameraControl()
         {
-            canExposure = false;
+            hasExposureControl = false;
 
             try
             {
                 useLogitechExposure = device.Logitech_SupportExposureProperty();
-
+                
                 if (useLogitechExposure)
                     PopulateLogitechExposure();
                 else
@@ -322,7 +328,7 @@ namespace Kinovea.Camera.DirectShow
                 log.ErrorFormat("Error while trying to get camera control properties.");
             }
 
-            if (!canExposure)
+            if (!hasExposureControl)
             {
                 lblExposure.Enabled = false;
                 tbExposure.Enabled = false;
@@ -341,15 +347,21 @@ namespace Kinovea.Camera.DirectShow
             tbExposure.Maximum = maxExposure;
 
             int currentValue;
-            bool success = device.Logitech_GetExposure(out currentValue);
+            bool manual;
+            bool success = device.Logitech_GetExposure(out currentValue, out manual);
+
+            if (!success)
+                return;
+
             selectedExposure = Math.Min(maxExposure, Math.Max(minExposure, currentValue));
+            manualExposure = manual;
             UpdateExposureLabel();
 
             updatingExposure = true;
             tbExposure.Value = selectedExposure;
             updatingExposure = false;
             
-            canExposure = true;
+            hasExposureControl = true;
         }
 
         private void PopulateGenericExposure()
@@ -358,11 +370,9 @@ namespace Kinovea.Camera.DirectShow
             int defaultValue;
             CameraControlFlags flags;
             bool success = device.GetCameraPropertyRange(CameraControlProperty.Exposure, out minExposure, out maxExposure, out step, out defaultValue, out flags);
+            
             if (!success || step != 1)
                 return;
-
-            tbExposure.Minimum = minExposure;
-            tbExposure.Maximum = maxExposure;
 
             int currentValue;
             success = device.GetCameraProperty(CameraControlProperty.Exposure, out currentValue, out flags);
@@ -370,14 +380,17 @@ namespace Kinovea.Camera.DirectShow
             if (!success)
                 return;
 
+            tbExposure.Minimum = minExposure;
+            tbExposure.Maximum = maxExposure;
+
+            selectedExposure = currentValue;
+            manualExposure = flags == CameraControlFlags.Manual;
+
             updatingExposure = true;
-
-            int value = Math.Min(maxExposure, Math.Max(minExposure, currentValue));
-            tbExposure.Value = value;
-
+            tbExposure.Value = selectedExposure;
             updatingExposure = false;
 
-            canExposure = true;
+            hasExposureControl = true;
         }
 
         private void tbExposure_ValueChanged(object sender, EventArgs e)
@@ -389,6 +402,7 @@ namespace Kinovea.Camera.DirectShow
                 return;
 
             selectedExposure = tbExposure.Value;
+            manualExposure = true;
 
             if (useLogitechExposure)
                 UpdateLogitechExposure();
@@ -398,11 +412,16 @@ namespace Kinovea.Camera.DirectShow
 
         private void UpdateLogitechExposure()
         {
-            device.Logitech_SetExposure(selectedExposure);
+            device.Logitech_SetExposure(selectedExposure, true);
             
+            // The device might decide to adjust the selected exposure on its own due to internal constraints.
+            // Read it back to have the actual final value in the label.
             int currentValue;
-            bool success = device.Logitech_GetExposure(out currentValue);
+            bool manual;
+            bool success = device.Logitech_GetExposure(out currentValue, out manual);
             selectedExposure = Math.Min(maxExposure, Math.Max(minExposure, currentValue));
+            manualExposure = manual;
+            
             UpdateExposureLabel();
         }
 
@@ -413,6 +432,8 @@ namespace Kinovea.Camera.DirectShow
 
         private void UpdateExposureLabel()
         {
+            // At the moment this label is only active for Logitech cameras,
+            // as they are the only cameras for which we have solid values.
             // The value from the Logitech LP1 propset is expressed in 100µs units.
             if (selectedExposure < 10)
                 lblExposureValue.Text = string.Format("{0} µs", selectedExposure * 100);

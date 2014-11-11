@@ -188,13 +188,14 @@ namespace Kinovea.Camera.DirectShow
             // Some options only work after the graph is actually connected.
             // For example exposure time. It might be due to a bug in Logitech drivers though.
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if (info == null || !info.HasExposure)
+            
+            if (info == null || !info.HasExposureControl || !info.ManualExposure)
                 return;
 
             if (info.UseLogitechExposure)
-                device.Logitech_SetExposure((int)info.Exposure);
+                device.Logitech_SetExposure((int)info.ExposureValue, true);
             else
-                device.SetCameraProperty(CameraControlProperty.Exposure, (int)info.Exposure, CameraControlFlags.Manual);
+                device.SetCameraProperty(CameraControlProperty.Exposure, (int)info.ExposureValue, CameraControlFlags.Manual);
         }
     }
 }
