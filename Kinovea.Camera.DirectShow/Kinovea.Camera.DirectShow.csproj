@@ -46,7 +46,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <OutputPath>..\Capteo\Capteo\bin\x86\Debug\</OutputPath>
+    <OutputPath>..\Kinovea\bin\x86\Debug\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\Kinovea\bin\x86\Release\</OutputPath>

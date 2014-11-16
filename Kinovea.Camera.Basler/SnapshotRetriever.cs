@@ -106,7 +106,7 @@ namespace Kinovea.Camera.Basler
             if(!cancelled && !string.IsNullOrEmpty(error) && CameraImageError != null)
                 CameraImageError(this, EventArgs.Empty);
             else if(!cancelled && image != null && CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));
             else if(!cancelled && image == null && CameraImageTimedOut != null)
                 CameraImageTimedOut(this, EventArgs.Empty);
         }
