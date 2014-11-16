@@ -29,18 +29,14 @@ namespace Kinovea.Camera
     {
         public readonly CameraSummary Summary;
         public readonly Bitmap Image;
-        public readonly byte[] Buffer;
-
-        public CameraImageReceivedEventArgs(CameraSummary summary, Bitmap image)
+        public readonly bool HadError;
+        public readonly bool Cancelled;
+        public CameraImageReceivedEventArgs(CameraSummary summary, Bitmap image, bool hadError, bool cancelled)
         {
             this.Summary = summary;
             this.Image = image;
-        }
-
-        public CameraImageReceivedEventArgs(CameraSummary summary, byte[] buffer)
-        {
-            this.Summary = summary;
-            this.Buffer = buffer;
+            this.HadError = hadError;
+            this.Cancelled = cancelled;
         }
     }
 }

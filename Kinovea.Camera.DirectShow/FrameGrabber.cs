@@ -20,8 +20,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Linq;
 using AForge.Video;
 using AForge.Video.DirectShow;
+using System.Collections.Generic;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -43,31 +45,28 @@ namespace Kinovea.Camera.DirectShow
         {
             get { return actualSize; }
         }
-
-        public int Depth
-        {
-            get { return 3; }
-        }
         
         public float Framerate
         {
-            get { return device.DesiredFrameRate;}
+            get 
+            {
+                if (device.VideoResolution != null)
+                    return device.VideoResolution.AverageFrameRate;
+                else
+                    return 30F;
+            }
         }
-        /*public string ErrorDescription
-        {
-            get { return errorDescription;}
-        }*/
         #endregion
         
         #region Members
-        private Bitmap image;
         private string moniker;
-        private CameraSummary summary;
-        private int finalHeight;
-        private object locker = new object();
         private VideoCaptureDevice device;
+        private CameraSummary summary;
         private bool grabbing;
         private Size actualSize;
+        private Bitmap image;
+        private bool receivedFirstFrame = false;
+        private object locker = new object();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -81,11 +80,14 @@ namespace Kinovea.Camera.DirectShow
         public void Start()
         {
             log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
+            
             ConfigureDevice();
+            
             device.NewFrame += Device_NewFrame;
             device.VideoSourceError += Device_VideoSourceError;
             grabbing = true;
             device.Start();
+
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
         }
@@ -96,6 +98,9 @@ namespace Kinovea.Camera.DirectShow
             device.NewFrame -= Device_NewFrame;
             device.VideoSourceError -= Device_VideoSourceError;
             device.Stop();
+
+            receivedFirstFrame = false;
+            
             grabbing = false;
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
@@ -104,23 +109,38 @@ namespace Kinovea.Camera.DirectShow
         private void ConfigureDevice()
         {
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info != null)
+            if (info == null || info.MediaTypeIndex < 0)
             {
-                device.DesiredFrameSize = info.SelectedFrameSize;
-                device.DesiredFrameRate = info.SelectedFrameRate;
-                log.DebugFormat("Device desired configuration: {0} @ {1} fps", device.DesiredFrameSize, device.DesiredFrameRate);
+                log.DebugFormat("The device has never been configured in Kinovea. Use the current configuration.");
+                return;
             }
-            else
+
+            // Initialize device configuration (Extract and cache media types on the output pin).
+            // Double check we have an existing index and set the format.
+            VideoCapabilities[] capabilities = device.VideoCapabilities;
+            VideoCapabilities match = capabilities.FirstOrDefault(c => c.Index == info.MediaTypeIndex);
+            if (match == null)
             {
-                
+                log.ErrorFormat("Could not match the saved media type.");
+                return;
             }
+
+            device.SetMediaTypeAndFramerate(info.MediaTypeIndex, info.SelectedFramerate);
+
+            log.DebugFormat("Device set to saved configuration: {0}.", info.MediaTypeIndex);
         }
         
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
             // TODO: see if unsafe deep copy from AForge is faster.
             //log.DebugFormat("New frame received, size:{0}", e.Frame.Size);
-            
+
+            if (!receivedFirstFrame)
+            {
+                SetPostConnectionOptions();
+                receivedFirstFrame = true;
+            }
+
             int finalHeight = SetFinalHeight(e.Frame.Width, e.Frame.Height);
             actualSize = new Size(e.Frame.Width, finalHeight);
             bool anamorphic = e.Frame.Height != finalHeight;
@@ -132,11 +152,8 @@ namespace Kinovea.Camera.DirectShow
             else
                 g.DrawImage(e.Frame, 0, 0, e.Frame.Width, finalHeight);
             
-            //if(CameraImageReceived != null)
-              //  CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
-
-            //if (FrameProduced != null)
-                //FrameProduced(this, new EventArgs<byte[]>(pylonImage.Buffer));
+            if(CameraImageReceived != null)
+                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));
         }
         
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
@@ -164,6 +181,21 @@ namespace Kinovea.Camera.DirectShow
             }
             
             return finalHeight;
+        }
+
+        private void SetPostConnectionOptions()
+        {
+            // Some options only work after the graph is actually connected.
+            // For example exposure time. It might be due to a bug in Logitech drivers though.
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            
+            if (info == null || !info.HasExposureControl || !info.ManualExposure)
+                return;
+
+            if (info.UseLogitechExposure)
+                device.Logitech_SetExposure((int)info.ExposureValue, true);
+            else
+                device.SetCameraProperty(CameraControlProperty.Exposure, (int)info.ExposureValue, CameraControlFlags.Manual);
         }
     }
 }

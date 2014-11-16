@@ -29,7 +29,21 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public class SpecificInfo
     {
-        public int SelectedFrameRate { get; set; }
-        public Size SelectedFrameSize { get; set; }
+        public int MediaTypeIndex { get; set; }
+        public float SelectedFramerate { get; set; }
+        public bool HasExposureControl { get; set; }
+        public long ExposureValue { get; set; }
+        public bool ManualExposure { get; set; }
+        public bool UseLogitechExposure { get; set; }
+
+        public SpecificInfo()
+        {
+            MediaTypeIndex = -1;
+            SelectedFramerate = -1;
+            HasExposureControl = false;
+            ExposureValue = 0;
+            ManualExposure = false;
+            UseLogitechExposure = false;
+        }
     }
 }

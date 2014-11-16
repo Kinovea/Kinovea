@@ -29,6 +29,7 @@ namespace Kinovea.Camera.DirectShow
 {
     /// <summary>
     /// Retrieve a single snapshot, simulating a synchronous function. Used for thumbnails.
+    /// We use whatever settings are currently configured in the camera.
     /// </summary>
     public class SnapshotRetriever
     {
@@ -40,12 +41,14 @@ namespace Kinovea.Camera.DirectShow
         }
         
         #region Members
+        private static readonly int timeout = 5000;
         private Bitmap image;
         private string moniker;
         private CameraSummary summary;
         private object locker = new object();
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
         private bool cancelled;
+        private bool hadError;
         private VideoCaptureDevice device;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -62,15 +65,19 @@ namespace Kinovea.Camera.DirectShow
 
         public void Run(object data)
         {
+            log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
             device.Start();
-            waitHandle.WaitOne(5000, false);
+            waitHandle.WaitOne(timeout, false);
             
             device.NewFrame -= Device_NewFrame;
             device.VideoSourceError -= Device_VideoSourceError;
             device.SignalToStop();
             
-            if(!cancelled && image != null && CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+            if (image == null)
+                log.DebugFormat("Timeout waiting for thumbnail of {0}", summary.Alias);
+
+            if(CameraImageReceived != null)
+                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, hadError, cancelled));
         }
         
         public void Cancel()
@@ -90,7 +97,10 @@ namespace Kinovea.Camera.DirectShow
         
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
-            log.DebugFormat("Error received");
+            log.ErrorFormat("Error received trying to get a thumbnail for {0}", summary.Alias);
+            log.Error(e.Description);
+            
+            hadError = true;
             waitHandle.Set();
         }
 

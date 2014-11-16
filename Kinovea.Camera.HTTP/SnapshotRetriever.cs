@@ -87,10 +87,10 @@ namespace Kinovea.Camera.HTTP
             
             if(!cancelled && !string.IsNullOrEmpty(error) && CameraImageError != null)
                 CameraImageError(this, EventArgs.Empty);
-            else if(!cancelled && image != null && CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
-            else if(!cancelled && image == null && CameraImageTimedOut != null)
+            else if (!cancelled && image == null && CameraImageTimedOut != null)
                 CameraImageTimedOut(this, EventArgs.Empty);
+            else if(CameraImageReceived != null)
+                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, cancelled));
         }
         
         public void Cancel()
