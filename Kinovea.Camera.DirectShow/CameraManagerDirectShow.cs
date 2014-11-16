@@ -247,20 +247,20 @@ namespace Kinovea.Camera.DirectShow
         private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if(retriever != null)
-            {
-                retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
-                snapshotting.Remove(retriever.Identifier);
-            }
+            if (retriever == null)
+                return;
             
-            OnCameraImageReceived(e);
+            retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
+            snapshotting.Remove(retriever.Identifier);
+
+            if (e.Image != null)
+                OnCameraImageReceived(e);
         }
         
         private bool BypassCamera(FilterInfo camera)
         {
             // Bypass DirectShow filters for industrial camera when we have SDK access.
-            //return camera.Name == "Basler GenICam Source" || camera.Name == "FlyCapture2 Camera";
-            return camera.Name == "FlyCapture2 Camera";
+            return false;
         }
         
         private SpecificInfo SpecificInfoDeserialize(string xml)
