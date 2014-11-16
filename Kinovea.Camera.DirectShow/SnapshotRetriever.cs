@@ -77,7 +77,7 @@ namespace Kinovea.Camera.DirectShow
                 log.DebugFormat("Timeout waiting for thumbnail of {0}", summary.Alias);
 
             if(CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, hadError, cancelled));
         }
         
         public void Cancel()

@@ -153,7 +153,7 @@ namespace Kinovea.Camera.DirectShow
                 g.DrawImage(e.Frame, 0, 0, e.Frame.Width, finalHeight);
             
             if(CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));
         }
         
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
