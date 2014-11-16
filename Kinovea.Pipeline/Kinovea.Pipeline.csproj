@@ -94,7 +94,7 @@
     <Compile Include="RingBuffer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Kinovea.Services\Kinovea.Services.csproj">
+    <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Kinovea.Services</Name>
     </ProjectReference>

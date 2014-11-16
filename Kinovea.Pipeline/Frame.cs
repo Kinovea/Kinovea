@@ -7,7 +7,6 @@ namespace Kinovea.Pipeline
 {
     public class Frame
     {
-        
         public int Width { get; private set; }
         public int Height { get; private set; }
         public int Depth { get; private set; }
