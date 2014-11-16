@@ -57,11 +57,16 @@ namespace Kinovea.Camera.DirectShow
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private List<string> snapshotting = new List<string>();
         private Bitmap defaultIcon;
+        private HashSet<string> bypass = new HashSet<string>();
         #endregion
         
         public CameraManagerDirectShow()
         {
             defaultIcon = IconLibrary.GetIcon("webcam");
+            
+            // Bypass DirectShow filters of cameras for which we have a dedicated plugin.
+            //bypass.Add("Basler GenICam Source");
+            //bypass.Add("FlyCapture2 Camera");
         }
 
         public override bool SanityCheck()
@@ -79,7 +84,7 @@ namespace Kinovea.Camera.DirectShow
             
             foreach(FilterInfo camera in cameras)
             {
-                if(BypassCamera(camera))
+                if(bypass.Contains(camera.Name))
                     continue;
 
                 // For now consider that the moniker string is like a serial number.
@@ -253,14 +258,8 @@ namespace Kinovea.Camera.DirectShow
             retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
             snapshotting.Remove(retriever.Identifier);
 
-            if (e.Image != null)
+            if (e.Image != null && !e.HadError && !e.Cancelled)
                 OnCameraImageReceived(e);
-        }
-        
-        private bool BypassCamera(FilterInfo camera)
-        {
-            // Bypass DirectShow filters for industrial camera when we have SDK access.
-            return false;
         }
         
         private SpecificInfo SpecificInfoDeserialize(string xml)
