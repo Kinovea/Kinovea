@@ -23,3 +23,4 @@ Updater/Languages/UpdaterLang.resources
 Tools/helptools/es/web/*.*
 *.opensdf
 *.sdf
+Installer/Kinovea.Portable*/*

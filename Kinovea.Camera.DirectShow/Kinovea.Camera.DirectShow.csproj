@@ -52,13 +52,13 @@
     <OutputPath>..\Kinovea\bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AForge.Video">
-      <HintPath>..\Refs\AForge.Video.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="AForge.Video, Version=2.2.5.0, Culture=neutral, PublicKeyToken=cbfb6e07d173c401, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\AForge\AForge.Video.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Video.DirectShow">
-      <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="AForge.Video.DirectShow, Version=2.2.5.0, Culture=neutral, PublicKeyToken=61ea4348d43881b7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\AForge\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\Refs\log4net.dll</HintPath>
@@ -78,6 +78,8 @@
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
     <Compile Include="FrameGrabber.cs" />
+    <Compile Include="MediaType.cs" />
+    <Compile Include="MediaTypeImporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnapshotRetriever.cs" />
     <Compile Include="SpecificInfo.cs" />

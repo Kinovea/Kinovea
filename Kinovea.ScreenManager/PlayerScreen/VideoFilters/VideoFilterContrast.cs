@@ -40,6 +40,6 @@ namespace Kinovea.ScreenManager
 		    get { return filter.ApplyInPlace; }
 		}
 		
-		private ContrastCorrection filter = new ContrastCorrection(1.6F);
+		private ContrastCorrection filter = new ContrastCorrection(13);
 	}
 }

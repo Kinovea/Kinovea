@@ -57,11 +57,16 @@ namespace Kinovea.Camera.DirectShow
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private List<string> snapshotting = new List<string>();
         private Bitmap defaultIcon;
+        private HashSet<string> bypass = new HashSet<string>();
         #endregion
         
         public CameraManagerDirectShow()
         {
             defaultIcon = IconLibrary.GetIcon("webcam");
+            
+            // Bypass DirectShow filters of cameras for which we have a dedicated plugin.
+            //bypass.Add("Basler GenICam Source");
+            //bypass.Add("FlyCapture2 Camera");
         }
 
         public override bool SanityCheck()
@@ -79,7 +84,7 @@ namespace Kinovea.Camera.DirectShow
             
             foreach(FilterInfo camera in cameras)
             {
-                if(BypassCamera(camera))
+                if(bypass.Contains(camera.Name))
                     continue;
 
                 // For now consider that the moniker string is like a serial number.
@@ -185,11 +190,20 @@ namespace Kinovea.Camera.DirectShow
                 if(form.SpecificChanged)
                 {
                     SpecificInfo info = new SpecificInfo();
-                    info.SelectedFrameRate = form.Capability.FrameRate;
-                    info.SelectedFrameSize = form.Capability.FrameSize;
+                    info.MediaTypeIndex = form.SelectedMediaTypeIndex;
+                    info.SelectedFramerate = form.SelectedFramerate;
+                    
+                    if (form.HasExposureControl)
+                    {
+                        info.HasExposureControl = true;
+                        info.ManualExposure = form.ManualExposure;
+                        info.ExposureValue = form.ExposureValue;
+                        info.UseLogitechExposure = form.UseLogitechExposure;
+                    }
+                    
                     summary.UpdateSpecific(info);
-                    summary.UpdateDisplayRectangle(Rectangle.Empty);
 
+                    summary.UpdateDisplayRectangle(Rectangle.Empty);
                     needsReconnection = true;
                 }
                 
@@ -206,11 +220,21 @@ namespace Kinovea.Camera.DirectShow
             string alias = summary.Alias;
             
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info != null)
+            if(info != null && info.MediaTypeIndex >= 0)
             {
-                Size size = info.SelectedFrameSize;
-                float fps = (float)info.SelectedFrameRate;
-                result = string.Format("{0} - {1}×{2} @ {3}fps", alias, size.Width, size.Height, fps);
+                VideoCaptureDevice device = new VideoCaptureDevice(summary.Identifier);
+                Dictionary<int, MediaType> mediaTypes = MediaTypeImporter.Import(device);
+                if (mediaTypes.ContainsKey(info.MediaTypeIndex))
+                {
+                    Size size = mediaTypes[info.MediaTypeIndex].FrameSize;
+                    float fps = (float)info.SelectedFramerate;
+                    string compression = mediaTypes[info.MediaTypeIndex].Compression;
+                    result = string.Format("{0} - {1}×{2} @ {3:0.000} fps in {4}.", alias, size.Width, size.Height, fps, compression);
+                }
+                else
+                {
+                    result = string.Format("{0}", alias);
+                }
             }
             else
             {
@@ -228,18 +252,14 @@ namespace Kinovea.Camera.DirectShow
         private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if(retriever != null)
-            {
-                retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
-                snapshotting.Remove(retriever.Identifier);
-            }
+            if (retriever == null)
+                return;
             
-            OnCameraImageReceived(e);
-        }
-        
-        private bool BypassCamera(FilterInfo camera)
-        {
-            return camera.Name == "Basler GenICam Source";
+            retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
+            snapshotting.Remove(retriever.Identifier);
+
+            if (e.Image != null && !e.HadError && !e.Cancelled)
+                OnCameraImageReceived(e);
         }
         
         private SpecificInfo SpecificInfoDeserialize(string xml)
@@ -255,24 +275,45 @@ namespace Kinovea.Camera.DirectShow
                 doc.Load(new StringReader(xml));
 
                 info = new SpecificInfo();
-                
-                int frameRate = 0;
-                XmlNode xmlFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFrameRate");
-                if(xmlFrameRate != null)
-                {
-                    string strFrameRate = xmlFrameRate.InnerText;
-                    frameRate = int.Parse(strFrameRate, CultureInfo.InvariantCulture);
-                }
-                info.SelectedFrameRate = frameRate;
-                
-                Size frameSize = Size.Empty;
-                XmlNode xmlFrameSize = doc.SelectSingleNode("/DirectShow/SelectedFrameSize");
-                if(xmlFrameSize != null)
-                {
-                    string strFrameSize = xmlFrameSize.InnerText;
-                    frameSize = XmlHelper.ParseSize(strFrameSize);
-                }
-                info.SelectedFrameSize = frameSize;
+
+                float selectedFramerate = -1;
+                int index = -1;
+                bool hasExposureControl = false;
+                bool manualExposure = false;
+                long exposureValue = 0;
+                bool useLogitechExposure = false;
+
+                XmlNode xmlSelectedFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFramerate");
+                if (xmlSelectedFrameRate != null)
+                    selectedFramerate = float.Parse(xmlSelectedFrameRate.InnerText, CultureInfo.InvariantCulture);
+
+                XmlNode xmlIndex = doc.SelectSingleNode("/DirectShow/MediaTypeIndex");
+                if (xmlIndex != null)
+                    index = int.Parse(xmlIndex.InnerText, CultureInfo.InvariantCulture);
+
+                // Exposure
+                XmlNode xmlHasExposureControl = doc.SelectSingleNode("/DirectShow/HasExposureControl");
+                if (xmlHasExposureControl != null)
+                    hasExposureControl = XmlHelper.ParseBoolean(xmlHasExposureControl.InnerText);
+
+                XmlNode xmlManualExposure = doc.SelectSingleNode("/DirectShow/ManualExposure");
+                if (xmlManualExposure != null)
+                    manualExposure = XmlHelper.ParseBoolean(xmlManualExposure.InnerText);
+
+                XmlNode xmlExposureValue = doc.SelectSingleNode("/DirectShow/ExposureValue");
+                if (xmlExposureValue != null)
+                    exposureValue = long.Parse(xmlExposureValue.InnerText, CultureInfo.InvariantCulture);
+
+                XmlNode xmlUseLogitechExposure = doc.SelectSingleNode("/DirectShow/UseLogitechExposure");
+                if (xmlUseLogitechExposure != null)
+                    useLogitechExposure = XmlHelper.ParseBoolean(xmlUseLogitechExposure.InnerText);
+
+                info.MediaTypeIndex = index;
+                info.SelectedFramerate = selectedFramerate;
+                info.HasExposureControl = hasExposureControl;
+                info.ManualExposure = manualExposure;
+                info.ExposureValue = exposureValue;
+                info.UseLogitechExposure = useLogitechExposure;
             }
             catch(Exception e)
             {
@@ -290,17 +331,39 @@ namespace Kinovea.Camera.DirectShow
                 
             XmlDocument doc = new XmlDocument();
             XmlElement xmlRoot = doc.CreateElement("DirectShow");
+
+            if (info.MediaTypeIndex < 0)
+            {
+                doc.AppendChild(xmlRoot);
+                return doc.OuterXml;
+            }
+
+            XmlElement xmlIndex = doc.CreateElement("MediaTypeIndex");
+            xmlIndex.InnerText = string.Format("{0}", info.MediaTypeIndex);
+            xmlRoot.AppendChild(xmlIndex);
+
+            XmlElement xmlFramerate = doc.CreateElement("SelectedFramerate");
+            string fps = info.SelectedFramerate.ToString("0.000", CultureInfo.InvariantCulture);
+            xmlFramerate.InnerText = fps;
+            xmlRoot.AppendChild(xmlFramerate);
+
+            // Exposure
+            XmlElement xmlHasExposureControl = doc.CreateElement("HasExposureControl");
+            xmlHasExposureControl.InnerText = info.HasExposureControl.ToString().ToLower();
+            xmlRoot.AppendChild(xmlHasExposureControl);
+
+            XmlElement xmlManualExposure = doc.CreateElement("ManualExposure");
+            xmlManualExposure.InnerText = info.ManualExposure.ToString().ToLower();
+            xmlRoot.AppendChild(xmlManualExposure);
+
+            XmlElement xmlExposureValue = doc.CreateElement("ExposureValue");
+            xmlExposureValue.InnerText = string.Format("{0}", info.ExposureValue);
+            xmlRoot.AppendChild(xmlExposureValue);
             
-            XmlElement xmlFrameRate = doc.CreateElement("SelectedFrameRate");
-            string framerate = string.Format("{0}", info.SelectedFrameRate);
-            xmlFrameRate.InnerText = framerate;
-            xmlRoot.AppendChild(xmlFrameRate);
-            
-            XmlElement xmlFrameSize = doc.CreateElement("SelectedFrameSize");
-            string frameSize = string.Format("{0};{1}", info.SelectedFrameSize.Width, info.SelectedFrameSize.Height);
-            xmlFrameSize.InnerText = frameSize;
-            xmlRoot.AppendChild(xmlFrameSize);
-            
+            XmlElement xmlUseLogitechExposure = doc.CreateElement("UseLogitechExposure");
+            xmlUseLogitechExposure.InnerText = info.UseLogitechExposure.ToString().ToLower();
+            xmlRoot.AppendChild(xmlUseLogitechExposure);
+
             doc.AppendChild(xmlRoot);
             
             return doc.OuterXml;

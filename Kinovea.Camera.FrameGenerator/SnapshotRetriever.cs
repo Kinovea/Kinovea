@@ -60,7 +60,7 @@ namespace Kinovea.Camera.FrameGenerator
             image = generator.Generate(new Size(640, 480));
             
             if (CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));
         }
 
         public void Cancel()
