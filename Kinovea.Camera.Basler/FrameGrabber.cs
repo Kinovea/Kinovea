@@ -35,8 +35,7 @@ namespace Kinovea.Camera.Basler
     /// </summary>
     public class FrameGrabber : IFrameGrabber
     {
-        //public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
-        public event EventHandler<EventArgs<byte[]>> FrameProduced;
+        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
         public event EventHandler GrabbingStatusChanged;
         
         #region Property
@@ -185,14 +184,19 @@ namespace Kinovea.Camera.Basler
             if (actualSize == Size.Empty)
                 actualSize = new Size(pylonImage.Width, pylonImage.Height);
             
+
+            // WORK IN PROGRESS
+            // The code is disabled until the pipeline is fully integrated into Kinovea proper.
+
+
             // At that point we have a reference on the Pylon-owned bytes.
             // Rather than using Pylon's BitmapFactory to build a Bitmap from the bytes, we transmit the bytes directly downstream.
             
-            if (FrameProduced != null)
-                FrameProduced(this, new EventArgs<byte[]>(pylonImage.Buffer));
+            //if (FrameProduced != null)
+                //FrameProduced(this, new EventArgs<byte[]>(pylonImage.Buffer));
             
             // When we are back from the event handler, the bytes have been copied to the shared queue.
-            imageProvider.ReleaseImage();
+            //imageProvider.ReleaseImage();
 
             //----------
             //if(CameraImageReceived != null)

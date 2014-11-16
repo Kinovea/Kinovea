@@ -202,7 +202,6 @@
     <Compile Include="CaptureScreen\CapturedFiles.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
     <Compile Include="CaptureScreen\FilenameHelper.cs" />
-    <Compile Include="CaptureScreen\Averager.cs" />
     <Compile Include="CaptureScreen\Frame buffers\CircularBufferMemory.cs" />
     <Compile Include="CaptureScreen\Frame buffers\IFrameBuffer.cs" />
     <Compile Include="CaptureScreen\ImageManipulator.cs" />
