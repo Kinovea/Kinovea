@@ -9,7 +9,7 @@ using Kinovea.Services;
 namespace Kinovea.Pipeline.Consumers
 {
     /// <summary>
-    /// Testing-purpose consumer.
+    /// Base class for all consumers.
     /// </summary>
     public abstract class AbstractConsumer : IFrameConsumer
     {
@@ -43,8 +43,6 @@ namespace Kinovea.Pipeline.Consumers
         // Frame memory storage
         private RingBuffer buffer;
         protected int frameLength;
-
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public void Run()
         {

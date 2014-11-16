@@ -23,7 +23,6 @@ namespace Kinovea.Pipeline
 
         private IFrameProducer producer;
         private List<IFrameConsumer> consumers;
-        //private List<Thread> consumerThreads = new List<Thread>();
         private RingBuffer buffer;
         private int frameLength;
 
@@ -121,8 +120,6 @@ namespace Kinovea.Pipeline
             buffer.Commit();
             commitbeat.Tick();
         }
-
-        
 
         #region Benchmarking support
         public void SetBenchmarkMode(BenchmarkMode benchmarkMode)

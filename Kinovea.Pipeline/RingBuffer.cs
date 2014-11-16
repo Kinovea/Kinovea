@@ -116,9 +116,6 @@ namespace Kinovea.Pipeline
             // The producer has finished stuffing the bytes in the Frame.
             // Mark the position as available for reading.
             producerPosition.Data = producerPosition.Data + 1;
-            //cursor = producerPosition;
-
-            // WaitStrategy.signalAll();
         }
 
         private void WaitForReaders(long position)
@@ -128,7 +125,7 @@ namespace Kinovea.Pipeline
             //-------------------------
 
             // Prefer the IsWriteable method for complete control over dropped frames.
-            // With this method the driver thread is slowed down, and the driver manages drops.
+            // With this method the camera wrapper thread is slowed down, and drops are left to its decision.
 
             if (benchmarkMode == BenchmarkMode.Bradycardia)
             {
