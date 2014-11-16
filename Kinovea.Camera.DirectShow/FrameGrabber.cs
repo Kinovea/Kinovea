@@ -22,7 +22,6 @@ using System;
 using System.Drawing;
 using AForge.Video;
 using AForge.Video.DirectShow;
-using Kinovea.Services;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -31,8 +30,7 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public class FrameGrabber : IFrameGrabber
     {
-        //public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
-        public event EventHandler<EventArgs<byte[]>> FrameProduced;
+        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
         public event EventHandler GrabbingStatusChanged;
         
         #region Property

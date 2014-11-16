@@ -64,8 +64,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.FrameGenerat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.Basler", "Kinovea.Camera.Basler\Kinovea.Camera.Basler.csproj", "{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Video.KS", "Kinovea.Video.KS\Kinovea.Video.KS.csproj", "{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -411,26 +409,6 @@ Global
 		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Release|Win32.ActiveCfg = Release|x86
 		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Release|x86.ActiveCfg = Release|x86
 		{D978AB6E-FEEB-4AD5-8A2B-A515F0DC166A}.Release|x86.Build.0 = Release|x86
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Debug|x86.ActiveCfg = Debug|x86
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Debug|x86.Build.0 = Debug|x86
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.DebugExternals|Any CPU.ActiveCfg = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.DebugExternals|Any CPU.Build.0 = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.DebugExternals|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.DebugExternals|Mixed Platforms.Build.0 = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.DebugExternals|Win32.ActiveCfg = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.DebugExternals|x86.ActiveCfg = Debug|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Release|Win32.ActiveCfg = Release|Any CPU
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Release|x86.ActiveCfg = Release|x86
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -447,6 +425,5 @@ Global
 		{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE} = {FDF09E19-B008-4D02-B644-F473FB55BAFA}
 		{F80DBE6D-D394-4811-B5E6-7528F849C71A} = {FDF09E19-B008-4D02-B644-F473FB55BAFA}
 		{94D6DE5A-B99A-4EED-AF5B-C08746EA568E} = {FDF09E19-B008-4D02-B644-F473FB55BAFA}
-		{13DC19E6-BEA7-452E-BCA3-BC9E51E119F8} = {FDF09E19-B008-4D02-B644-F473FB55BAFA}
 	EndGlobalSection
 EndGlobal

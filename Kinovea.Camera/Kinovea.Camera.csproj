@@ -82,6 +82,7 @@
     <Compile Include="ImageAspectRatio.cs" />
     <Compile Include="Interfaces\IConnectionWizard.cs" />
     <Compile Include="Interfaces\IFrameGrabber.cs" />
+    <Compile Include="LogarithmicMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Icons.Designer.cs">
       <DependentUpon>Icons.resx</DependentUpon>
@@ -102,10 +103,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CaptureBenchmark\Kinovea.Pipeline\Kinovea.Pipeline.csproj">
-      <Project>{32380CE3-AA6A-465B-BB0C-BF0708B2B3A5}</Project>
-      <Name>Kinovea.Pipeline</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Kinovea.Services</Name>
