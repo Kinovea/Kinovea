@@ -22,10 +22,11 @@ using System;
 using System.Drawing;
 using System.Timers;
 using System.Runtime.InteropServices;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.FrameGenerator
 {
-    public class FrameGrabber : IFrameGrabber
+    public class FrameGrabber : ICaptureSource
     {
         #region Imports Win32
         [DllImport("winmm.dll", SetLastError = true)]
@@ -39,7 +40,7 @@ namespace Kinovea.Camera.FrameGenerator
 
         #endregion
 
-        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler<EventArgs<byte[]>> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
 
         #region Property
@@ -126,8 +127,10 @@ namespace Kinovea.Camera.FrameGenerator
             Size size = info.SelectedFrameSize;
             Bitmap image = generator.Generate(size);
 
-            if (CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));
+            // TODO: Grab byte array and push to clients.
+
+            //if (CameraImageReceived != null)
+              //  CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));
         }
     }
 }

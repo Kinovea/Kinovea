@@ -54,7 +54,7 @@ namespace Kinovea.Pipeline.Consumers
 
                 // We first need to copy the bytes into a proper bitmap, as the jpeg encoder works with a bitmap object.
                 // Marshal.Copy is about 1ms on 2K.
-                Marshal.Copy(entry.Bytes, 0, bmpData.Scan0, bmpData.Stride * bitmap.Height);
+                Marshal.Copy(entry.Buffer, 0, bmpData.Scan0, bmpData.Stride * bitmap.Height);
                 
                 bitmap.Save(jpegStream, jpegCodec, encoderParameters);
 

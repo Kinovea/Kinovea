@@ -34,7 +34,7 @@ namespace Kinovea.Pipeline.Consumers
             sw.Reset();
             sw.Start();
             
-            LZ4Codec.Encode32(entry.Bytes, 0, entry.Bytes.Length, output, 0, output.Length);
+            LZ4Codec.Encode32(entry.Buffer, 0, entry.Buffer.Length, output, 0, output.Length);
             
             counter.Post((int)sw.ElapsedMilliseconds, frameLength);
         }

@@ -30,7 +30,7 @@ namespace Kinovea.Camera.HTTP
     /// </summary>
     public class SnapshotRetriever
     {
-        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
         public event EventHandler CameraImageTimedOut;
         public event EventHandler CameraImageError;
         
@@ -89,8 +89,8 @@ namespace Kinovea.Camera.HTTP
                 CameraImageError(this, EventArgs.Empty);
             else if (!cancelled && image == null && CameraImageTimedOut != null)
                 CameraImageTimedOut(this, EventArgs.Empty);
-            else if(CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, cancelled));
+            else if(CameraThumbnailProduced != null)
+                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, false, cancelled));
         }
         
         public void Cancel()

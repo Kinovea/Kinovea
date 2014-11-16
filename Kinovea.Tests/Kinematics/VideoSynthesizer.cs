@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Kinovea.Video;
 using System.Drawing;
-using Kinovea.Video.FFMpeg;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
@@ -23,7 +22,11 @@ namespace Kinovea.Tests.Kinematics
 
         public void CreateVideo(string outputPath, int width, int height, double fps, double durationSeconds, MovingObject o)
         {
-            string extension = "avi";
+
+            // Note: this class is no longer buildable as the VideoRecorder has been deprecated in favor of the Pipeline framework.
+            // Ideally this code would be in the KSV plug-in anyway.
+            
+            /*string extension = "avi";
             string filename = string.Format("{0:yyyyMMddTHHmmss}-{1}x{2}px-{3}s-{4}Hz.{5}", DateTime.Now, width, height, durationSeconds, fps, extension);
             string filepath = Path.Combine(outputPath, filename);
             int intervalMilliseconds = (int)(1000 / fps);
@@ -57,7 +60,7 @@ namespace Kinovea.Tests.Kinematics
             recorder.Close();
 
             foreach (Bitmap frame in frames)
-                frame.Dispose();
+                frame.Dispose();*/
         }
 
         private void DrawImage(Graphics g, PointF location, int frame, double t, double a, int width, int height, double duration, double fps, MovingObject o)

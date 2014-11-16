@@ -58,7 +58,7 @@ namespace Kinovea.Camera.FrameGenerator
             testing = true;
             CameraSummary testSummary = GetResult();
             SnapshotRetriever retriever = new SnapshotRetriever(manager, testSummary);
-            retriever.CameraImageReceived += SnapshotRetriever_CameraImageReceived;
+            retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
             retriever.CameraImageTimedOut += SnapshotRetriever_CameraImageTimedOut;
             retriever.CameraImageError += SnapshotRetriever_CameraImageError;
             retriever.Run(null);
@@ -104,24 +104,24 @@ namespace Kinovea.Camera.FrameGenerator
             MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             AfterCameraTest(retriever);
         }
-        
-        private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+
+        private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
             if(retriever == null)
                 return;
             
-            FormHandshakeResult result = new FormHandshakeResult(e.Image);
+            FormHandshakeResult result = new FormHandshakeResult(e.Thumbnail);
             result.ShowDialog();
             result.Dispose();
 
-            e.Image.Dispose();
+            e.Thumbnail.Dispose();
             AfterCameraTest(retriever);
         }
         
         private void AfterCameraTest(SnapshotRetriever retriever)
         {
-            retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
+            retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
             retriever.CameraImageTimedOut -= SnapshotRetriever_CameraImageTimedOut;
             retriever.CameraImageError -= SnapshotRetriever_CameraImageError;
             

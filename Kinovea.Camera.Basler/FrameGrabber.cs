@@ -33,9 +33,9 @@ namespace Kinovea.Camera.Basler
     /// <summary>
     /// The main grabbing class for Basler devices.
     /// </summary>
-    public class FrameGrabber : IFrameGrabber
+    public class FrameGrabber : ICaptureSource
     {
-        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler<EventArgs<byte[]>> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
         
         #region Property

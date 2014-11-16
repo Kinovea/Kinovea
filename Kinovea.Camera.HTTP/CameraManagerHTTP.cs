@@ -104,7 +104,7 @@ namespace Kinovea.Camera.HTTP
             log.DebugFormat("Retrieve single image.");
             
             SnapshotRetriever retriever = new SnapshotRetriever(this, summary);
-            retriever.CameraImageReceived += SnapshotRetriever_CameraImageReceived;
+            retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
             snapshotting.Add(summary.Identifier);
             ThreadPool.QueueUserWorkItem(retriever.Run);
         }
@@ -116,7 +116,7 @@ namespace Kinovea.Camera.HTTP
             return blurb;
         }
         
-        public override IFrameGrabber Connect(CameraSummary summary)
+        public override ICaptureSource Connect(CameraSummary summary)
         {
             FrameGrabber grabber = new FrameGrabber(this, summary);
             return grabber;
@@ -186,16 +186,16 @@ namespace Kinovea.Camera.HTTP
             return url;
         }
         
-        private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+        private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
             if(retriever != null)
             {
-                retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
+                retriever.CameraThumbnailProduced-= SnapshotRetriever_CameraThumbnailProduced;
                 snapshotting.Remove(retriever.Identifier);
             }
             
-            OnCameraImageReceived(e);
+            OnCameraThumbnailProduced(e);
         }
         
         private SpecificInfo SpecificInfoDeserialize(string xml)

@@ -79,6 +79,7 @@
     <Compile Include="Consumers\ConsumerJPEG.cs" />
     <Compile Include="Consumers\ConsumerLZ4.cs" />
     <Compile Include="Consumers\ConsumerFrameNumber.cs" />
+    <Compile Include="ImageFormat.cs" />
     <Compile Include="MemoryLayout\CacheLineStorageBool.cs" />
     <Compile Include="MemoryLayout\CacheLineStorageLong.cs" />
     <Compile Include="Consumers\ConsumerOccasionallySlow.cs" />
