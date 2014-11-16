@@ -72,15 +72,9 @@ namespace Kinovea.Camera.DirectShow
             device.NewFrame -= Device_NewFrame;
             device.VideoSourceError -= Device_VideoSourceError;
             device.SignalToStop();
-
-            if (cancelled || hadError)
-                return;
-
+            
             if (image == null)
-            {
                 log.DebugFormat("Timeout waiting for thumbnail of {0}", summary.Alias);
-                return;
-            }
 
             if(CameraImageReceived != null)
                 CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
