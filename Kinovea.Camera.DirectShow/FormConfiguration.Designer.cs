@@ -55,6 +55,7 @@ namespace Kinovea.Camera.DirectShow
             this.cmbColorSpace = new System.Windows.Forms.ComboBox();
             this.btnIcon = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblExposureValue = new System.Windows.Forms.Label();
             this.tbExposure = new System.Windows.Forms.TrackBar();
             this.lblExposure = new System.Windows.Forms.Label();
             this.cmbImageSize = new System.Windows.Forms.ComboBox();
@@ -63,7 +64,6 @@ namespace Kinovea.Camera.DirectShow
             this.lblFramerate = new System.Windows.Forms.Label();
             this.tbAlias = new System.Windows.Forms.TextBox();
             this.lblSystemName = new System.Windows.Forms.Label();
-            this.lblExposureValue = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbExposure)).BeginInit();
             this.SuspendLayout();
@@ -110,7 +110,7 @@ namespace Kinovea.Camera.DirectShow
             this.lblColorSpace.Name = "lblColorSpace";
             this.lblColorSpace.Size = new System.Drawing.Size(187, 23);
             this.lblColorSpace.TabIndex = 80;
-            this.lblColorSpace.Text = "Color space / compression:";
+            this.lblColorSpace.Text = "Stream format:";
             this.lblColorSpace.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // cmbColorSpace
@@ -162,6 +162,19 @@ namespace Kinovea.Camera.DirectShow
             this.groupBox1.Size = new System.Drawing.Size(366, 282);
             this.groupBox1.TabIndex = 84;
             this.groupBox1.TabStop = false;
+            // 
+            // lblExposureValue
+            // 
+            this.lblExposureValue.AutoSize = true;
+            this.lblExposureValue.BackColor = System.Drawing.Color.Transparent;
+            this.lblExposureValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblExposureValue.ForeColor = System.Drawing.Color.Black;
+            this.lblExposureValue.Location = new System.Drawing.Point(155, 194);
+            this.lblExposureValue.Name = "lblExposureValue";
+            this.lblExposureValue.Size = new System.Drawing.Size(39, 13);
+            this.lblExposureValue.TabIndex = 93;
+            this.lblExposureValue.Text = "100 µs";
+            this.lblExposureValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tbExposure
             // 
@@ -258,19 +271,6 @@ namespace Kinovea.Camera.DirectShow
             this.lblSystemName.TabIndex = 85;
             this.lblSystemName.Text = "System name";
             this.lblSystemName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblExposureValue
-            // 
-            this.lblExposureValue.AutoSize = true;
-            this.lblExposureValue.BackColor = System.Drawing.Color.Transparent;
-            this.lblExposureValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblExposureValue.ForeColor = System.Drawing.Color.Black;
-            this.lblExposureValue.Location = new System.Drawing.Point(155, 194);
-            this.lblExposureValue.Name = "lblExposureValue";
-            this.lblExposureValue.Size = new System.Drawing.Size(39, 13);
-            this.lblExposureValue.TabIndex = 93;
-            this.lblExposureValue.Text = "100 µs";
-            this.lblExposureValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FormConfiguration
             // 
