@@ -25,16 +25,16 @@ using System.Drawing;
 
 namespace Kinovea.Camera
 {
-    public class CameraImageReceivedEventArgs : EventArgs
+    public class CameraThumbnailProducedEventArgs : EventArgs
     {
         public readonly CameraSummary Summary;
-        public readonly Bitmap Image;
+        public readonly Bitmap Thumbnail;
         public readonly bool HadError;
         public readonly bool Cancelled;
-        public CameraImageReceivedEventArgs(CameraSummary summary, Bitmap image, bool hadError, bool cancelled)
+        public CameraThumbnailProducedEventArgs(CameraSummary summary, Bitmap thumbnail, bool hadError, bool cancelled)
         {
             this.Summary = summary;
-            this.Image = image;
+            this.Thumbnail = thumbnail;
             this.HadError = hadError;
             this.Cancelled = cancelled;
         }

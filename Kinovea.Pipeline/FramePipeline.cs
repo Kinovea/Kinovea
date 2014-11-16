@@ -108,9 +108,9 @@ namespace Kinovea.Pipeline
             //-------------------------
 
             // The slot is writeable, let's stuff it with camera bytes.
-            if (bytes.Length <= entry.Bytes.Length)
+            if (bytes.Length <= entry.Buffer.Length)
             {
-                Buffer.BlockCopy(bytes, 0, entry.Bytes, 0, bytes.Length);
+                Buffer.BlockCopy(bytes, 0, entry.Buffer, 0, bytes.Length);
             }
             else
             {

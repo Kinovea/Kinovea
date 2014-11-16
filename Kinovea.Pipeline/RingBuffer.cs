@@ -19,7 +19,7 @@ namespace Kinovea.Pipeline
     {
         public int FrameLength
         {
-            get { return slots[0].Bytes.Length; }
+            get { return slots[0].Buffer.Length; }
         }
 
         public long ProducerPosition

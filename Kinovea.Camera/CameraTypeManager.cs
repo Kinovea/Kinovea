@@ -38,7 +38,7 @@ namespace Kinovea.Camera
     {
         #region Events
         public static event EventHandler<CamerasDiscoveredEventArgs> CamerasDiscovered;
-        public static event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public static event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
         public static event EventHandler<CameraSummaryUpdatedEventArgs> CameraSummaryUpdated;
         public static event EventHandler<CameraLoadAskedEventArgs> CameraLoadAsked;
         #endregion
@@ -89,7 +89,7 @@ namespace Kinovea.Camera
                         CameraManager manager = (CameraManager)Activator.CreateInstance(t, null);
                         if (manager.SanityCheck())
                         {
-                            manager.CameraImageReceived += CameraManager_CameraImageReceived;
+                            manager.CameraThumbnailProduced += CameraManager_CameraThumbnailProduced;
                             cameraManagers.Add(manager);
                         }
                     }
@@ -163,7 +163,7 @@ namespace Kinovea.Camera
         {
             // Ask each plug-in to discover its cameras.
             // This can be dynamic or based on previously saved data.
-            // Camera managers should also try to connect to the cameras and raise the CameraImageReceived event.
+            // Camera managers should also try to connect to the cameras and raise the CameraThumbnailProduced event.
             
             IEnumerable<CameraBlurb> cameraBlurbs = PreferencesManager.CapturePreferences.CameraBlurbs;
             
@@ -176,14 +176,14 @@ namespace Kinovea.Camera
         }
         
         /// <summary>
-        /// Receive a single image from a camera and forward it upstream.
+        /// Receive a new thumbnail from a camera and forward it upstream.
         /// </summary>
-        private static void CameraManager_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+        private static void CameraManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             // This runs in a worker thread.
             // The final event handler will have to merge back into the UI thread before using the bitmap.
-            if(CameraImageReceived != null /*&& timerDiscovery.Enabled*/)
-                CameraImageReceived(sender, e);
+            if (CameraThumbnailProduced != null)
+                CameraThumbnailProduced(sender, e);
         }
         #endregion
     }

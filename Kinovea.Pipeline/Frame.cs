@@ -10,7 +10,8 @@ namespace Kinovea.Pipeline
         public int Width { get; private set; }
         public int Height { get; private set; }
         public int Depth { get; private set; }
-        public byte[] Bytes { get; private set; }
+        public byte[] Buffer { get; private set; }
+        public long PopulatedBytes { get; private set; }
 
         public Frame(int width, int height, int depth)
         {
@@ -19,7 +20,8 @@ namespace Kinovea.Pipeline
             this.Depth = depth;
 
             // TODO: align on disk block size.
-            this.Bytes = new byte[width * height * depth];
+            this.Buffer = new byte[width * height * depth];
         }
+
     }
 }

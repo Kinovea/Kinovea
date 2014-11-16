@@ -157,7 +157,7 @@ namespace Kinovea.Camera.DirectShow
             
             // Spawn a thread to get a snapshot.
             SnapshotRetriever retriever = new SnapshotRetriever(summary, moniker);
-            retriever.CameraImageReceived += SnapshotRetriever_CameraImageReceived;
+            retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
             snapshotting.Add(summary.Identifier);
             ThreadPool.QueueUserWorkItem(retriever.Run);
         }
@@ -169,11 +169,9 @@ namespace Kinovea.Camera.DirectShow
             return blurb;
         }
         
-        public override IFrameGrabber Connect(CameraSummary summary)
+        public override ICaptureSource Connect(CameraSummary summary)
         {
-            // TODO: Retrieve moniker from identifier.
             string moniker = summary.Identifier;
-            
             FrameGrabber grabber = new FrameGrabber(summary, moniker);
             return grabber;
         }
@@ -248,18 +246,18 @@ namespace Kinovea.Camera.DirectShow
         {
             throw new NotImplementedException();
         }
-        
-        private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+
+        private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
             if (retriever == null)
                 return;
-            
-            retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
+
+            retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
             snapshotting.Remove(retriever.Identifier);
 
-            if (e.Image != null && !e.HadError && !e.Cancelled)
-                OnCameraImageReceived(e);
+            if (e.Thumbnail != null && !e.HadError && !e.Cancelled)
+                OnCameraThumbnailProduced(e);
         }
         
         private SpecificInfo SpecificInfoDeserialize(string xml)

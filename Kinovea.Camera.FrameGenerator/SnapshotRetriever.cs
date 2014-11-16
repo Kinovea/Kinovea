@@ -29,7 +29,7 @@ namespace Kinovea.Camera.FrameGenerator
     /// </summary>
     public class SnapshotRetriever
     {
-        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
         public event EventHandler CameraImageTimedOut;
         public event EventHandler CameraImageError;
 
@@ -59,8 +59,8 @@ namespace Kinovea.Camera.FrameGenerator
             Generator generator = new Generator();
             image = generator.Generate(new Size(640, 480));
             
-            if (CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));
+            if (CameraThumbnailProduced != null)
+                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, false, false));
         }
 
         public void Cancel()

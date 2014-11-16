@@ -62,7 +62,7 @@
     <Compile Include="CameraManager.cs" />
     <Compile Include="CameraSummary.cs" />
     <Compile Include="CameraTypeManager.cs" />
-    <Compile Include="Events\CameraImageReceivedEventArgs.cs" />
+    <Compile Include="Events\CameraThumbnailProducedEventArgs.cs" />
     <Compile Include="Events\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Events\CamerasDiscoveredEventArgs.cs" />
     <Compile Include="Events\CameraSummaryUpdatedEventArgs.cs" />
@@ -81,8 +81,9 @@
     <Compile Include="IconLibrary.cs" />
     <Compile Include="ImageAspectRatio.cs" />
     <Compile Include="Interfaces\IConnectionWizard.cs" />
-    <Compile Include="Interfaces\IFrameGrabber.cs" />
+    <Compile Include="Interfaces\ICaptureSource.cs" />
     <Compile Include="LogarithmicMapper.cs" />
+    <Compile Include="PipelineManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Icons.Designer.cs">
       <DependentUpon>Icons.resx</DependentUpon>
@@ -103,6 +104,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Kinovea.Pipeline\Kinovea.Pipeline.csproj">
+      <Project>{32380CE3-AA6A-465B-BB0C-BF0708B2B3A5}</Project>
+      <Name>Kinovea.Pipeline</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Kinovea.Services</Name>

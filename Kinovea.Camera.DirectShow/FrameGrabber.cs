@@ -24,15 +24,16 @@ using System.Linq;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using System.Collections.Generic;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.DirectShow
 {
     /// <summary>
     /// The main grabbing class for devices with a DirectShow interface.
     /// </summary>
-    public class FrameGrabber : IFrameGrabber
+    public class FrameGrabber : ICaptureSource
     {
-        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler<EventArgs<byte[]>> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
         
         #region Property
@@ -43,7 +44,10 @@ namespace Kinovea.Camera.DirectShow
         
         public Size Size
         {
-            get { return actualSize; }
+            get 
+            { 
+                return Size.Empty; 
+            }
         }
         
         public float Framerate
@@ -59,21 +63,18 @@ namespace Kinovea.Camera.DirectShow
         #endregion
         
         #region Members
+        private CameraSummary summary;
         private string moniker;
         private VideoCaptureDevice device;
-        private CameraSummary summary;
         private bool grabbing;
-        private Size actualSize;
-        private Bitmap image;
-        private bool receivedFirstFrame = false;
-        private object locker = new object();
+        private bool receivedFirstFrame;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         public FrameGrabber(CameraSummary summary, string moniker)
         {
-            this.moniker = moniker;
             this.summary = summary;
+            this.moniker = moniker;
             device = new VideoCaptureDevice(moniker);
         }
 
@@ -82,9 +83,9 @@ namespace Kinovea.Camera.DirectShow
             log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
             
             ConfigureDevice();
-            
-            device.NewFrame += Device_NewFrame;
-            device.VideoSourceError += Device_VideoSourceError;
+
+            device.NewFrameBuffer += device_NewFrameBuffer;
+            device.VideoSourceError += device_VideoSourceError;
             grabbing = true;
             device.Start();
 
@@ -95,8 +96,8 @@ namespace Kinovea.Camera.DirectShow
         public void Stop()
         {
             log.DebugFormat("Stopping device {0}", summary.Alias);
-            device.NewFrame -= Device_NewFrame;
-            device.VideoSourceError -= Device_VideoSourceError;
+            device.NewFrameBuffer -= device_NewFrameBuffer;
+            device.VideoSourceError -= device_VideoSourceError;
             device.Stop();
 
             receivedFirstFrame = false;
@@ -130,57 +131,21 @@ namespace Kinovea.Camera.DirectShow
             log.DebugFormat("Device set to saved configuration: {0}.", info.MediaTypeIndex);
         }
         
-        private void Device_NewFrame(object sender, NewFrameEventArgs e)
+        private void device_NewFrameBuffer(object sender, NewFrameBufferEventArgs e)
         {
-            // TODO: see if unsafe deep copy from AForge is faster.
-            //log.DebugFormat("New frame received, size:{0}", e.Frame.Size);
-
             if (!receivedFirstFrame)
             {
                 SetPostConnectionOptions();
                 receivedFirstFrame = true;
             }
 
-            int finalHeight = SetFinalHeight(e.Frame.Width, e.Frame.Height);
-            actualSize = new Size(e.Frame.Width, finalHeight);
-            bool anamorphic = e.Frame.Height != finalHeight;
-            
-            image = new Bitmap(e.Frame.Width, finalHeight, e.Frame.PixelFormat);
-            Graphics g = Graphics.FromImage(image);
-            if(!anamorphic)
-                g.DrawImageUnscaled(e.Frame, Point.Empty);
-            else
-                g.DrawImage(e.Frame, 0, 0, e.Frame.Width, finalHeight);
-            
-            if(CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));
+            if (FrameProduced != null)
+                FrameProduced(this, new EventArgs<byte[]>(e.Buffer));
         }
         
-        private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
+        private void device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
             log.ErrorFormat("Error from device {0}: {1}", summary.Alias, e.Description);
-        }
-        
-        private int SetFinalHeight(int width, int height)
-        {
-            int finalHeight = height;
-            
-            switch(summary.AspectRatio)
-            {
-                case CaptureAspectRatio.Force43:
-                    finalHeight = (int)((width / 4.0) * 3);
-                    break;
-                case CaptureAspectRatio.Force169:
-                    finalHeight = (int)((width / 16.0) * 9);
-                    break;
-                default:
-                    // Hack for DV rectangular pixels. Force 4:3 image ratio by default.
-                    if(width == 720 && height == 576)
-                        finalHeight = 540;
-                    break;
-            }
-            
-            return finalHeight;
         }
 
         private void SetPostConnectionOptions()

@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using AForge.Video;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.HTTP
 {
@@ -30,9 +31,9 @@ namespace Kinovea.Camera.HTTP
     /// they both use AForge to connect to the device. However it is 
     /// an implementation detail, so we don't factorize the code.
     /// </summary>
-    public class FrameGrabber : IFrameGrabber
+    public class FrameGrabber : ICaptureSource
     {
-        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler<EventArgs<byte[]>> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
         
         #region Property
@@ -120,7 +121,9 @@ namespace Kinovea.Camera.HTTP
         
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
-            int finalHeight = SetFinalHeight(e.Frame.Width, e.Frame.Height);
+            // WIP: use frame buffer event and send byte[] to client.
+
+            /*int finalHeight = SetFinalHeight(e.Frame.Width, e.Frame.Height);
             bool anamorphic = e.Frame.Height != finalHeight;
             actualSize = new Size(e.Frame.Width, finalHeight);
             
@@ -132,7 +135,7 @@ namespace Kinovea.Camera.HTTP
                 g.DrawImage(e.Frame, 0, 0, e.Frame.Width, finalHeight);
             
             if(CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));
+                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));*/
         }
         
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)

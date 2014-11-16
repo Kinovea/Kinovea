@@ -34,12 +34,12 @@ namespace Kinovea.Camera
     public abstract class CameraManager
     {
         /// <summary>
-        /// Event raised by Camera managers to report a new image. (events can't be inherited).
+        /// Event raised by Camera managers to report a new thumbnail.
         /// </summary>
-        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
-        protected virtual void OnCameraImageReceived(CameraImageReceivedEventArgs e)
+        public event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
+        protected virtual void OnCameraThumbnailProduced(CameraThumbnailProducedEventArgs e)
         {
-            EventHandler<CameraImageReceivedEventArgs> invoker = CameraImageReceived;
+            EventHandler<CameraThumbnailProducedEventArgs> invoker = CameraThumbnailProduced;
             if(invoker != null) 
                 invoker(this, e);
         }
@@ -67,7 +67,7 @@ namespace Kinovea.Camera
         
         /// <summary>
         /// Get a single image for thumbnail refresh.
-        /// The function is asynchronous and should raise CameraImageReceived when done.
+        /// The function is asynchronous and should raise CameraThumbnailProduced when done.
         /// </summary>
         public abstract void GetSingleImage(CameraSummary summary);
         
@@ -79,7 +79,7 @@ namespace Kinovea.Camera
         /// <summary>
         /// Connect to a camera and return the frame grabbing object.
         /// </summary>
-        public abstract IFrameGrabber Connect(CameraSummary summary);
+        public abstract ICaptureSource Connect(CameraSummary summary);
         
         /// <summary>
         /// Launch a dialog to configure the device. Returns true if the configuration has changed.

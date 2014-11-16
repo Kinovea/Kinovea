@@ -33,7 +33,7 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public class SnapshotRetriever
     {
-        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
         
         public string Identifier 
         { 
@@ -59,8 +59,8 @@ namespace Kinovea.Camera.DirectShow
             this.summary = summary;
             
             device = new VideoCaptureDevice(moniker);
-            device.NewFrame += Device_NewFrame;
-            device.VideoSourceError += Device_VideoSourceError;
+            device.NewFrameBuffer += device_NewFrameBuffer;
+            device.VideoSourceError += device_VideoSourceError;
         }
 
         public void Run(object data)
@@ -68,16 +68,16 @@ namespace Kinovea.Camera.DirectShow
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
             device.Start();
             waitHandle.WaitOne(timeout, false);
-            
-            device.NewFrame -= Device_NewFrame;
-            device.VideoSourceError -= Device_VideoSourceError;
+
+            device.NewFrameBuffer -= device_NewFrameBuffer;
+            device.VideoSourceError -= device_VideoSourceError;
             device.SignalToStop();
             
             if (image == null)
                 log.DebugFormat("Timeout waiting for thumbnail of {0}", summary.Alias);
 
-            if(CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, hadError, cancelled));
+            if (CameraThumbnailProduced != null)
+                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, hadError, cancelled));
         }
         
         public void Cancel()
@@ -85,17 +85,21 @@ namespace Kinovea.Camera.DirectShow
             cancelled = true;
             waitHandle.Set();
         }
-        
-        private void Device_NewFrame(object sender, NewFrameEventArgs e)
+
+        private void device_NewFrameBuffer(object sender, NewFrameBufferEventArgs e)
         {
+            // TODO: convert raw bytes to Bitmap for thumbnail.
+
+
             // Note: unfortunately some devices need several frames to have a usable image. (e.g: PS3 Eye).
-            image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
+            /*image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
             Graphics g = Graphics.FromImage(image);
-            g.DrawImageUnscaled(e.Frame, Point.Empty);
+            g.DrawImageUnscaled(e.Frame, Point.Empty);*/
+
             waitHandle.Set();
         }
         
-        private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
+        private void device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
             log.ErrorFormat("Error received trying to get a thumbnail for {0}", summary.Alias);
             log.Error(e.Description);
