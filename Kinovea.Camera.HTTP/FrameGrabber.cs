@@ -22,6 +22,7 @@ using System;
 using System.Drawing;
 using AForge.Video;
 using Kinovea.Services;
+using Kinovea.Pipeline;
 
 namespace Kinovea.Camera.HTTP
 {
@@ -33,7 +34,7 @@ namespace Kinovea.Camera.HTTP
     /// </summary>
     public class FrameGrabber : ICaptureSource
     {
-        public event EventHandler<EventArgs<byte[]>> FrameProduced;
+        public event EventHandler<FrameProducedEventArgs> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
         
         #region Property
@@ -72,6 +73,11 @@ namespace Kinovea.Camera.HTTP
         {
             this.manager = manager;
             this.summary = summary;
+        }
+
+        public ImageDescriptor Prepare()
+        {
+            return null;
         }
 
         public void Start()

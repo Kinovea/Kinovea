@@ -35,7 +35,7 @@ namespace Kinovea.Pipeline
         private CacheLineStorageLong producerPosition = new CacheLineStorageLong(-1); // Last position written to by the producer.
         private BenchmarkMode benchmarkMode;
 
-        public RingBuffer(int capacity, int width, int height, int depth)
+        public RingBuffer(int capacity, int bufferSize)
         {
             if ((capacity & (capacity - 1)) != 0)
                 throw new ArgumentException("Capacity must be a power of two.");
@@ -47,13 +47,24 @@ namespace Kinovea.Pipeline
 
             for (int i = 0; i < slots.Count(); i++)
             {
-                slots[i] = new Frame(width, height, depth);
+                slots[i] = new Frame(bufferSize);
             }
         }
 
         public void SetConsumers(List<IFrameConsumer> consumers)
         {
             this.consumers = consumers;
+        }
+
+        public void ClearConsumers()
+        {
+            this.consumers.Clear();
+        }
+
+        public void Teardown()
+        {
+            Array.Clear(slots, 0, slots.Length);
+            GC.Collect();
         }
 
         public void SetBenchmarkMode(BenchmarkMode benchmarkMode)

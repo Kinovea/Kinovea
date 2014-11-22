@@ -183,7 +183,7 @@ namespace Kinovea.Camera.Basler
             return blurb;
         }
         
-        public override ICaptureSource Connect(CameraSummary summary)
+        public override ICaptureSource CreateCaptureSource(CameraSummary summary)
         {
             FrameGrabber grabber = new FrameGrabber(summary, deviceIndices[summary.Identifier]);
             return grabber;

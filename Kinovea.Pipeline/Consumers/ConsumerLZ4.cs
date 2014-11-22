@@ -25,6 +25,8 @@ namespace Kinovea.Pipeline.Consumers
 
         protected override void Initialize()
         {
+            base.Initialize();
+
             int maxLength = LZ4Codec.MaximumOutputLength(frameLength);
             this.output = new byte[maxLength];
         }

@@ -79,7 +79,7 @@ namespace Kinovea.Camera
         /// <summary>
         /// Connect to a camera and return the frame grabbing object.
         /// </summary>
-        public abstract ICaptureSource Connect(CameraSummary summary);
+        public abstract ICaptureSource CreateCaptureSource(CameraSummary summary);
         
         /// <summary>
         /// Launch a dialog to configure the device. Returns true if the configuration has changed.

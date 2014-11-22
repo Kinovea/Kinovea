@@ -13,6 +13,7 @@ namespace Kinovea.Pipeline
 
         void Run();
         void SetRingBuffer(RingBuffer buffer);
+        void ClearRingBuffer();
         void Activate();
         void Deactivate();
     }

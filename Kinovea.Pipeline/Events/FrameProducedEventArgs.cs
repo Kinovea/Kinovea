@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2013.
+Copyright © Joan Charmant 2014.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -18,16 +18,21 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using System;
 
-namespace Kinovea.ScreenManager
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+
+namespace Kinovea.Pipeline
 {
-    /// <summary>
-    /// Describe the interface of a frame buffer used to buffer frames during capture.
-    /// The buffer is used to support delayed viewing.
-    /// </summary>
-    public interface IFrameBuffer
+    public class FrameProducedEventArgs : EventArgs
     {
-        
+        public readonly byte[] Buffer;
+        public readonly int PayloadLength;
+        public FrameProducedEventArgs(byte[] buffer, int payloadLength)
+        {
+            this.Buffer = buffer;
+            this.PayloadLength = payloadLength;
+        }
     }
 }

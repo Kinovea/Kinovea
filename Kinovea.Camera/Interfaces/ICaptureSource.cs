@@ -34,7 +34,8 @@ namespace Kinovea.Camera
         bool Grabbing { get; }
         Size Size { get; }
         float Framerate { get; }
-        
+
+        ImageDescriptor Prepare();
         void Start();
         void Stop();
     }

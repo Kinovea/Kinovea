@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
             CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
-            CameraTypeManager.CameraImageReceived += CameraTypeManager_CameraImageReceived;
+            CameraTypeManager.CameraThumbnailProduced += CameraTypeManager_CameraThumbnailProduced;
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerContainer");
         }
@@ -321,10 +321,10 @@ namespace Kinovea.ScreenManager
             
             return content;
         }
-        private void CameraTypeManager_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+        private void CameraTypeManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             if(currentContent == ThumbnailViewerContent.Cameras && !e.HadError && !e.Cancelled)
-                viewerCameras.CameraImageReceived(e.Summary, e.Image);
+                viewerCameras.CameraImageReceived(e.Summary, e.Thumbnail);
         }
         private void ThumbnailViewerContainer_Load(object sender, EventArgs e)
         {

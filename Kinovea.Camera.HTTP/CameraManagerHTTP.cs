@@ -116,7 +116,7 @@ namespace Kinovea.Camera.HTTP
             return blurb;
         }
         
-        public override ICaptureSource Connect(CameraSummary summary)
+        public override ICaptureSource CreateCaptureSource(CameraSummary summary)
         {
             FrameGrabber grabber = new FrameGrabber(this, summary);
             return grabber;

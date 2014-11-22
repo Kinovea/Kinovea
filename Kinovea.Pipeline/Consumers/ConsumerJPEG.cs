@@ -30,6 +30,8 @@ namespace Kinovea.Pipeline.Consumers
 
         protected override void Initialize()
         {
+            base.Initialize();
+
             jpegCodec = GetEncoderInfo("image/jpeg");
 
             Encoder encoder = Encoder.Quality;

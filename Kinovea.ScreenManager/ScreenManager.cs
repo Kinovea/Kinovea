@@ -520,7 +520,7 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            screen.BeforeClose();
+            //screen.BeforeClose();
 
             // Reorganise screens.
             // We leverage the fact that screens are always well ordered relative to menus.

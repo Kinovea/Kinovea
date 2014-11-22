@@ -48,6 +48,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
@@ -62,6 +63,7 @@
     <Compile Include="CameraManager.cs" />
     <Compile Include="CameraSummary.cs" />
     <Compile Include="CameraTypeManager.cs" />
+    <Compile Include="ConsumerDisplay.cs" />
     <Compile Include="Events\CameraThumbnailProducedEventArgs.cs" />
     <Compile Include="Events\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Events\CamerasDiscoveredEventArgs.cs" />
