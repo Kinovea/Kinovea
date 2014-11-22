@@ -104,7 +104,7 @@ namespace Kinovea.Camera.Basler
                 PopulateTriggerSource();
                 PopulateRecordingFramerate();
             }
-            catch(Exception e)
+            catch
             {
                 log.ErrorFormat(PylonHelper.GetLastError());
             }

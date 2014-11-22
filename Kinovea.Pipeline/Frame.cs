@@ -5,23 +5,18 @@ using System.Text;
 
 namespace Kinovea.Pipeline
 {
+    /// <summary>
+    /// Simple byte buffer. Format agnostic.
+    /// The whole buffer might not be filled with payload.
+    /// </summary>
     public class Frame
     {
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public int Depth { get; private set; }
         public byte[] Buffer { get; private set; }
-        public long PopulatedBytes { get; private set; }
+        public int PayloadLength { get; set; }
 
-        public Frame(int width, int height, int depth)
+        public Frame(int bufferSize)
         {
-            this.Width = width;
-            this.Height = height;
-            this.Depth = depth;
-
-            // TODO: align on disk block size.
-            this.Buffer = new byte[width * height * depth];
+            this.Buffer = new byte[bufferSize];
         }
-
     }
 }

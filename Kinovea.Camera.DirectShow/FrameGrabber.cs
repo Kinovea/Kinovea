@@ -25,6 +25,7 @@ using AForge.Video;
 using AForge.Video.DirectShow;
 using System.Collections.Generic;
 using Kinovea.Services;
+using Kinovea.Pipeline;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -33,7 +34,7 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public class FrameGrabber : ICaptureSource
     {
-        public event EventHandler<EventArgs<byte[]>> FrameProduced;
+        public event EventHandler<FrameProducedEventArgs> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
         
         #region Property
@@ -78,12 +79,36 @@ namespace Kinovea.Camera.DirectShow
             device = new VideoCaptureDevice(moniker);
         }
 
+        public ImageDescriptor Prepare()
+        {
+            ConfigureDevice();
+
+            VideoCapabilities cap = null;
+            if (device.VideoResolution == null)
+            {
+                // This device was never connected to in Kinovea, use the first media type.
+                VideoCapabilities[] caps = device.VideoCapabilities;
+                cap = caps[0];
+            }
+            else
+            {
+                cap = device.VideoResolution;
+            }
+
+            int width = cap.FrameSize.Width;
+            int height = cap.FrameSize.Height;
+            
+            // RGB24 is the only supported format until the pipeline is fully integrated.
+            ImageFormat format = ImageFormat.RGB24;
+            int bufferSize = width * height * 3;
+
+            return new ImageDescriptor(format, width, height, bufferSize);
+        }
+
         public void Start()
         {
             log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
             
-            ConfigureDevice();
-
             device.NewFrameBuffer += device_NewFrameBuffer;
             device.VideoSourceError += device_VideoSourceError;
             grabbing = true;
@@ -95,10 +120,15 @@ namespace Kinovea.Camera.DirectShow
 
         public void Stop()
         {
+            if (!grabbing)
+                return;
+
             log.DebugFormat("Stopping device {0}", summary.Alias);
             device.NewFrameBuffer -= device_NewFrameBuffer;
             device.VideoSourceError -= device_VideoSourceError;
-            device.Stop();
+            
+            device.SignalToStop();
+            device.WaitForStop();
 
             receivedFirstFrame = false;
             
@@ -112,7 +142,7 @@ namespace Kinovea.Camera.DirectShow
             SpecificInfo info = summary.Specific as SpecificInfo;
             if (info == null || info.MediaTypeIndex < 0)
             {
-                log.DebugFormat("The device has never been configured in Kinovea. Use the current configuration.");
+                log.DebugFormat("The device has never been configured in Kinovea.");
                 return;
             }
 
@@ -140,7 +170,7 @@ namespace Kinovea.Camera.DirectShow
             }
 
             if (FrameProduced != null)
-                FrameProduced(this, new EventArgs<byte[]>(e.Buffer));
+                FrameProduced(this, new FrameProducedEventArgs(e.Buffer, e.PayloadLength));
         }
         
         private void device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)

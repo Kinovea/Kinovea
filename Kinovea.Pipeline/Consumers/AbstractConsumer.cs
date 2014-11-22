@@ -9,7 +9,8 @@ using Kinovea.Services;
 namespace Kinovea.Pipeline.Consumers
 {
     /// <summary>
-    /// Base class for all consumers.
+    /// Base class for batch consumers.
+    /// These consumers should have the same lifetime as the pipeline itself.
     /// </summary>
     public abstract class AbstractConsumer : IFrameConsumer
     {
@@ -35,6 +36,7 @@ namespace Kinovea.Pipeline.Consumers
         
         // Synchronization
         private CacheLineStorageBool started = new CacheLineStorageBool(false); 
+        private CacheLineStorageBool stopAsked = new CacheLineStorageBool(false);
         private EventWaitHandle activateEventHandle = new AutoResetEvent(false);
         private CacheLineStorageBool active = new CacheLineStorageBool(false);
         private CacheLineStorageBool deactivateAsked = new CacheLineStorageBool(false);
@@ -48,16 +50,21 @@ namespace Kinovea.Pipeline.Consumers
         {
             started.Data = true;
 
-            while (true)
+            while (!stopAsked.Data)
             {
                 activateEventHandle.WaitOne();
                 
+                if (stopAsked.Data)
+                    break;
+
                 BeforeActivate();
                 
                 Loop();
                 
                 AfterDeactivate();
             }
+
+            started.Data = false;
         }
 
         /// <summary>
@@ -70,6 +77,13 @@ namespace Kinovea.Pipeline.Consumers
             this.Initialize();
         }
 
+        public void ClearRingBuffer()
+        {
+            buffer = null;
+            frameLength = 0;
+            // Uninitialize();
+        }
+
         public void Activate()
         {
             activateEventHandle.Set();
@@ -78,6 +92,20 @@ namespace Kinovea.Pipeline.Consumers
         public void Deactivate()
         {
             deactivateAsked.Data = true;
+        }
+
+        public void Stop()
+        {
+            if (!started.Data)
+                return;
+
+            stopAsked.Data = true;
+            
+            // stopAsked is checked after activation and after deactivation.
+            if (active.Data)
+                deactivateAsked.Data = true;
+            else
+                activateEventHandle.Set();
         }
 
         private void Loop()

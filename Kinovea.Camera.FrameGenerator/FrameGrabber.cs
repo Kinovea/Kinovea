@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Timers;
 using System.Runtime.InteropServices;
 using Kinovea.Services;
+using Kinovea.Pipeline;
 
 namespace Kinovea.Camera.FrameGenerator
 {
@@ -40,7 +41,7 @@ namespace Kinovea.Camera.FrameGenerator
 
         #endregion
 
-        public event EventHandler<EventArgs<byte[]>> FrameProduced;
+        public event EventHandler<FrameProducedEventArgs> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
 
         #region Property
@@ -78,6 +79,11 @@ namespace Kinovea.Camera.FrameGenerator
             this.summary = summary;
             this.info = summary.Specific as SpecificInfo;
             timerEventHandler = new TimerEventHandler(MultimediaTimer_Tick);
+        }
+
+        public ImageDescriptor Prepare()
+        {
+            return null;
         }
 
         public void Start()

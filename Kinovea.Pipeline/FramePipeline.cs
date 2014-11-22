@@ -23,7 +23,7 @@ namespace Kinovea.Pipeline
 
         private IFrameProducer producer;
         private List<IFrameConsumer> consumers;
-        private RingBuffer buffer;
+        private RingBuffer ringBuffer;
         private int frameLength;
 
         // Note: the benchmark counters are always filled.
@@ -35,7 +35,7 @@ namespace Kinovea.Pipeline
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public FramePipeline(IFrameProducer producer, List<IFrameConsumer> consumers, int width, int height, int depth)
+        public FramePipeline(IFrameProducer producer, List<IFrameConsumer> consumers, int buffers, int bufferSize)
         {
             log.DebugFormat("Starting frame pipeline.");
 
@@ -43,13 +43,19 @@ namespace Kinovea.Pipeline
             this.consumers = consumers;
 
             InitializeBenchmarkCounters();
-            
-            buffer = new RingBuffer(8, width, height, depth);
-            frameLength = buffer.FrameLength;
+
+            ringBuffer = new RingBuffer(buffers, bufferSize);
+            frameLength = bufferSize;
             
             Bind();
-            
-            GC.Collect(2);
+            GC.Collect();
+        }
+
+        public void Teardown()
+        {
+            Unbind();
+            frameLength = 0;
+            ringBuffer.Teardown();
         }
 
         private void Bind()
@@ -64,15 +70,24 @@ namespace Kinovea.Pipeline
                     // Busy spin to make sure the consumer is started.
                 }
 
-                consumer.SetRingBuffer(buffer);
+                consumer.SetRingBuffer(ringBuffer);
             }
 
-            buffer.SetConsumers(consumers);
+            ringBuffer.SetConsumers(consumers);
 
             producer.FrameProduced += producer_FrameProduced;
         }
 
-        private void producer_FrameProduced(object sender, EventArgs<byte[]> e)
+        private void Unbind()
+        {
+            producer.FrameProduced -= producer_FrameProduced;
+            ringBuffer.ClearConsumers();
+
+            foreach (IFrameConsumer consumer in consumers)
+                consumer.ClearRingBuffer();
+        }
+
+        private void producer_FrameProduced(object sender, FrameProducedEventArgs e)
         {
             //-------------------------
             // Runs in producer thread.
@@ -87,9 +102,9 @@ namespace Kinovea.Pipeline
             Frame entry;
             bool claimed = true;
             if (benchmarkMode == BenchmarkMode.Bradycardia)
-                buffer.Claim(out entry);
+                ringBuffer.Claim(out entry);
             else
-                claimed = buffer.TryClaim(out entry);
+                claimed = ringBuffer.TryClaim(out entry);
 
             if (!claimed)
             {
@@ -97,27 +112,27 @@ namespace Kinovea.Pipeline
             }
             else
             {
-                WriteSlot(e.Value, entry);
+                WriteSlot(e.Buffer, e.PayloadLength, entry);
             }
         }
 
-        private void WriteSlot(byte[] bytes, Frame entry)
+        private void WriteSlot(byte[] bytes, int payloadLength, Frame entry)
         {
             //-------------------------
             // Runs in producer thread.
             //-------------------------
 
             // The slot is writeable, let's stuff it with camera bytes.
-            if (bytes.Length <= entry.Buffer.Length)
+            if (payloadLength <= entry.Buffer.Length)
             {
-                Buffer.BlockCopy(bytes, 0, entry.Buffer, 0, bytes.Length);
+                Buffer.BlockCopy(bytes, 0, entry.Buffer, 0, payloadLength);
             }
             else
             {
                 // Unexpected
             }
 
-            buffer.Commit();
+            ringBuffer.Commit();
             commitbeat.Tick();
         }
 
@@ -125,7 +140,7 @@ namespace Kinovea.Pipeline
         public void SetBenchmarkMode(BenchmarkMode benchmarkMode)
         {
             this.benchmarkMode = benchmarkMode;
-            buffer.SetBenchmarkMode(benchmarkMode);
+            ringBuffer.SetBenchmarkMode(benchmarkMode);
         }
 
         public Dictionary<string, IBenchmarkCounter> StopBenchmark()

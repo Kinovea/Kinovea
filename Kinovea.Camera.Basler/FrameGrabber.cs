@@ -27,6 +27,7 @@ using PylonC.NET;
 using PylonC.NETSupportLibrary;
 using Kinovea.Base;
 using Kinovea.Services;
+using Kinovea.Pipeline;
 
 namespace Kinovea.Camera.Basler
 {
@@ -35,7 +36,7 @@ namespace Kinovea.Camera.Basler
     /// </summary>
     public class FrameGrabber : ICaptureSource
     {
-        public event EventHandler<EventArgs<byte[]>> FrameProduced;
+        public event EventHandler<FrameProducedEventArgs> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
         
         #region Property
@@ -86,6 +87,11 @@ namespace Kinovea.Camera.Basler
         {
             this.summary = summary;
             this.deviceIndex = deviceIndex;
+        }
+
+        public ImageDescriptor Prepare()
+        {
+            return null;
         }
 
         public void Start()
