@@ -144,6 +144,7 @@ namespace Kinovea.Pipeline.Consumers
 
         protected virtual void AfterDeactivate()
         {
+            deactivateAsked.Data = false;
         }
 
         protected virtual void Initialize()
