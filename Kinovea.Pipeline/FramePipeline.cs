@@ -126,6 +126,7 @@ namespace Kinovea.Pipeline
             if (payloadLength <= entry.Buffer.Length)
             {
                 Buffer.BlockCopy(bytes, 0, entry.Buffer, 0, payloadLength);
+                entry.PayloadLength = payloadLength;
             }
             else
             {
