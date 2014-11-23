@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="MJPEGWriter.cpp" />
     <ClCompile Include="VideoFileWriter.cpp" />
     <ClCompile Include="VideoReaderFFMpeg.cpp" />
   </ItemGroup>
@@ -149,6 +150,7 @@
     <ClInclude Include="..\..\Refs\FFmpeg\include\libswresample\swresample.h" />
     <ClInclude Include="..\..\Refs\FFmpeg\include\libswscale\swscale.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="MJPEGWriter.h" />
     <ClInclude Include="SavingContext.h" />
     <ClInclude Include="TimestampInfo.h" />
     <ClInclude Include="VideoFileWriter.h" />

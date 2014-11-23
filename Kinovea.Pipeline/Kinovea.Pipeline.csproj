@@ -80,7 +80,6 @@
     <Compile Include="Consumers\ConsumerLZ4.cs" />
     <Compile Include="Consumers\ConsumerFrameNumber.cs" />
     <Compile Include="ImageDescriptor.cs" />
-    <Compile Include="ImageFormat.cs" />
     <Compile Include="Events\FrameProducedEventArgs.cs" />
     <Compile Include="MemoryLayout\CacheLineStorageBool.cs" />
     <Compile Include="MemoryLayout\CacheLineStorageLong.cs" />
@@ -100,6 +99,10 @@
     <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Kinovea.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
+      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
+      <Name>Kinovea.Video</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
