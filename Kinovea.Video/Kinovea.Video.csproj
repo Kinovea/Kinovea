@@ -105,6 +105,7 @@
     <Compile Include="FrameContainers\PreBuffer.cs" />
     <Compile Include="CapabilityNotSupportedException.cs" />
     <Compile Include="IFrameGenerator.cs" />
+    <Compile Include="ImageFormat.cs" />
     <Compile Include="VideoReaderAlwaysCaching.cs" />
     <Compile Include="VideoReader.cs" />
     <Compile Include="ThreadCanceler.cs" />

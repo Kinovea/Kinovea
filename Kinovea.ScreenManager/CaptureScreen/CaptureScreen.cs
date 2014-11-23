@@ -113,13 +113,14 @@ namespace Kinovea.ScreenManager
         private bool cameraConnected;
         private bool firstImageReceived;
         private bool recording;
+        private ImageDescriptor imageDescriptor;
 
         private CameraSummary cameraSummary;
         private CameraManager cameraManager;
         private ICaptureSource cameraGrabber;
         private PipelineManager pipelineManager = new PipelineManager();
         private ConsumerDisplay consumerDisplay = new ConsumerDisplay();
-        private ConsumerNoop consumerRecord;
+        private ConsumerMJPEGRecorder consumerRecord;
         private Thread recorderThread;
 
         private ViewportController viewportController;
@@ -319,7 +320,7 @@ namespace Kinovea.ScreenManager
         }
         public void View_ToggleRecording(string filename)
         {
-            //ToggleRecording(filename);
+            ToggleRecording(filename);
         }
         
         public void View_ValidateFilename(string filename)
@@ -399,13 +400,13 @@ namespace Kinovea.ScreenManager
 
             // Start recorder thread. 
             // It will be dormant until recording is started but it has the same lifetime as the pipeline.
-            consumerRecord = new ConsumerNoop();
+            consumerRecord = new ConsumerMJPEGRecorder();
             recorderThread = new Thread(consumerRecord.Run) { IsBackground = true };
             recorderThread.Name = consumerRecord.GetType().Name;
             recorderThread.Start();
 
             // Initialize pipeline.
-            ImageDescriptor imageDescriptor = cameraGrabber.Prepare();
+            imageDescriptor = cameraGrabber.Prepare();
             pipelineManager.Connect(imageDescriptor, (IFrameProducer)cameraGrabber, consumerDisplay, consumerRecord);
             
             viewportController.InitializeDisplayRectangle(cameraSummary.DisplayRectangle, new Size(imageDescriptor.Width, imageDescriptor.Height));
@@ -425,6 +426,9 @@ namespace Kinovea.ScreenManager
         {
             if (!cameraLoaded || !cameraConnected)
                 return;
+
+            if (recording)
+                StopRecording();
 
             consumerRecord.Stop();
             if (recorderThread != null && recorderThread.IsAlive)
@@ -460,16 +464,6 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void StartRecording()
-        {
-
-        }
-
-        private void StopRecording()
-        {
-
-        }
-
         private void pipelineManager_FrameSignaled(object sender, EventArgs e)
         {
             // A frame was received by the camera.
@@ -486,18 +480,6 @@ namespace Kinovea.ScreenManager
 
 
         #region Private methods
-        /*private void UpdateMemory()
-        {
-            double totalMemory = PreferencesManager.CapturePreferences.CaptureMemoryBuffer * 1024 * 1024;
-            double availableMemory = shared ? totalMemory / 2 : totalMemory;
-            
-            if(this.availableMemory != availableMemory)
-            {
-                this.availableMemory = availableMemory;
-                UpdateBufferCapacity();
-            }
-        }*/
-        
         private void ToggleConnection()
         {
             if (cameraConnected)
@@ -784,7 +766,8 @@ namespace Kinovea.ScreenManager
             DialogResult result = MessageBox.Show(msgText, msgTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             return result == DialogResult.Yes;
         }
-        /*private void ToggleRecording(string filename)
+
+        private void ToggleRecording(string filename)
         {
             if (recording)
                 StopRecording();
@@ -792,10 +775,11 @@ namespace Kinovea.ScreenManager
                 StartRecording(filename);
 
             view.UpdateRecordingStatus(recording);
-        }*/
-        /*private void StartRecording(string filename)
+        }
+        
+        private void StartRecording(string filename)
         {
-            if(recording)
+            if (!cameraLoaded || !cameraConnected || recording)
                 return;
 
             bool ok = SanityCheckRecording(filename);
@@ -806,19 +790,22 @@ namespace Kinovea.ScreenManager
             filename = Path.GetFileNameWithoutExtension(filepath);
             if(!OverwriteCheck(filepath))
                 return;
-            
-            if(!cameraGrabber.Grabbing)
-                StartGrabber();
-                
-            if(recorder != null)
-                recorder.Close();
-            
-            recorder = new VideoRecorder();
+
+            if (!cameraConnected)
+                Connect();
+
+            if (consumerRecord.Active)
+                consumerRecord.Deactivate();
             
             double interval = cameraGrabber.Framerate > 0 ? 1000.0 / cameraGrabber.Framerate : 40;
-            SaveResult result = recorder.Initialize(filepath, interval, cameraGrabber.Size);
-            
+
+            SaveResult result = consumerRecord.Prepare(filepath, interval, imageDescriptor);
+            //SaveResult result = recorder.Initialize();
+
+            consumerRecord.Activate();
+
             recording = result == SaveResult.Success;
+            
             if(recording)
             {
                 string next = filenameHelper.Next(filename, true);
@@ -830,25 +817,28 @@ namespace Kinovea.ScreenManager
             {
                 //DisplayError(result);
             }
-        }*/
-        /*private void StopRecording()
+        }
+
+        private void StopRecording()
         {
-             if(!recording || cameraGrabber == null || recorder == null)
-                return;
+            if(!cameraLoaded || !cameraConnected || !recording || !consumerRecord.Active)
+               return;
              
-             recording = false;
-             recorder.Close();
-             PreferencesManager.CapturePreferences.VideoFile = recorder.Filename;
-             PreferencesManager.Save();
+            recording = false;
+            consumerRecord.Deactivate();
+
+            //PreferencesManager.CapturePreferences.VideoFile = recorder.Filename;
+            //PreferencesManager.Save();
              
-             if(recorder.CaptureThumb != null)
-             {
-                 AddCapturedFile(recorder.Filepath, recorder.CaptureThumb, true);
-                 recorder.CaptureThumb.Dispose();
-             }
+            /*if(recorder.CaptureThumb != null)
+            {
+                AddCapturedFile(recorder.Filepath, recorder.CaptureThumb, true);
+                recorder.CaptureThumb.Dispose();
+            }*/
              
-             view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
-        }*/
+            view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
+        }
+
         private void AddCapturedFile(string filepath, Bitmap image, bool video)
         {
             if(!capturedFiles.HasThumbnails)

@@ -1,0 +1,86 @@
+#pragma region License
+/*
+Copyright © Joan Charmant 2014.
+joan.charmant@gmail.com 
+ 
+This file is part of Kinovea.
+
+Kinovea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 2 
+as published by the Free Software Foundation.
+
+Kinovea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Kinovea. If not, see http://www.gnu.org/licenses/.
+
+*/
+#pragma endregion
+
+#pragma once
+
+extern "C" 
+{
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+#include <avformat.h>
+#include <avcodec.h>
+#include <avstring.h>
+#include <swscale.h> 
+}
+
+#include "Enums.h"
+#include "SavingContext.h"
+
+using namespace System;
+using namespace System::Collections::Generic;				
+using namespace System::ComponentModel;
+using namespace System::Diagnostics;
+using namespace System::Drawing;
+using namespace System::IO;
+using namespace System::Reflection;
+using namespace System::Text;
+using namespace System::Threading;
+using namespace System::Windows::Forms;
+using namespace Kinovea::Video;
+
+namespace Kinovea { namespace Video { namespace FFMpeg
+{
+	public ref class MJPEGWriter
+	{
+	// Construction/Destruction
+	public:
+		MJPEGWriter();
+		~MJPEGWriter();
+	protected:
+		!MJPEGWriter();
+
+	// Public Methods
+	public:
+		SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, double _fFramesInterval);
+		SaveResult CloseSavingContext(bool _bEncodingSuccess);
+		SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length);
+	
+	// Private Methods
+	private:
+		double ComputeBitrate(Size outputSize, double frameInterval);
+		bool SetupMuxer(SavingContext^ _SavingContext);
+		bool SetupEncoder(SavingContext^ _SavingContext);
+		
+		bool EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
+		bool EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
+		bool EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
+
+		bool WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
+		void SanityCheck(AVFormatContext* s);
+		static int GreatestCommonDenominator(int a, int b);
+	
+	// Members
+	private :
+		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
+		SavingContext^ m_SavingContext;
+	};
+}}}

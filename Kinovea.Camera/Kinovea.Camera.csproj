@@ -63,7 +63,6 @@
     <Compile Include="CameraManager.cs" />
     <Compile Include="CameraSummary.cs" />
     <Compile Include="CameraTypeManager.cs" />
-    <Compile Include="ConsumerDisplay.cs" />
     <Compile Include="Events\CameraThumbnailProducedEventArgs.cs" />
     <Compile Include="Events\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Events\CamerasDiscoveredEventArgs.cs" />
@@ -85,7 +84,6 @@
     <Compile Include="Interfaces\IConnectionWizard.cs" />
     <Compile Include="Interfaces\ICaptureSource.cs" />
     <Compile Include="LogarithmicMapper.cs" />
-    <Compile Include="PipelineManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Icons.Designer.cs">
       <DependentUpon>Icons.resx</DependentUpon>

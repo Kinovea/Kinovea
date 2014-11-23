@@ -23,6 +23,9 @@
     <ClCompile Include="VideoReaderFFMpeg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MJPEGWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enums.h">
@@ -69,6 +72,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\pixfmt.h">
       <Filter>Header Files\FFMpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="MJPEGWriter.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

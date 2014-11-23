@@ -175,6 +175,9 @@
   <ItemGroup>
     <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
+    <Compile Include="CaptureScreen\ConsumerDisplay.cs" />
+    <Compile Include="CaptureScreen\ConsumerMJPEGRecorder.cs" />
+    <Compile Include="CaptureScreen\PipelineManager.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementCurved.cs" />
     <Compile Include="PlayerScreen\DrawingToolbar\DrawingTool.cs" />
     <Compile Include="PlayerScreen\DrawingToolbar\DrawingToolbarImporter.cs" />

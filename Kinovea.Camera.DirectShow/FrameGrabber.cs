@@ -26,6 +26,7 @@ using AForge.Video.DirectShow;
 using System.Collections.Generic;
 using Kinovea.Services;
 using Kinovea.Pipeline;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -83,11 +84,11 @@ namespace Kinovea.Camera.DirectShow
         {
             ConfigureDevice();
 
-            VideoCapabilities cap = null;
+            AForge.Video.DirectShow.VideoCapabilities cap = null;
             if (device.VideoResolution == null)
             {
                 // This device was never connected to in Kinovea, use the first media type.
-                VideoCapabilities[] caps = device.VideoCapabilities;
+                AForge.Video.DirectShow.VideoCapabilities[] caps = device.VideoCapabilities;
                 cap = caps[0];
             }
             else
@@ -148,8 +149,8 @@ namespace Kinovea.Camera.DirectShow
 
             // Initialize device configuration (Extract and cache media types on the output pin).
             // Double check we have an existing index and set the format.
-            VideoCapabilities[] capabilities = device.VideoCapabilities;
-            VideoCapabilities match = capabilities.FirstOrDefault(c => c.Index == info.MediaTypeIndex);
+            AForge.Video.DirectShow.VideoCapabilities[] capabilities = device.VideoCapabilities;
+            AForge.Video.DirectShow.VideoCapabilities match = capabilities.FirstOrDefault(c => c.Index == info.MediaTypeIndex);
             if (match == null)
             {
                 log.ErrorFormat("Could not match the saved media type.");

@@ -11,7 +11,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-namespace Kinovea.Camera
+namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Pipeline consumer wrapping the main UI thread.

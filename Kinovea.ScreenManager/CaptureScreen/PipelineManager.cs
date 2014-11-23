@@ -6,7 +6,7 @@ using Kinovea.Pipeline;
 using Kinovea.Services;
 using Kinovea.Pipeline.Consumers;
 
-namespace Kinovea.Camera
+namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// The pipeline manager for capture pipelines.
@@ -20,10 +20,10 @@ namespace Kinovea.Camera
         private FramePipeline pipeline;
         private IFrameProducer producer;
         private ConsumerDisplay consumerDisplay;
-        private ConsumerNoop consumerRecord;
+        private ConsumerMJPEGRecorder consumerRecord;
         private List<IFrameConsumer> consumers = new List<IFrameConsumer>();
 
-        public void Connect(ImageDescriptor imageDescriptor, IFrameProducer producer, ConsumerDisplay consumerDisplay, ConsumerNoop consumerRecord)
+        public void Connect(ImageDescriptor imageDescriptor, IFrameProducer producer, ConsumerDisplay consumerDisplay, ConsumerMJPEGRecorder consumerRecord)
         {
             // At that point the consumer threads are already started.
             // But only the display thread (actually the UI main thread) should be "active".
