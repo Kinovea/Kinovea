@@ -78,6 +78,8 @@ namespace Kinovea.Camera.DirectShow
             this.summary = summary;
             this.moniker = moniker;
             device = new VideoCaptureDevice(moniker);
+
+            device.SetDirectConnectFormats(new List<string>() { "RGB24", "MJPG" });
         }
 
         public ImageDescriptor Prepare()
@@ -99,10 +101,22 @@ namespace Kinovea.Camera.DirectShow
             int width = cap.FrameSize.Width;
             int height = cap.FrameSize.Height;
             
-            // RGB24 is the only supported format until the pipeline is fully integrated.
             ImageFormat format = ImageFormat.RGB24;
-            int bufferSize = width * height * 3;
 
+            switch (cap.Compression)
+            {
+                case "RGB24":
+                default:
+                    format = ImageFormat.RGB24;
+                    break;
+                case "MJPG":
+                    format = ImageFormat.JPEG;
+                    break;
+            }
+
+            // Buffer size is always the full RGB24 size, even for compressed or subsampled formats.
+            int bufferSize = width * height * 3;
+            
             return new ImageDescriptor(format, width, height, bufferSize);
         }
 

@@ -799,9 +799,7 @@ namespace Kinovea.ScreenManager
             
             double interval = cameraGrabber.Framerate > 0 ? 1000.0 / cameraGrabber.Framerate : 40;
 
-            SaveResult result = consumerRecord.Prepare(filepath, interval, imageDescriptor);
-            //SaveResult result = recorder.Initialize();
-
+            SaveResult result = consumerRecord.Prepare(filepath, interval);
             consumerRecord.Activate();
 
             recording = result == SaveResult.Success;

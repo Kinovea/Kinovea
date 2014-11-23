@@ -33,6 +33,7 @@ namespace Kinovea.ScreenManager
             this.consumerRecord = consumerRecord;
 
             consumerDisplay.SetImageDescriptor(imageDescriptor);
+            consumerRecord.SetImageDescriptor(imageDescriptor);
 
             consumers.Clear();
             consumers.Add(consumerDisplay as IFrameConsumer);
