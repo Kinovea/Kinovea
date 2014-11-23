@@ -273,6 +273,10 @@ SaveResult MJPEGWriter::SaveFrame(ImageFormat format, array<System::Byte>^ buffe
 	case ImageFormat::Y800:
 		saved = EncodeAndWriteVideoFrameY800(m_SavingContext, buffer, length);
 		break;
+	case ImageFormat::JPEG:
+		saved = EncodeAndWriteVideoFrameJPEG(m_SavingContext, buffer, length);
+		break;
+
 	}
 
     if(!saved)

@@ -15,7 +15,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Pipeline consumer wrapping the main UI thread.
-    /// Convert the image to RGB24, then Bitmap for display purposes.
+    /// Convert the sample buffer to RGB24, then to Bitmap for display purposes.
     /// </summary>
     public class ConsumerDisplay : IFrameConsumer
     {
@@ -108,13 +108,20 @@ namespace Kinovea.ScreenManager
 
         private void ProcessEntry(long position, Frame entry)
         {
-            // TODO: Convert to RGB24 if needed.
-            FillBitmap(entry.Buffer);
+            switch (imageDescriptor.Format)
+            {
+                case Video.ImageFormat.RGB24:
+                    FillBitmapRGB24(entry.Buffer);
+                    break;
+                case Video.ImageFormat.JPEG:
+                    FillBitmapJPEG(entry.Buffer, entry.PayloadLength);
+                    break;
+            }
         }
 
-        private unsafe void FillBitmap(byte[] buffer)
+        private unsafe void FillBitmapRGB24(byte[] buffer)
         {
-            // Source is a bottom up RGB24 buffer.
+            // Source is a bottom-up RGB24 buffer.
 
             int width = imageDescriptor.Width;
             int height = imageDescriptor.Height;
@@ -122,7 +129,7 @@ namespace Kinovea.ScreenManager
 
             BitmapData bmpData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, bitmap.PixelFormat);
 
-            // Copy the buffer to the bitmap while reverting it.
+            // Copy + flip the buffer into the bitmap.
             int stride = bmpData.Stride;
 
             fixed (byte* pBuffer = buffer)
@@ -139,6 +146,11 @@ namespace Kinovea.ScreenManager
             }
 
             bitmap.UnlockBits(bmpData);
+        }
+
+        private void FillBitmapJPEG(byte[] buffer, int payloadLength)
+        {
+            // Convert JPEG to RGB24 buffer then to bitmap.
         }
     }
 }
