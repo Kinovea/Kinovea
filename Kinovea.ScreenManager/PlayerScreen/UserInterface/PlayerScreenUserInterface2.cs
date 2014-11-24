@@ -1239,6 +1239,12 @@ namespace Kinovea.ScreenManager
 
             return true;
         }
+
+        public void AfterClose()
+        {
+            m_KeyframeCommentsHub.Owner = null;
+            m_KeyframeCommentsHub = null;
+        }
         #endregion
 
         #region Misc Events
