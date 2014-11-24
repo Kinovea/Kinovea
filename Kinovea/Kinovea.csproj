@@ -376,6 +376,11 @@
       <Link>Microsoft.VC90.OpenMP.manifest</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\Refs\TurboJpeg\turbojpeg.dll">
+      <Visible>False</Visible>
+      <Link>turbojpeg.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="app.manifest">
       <SubType>Designer</SubType>

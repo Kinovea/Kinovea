@@ -10,6 +10,7 @@ using Kinovea.Pipeline;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using TurboJpegNet;
 
 namespace Kinovea.ScreenManager
 {
@@ -50,10 +51,16 @@ namespace Kinovea.ScreenManager
         private RingBuffer buffer;
         private int frameLength;
         private ImageDescriptor imageDescriptor;
+        private int width;
+        private int height;
+        private int pitch;
+        private Rectangle rect;
         private Bitmap bitmap;
+        private byte[] decoded;
 
         public void Run()
         {
+            throw new NotSupportedException();
         }
 
         public void SetRingBuffer(RingBuffer buffer)
@@ -70,19 +77,35 @@ namespace Kinovea.ScreenManager
 
         public void Activate()
         {
+            throw new NotSupportedException();
         }
 
         public void Deactivate()
         {
+            throw new NotSupportedException();
         }
 
         public void SetImageDescriptor(ImageDescriptor imageDescriptor)
         {
-            this.imageDescriptor = imageDescriptor;
             if (bitmap != null)
+            {
                 bitmap.Dispose();
+                bitmap = null;
+            }
+            
+            if (decoded != null)
+                decoded = null;
 
-            bitmap = new Bitmap(imageDescriptor.Width, imageDescriptor.Height, PixelFormat.Format24bppRgb);
+            GC.Collect();
+
+            this.imageDescriptor = imageDescriptor;
+            width = imageDescriptor.Width;
+            height = imageDescriptor.Height;
+            rect = new Rectangle(0, 0, width, height);
+            pitch = width * 3;
+            
+            decoded = new byte[pitch * height];
+            bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
         }
 
         /// <summary>
@@ -122,11 +145,6 @@ namespace Kinovea.ScreenManager
         private unsafe void FillBitmapRGB24(byte[] buffer)
         {
             // Source is a bottom-up RGB24 buffer.
-
-            int width = imageDescriptor.Width;
-            int height = imageDescriptor.Height;
-            Rectangle rect = new Rectangle(0, 0, width, height);
-
             BitmapData bmpData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, bitmap.PixelFormat);
 
             // Copy + flip the buffer into the bitmap.
@@ -151,6 +169,24 @@ namespace Kinovea.ScreenManager
         private void FillBitmapJPEG(byte[] buffer, int payloadLength)
         {
             // Convert JPEG to RGB24 buffer then to bitmap.
+
+            IntPtr handle = tjnet.tjInitDecompress();
+
+            uint jpegSize = (uint)payloadLength;
+            int width;
+            int height;
+            TJSAMP jpegSubsamp;
+            tjnet.tjDecompressHeader2(handle, buffer, jpegSize, out width, out height, out jpegSubsamp);
+
+            tjnet.tjDecompress2(handle, buffer, jpegSize, decoded, width, pitch, height, TJPF.TJPF_BGR, TJFLAG.TJFLAG_FASTDCT);
+            
+            tjnet.tjDestroy(handle);
+
+            // Encapsulate into bitmap.
+            // Fixme: do we need the copy here? What about getting an IntPtr from tjnet and setting it to scan0?
+            BitmapData bmpData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);
+            Marshal.Copy(decoded, 0, bmpData.Scan0, bmpData.Stride * bitmap.Height);
+            bitmap.UnlockBits(bmpData);
         }
     }
 }
