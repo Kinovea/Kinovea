@@ -73,7 +73,7 @@ namespace Kinovea.Pipeline
                 consumer.SetRingBuffer(ringBuffer);
             }
 
-            ringBuffer.SetConsumers(consumers);
+            ringBuffer.SetConsumers(new List<IFrameConsumer>(consumers));
 
             producer.FrameProduced += producer_FrameProduced;
         }
