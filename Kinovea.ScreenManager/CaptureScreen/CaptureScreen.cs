@@ -160,7 +160,7 @@ namespace Kinovea.ScreenManager
 
             log.Debug("Constructing a CaptureScreen.");
             view = new CaptureScreenView(this);
-            view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
+            view.DualCommandReceived += OnDualCommandReceived;
             
             viewportController = new ViewportController();
             viewportController.DisplayRectangleUpdated += ViewportController_DisplayRectangleUpdated;
@@ -235,10 +235,15 @@ namespace Kinovea.ScreenManager
 
             // Destroy resources (symmetric to constructor).
             pipelineManager.FrameSignaled -= pipelineManager_FrameSignaled;
+            pipelineManager = null;
+            consumerDisplay = null;
+
             nonGrabbingInteractionTimer.Tick -= NonGrabbingInteractionTimer_Tick;
             viewportController.DisplayRectangleUpdated -= ViewportController_DisplayRectangleUpdated;
-            //view.DualCommandReceived += (s, e) => OnDualCommandReceived(e);
+            view.DualCommandReceived -= OnDualCommandReceived;
+            
             view.BeforeClose();
+            view = null;
         }
         public override void AfterClose()
         {
@@ -477,9 +482,11 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
-
-
         #region Private methods
+        private void OnDualCommandReceived(object sender, EventArgs<HotkeyCommand> e)
+        {
+            OnDualCommandReceived(e);
+        }
         private void ToggleConnection()
         {
             if (cameraConnected)
