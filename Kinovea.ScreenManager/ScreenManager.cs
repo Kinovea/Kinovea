@@ -645,6 +645,8 @@ namespace Kinovea.ScreenManager
         {
             if (screenList.Count > 0)
                 SetActiveScreen(screenList[0]);
+            else
+                activeScreen = null;
 
             foreach (PlayerScreen p in playerScreens)
                 p.Synched = false;
