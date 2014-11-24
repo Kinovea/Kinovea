@@ -437,6 +437,7 @@ namespace Kinovea.ScreenManager
             
             frameServer.VideoReader.Close();
             view.ResetToEmptyState();
+            view.AfterClose();
         }
         public override void RefreshUICulture()
         {
