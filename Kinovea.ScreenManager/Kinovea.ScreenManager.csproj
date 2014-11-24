@@ -171,6 +171,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="TurboJpegNet">
+      <HintPath>..\Refs\TurboJpeg\TurboJpegNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractFrameServer.cs" />
