@@ -10,6 +10,7 @@ namespace Kinovea.Video
     /// </summary>
     public enum ImageFormat
     {
+        None,
         RGB24,
         I420,
         Y800,

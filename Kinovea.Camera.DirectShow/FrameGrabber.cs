@@ -91,6 +91,9 @@ namespace Kinovea.Camera.DirectShow
             {
                 // This device was never connected to in Kinovea, use the first media type.
                 AForge.Video.DirectShow.VideoCapabilities[] caps = device.VideoCapabilities;
+                if (caps.Length == 0)
+                    return new ImageDescriptor(ImageFormat.None, 0, 0, 0);
+
                 cap = caps[0];
             }
             else
