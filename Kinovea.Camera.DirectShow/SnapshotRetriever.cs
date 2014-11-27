@@ -24,6 +24,8 @@ using System.Threading;
 
 using AForge.Video;
 using AForge.Video.DirectShow;
+using System.Drawing.Imaging;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -88,14 +90,14 @@ namespace Kinovea.Camera.DirectShow
 
         private void device_NewFrameBuffer(object sender, NewFrameBufferEventArgs e)
         {
-            // TODO: convert raw bytes to Bitmap for thumbnail.
+            // As we didn't specify any media type, the buffer is guaranteed to come back in RGB24.
+            
+            if (image != null)
+                image.Dispose();
 
-
-            // Note: unfortunately some devices need several frames to have a usable image. (e.g: PS3 Eye).
-            /*image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
-            Graphics g = Graphics.FromImage(image);
-            g.DrawImageUnscaled(e.Frame, Point.Empty);*/
-
+            image = new Bitmap(e.Width, e.Height, PixelFormat.Format24bppRgb);
+            Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+            BitmapHelper.FillFromRGB24(image, rect, e.Buffer);
             waitHandle.Set();
         }
         
@@ -107,6 +109,5 @@ namespace Kinovea.Camera.DirectShow
             hadError = true;
             waitHandle.Set();
         }
-
     }
 }
