@@ -403,6 +403,13 @@ namespace Kinovea.ScreenManager
             firstImageReceived = false;
             //currentImageSize = Size.Empty;
 
+            imageDescriptor = cameraGrabber.Prepare();
+            if (imageDescriptor == null)
+            {
+                log.ErrorFormat("The camera does not support configuration so we cannot preallocate buffers.");
+                UpdateTitle();
+            }
+
             // Start recorder thread. 
             // It will be dormant until recording is started but it has the same lifetime as the pipeline.
             consumerRecord = new ConsumerMJPEGRecorder();
@@ -411,7 +418,7 @@ namespace Kinovea.ScreenManager
             recorderThread.Start();
 
             // Initialize pipeline.
-            imageDescriptor = cameraGrabber.Prepare();
+            
             pipelineManager.Connect(imageDescriptor, (IFrameProducer)cameraGrabber, consumerDisplay, consumerRecord);
             
             viewportController.InitializeDisplayRectangle(cameraSummary.DisplayRectangle, new Size(imageDescriptor.Width, imageDescriptor.Height));
@@ -800,6 +807,9 @@ namespace Kinovea.ScreenManager
 
             if (!cameraConnected)
                 Connect();
+
+            if (!cameraConnected)
+                return;
 
             if (consumerRecord.Active)
                 consumerRecord.Deactivate();
