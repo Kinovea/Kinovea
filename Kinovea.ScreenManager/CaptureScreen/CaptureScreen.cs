@@ -122,6 +122,7 @@ namespace Kinovea.ScreenManager
         private ConsumerDisplay consumerDisplay = new ConsumerDisplay();
         private ConsumerMJPEGRecorder consumerRecord;
         private Thread recorderThread;
+        private Bitmap recordingThumbnail;
 
         private ViewportController viewportController;
         private FilenameHelper filenameHelper = new FilenameHelper();
@@ -214,6 +215,9 @@ namespace Kinovea.ScreenManager
         #region AbstractScreen Implementation
         public override void DisplayAsActiveScreen(bool active)
         {
+            if (view == null)
+                return;
+
             view.DisplayAsActiveScreen(active);
         }
         public override void RefreshUICulture() 
@@ -485,6 +489,9 @@ namespace Kinovea.ScreenManager
 
             viewportController.Bitmap = consumerDisplay.Bitmap;
             viewportController.Refresh();
+
+            if (recording && recordingThumbnail == null)
+                recordingThumbnail = BitmapHelper.Copy(consumerDisplay.Bitmap);
         }
 
         #endregion
@@ -512,18 +519,7 @@ namespace Kinovea.ScreenManager
             view.UpdateGrabbingStatus(cameraGrabber.Grabbing);
         }
         
-        /*private void Grabber_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
-        {
-            try
-            {
-                dummy.BeginInvoke((Action)delegate { ImageReceived(e.Image); });
-            }
-            catch (Exception ex)
-            {
-                log.ErrorFormat("Begin invoke failed on dummy control.", ex.ToString());
-                dummy = new Control();
-            }
-        }
+        /*
         private void ImageReceived(Bitmap image)
         {
             ComputeFPS();
@@ -763,7 +759,7 @@ namespace Kinovea.ScreenManager
                 filename = video ? filenameHelper.GetVideoFilename() : filenameHelper.GetImageFilename();
             
             string extension = video ? filenameHelper.GetVideoFileExtension() : filenameHelper.GetImageFileExtension();
-            string filepath = directory + "\\" + filename + extension;
+            string filepath = Path.Combine(directory, filename + extension);
             
             filenameHelper.CreateDirectory(filepath);
             
@@ -800,7 +796,7 @@ namespace Kinovea.ScreenManager
             if(!ok)
                 return;
                 
-            string filepath = GetFilePath(filename, true);
+            string filepath = GetFilePath(Path.GetFileName(filename), true);
             filename = Path.GetFileNameWithoutExtension(filepath);
             if(!OverwriteCheck(filepath))
                 return;
@@ -819,6 +815,12 @@ namespace Kinovea.ScreenManager
             SaveResult result = consumerRecord.Prepare(filepath, interval);
             consumerRecord.Activate();
 
+            if (recordingThumbnail != null)
+            {
+                recordingThumbnail.Dispose();
+                recordingThumbnail = null;
+            }
+            
             recording = result == SaveResult.Success;
             
             if(recording)
@@ -842,14 +844,15 @@ namespace Kinovea.ScreenManager
             recording = false;
             consumerRecord.Deactivate();
 
-            //PreferencesManager.CapturePreferences.VideoFile = recorder.Filename;
-            //PreferencesManager.Save();
+            PreferencesManager.CapturePreferences.VideoFile = Path.GetFileNameWithoutExtension(consumerRecord.Filename);
+            PreferencesManager.Save();
              
-            /*if(recorder.CaptureThumb != null)
+            if(recordingThumbnail != null)
             {
-                AddCapturedFile(recorder.Filepath, recorder.CaptureThumb, true);
-                recorder.CaptureThumb.Dispose();
-            }*/
+                AddCapturedFile(consumerRecord.Filename, recordingThumbnail, true);
+                recordingThumbnail.Dispose();
+                recordingThumbnail = null;
+            }
              
             view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
         }
