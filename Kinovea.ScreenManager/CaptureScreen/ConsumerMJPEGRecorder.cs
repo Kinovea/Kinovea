@@ -15,8 +15,14 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ConsumerMJPEGRecorder : AbstractConsumer
     {
+        public string Filename
+        {
+            get { return filename; }
+        }
+
         private ImageDescriptor imageDescriptor;
         private MJPEGWriter writer;
+        private string filename;
         
         public void SetImageDescriptor(ImageDescriptor imageDescriptor)
         {
@@ -27,6 +33,8 @@ namespace Kinovea.ScreenManager
         {
             if (imageDescriptor == null)
                 throw new NotSupportedException("ImageDescriptor must be set before prepare.");
+
+            this.filename = filename;
 
             if (writer != null)
                 writer.Dispose();
