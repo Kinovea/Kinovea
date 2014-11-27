@@ -11,6 +11,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using TurboJpegNet;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -20,9 +21,6 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ConsumerDisplay : IFrameConsumer
     {
-        [DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-        public static unsafe extern int memcpy(void* dest, void* src, int count);
-
         public bool Started
         {
             get { return true; }
@@ -134,36 +132,12 @@ namespace Kinovea.ScreenManager
             switch (imageDescriptor.Format)
             {
                 case Video.ImageFormat.RGB24:
-                    FillBitmapRGB24(entry.Buffer);
+                    BitmapHelper.FillFromRGB24(bitmap, rect, entry.Buffer);
                     break;
                 case Video.ImageFormat.JPEG:
                     FillBitmapJPEG(entry.Buffer, entry.PayloadLength);
                     break;
             }
-        }
-
-        private unsafe void FillBitmapRGB24(byte[] buffer)
-        {
-            // Source is a bottom-up RGB24 buffer.
-            BitmapData bmpData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, bitmap.PixelFormat);
-
-            // Copy + flip the buffer into the bitmap.
-            int stride = bmpData.Stride;
-
-            fixed (byte* pBuffer = buffer)
-            {
-                byte* src = pBuffer;
-                byte* dst = (byte*)bmpData.Scan0.ToPointer() + stride * (height - 1);
-
-                for (int i = 0; i < height; i++)
-                {
-                    memcpy(dst, src, stride);
-                    src += stride;
-                    dst -= stride;
-                }
-            }
-
-            bitmap.UnlockBits(bmpData);
         }
 
         private void FillBitmapJPEG(byte[] buffer, int payloadLength)
