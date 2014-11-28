@@ -66,10 +66,10 @@ namespace Kinovea.Camera.DirectShow
             
             // Bypass DirectShow filters of cameras for which we have a dedicated plugin.
             bypass.Add("Basler GenICam Source");
-            bypass.Add("FlyCapture2 Camera");
+            //bypass.Add("FlyCapture2 Camera");
             //bypass.Add("Logitech HD Pro Webcam C920");
             //bypass.Add("Logitech Webcam C100");
-            bypass.Add("PS3Eye Camera");
+            //bypass.Add("PS3Eye Camera");
             bypass.Add("uEye Capture Device 1");
         }
 
@@ -92,8 +92,7 @@ namespace Kinovea.Camera.DirectShow
                     continue;
 
                 // For now consider that the moniker string is like a serial number.
-                // Apparently this is only true for certain models.
-                // Check if we should extract the serial number part so that we don't change id when changing USB port.
+                // Cameras that don't have a serial number will appear to be new when changing USB port.
                 string identifier = camera.MonikerString;
                 bool cached = cache.ContainsKey(identifier);
                 
@@ -231,7 +230,7 @@ namespace Kinovea.Camera.DirectShow
                     Size size = mediaTypes[info.MediaTypeIndex].FrameSize;
                     float fps = (float)info.SelectedFramerate;
                     string compression = mediaTypes[info.MediaTypeIndex].Compression;
-                    result = string.Format("{0} - {1}×{2} @ {3:0.000} fps in {4}.", alias, size.Width, size.Height, fps, compression);
+                    result = string.Format("{0} - {1}×{2} @ {3:0.###} fps ({4}).", alias, size.Width, size.Height, fps, compression);
                 }
                 else
                 {
