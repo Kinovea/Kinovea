@@ -16,6 +16,11 @@ namespace Kinovea.ScreenManager
     {
         public event EventHandler FrameSignaled;
 
+        public long Drops
+        {
+            get { return pipeline == null ? 0 : pipeline.Drops; }
+        }
+
         private bool connected;
         private FramePipeline pipeline;
         private IFrameProducer producer;
@@ -62,6 +67,7 @@ namespace Kinovea.ScreenManager
         public void StartRecord()
         {
             consumerRecord.Activate();
+            pipeline.ResetDrops();
         }
 
         public void StopRecord()

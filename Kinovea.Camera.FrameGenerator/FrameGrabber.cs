@@ -24,6 +24,7 @@ using System.Timers;
 using System.Runtime.InteropServices;
 using Kinovea.Services;
 using Kinovea.Pipeline;
+using System.Diagnostics;
 
 namespace Kinovea.Camera.FrameGenerator
 {
@@ -58,6 +59,10 @@ namespace Kinovea.Camera.FrameGenerator
         public float Framerate
         {
             get { return 25f; }
+        }
+        public double LiveDataRate
+        {
+            get { return 0; }
         }
         #endregion
 

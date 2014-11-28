@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Kinovea.Services;
 using System.Threading;
+using Kinovea.Pipeline.MemoryLayout;
 
 namespace Kinovea.Pipeline
 {
@@ -21,6 +22,11 @@ namespace Kinovea.Pipeline
             get { return frameLength; }
         }
 
+        public long Drops
+        {
+            get { return drops.Data; }
+        }
+
         private IFrameProducer producer;
         private List<IFrameConsumer> consumers;
         private RingBuffer ringBuffer;
@@ -32,7 +38,7 @@ namespace Kinovea.Pipeline
         private Dictionary<string, BenchmarkCounterIntervals> counters = new Dictionary<string, BenchmarkCounterIntervals>();
         private BenchmarkCounterIntervals heartbeat = new BenchmarkCounterIntervals();
         private BenchmarkCounterIntervals commitbeat = new BenchmarkCounterIntervals();
-
+        private CacheLineStorageLong drops = new CacheLineStorageLong(0);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FramePipeline(IFrameProducer producer, List<IFrameConsumer> consumers, int buffers, int bufferSize)
@@ -49,6 +55,11 @@ namespace Kinovea.Pipeline
             
             Bind();
             GC.Collect();
+        }
+
+        public void ResetDrops()
+        {
+            drops.Data = 0;
         }
 
         public void Teardown()
@@ -108,7 +119,7 @@ namespace Kinovea.Pipeline
 
             if (!claimed)
             {
-                // Frame drop.
+                drops.Data++;
             }
             else
             {
