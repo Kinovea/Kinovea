@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using Kinovea.Services;
 using Kinovea.Pipeline;
 using Kinovea.Video;
+using System.Diagnostics;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -62,6 +63,13 @@ namespace Kinovea.Camera.DirectShow
                     return 30F;
             }
         }
+        public double LiveDataRate
+        {
+            // Note: this variable is written by the stream thread and read by the UI thread.
+            // We don't lock because freshness of values is not paramount and torn reads are not catastrophic either.
+            // We eventually get an approximate value good enough for the purpose.
+            get { return dataRateAverager.Average; }
+        }
         #endregion
         
         #region Members
@@ -69,6 +77,9 @@ namespace Kinovea.Camera.DirectShow
         private string moniker;
         private VideoCaptureDevice device;
         private bool grabbing;
+        private Stopwatch swDataRate = new Stopwatch();
+        private Averager dataRateAverager = new Averager(0.02);
+        private const double megabyte = 1024 * 1024;
         private bool receivedFirstFrame;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -130,6 +141,9 @@ namespace Kinovea.Camera.DirectShow
             device.NewFrameBuffer += device_NewFrameBuffer;
             device.VideoSourceError += device_VideoSourceError;
             grabbing = true;
+            swDataRate.Reset();
+            swDataRate.Start();
+
             device.Start();
 
             if (GrabbingStatusChanged != null)
@@ -187,6 +201,8 @@ namespace Kinovea.Camera.DirectShow
                 receivedFirstFrame = true;
             }
 
+            ComputeDataRate(e.PayloadLength);
+
             if (FrameProduced != null)
                 FrameProduced(this, new FrameProducedEventArgs(e.Buffer, e.PayloadLength));
         }
@@ -209,6 +225,14 @@ namespace Kinovea.Camera.DirectShow
                 device.Logitech_SetExposure((int)info.ExposureValue, true);
             else
                 device.SetCameraProperty(CameraControlProperty.Exposure, (int)info.ExposureValue, CameraControlFlags.Manual);
+        }
+
+        private void ComputeDataRate(int bytes)
+        {
+            double rate = (bytes / megabyte) / swDataRate.Elapsed.TotalSeconds;
+            dataRateAverager.Post(rate);
+            swDataRate.Reset();
+            swDataRate.Start();
         }
     }
 }

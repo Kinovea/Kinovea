@@ -55,8 +55,6 @@ namespace Kinovea.Camera.Basler
             get { return 1; }
         }
 
-
-        
         public float Framerate
         {
             get { return framerate; }
@@ -66,6 +64,10 @@ namespace Kinovea.Camera.Basler
         {
             get { return errorDescription;}
         }*/
+        public double LiveDataRate
+        {
+            get { return 0; }
+        }
         #endregion
         
         #region Members

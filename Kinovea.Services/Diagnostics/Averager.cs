@@ -24,36 +24,48 @@ using System.Collections.Generic;
 namespace Kinovea.Services
 {
     /// <summary>
-    /// Sliding average.
+    /// Online averager using Exponential Moving Average.
+    /// This class is not thread safe.
+    /// The average can be consulted at any time.
     /// </summary>
     public class Averager
     {
         public double Average
         {
-            get { return avg;}
+            get { return average;}
         }
         
-        private List<double> intervals = new List<double>();
-        private int max;
-        private double total;
-        private double avg;
+        private double alpha;
+        private double alphaComplement;
+        private double average;
         
-        public Averager(int max)
+        /// <summary>
+        /// Creates a new Averager.
+        /// </summary>
+        /// <param name="alpha">Weight given to the most up to date sample.</param>
+        public Averager(double alpha)
         {
-            this.max = max;
+            if (alpha < 0 || alpha > 1.0)
+                throw new ArgumentOutOfRangeException("Alpha must be between 0 and 1.");
+
+            this.alpha = alpha;
+            this.alphaComplement = 1 - alpha;
         }
         
-        public void Add(double interval)
+        /// <summary>
+        /// Update the moving average.
+        /// </summary>
+        public void Post(long value)
         {
-            if(intervals.Count == max)
-            {
-                total -= intervals[0];
-                intervals.RemoveAt(0);
-            }
-            
-            intervals.Add(interval);
-            total += interval;
-            avg = total / intervals.Count;
+            average = (value * alpha) + (average * alphaComplement);
+        }
+
+        /// <summary>
+        /// Update the moving average.
+        /// </summary>
+        public void Post(double value)
+        {
+            average = (value * alpha) + (average * alphaComplement);
         }
     }
 }

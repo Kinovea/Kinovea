@@ -137,7 +137,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphanumComparator.cs" />
-    <Compile Include="Diagnostics\Averager.cs" />
     <Compile Include="Diagnostics\BenchmarkCounterBandwidth.cs" />
     <Compile Include="Diagnostics\BenchmarkCounterIntervals.cs" />
     <Compile Include="Diagnostics\BenchmarkCounterValues.cs" />
@@ -149,6 +148,7 @@
     <Compile Include="Diagnostics\BenchmarkReport.Designer.cs">
       <DependentUpon>BenchmarkReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Diagnostics\Averager.cs" />
     <Compile Include="Diagnostics\WMI\LogicalDisk.cs" />
     <Compile Include="Diagnostics\WMI\DriveType.cs" />
     <Compile Include="Diagnostics\IBenchmarkCounter.cs" />

@@ -34,6 +34,7 @@ using Kinovea.Video;
 using Kinovea.Pipeline;
 using Kinovea.Pipeline.Consumers;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Kinovea.ScreenManager
 {
@@ -141,11 +142,14 @@ namespace Kinovea.ScreenManager
         private int displayImageAge = 0;
         private int recordImageAge = 0;
         private Size currentImageSize;
-        private double computedFps = 0;
         private Control dummy = new Control();
         private System.Windows.Forms.Timer nonGrabbingInteractionTimer = new System.Windows.Forms.Timer();
+        
+        // Performance feedback
+        private Averager averager = new Averager(0.05);
+        private Stopwatch swFrameSignal = new Stopwatch();
+        private double computedFps = 0;
         private DateTime lastImageTime;
-        private Averager averager = new Averager(25);
         private HistoryStack historyStack = new HistoryStack();
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -237,17 +241,24 @@ namespace Kinovea.ScreenManager
             if (cameraLoaded)
                 UnloadCamera();
 
-            // Destroy resources (symmetric to constructor).
-            pipelineManager.FrameSignaled -= pipelineManager_FrameSignaled;
-            pipelineManager = null;
+            if (pipelineManager != null)
+            {
+                // Destroy resources (symmetric to constructor).
+                pipelineManager.FrameSignaled -= pipelineManager_FrameSignaled;
+                pipelineManager = null;
+            }
+
             consumerDisplay = null;
 
             nonGrabbingInteractionTimer.Tick -= NonGrabbingInteractionTimer_Tick;
             viewportController.DisplayRectangleUpdated -= ViewportController_DisplayRectangleUpdated;
-            view.DualCommandReceived -= OnDualCommandReceived;
-            
-            view.BeforeClose();
-            view = null;
+
+            if (view != null)
+            {
+                view.DualCommandReceived -= OnDualCommandReceived;
+                view.BeforeClose();
+                view = null;
+            }
         }
         public override void AfterClose()
         {
@@ -431,6 +442,9 @@ namespace Kinovea.ScreenManager
             cameraGrabber.GrabbingStatusChanged += Grabber_GrabbingStatusChanged;
             cameraGrabber.Start();
 
+            swFrameSignal.Reset();
+            swFrameSignal.Start();
+
             UpdateTitle();
             cameraConnected = true;
         }
@@ -482,6 +496,21 @@ namespace Kinovea.ScreenManager
 
         private void pipelineManager_FrameSignaled(object sender, EventArgs e)
         {
+            // Runs in producer thread.
+
+            try
+            {            
+                dummy.BeginInvoke((Action)delegate { FrameSignaled(); });
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("Begin invoke failed.", ex.ToString());
+                dummy = new Control();
+            }
+        }
+
+        private void FrameSignaled()
+        {
             // A frame was received by the camera.
             // We use this as a clock tick to update the consumer responsible for display.
             // This consumer cannot block because it's on the UI thread.
@@ -489,6 +518,8 @@ namespace Kinovea.ScreenManager
 
             viewportController.Bitmap = consumerDisplay.Bitmap;
             viewportController.Refresh();
+
+            UpdateStats();
 
             if (recording && recordingThumbnail == null)
                 recordingThumbnail = BitmapHelper.Copy(consumerDisplay.Bitmap);
@@ -573,18 +604,16 @@ namespace Kinovea.ScreenManager
             view.UpdateTitle(cameraManager.GetSummaryAsText(cameraSummary));
         }
         
-        private void UpdateInfo()
+        private void UpdateStats()
         {
-            string info = "";
-            //float fill = buffer.Fill * 100;
-            float fill = 0;
+            averager.Post(swFrameSignal.ElapsedMilliseconds);
+            computedFps = 1000.0 / averager.Average;
             
-            if(fill == 100)
-                info = string.Format("Actual: {0}×{1} @ {2:0.00}fps, Buffer: 100%", currentImageSize.Width, currentImageSize.Height, computedFps);
-            else
-                info = string.Format("Actual: {0}×{1} @ {2:0.00}fps, Buffer: {3:0.00}%", currentImageSize.Width, currentImageSize.Height, computedFps, fill);
-            
-            view.UpdateInfo(info);
+            view.UpdateInfo(string.Format("Signal: {0:0.00} fps. Data: {1:0.00} MB/s. Drops: {2}.", 
+                computedFps, cameraGrabber.LiveDataRate, pipelineManager.Drops));
+
+            swFrameSignal.Reset();
+            swFrameSignal.Start();
         }
 
         private void ChangeAspectRatio(ImageAspectRatio aspectRatio)

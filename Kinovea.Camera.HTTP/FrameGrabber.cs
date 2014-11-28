@@ -56,6 +56,10 @@ namespace Kinovea.Camera.HTTP
         {
             get { return errorDescription;}
         }*/
+        public double LiveDataRate
+        {
+            get { return 0; }
+        }
         #endregion
         
         #region Members
