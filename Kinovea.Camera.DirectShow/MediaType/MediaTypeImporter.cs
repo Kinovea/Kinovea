@@ -21,7 +21,7 @@ namespace Kinovea.Camera.DirectShow
 
             foreach (VideoCapabilities cap in capabilities)
             {
-                MediaType mt = new MediaType(cap.Compression, cap.FrameSize, cap.AverageFrameRate, cap.Index, cap.BitCount);
+                MediaType mt = new MediaType(cap.Compression, cap.FrameSize, cap.Index, cap.BitCount);
                 result.Add(mt.MediaTypeIndex, mt);
             }
 

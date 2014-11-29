@@ -16,7 +16,6 @@ namespace Kinovea.Camera.DirectShow
     {
         public string Compression { get; private set; }
         public Size FrameSize { get; private set; }
-        public float SelectedFramerate { get; set; }
         public int MediaTypeIndex { get; private set; }
         public int BitsPerPixel { get; private set; }
 
@@ -24,16 +23,15 @@ namespace Kinovea.Camera.DirectShow
         {
             get 
             {
-                return string.Format("Compression:{0}, FrameSize:{1}x{2}, Framerate:{3:0.000}, BPP:{4}, Index:{5}.",
-                    Compression, FrameSize.Width, FrameSize.Height, SelectedFramerate, BitsPerPixel, MediaTypeIndex);
+                return string.Format("Compression:{0}, FrameSize:{1}x{2}, BPP:{4}, Index:{5}.",
+                    Compression, FrameSize.Width, FrameSize.Height, BitsPerPixel, MediaTypeIndex);
             }
         }
 
-        public MediaType(string compression, Size frameSize, float selectedFramerate, int index, int bpp)
+        public MediaType(string compression, Size frameSize, int index, int bpp)
         {
             this.Compression = compression;
             this.FrameSize = frameSize;
-            this.SelectedFramerate = selectedFramerate;
             this.MediaTypeIndex = index;
             this.BitsPerPixel = bpp;
         }
@@ -42,7 +40,5 @@ namespace Kinovea.Camera.DirectShow
         {
             return string.Format("{0} × {1}", FrameSize.Width, FrameSize.Height);
         }
-
-        
     }
 }
