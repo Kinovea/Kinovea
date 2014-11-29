@@ -52,7 +52,7 @@ namespace Kinovea.Camera.DirectShow
             this.btnApply = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.lblColorSpace = new System.Windows.Forms.Label();
-            this.cmbColorSpace = new System.Windows.Forms.ComboBox();
+            this.cmbFormat = new System.Windows.Forms.ComboBox();
             this.btnIcon = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lblExposureValue = new System.Windows.Forms.Label();
@@ -115,15 +115,15 @@ namespace Kinovea.Camera.DirectShow
             // 
             // cmbColorSpace
             // 
-            this.cmbColorSpace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.cmbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbColorSpace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbColorSpace.FormattingEnabled = true;
-            this.cmbColorSpace.Location = new System.Drawing.Point(242, 88);
-            this.cmbColorSpace.Name = "cmbColorSpace";
-            this.cmbColorSpace.Size = new System.Drawing.Size(105, 21);
-            this.cmbColorSpace.TabIndex = 81;
-            this.cmbColorSpace.SelectedIndexChanged += new System.EventHandler(this.cmbColorSpace_SelectedIndexChanged);
+            this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFormat.FormattingEnabled = true;
+            this.cmbFormat.Location = new System.Drawing.Point(242, 88);
+            this.cmbFormat.Name = "cmbColorSpace";
+            this.cmbFormat.Size = new System.Drawing.Size(105, 21);
+            this.cmbFormat.TabIndex = 81;
+            this.cmbFormat.SelectedIndexChanged += new System.EventHandler(this.cmbFormat_SelectedIndexChanged);
             // 
             // btnIcon
             // 
@@ -155,7 +155,7 @@ namespace Kinovea.Camera.DirectShow
             this.groupBox1.Controls.Add(this.tbAlias);
             this.groupBox1.Controls.Add(this.lblSystemName);
             this.groupBox1.Controls.Add(this.btnIcon);
-            this.groupBox1.Controls.Add(this.cmbColorSpace);
+            this.groupBox1.Controls.Add(this.cmbFormat);
             this.groupBox1.Controls.Add(this.lblColorSpace);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
@@ -297,7 +297,7 @@ namespace Kinovea.Camera.DirectShow
         private System.Windows.Forms.Label lblSystemName;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnIcon;
-        private System.Windows.Forms.ComboBox cmbColorSpace;
+        private System.Windows.Forms.ComboBox cmbFormat;
         private System.Windows.Forms.Label lblColorSpace;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnApply;
