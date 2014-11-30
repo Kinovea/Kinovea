@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
             if (cameraGrabber == null || cameraGrabber.Grabbing == grab)
                 return;
 
-            //ToggleGrabbing();
+            ToggleConnection();
         }
 
         public void ForceRecordingStatus(bool record)
@@ -208,7 +208,7 @@ namespace Kinovea.ScreenManager
             if (recording == record)
                 return;
 
-            //ToggleRecording(view.CurrentVideoFilename);
+            ToggleRecording(view.CurrentVideoFilename);
         }
 
         public void PerformSnapshot()
@@ -432,12 +432,13 @@ namespace Kinovea.ScreenManager
             recorderThread.Name = consumerRecord.GetType().Name;
             recorderThread.Start();
 
-            // Initialize pipeline.
-            
-            pipelineManager.Connect(imageDescriptor, (IFrameProducer)cameraGrabber, consumerDisplay, consumerRecord);
-            
+            // Make sure the viewport will not use the bitmap allocated by the consumerDisplay as it is about to be disposed.
+            viewportController.ForgetBitmap();
             viewportController.InitializeDisplayRectangle(cameraSummary.DisplayRectangle, new Size(imageDescriptor.Width, imageDescriptor.Height));
 
+            // Initialize pipeline.
+            pipelineManager.Connect(imageDescriptor, (IFrameProducer)cameraGrabber, consumerDisplay, consumerRecord);
+            
             nonGrabbingInteractionTimer.Enabled = false;
             cameraGrabber.GrabbingStatusChanged += Grabber_GrabbingStatusChanged;
             cameraGrabber.Start();
@@ -457,6 +458,8 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded || !cameraConnected)
                 return;
 
+            cameraConnected = false;
+
             if (recording)
                 StopRecording();
 
@@ -465,7 +468,10 @@ namespace Kinovea.ScreenManager
                 recorderThread.Join(500);
 
             if (recorderThread.IsAlive)
+            {
                 log.ErrorFormat("Time out while waiting for recorder thread to join.");
+                recorderThread.Abort();
+            }
 
             pipelineManager.Disconnect();
 
@@ -477,7 +483,6 @@ namespace Kinovea.ScreenManager
             }
 
             UpdateTitle();
-            cameraConnected = false;
         }
 
         private void ConfigureCamera()
@@ -511,11 +516,17 @@ namespace Kinovea.ScreenManager
 
         private void FrameSignaled()
         {
+            if (!cameraConnected)
+                return;
+
             // A frame was received by the camera.
             // We use this as a clock tick to update the consumer responsible for display.
             // This consumer cannot block because it's on the UI thread.
             consumerDisplay.ConsumeOne();
 
+            // Note: the viewport has a reference on the consumerDisplay allocated bitmap.
+            // This means that when the consumerDisplay disposes the bitmap, the viewport must be alerted 
+            // so that it avoids trying to draw the image. The alternative is to copy the image into the viewport.
             viewportController.Bitmap = consumerDisplay.Bitmap;
             viewportController.Refresh();
 
@@ -549,55 +560,6 @@ namespace Kinovea.ScreenManager
         {
             view.UpdateGrabbingStatus(cameraGrabber.Grabbing);
         }
-        
-        /*
-        private void ImageReceived(Bitmap image)
-        {
-            ComputeFPS();
-            
-            if(!cameraGrabber.Grabbing)
-                return;
-
-            buffer.Write(image);
-            
-            Bitmap recordImage = buffer.Read(displayImageAge);
-            Bitmap displayImage = buffer.Read(displayImageAge);
-            
-            if(currentImageSize != displayImage.Size)
-            {
-                log.DebugFormat("new size of image received, {0}, {1}", image.Size, displayImage.Size);
-                viewportController.InitializeDisplayRectangle(cameraSummary.DisplayRectangle, displayImage.Size);
-                firstImageReceived = true;
-                currentImageSize = displayImage.Size;
-                metadata.ImageSize = currentImageSize;
-                frameMemory = (double)currentImageSize.Height * currentImageSize.Width * BytesPerPixel(image.PixelFormat);
-                UpdateBufferCapacity();
-            }
-            
-            viewportController.Bitmap = displayImage;
-            viewportController.Timestamp = 0;
-            
-            if(recording)
-                recorder.EnqueueFrame(CopyImage(displayImage));
-            
-            UpdateInfo();
-            
-            viewportController.Refresh();
-        }*/
-        
-        /*private void ComputeFPS()
-        {
-            DateTime now = DateTime.Now;
-            
-            if(firstImageReceived)
-            {
-                TimeSpan span = now - lastImageTime;
-                averager.Add(span.TotalSeconds);
-                computedFps = 1.0/averager.Average;
-            }
-        
-            lastImageTime = now;
-        }*/
         
         private void UpdateTitle()
         {
@@ -812,8 +774,6 @@ namespace Kinovea.ScreenManager
                 StopRecording();
             else
                 StartRecording(filename);
-
-            view.UpdateRecordingStatus(recording);
         }
         
         private void StartRecording(string filename)
@@ -839,23 +799,21 @@ namespace Kinovea.ScreenManager
             if (consumerRecord.Active)
                 consumerRecord.Deactivate();
             
-            double interval = cameraGrabber.Framerate > 0 ? 1000.0 / cameraGrabber.Framerate : 40;
-
-            SaveResult result = consumerRecord.Prepare(filepath, interval);
-            consumerRecord.Activate();
-
             if (recordingThumbnail != null)
             {
                 recordingThumbnail.Dispose();
                 recordingThumbnail = null;
             }
             
+            double interval = cameraGrabber.Framerate > 0 ? 1000.0 / cameraGrabber.Framerate : 40;
+            SaveResult result = pipelineManager.StartRecord(filepath, interval);
             recording = result == SaveResult.Success;
             
             if(recording)
             {
                 string next = filenameHelper.Next(filename, true);
                 view.UpdateNextVideoFilename(next, !PreferencesManager.CapturePreferences.CaptureUsePattern);
+                view.UpdateRecordingStatus(recording);
                 view.Toast(ScreenManagerLang.Toast_StartRecord, 1000);
                 NotificationCenter.RaiseRefreshFileExplorer(this, false);
             }
@@ -867,7 +825,7 @@ namespace Kinovea.ScreenManager
 
         private void StopRecording()
         {
-            if(!cameraLoaded || !cameraConnected || !recording || !consumerRecord.Active)
+            if(!cameraLoaded || !recording || !consumerRecord.Active)
                return;
              
             recording = false;
@@ -883,6 +841,7 @@ namespace Kinovea.ScreenManager
                 recordingThumbnail = null;
             }
              
+            view.UpdateRecordingStatus(recording);
             view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
         }
 

@@ -67,6 +67,7 @@ namespace Kinovea.Camera.DirectShow
 
         public void Run(object data)
         {
+            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
             device.Start();
             waitHandle.WaitOne(timeout, false);
@@ -80,6 +81,9 @@ namespace Kinovea.Camera.DirectShow
 
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, hadError, cancelled));
+
+            // TODO: wait for a bit then kill the thread.
+            //device.WaitForStop();
         }
         
         public void Cancel()
@@ -91,10 +95,6 @@ namespace Kinovea.Camera.DirectShow
         private void device_NewFrameBuffer(object sender, NewFrameBufferEventArgs e)
         {
             // As we didn't specify any media type, the buffer is guaranteed to come back in RGB24.
-            
-            if (image != null)
-                image.Dispose();
-
             image = new Bitmap(e.Width, e.Height, PixelFormat.Format24bppRgb);
             Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
             BitmapHelper.FillFromRGB24(image, rect, e.Buffer);
