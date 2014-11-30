@@ -34,11 +34,10 @@ namespace Kinovea.Pipeline
 
         // Note: the benchmark counters are always filled.
         // The benchmark mode determines the code path taken.
-        private BenchmarkMode benchmarkMode = BenchmarkMode.Heartbeat;
-        private Dictionary<string, BenchmarkCounterIntervals> counters = new Dictionary<string, BenchmarkCounterIntervals>();
-        private BenchmarkCounterIntervals heartbeat = new BenchmarkCounterIntervals();
-        private BenchmarkCounterIntervals commitbeat = new BenchmarkCounterIntervals();
-        //private CacheLineStorageLong drops = new CacheLineStorageLong(0);
+        //private BenchmarkMode benchmarkMode = BenchmarkMode.Heartbeat;
+        //private Dictionary<string, BenchmarkCounterIntervals> counters = new Dictionary<string, BenchmarkCounterIntervals>();
+        //private BenchmarkCounterIntervals heartbeat = new BenchmarkCounterIntervals();
+        //private BenchmarkCounterIntervals commitbeat = new BenchmarkCounterIntervals();
         
         // Note: we lock drops on write as it's written from UI thread and producer thread.
         // The freshness of the value is not paramount so we do not lock on read to avoid slowing down the producer thread.
@@ -118,18 +117,19 @@ namespace Kinovea.Pipeline
             // Runs in producer thread.
             //-------------------------
 
-            heartbeat.Tick();
+            //heartbeat.Tick();
             
-            if (benchmarkMode == BenchmarkMode.Heartbeat)
-                return;
+            //if (benchmarkMode == BenchmarkMode.Heartbeat)
+              //return;
 
             // Claim the next slot in the ring buffer.
             Frame entry;
             bool claimed = true;
-            if (benchmarkMode == BenchmarkMode.Bradycardia)
+            /*if (benchmarkMode == BenchmarkMode.Bradycardia)
                 ringBuffer.Claim(out entry);
-            else
-                claimed = ringBuffer.TryClaim(out entry);
+            else*/
+            
+            claimed = ringBuffer.TryClaim(out entry);
 
             if (!claimed)
             {
@@ -160,31 +160,32 @@ namespace Kinovea.Pipeline
             }
 
             ringBuffer.Commit();
-            commitbeat.Tick();
+            //commitbeat.Tick();
         }
 
         #region Benchmarking support
         public void SetBenchmarkMode(BenchmarkMode benchmarkMode)
         {
-            this.benchmarkMode = benchmarkMode;
-            ringBuffer.SetBenchmarkMode(benchmarkMode);
+            //this.benchmarkMode = benchmarkMode;
+            //ringBuffer.SetBenchmarkMode(benchmarkMode);
         }
 
         public Dictionary<string, IBenchmarkCounter> StopBenchmark()
         {
-            foreach (BenchmarkCounterIntervals counter in counters.Values)
+            return null;
+            /*foreach (BenchmarkCounterIntervals counter in counters.Values)
                 counter.Stop();
 
             Dictionary<string, IBenchmarkCounter> result = new Dictionary<string, IBenchmarkCounter>();
             foreach (var pair in counters)
                 result.Add(pair.Key, pair.Value as IBenchmarkCounter);
 
-            return result;
+            return result;*/
         }
         private void InitializeBenchmarkCounters()
         {
-            counters.Add("Heartbeat", heartbeat);
-            counters.Add("Commitbeat", commitbeat);
+            //counters.Add("Heartbeat", heartbeat);
+            //counters.Add("Commitbeat", commitbeat);
         }
         #endregion
         
