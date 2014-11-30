@@ -91,6 +91,9 @@ namespace Kinovea.Camera.HTTP
                 CameraImageTimedOut(this, EventArgs.Empty);
             else if(CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, false, cancelled));
+
+            // TODO: wait for a bit then kill the thread.
+            //device.WaitForStop();
         }
         
         public void Cancel()

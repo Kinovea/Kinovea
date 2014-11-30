@@ -116,6 +116,15 @@ namespace Kinovea.ScreenManager
             view.Invalidate();
         }
         
+        /// <summary>
+        /// Make sure the viewport will not try to draw the bitmap.
+        /// Use this when the bitmap is about to be disposed from elsewhere.
+        /// </summary>
+        public void ForgetBitmap()
+        {
+            bitmap = null;
+        }
+
         public void InitializeDisplayRectangle(Rectangle displayRectangle, Size size)
         {
             view.InitializeDisplayRectangle(displayRectangle, size);

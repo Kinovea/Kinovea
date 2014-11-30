@@ -136,7 +136,7 @@ namespace Kinovea.Camera.DirectShow
 
         public void Start()
         {
-            log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
+            log.DebugFormat("Starting device {0}.", summary.Alias);
             
             device.NewFrameBuffer += device_NewFrameBuffer;
             device.VideoSourceError += device_VideoSourceError;
@@ -155,12 +155,13 @@ namespace Kinovea.Camera.DirectShow
             if (!grabbing)
                 return;
 
-            log.DebugFormat("Stopping device {0}", summary.Alias);
+            log.DebugFormat("Stopping device {0}.", summary.Alias);
             device.NewFrameBuffer -= device_NewFrameBuffer;
             device.VideoSourceError -= device_VideoSourceError;
             
             device.SignalToStop();
             device.WaitForStop();
+            log.DebugFormat("{0} stopped.", summary.Alias);
 
             receivedFirstFrame = false;
             
@@ -190,7 +191,8 @@ namespace Kinovea.Camera.DirectShow
 
             device.SetMediaTypeAndFramerate(info.MediaTypeIndex, info.SelectedFramerate);
 
-            log.DebugFormat("Device set to saved configuration: {0}.", info.MediaTypeIndex);
+            log.DebugFormat("Device set to saved configuration: Index:{0}. ({1}×{2} @ {3:0.###} fps ({4})).", 
+                info.MediaTypeIndex, match.FrameSize.Width, match.FrameSize.Height, info.SelectedFramerate, match.Compression);
         }
         
         private void device_NewFrameBuffer(object sender, NewFrameBufferEventArgs e)
