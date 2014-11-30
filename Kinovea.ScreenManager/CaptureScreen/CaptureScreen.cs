@@ -213,7 +213,7 @@ namespace Kinovea.ScreenManager
 
         public void PerformSnapshot()
         {
-            //MakeSnapshot(view.CurrentImageFilename);
+            MakeSnapshot(view.CurrentImageFilename);
         }
 
         #region AbstractScreen Implementation
@@ -336,7 +336,7 @@ namespace Kinovea.ScreenManager
         }
         public void View_SnapshotAsked(string filename)
         {
-            //MakeSnapshot(filename);
+            MakeSnapshot(filename);
         }
         public void View_ToggleRecording(string filename)
         {
@@ -570,8 +570,8 @@ namespace Kinovea.ScreenManager
         {
             averager.Post(swFrameSignal.ElapsedMilliseconds);
             computedFps = 1000.0 / averager.Average;
-            
-            view.UpdateInfo(string.Format("Signal: {0:0.00} fps. Data: {1:0.00} MB/s. Drops: {2}.", 
+
+            view.UpdateInfo(string.Format("Signal: {0:0.00} fps. Data: {1:0.00} MB/s. Drops: {2}.",
                 computedFps, cameraGrabber.LiveDataRate, pipelineManager.Drops));
 
             swFrameSignal.Reset();
@@ -697,7 +697,7 @@ namespace Kinovea.ScreenManager
             string videoFilename = filenameHelper.GetVideoFilename();
             view.UpdateNextVideoFilename(videoFilename, !PreferencesManager.CapturePreferences.CaptureUsePattern);
         }
-        /*private void MakeSnapshot(string filename)
+        private void MakeSnapshot(string filename)
         {
             bool ok = SanityCheckRecording(filename);
             if(!ok)
@@ -708,7 +708,7 @@ namespace Kinovea.ScreenManager
             if(!OverwriteCheck(filepath))
                 return;
             
-            Bitmap outputImage = buffer.Read(displayImageAge);
+            Bitmap outputImage = BitmapHelper.Copy(consumerDisplay.Bitmap);
             if(outputImage == null)
                 return;
             
@@ -728,7 +728,8 @@ namespace Kinovea.ScreenManager
             view.Toast(ScreenManagerLang.Toast_ImageSaved, 750);
             
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
-        }*/
+        }
+        
         private bool SanityCheckRecording(string filename)
         {
             if(cameraGrabber == null)
