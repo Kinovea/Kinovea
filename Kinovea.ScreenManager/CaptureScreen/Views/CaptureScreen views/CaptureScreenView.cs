@@ -126,7 +126,7 @@ namespace Kinovea.ScreenManager
         {
             lblCameraInfo.Text = info;
             
-            if(capturedFilesView.HorizontalScroll.Visible)
+            /*if(capturedFilesView.HorizontalScroll.Visible)
             {
                 //pnlCapturedVideos.Height = 120;
                 //pnlCapturedVideos.Top -= 20;
@@ -137,7 +137,7 @@ namespace Kinovea.ScreenManager
                 //pnlCapturedVideos.Height = 100;
                 //pnlCapturedVideos.Top += 20;
                 AfterCapturedVideosChange();
-            }
+            }*/
         }
         
         public void UpdateGrabbingStatus(bool grabbing)
