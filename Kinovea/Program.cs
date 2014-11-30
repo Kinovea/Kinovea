@@ -52,12 +52,12 @@ namespace Kinovea.Root
             if (!Program.FirstInstance)
                 return;
             
+            Thread.CurrentThread.Name = "Main";
+            
             Assembly assembly = Assembly.GetExecutingAssembly();
             Software.Initialize(assembly.GetName().Version);
             Software.SanityCheckDirectories();
             Software.LogInfo();
-            
-            Thread.CurrentThread.Name = "Main";
                 
             log.Debug("Application level initialisations.");
             Application.EnableVisualStyles();
