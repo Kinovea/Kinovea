@@ -158,11 +158,10 @@ namespace Kinovea.Camera.DirectShow
             log.DebugFormat("Stopping device {0}.", summary.Alias);
             device.NewFrameBuffer -= device_NewFrameBuffer;
             device.VideoSourceError -= device_VideoSourceError;
-            
-            device.SignalToStop();
-            device.WaitForStop();
-            log.DebugFormat("{0} stopped.", summary.Alias);
 
+            DeviceHelper.StopDevice(device);
+            log.DebugFormat("{0} stopped.", summary.Alias);
+            
             receivedFirstFrame = false;
             
             grabbing = false;
