@@ -65,12 +65,12 @@ namespace Kinovea.Camera.DirectShow
             defaultIcon = IconLibrary.GetIcon("webcam");
             
             // Bypass DirectShow filters of cameras for which we have a dedicated plugin.
-            bypass.Add("Basler GenICam Source");
+            //bypass.Add("Basler GenICam Source");
             //bypass.Add("FlyCapture2 Camera");
             //bypass.Add("Logitech HD Pro Webcam C920");
             //bypass.Add("Logitech Webcam C100");
             //bypass.Add("PS3Eye Camera");
-            bypass.Add("uEye Capture Device 1");
+            //bypass.Add("uEye Capture Device 1");
         }
 
         public override bool SanityCheck()
@@ -132,6 +132,7 @@ namespace Kinovea.Camera.DirectShow
                 {
                     cache.Add(identifier, summary);
                     found.Add(summary);
+                    log.DebugFormat("DirectShow device enumeration: {0} (moniker:{1}).", summary.Alias, identifier);
                 }
             }
             

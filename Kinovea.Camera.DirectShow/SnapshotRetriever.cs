@@ -74,7 +74,6 @@ namespace Kinovea.Camera.DirectShow
 
             device.NewFrameBuffer -= device_NewFrameBuffer;
             device.VideoSourceError -= device_VideoSourceError;
-            device.SignalToStop();
             
             if (image == null)
                 log.DebugFormat("Timeout waiting for thumbnail of {0}", summary.Alias);
@@ -82,8 +81,7 @@ namespace Kinovea.Camera.DirectShow
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, hadError, cancelled));
 
-            // TODO: wait for a bit then kill the thread.
-            //device.WaitForStop();
+            DeviceHelper.StopDevice(device);
         }
         
         public void Cancel()
