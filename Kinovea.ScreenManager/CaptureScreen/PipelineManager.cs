@@ -5,6 +5,7 @@ using System.Text;
 using Kinovea.Pipeline;
 using Kinovea.Services;
 using Kinovea.Pipeline.Consumers;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -64,10 +65,15 @@ namespace Kinovea.ScreenManager
             connected = false;
         }
 
-        public void StartRecord()
+        public SaveResult StartRecord(string filepath, double interval)
         {
-            consumerRecord.Activate();
             pipeline.ResetDrops();
+            
+            SaveResult result = consumerRecord.Prepare(filepath, interval);
+            if (result == SaveResult.Success)
+                consumerRecord.Activate();
+
+            return result;
         }
 
         public void StopRecord()

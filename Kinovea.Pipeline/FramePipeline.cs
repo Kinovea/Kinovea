@@ -24,7 +24,7 @@ namespace Kinovea.Pipeline
 
         public long Drops
         {
-            get { return drops.Data; }
+            get { return drops; }
         }
 
         private IFrameProducer producer;
@@ -38,7 +38,13 @@ namespace Kinovea.Pipeline
         private Dictionary<string, BenchmarkCounterIntervals> counters = new Dictionary<string, BenchmarkCounterIntervals>();
         private BenchmarkCounterIntervals heartbeat = new BenchmarkCounterIntervals();
         private BenchmarkCounterIntervals commitbeat = new BenchmarkCounterIntervals();
-        private CacheLineStorageLong drops = new CacheLineStorageLong(0);
+        //private CacheLineStorageLong drops = new CacheLineStorageLong(0);
+        
+        // Note: we lock drops on write as it's written from UI thread and producer thread.
+        // The freshness of the value is not paramount so we do not lock on read to avoid slowing down the producer thread.
+        private int drops;
+        private object lockerDrops = new object();
+        
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FramePipeline(IFrameProducer producer, List<IFrameConsumer> consumers, int buffers, int bufferSize)
@@ -52,14 +58,16 @@ namespace Kinovea.Pipeline
 
             ringBuffer = new RingBuffer(buffers, bufferSize);
             frameLength = bufferSize;
-            
+            log.DebugFormat("Ring buffer allocated.");
+
             Bind();
             GC.Collect();
         }
 
         public void ResetDrops()
         {
-            drops.Data = 0;
+            lock (lockerDrops)
+                drops = 0;
         }
 
         public void Teardown()
@@ -67,6 +75,8 @@ namespace Kinovea.Pipeline
             Unbind();
             frameLength = 0;
             ringBuffer.Teardown();
+
+            log.DebugFormat("Ring buffer torn down.");
         }
 
         private void Bind()
@@ -87,6 +97,8 @@ namespace Kinovea.Pipeline
             ringBuffer.SetConsumers(new List<IFrameConsumer>(consumers));
 
             producer.FrameProduced += producer_FrameProduced;
+
+            log.DebugFormat("Pipeline connected to producer and consumers.");
         }
 
         private void Unbind()
@@ -96,6 +108,8 @@ namespace Kinovea.Pipeline
 
             foreach (IFrameConsumer consumer in consumers)
                 consumer.ClearRingBuffer();
+
+            log.DebugFormat("Pipeline disconnected from producer and consumers.");
         }
 
         private void producer_FrameProduced(object sender, FrameProducedEventArgs e)
@@ -119,7 +133,8 @@ namespace Kinovea.Pipeline
 
             if (!claimed)
             {
-                drops.Data++;
+                lock (lockerDrops)
+                    drops++;
             }
             else
             {
