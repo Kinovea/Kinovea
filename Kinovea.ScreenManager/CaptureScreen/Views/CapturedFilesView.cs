@@ -62,6 +62,35 @@ namespace Kinovea.ScreenManager
             animator.AnimationsFinished += animator_AnimationsFinished;
         }
 
+        /// <summary>
+        /// Disposes resources used by the control.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                    components.Dispose();
+
+                for (int i = capturedFiles.Count - 1; i >= 0; i--)
+                {
+                    CapturedFile capturedFile = capturedFiles[i];
+                    Control control = capturedFileViews[capturedFile.Time];
+
+                    this.Controls.Remove(control);
+                    control.Dispose();
+
+                    capturedFileViews.Remove(capturedFile.Time);
+
+                    capturedFiles.Remove(capturedFile);
+                    capturedFile.Dispose();
+                }
+            }
+            
+            base.Dispose(disposing);
+        }
+
         public void RefreshUICulture()
         {
             foreach(CapturedFileView capturedFileView in capturedFileViews.Values)
