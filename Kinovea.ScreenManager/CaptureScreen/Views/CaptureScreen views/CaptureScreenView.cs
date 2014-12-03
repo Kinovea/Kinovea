@@ -198,6 +198,23 @@ namespace Kinovea.ScreenManager
             if(!pnlCapturedVideos.Visible)
                 ToggleCapturedVideosPanel();
         }
+
+        /// <summary>
+        /// Disposes resources used by the control.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                    components.Dispose();
+
+                capturedFilesView.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
         #endregion
         
         #endregion

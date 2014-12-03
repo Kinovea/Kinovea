@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager
                 this.AllowDrop = false;
                 
                 thumbnailViewerContainer.HideContent();
-                
+
                 splitScreens.Panel1.Controls.Clear();
                 splitScreens.Panel2.Controls.Clear();
                 
@@ -164,12 +164,18 @@ namespace Kinovea.ScreenManager
         }
         private void ClearLeftScreen()
         {
+            foreach (Control c in splitScreens.Panel1.Controls)
+                c.Dispose();
+
             splitScreens.Panel1.Controls.Clear();
             splitScreens.Panel1Collapsed = true;
             splitScreens.Panel1.AllowDrop = false;
         }
         private void ClearRightScreen()
         {
+            foreach (Control c in splitScreens.Panel2.Controls)
+                c.Dispose();
+
             splitScreens.Panel2.Controls.Clear();
             splitScreens.Panel2Collapsed = true;
             splitScreens.Panel2.AllowDrop = false;

@@ -71,15 +71,49 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             this.BackColor = Color.FromArgb(255, 44, 44, 44);
             lblFilename.Text = capturedFile.Filename;
-            tbFilename.KeyDown += new KeyEventHandler(tbFilename_KeyDown);
+            tbFilename.KeyDown += tbFilename_KeyDown;
             tbFilename.MouseEnter += Controls_MouseEnter;
             tbFilename.MouseLeave += Controls_MouseLeave;
             btnClose = new EmbeddedButton(Properties.Capture.thumb_close, this.Width - Properties.Capture.thumb_close.Width - 2, 2);
-            btnClose.Click += new EventHandler(btnClose_Click);
+            btnClose.Click += btnClose_Click;
             buttons.Add(btnClose);
 
             BuildContextMenus();
             ReloadMenusCulture();
+        }
+
+        /// <summary>
+        /// Disposes resources used by the control.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                    components.Dispose();
+
+                tbFilename.KeyDown -= tbFilename_KeyDown;
+                tbFilename.MouseEnter -= Controls_MouseEnter;
+                tbFilename.MouseLeave -= Controls_MouseLeave;
+                btnClose.Click -= btnClose_Click;
+
+                popMenu.Dispose();
+                mnuLoadVideo.Dispose();
+                mnuLocate.Dispose();
+                mnuRename.Dispose();
+                mnuHide.Dispose();
+                mnuDelete.Dispose();
+
+                this.Controls.Remove(tbFilename);
+                tbFilename.Dispose();
+
+                penBorder.Dispose();
+                penBorderHovering.Dispose();
+                penBorderNormal.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
 
         public void RefreshUICulture()
