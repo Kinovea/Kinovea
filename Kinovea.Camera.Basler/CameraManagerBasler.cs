@@ -163,7 +163,13 @@ namespace Kinovea.Camera.Basler
             
             return summaries;
         }
-        
+
+        public override void ForgetCamera(CameraSummary summary)
+        {
+            if(cache.ContainsKey(summary.Identifier))
+                cache.Remove(summary.Identifier);
+        }
+
         public override void GetSingleImage(CameraSummary summary)
         {
             if(snapshotting.IndexOf(summary.Identifier) >= 0)

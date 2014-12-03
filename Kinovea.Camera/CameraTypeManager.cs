@@ -40,6 +40,7 @@ namespace Kinovea.Camera
         public static event EventHandler<CamerasDiscoveredEventArgs> CamerasDiscovered;
         public static event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
         public static event EventHandler<CameraSummaryUpdatedEventArgs> CameraSummaryUpdated;
+        public static event EventHandler<EventArgs<CameraSummary>> CameraForgotten;
         public static event EventHandler<CameraLoadAskedEventArgs> CameraLoadAsked;
         #endregion
         
@@ -132,10 +133,15 @@ namespace Kinovea.Camera
                 CameraLoadAsked(null, new CameraLoadAskedEventArgs(summary, target));
         }
         
-        public static void DeleteCamera(CameraSummary summary)
+        public static void ForgetCamera(CameraSummary summary)
         {
+            summary.Manager.ForgetCamera(summary);
+
             PreferencesManager.CapturePreferences.RemoveCamera(summary.Identifier);
             PreferencesManager.Save();
+
+            if (CameraForgotten != null)
+                CameraForgotten(null, new EventArgs<CameraSummary>(summary));
         }
         
         #endregion

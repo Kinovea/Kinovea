@@ -48,6 +48,7 @@ namespace Kinovea.FileBrowser
         {
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
             CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
+            CameraTypeManager.CameraForgotten += CameraTypeManager_CameraForgotten;
         }
 
         #region IKernel Implementation
@@ -80,6 +81,11 @@ namespace Kinovea.FileBrowser
         private void CameraTypeManager_CameraSummaryUpdated(object sender, CameraSummaryUpdatedEventArgs e)
         {
             view.CameraSummaryUpdated(e.Summary);
+        }
+
+        private void CameraTypeManager_CameraForgotten(object sender, EventArgs<CameraSummary> e)
+        {
+            view.CameraForgotten(e.Value);
         }
 
     }

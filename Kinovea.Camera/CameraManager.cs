@@ -64,6 +64,11 @@ namespace Kinovea.Camera
         /// Knowing about the camera is enough, the camera managers should cache the snapshots to avoid connecting to the camera each time.
         /// </summary>
         public abstract List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs);
+
+        /// <summary>
+        /// Invalidate the camera reference from any cache held in the extension.
+        /// </summary>
+        public abstract void ForgetCamera(CameraSummary summary);
         
         /// <summary>
         /// Get a single image for thumbnail refresh.

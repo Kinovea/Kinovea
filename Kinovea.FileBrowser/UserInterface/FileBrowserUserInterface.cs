@@ -325,10 +325,19 @@ namespace Kinovea.FileBrowser
         {
             UpdateCameraList(summaries);
         }
+        
         public void CameraSummaryUpdated(CameraSummary summary)
         {
             UpdateCamera(summary);
         }
+        
+        public void CameraForgotten(CameraSummary summary)
+        {
+            ForgetCamera(summary);
+            List<CameraSummary> newList = new List<CameraSummary>(cameraSummaries);
+            UpdateCameraList(newList);
+        }
+        
         public void Closing()
         {
             if(currentExptreeItem != null)
@@ -557,7 +566,14 @@ namespace Kinovea.FileBrowser
 
             return -1;
         }
-        
+
+        private void ForgetCamera(CameraSummary summary)
+        {
+            int index = IndexOfCamera(cameraSummaries, summary.Identifier);
+            if (index >= 0)
+                cameraSummaries.RemoveAt(index);
+        }
+
         private void LvCameras_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             ListViewItem lvi = lvCameras.GetItemAt(e.X, e.Y);

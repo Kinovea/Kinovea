@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
         private ThumbnailCamera selectedThumbnail;
         private int columns = (int)ExplorerThumbSize.Large;
         private List<ThumbnailCamera> thumbnailControls = new List<ThumbnailCamera>();
-        private int imageReceived;
+        private HashSet<ThumbnailCamera> imageReceived = new HashSet<ThumbnailCamera>();
         private bool refreshImages;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -79,11 +79,21 @@ namespace Kinovea.ScreenManager
         }
         public void CameraSummaryUpdated(CameraSummary summary)
         {
-             int index = IndexOf(summary.Identifier);
-             if(index < 0)
-                return;
+            int index = IndexOf(summary.Identifier);
+            if(index < 0)
+            return;
                 
-             thumbnailControls[index].UpdateSummary(summary);
+            thumbnailControls[index].UpdateSummary(summary);
+        }
+
+        public void CameraForgotten(CameraSummary summary)
+        {
+            int index = IndexOf(summary.Identifier);
+            if (index < 0)
+                return;
+
+            RemoveThumbnail(thumbnailControls[index]);
+            Refresh();
         }
         
         public void UpdateThumbnailsSize(ExplorerThumbSize newSize)
@@ -104,7 +114,7 @@ namespace Kinovea.ScreenManager
                 if(BeforeLoad != null)
                     BeforeLoad(this, EventArgs.Empty);
                     
-                imageReceived = 0;
+                imageReceived.Clear();
             }
             
             // Add new cameras.
@@ -121,15 +131,8 @@ namespace Kinovea.ScreenManager
                     continue;
                 
                 updated = true;
-                
-                ThumbnailCamera thumbnail = new ThumbnailCamera(summary);
-                thumbnail.LaunchCamera += Thumbnail_LaunchCamera;
-                thumbnail.CameraSelected += Thumbnail_CameraSelected;
-                thumbnail.SummaryUpdated += Thumbnail_SummaryUpdated;
-                thumbnail.DeleteCamera += Thumbnail_DeleteCamera;
-               
-                thumbnailControls.Add(thumbnail);
-                this.Controls.Add(thumbnail);
+
+                AddThumbnail(new ThumbnailCamera(summary));
             }
             
             refreshImages = false;
@@ -146,10 +149,7 @@ namespace Kinovea.ScreenManager
                 updated = true;
                 
             foreach(ThumbnailCamera thumbnail in lost)
-            {
-                this.Controls.Remove(thumbnail);
-                thumbnailControls.Remove(thumbnail);
-            }
+                RemoveThumbnail(thumbnail);
             
             if(summaries.Count == 0)
             {
@@ -201,6 +201,35 @@ namespace Kinovea.ScreenManager
             
             this.ResumeLayout();
         }
+
+        private void AddThumbnail(ThumbnailCamera thumbnail)
+        {
+            thumbnail.LaunchCamera += Thumbnail_LaunchCamera;
+            thumbnail.CameraSelected += Thumbnail_CameraSelected;
+            thumbnail.SummaryUpdated += Thumbnail_SummaryUpdated;
+            thumbnail.DeleteCamera += Thumbnail_DeleteCamera;
+
+            thumbnailControls.Add(thumbnail);
+            this.Controls.Add(thumbnail);
+        }
+
+        private void RemoveThumbnail(ThumbnailCamera thumbnail)
+        {
+            if (imageReceived.Contains(thumbnail))
+                imageReceived.Remove(thumbnail);
+
+            thumbnail.LaunchCamera -= Thumbnail_LaunchCamera;
+            thumbnail.CameraSelected -= Thumbnail_CameraSelected;
+            thumbnail.SummaryUpdated -= Thumbnail_SummaryUpdated;
+            thumbnail.DeleteCamera -= Thumbnail_DeleteCamera;
+
+            this.Controls.Remove(thumbnail);
+            thumbnailControls.Remove(thumbnail);
+            if (selectedThumbnail == thumbnail)
+                selectedThumbnail = null;
+
+            thumbnail.Dispose();
+        }
         
         private void UpdateThumbnailImage(CameraSummary summary, Bitmap image)
         {
@@ -216,14 +245,14 @@ namespace Kinovea.ScreenManager
             
             if(hasImage)
                 return;
-            
-            imageReceived++;
-            int percentage = (int)(((float)imageReceived / thumbnailControls.Count) * 100);
+
+            imageReceived.Add(thumbnailControls[index]);
+            int percentage = (int)(((float)imageReceived.Count / thumbnailControls.Count) * 100);
             
             if(ProgressChanged != null)
                 ProgressChanged(this, new ProgressChangedEventArgs(percentage, null));
             
-            if(imageReceived >= thumbnailControls.Count && AfterLoad != null)
+            if(imageReceived.Count >= thumbnailControls.Count && AfterLoad != null)
                 AfterLoad(this, EventArgs.Empty);
         }
         
@@ -245,7 +274,10 @@ namespace Kinovea.ScreenManager
             // Delete camera in prefs (blurbs).
             // Should be enough to remove the thumbnail at next discovery heart beat.
             ThumbnailCamera thumbnail = sender as ThumbnailCamera;
-            CameraTypeManager.DeleteCamera(thumbnail.Summary);
+            CameraTypeManager.ForgetCamera(thumbnail.Summary);
+
+            refreshImages = true;
+            CameraTypeManager.DiscoverCameras();
         }
         
         private void Thumbnail_CameraSelected(object sender, EventArgs e)

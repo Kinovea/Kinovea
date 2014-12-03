@@ -48,6 +48,7 @@ namespace Kinovea.ScreenManager
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuLaunch = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRename = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuForget = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
         private bool selected;
         private static readonly Pen penSelected = new Pen(Color.DodgerBlue, 2);
@@ -92,7 +93,9 @@ namespace Kinovea.ScreenManager
             lblAlias.Text = Summary.Alias;
             mnuLaunch.Text = "Open"; //ScreenManagerLang.mnuThumbnailPlay;
             mnuRename.Text = "Rename"; //ScreenManagerLang.mnuThumbnailRename;
+            mnuForget.Text = "Forget custom settings";
             mnuDelete.Text = "Delete"; //ScreenManagerLang.mnuThumbnailDelete;
+
         }
         public void SetUnselected()
         {
@@ -131,8 +134,29 @@ namespace Kinovea.ScreenManager
             }
 
             fca.Dispose();
-        }
+        } 
         #endregion
+
+        /// <summary>
+        /// Disposes resources used by the control.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                    components.Dispose();
+
+                popMenu.Dispose();
+                mnuLaunch.Dispose();
+                mnuRename.Dispose();
+                mnuForget.Dispose();
+                mnuDelete.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
         
         #region Private methods
         private void ThumbnailCamera_Paint(object sender, PaintEventArgs e)
@@ -151,12 +175,14 @@ namespace Kinovea.ScreenManager
             mnuLaunch.Click += mnuLaunch_Click;
             mnuRename.Image = Properties.Resources.rename;
             mnuRename.Click += mnuRename_Click;
+            mnuForget.Image = Properties.Resources.delete;
+            mnuForget.Click += mnuForget_Click;
             mnuDelete.Image = Properties.Resources.delete;
             mnuDelete.Click += mnuDelete_Click;
             if(Summary.Manager.HasConnectionWizard)
                 popMenu.Items.AddRange(new ToolStripItem[] { mnuLaunch, mnuRename, new ToolStripSeparator(), mnuDelete});
             else
-                popMenu.Items.AddRange(new ToolStripItem[] { mnuLaunch, mnuRename});
+                popMenu.Items.AddRange(new ToolStripItem[] { mnuLaunch, mnuRename, new ToolStripSeparator(), mnuForget});
             
             this.ContextMenuStrip = popMenu;
         }
@@ -189,6 +215,12 @@ namespace Kinovea.ScreenManager
         private void mnuRename_Click(object sender, EventArgs e)
         {
             StartRenaming();
+        }
+
+        private void mnuForget_Click(object sender, EventArgs e)
+        {
+            if (DeleteCamera != null)
+                DeleteCamera(this, EventArgs.Empty);
         }
         
         private void mnuLaunch_Click(object sender, EventArgs e)
