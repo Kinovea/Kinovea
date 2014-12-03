@@ -419,10 +419,11 @@ namespace Kinovea.ScreenManager
             //currentImageSize = Size.Empty;
 
             imageDescriptor = cameraGrabber.Prepare();
-            if (imageDescriptor == null)
+            if (imageDescriptor == null || imageDescriptor.Format == Video.ImageFormat.None || imageDescriptor.Width <= 0 || imageDescriptor.Height <= 0)
             {
                 log.ErrorFormat("The camera does not support configuration so we cannot preallocate buffers.");
                 UpdateTitle();
+                return;
             }
 
             // Start recorder thread. 
@@ -699,6 +700,9 @@ namespace Kinovea.ScreenManager
         }
         private void MakeSnapshot(string filename)
         {
+            if (!cameraLoaded || consumerDisplay.Bitmap == null)
+                return;
+
             bool ok = SanityCheckRecording(filename);
             if(!ok)
                 return;
