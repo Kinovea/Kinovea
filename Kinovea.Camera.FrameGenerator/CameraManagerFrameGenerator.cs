@@ -51,7 +51,6 @@ namespace Kinovea.Camera.FrameGenerator
 
         #region Members
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private List<string> snapshotting = new List<string>();
         private Bitmap defaultIcon;
         private string defaultAlias = "Camera simulator";
@@ -91,6 +90,10 @@ namespace Kinovea.Camera.FrameGenerator
             }
 
             return summaries;
+        }
+
+        public override void ForgetCamera(CameraSummary summary)
+        {
         }
 
         public override void GetSingleImage(CameraSummary summary)

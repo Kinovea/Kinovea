@@ -62,6 +62,7 @@ namespace Kinovea.ScreenManager
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
             CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
+            CameraTypeManager.CameraForgotten += CameraTypeManager_CameraForgotten; 
             CameraTypeManager.CameraThumbnailProduced += CameraTypeManager_CameraThumbnailProduced;
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerContainer");
@@ -138,6 +139,14 @@ namespace Kinovea.ScreenManager
                 return;
                 
             viewerCameras.CameraSummaryUpdated(e.Summary);
+        }
+
+        private void CameraTypeManager_CameraForgotten(object sender, EventArgs<CameraSummary> e)
+        {
+            if (currentContent != ThumbnailViewerContent.Cameras)
+                return;
+
+            viewerCameras.CameraForgotten(e.Value);
         }
 
         private void InitializeSizeSelector()
@@ -218,7 +227,8 @@ namespace Kinovea.ScreenManager
         }
         private void Viewer_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            progressBar.Value = e.ProgressPercentage;
+            int progress = Math.Min(e.ProgressPercentage, progressBar.Maximum);
+            progressBar.Value = progress;
         }
         private void Viewer_BeforeLoad(object sender, EventArgs e)
         {

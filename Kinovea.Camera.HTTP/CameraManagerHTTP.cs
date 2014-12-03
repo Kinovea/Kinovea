@@ -95,6 +95,10 @@ namespace Kinovea.Camera.HTTP
             
             return summaries;
         }
+
+        public override void ForgetCamera(CameraSummary summary)
+        {
+        }
         
         public override void GetSingleImage(CameraSummary summary)
         {
