@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingToolbarPresenter
+    public class DrawingToolbarPresenter : IDisposable
     {
         public Control View
         {
@@ -142,6 +142,12 @@ namespace Kinovea.ScreenManager
             btn.Size = new Size(25, 25);
             btn.AutoToolTip = false;
             return btn;
+        }
+
+        public void Dispose()
+        {
+            view.Items.Clear();
+            view.Dispose();
         }
     }
 }
