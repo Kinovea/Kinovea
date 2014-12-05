@@ -98,12 +98,21 @@ namespace Kinovea.ScreenManager
                 tbFilename.MouseLeave -= Controls_MouseLeave;
                 btnClose.Click -= btnClose_Click;
 
-                popMenu.Dispose();
+                mnuLoadVideo.Click -= mnuLoadVideo_Click;
+                mnuLocate.Click -= mnuLocate_Click;
+                mnuRename.Click -= mnuRename_Click;
+                mnuHide.Click -= mnuHide_Click;
+                mnuDelete.Click -= mnuDelete_Click;
+            
                 mnuLoadVideo.Dispose();
                 mnuLocate.Dispose();
                 mnuRename.Dispose();
                 mnuHide.Dispose();
                 mnuDelete.Dispose();
+
+                popMenu.Items.Clear();
+                popMenu.Dispose();
+                this.ContextMenu = null;
 
                 this.Controls.Remove(tbFilename);
                 tbFilename.Dispose();
@@ -134,20 +143,20 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void BuildContextMenus()
         {
-            mnuLoadVideo.Click += mnuLoadVideo_Click;
             mnuLoadVideo.Image = Properties.Resources.film_go;
-            mnuLocate.Click += mnuLocate_Click;
-            if(capturedFile.Video)
-                mnuLocate.Image = Properties.Capture.folder_camera;
-            else
-                mnuLocate.Image = Properties.Capture.folder_image;
-            mnuRename.Click += mnuRename_Click;
+            mnuLocate.Image = capturedFile.Video ? Properties.Capture.folder_camera : Properties.Capture.folder_image;
             mnuRename.Image = Properties.Capture.rename;
-            mnuHide.Click += mnuHide_Click;
             mnuHide.Image = Properties.Resources.hide;
-            mnuDelete.Click += mnuDelete_Click;
             mnuDelete.Image = Properties.Resources.delete;
+            
+            mnuLoadVideo.Click += mnuLoadVideo_Click;
+            mnuLocate.Click += mnuLocate_Click;
+            mnuRename.Click += mnuRename_Click;
+            mnuHide.Click += mnuHide_Click;
+            mnuDelete.Click += mnuDelete_Click;
+            
             popMenu.Items.AddRange(new ToolStripItem[] { mnuLoadVideo, new ToolStripSeparator(), mnuLocate, mnuRename, new ToolStripSeparator(), mnuHide, mnuDelete }); 
+            
             this.ContextMenuStrip = popMenu;
         }
         private void ReloadMenusCulture()
