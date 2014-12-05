@@ -84,11 +84,21 @@ namespace Kinovea.ScreenManager
         {
             selectedThumbnail = null;
             NotificationCenter.RaiseFileSelected(this, null);
-            foreach(ThumbnailFile tlvi in thumbnails)
-                tlvi.DisposeImages();
             
-            thumbnails.Clear();
-            this.Controls.Clear();
+            for (int i = thumbnails.Count - 1; i >= 0; i--)
+            {
+                ThumbnailFile thumbnail = thumbnails[i];
+
+                thumbnail.LaunchVideo -= ThumbListViewItem_LaunchVideo;
+                thumbnail.VideoSelected -= ThumbListViewItem_VideoSelected;
+                thumbnail.FileNameEditing -= ThumbListViewItem_FileNameEditing;
+
+                thumbnails.Remove(thumbnail);
+                this.Controls.Remove(thumbnail);
+                
+                thumbnail.DisposeImages();
+                thumbnail.Dispose();
+            }
         }
 
         public void RefreshUICulture()

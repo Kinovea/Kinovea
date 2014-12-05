@@ -148,11 +148,19 @@ namespace Kinovea.ScreenManager
                 if (components != null)
                     components.Dispose();
 
-                popMenu.Dispose();
+                mnuLaunch.Click -= mnuLaunch_Click;
+                mnuRename.Click -= mnuRename_Click;
+                mnuForget.Click -= mnuForget_Click;
+                mnuDelete.Click -= mnuDelete_Click;
+                
                 mnuLaunch.Dispose();
                 mnuRename.Dispose();
                 mnuForget.Dispose();
                 mnuDelete.Dispose();
+
+                popMenu.Items.Clear();
+                popMenu.Dispose();
+                this.ContextMenu = null;
             }
 
             base.Dispose(disposing);
@@ -172,13 +180,15 @@ namespace Kinovea.ScreenManager
         private void BuildContextMenus()
         {
             mnuLaunch.Image = Properties.Resources.film_go;
-            mnuLaunch.Click += mnuLaunch_Click;
             mnuRename.Image = Properties.Resources.rename;
-            mnuRename.Click += mnuRename_Click;
             mnuForget.Image = Properties.Resources.delete;
-            mnuForget.Click += mnuForget_Click;
             mnuDelete.Image = Properties.Resources.delete;
+            
+            mnuLaunch.Click += mnuLaunch_Click;
+            mnuRename.Click += mnuRename_Click;
+            mnuForget.Click += mnuForget_Click;
             mnuDelete.Click += mnuDelete_Click;
+            
             if(Summary.Manager.HasConnectionWizard)
                 popMenu.Items.AddRange(new ToolStripItem[] { mnuLaunch, mnuRename, new ToolStripSeparator(), mnuDelete});
             else
