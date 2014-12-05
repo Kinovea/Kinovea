@@ -422,8 +422,7 @@ namespace Kinovea.ScreenManager
             // 2. Reset all interface.
             ShowHideRenderingSurface(false);
             SetupPrimarySelectionPanel();
-            pnlThumbnails.Controls.Clear();
-            thumbnails.Clear();
+            ClearKeyframeBoxes();
             DockKeyframePanel(true);
             UpdateFramesMarkers();
             trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
@@ -441,6 +440,21 @@ namespace Kinovea.ScreenManager
             
             if (ResetAsked != null)
                 ResetAsked(this, EventArgs.Empty);
+        }
+        private void ClearKeyframeBoxes()
+        {
+            for (int i = thumbnails.Count - 1; i >= 0; i--)
+            {
+                KeyframeBox thumbnail = thumbnails[i];
+                
+                thumbnail.CloseThumb -= ThumbBoxClose;
+                thumbnail.ClickThumb -= ThumbBoxClick;
+                thumbnail.ClickInfos -= ThumbBoxInfosClick;
+                    
+                thumbnails.Remove(thumbnail);
+                pnlThumbnails.Controls.Remove(thumbnail);
+                thumbnail.Dispose();
+            }
         }
         public void SetLaunchDescription(ScreenDescriptionPlayback description)
         {
@@ -1243,7 +1257,34 @@ namespace Kinovea.ScreenManager
         public void AfterClose()
         {
             m_KeyframeCommentsHub.Owner = null;
+            m_KeyframeCommentsHub.Dispose();
             m_KeyframeCommentsHub = null;
+
+            m_DeselectionTimer.Tick -= DeselectionTimer_OnTick;
+            m_DeselectionTimer.Dispose();
+        }
+
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                    components.Dispose();
+
+                panelCenter.ContextMenuStrip = null;
+
+                popMenu.Dispose();
+                popMenuDrawings.Dispose();
+                popMenuTrack.Dispose();
+                popMenuChrono.Dispose();
+                popMenuMagnifier.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
         #endregion
 
@@ -3324,9 +3365,8 @@ namespace Kinovea.ScreenManager
         public void OrganizeKeyframes()
         {
             // Should only be called when adding/removing a Thumbnail
-            
-            pnlThumbnails.Controls.Clear();
-            thumbnails.Clear();
+
+            ClearKeyframeBoxes();
 
             if (m_FrameServer.Metadata.Count > 0)
             {

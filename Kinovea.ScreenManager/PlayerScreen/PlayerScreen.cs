@@ -438,6 +438,8 @@ namespace Kinovea.ScreenManager
             frameServer.VideoReader.Close();
             view.ResetToEmptyState();
             view.AfterClose();
+
+            drawingToolbarPresenter.Dispose();
         }
         public override void RefreshUICulture()
         {
