@@ -135,13 +135,15 @@ namespace Kinovea.ScreenManager
         private void BuildContextMenus()
         {
             mnuLaunch.Image = Properties.Resources.film_go;
-            mnuLaunch.Click += mnuLaunch_Click;
-            mnuRename.Image = Properties.Resources.rename;
-            mnuRename.Click += mnuRename_Click;
-            mnuDelete.Image = Properties.Resources.delete;
-            mnuDelete.Click += mnuDelete_Click;
-            mnuOpenInExplorer.Click += mnuOpenInExplorer_Click;
             mnuOpenInExplorer.Image = Properties.Resources.folder_new;
+            mnuRename.Image = Properties.Resources.rename;
+            mnuDelete.Image = Properties.Resources.delete;
+            
+            mnuLaunch.Click += mnuLaunch_Click;
+            mnuOpenInExplorer.Click += mnuOpenInExplorer_Click;
+            mnuRename.Click += mnuRename_Click;
+            mnuDelete.Click += mnuDelete_Click;
+            
             popMenu.Items.AddRange(new ToolStripItem[] { 
                 mnuLaunch, 
                 mnuSep, 
@@ -152,6 +154,48 @@ namespace Kinovea.ScreenManager
             });
 
             this.ContextMenuStrip = popMenu;
+        }
+        
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                    components.Dispose();
+
+                mnuLaunch.Click -= mnuLaunch_Click;
+                mnuOpenInExplorer.Click -= mnuOpenInExplorer_Click;
+                mnuRename.Click -= mnuRename_Click;
+                mnuDelete.Click -= mnuDelete_Click;
+                
+                mnuLaunch.Dispose();
+                mnuOpenInExplorer.Dispose();
+                mnuRename.Dispose();
+                mnuSep.Dispose();
+                mnuDelete.Dispose();
+                
+                popMenu.Items.Clear();
+                popMenu.Dispose();
+                this.ContextMenuStrip = null;
+
+                m_PenDuration.Dispose();
+
+                tmrThumbs.Tick -= tmrThumbs_Tick;
+                tmrThumbs.Dispose();
+
+                tbFileName.KeyPress -= TbFileNameKeyPress;
+                tbFileName.Dispose();
+
+                LaunchVideo = null;
+                VideoSelected = null;
+                FileNameEditing = null;
+            }
+            
+            base.Dispose(disposing);
         }
         #endregion
         
