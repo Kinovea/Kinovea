@@ -139,6 +139,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -250,7 +255,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormPreferences2.resx">
       <DependentUpon>FormPreferences2.cs</DependentUpon>
@@ -285,11 +289,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>KinoveaMainWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <BaseApplicationManifest Include="Properties\app.manifest" />
     <None Include="..\Refs\cv200.dll">
       <Visible>False</Visible>
@@ -523,8 +522,34 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
-    <None Include="Resources\home2.png" />
+    <None Include="Resources\wrench.png" />
+    <None Include="Resources\website.png" />
+    <None Include="Resources\video.png" />
+    <None Include="Resources\time_edit.png" />
+    <None Include="Resources\time.png" />
+    <None Include="Resources\style.png" />
+    <None Include="Resources\splash.png" />
+    <None Include="Resources\quit.png" />
+    <None Include="Resources\pref_general.png" />
+    <None Include="Resources\pref_capture.png" />
     <None Include="Resources\keyboard.png" />
+    <None Include="Resources\international.png" />
+    <None Include="Resources\information.png" />
+    <None Include="Resources\home2.png" />
+    <None Include="Resources\fullscreen.png" />
+    <None Include="Resources\folder.png" />
+    <None Include="Resources\film.png" />
+    <None Include="Resources\explorer.png" />
+    <None Include="Resources\drawings.png" />
+    <None Include="Resources\configure.png" />
+    <None Include="Resources\closegrey.png" />
+    <None Include="Resources\capture.png" />
+    <None Include="Resources\bullet_go.png" />
+    <None Include="Resources\bug.png" />
+    <None Include="Resources\book_open.png" />
+    <None Include="Resources\bin_empty.png" />
+    <None Include="Resources\arrow_undo.png" />
+    <None Include="Resources\arrow_redo.png" />
     <None Include="..\Installer\OtherFiles\LogConf.xml">
       <Visible>True</Visible>
       <Link>LogConf.xml</Link>
