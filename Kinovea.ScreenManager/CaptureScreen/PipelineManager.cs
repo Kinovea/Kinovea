@@ -22,6 +22,11 @@ namespace Kinovea.ScreenManager
             get { return pipeline == null ? 0 : pipeline.Drops; }
         }
 
+        public double Frequency
+        {
+            get { return pipeline == null ? 0 : pipeline.Frequency; }
+        }
+
         private bool connected;
         private FramePipeline pipeline;
         private IFrameProducer producer;

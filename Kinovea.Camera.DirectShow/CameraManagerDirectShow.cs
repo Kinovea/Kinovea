@@ -69,7 +69,7 @@ namespace Kinovea.Camera.DirectShow
             bypass.Add("FlyCapture2 Camera");
             //bypass.Add("Logitech HD Pro Webcam C920");
             //bypass.Add("Logitech Webcam C100");
-            bypass.Add("PS3Eye Camera");
+            //bypass.Add("PS3Eye Camera");
             bypass.Add("uEye Capture Device 1");
         }
 
