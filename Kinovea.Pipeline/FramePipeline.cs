@@ -27,6 +27,17 @@ namespace Kinovea.Pipeline
             get { return drops; }
         }
 
+        public double Frequency
+        {
+            // Note: this variable is written by the stream thread and read by the UI thread.
+            // We don't lock because freshness of values is not paramount and torn reads are not catastrophic either.
+            // We eventually get an approximate value good enough for the purpose.
+            get 
+            {
+                return frequencyCounter.Frequency;
+            }
+        }
+
         private IFrameProducer producer;
         private List<IFrameConsumer> consumers;
         private RingBuffer ringBuffer;
@@ -38,12 +49,13 @@ namespace Kinovea.Pipeline
         //private Dictionary<string, BenchmarkCounterIntervals> counters = new Dictionary<string, BenchmarkCounterIntervals>();
         //private BenchmarkCounterIntervals heartbeat = new BenchmarkCounterIntervals();
         //private BenchmarkCounterIntervals commitbeat = new BenchmarkCounterIntervals();
-        
+        private FrequencyCounter frequencyCounter = new FrequencyCounter(24, 48, true);
+
         // Note: we lock drops on write as it's written from UI thread and producer thread.
         // The freshness of the value is not paramount so we do not lock on read to avoid slowing down the producer thread.
         private int drops;
         private object lockerDrops = new object();
-        
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FramePipeline(IFrameProducer producer, List<IFrameConsumer> consumers, int buffers, int bufferSize)
@@ -121,6 +133,8 @@ namespace Kinovea.Pipeline
             
             //if (benchmarkMode == BenchmarkMode.Heartbeat)
               //return;
+
+            frequencyCounter.Tick();
 
             // Claim the next slot in the ring buffer.
             Frame entry;

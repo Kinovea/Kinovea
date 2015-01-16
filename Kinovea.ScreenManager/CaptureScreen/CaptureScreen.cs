@@ -144,14 +144,8 @@ namespace Kinovea.ScreenManager
         private Size currentImageSize;
         private Control dummy = new Control();
         private System.Windows.Forms.Timer nonGrabbingInteractionTimer = new System.Windows.Forms.Timer();
-        
-        // Performance feedback
-        private Averager averager = new Averager(0.05);
-        private Stopwatch swFrameSignal = new Stopwatch();
-        private double computedFps = 0;
-        private DateTime lastImageTime;
+
         private HistoryStack historyStack = new HistoryStack();
-        
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -443,10 +437,7 @@ namespace Kinovea.ScreenManager
             nonGrabbingInteractionTimer.Enabled = false;
             cameraGrabber.GrabbingStatusChanged += Grabber_GrabbingStatusChanged;
             cameraGrabber.Start();
-
-            swFrameSignal.Reset();
-            swFrameSignal.Start();
-
+            
             UpdateTitle();
             cameraConnected = true;
         }
@@ -569,14 +560,11 @@ namespace Kinovea.ScreenManager
         
         private void UpdateStats()
         {
-            averager.Post(swFrameSignal.ElapsedMilliseconds);
-            computedFps = 1000.0 / averager.Average;
+            if (pipelineManager.Frequency == 0)
+                return;
 
             view.UpdateInfo(string.Format("Signal: {0:0.00} fps. Data: {1:0.00} MB/s. Drops: {2}.",
-                computedFps, cameraGrabber.LiveDataRate, pipelineManager.Drops));
-
-            swFrameSignal.Reset();
-            swFrameSignal.Start();
+                pipelineManager.Frequency, cameraGrabber.LiveDataRate, pipelineManager.Drops));
         }
 
         private void ChangeAspectRatio(ImageAspectRatio aspectRatio)
@@ -627,10 +615,10 @@ namespace Kinovea.ScreenManager
         }
         private double AgeToSeconds(int age)
         {
-            if(computedFps == 0)
+            if(pipelineManager.Frequency == 0)
                 return 0;
-                
-            return age / computedFps;
+
+            return age / pipelineManager.Frequency;
         }
         
         private void UpdateDelayMaxAge()
