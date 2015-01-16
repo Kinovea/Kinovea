@@ -38,6 +38,7 @@ namespace Kinovea.Services
         private double alpha;
         private double alphaComplement;
         private double average;
+        private bool initialized;
         
         /// <summary>
         /// Creates a new Averager.
@@ -57,6 +58,13 @@ namespace Kinovea.Services
         /// </summary>
         public void Post(long value)
         {
+            if (!initialized)
+            {
+                average = (double)value;
+                initialized = true;
+                return;
+            }
+
             average = (value * alpha) + (average * alphaComplement);
         }
 
@@ -65,7 +73,20 @@ namespace Kinovea.Services
         /// </summary>
         public void Post(double value)
         {
+            if (!initialized)
+            {
+                average = value;
+                initialized = true;
+                return;
+            }
+
             average = (value * alpha) + (average * alphaComplement);
+        }
+
+        public void Reset()
+        {
+            initialized = false;
+            average = 0;
         }
     }
 }
