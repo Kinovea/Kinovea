@@ -62,24 +62,9 @@ namespace Kinovea.Camera.DirectShow
             get { return selectedFramerate; }
         }
 
-        public bool HasExposureControl
+        public Dictionary<string, CameraProperty> CameraProperties
         {
-            get { return hasExposureControl; }
-        }
-
-        public bool ManualExposure
-        {
-            get { return manualExposure; }
-        }
-        
-        public int ExposureValue
-        {
-            get { return selectedExposure; }
-        }
-
-        public bool UseLogitechExposure
-        {
-            get { return useLogitechExposure; }
+            get { return cameraProperties; }
         }
 
         private bool iconChanged;
@@ -91,14 +76,7 @@ namespace Kinovea.Camera.DirectShow
         private int selectedMediaTypeIndex;
         private float selectedFramerate;
         private bool canStreamConfig;
-
-        private bool hasExposureControl;
-        private bool manualExposure;
-        private bool useLogitechExposure;
-        private int minExposure;
-        private int maxExposure;
-        private int selectedExposure;
-        private bool updatingExposure;
+        private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -119,6 +97,7 @@ namespace Kinovea.Camera.DirectShow
             else
                 DisableStreamConfig();
 
+            cameraProperties = CameraPropertyManager.Read(device);
             PopulateCameraControl();
         }
 
@@ -294,133 +273,98 @@ namespace Kinovea.Camera.DirectShow
         #region Exposure
         private void PopulateCameraControl()
         {
-            hasExposureControl = false;
+            Func<int, string> defaultValueMapper = (value) => value.ToString();
 
-            try
+            if (cameraProperties.ContainsKey("exposure_logitech"))
             {
-                useLogitechExposure = device.Logitech_SupportExposureProperty();
-                
-                if (useLogitechExposure)
-                    PopulateLogitechExposure();
-                else
-                    PopulateGenericExposure();
-            }
-            catch
-            {
-                log.ErrorFormat("Error while trying to get camera control properties.");
-            }
+                Func<int, string> valueMapper = (value) =>
+                {
+                    if (value < 10)
+                        return string.Format("{0} µs", value * 100);
+                    else
+                        return string.Format("{0:0.#} ms", value / 10F);
+                };
 
-            if (!hasExposureControl)
-            {
-                lblExposure.Enabled = false;
-                tbExposure.Enabled = false;
+                CameraPropertyView cpvExposureLogitech = new CameraPropertyView(cameraProperties["exposure_logitech"], "Exposure:", valueMapper);
+                cpvExposureLogitech.ValueChanged += cpvLogitechExposure_ValueChanged;
+                cpvExposureLogitech.Left = 20;
+                cpvExposureLogitech.Top = 220;
+                groupBox1.Controls.Add(cpvExposureLogitech);
             }
 
-            if (!useLogitechExposure)
-                lblExposureValue.Visible = false;
-        }
+            if (cameraProperties.ContainsKey("exposure"))
+            {
+                CameraPropertyView cpvExposure = new CameraPropertyView(cameraProperties["exposure"], "Exposure:", defaultValueMapper);
+                CameraControlProperty? prop = CameraControlProperty.Exposure;
+                cpvExposure.Tag = prop;
+                cpvExposure.ValueChanged += cpvCameraControl_ValueChanged;
+                cpvExposure.Left = 20;
+                cpvExposure.Top = 220;
+                groupBox1.Controls.Add(cpvExposure);
+            }
 
-        private void PopulateLogitechExposure()
-        {
-            // Set min to what is supported by the C920.
-            minExposure = 1;
-            maxExposure = 500;
-            tbExposure.Minimum = minExposure;
-            tbExposure.Maximum = maxExposure;
-
-            int currentValue;
-            bool manual;
-            bool success = device.Logitech_GetExposure(out currentValue, out manual);
-
-            if (!success)
-                return;
-
-            selectedExposure = Math.Min(maxExposure, Math.Max(minExposure, currentValue));
-            manualExposure = manual;
-            UpdateExposureLabel();
-
-            updatingExposure = true;
-            tbExposure.Value = selectedExposure;
-            updatingExposure = false;
+            if (cameraProperties.ContainsKey("gain"))
+            {
+                CameraPropertyView cpvGain = new CameraPropertyView(cameraProperties["gain"], "Gain:", defaultValueMapper);
+                VideoProcAmpProperty? prop = VideoProcAmpProperty.Gain;
+                cpvGain.Tag = prop;
+                cpvGain.ValueChanged += cpvVideoProcAmp_ValueChanged;
+                cpvGain.Left = 20;
+                cpvGain.Top = 250;
+                groupBox1.Controls.Add(cpvGain);
+            }
             
-            hasExposureControl = true;
+            if (cameraProperties.ContainsKey("focus"))
+            {
+                CameraPropertyView cpvFocus = new CameraPropertyView(cameraProperties["focus"], "Focus:", defaultValueMapper);
+                CameraControlProperty? prop = CameraControlProperty.Focus;
+                cpvFocus.Tag = prop;
+                cpvFocus.ValueChanged += cpvCameraControl_ValueChanged;
+                cpvFocus.Left = 20;
+                cpvFocus.Top = 280;
+                groupBox1.Controls.Add(cpvFocus);
+            }
         }
 
-        private void PopulateGenericExposure()
+        private void cpvCameraControl_ValueChanged(object sender, EventArgs e)
         {
-            int step;
-            int defaultValue;
-            CameraControlFlags flags;
-            bool success = device.GetCameraPropertyRange(CameraControlProperty.Exposure, out minExposure, out maxExposure, out step, out defaultValue, out flags);
-            
-            if (!success || step != 1)
+            CameraPropertyView cpv = sender as CameraPropertyView;
+            if (cpv == null)
                 return;
 
-            int currentValue;
-            success = device.GetCameraProperty(CameraControlProperty.Exposure, out currentValue, out flags);
-
-            if (!success)
+            CameraControlProperty? property = cpv.Tag as CameraControlProperty?;
+            if (property == null || !property.HasValue)
                 return;
 
-            tbExposure.Minimum = minExposure;
-            tbExposure.Maximum = maxExposure;
-
-            selectedExposure = currentValue;
-            manualExposure = flags == CameraControlFlags.Manual;
-
-            updatingExposure = true;
-            tbExposure.Value = selectedExposure;
-            updatingExposure = false;
-
-            hasExposureControl = true;
+            CameraControlFlags flags = cpv.Property.Automatic ? CameraControlFlags.Auto : CameraControlFlags.Manual;
+            device.SetCameraProperty(property.Value, cpv.Property.Value, flags); 
         }
 
-        private void tbExposure_ValueChanged(object sender, EventArgs e)
+        private void cpvVideoProcAmp_ValueChanged(object sender, EventArgs e)
         {
-            if (updatingExposure)
+            CameraPropertyView cpv = sender as CameraPropertyView;
+            if (cpv == null)
                 return;
 
-            if (tbExposure.Value < minExposure || tbExposure.Value > maxExposure)
+            VideoProcAmpProperty? property = cpv.Tag as VideoProcAmpProperty?;
+            if (property == null || !property.HasValue)
                 return;
 
-            selectedExposure = tbExposure.Value;
-            manualExposure = true;
-
-            if (useLogitechExposure)
-                UpdateLogitechExposure();
-            else
-                UpdateGenericExposure();
+            VideoProcAmpFlags flags = cpv.Property.Automatic ? VideoProcAmpFlags.Auto : VideoProcAmpFlags.Manual;
+            device.SetVideoProperty(property.Value, cpv.Property.Value, flags);
         }
 
-        private void UpdateLogitechExposure()
+        private void cpvLogitechExposure_ValueChanged(object sender, EventArgs e)
         {
-            device.Logitech_SetExposure(selectedExposure, true);
-            
+            CameraPropertyView cpv = sender as CameraPropertyView;
+            if (cpv == null)
+                return;
+
+            device.Logitech_SetExposure(cpv.Property.Value, !cpv.Property.Automatic);
+
             // The device might decide to adjust the selected exposure on its own due to internal constraints.
-            // Read it back to have the actual final value in the label.
-            int currentValue;
-            bool manual;
-            bool success = device.Logitech_GetExposure(out currentValue, out manual);
-            selectedExposure = Math.Min(maxExposure, Math.Max(minExposure, currentValue));
-            manualExposure = manual;
-            
-            UpdateExposureLabel();
-        }
-
-        private void UpdateGenericExposure()
-        {
-            device.SetCameraProperty(CameraControlProperty.Exposure, selectedExposure, CameraControlFlags.Manual);
-        }
-
-        private void UpdateExposureLabel()
-        {
-            // At the moment this label is only active for Logitech cameras,
-            // as they are the only cameras for which we have solid values.
-            // The value from the Logitech LP1 propset is expressed in 100µs units.
-            if (selectedExposure < 10)
-                lblExposureValue.Text = string.Format("{0} µs", selectedExposure * 100);
-            else
-                lblExposureValue.Text = string.Format("{0:0.#} ms", selectedExposure / 10F);
+            // However it was found that the actual exposure used is closer to the original asked one than 
+            // to the adjusted one. It is possibly just a truncation after a float conversion.
         }
         #endregion
     }

@@ -55,9 +55,7 @@ namespace Kinovea.Camera.DirectShow
             this.cmbFormat = new System.Windows.Forms.ComboBox();
             this.btnIcon = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lblExposureValue = new System.Windows.Forms.Label();
-            this.tbExposure = new System.Windows.Forms.TrackBar();
-            this.lblExposure = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.cmbImageSize = new System.Windows.Forms.ComboBox();
             this.lblImageSize = new System.Windows.Forms.Label();
             this.cmbFramerate = new System.Windows.Forms.ComboBox();
@@ -65,13 +63,12 @@ namespace Kinovea.Camera.DirectShow
             this.tbAlias = new System.Windows.Forms.TextBox();
             this.lblSystemName = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbExposure)).BeginInit();
             this.SuspendLayout();
             // 
             // btnDeviceProperties
             // 
             this.btnDeviceProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDeviceProperties.Location = new System.Drawing.Point(180, 241);
+            this.btnDeviceProperties.Location = new System.Drawing.Point(255, 330);
             this.btnDeviceProperties.Name = "btnDeviceProperties";
             this.btnDeviceProperties.Size = new System.Drawing.Size(167, 24);
             this.btnDeviceProperties.TabIndex = 11;
@@ -83,7 +80,7 @@ namespace Kinovea.Camera.DirectShow
             // 
             this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnApply.Location = new System.Drawing.Point(174, 309);
+            this.btnApply.Location = new System.Drawing.Point(249, 398);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(99, 24);
             this.btnApply.TabIndex = 78;
@@ -94,7 +91,7 @@ namespace Kinovea.Camera.DirectShow
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(279, 309);
+            this.btnCancel.Location = new System.Drawing.Point(354, 398);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(99, 24);
             this.btnCancel.TabIndex = 79;
@@ -113,15 +110,15 @@ namespace Kinovea.Camera.DirectShow
             this.lblColorSpace.Text = "Stream format:";
             this.lblColorSpace.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // cmbColorSpace
+            // cmbFormat
             // 
             this.cmbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFormat.FormattingEnabled = true;
-            this.cmbFormat.Location = new System.Drawing.Point(242, 88);
-            this.cmbFormat.Name = "cmbColorSpace";
-            this.cmbFormat.Size = new System.Drawing.Size(105, 21);
+            this.cmbFormat.Location = new System.Drawing.Point(214, 88);
+            this.cmbFormat.Name = "cmbFormat";
+            this.cmbFormat.Size = new System.Drawing.Size(151, 21);
             this.cmbFormat.TabIndex = 81;
             this.cmbFormat.SelectedIndexChanged += new System.EventHandler(this.cmbFormat_SelectedIndexChanged);
             // 
@@ -144,10 +141,8 @@ namespace Kinovea.Camera.DirectShow
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.btnDeviceProperties);
-            this.groupBox1.Controls.Add(this.lblExposureValue);
-            this.groupBox1.Controls.Add(this.tbExposure);
-            this.groupBox1.Controls.Add(this.lblExposure);
             this.groupBox1.Controls.Add(this.cmbImageSize);
             this.groupBox1.Controls.Add(this.lblImageSize);
             this.groupBox1.Controls.Add(this.cmbFramerate);
@@ -159,46 +154,21 @@ namespace Kinovea.Camera.DirectShow
             this.groupBox1.Controls.Add(this.lblColorSpace);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(366, 282);
+            this.groupBox1.Size = new System.Drawing.Size(441, 371);
             this.groupBox1.TabIndex = 84;
             this.groupBox1.TabStop = false;
             // 
-            // lblExposureValue
+            // label1
             // 
-            this.lblExposureValue.AutoSize = true;
-            this.lblExposureValue.BackColor = System.Drawing.Color.Transparent;
-            this.lblExposureValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblExposureValue.ForeColor = System.Drawing.Color.Black;
-            this.lblExposureValue.Location = new System.Drawing.Point(155, 194);
-            this.lblExposureValue.Name = "lblExposureValue";
-            this.lblExposureValue.Size = new System.Drawing.Size(39, 13);
-            this.lblExposureValue.TabIndex = 93;
-            this.lblExposureValue.Text = "100 µs";
-            this.lblExposureValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tbExposure
-            // 
-            this.tbExposure.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbExposure.LargeChange = 1;
-            this.tbExposure.Location = new System.Drawing.Point(204, 192);
-            this.tbExposure.Name = "tbExposure";
-            this.tbExposure.Size = new System.Drawing.Size(156, 45);
-            this.tbExposure.TabIndex = 92;
-            this.tbExposure.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.tbExposure.ValueChanged += new System.EventHandler(this.tbExposure_ValueChanged);
-            // 
-            // lblExposure
-            // 
-            this.lblExposure.BackColor = System.Drawing.Color.Transparent;
-            this.lblExposure.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblExposure.ForeColor = System.Drawing.Color.Black;
-            this.lblExposure.Location = new System.Drawing.Point(21, 189);
-            this.lblExposure.Name = "lblExposure";
-            this.lblExposure.Size = new System.Drawing.Size(104, 23);
-            this.lblExposure.TabIndex = 91;
-            this.lblExposure.Text = "Exposure:";
-            this.lblExposure.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Black;
+            this.label1.Location = new System.Drawing.Point(381, 198);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(56, 23);
+            this.label1.TabIndex = 100;
+            this.label1.Text = "Auto";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // cmbImageSize
             // 
@@ -206,9 +176,9 @@ namespace Kinovea.Camera.DirectShow
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbImageSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbImageSize.FormattingEnabled = true;
-            this.cmbImageSize.Location = new System.Drawing.Point(242, 119);
+            this.cmbImageSize.Location = new System.Drawing.Point(214, 119);
             this.cmbImageSize.Name = "cmbImageSize";
-            this.cmbImageSize.Size = new System.Drawing.Size(105, 21);
+            this.cmbImageSize.Size = new System.Drawing.Size(151, 21);
             this.cmbImageSize.TabIndex = 90;
             this.cmbImageSize.SelectedIndexChanged += new System.EventHandler(this.cmbImageSize_SelectedIndexChanged);
             // 
@@ -230,9 +200,9 @@ namespace Kinovea.Camera.DirectShow
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbFramerate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFramerate.FormattingEnabled = true;
-            this.cmbFramerate.Location = new System.Drawing.Point(242, 153);
+            this.cmbFramerate.Location = new System.Drawing.Point(214, 153);
             this.cmbFramerate.Name = "cmbFramerate";
-            this.cmbFramerate.Size = new System.Drawing.Size(105, 21);
+            this.cmbFramerate.Size = new System.Drawing.Size(151, 21);
             this.cmbFramerate.TabIndex = 88;
             this.cmbFramerate.SelectedIndexChanged += new System.EventHandler(this.cmbFramerate_SelectedIndexChanged);
             // 
@@ -277,7 +247,7 @@ namespace Kinovea.Camera.DirectShow
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(390, 345);
+            this.ClientSize = new System.Drawing.Size(465, 434);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnApply);
             this.Controls.Add(this.btnCancel);
@@ -286,10 +256,9 @@ namespace Kinovea.Camera.DirectShow
             this.MinimizeBox = false;
             this.Name = "FormConfiguration";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "FormConfiguration";
+            this.Text = "Camera configuration";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbExposure)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -306,8 +275,6 @@ namespace Kinovea.Camera.DirectShow
         private System.Windows.Forms.Label lblImageSize;
         private System.Windows.Forms.ComboBox cmbFramerate;
         private System.Windows.Forms.Label lblFramerate;
-        private System.Windows.Forms.Label lblExposure;
-        private System.Windows.Forms.TrackBar tbExposure;
-        private System.Windows.Forms.Label lblExposureValue;
+        private System.Windows.Forms.Label label1;
     }
 }

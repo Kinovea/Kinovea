@@ -200,15 +200,8 @@ namespace Kinovea.Camera.DirectShow
                     SpecificInfo info = new SpecificInfo();
                     info.MediaTypeIndex = form.SelectedMediaTypeIndex;
                     info.SelectedFramerate = form.SelectedFramerate;
-                    
-                    if (form.HasExposureControl)
-                    {
-                        info.HasExposureControl = true;
-                        info.ManualExposure = form.ManualExposure;
-                        info.ExposureValue = form.ExposureValue;
-                        info.UseLogitechExposure = form.UseLogitechExposure;
-                    }
-                    
+                    info.CameraProperties = form.CameraProperties;
+
                     summary.UpdateSpecific(info);
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
@@ -237,7 +230,7 @@ namespace Kinovea.Camera.DirectShow
                     Size size = mediaTypes[info.MediaTypeIndex].FrameSize;
                     float fps = (float)info.SelectedFramerate;
                     string compression = mediaTypes[info.MediaTypeIndex].Compression;
-                    result = string.Format("{0} - {1}×{2} @ {3:0.###} fps ({4}).", alias, size.Width, size.Height, fps, compression);
+                    result = string.Format("{0} - {1}×{2} @ {3:0.##} fps ({4}).", alias, size.Width, size.Height, fps, compression);
                 }
                 else
                 {
@@ -286,10 +279,6 @@ namespace Kinovea.Camera.DirectShow
 
                 float selectedFramerate = -1;
                 int index = -1;
-                bool hasExposureControl = false;
-                bool manualExposure = false;
-                long exposureValue = 0;
-                bool useLogitechExposure = false;
 
                 XmlNode xmlSelectedFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFramerate");
                 if (xmlSelectedFrameRate != null)
@@ -299,29 +288,37 @@ namespace Kinovea.Camera.DirectShow
                 if (xmlIndex != null)
                     index = int.Parse(xmlIndex.InnerText, CultureInfo.InvariantCulture);
 
-                // Exposure
-                XmlNode xmlHasExposureControl = doc.SelectSingleNode("/DirectShow/HasExposureControl");
-                if (xmlHasExposureControl != null)
-                    hasExposureControl = XmlHelper.ParseBoolean(xmlHasExposureControl.InnerText);
+                Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
 
-                XmlNode xmlManualExposure = doc.SelectSingleNode("/DirectShow/ManualExposure");
-                if (xmlManualExposure != null)
-                    manualExposure = XmlHelper.ParseBoolean(xmlManualExposure.InnerText);
+                XmlNodeList props = doc.SelectNodes("/DirectShow/CameraProperties/CameraProperty");
+                foreach (XmlNode node in props)
+                {
+                    XmlAttribute keyAttribute = node.Attributes["key"];
+                    if (keyAttribute == null)
+                        continue;
 
-                XmlNode xmlExposureValue = doc.SelectSingleNode("/DirectShow/ExposureValue");
-                if (xmlExposureValue != null)
-                    exposureValue = long.Parse(xmlExposureValue.InnerText, CultureInfo.InvariantCulture);
+                    string key = keyAttribute.Value;
+                    CameraProperty property = new CameraProperty();
 
-                XmlNode xmlUseLogitechExposure = doc.SelectSingleNode("/DirectShow/UseLogitechExposure");
-                if (xmlUseLogitechExposure != null)
-                    useLogitechExposure = XmlHelper.ParseBoolean(xmlUseLogitechExposure.InnerText);
+                    string xpath = string.Format("/DirectShow/CameraProperties/CameraProperty[@key='{0}']", key);
+                    XmlNode xmlPropertyValue = doc.SelectSingleNode(xpath + "/Value");
+                    if (xmlPropertyValue != null)
+                        property.Value = int.Parse(xmlPropertyValue.InnerText, CultureInfo.InvariantCulture);
+                    else
+                        property.Supported = false;
+
+                    XmlNode xmlPropertyAuto = doc.SelectSingleNode(xpath + "/Auto");
+                    if (xmlPropertyAuto != null)
+                        property.Automatic = XmlHelper.ParseBoolean(xmlPropertyAuto.InnerText);
+                    else
+                        property.Supported = false;
+
+                    cameraProperties.Add(key, property);
+                }
 
                 info.MediaTypeIndex = index;
                 info.SelectedFramerate = selectedFramerate;
-                info.HasExposureControl = hasExposureControl;
-                info.ManualExposure = manualExposure;
-                info.ExposureValue = exposureValue;
-                info.UseLogitechExposure = useLogitechExposure;
+                info.CameraProperties = cameraProperties;
             }
             catch(Exception e)
             {
@@ -355,22 +352,30 @@ namespace Kinovea.Camera.DirectShow
             xmlFramerate.InnerText = fps;
             xmlRoot.AppendChild(xmlFramerate);
 
-            // Exposure
-            XmlElement xmlHasExposureControl = doc.CreateElement("HasExposureControl");
-            xmlHasExposureControl.InnerText = info.HasExposureControl.ToString().ToLower();
-            xmlRoot.AppendChild(xmlHasExposureControl);
+            XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
 
-            XmlElement xmlManualExposure = doc.CreateElement("ManualExposure");
-            xmlManualExposure.InnerText = info.ManualExposure.ToString().ToLower();
-            xmlRoot.AppendChild(xmlManualExposure);
+            foreach (KeyValuePair<string, CameraProperty> pair in info.CameraProperties)
+            {
+                //if (!pair.Value.Supported)
+                  //  continue;
 
-            XmlElement xmlExposureValue = doc.CreateElement("ExposureValue");
-            xmlExposureValue.InnerText = string.Format("{0}", info.ExposureValue);
-            xmlRoot.AppendChild(xmlExposureValue);
-            
-            XmlElement xmlUseLogitechExposure = doc.CreateElement("UseLogitechExposure");
-            xmlUseLogitechExposure.InnerText = info.UseLogitechExposure.ToString().ToLower();
-            xmlRoot.AppendChild(xmlUseLogitechExposure);
+                XmlElement xmlCameraProperty = doc.CreateElement("CameraProperty");
+                XmlAttribute attr = doc.CreateAttribute("key");
+                attr.Value = pair.Key;
+                xmlCameraProperty.Attributes.Append(attr);
+
+                XmlElement xmlCameraPropertyValue = doc.CreateElement("Value");
+                xmlCameraPropertyValue.InnerText = pair.Value.Value.ToString();
+                xmlCameraProperty.AppendChild(xmlCameraPropertyValue);
+
+                XmlElement xmlCameraPropertyAuto = doc.CreateElement("Auto");
+                xmlCameraPropertyAuto.InnerText = pair.Value.Automatic.ToString().ToLower();
+                xmlCameraProperty.AppendChild(xmlCameraPropertyAuto);
+
+                xmlCameraProperties.AppendChild(xmlCameraProperty);
+            }
+
+            xmlRoot.AppendChild(xmlCameraProperties);
 
             doc.AppendChild(xmlRoot);
             
