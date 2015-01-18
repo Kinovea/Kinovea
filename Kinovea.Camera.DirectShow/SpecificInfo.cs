@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -31,19 +32,13 @@ namespace Kinovea.Camera.DirectShow
     {
         public int MediaTypeIndex { get; set; }
         public float SelectedFramerate { get; set; }
-        public bool HasExposureControl { get; set; }
-        public long ExposureValue { get; set; }
-        public bool ManualExposure { get; set; }
-        public bool UseLogitechExposure { get; set; }
-
+        public Dictionary<string, CameraProperty> CameraProperties { get; set; }
+        
         public SpecificInfo()
         {
             MediaTypeIndex = -1;
             SelectedFramerate = -1;
-            HasExposureControl = false;
-            ExposureValue = 0;
-            ManualExposure = false;
-            UseLogitechExposure = false;
+            CameraProperties = new Dictionary<string, CameraProperty>();
         }
     }
 }

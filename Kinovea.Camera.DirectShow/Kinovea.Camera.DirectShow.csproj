@@ -65,17 +65,27 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraManagerDirectShow.cs" />
+    <Compile Include="Configuration\CameraProperty.cs" />
+    <Compile Include="Configuration\CameraPropertyManager.cs" />
+    <Compile Include="Configuration\CameraPropertyType.cs" />
+    <Compile Include="Configuration\CameraPropertyView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\CameraPropertyView.Designer.cs">
+      <DependentUpon>CameraPropertyView.cs</DependentUpon>
+    </Compile>
     <Compile Include="DeviceHelper.cs" />
-    <Compile Include="FormConfiguration.cs">
+    <Compile Include="Configuration\FormConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormConfiguration.Designer.cs">
+    <Compile Include="Configuration\FormConfiguration.Designer.cs">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
     <Compile Include="FrameGrabber.cs" />
@@ -108,7 +118,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FormConfiguration.resx">
+    <EmbeddedResource Include="Configuration\CameraPropertyView.resx">
+      <DependentUpon>CameraPropertyView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\FormConfiguration.resx">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

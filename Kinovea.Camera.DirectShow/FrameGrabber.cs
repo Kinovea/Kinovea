@@ -192,6 +192,10 @@ namespace Kinovea.Camera.DirectShow
 
             log.DebugFormat("Device set to saved configuration: Index:{0}. ({1}×{2} @ {3:0.###} fps ({4})).", 
                 info.MediaTypeIndex, match.FrameSize.Width, match.FrameSize.Height, info.SelectedFramerate, match.Compression);
+
+            // Reload camera properties in case the firmware "forgot" them.
+            // This means changes done in other softwares will be overwritten.
+            CameraPropertyManager.Write(device, info.CameraProperties);
         }
         
         private void device_NewFrameBuffer(object sender, NewFrameBufferEventArgs e)
@@ -216,16 +220,13 @@ namespace Kinovea.Camera.DirectShow
         private void SetPostConnectionOptions()
         {
             // Some options only work after the graph is actually connected.
-            // For example exposure time. It might be due to a bug in Logitech drivers though.
+            // For example logitech exposure. It might be due to a bug in Logitech drivers/firmware though.
             SpecificInfo info = summary.Specific as SpecificInfo;
             
-            if (info == null || !info.HasExposureControl || !info.ManualExposure)
+            if (info == null || !info.CameraProperties.ContainsKey("exposure_logitech") || info.CameraProperties["exposure_logitech"].Automatic)
                 return;
 
-            if (info.UseLogitechExposure)
-                device.Logitech_SetExposure((int)info.ExposureValue, true);
-            else
-                device.SetCameraProperty(CameraControlProperty.Exposure, (int)info.ExposureValue, CameraControlFlags.Manual);
+            device.Logitech_SetExposure(info.CameraProperties["exposure_logitech"].Value, true);
         }
 
         private void ComputeDataRate(int bytes)
