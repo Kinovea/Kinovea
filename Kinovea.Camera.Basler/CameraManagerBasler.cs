@@ -64,7 +64,7 @@ namespace Kinovea.Camera.Basler
         
         public CameraManagerBasler()
         {
-            defaultIcon = IconLibrary.GetIcon("webcam");
+            defaultIcon = IconLibrary.GetIcon("basler");
         }
         
         public override bool SanityCheck()
@@ -72,8 +72,7 @@ namespace Kinovea.Camera.Basler
             bool result = false;
             try
             {
-                // Trigger a P/Invoke to see if the correct native DLL is installed.
-                Pylon.EnumerateDevices();
+                Pylon.Initialize();
                 result = true;
             }
             catch (Exception e)
@@ -198,22 +197,25 @@ namespace Kinovea.Camera.Basler
         public override bool Configure(CameraSummary summary)
         {
             bool needsReconnection = false;
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if (info == null)
+                return false;
+
             FormConfiguration form = new FormConfiguration(summary);
             if(form.ShowDialog() == DialogResult.OK)
             {
                 if(form.AliasChanged)
                     summary.UpdateAlias(form.Alias, form.PickedIcon);
                 
-                /*if(form.SpecificChanged)
+                if(form.SpecificChanged)
                 {
-                    SpecificInfo info = new SpecificInfo();
-                    info.SelectedFrameRate = form.Capability.FrameRate;
-                    info.SelectedFrameSize = form.Capability.FrameSize;
-                    summary.UpdateSpecific(info);
+                    info.StreamFormat = form.SelectedStreamFormat.Symbol;
+                    info.CameraProperties = form.CameraProperties;
+
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
 
                     needsReconnection = true;
-                }*/
+                }
                 
                 CameraTypeManager.UpdatedCameraSummary(summary);
             }
@@ -228,16 +230,31 @@ namespace Kinovea.Camera.Basler
             string alias = summary.Alias;
             
             SpecificInfo info = summary.Specific as SpecificInfo;
-            /*if(info != null)
+
+            try
             {
-                //Size size = info.SelectedFrameSize;
-                //float fps = (float)info.SelectedFrameRate;
-                //result = string.Format("{0} - {1}×{2} @ {3}fps", alias, size.Width, size.Height, fps);
+                if (info != null &&
+                    info.StreamFormat != null &&
+                    info.CameraProperties.ContainsKey("width") &&
+                    info.CameraProperties.ContainsKey("height") &&
+                    info.CameraProperties.ContainsKey("framerate"))
+                {
+                    string format = info.StreamFormat;
+                    int width = int.Parse(info.CameraProperties["width"].CurrentValue, CultureInfo.InvariantCulture);
+                    int height = int.Parse(info.CameraProperties["height"].CurrentValue, CultureInfo.InvariantCulture);
+                    double framerate = double.Parse(info.CameraProperties["framerate"].CurrentValue, CultureInfo.InvariantCulture);
+
+                    result = string.Format("{0} - {1}×{2} @ {3:0.##} fps ({4}).", alias, width, height, framerate, format);
+                }
+                else
+                {
+                    result = string.Format("{0}", alias);
+                }
             }
-            else
-            {*/
+            catch
+            {
                 result = string.Format("{0}", alias);
-            //}
+            }
             
             return result;
         }
@@ -264,32 +281,51 @@ namespace Kinovea.Camera.Basler
             if(string.IsNullOrEmpty(xml))
                 return null;
             
-            SpecificInfo info = new SpecificInfo();
+            SpecificInfo info = null;
             
             try
             {
-                /*XmlDocument doc = new XmlDocument();
+                XmlDocument doc = new XmlDocument();
                 doc.Load(new StringReader(xml));
 
                 info = new SpecificInfo();
-                
-                int frameRate = 0;
-                XmlNode xmlFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFrameRate");
-                if(xmlFrameRate != null)
+
+                string streamFormat = "";
+
+                XmlNode xmlStreamFormat = doc.SelectSingleNode("/Basler/StreamFormat");
+                if (xmlStreamFormat != null)
+                    streamFormat = xmlStreamFormat.InnerText;
+
+                Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
+
+                XmlNodeList props = doc.SelectNodes("/Basler/CameraProperties/CameraProperty");
+                foreach (XmlNode node in props)
                 {
-                    string strFrameRate = xmlFrameRate.InnerText;
-                    frameRate = int.Parse(strFrameRate, CultureInfo.InvariantCulture);
+                    XmlAttribute keyAttribute = node.Attributes["key"];
+                    if (keyAttribute == null)
+                        continue;
+
+                    string key = keyAttribute.Value;
+                    CameraProperty property = new CameraProperty();
+
+                    string xpath = string.Format("/Basler/CameraProperties/CameraProperty[@key='{0}']", key);
+                    XmlNode xmlPropertyValue = doc.SelectSingleNode(xpath + "/Value");
+                    if (xmlPropertyValue != null)
+                        property.CurrentValue = xmlPropertyValue.InnerText;
+                    else
+                        property.Supported = false;
+
+                    XmlNode xmlPropertyAuto = doc.SelectSingleNode(xpath + "/Auto");
+                    if (xmlPropertyAuto != null)
+                        property.Automatic = XmlHelper.ParseBoolean(xmlPropertyAuto.InnerText);
+                    else
+                        property.Supported = false;
+
+                    cameraProperties.Add(key, property);
                 }
-                info.SelectedFrameRate = frameRate;
-                
-                Size frameSize = Size.Empty;
-                XmlNode xmlFrameSize = doc.SelectSingleNode("/DirectShow/SelectedFrameSize");
-                if(xmlFrameSize != null)
-                {
-                    string strFrameSize = xmlFrameSize.InnerText;
-                    frameSize = XmlHelper.ParseSize(strFrameSize);
-                }
-                info.SelectedFrameSize = frameSize;*/
+
+                info.StreamFormat = streamFormat;
+                info.CameraProperties = cameraProperties;
             }
             catch(Exception e)
             {
@@ -301,27 +337,42 @@ namespace Kinovea.Camera.Basler
         
         private string SpecificInfoSerialize(CameraSummary summary)
         {
-            /*SpecificInfo info = summary.Specific as SpecificInfo;
+            SpecificInfo info = summary.Specific as SpecificInfo;
             if(info == null)
                 return null;
                 
             XmlDocument doc = new XmlDocument();
             XmlElement xmlRoot = doc.CreateElement("Basler");
-            
-            XmlElement xmlFrameRate = doc.CreateElement("SelectedFrameRate");
-            string framerate = string.Format("{0}", info.SelectedFrameRate);
-            xmlFrameRate.InnerText = framerate;
-            xmlRoot.AppendChild(xmlFrameRate);
-            
-            XmlElement xmlFrameSize = doc.CreateElement("SelectedFrameSize");
-            string frameSize = string.Format("{0};{1}", info.SelectedFrameSize.Width, info.SelectedFrameSize.Height);
-            xmlFrameSize.InnerText = frameSize;
-            xmlRoot.AppendChild(xmlFrameSize);
-            
+
+            XmlElement xmlStreamFormat = doc.CreateElement("StreamFormat");
+            xmlStreamFormat.InnerText = info.StreamFormat;
+            xmlRoot.AppendChild(xmlStreamFormat);
+
+            XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
+
+            foreach (KeyValuePair<string, CameraProperty> pair in info.CameraProperties)
+            {
+                XmlElement xmlCameraProperty = doc.CreateElement("CameraProperty");
+                XmlAttribute attr = doc.CreateAttribute("key");
+                attr.Value = pair.Key;
+                xmlCameraProperty.Attributes.Append(attr);
+
+                XmlElement xmlCameraPropertyValue = doc.CreateElement("Value");
+                xmlCameraPropertyValue.InnerText = pair.Value.CurrentValue;
+                xmlCameraProperty.AppendChild(xmlCameraPropertyValue);
+
+                XmlElement xmlCameraPropertyAuto = doc.CreateElement("Auto");
+                xmlCameraPropertyAuto.InnerText = pair.Value.Automatic.ToString().ToLower();
+                xmlCameraProperty.AppendChild(xmlCameraPropertyAuto);
+
+                xmlCameraProperties.AppendChild(xmlCameraProperty);
+            }
+
+            xmlRoot.AppendChild(xmlCameraProperties);
+
             doc.AppendChild(xmlRoot);
             
-            return doc.OuterXml;*/
-            return "";
+            return doc.OuterXml;
         }
     }
 }

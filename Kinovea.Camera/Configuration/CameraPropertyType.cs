@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Kinovea.Camera.DirectShow
+namespace Kinovea.Camera
 {
     public enum CameraPropertyType
     {
-        VideoProcAmp,
-        CameraControl,
-        Logitech
+        Undefined,
+        Boolean,
+        Integer,
+        Float,
+        String
     }
 }

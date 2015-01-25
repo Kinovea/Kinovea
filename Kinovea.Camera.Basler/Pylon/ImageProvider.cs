@@ -136,7 +136,8 @@ namespace PylonC.NETSupportLibrary
                 }
                 catch (Exception e) 
                 { 
-                    lastException = e; UpdateLastError(); 
+                    lastException = e; 
+                    UpdateLastError(); 
                 }
             }
 
@@ -149,7 +150,8 @@ namespace PylonC.NETSupportLibrary
                 }
                 catch (Exception e) 
                 { 
-                    lastException = e; UpdateLastError(); 
+                    lastException = e; 
+                    UpdateLastError(); 
                 }
 
                 try
@@ -159,7 +161,8 @@ namespace PylonC.NETSupportLibrary
                 }
                 catch (Exception e) 
                 { 
-                    lastException = e; UpdateLastError(); 
+                    lastException = e; 
+                    UpdateLastError(); 
                 }
                 
                 try
@@ -168,7 +171,8 @@ namespace PylonC.NETSupportLibrary
                 }
                 catch (Exception e) 
                 { 
-                    lastException = e; UpdateLastError(); 
+                    lastException = e; 
+                    UpdateLastError(); 
                 }
             }
 
@@ -685,9 +689,10 @@ namespace PylonC.NETSupportLibrary
             newGrabResultInternal.Handle = grabResult.hBuffer; /* Add the handle to requeue the buffer in the stream grabber queue. */
 
             /* If already in output format add the image data. */
-            if (grabResult.PixelType == EPylonPixelType.PixelType_Mono8 || grabResult.PixelType == EPylonPixelType.PixelType_RGBA8packed)
+            //if (grabResult.PixelType == EPylonPixelType.PixelType_Mono8 || grabResult.PixelType == EPylonPixelType.PixelType_RGBA8packed)
+            if (grabResult.PixelType == EPylonPixelType.PixelType_Mono8 || grabResult.PixelType == EPylonPixelType.PixelType_RGB8packed)
             {
-                newGrabResultInternal.ImageData = new Image(grabResult.SizeX, grabResult.SizeY, buffer.Array, grabResult.PixelType == EPylonPixelType.PixelType_RGBA8packed);
+                newGrabResultInternal.ImageData = new Image(grabResult.SizeX, grabResult.SizeY, buffer.Array, grabResult.PixelType == EPylonPixelType.PixelType_RGB8packed);
             }
             else /* Conversion is required. */
             {
@@ -703,7 +708,7 @@ namespace PylonC.NETSupportLibrary
                 /* Look up if a buffer is already attached to the handle. */
                 bool bufferListed = m_convertedBuffers.TryGetValue(grabResult.hBuffer, out convertedBuffer);
                 /* Perform the conversion. If the buffer is null a new one is automatically created. */
-                Pylon.ImageFormatConverterSetOutputPixelFormat(m_hConverter, m_converterOutputFormatIsColor ? EPylonPixelType.PixelType_BGRA8packed : EPylonPixelType.PixelType_Mono8);
+                Pylon.ImageFormatConverterSetOutputPixelFormat(m_hConverter, m_converterOutputFormatIsColor ? EPylonPixelType.PixelType_RGB8packed : EPylonPixelType.PixelType_Mono8);
                 Pylon.ImageFormatConverterConvert(m_hConverter, ref convertedBuffer, buffer, grabResult.PixelType, (uint)grabResult.SizeX, (uint)grabResult.SizeY, (uint)grabResult.PaddingX, EPylonImageOrientation.ImageOrientation_TopDown);
                 if (!bufferListed) /* A new buffer has been created. Add it to the dictionary. */
                 {

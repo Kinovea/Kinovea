@@ -64,14 +64,14 @@
     <Compile Include="Base\LoopWatcher.cs" />
     <Compile Include="Base\TimeWatcher.cs" />
     <Compile Include="CameraManagerBasler.cs" />
-    <Compile Include="FormConfiguration.cs">
+    <Compile Include="Configuration\CameraPropertyManager.cs" />
+    <Compile Include="Configuration\FormConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormConfiguration.Designer.cs">
+    <Compile Include="Configuration\FormConfiguration.Designer.cs">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
     <Compile Include="FrameGrabber.cs" />
-    <Compile Include="LogarithmicMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Pylon\BitmapFactory.cs" />
     <Compile Include="Pylon\Device.cs" />
@@ -79,9 +79,10 @@
     <Compile Include="Pylon\PylonHelper.cs" />
     <Compile Include="SnapshotRetriever.cs" />
     <Compile Include="SpecificInfo.cs" />
+    <Compile Include="Configuration\StreamFormat.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FormConfiguration.resx">
+    <EmbeddedResource Include="Configuration\FormConfiguration.resx">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -97,6 +98,10 @@
     <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Kinovea.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
+      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
+      <Name>Kinovea.Video</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

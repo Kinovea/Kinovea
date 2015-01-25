@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
         void SetToolbarView(Control toolbarView);
         void ShowThumbnails();
         
-        void UpdateTitle(string title);
+        void UpdateTitle(string title, Bitmap icon);
         void UpdateInfo(string info);
         void UpdateGrabbingStatus(bool grabbing);
         void UpdateRecordingStatus(bool recording);

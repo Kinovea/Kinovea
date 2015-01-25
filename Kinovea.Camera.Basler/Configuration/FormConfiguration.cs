@@ -25,6 +25,7 @@ using System.Windows.Forms;
 
 using Kinovea.Camera;
 using PylonC.NET;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.Basler
 {
@@ -49,28 +50,23 @@ namespace Kinovea.Camera.Basler
         {
             get { return specificChanged; }
         }
+
+        public StreamFormat SelectedStreamFormat
+        {
+            get { return selectedStreamFormat; }
+        }
+
+        public Dictionary<string, CameraProperty> CameraProperties
+        {
+            get { return cameraProperties; }
+        } 
         
+        private CameraSummary summary;
+        private PYLON_DEVICE_HANDLE deviceHandle;
         private bool iconChanged;
         private bool specificChanged;
-        private CameraSummary summary;
-        private bool loaded;
-        private PYLON_DEVICE_HANDLE handle;
-        private long gainRaw = 36;
-        private long memoGain = 36;
-        private double exposureTimeAbs;
-        private double memoExposureTimeAbs;
-        private string triggerSource = "Software";
-        private string memoTriggerSource;
-        private bool manualTextbox;
-        private bool manualTrackbar;
-        private bool manualComboBox;
-        private double minExposure;
-        private double maxExposure;
-        private bool useTrigger;
-        private bool memoUseTrigger;
-        private LogarithmicMapper exposureLogMapper;
-        private double acquisitionFramerate;
-        private double memoAcquisitionFramerate;
+        private StreamFormat selectedStreamFormat;
+        private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FormConfiguration(CameraSummary summary)
@@ -78,31 +74,29 @@ namespace Kinovea.Camera.Basler
             this.summary = summary;
             
             InitializeComponent();
+            tbAlias.AutoSize = false;
+            tbAlias.Height = 20;
             
             tbAlias.Text = summary.Alias;
             lblSystemName.Text = summary.Name;
             btnIcon.BackgroundImage = summary.Icon;
 
+            SpecificInfo specific = summary.Specific as SpecificInfo;
+            if (specific == null || specific.Handle == null || !specific.Handle.IsValid)
+                return;
+
+            deviceHandle = specific.Handle;
+
+            cameraProperties = CameraPropertyManager.Read(deviceHandle);
             Populate();
-            loaded = true;
         }
         
         private void Populate()
         {
-            SpecificInfo specific = summary.Specific as SpecificInfo;
-            if(specific == null)
-                return;
-            
-            handle = specific.Handle;
-            
             try
             {
-                PopulateGainRaw();
-                PopulateExposureTimeAbs();
-                PopulateAcquisitionFramerate();
-                PopulateUseTrigger();
-                PopulateTriggerSource();
-                PopulateRecordingFramerate();
+                PopulateStreamFormat();
+                PopulateCameraControls();
             }
             catch
             {
@@ -113,7 +107,7 @@ namespace Kinovea.Camera.Basler
         private void BtnIconClick(object sender, EventArgs e)
         {
             FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5, "Icons");
-            LocateForm(fip);
+            FormsHelper.Locate(fip);
             if(fip.ShowDialog() == DialogResult.OK)
             {
                 btnIcon.BackgroundImage = fip.PickedIcon;
@@ -122,29 +116,109 @@ namespace Kinovea.Camera.Basler
             
             fip.Dispose();
         }
-        
-        private void LocateForm(Form form)
+
+        private void PopulateStreamFormat()
         {
-            // Note: function duplicated from ScreenManager which we don't want to depend upon.
-            // Maybe this method would be better in Kinovea.Service or a general Forms utility.
-            if (Cursor.Position.X + (form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width || 
-                Cursor.Position.Y + form.Height >= SystemInformation.PrimaryMonitorSize.Height)
-                form.StartPosition = FormStartPosition.CenterScreen;
-            else
-                form.Location = new Point(Cursor.Position.X - (form.Width / 2), Cursor.Position.Y - 20);
+            bool readable = Pylon.DeviceFeatureIsReadable(deviceHandle, "PixelFormat");
+            if (!readable)
+            {
+                cmbFormat.Enabled = false;
+                return;
+            }
+
+            string currentValue = Pylon.DeviceFeatureToString(deviceHandle, "PixelFormat");
+
+            List<StreamFormat> streamFormats = PylonHelper.GetSupportedStreamFormats(deviceHandle);
+            if (streamFormats == null)
+            {
+                cmbFormat.Enabled = false;
+                return;
+            }
+
+            foreach (StreamFormat streamFormat in streamFormats)
+            {
+                cmbFormat.Items.Add(streamFormat);
+                if (currentValue == streamFormat.Symbol)
+                {
+                    selectedStreamFormat = streamFormat;
+                    cmbFormat.SelectedIndex = cmbFormat.Items.Count - 1;
+                }
+            }
         }
+
+        private void PopulateCameraControls()
+        {
+            int top = lblAuto.Bottom;
+            Func<int, string> defaultValueMapper = (value) => value.ToString();
+
+            AddCameraProperty("width", "Width (px):", defaultValueMapper, top);
+            AddCameraProperty("height", "Height (px):", defaultValueMapper, top + 30);
+            AddCameraProperty("framerate", "Framerate (Hz):", defaultValueMapper, top + 60);
+            AddCameraProperty("exposure", "Exposure (µs):", defaultValueMapper, top + 90);
+            AddCameraProperty("gain", "Gain:", defaultValueMapper, top + 120);
+        }
+
+        private void AddCameraProperty(string key, string localizationToken, Func<int, string> valueMapper, int top)
+        {
+            if (!cameraProperties.ContainsKey(key))
+                return;
+
+            CameraProperty property = cameraProperties[key];
+
+            AbstractCameraPropertyView control = null;
+             
+            switch (property.Representation)
+            {
+                case CameraPropertyRepresentation.LinearSlider:
+                    control = new CameraPropertyLinearView(property, localizationToken, valueMapper);
+                    break;
+                case CameraPropertyRepresentation.LogarithmicSlider:
+                    control = new CameraPropertyLogarithmicView(property, localizationToken, valueMapper);
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (control == null)
+                return;
+
+            control.Tag = key;
+            control.ValueChanged += cpvCameraControl_ValueChanged;
+            control.Left = 20;
+            control.Top = top;
+            gbProperties.Controls.Add(control);
+        }
+
+        private void cpvCameraControl_ValueChanged(object sender, EventArgs e)
+        {
+            AbstractCameraPropertyView control = sender as AbstractCameraPropertyView;
+            if (control == null)
+                return;
+
+            string key = control.Tag as string;
+            if (string.IsNullOrEmpty(key) || !cameraProperties.ContainsKey(key))
+                return;
+
+            CameraProperty property = control.Property;
+            CameraPropertyManager.Write(deviceHandle, cameraProperties[key]);
+
+            specificChanged = true;
+        }
+        
+        /*
         
         #region GainRaw
         private void PopulateGainRaw()
         {
             string featureName = "GainRaw";
-            if(!Pylon.DeviceFeatureIsReadable(handle, featureName))
+            if(!Pylon.DeviceFeatureIsReadable(deviceHandle, featureName))
                 return;
 
-            long min = Pylon.DeviceGetIntegerFeatureMin(handle, featureName);
-            long max = Pylon.DeviceGetIntegerFeatureMax(handle, featureName);
-            long incr = Pylon.DeviceGetIntegerFeatureInc(handle, featureName);
-            long val = Pylon.DeviceGetIntegerFeature(handle, featureName);
+            long min = Pylon.DeviceGetIntegerFeatureMin(deviceHandle, featureName);
+            long max = Pylon.DeviceGetIntegerFeatureMax(deviceHandle, featureName);
+            long incr = Pylon.DeviceGetIntegerFeatureInc(deviceHandle, featureName);
+            long val = Pylon.DeviceGetIntegerFeature(deviceHandle, featureName);
             
             trkGainRaw.Minimum = (int)min;
             trkGainRaw.Maximum = (int)max;
@@ -191,8 +265,8 @@ namespace Kinovea.Camera.Basler
         
         private void UpdateGain()
         {
-            if(Pylon.DeviceFeatureIsWritable(handle, "GainRaw"))
-                Pylon.DeviceSetIntegerFeature(handle, "GainRaw", gainRaw);
+            if(Pylon.DeviceFeatureIsWritable(deviceHandle, "GainRaw"))
+                Pylon.DeviceSetIntegerFeature(deviceHandle, "GainRaw", gainRaw);
         }
         #endregion
         
@@ -200,13 +274,13 @@ namespace Kinovea.Camera.Basler
         private void PopulateExposureTimeAbs()
         {
             string featureName = "ExposureTimeAbs";
-            if(!Pylon.DeviceFeatureIsReadable(handle, featureName))
+            if(!Pylon.DeviceFeatureIsReadable(deviceHandle, featureName))
                 return;
             
-            minExposure = Pylon.DeviceGetFloatFeatureMin(handle, featureName);
-            maxExposure = Pylon.DeviceGetFloatFeatureMax(handle, featureName);
+            minExposure = Pylon.DeviceGetFloatFeatureMin(deviceHandle, featureName);
+            maxExposure = Pylon.DeviceGetFloatFeatureMax(deviceHandle, featureName);
             maxExposure = Math.Min(maxExposure, 1000000);
-            double val = Pylon.DeviceGetFloatFeature(handle, featureName);
+            double val = Pylon.DeviceGetFloatFeature(deviceHandle, featureName);
             
             exposureLogMapper = new LogarithmicMapper((int)minExposure, (int)maxExposure, trkExposure.Minimum, trkExposure.Maximum);
             
@@ -265,8 +339,8 @@ namespace Kinovea.Camera.Basler
 
         private void UpdateExposureTimeAbs()
         {
-            if(Pylon.DeviceFeatureIsWritable(handle, "ExposureTimeAbs"))
-                Pylon.DeviceSetFloatFeature(handle, "ExposureTimeAbs", exposureTimeAbs);
+            if(Pylon.DeviceFeatureIsWritable(deviceHandle, "ExposureTimeAbs"))
+                Pylon.DeviceSetFloatFeature(deviceHandle, "ExposureTimeAbs", exposureTimeAbs);
 
             ChangedResultingFramerate();
         }
@@ -306,8 +380,8 @@ namespace Kinovea.Camera.Basler
         #region Acquisition framerate
         private void PopulateAcquisitionFramerate()
         {
-            if (Pylon.DeviceFeatureIsReadable(handle, "AcquisitionFrameRateAbs"))
-                acquisitionFramerate = Pylon.DeviceGetFloatFeature(handle, "AcquisitionFrameRateAbs");
+            if (Pylon.DeviceFeatureIsReadable(deviceHandle, "AcquisitionFrameRateAbs"))
+                acquisitionFramerate = Pylon.DeviceGetFloatFeature(deviceHandle, "AcquisitionFrameRateAbs");
 
             memoAcquisitionFramerate = acquisitionFramerate;
             
@@ -336,9 +410,9 @@ namespace Kinovea.Camera.Basler
 
         private void ChangedResultingFramerate()
         {
-            if (Pylon.DeviceFeatureIsReadable(handle, "ResultingFrameRateAbs"))
+            if (Pylon.DeviceFeatureIsReadable(deviceHandle, "ResultingFrameRateAbs"))
             {
-                double resulting = Pylon.DeviceGetFloatFeature(handle, "ResultingFrameRateAbs");
+                double resulting = Pylon.DeviceGetFloatFeature(deviceHandle, "ResultingFrameRateAbs");
                 resulting = Math.Round(resulting, 3);
                 
                 lblResultingFrameRate.Text = string.Format("Forced to : {0:0.000}", resulting);
@@ -350,8 +424,8 @@ namespace Kinovea.Camera.Basler
         {
             try
             {
-                if (Pylon.DeviceFeatureIsWritable(handle, "AcquisitionFrameRateAbs"))
-                    Pylon.DeviceSetFloatFeature(handle, "AcquisitionFrameRateAbs", acquisitionFramerate);
+                if (Pylon.DeviceFeatureIsWritable(deviceHandle, "AcquisitionFrameRateAbs"))
+                    Pylon.DeviceSetFloatFeature(deviceHandle, "AcquisitionFrameRateAbs", acquisitionFramerate);
             }
             catch
             {
@@ -363,10 +437,10 @@ namespace Kinovea.Camera.Basler
         #region Use trigger
         private void PopulateUseTrigger()
         {
-            if (Pylon.DeviceFeatureIsAvailable(handle, "EnumEntry_TriggerSelector_FrameStart"))
+            if (Pylon.DeviceFeatureIsAvailable(deviceHandle, "EnumEntry_TriggerSelector_FrameStart"))
             {
-                Pylon.DeviceFeatureFromString(handle, "TriggerSelector", "FrameStart");
-                string value = PylonHelper.DeviceGetStringFeature(handle, "TriggerMode");
+                Pylon.DeviceFeatureFromString(deviceHandle, "TriggerSelector", "FrameStart");
+                string value = PylonHelper.DeviceGetStringFeature(deviceHandle, "TriggerMode");
                 useTrigger = (value == "On");
                 memoUseTrigger = useTrigger;
             }
@@ -386,20 +460,20 @@ namespace Kinovea.Camera.Basler
         }
         private void UpdateUseTrigger()
         {
-            if (Pylon.DeviceFeatureIsAvailable(handle, "EnumEntry_TriggerSelector_FrameStart"))
+            if (Pylon.DeviceFeatureIsAvailable(deviceHandle, "EnumEntry_TriggerSelector_FrameStart"))
             {
-                Pylon.DeviceFeatureFromString(handle, "TriggerSelector", "FrameStart");
-                Pylon.DeviceFeatureFromString(handle, "TriggerMode", useTrigger ? "On" : "Off");
+                Pylon.DeviceFeatureFromString(deviceHandle, "TriggerSelector", "FrameStart");
+                Pylon.DeviceFeatureFromString(deviceHandle, "TriggerMode", useTrigger ? "On" : "Off");
             }
 
-            Pylon.DeviceFeatureFromString(handle, "AcquisitionFrameRateEnable", useTrigger ? "false" : "true");
+            Pylon.DeviceFeatureFromString(deviceHandle, "AcquisitionFrameRateEnable", useTrigger ? "false" : "true");
         }
         #endregion
 
         #region Trigger source
         private void PopulateTriggerSource()
         {
-            string source = PylonHelper.DeviceGetStringFeature(handle, "TriggerSource");
+            string source = PylonHelper.DeviceGetStringFeature(deviceHandle, "TriggerSource");
             memoTriggerSource = source;
             
             manualComboBox = true;
@@ -422,7 +496,7 @@ namespace Kinovea.Camera.Basler
             if(manualComboBox)
                 return;
                 
-            Pylon.DeviceFeatureFromString(handle, "TriggerSelector", "FrameStart");
+            Pylon.DeviceFeatureFromString(deviceHandle, "TriggerSelector", "FrameStart");
                 
             if(cbTriggerSource.SelectedIndex == 0)
             {
@@ -439,21 +513,16 @@ namespace Kinovea.Camera.Basler
         }
         private void UpdateTriggerSource()
         {
-            Pylon.DeviceFeatureFromString(handle, "TriggerSource", triggerSource);
+            Pylon.DeviceFeatureFromString(deviceHandle, "TriggerSource", triggerSource);
         }
         #endregion
         
-        #region Recording framerate
-        private void PopulateRecordingFramerate()
-        {
-        
-        }
-        #endregion
-        
+         */
+
         private void BtnCancelClick(object sender, EventArgs e)
         {
             // Restore memo.
-            if (gainRaw != memoGain)
+            /*if (gainRaw != memoGain)
             {
                 gainRaw = memoGain;
                 UpdateGain();
@@ -475,12 +544,22 @@ namespace Kinovea.Camera.Basler
             {
                 triggerSource = memoTriggerSource;
                 UpdateTriggerSource();
-            }
+            }*/
+        }
+
+        private void cmbFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            StreamFormat selected = cmbFormat.SelectedItem as StreamFormat;
+            if (selected == null || selectedStreamFormat.Symbol == selected.Symbol)
+                return;
+
+            selectedStreamFormat = selected;
+            specificChanged = true;
         }
         
-        private void BtnSoftwareTrigger_Click(object sender, EventArgs e)
+        /*private void BtnSoftwareTrigger_Click(object sender, EventArgs e)
         {
-            Pylon.DeviceExecuteCommandFeature(handle, "TriggerSoftware");
-        }
+            Pylon.DeviceExecuteCommandFeature(deviceHandle, "TriggerSoftware");
+        }*/
     }
 }

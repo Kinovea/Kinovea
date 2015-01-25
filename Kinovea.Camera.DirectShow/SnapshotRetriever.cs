@@ -36,21 +36,21 @@ namespace Kinovea.Camera.DirectShow
     public class SnapshotRetriever
     {
         public event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
-        
-        public string Identifier 
-        { 
-            get { return this.summary.Identifier;}
+
+        public string Identifier
+        {
+            get { return this.summary.Identifier; }
         }
         
         #region Members
         private static readonly int timeout = 5000;
         private Bitmap image;
-        private string moniker;
         private CameraSummary summary;
         private object locker = new object();
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
         private bool cancelled;
         private bool hadError;
+        private string moniker;
         private VideoCaptureDevice device;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -61,23 +61,27 @@ namespace Kinovea.Camera.DirectShow
             this.summary = summary;
             
             device = new VideoCaptureDevice(moniker);
-            device.NewFrameBuffer += device_NewFrameBuffer;
-            device.VideoSourceError += device_VideoSourceError;
         }
 
+        /// <summary>
+        /// Start the device for a frame grab, wait a bit and then return the result.
+        /// This method MUST raise a CameraThumbnailProduced event, even in case of error.
+        /// </summary>
         public void Run(object data)
         {
             Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
+
+            device.NewFrameBuffer += device_NewFrameBuffer;
+            device.VideoSourceError += device_VideoSourceError;
+
             device.Start();
+
             waitHandle.WaitOne(timeout, false);
 
             device.NewFrameBuffer -= device_NewFrameBuffer;
             device.VideoSourceError -= device_VideoSourceError;
             
-            if (image == null)
-                log.DebugFormat("Timeout waiting for thumbnail of {0}", summary.Alias);
-
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, hadError, cancelled));
 
@@ -95,7 +99,7 @@ namespace Kinovea.Camera.DirectShow
             // As we didn't specify any media type, the buffer is guaranteed to come back in RGB24.
             image = new Bitmap(e.Width, e.Height, PixelFormat.Format24bppRgb);
             Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
-            BitmapHelper.FillFromRGB24(image, rect, e.Buffer);
+            BitmapHelper.FillFromRGB24(image, rect, false, e.Buffer);
             waitHandle.Set();
         }
         

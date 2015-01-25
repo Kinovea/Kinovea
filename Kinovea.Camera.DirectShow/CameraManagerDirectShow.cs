@@ -56,17 +56,14 @@ namespace Kinovea.Camera.DirectShow
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private List<string> snapshotting = new List<string>();
-        private Bitmap defaultIcon;
         private HashSet<string> bypass = new HashSet<string>();
         #endregion
         
         public CameraManagerDirectShow()
-        {
-            defaultIcon = IconLibrary.GetIcon("webcam");
-            
+        {   
             // Bypass DirectShow filters of cameras for which we have a dedicated plugin.
             bypass.Add("Basler GenICam Source");
-            bypass.Add("FlyCapture2 Camera");
+            //bypass.Add("FlyCapture2 Camera");
             //bypass.Add("Logitech HD Pro Webcam C920");
             //bypass.Add("Logitech Webcam C100");
             //bypass.Add("PS3Eye Camera");
@@ -110,7 +107,7 @@ namespace Kinovea.Camera.DirectShow
                             continue;
                             
                         alias = blurb.Alias;
-                        icon = blurb.Icon ?? defaultIcon;
+                        icon = blurb.Icon ?? SelectDefaultIcon(identifier);
                         displayRectangle = blurb.DisplayRectangle;
                         if(!string.IsNullOrEmpty(blurb.AspectRatio))
                             aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
@@ -120,7 +117,7 @@ namespace Kinovea.Camera.DirectShow
                 }
                 
                 if(icon == null)
-                    icon = defaultIcon;
+                    icon = SelectDefaultIcon(identifier);
                 
                 CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, icon, displayRectangle, aspectRatio, specific, this);
                 summaries.Add(summary);
@@ -262,6 +259,18 @@ namespace Kinovea.Camera.DirectShow
             if (e.Thumbnail != null && !e.HadError && !e.Cancelled)
                 OnCameraThumbnailProduced(e);
         }
+
+        private Bitmap SelectDefaultIcon(string identifier)
+        {
+            if (identifier.Contains("usb#vid_046d"))
+                return IconLibrary.GetIcon("logitech");
+            else if (identifier.Contains("usb#vid_045e"))
+                return IconLibrary.GetIcon("microsoft");
+            else if (identifier.Contains("PS3Eye Camera"))
+                return IconLibrary.GetIcon("playstation");
+            else
+                return IconLibrary.GetIcon("webcam");
+        }
         
         private SpecificInfo SpecificInfoDeserialize(string xml)
         {
@@ -290,7 +299,7 @@ namespace Kinovea.Camera.DirectShow
 
                 Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
 
-                XmlNodeList props = doc.SelectNodes("/DirectShow/CameraProperties/CameraProperty");
+                XmlNodeList props = doc.SelectNodes("/DirectShow/CameraProperties/CameraProperty2");
                 foreach (XmlNode node in props)
                 {
                     XmlAttribute keyAttribute = node.Attributes["key"];
@@ -300,10 +309,10 @@ namespace Kinovea.Camera.DirectShow
                     string key = keyAttribute.Value;
                     CameraProperty property = new CameraProperty();
 
-                    string xpath = string.Format("/DirectShow/CameraProperties/CameraProperty[@key='{0}']", key);
+                    string xpath = string.Format("/DirectShow/CameraProperties/CameraProperty2[@key='{0}']", key);
                     XmlNode xmlPropertyValue = doc.SelectSingleNode(xpath + "/Value");
                     if (xmlPropertyValue != null)
-                        property.Value = int.Parse(xmlPropertyValue.InnerText, CultureInfo.InvariantCulture);
+                        property.CurrentValue = xmlPropertyValue.InnerText;
                     else
                         property.Supported = false;
 
@@ -356,23 +365,20 @@ namespace Kinovea.Camera.DirectShow
 
             foreach (KeyValuePair<string, CameraProperty> pair in info.CameraProperties)
             {
-                //if (!pair.Value.Supported)
-                  //  continue;
-
-                XmlElement xmlCameraProperty = doc.CreateElement("CameraProperty");
+                XmlElement xmlCameraProperty2 = doc.CreateElement("CameraProperty2");
                 XmlAttribute attr = doc.CreateAttribute("key");
                 attr.Value = pair.Key;
-                xmlCameraProperty.Attributes.Append(attr);
+                xmlCameraProperty2.Attributes.Append(attr);
 
-                XmlElement xmlCameraPropertyValue = doc.CreateElement("Value");
-                xmlCameraPropertyValue.InnerText = pair.Value.Value.ToString();
-                xmlCameraProperty.AppendChild(xmlCameraPropertyValue);
+                XmlElement xmlCameraProperty2Value = doc.CreateElement("Value");
+                xmlCameraProperty2Value.InnerText = pair.Value.CurrentValue;
+                xmlCameraProperty2.AppendChild(xmlCameraProperty2Value);
 
-                XmlElement xmlCameraPropertyAuto = doc.CreateElement("Auto");
-                xmlCameraPropertyAuto.InnerText = pair.Value.Automatic.ToString().ToLower();
-                xmlCameraProperty.AppendChild(xmlCameraPropertyAuto);
+                XmlElement xmlCameraProperty2Auto = doc.CreateElement("Auto");
+                xmlCameraProperty2Auto.InnerText = pair.Value.Automatic.ToString().ToLower();
+                xmlCameraProperty2.AppendChild(xmlCameraProperty2Auto);
 
-                xmlCameraProperties.AppendChild(xmlCameraProperty);
+                xmlCameraProperties.AppendChild(xmlCameraProperty2);
             }
 
             xmlRoot.AppendChild(xmlCameraProperties);

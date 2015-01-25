@@ -53,22 +53,24 @@ namespace Kinovea.Camera.DirectShow
             this.btnCancel = new System.Windows.Forms.Button();
             this.lblColorSpace = new System.Windows.Forms.Label();
             this.cmbFormat = new System.Windows.Forms.ComboBox();
-            this.btnIcon = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblAuto = new System.Windows.Forms.Label();
             this.cmbImageSize = new System.Windows.Forms.ComboBox();
             this.lblImageSize = new System.Windows.Forms.Label();
             this.cmbFramerate = new System.Windows.Forms.ComboBox();
             this.lblFramerate = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbAlias = new System.Windows.Forms.TextBox();
             this.lblSystemName = new System.Windows.Forms.Label();
+            this.btnIcon = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnDeviceProperties
             // 
             this.btnDeviceProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDeviceProperties.Location = new System.Drawing.Point(255, 330);
+            this.btnDeviceProperties.Location = new System.Drawing.Point(255, 267);
             this.btnDeviceProperties.Name = "btnDeviceProperties";
             this.btnDeviceProperties.Size = new System.Drawing.Size(167, 24);
             this.btnDeviceProperties.TabIndex = 11;
@@ -80,7 +82,7 @@ namespace Kinovea.Camera.DirectShow
             // 
             this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnApply.Location = new System.Drawing.Point(249, 398);
+            this.btnApply.Location = new System.Drawing.Point(249, 417);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(99, 24);
             this.btnApply.TabIndex = 78;
@@ -91,7 +93,7 @@ namespace Kinovea.Camera.DirectShow
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(354, 398);
+            this.btnCancel.Location = new System.Drawing.Point(354, 417);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(99, 24);
             this.btnCancel.TabIndex = 79;
@@ -103,7 +105,7 @@ namespace Kinovea.Camera.DirectShow
             this.lblColorSpace.BackColor = System.Drawing.Color.Transparent;
             this.lblColorSpace.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblColorSpace.ForeColor = System.Drawing.Color.Black;
-            this.lblColorSpace.Location = new System.Drawing.Point(21, 88);
+            this.lblColorSpace.Location = new System.Drawing.Point(21, 26);
             this.lblColorSpace.Name = "lblColorSpace";
             this.lblColorSpace.Size = new System.Drawing.Size(187, 23);
             this.lblColorSpace.TabIndex = 80;
@@ -116,59 +118,42 @@ namespace Kinovea.Camera.DirectShow
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFormat.FormattingEnabled = true;
-            this.cmbFormat.Location = new System.Drawing.Point(214, 88);
+            this.cmbFormat.Location = new System.Drawing.Point(214, 26);
             this.cmbFormat.Name = "cmbFormat";
             this.cmbFormat.Size = new System.Drawing.Size(151, 21);
             this.cmbFormat.TabIndex = 81;
             this.cmbFormat.SelectedIndexChanged += new System.EventHandler(this.cmbFormat_SelectedIndexChanged);
-            // 
-            // btnIcon
-            // 
-            this.btnIcon.BackColor = System.Drawing.Color.Transparent;
-            this.btnIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnIcon.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnIcon.FlatAppearance.BorderSize = 0;
-            this.btnIcon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnIcon.Location = new System.Drawing.Point(24, 26);
-            this.btnIcon.Name = "btnIcon";
-            this.btnIcon.Size = new System.Drawing.Size(16, 16);
-            this.btnIcon.TabIndex = 83;
-            this.btnIcon.UseVisualStyleBackColor = false;
-            this.btnIcon.Click += new System.EventHandler(this.btnIcon_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.lblAuto);
             this.groupBox1.Controls.Add(this.btnDeviceProperties);
             this.groupBox1.Controls.Add(this.cmbImageSize);
             this.groupBox1.Controls.Add(this.lblImageSize);
             this.groupBox1.Controls.Add(this.cmbFramerate);
             this.groupBox1.Controls.Add(this.lblFramerate);
-            this.groupBox1.Controls.Add(this.tbAlias);
-            this.groupBox1.Controls.Add(this.lblSystemName);
-            this.groupBox1.Controls.Add(this.btnIcon);
             this.groupBox1.Controls.Add(this.cmbFormat);
             this.groupBox1.Controls.Add(this.lblColorSpace);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(12, 94);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(441, 371);
+            this.groupBox1.Size = new System.Drawing.Size(441, 308);
             this.groupBox1.TabIndex = 84;
             this.groupBox1.TabStop = false;
             // 
-            // label1
+            // lblAuto
             // 
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Black;
-            this.label1.Location = new System.Drawing.Point(381, 198);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(56, 23);
-            this.label1.TabIndex = 100;
-            this.label1.Text = "Auto";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblAuto.BackColor = System.Drawing.Color.Transparent;
+            this.lblAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAuto.ForeColor = System.Drawing.Color.Black;
+            this.lblAuto.Location = new System.Drawing.Point(379, 130);
+            this.lblAuto.Name = "lblAuto";
+            this.lblAuto.Size = new System.Drawing.Size(56, 23);
+            this.lblAuto.TabIndex = 100;
+            this.lblAuto.Text = "Auto";
+            this.lblAuto.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // cmbImageSize
             // 
@@ -176,7 +161,7 @@ namespace Kinovea.Camera.DirectShow
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbImageSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbImageSize.FormattingEnabled = true;
-            this.cmbImageSize.Location = new System.Drawing.Point(214, 119);
+            this.cmbImageSize.Location = new System.Drawing.Point(214, 57);
             this.cmbImageSize.Name = "cmbImageSize";
             this.cmbImageSize.Size = new System.Drawing.Size(151, 21);
             this.cmbImageSize.TabIndex = 90;
@@ -187,7 +172,7 @@ namespace Kinovea.Camera.DirectShow
             this.lblImageSize.BackColor = System.Drawing.Color.Transparent;
             this.lblImageSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblImageSize.ForeColor = System.Drawing.Color.Black;
-            this.lblImageSize.Location = new System.Drawing.Point(21, 119);
+            this.lblImageSize.Location = new System.Drawing.Point(21, 57);
             this.lblImageSize.Name = "lblImageSize";
             this.lblImageSize.Size = new System.Drawing.Size(187, 23);
             this.lblImageSize.TabIndex = 89;
@@ -200,7 +185,7 @@ namespace Kinovea.Camera.DirectShow
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbFramerate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFramerate.FormattingEnabled = true;
-            this.cmbFramerate.Location = new System.Drawing.Point(214, 153);
+            this.cmbFramerate.Location = new System.Drawing.Point(214, 91);
             this.cmbFramerate.Name = "cmbFramerate";
             this.cmbFramerate.Size = new System.Drawing.Size(151, 21);
             this.cmbFramerate.TabIndex = 88;
@@ -211,21 +196,34 @@ namespace Kinovea.Camera.DirectShow
             this.lblFramerate.BackColor = System.Drawing.Color.Transparent;
             this.lblFramerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFramerate.ForeColor = System.Drawing.Color.Black;
-            this.lblFramerate.Location = new System.Drawing.Point(21, 153);
+            this.lblFramerate.Location = new System.Drawing.Point(21, 91);
             this.lblFramerate.Name = "lblFramerate";
             this.lblFramerate.Size = new System.Drawing.Size(187, 23);
             this.lblFramerate.TabIndex = 87;
             this.lblFramerate.Text = "Framerate:";
             this.lblFramerate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.tbAlias);
+            this.groupBox2.Controls.Add(this.lblSystemName);
+            this.groupBox2.Controls.Add(this.btnIcon);
+            this.groupBox2.Location = new System.Drawing.Point(12, 12);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(441, 76);
+            this.groupBox2.TabIndex = 89;
+            this.groupBox2.TabStop = false;
+            // 
             // tbAlias
             // 
             this.tbAlias.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbAlias.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbAlias.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.tbAlias.Location = new System.Drawing.Point(73, 26);
+            this.tbAlias.Location = new System.Drawing.Point(73, 22);
             this.tbAlias.Name = "tbAlias";
-            this.tbAlias.Size = new System.Drawing.Size(223, 15);
+            this.tbAlias.Size = new System.Drawing.Size(349, 15);
             this.tbAlias.TabIndex = 86;
             this.tbAlias.Text = "Alias";
             // 
@@ -242,12 +240,27 @@ namespace Kinovea.Camera.DirectShow
             this.lblSystemName.Text = "System name";
             this.lblSystemName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // btnIcon
+            // 
+            this.btnIcon.BackColor = System.Drawing.Color.Transparent;
+            this.btnIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btnIcon.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnIcon.FlatAppearance.BorderSize = 0;
+            this.btnIcon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnIcon.Location = new System.Drawing.Point(24, 26);
+            this.btnIcon.Name = "btnIcon";
+            this.btnIcon.Size = new System.Drawing.Size(16, 16);
+            this.btnIcon.TabIndex = 83;
+            this.btnIcon.UseVisualStyleBackColor = false;
+            this.btnIcon.Click += new System.EventHandler(this.btnIcon_Click);
+            // 
             // FormConfiguration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(465, 434);
+            this.ClientSize = new System.Drawing.Size(465, 453);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnApply);
             this.Controls.Add(this.btnCancel);
@@ -258,14 +271,12 @@ namespace Kinovea.Camera.DirectShow
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Camera configuration";
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
-        private System.Windows.Forms.TextBox tbAlias;
-        private System.Windows.Forms.Label lblSystemName;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button btnIcon;
         private System.Windows.Forms.ComboBox cmbFormat;
         private System.Windows.Forms.Label lblColorSpace;
         private System.Windows.Forms.Button btnCancel;
@@ -275,6 +286,10 @@ namespace Kinovea.Camera.DirectShow
         private System.Windows.Forms.Label lblImageSize;
         private System.Windows.Forms.ComboBox cmbFramerate;
         private System.Windows.Forms.Label lblFramerate;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblAuto;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox tbAlias;
+        private System.Windows.Forms.Label lblSystemName;
+        private System.Windows.Forms.Button btnIcon;
     }
 }

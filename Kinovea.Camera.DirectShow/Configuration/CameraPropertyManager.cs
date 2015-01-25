@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using AForge.Video.DirectShow;
+using System.Globalization;
 
 namespace Kinovea.Camera.DirectShow
 {
     /// <summary>
     /// Reads and writes a list of supported camera properties from/to the device.
-    /// Used for IAMCameraControl and IAMProcAmp type of properties.
     /// </summary>
     public static class CameraPropertyManager
     {
@@ -42,10 +42,42 @@ namespace Kinovea.Camera.DirectShow
                 WriteProperty(device, CameraControlProperty.Focus, properties["focus"]);
         }
 
+        public static void Write(VideoCaptureDevice device, CameraProperty property)
+        {
+            if (!property.Supported)
+                return;
+
+            switch (property.Specific)
+            {
+                case "CameraControl":
+                    {
+                        CameraControlProperty p = (CameraControlProperty)Enum.Parse(typeof(CameraControlProperty), property.Identifier, true);
+                        WriteProperty(device, p, property);
+                        break;
+                    }
+                case "VideoProcAmp":
+                    {
+                        VideoProcAmpProperty p = (VideoProcAmpProperty)Enum.Parse(typeof(VideoProcAmpProperty), property.Identifier, true);
+                        WriteProperty(device, p, property);
+                        break;
+                    }
+                case "Logitech":
+                    {
+                        WriteLogitechProperty(device, property);
+                        break;
+                    }
+            }
+        }
+
         private static CameraProperty ReadProperty(VideoCaptureDevice device, CameraControlProperty property)
         {
             CameraProperty p = new CameraProperty();
-            p.Type = CameraPropertyType.CameraControl;
+            p.Identifier = property.ToString();
+            p.Specific = "CameraControl";
+            p.ReadOnly = false;
+            p.Type = CameraPropertyType.Integer;
+            p.Representation = CameraPropertyRepresentation.LinearSlider;
+            p.CanBeAutomatic = true;
 
             try
             {
@@ -63,8 +95,8 @@ namespace Kinovea.Camera.DirectShow
                 else
                 {
                     p.Supported = true;
-                    p.Minimum = min;
-                    p.Maximum = max;
+                    p.Minimum = min.ToString(CultureInfo.InvariantCulture);
+                    p.Maximum = max.ToString(CultureInfo.InvariantCulture);
 
                     int currentValue;
                     success = device.GetCameraProperty(property, out currentValue, out flags);
@@ -75,7 +107,7 @@ namespace Kinovea.Camera.DirectShow
                     }
                     else
                     {
-                        p.Value = currentValue;
+                        p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
                         p.Automatic = flags == CameraControlFlags.Auto;
                     }
                 }
@@ -91,7 +123,12 @@ namespace Kinovea.Camera.DirectShow
         private static CameraProperty ReadProperty(VideoCaptureDevice device, VideoProcAmpProperty property)
         {
             CameraProperty p = new CameraProperty();
-            p.Type = CameraPropertyType.VideoProcAmp;
+            p.Identifier = property.ToString();
+            p.Specific = "VideoProcAmp";
+            p.ReadOnly = false;
+            p.Type = CameraPropertyType.Integer;
+            p.Representation = CameraPropertyRepresentation.LinearSlider;
+            p.CanBeAutomatic = true;
 
             try
             {
@@ -109,8 +146,8 @@ namespace Kinovea.Camera.DirectShow
                 else
                 {
                     p.Supported = true;
-                    p.Minimum = min;
-                    p.Maximum = max;
+                    p.Minimum = min.ToString(CultureInfo.InvariantCulture);
+                    p.Maximum = max.ToString(CultureInfo.InvariantCulture);
 
                     int currentValue;
                     success = device.GetVideoProperty(property, out currentValue, out flags);
@@ -121,7 +158,7 @@ namespace Kinovea.Camera.DirectShow
                     }
                     else
                     {
-                        p.Value = currentValue;
+                        p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
                         p.Automatic = flags == VideoProcAmpFlags.Auto;
                     }
                 }
@@ -138,11 +175,19 @@ namespace Kinovea.Camera.DirectShow
         {
             // Hardcoded values for min/max according to C920.
             CameraProperty p = new CameraProperty();
-            p.Type = CameraPropertyType.Logitech;
-            p.Supported = true;
+            p.Identifier = "Exposure";
+            p.Specific = "Logitech";
+            p.ReadOnly = false;
+            p.Type = CameraPropertyType.Integer;
+            p.Representation = CameraPropertyRepresentation.LinearSlider;
+            p.CanBeAutomatic = true;
 
-            p.Minimum = 1;
-            p.Maximum = 500;
+            int min = 1;
+            int max = 500;
+
+            p.Supported = true;
+            p.Minimum = min.ToString(CultureInfo.InvariantCulture);
+            p.Maximum = max.ToString(CultureInfo.InvariantCulture);
             
             int currentValue;
             bool manual;
@@ -154,7 +199,8 @@ namespace Kinovea.Camera.DirectShow
             }
             else
             {
-                p.Value = Math.Min(p.Maximum, Math.Max(p.Minimum, currentValue));
+                currentValue = Math.Min(min, Math.Max(min, currentValue));
+                p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
                 p.Automatic = !manual;
             }
 
@@ -164,18 +210,21 @@ namespace Kinovea.Camera.DirectShow
         private static void WriteProperty(VideoCaptureDevice device, CameraControlProperty property, CameraProperty value)
         {
             CameraControlFlags flags = value.Automatic ? CameraControlFlags.Auto : CameraControlFlags.Manual;
-            device.SetCameraProperty(property, value.Value, flags);
+            int v = int.Parse(value.CurrentValue, CultureInfo.InvariantCulture);
+            device.SetCameraProperty(property, v, flags);
         }
 
         private static void WriteProperty(VideoCaptureDevice device, VideoProcAmpProperty property, CameraProperty value)
         {
             VideoProcAmpFlags flags = value.Automatic ? VideoProcAmpFlags.Auto : VideoProcAmpFlags.Manual;
-            device.SetVideoProperty(property, value.Value, flags);
+            int v = int.Parse(value.CurrentValue, CultureInfo.InvariantCulture);
+            device.SetVideoProperty(property, v, flags);
         }
 
         private static void WriteLogitechProperty(VideoCaptureDevice device, CameraProperty value)
         {
-            device.Logitech_SetExposure(value.Value, !value.Automatic);
+            int v = int.Parse(value.CurrentValue, CultureInfo.InvariantCulture);
+            device.Logitech_SetExposure(v, !value.Automatic);
         }
     }
 }

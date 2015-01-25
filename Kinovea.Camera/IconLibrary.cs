@@ -88,6 +88,11 @@ namespace Kinovea.Camera
             icons.Add("counter", Properties.Icons.counter);
             icons.Add("construction", Properties.Icons.construction);
             icons.Add("na", Properties.Icons.na);
+
+            icons.Add("logitech", Properties.Icons.logitech);
+            icons.Add("microsoft", Properties.Icons.microsoft);
+            icons.Add("playstation", Properties.Icons.playstation);
+            icons.Add("basler", Properties.Icons.basler2);
             
             defaultKey = "camcorder";
             

@@ -28,6 +28,8 @@ using PylonC.NETSupportLibrary;
 using Kinovea.Base;
 using Kinovea.Services;
 using Kinovea.Pipeline;
+using Kinovea.Video;
+using System.Diagnostics;
 
 namespace Kinovea.Camera.Basler
 {
@@ -47,41 +49,32 @@ namespace Kinovea.Camera.Basler
         
         public Size Size
         {
-            get { return actualSize; }
-        }
-
-        public int Depth
-        {
-            get { return 1; }
+            get { return Size.Empty; }
         }
 
         public float Framerate
         {
-            get { return framerate; }
+            get { return 30; }
         }
         
-        /*public string ErrorDescription
-        {
-            get { return errorDescription;}
-        }*/
         public double LiveDataRate
         {
-            get { return 0; }
+            // Note: this variable is written by the stream thread and read by the UI thread.
+            // We don't lock because freshness of values is not paramount and torn reads are not catastrophic either.
+            // We eventually get an approximate value good enough for the purpose.
+            get { return dataRateAverager.Average; }
         }
         #endregion
         
         #region Members
-        private Bitmap image;
         private CameraSummary summary;
-        private object locker = new object();
         private uint deviceIndex;
-        private ImageProvider imageProvider;
+        private PYLON_DEVICE_HANDLE deviceHandle;
+        private ImageProvider device;
         private bool grabbing;
-        private Size actualSize;
-        private float framerate;
-        private LoopWatcher watcher = new LoopWatcher();
-        private System.Windows.Forms.Timer triggerTimer = new System.Windows.Forms.Timer();
-        private Random random = new Random();
+        private Stopwatch swDataRate = new Stopwatch();
+        private Averager dataRateAverager = new Averager(0.02);
+        private const double megabyte = 1024 * 1024;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
     
@@ -91,29 +84,63 @@ namespace Kinovea.Camera.Basler
             this.deviceIndex = deviceIndex;
         }
 
+        /// <summary>
+        /// Configure device and report frame format that will be used during streaming.
+        /// This method must return a proper ImageDescriptor so we can pre-allocate buffers.
+        /// </summary>
         public ImageDescriptor Prepare()
         {
-            return null;
+            ConfigureDevice();
+
+            if (device == null || !deviceHandle.IsValid)
+                return ImageDescriptor.Invalid;
+
+
+            CameraPropertyManager.ReadIntegerValue(deviceHandle, "Width");
+
+            bool hasWidth = Pylon.DeviceFeatureIsReadable(deviceHandle, "Width");
+            bool hasHeight = Pylon.DeviceFeatureIsReadable(deviceHandle, "Height");
+
+            if (!hasWidth || !hasHeight)
+                return ImageDescriptor.Invalid;
+
+            int width = (int)Pylon.DeviceGetIntegerFeature(deviceHandle, "Width");
+            int height = (int)Pylon.DeviceGetIntegerFeature(deviceHandle, "Height");
+            string pixelFormat = Pylon.DeviceFeatureToString(deviceHandle, "PixelFormat");
+
+            // The ImageProvider will perform pixel format conversion and only output either Y800 or RGB24.
+            // Notably:
+            // - Y16 will be converted to Y8.
+            // - Bayer pattern will be converted to color image.
+            EPylonPixelType pixelType = Pylon.PixelTypeFromString(pixelFormat);
+            if (pixelType == EPylonPixelType.PixelType_Undefined)
+                return ImageDescriptor.Invalid;
+
+            bool monochrome = Pylon.IsMono(pixelType) && !Pylon.IsBayer(pixelType);
+            ImageFormat format = monochrome ? format = ImageFormat.Y800 : ImageFormat.RGB24;
+            
+            int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
+            bool topDown = true;
+            return new ImageDescriptor(format, width, height, topDown, bufferSize);
         }
 
         public void Start()
         {
             log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
-            ConfigureDevice();
             
-            imageProvider.ImageReadyEvent += ImageProvider_ImageReadyEvent;
-            imageProvider.GrabErrorEvent += ImageProvider_GrabErrorEvent;
-            imageProvider.GrabbingStartedEvent += ImageProvider_GrabbingStartedEvent;
+            device.ImageReadyEvent += ImageProvider_ImageReadyEvent;
+            device.GrabErrorEvent += ImageProvider_GrabErrorEvent;
+            device.GrabbingStartedEvent += ImageProvider_GrabbingStartedEvent;
             
-            imageProvider.Continuous();
+            device.Continuous();
         }
         
         public void Stop()
         {
             log.DebugFormat("Stopping device {0}", summary.Alias);
-            imageProvider.ImageReadyEvent -= ImageProvider_ImageReadyEvent;
-            imageProvider.GrabErrorEvent -= ImageProvider_GrabErrorEvent;
-            imageProvider.GrabbingStartedEvent -= ImageProvider_GrabbingStartedEvent;
+            device.ImageReadyEvent -= ImageProvider_ImageReadyEvent;
+            device.GrabErrorEvent -= ImageProvider_GrabErrorEvent;
+            device.GrabbingStartedEvent -= ImageProvider_GrabbingStartedEvent;
             Close();
             
             grabbing = false;
@@ -123,13 +150,9 @@ namespace Kinovea.Camera.Basler
 
         private void Close()
         {
-            // Close and destroy.
             SpecificInfo specific = summary.Specific as SpecificInfo;
             specific.Handle = null;
-            
-            imageProvider.Close();
-            
-            log.DebugFormat("bitmap creation avg : {0}", watcher.Average);
+            device.Close();
         }
         
         private void SoftwareTrigger()
@@ -137,47 +160,53 @@ namespace Kinovea.Camera.Basler
             if(!grabbing)
                 return;
                 
-            imageProvider.Trigger();
+            device.Trigger();
         }
-        
+
+        /// <summary>
+        /// Configure the device according to what is saved in the preferences.
+        /// </summary>
         private void ConfigureDevice()
         {
             if(grabbing)
                 Stop();
                 
             CreateDevice();
-            if(imageProvider == null)
+            if(device == null || !deviceHandle.IsValid)
                 return;
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
             if(specific == null)
                 return;
-           
-            framerate = imageProvider.GetFrameRate();
-            actualSize = Size.Empty;
+
+            specific.Handle = deviceHandle;
+
+            if (specific.StreamFormat != null)
+                Pylon.DeviceFeatureFromString(deviceHandle, "PixelFormat", specific.StreamFormat);
+
+            foreach (CameraProperty property in specific.CameraProperties.Values)
+                CameraPropertyManager.Write(deviceHandle, property);
         }
         
         private void CreateDevice()
         {
-            imageProvider = new ImageProvider();
-            
+            device = new ImageProvider();
+
             try
             {
-                PYLON_DEVICE_HANDLE handle = Pylon.CreateDeviceByIndex(deviceIndex);
-                imageProvider.Open(handle);
-                
-                SpecificInfo specific = summary.Specific as SpecificInfo;
-                specific.Handle = handle;
+                deviceHandle = Pylon.CreateDeviceByIndex(deviceIndex);
+                device.Open(deviceHandle);
             }
-            catch(Exception)
+            catch (Exception)
             {
-                log.Error(imageProvider.GetLastErrorMessage());
+                log.Error(PylonHelper.GetLastError());
             }
         }
         
         private void ImageProvider_GrabbingStartedEvent()
         {
             grabbing = true;
+
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
         }
@@ -185,55 +214,29 @@ namespace Kinovea.Camera.Basler
         private void ImageProvider_ImageReadyEvent()
         {
             // Consume the Pylon queue (no copy).
-            ImageProvider.Image pylonImage = imageProvider.GetLatestImage();
+            ImageProvider.Image pylonImage = device.GetLatestImage();
             if (pylonImage == null)
                 return;
 
-            if (actualSize == Size.Empty)
-                actualSize = new Size(pylonImage.Width, pylonImage.Height);
-            
+            ComputeDataRate(pylonImage.Buffer.Length);
 
-            // WORK IN PROGRESS
-            // The code is disabled until the pipeline is fully integrated into Kinovea proper.
+            if (FrameProduced != null)
+                FrameProduced(this, new FrameProducedEventArgs(pylonImage.Buffer, pylonImage.Buffer.Length));
 
-
-            // At that point we have a reference on the Pylon-owned bytes.
-            // Rather than using Pylon's BitmapFactory to build a Bitmap from the bytes, we transmit the bytes directly downstream.
-            
-            //if (FrameProduced != null)
-                //FrameProduced(this, new EventArgs<byte[]>(pylonImage.Buffer));
-            
-            // When we are back from the event handler, the bytes have been copied to the shared queue.
-            //imageProvider.ReleaseImage();
-
-            //----------
-            //if(CameraImageReceived != null)
-            //    CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, pylonImage.Buffer));
-
-            //image = CreateBitmap(pylonImage);
-            //actualSize = image.Size;
-            //if(CameraImageReceived != null)
-            //    CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+            device.ReleaseImage();
         }
 
         private void ImageProvider_GrabErrorEvent(Exception grabException, string additionalErrorMessage)
         {
             log.ErrorFormat("Error from device {0}: {1}", summary.Alias, additionalErrorMessage);
         }
-        
-        private Bitmap CreateBitmap(ImageProvider.Image pylonImage)
-        {
-            // TODO code duplicated with SnapshotRetriever.
-        
-            if (pylonImage == null)
-                return null;
-            
-            Bitmap bitmap = null;
-            BitmapFactory.CreateBitmap(out bitmap, pylonImage.Width, pylonImage.Height, pylonImage.Color);
-            BitmapFactory.UpdateBitmap(bitmap, pylonImage.Buffer, pylonImage.Width, pylonImage.Height, pylonImage.Color);
-            imageProvider.ReleaseImage();
 
-            return bitmap;
+        private void ComputeDataRate(int bytes)
+        {
+            double rate = ((double)bytes / megabyte) / swDataRate.Elapsed.TotalSeconds;
+            dataRateAverager.Post(rate);
+            swDataRate.Reset();
+            swDataRate.Start();
         }
     }
 }

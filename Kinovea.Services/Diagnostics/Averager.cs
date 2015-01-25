@@ -75,6 +75,9 @@ namespace Kinovea.Services
         {
             if (!initialized)
             {
+                if (value == double.PositiveInfinity)
+                    return;
+
                 average = value;
                 initialized = true;
                 return;

@@ -116,8 +116,9 @@ namespace Kinovea.ScreenManager
             pnlDrawingToolsBar.Controls.Add(toolbar);
         }
         
-        public void UpdateTitle(string title)
+        public void UpdateTitle(string title, Bitmap icon)
         {
+            btnIcon.BackgroundImage = icon;
             lblCameraTitle.Text = title;
             lblCameraInfo.Left = lblCameraTitle.Right + 5;
         }
@@ -125,19 +126,6 @@ namespace Kinovea.ScreenManager
         public void UpdateInfo(string info)
         {
             lblCameraInfo.Text = info;
-            
-            /*if(capturedFilesView.HorizontalScroll.Visible)
-            {
-                //pnlCapturedVideos.Height = 120;
-                //pnlCapturedVideos.Top -= 20;
-                AfterCapturedVideosChange();
-            }
-            else
-            {
-                //pnlCapturedVideos.Height = 100;
-                //pnlCapturedVideos.Top += 20;
-                AfterCapturedVideosChange();
-            }*/
         }
         
         public void UpdateGrabbingStatus(bool grabbing)

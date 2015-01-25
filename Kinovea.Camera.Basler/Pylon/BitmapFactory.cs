@@ -11,13 +11,13 @@ namespace PylonC.NETSupportLibrary
         /* Returns the corresponding pixel format of a bitmap. */
         private static PixelFormat GetFormat(bool color)
         {
-            return color ? PixelFormat.Format32bppRgb : PixelFormat.Format8bppIndexed;
+            return color ? PixelFormat.Format24bppRgb : PixelFormat.Format8bppIndexed;
         }
 
         /* Calculates the length of one line in byte. */
         private static int GetStride(int width, bool color)
         {
-            return color ? width * 4 : width;
+            return color ? width * 3 : width;
         }
 
         /* Compares the properties of the bitmap with the supplied image data. Returns true if the properties are compatible. */
