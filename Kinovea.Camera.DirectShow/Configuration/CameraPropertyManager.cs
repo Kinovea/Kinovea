@@ -199,7 +199,7 @@ namespace Kinovea.Camera.DirectShow
             }
             else
             {
-                currentValue = Math.Min(min, Math.Max(min, currentValue));
+                currentValue = Math.Min(max, Math.Max(min, currentValue));
                 p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
                 p.Automatic = !manual;
             }
