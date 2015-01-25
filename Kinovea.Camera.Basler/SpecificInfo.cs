@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using PylonC.NET;
+using System.Collections.Generic;
 
 namespace Kinovea.Camera.Basler
 {
@@ -31,5 +32,12 @@ namespace Kinovea.Camera.Basler
     public class SpecificInfo
     {
         public PYLON_DEVICE_HANDLE Handle { get; set; }
+        public string StreamFormat { get; set; }
+        public Dictionary<string, CameraProperty> CameraProperties { get; set; }
+
+        public SpecificInfo()
+        {
+            CameraProperties = new Dictionary<string, CameraProperty>();
+        }
     }
 }

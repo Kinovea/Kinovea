@@ -77,7 +77,6 @@ namespace Kinovea.Camera.DirectShow
         private float selectedFramerate;
         private bool canStreamConfig;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
-        
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FormConfiguration(CameraSummary summary)
@@ -85,6 +84,8 @@ namespace Kinovea.Camera.DirectShow
             this.summary = summary;
    
             InitializeComponent();
+            tbAlias.AutoSize = false;
+            tbAlias.Height = 20;
             
             tbAlias.Text = summary.Alias;
             lblSystemName.Text = summary.Name;
@@ -270,9 +271,11 @@ namespace Kinovea.Camera.DirectShow
         }
         #endregion
 
-        #region Exposure
+        #region Camera controls
         private void PopulateCameraControl()
         {
+            int top = lblAuto.Bottom;
+
             Func<int, string> defaultValueMapper = (value) => value.ToString();
 
             if (cameraProperties.ContainsKey("exposure_logitech"))
@@ -285,24 +288,18 @@ namespace Kinovea.Camera.DirectShow
                         return string.Format("{0:0.#} ms", value / 10F);
                 };
 
-                CameraPropertyView cpvExposureLogitech = new CameraPropertyView(cameraProperties["exposure_logitech"], "Exposure:", valueMapper);
-                cpvExposureLogitech.ValueChanged += cpvLogitechExposure_ValueChanged;
-                cpvExposureLogitech.Left = 20;
-                cpvExposureLogitech.Top = 220;
-                groupBox1.Controls.Add(cpvExposureLogitech);
+                AddCameraProperty("exposure_logitech", "Exposure:", valueMapper, top);
             }
 
             if (cameraProperties.ContainsKey("exposure"))
             {
-                CameraPropertyView cpvExposure = new CameraPropertyView(cameraProperties["exposure"], "Exposure:", defaultValueMapper);
-                CameraControlProperty? prop = CameraControlProperty.Exposure;
-                cpvExposure.Tag = prop;
-                cpvExposure.ValueChanged += cpvCameraControl_ValueChanged;
-                cpvExposure.Left = 20;
-                cpvExposure.Top = 220;
-                groupBox1.Controls.Add(cpvExposure);
+                AddCameraProperty("exposure", "Exposure:", defaultValueMapper, top);
             }
 
+            AddCameraProperty("gain", "Gain:", defaultValueMapper, top + 30);
+            AddCameraProperty("focus", "Focus:", defaultValueMapper, top + 60);
+
+            /*
             if (cameraProperties.ContainsKey("gain"))
             {
                 CameraPropertyView cpvGain = new CameraPropertyView(cameraProperties["gain"], "Gain:", defaultValueMapper);
@@ -310,7 +307,7 @@ namespace Kinovea.Camera.DirectShow
                 cpvGain.Tag = prop;
                 cpvGain.ValueChanged += cpvVideoProcAmp_ValueChanged;
                 cpvGain.Left = 20;
-                cpvGain.Top = 250;
+                cpvGain.Top = top + 30;
                 groupBox1.Controls.Add(cpvGain);
             }
             
@@ -321,13 +318,59 @@ namespace Kinovea.Camera.DirectShow
                 cpvFocus.Tag = prop;
                 cpvFocus.ValueChanged += cpvCameraControl_ValueChanged;
                 cpvFocus.Left = 20;
-                cpvFocus.Top = 280;
+                cpvFocus.Top = top + 60;
                 groupBox1.Controls.Add(cpvFocus);
+            }*/
+        }
+
+        private void AddCameraProperty(string key, string localizationToken, Func<int, string> valueMapper, int top)
+        {
+            if (!cameraProperties.ContainsKey(key))
+                return;
+
+            CameraProperty property = cameraProperties[key];
+
+            AbstractCameraPropertyView control = null;
+
+            switch (property.Representation)
+            {
+                case CameraPropertyRepresentation.LinearSlider:
+                    control = new CameraPropertyLinearView(property, localizationToken, valueMapper);
+                    break;
+                case CameraPropertyRepresentation.LogarithmicSlider:
+                    control = new CameraPropertyLogarithmicView(property, localizationToken, valueMapper);
+                    break;
+
+                default:
+                    break;
             }
+
+            if (control == null)
+                return;
+
+            control.Tag = key;
+            control.ValueChanged += cpvCameraControl_ValueChanged;
+            control.Left = 20;
+            control.Top = top;
+            groupBox1.Controls.Add(control);
         }
 
         private void cpvCameraControl_ValueChanged(object sender, EventArgs e)
         {
+            AbstractCameraPropertyView control = sender as AbstractCameraPropertyView;
+            if (control == null)
+                return;
+
+            string key = control.Tag as string;
+            if (string.IsNullOrEmpty(key) || !cameraProperties.ContainsKey(key))
+                return;
+
+            CameraProperty property = control.Property;
+            CameraPropertyManager.Write(device, cameraProperties[key]);
+
+            specificChanged = true;
+
+            /*
             CameraPropertyView cpv = sender as CameraPropertyView;
             if (cpv == null)
                 return;
@@ -337,10 +380,10 @@ namespace Kinovea.Camera.DirectShow
                 return;
 
             CameraControlFlags flags = cpv.Property.Automatic ? CameraControlFlags.Auto : CameraControlFlags.Manual;
-            device.SetCameraProperty(property.Value, cpv.Property.Value, flags); 
+            device.SetCameraProperty(property.Value, cpv.Property.Value, flags); */
         }
 
-        private void cpvVideoProcAmp_ValueChanged(object sender, EventArgs e)
+        /*private void cpvVideoProcAmp_ValueChanged(object sender, EventArgs e)
         {
             CameraPropertyView cpv = sender as CameraPropertyView;
             if (cpv == null)
@@ -365,7 +408,7 @@ namespace Kinovea.Camera.DirectShow
             // The device might decide to adjust the selected exposure on its own due to internal constraints.
             // However it was found that the actual exposure used is closer to the original asked one than 
             // to the adjusted one. It is possibly just a truncation after a float conversion.
-        }
+        }*/
         #endregion
     }
 }

@@ -26,6 +26,7 @@ namespace Kinovea.Camera.FrameGenerator
 {
     /// <summary>
     /// Retrieve a single snapshot, simulating a synchronous function. Used for thumbnails.
+    /// We use whatever settings are currently configured in the camera.
     /// </summary>
     public class SnapshotRetriever
     {
@@ -44,6 +45,7 @@ namespace Kinovea.Camera.FrameGenerator
         }
 
         #region Members
+        private static readonly int timeout = 5000;
         private Bitmap image;
         private CameraSummary summary;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

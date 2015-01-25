@@ -1,29 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using System.Globalization;
 
-namespace Kinovea.Camera.DirectShow
+namespace Kinovea.Camera
 {
-    public partial class CameraPropertyView : UserControl
+    public partial class CameraPropertyLinearView : AbstractCameraPropertyView
     {
-        public event EventHandler ValueChanged;
-
-        public CameraProperty Property
-        {
-            get { return property; }
-        }
-
-        private CameraProperty property;
         private string localizationToken;
         private bool updatingValue;
         private Func<int, string> valueMapper;
         
-        public CameraPropertyView(CameraProperty property, string localizationToken, Func<int, string> valueMapper)
+        public CameraPropertyLinearView(CameraProperty property, string localizationToken, Func<int, string> valueMapper)
         {
             this.property = property;
             this.localizationToken = localizationToken;
@@ -42,15 +29,20 @@ namespace Kinovea.Camera.DirectShow
 
         private void Populate()
         {
-
-            tbValue.Minimum = property.Minimum;
-            tbValue.Maximum = property.Maximum;
-
+            cbAuto.Enabled = property.CanBeAutomatic;
+            
+            tbValue.Minimum = int.Parse(property.Minimum, CultureInfo.InvariantCulture);
+            tbValue.Maximum = int.Parse(property.Maximum, CultureInfo.InvariantCulture);
+            int value = int.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+            
             updatingValue = true;
-            tbValue.Value = property.Value;
+            tbValue.Value = value;
             cbAuto.Checked = property.Automatic;
-            lblValue.Text = valueMapper(property.Value);
             updatingValue = false;
+
+            tbValue.Enabled = !property.ReadOnly;
+
+            lblValue.Text = valueMapper(value);
         }
 
         private void tbValue_ValueChanged(object sender, EventArgs e)
@@ -58,11 +50,8 @@ namespace Kinovea.Camera.DirectShow
             if (updatingValue)
                 return;
 
-            if (tbValue.Value < property.Minimum || tbValue.Value > property.Maximum)
-                return;
-
-            property.Value = tbValue.Value;
-            lblValue.Text = valueMapper(property.Value);
+            property.CurrentValue = tbValue.Value.ToString(CultureInfo.InvariantCulture);
+            lblValue.Text = valueMapper(tbValue.Value);
 
             property.Automatic = false;
             
@@ -70,8 +59,7 @@ namespace Kinovea.Camera.DirectShow
             cbAuto.Checked = property.Automatic;
             updatingValue = false;
 
-            if (ValueChanged != null)
-                ValueChanged(this, EventArgs.Empty);
+            RaiseValueChanged();
         }
 
         private void cbAuto_CheckedChanged(object sender, EventArgs e)
@@ -81,8 +69,7 @@ namespace Kinovea.Camera.DirectShow
 
             property.Automatic = cbAuto.Checked;
 
-            if (ValueChanged != null)
-                ValueChanged(this, EventArgs.Empty);
+            RaiseValueChanged();
         }
     }
 }

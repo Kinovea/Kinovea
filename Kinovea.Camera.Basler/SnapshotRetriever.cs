@@ -29,31 +29,27 @@ namespace Kinovea.Camera.Basler
 {
     /// <summary>
     /// Retrieve a single snapshot, simulating a synchronous function. Used for thumbnails.
+    /// We use whatever settings are currently configured in the camera.
     /// </summary>
     public class SnapshotRetriever
     {
         public event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
-        public event EventHandler CameraImageTimedOut;
-        public event EventHandler CameraImageError;
-        
-        public string Identifier 
-        { 
-            get { return this.summary.Identifier;}
-        }
-        public string Error
+
+        public string Identifier
         {
-            get { return error;}
+            get { return this.summary.Identifier; }
         }
         
         #region Members
+        private static readonly int timeout = 5000;
         private Bitmap image;
         private CameraSummary summary;
         private object locker = new object();
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
         private bool cancelled;
-        private PYLON_DEVICE_HANDLE handle;
-        private ImageProvider imageProvider;
-        private string error;
+        private bool hadError;
+        private PYLON_DEVICE_HANDLE deviceHandle;
+        private ImageProvider device;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -61,12 +57,12 @@ namespace Kinovea.Camera.Basler
         {
             this.summary = summary;
 
-            imageProvider = new ImageProvider();
+            device = new ImageProvider();
             
             try
             {
-                handle = Pylon.CreateDeviceByIndex(deviceIndex);                
-                imageProvider.Open(handle);
+                deviceHandle = Pylon.CreateDeviceByIndex(deviceIndex);                
+                device.Open(deviceHandle);
             }
             catch(Exception)
             {
@@ -74,51 +70,67 @@ namespace Kinovea.Camera.Basler
             }
         }
 
+        /// <summary>
+        /// Start the device for a frame grab, wait a bit and then return the result.
+        /// This method MUST raise a CameraThumbnailProduced event, even in case of error.
+        /// </summary>
         public void Run(object data)
         {
-            if(!imageProvider.IsOpen)
+            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
+            log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
+
+            if (!device.IsOpen)
+            {
+                if (CameraThumbnailProduced != null)
+                    CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, null, true, false));
+
                 return;
-            
-            imageProvider.ImageReadyEvent += ImageProvider_ImageReadyEvent;
-            imageProvider.GrabErrorEvent += ImageProvider_GrabErrorEvent;
-            imageProvider.GrabbingStartedEvent += ImageProvider_GrabbingStartedEvent;
+            }
+             
+            device.ImageReadyEvent += ImageProvider_ImageReadyEvent;
+            device.GrabErrorEvent += ImageProvider_GrabErrorEvent;
+            device.GrabbingStartedEvent += ImageProvider_GrabbingStartedEvent;
             
             try
             {
-                imageProvider.BeforeSingleFrameAuto();
-                imageProvider.SingleFrameAuto();
+                device.BeforeSingleFrameAuto();
+                device.SingleFrameAuto();
             }
             catch (Exception)
             {
-                log.Error(imageProvider.GetLastErrorMessage());
+                log.Error(device.GetLastErrorMessage());
             }
             
-            waitHandle.WaitOne(500000);
+            waitHandle.WaitOne(timeout, false);
             
-            // Detach 
-            imageProvider.GrabbingStartedEvent -= ImageProvider_GrabbingStartedEvent;
-            imageProvider.GrabErrorEvent -= ImageProvider_GrabErrorEvent;
-            imageProvider.ImageReadyEvent -= ImageProvider_ImageReadyEvent;
+            device.GrabbingStartedEvent -= ImageProvider_GrabbingStartedEvent;
+            device.GrabErrorEvent -= ImageProvider_GrabErrorEvent;
+            device.ImageReadyEvent -= ImageProvider_ImageReadyEvent;
             
-            imageProvider.AfterSingleFrameAuto();
-            imageProvider.Close();
-            
-            if(!cancelled && !string.IsNullOrEmpty(error) && CameraImageError != null)
-                CameraImageError(this, EventArgs.Empty);
-            else if(!cancelled && image != null && CameraThumbnailProduced != null)
-                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, false, false));
-            else if(!cancelled && image == null && CameraImageTimedOut != null)
-                CameraImageTimedOut(this, EventArgs.Empty);
+            device.AfterSingleFrameAuto();
+            device.Close();
+
+            if (CameraThumbnailProduced != null)
+                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, hadError, cancelled));
+        }
+
+        public void Cancel()
+        {
+            if (!device.IsOpen)
+                return;
+
+            cancelled = true;
+            waitHandle.Set();
         }
 
         private void ImageProvider_GrabbingStartedEvent()
         {
-            imageProvider.Trigger();
+            device.Trigger();
         }
 
         private void ImageProvider_ImageReadyEvent()
         {
-            ImageProvider.Image pylonImage = imageProvider.GetLatestImage();
+            ImageProvider.Image pylonImage = device.GetLatestImage();
             
             if(pylonImage == null)
             {
@@ -132,21 +144,15 @@ namespace Kinovea.Camera.Basler
 
         private void ImageProvider_GrabErrorEvent(Exception grabException, string additionalErrorMessage)
         {
-            log.ErrorFormat("Error received");
+            log.ErrorFormat("Error received trying to get a thumbnail for {0}", summary.Alias);
+            log.Error(grabException.ToString());
             log.Error(additionalErrorMessage);
+
+            hadError = true;
             waitHandle.Set();
         }
         
-        public void Cancel()
-        {
-            if(!imageProvider.IsOpen)
-                return;
-            
-            cancelled = true;
-            waitHandle.Set();
-        }
-        
-        public Bitmap CreateBitmap(ImageProvider.Image pylonImage)
+        private Bitmap CreateBitmap(ImageProvider.Image pylonImage)
         {
             if (pylonImage == null)
                 return null;
@@ -154,7 +160,7 @@ namespace Kinovea.Camera.Basler
             Bitmap bitmap = null;
             BitmapFactory.CreateBitmap(out bitmap, pylonImage.Width, pylonImage.Height, pylonImage.Color);
             BitmapFactory.UpdateBitmap(bitmap, pylonImage.Buffer, pylonImage.Width, pylonImage.Height, pylonImage.Color);
-            imageProvider.ReleaseImage();
+            device.ReleaseImage();
 
             return bitmap;
         }

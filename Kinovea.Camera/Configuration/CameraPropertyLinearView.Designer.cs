@@ -1,6 +1,6 @@
-﻿namespace Kinovea.Camera.DirectShow
+﻿namespace Kinovea.Camera
 {
-    partial class CameraPropertyView
+    partial class CameraPropertyLinearView
     {
         /// <summary> 
         /// Required designer variable.

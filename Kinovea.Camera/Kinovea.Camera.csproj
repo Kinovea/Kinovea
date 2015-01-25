@@ -61,8 +61,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraManager.cs" />
+    <Compile Include="Configuration\AbstractCameraPropertyView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\CameraProperty.cs" />
+    <Compile Include="Configuration\CameraPropertyRepresentation.cs" />
+    <Compile Include="Configuration\CameraPropertyType.cs" />
     <Compile Include="CameraSummary.cs" />
     <Compile Include="CameraTypeManager.cs" />
+    <Compile Include="Configuration\CameraPropertyLinearView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\CameraPropertyLinearView.Designer.cs">
+      <DependentUpon>CameraPropertyLinearView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\CameraPropertyLogarithmicView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\CameraPropertyLogarithmicView.Designer.cs">
+      <DependentUpon>CameraPropertyLogarithmicView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Events\CameraThumbnailProducedEventArgs.cs" />
     <Compile Include="Events\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Events\CamerasDiscoveredEventArgs.cs" />
@@ -92,6 +110,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Configuration\CameraPropertyLinearView.resx">
+      <DependentUpon>CameraPropertyLinearView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\CameraPropertyLogarithmicView.resx">
+      <DependentUpon>CameraPropertyLogarithmicView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormHandshakeResult.resx">
       <DependentUpon>FormHandshakeResult.cs</DependentUpon>
     </EmbeddedResource>
@@ -118,6 +142,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\dashboard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\basler.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logitech.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\microsoft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\playstation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\basler2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

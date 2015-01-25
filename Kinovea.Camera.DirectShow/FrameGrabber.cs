@@ -28,6 +28,7 @@ using Kinovea.Services;
 using Kinovea.Pipeline;
 using Kinovea.Video;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -88,11 +89,15 @@ namespace Kinovea.Camera.DirectShow
         {
             this.summary = summary;
             this.moniker = moniker;
+            
             device = new VideoCaptureDevice(moniker);
-
             device.SetDirectConnectFormats(new List<string>() { "RGB24", "MJPG" });
         }
 
+        /// <summary>
+        /// Configure device and report frame format that will be used during streaming.
+        /// This method must return a proper ImageDescriptor so we can pre-allocate buffers.
+        /// </summary>
         public ImageDescriptor Prepare()
         {
             ConfigureDevice();
@@ -103,7 +108,7 @@ namespace Kinovea.Camera.DirectShow
                 // This device was never connected to in Kinovea, use the first media type.
                 AForge.Video.DirectShow.VideoCapabilities[] caps = device.VideoCapabilities;
                 if (caps.Length == 0)
-                    return new ImageDescriptor(ImageFormat.None, 0, 0, 0);
+                    return ImageDescriptor.Invalid;
 
                 cap = caps[0];
             }
@@ -128,10 +133,10 @@ namespace Kinovea.Camera.DirectShow
                     break;
             }
 
-            // Buffer size is always the full RGB24 size, even for compressed or subsampled formats.
-            int bufferSize = width * height * 3;
-            
-            return new ImageDescriptor(format, width, height, bufferSize);
+            int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
+            bool topDown = false;
+
+            return new ImageDescriptor(format, width, height, topDown, bufferSize);
         }
 
         public void Start()
@@ -141,8 +146,6 @@ namespace Kinovea.Camera.DirectShow
             device.NewFrameBuffer += device_NewFrameBuffer;
             device.VideoSourceError += device_VideoSourceError;
             grabbing = true;
-            swDataRate.Reset();
-            swDataRate.Start();
 
             device.Start();
 
@@ -169,6 +172,9 @@ namespace Kinovea.Camera.DirectShow
                 GrabbingStatusChanged(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Configure the device according to what is saved in the preferences for it.
+        /// </summary>
         private void ConfigureDevice()
         {
             SpecificInfo info = summary.Specific as SpecificInfo;
@@ -195,7 +201,14 @@ namespace Kinovea.Camera.DirectShow
 
             // Reload camera properties in case the firmware "forgot" them.
             // This means changes done in other softwares will be overwritten.
-            CameraPropertyManager.Write(device, info.CameraProperties);
+            try
+            {
+                CameraPropertyManager.Write(device, info.CameraProperties);
+            }
+            catch
+            {
+                log.ErrorFormat("An error occured while reloading camera properties.");
+            }
         }
         
         private void device_NewFrameBuffer(object sender, NewFrameBufferEventArgs e)
@@ -226,7 +239,9 @@ namespace Kinovea.Camera.DirectShow
             if (info == null || !info.CameraProperties.ContainsKey("exposure_logitech") || info.CameraProperties["exposure_logitech"].Automatic)
                 return;
 
-            device.Logitech_SetExposure(info.CameraProperties["exposure_logitech"].Value, true);
+            int exposure = int.Parse(info.CameraProperties["exposure_logitech"].CurrentValue, CultureInfo.InvariantCulture);
+
+            device.Logitech_SetExposure(exposure, true);
         }
 
         private void ComputeDataRate(int bytes)

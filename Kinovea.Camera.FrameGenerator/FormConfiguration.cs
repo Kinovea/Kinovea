@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Kinovea.Camera;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.FrameGenerator
 {
@@ -121,7 +122,7 @@ namespace Kinovea.Camera.FrameGenerator
         void BtnIconClick(object sender, EventArgs e)
         {
             FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5, "Icons");
-            LocateForm(fip);
+            FormsHelper.Locate(fip);
             if(fip.ShowDialog() == DialogResult.OK)
             {
                 btnIcon.BackgroundImage = fip.PickedIcon;
@@ -129,15 +130,6 @@ namespace Kinovea.Camera.FrameGenerator
             }
             
             fip.Dispose();
-        }
-        
-        private void LocateForm(Form form)
-        {
-            if (Cursor.Position.X + (form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width || 
-                Cursor.Position.Y + form.Height >= SystemInformation.PrimaryMonitorSize.Height)
-                form.StartPosition = FormStartPosition.CenterScreen;
-            else
-                form.Location = new Point(Cursor.Position.X - (form.Width / 2), Cursor.Position.Y - 20);
         }
         
         private void PopulateCapabilities()
