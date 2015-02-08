@@ -88,7 +88,17 @@ namespace Kinovea.Camera.FrameGenerator
 
         public ImageDescriptor Prepare()
         {
-            return null;
+            return ImageDescriptor.Invalid;
+        }
+
+        /// <summary>
+        /// In case of configure failure, we would have retrieved a single image and the corresponding image descriptor.
+        /// A limitation of the single snapshot retriever is that the format is always RGB24, even though the grabber may
+        /// use a different format.
+        /// </summary>
+        public ImageDescriptor GetPrepareFailedImageDescriptor(ImageDescriptor input)
+        {
+            return input;
         }
 
         public void Start()

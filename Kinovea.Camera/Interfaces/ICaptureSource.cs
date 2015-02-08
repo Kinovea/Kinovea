@@ -37,6 +37,7 @@ namespace Kinovea.Camera
         double LiveDataRate { get; }
 
         ImageDescriptor Prepare();
+        ImageDescriptor GetPrepareFailedImageDescriptor(ImageDescriptor input);
         void Start();
         void Stop();
     }

@@ -20,10 +20,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Diagnostics;
 using AForge.Video;
 using Kinovea.Services;
 using Kinovea.Pipeline;
-using System.Diagnostics;
 
 namespace Kinovea.Camera.HTTP
 {
@@ -65,12 +65,13 @@ namespace Kinovea.Camera.HTTP
         #region Members
         private CameraSummary summary;
         private CameraManagerHTTP manager;
-        private IVideoSource device;
+        private ICameraHTTPClient device;
         private bool grabbing;
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
         private bool receivedFirstFrame;
+        private string format;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -84,11 +85,11 @@ namespace Kinovea.Camera.HTTP
                 return;
 
             string url = manager.BuildURL(specific);
-
-            if (specific.Format == "MJPEG")
-                device = new MJPEGStream(url);
-            else if (specific.Format == "JPEG")
-                device = new JPEGStream(url);
+            this.format = specific.Format;
+            if (format == "MJPEG")
+                device = new CameraHTTPClientMJPEG(url);
+            else if (format == "JPEG")
+                device = new CameraHTTPClientJPEG(url);
         }
 
         /// <summary>
@@ -97,7 +98,21 @@ namespace Kinovea.Camera.HTTP
         /// </summary>
         public ImageDescriptor Prepare()
         {
+            // We cannot know the stream format in advance, it must always use the two-step process.
             return ImageDescriptor.Invalid;
+        }
+
+        /// <summary>
+        /// In case of configure failure, we would have retrieved a single image and the corresponding image descriptor.
+        /// A limitation of the single snapshot retriever is that the format is always RGB24, even though the grabber may
+        /// use a different format.
+        /// </summary>
+        public ImageDescriptor GetPrepareFailedImageDescriptor(ImageDescriptor input)
+        {
+            if (format == "MJPEG" || format == "JPEG")
+                return new ImageDescriptor(Video.ImageFormat.JPEG, input.Width, input.Height, input.TopDown, input.BufferSize);
+            else
+                return input;
         }
 
         public void Start()
@@ -107,11 +122,10 @@ namespace Kinovea.Camera.HTTP
             if(grabbing)
                 return;
             
-            
-            
             log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
-            device.NewFrame += Device_NewFrame;
-            device.VideoSourceError += Device_VideoSourceError;
+            
+            device.NewFrameBuffer += device_NewFrameBuffer;
+            device.VideoSourceError += device_VideoSourceError;
             grabbing = true;
             device.Start();
             if (GrabbingStatusChanged != null)
@@ -120,13 +134,17 @@ namespace Kinovea.Camera.HTTP
 
         public void Stop()
         {
-            if(device == null)
+            if(device == null || !grabbing)
                 return;
                 
             log.DebugFormat("Stopping device {0}", summary.Alias);
-            device.NewFrame -= Device_NewFrame;
-            device.VideoSourceError -= Device_VideoSourceError;
+            device.NewFrameBuffer -= device_NewFrameBuffer;
+            device.VideoSourceError -= device_VideoSourceError;
             device.Stop();
+
+            if (device.IsRunning)
+                log.DebugFormat("Stopping device {0}", summary.Alias);
+    
             grabbing = false;
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
@@ -137,32 +155,13 @@ namespace Kinovea.Camera.HTTP
             if (!receivedFirstFrame)
                 receivedFirstFrame = true;
 
-            //ComputeDataRate(e.PayloadLength);
+            ComputeDataRate(e.PayloadLength);
 
             if (FrameProduced != null)
                 FrameProduced(this, new FrameProducedEventArgs(e.Buffer, e.PayloadLength));
         }
 
-        private void Device_NewFrame(object sender, NewFrameEventArgs e)
-        {
-            // WIP: use frame buffer event and send byte[] to client.
-
-            /*int finalHeight = SetFinalHeight(e.Frame.Width, e.Frame.Height);
-            bool anamorphic = e.Frame.Height != finalHeight;
-            actualSize = new Size(e.Frame.Width, finalHeight);
-            
-            image = new Bitmap(e.Frame.Width, finalHeight, e.Frame.PixelFormat);
-            Graphics g = Graphics.FromImage(image);
-            if(!anamorphic)
-                g.DrawImageUnscaled(e.Frame, Point.Empty);
-            else
-                g.DrawImage(e.Frame, 0, 0, e.Frame.Width, finalHeight);
-            
-            if(CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));*/
-        }
-        
-        private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
+        private void device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
             log.ErrorFormat("Error from device {0}: {1}", summary.Alias, e.Description);
         }
@@ -182,6 +181,14 @@ namespace Kinovea.Camera.HTTP
             }
             
             return finalHeight;
+        }
+
+        private void ComputeDataRate(int bytes)
+        {
+            double rate = (bytes / megabyte) / swDataRate.Elapsed.TotalSeconds;
+            dataRateAverager.Post(rate);
+            swDataRate.Reset();
+            swDataRate.Start();
         }
     }
 }

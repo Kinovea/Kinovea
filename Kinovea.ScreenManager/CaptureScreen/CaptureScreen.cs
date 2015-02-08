@@ -419,10 +419,12 @@ namespace Kinovea.ScreenManager
             ImageDescriptor imageDescriptor = ImageDescriptor.Invalid;
             if (prepareFailed && prepareFailedImageDescriptor != ImageDescriptor.Invalid)
             {
-                imageDescriptor = prepareFailedImageDescriptor;
+                imageDescriptor = cameraGrabber.GetPrepareFailedImageDescriptor(prepareFailedImageDescriptor);
+
             }
             else
             {
+
                 imageDescriptor = cameraGrabber.Prepare();
 
                 if (imageDescriptor == null || imageDescriptor.Format == Video.ImageFormat.None || imageDescriptor.Width <= 0 || imageDescriptor.Height <= 0)
@@ -437,6 +439,8 @@ namespace Kinovea.ScreenManager
                     cameraManager.GetSingleImage(cameraSummary);
                 }
             }
+
+            //ImageDescriptor imageDescriptor = new ImageDescriptor(Video.ImageFormat.JPEG, 640, 480, true, 921600); 
 
             if (imageDescriptor == ImageDescriptor.Invalid)
             {

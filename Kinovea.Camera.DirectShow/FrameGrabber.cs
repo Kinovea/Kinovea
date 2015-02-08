@@ -139,6 +139,16 @@ namespace Kinovea.Camera.DirectShow
             return new ImageDescriptor(format, width, height, topDown, bufferSize);
         }
 
+        /// <summary>
+        /// In case of configure failure, we would have retrieved a single image and the corresponding image descriptor.
+        /// A limitation of the single snapshot retriever is that the format is always RGB24, even though the grabber may
+        /// use a different format.
+        /// </summary>
+        public ImageDescriptor GetPrepareFailedImageDescriptor(ImageDescriptor input)
+        {
+            return input;
+        }
+
         public void Start()
         {
             log.DebugFormat("Starting device {0}.", summary.Alias);

@@ -47,8 +47,7 @@ namespace Kinovea.Camera.HTTP
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
         private bool cancelled;
         private bool hadError;
-        private string moniker;
-        private IVideoSource device;
+        private ICameraHTTPClient device;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -62,9 +61,9 @@ namespace Kinovea.Camera.HTTP
                 url = manager.BuildURL(specific);
             
             if(specific.Format == "MJPEG")
-                device = new MJPEGStream(url);
+                device = new CameraHTTPClientMJPEG(url);
             else if(specific.Format == "JPEG")
-                device = new JPEGStream(url);
+                device = new CameraHTTPClientJPEG(url);
         }
 
         /// <summary>
@@ -102,7 +101,7 @@ namespace Kinovea.Camera.HTTP
             // TODO: wait for a bit then kill the thread.
             //device.WaitForStop();
         }
-        
+
         public void Cancel()
         {
             cancelled = true;
