@@ -22,6 +22,8 @@ using System;
 using System.Drawing;
 using System.Threading;
 using AForge.Video;
+using Kinovea.Pipeline;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.HTTP
 {
@@ -31,27 +33,22 @@ namespace Kinovea.Camera.HTTP
     public class SnapshotRetriever
     {
         public event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
-        public event EventHandler CameraImageTimedOut;
-        public event EventHandler CameraImageError;
         
         public string Identifier 
         { 
             get { return this.summary.Identifier;}
         }
         
-        public string Error
-        {
-            get { return error;}
-        }
-        
         #region Members
+        private static readonly int timeout = 5000;
         private Bitmap image;
+        private ImageDescriptor imageDescriptor = ImageDescriptor.Invalid;
         private CameraSummary summary;
-        private object locker = new object();
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
         private bool cancelled;
+        private bool hadError;
+        private string moniker;
         private IVideoSource device;
-        private string error;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -70,54 +67,66 @@ namespace Kinovea.Camera.HTTP
                 device = new JPEGStream(url);
         }
 
+        /// <summary>
+        /// Start the device for a frame grab, wait a bit and then return the result.
+        /// This method MUST raise a CameraThumbnailProduced event, even in case of error.
+        /// </summary>
         public void Run(object data)
         {
-            if(device == null)
+            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
+            log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
+
+            if (device == null)
+            {
+                if (CameraThumbnailProduced != null)
+                    CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, null, imageDescriptor, true, false));
+
                 return;
+            }
 
             device.NewFrame += Device_NewFrame;
             device.VideoSourceError += Device_VideoSourceError;
             
             device.Start();
-            waitHandle.WaitOne(5000, false);
+
+            waitHandle.WaitOne(timeout, false);
             
             device.NewFrame -= Device_NewFrame;
             device.VideoSourceError -= Device_VideoSourceError;
+            
+            if(CameraThumbnailProduced != null)
+                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
+
             device.SignalToStop();
             
-            if(!cancelled && !string.IsNullOrEmpty(error) && CameraImageError != null)
-                CameraImageError(this, EventArgs.Empty);
-            else if (!cancelled && image == null && CameraImageTimedOut != null)
-                CameraImageTimedOut(this, EventArgs.Empty);
-            else if(CameraThumbnailProduced != null)
-                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, false, cancelled));
-
             // TODO: wait for a bit then kill the thread.
             //device.WaitForStop();
         }
         
         public void Cancel()
         {
-            if(device == null)
-                return;
-
             cancelled = true;
             waitHandle.Set();
         }
         
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
-            // Note: unfortunately some devices need several frames to have a usable image. (e.g: PS3 Eye).
             image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
             Graphics g = Graphics.FromImage(image);
             g.DrawImageUnscaled(e.Frame, Point.Empty);
+
+            int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24);
+            imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+            
             waitHandle.Set();
         }
         
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
-            log.DebugFormat("Error received");
-            error = e.Description;
+            log.ErrorFormat("Error received trying to get a thumbnail for {0}", summary.Alias);
+            log.Error(e.Description);
+
+            hadError = true;
             waitHandle.Set();
         }
 

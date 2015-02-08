@@ -95,7 +95,6 @@ namespace Kinovea.Camera.Basler
             if (device == null || !deviceHandle.IsValid)
                 return ImageDescriptor.Invalid;
 
-
             CameraPropertyManager.ReadIntegerValue(deviceHandle, "Width");
 
             bool hasWidth = Pylon.DeviceFeatureIsReadable(deviceHandle, "Width");

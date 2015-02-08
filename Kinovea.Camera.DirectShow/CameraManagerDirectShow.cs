@@ -250,14 +250,13 @@ namespace Kinovea.Camera.DirectShow
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if (retriever == null)
-                return;
+            if (retriever != null)
+            {
+                retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
+                snapshotting.Remove(retriever.Identifier);
+            }
 
-            retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-            snapshotting.Remove(retriever.Identifier);
-
-            if (e.Thumbnail != null && !e.HadError && !e.Cancelled)
-                OnCameraThumbnailProduced(e);
+            OnCameraThumbnailProduced(e);
         }
 
         private Bitmap SelectDefaultIcon(string identifier)

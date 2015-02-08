@@ -114,8 +114,10 @@ namespace Kinovea.ScreenManager
         private bool cameraConnected;
         private bool firstImageReceived;
         private bool recording;
-        private ImageDescriptor imageDescriptor;
 
+        private bool prepareFailed;
+        private ImageDescriptor prepareFailedImageDescriptor;
+        
         private CameraSummary cameraSummary;
         private CameraManager cameraManager;
         private ICaptureSource cameraGrabber;
@@ -412,10 +414,32 @@ namespace Kinovea.ScreenManager
             firstImageReceived = false;
             //currentImageSize = Size.Empty;
 
-            imageDescriptor = cameraGrabber.Prepare();
-            if (imageDescriptor == null || imageDescriptor.Format == Video.ImageFormat.None || imageDescriptor.Width <= 0 || imageDescriptor.Height <= 0)
+            // First we try to prepare the grabber by pushing preferences and reading back the configuration.
+            // If the configuration cannot be known in advance by an API, we try to read a single frame and check its configuration.
+            ImageDescriptor imageDescriptor = ImageDescriptor.Invalid;
+            if (prepareFailed && prepareFailedImageDescriptor != ImageDescriptor.Invalid)
             {
-                log.ErrorFormat("The camera does not support configuration so we cannot preallocate buffers.");
+                imageDescriptor = prepareFailedImageDescriptor;
+            }
+            else
+            {
+                imageDescriptor = cameraGrabber.Prepare();
+
+                if (imageDescriptor == null || imageDescriptor.Format == Video.ImageFormat.None || imageDescriptor.Width <= 0 || imageDescriptor.Height <= 0)
+                {
+                    imageDescriptor = ImageDescriptor.Invalid;
+                    prepareFailed = true;
+                    log.ErrorFormat("The camera does not support configuration and we could not preallocate buffers.");
+                    
+                    // Attempt to retrieve an image and look up its format on the fly.
+                    // This is asynchronous. We'll come back here after the image has been captured or a timeout expired.
+                    cameraManager.CameraThumbnailProduced += cameraManager_CameraThumbnailProduced;
+                    cameraManager.GetSingleImage(cameraSummary);
+                }
+            }
+
+            if (imageDescriptor == ImageDescriptor.Invalid)
+            {
                 UpdateTitle();
                 return;
             }
@@ -440,6 +464,13 @@ namespace Kinovea.ScreenManager
             
             UpdateTitle();
             cameraConnected = true;
+        }
+
+        private void cameraManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
+        {
+            cameraManager.CameraThumbnailProduced -= cameraManager_CameraThumbnailProduced;
+            prepareFailedImageDescriptor = e.ImageDescriptor;
+            Connect();
         }
 
         /// <summary>
@@ -474,6 +505,7 @@ namespace Kinovea.ScreenManager
                 nonGrabbingInteractionTimer.Enabled = true;
             }
 
+            prepareFailedImageDescriptor = ImageDescriptor.Invalid;
             UpdateTitle();
         }
 

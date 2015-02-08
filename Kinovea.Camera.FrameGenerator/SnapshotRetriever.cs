@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Threading;
+using Kinovea.Pipeline;
 
 namespace Kinovea.Camera.FrameGenerator
 {
@@ -62,7 +63,7 @@ namespace Kinovea.Camera.FrameGenerator
             image = generator.Generate(new Size(640, 480));
             
             if (CameraThumbnailProduced != null)
-                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, false, false));
+                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, ImageDescriptor.Invalid, false, false));
         }
 
         public void Cancel()
