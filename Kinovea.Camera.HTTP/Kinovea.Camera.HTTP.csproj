@@ -62,6 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraManagerHTTP.cs" />
+    <Compile Include="Clients\CameraHTTPClientJPEG.cs" />
+    <Compile Include="Clients\CameraHTTPClientMJPEG.cs" />
+    <Compile Include="Clients\ICameraHTTPClient.cs" />
     <Compile Include="ConnectionWizard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -105,5 +108,6 @@
       <Name>Kinovea.Video</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
