@@ -26,6 +26,7 @@ using AForge.Video;
 using AForge.Video.DirectShow;
 using System.Drawing.Imaging;
 using Kinovea.Video;
+using Kinovea.Pipeline;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -45,8 +46,8 @@ namespace Kinovea.Camera.DirectShow
         #region Members
         private static readonly int timeout = 5000;
         private Bitmap image;
+        private ImageDescriptor imageDescriptor = ImageDescriptor.Invalid;
         private CameraSummary summary;
-        private object locker = new object();
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
         private bool cancelled;
         private bool hadError;
@@ -83,7 +84,7 @@ namespace Kinovea.Camera.DirectShow
             device.VideoSourceError -= device_VideoSourceError;
             
             if (CameraThumbnailProduced != null)
-                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, hadError, cancelled));
+                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
 
             DeviceHelper.StopDevice(device);
         }
@@ -100,6 +101,8 @@ namespace Kinovea.Camera.DirectShow
             image = new Bitmap(e.Width, e.Height, PixelFormat.Format24bppRgb);
             Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
             BitmapHelper.FillFromRGB24(image, rect, false, e.Buffer);
+            imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24));
+
             waitHandle.Set();
         }
         

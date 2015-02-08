@@ -26,6 +26,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
+using Kinovea.Pipeline;
 
 namespace Kinovea.Camera.HTTP
 {
@@ -71,8 +72,6 @@ namespace Kinovea.Camera.HTTP
             CameraSummary testSummary = GetResult();
             SnapshotRetriever retriever = new SnapshotRetriever(manager, testSummary);
             retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
-            retriever.CameraImageTimedOut += SnapshotRetriever_CameraImageTimedOut;
-            retriever.CameraImageError += SnapshotRetriever_CameraImageError;
             retriever.Run(null);
         }
         
@@ -229,50 +228,32 @@ namespace Kinovea.Camera.HTTP
             return specific;
         }
         
-        
-        private void SnapshotRetriever_CameraImageTimedOut(object sender, EventArgs e)
-        {
-            SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if(retriever == null)
-                return;
-            
-            string title = "Camera connection test failure";
-            string message = "The connection to the camera timed out, double check host address.";
-            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            AfterCameraTest(retriever);
-        }
-        
-        private void SnapshotRetriever_CameraImageError(object sender, EventArgs e)
-        {
-            SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if(retriever == null)
-                return;
-            
-            string title = "Camera connection test failure";
-            string message = "An error occurred during connection test:\n" + retriever.Error; 
-            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            AfterCameraTest(retriever);
-        }
-        
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if(retriever == null)
+            if (retriever == null)
                 return;
-            
-            FormHandshakeResult result = new FormHandshakeResult(e.Thumbnail);
-            result.ShowDialog();
-            result.Dispose();
-            e.Thumbnail.Dispose();
+
+            if (e.HadError || e.ImageDescriptor == ImageDescriptor.Invalid || e.Thumbnail == null)
+            {
+                string title = "Camera connection test failure";
+                string message = "An error occurred during connection test:\n";
+                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                FormHandshakeResult result = new FormHandshakeResult(e.Thumbnail);
+                result.ShowDialog();
+                result.Dispose();
+                e.Thumbnail.Dispose();
+            }
+
             AfterCameraTest(retriever);
         }
         
         private void AfterCameraTest(SnapshotRetriever retriever)
         {
             retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-            retriever.CameraImageTimedOut -= SnapshotRetriever_CameraImageTimedOut;
-            retriever.CameraImageError -= SnapshotRetriever_CameraImageError;
-            
             testing = false;
         }
     }

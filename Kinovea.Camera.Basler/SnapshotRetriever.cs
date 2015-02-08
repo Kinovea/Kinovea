@@ -24,6 +24,8 @@ using System.Threading;
 
 using PylonC.NET;
 using PylonC.NETSupportLibrary;
+using Kinovea.Pipeline;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.Basler
 {
@@ -43,6 +45,7 @@ namespace Kinovea.Camera.Basler
         #region Members
         private static readonly int timeout = 5000;
         private Bitmap image;
+        private ImageDescriptor imageDescriptor = ImageDescriptor.Invalid;
         private CameraSummary summary;
         private object locker = new object();
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
@@ -82,7 +85,7 @@ namespace Kinovea.Camera.Basler
             if (!device.IsOpen)
             {
                 if (CameraThumbnailProduced != null)
-                    CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, null, true, false));
+                    CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, null, imageDescriptor, true, false));
 
                 return;
             }
@@ -111,7 +114,7 @@ namespace Kinovea.Camera.Basler
             device.Close();
 
             if (CameraThumbnailProduced != null)
-                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, hadError, cancelled));
+                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
         }
 
         public void Cancel()
@@ -161,6 +164,12 @@ namespace Kinovea.Camera.Basler
             BitmapFactory.CreateBitmap(out bitmap, pylonImage.Width, pylonImage.Height, pylonImage.Color);
             BitmapFactory.UpdateBitmap(bitmap, pylonImage.Buffer, pylonImage.Width, pylonImage.Height, pylonImage.Color);
             device.ReleaseImage();
+
+            if (bitmap != null)
+            {
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(bitmap.Width, bitmap.Height, Video.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, bitmap.Width, bitmap.Height, true, bufferSize); 
+            }
 
             return bitmap;
         }

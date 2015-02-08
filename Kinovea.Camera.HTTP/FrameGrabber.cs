@@ -23,6 +23,7 @@ using System.Drawing;
 using AForge.Video;
 using Kinovea.Services;
 using Kinovea.Pipeline;
+using System.Diagnostics;
 
 namespace Kinovea.Camera.HTTP
 {
@@ -45,43 +46,58 @@ namespace Kinovea.Camera.HTTP
         
         public Size Size
         {
-            get { return actualSize; }
+            get { return Size.Empty; }
         }
         
         public float Framerate
         {
             get { return 0;}
         }
-        /*public string ErrorDescription
-        {
-            get { return errorDescription;}
-        }*/
         public double LiveDataRate
         {
-            get { return 0; }
+            // Note: this variable is written by the stream thread and read by the UI thread.
+            // We don't lock because freshness of values is not paramount and torn reads are not catastrophic either.
+            // We eventually get an approximate value good enough for the purpose.
+            get { return dataRateAverager.Average; }
         }
         #endregion
         
         #region Members
-        private Bitmap image;
         private CameraSummary summary;
         private CameraManagerHTTP manager;
-        private object locker = new object();
         private IVideoSource device;
         private bool grabbing;
-        private Size actualSize;
+        private Stopwatch swDataRate = new Stopwatch();
+        private Averager dataRateAverager = new Averager(0.02);
+        private const double megabyte = 1024 * 1024;
+        private bool receivedFirstFrame;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public FrameGrabber(CameraManagerHTTP manager, CameraSummary summary)
+        public FrameGrabber(CameraSummary summary, CameraManagerHTTP manager)
         {
-            this.manager = manager;
             this.summary = summary;
+            this.manager = manager;
+
+            SpecificInfo specific = summary.Specific as SpecificInfo;
+            if (specific == null)
+                return;
+
+            string url = manager.BuildURL(specific);
+
+            if (specific.Format == "MJPEG")
+                device = new MJPEGStream(url);
+            else if (specific.Format == "JPEG")
+                device = new JPEGStream(url);
         }
 
+        /// <summary>
+        /// Configure device and report frame format that will be used during streaming.
+        /// This method must return a proper ImageDescriptor so we can pre-allocate buffers.
+        /// </summary>
         public ImageDescriptor Prepare()
         {
-            return null;
+            return ImageDescriptor.Invalid;
         }
 
         public void Start()
@@ -91,20 +107,7 @@ namespace Kinovea.Camera.HTTP
             if(grabbing)
                 return;
             
-            string url = "";
-            SpecificInfo specific = summary.Specific as SpecificInfo;
-            if(specific == null)
-                return;
-                
-            url = manager.BuildURL(specific);
-                
-            if(specific.Format == "MJPEG")
-                device = new MJPEGStream(url);
-            else if(specific.Format == "JPEG")
-                device = new JPEGStream(url);
             
-            if(device == null)
-                return;
             
             log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
             device.NewFrame += Device_NewFrame;
@@ -128,7 +131,18 @@ namespace Kinovea.Camera.HTTP
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
         }
-        
+
+        private void device_NewFrameBuffer(object sender, NewFrameBufferEventArgs e)
+        {
+            if (!receivedFirstFrame)
+                receivedFirstFrame = true;
+
+            //ComputeDataRate(e.PayloadLength);
+
+            if (FrameProduced != null)
+                FrameProduced(this, new FrameProducedEventArgs(e.Buffer, e.PayloadLength));
+        }
+
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
             // WIP: use frame buffer event and send byte[] to client.

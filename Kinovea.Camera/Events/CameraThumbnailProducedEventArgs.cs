@@ -22,6 +22,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Kinovea.Pipeline;
 
 namespace Kinovea.Camera
 {
@@ -29,12 +30,14 @@ namespace Kinovea.Camera
     {
         public readonly CameraSummary Summary;
         public readonly Bitmap Thumbnail;
+        public readonly ImageDescriptor ImageDescriptor;
         public readonly bool HadError;
         public readonly bool Cancelled;
-        public CameraThumbnailProducedEventArgs(CameraSummary summary, Bitmap thumbnail, bool hadError, bool cancelled)
+        public CameraThumbnailProducedEventArgs(CameraSummary summary, Bitmap thumbnail, ImageDescriptor imageDescriptor, bool hadError, bool cancelled)
         {
             this.Summary = summary;
             this.Thumbnail = thumbnail;
+            this.ImageDescriptor = imageDescriptor;
             this.HadError = hadError;
             this.Cancelled = cancelled;
         }
