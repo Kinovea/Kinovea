@@ -149,7 +149,7 @@
     <ClInclude Include="..\..\Refs\FFmpeg\include\libpostproc\postprocess.h" />
     <ClInclude Include="..\..\Refs\FFmpeg\include\libswresample\swresample.h" />
     <ClInclude Include="..\..\Refs\FFmpeg\include\libswscale\swscale.h" />
-    <ClInclude Include="Enums.h" />
+    <ClInclude Include="ReadResult.h" />
     <ClInclude Include="MJPEGWriter.h" />
     <ClInclude Include="SavingContext.h" />
     <ClInclude Include="TimestampInfo.h" />

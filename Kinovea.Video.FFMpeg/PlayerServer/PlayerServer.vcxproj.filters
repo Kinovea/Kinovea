@@ -1,80 +1,52 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Header Files\FFMpeg">
+    <Filter Include="FFMpeg">
       <UniqueIdentifier>{4c4ef50c-72e7-4b60-ab7e-498a3c39eee2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AssemblyInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VideoFileWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VideoReaderFFMpeg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MJPEGWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClCompile Include="VideoReaderFFMpeg.cpp" />
+    <ClCompile Include="VideoFileWriter.cpp" />
+    <ClCompile Include="MJPEGWriter.cpp" />
+    <ClCompile Include="AssemblyInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Enums.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SavingContext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TimestampInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VideoFileWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VideoReaderFFMpeg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavcodec\avcodec.h">
-      <Filter>Header Files\FFMpeg</Filter>
+      <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavdevice\avdevice.h">
-      <Filter>Header Files\FFMpeg</Filter>
+      <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavfilter\avfilter.h">
-      <Filter>Header Files\FFMpeg</Filter>
+      <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavformat\avformat.h">
-      <Filter>Header Files\FFMpeg</Filter>
+      <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\avutil.h">
-      <Filter>Header Files\FFMpeg</Filter>
+      <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\error.h">
-      <Filter>Header Files\FFMpeg</Filter>
+      <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libpostproc\postprocess.h">
-      <Filter>Header Files\FFMpeg</Filter>
+      <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libswscale\swscale.h">
-      <Filter>Header Files\FFMpeg</Filter>
+      <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libswresample\swresample.h">
-      <Filter>Header Files\FFMpeg</Filter>
+      <Filter>FFMpeg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\pixfmt.h">
-      <Filter>Header Files\FFMpeg</Filter>
+      <Filter>FFMpeg</Filter>
     </ClInclude>
-    <ClInclude Include="MJPEGWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="VideoReaderFFMpeg.h" />
+    <ClInclude Include="VideoFileWriter.h" />
+    <ClInclude Include="TimestampInfo.h" />
+    <ClInclude Include="SavingContext.h" />
+    <ClInclude Include="MJPEGWriter.h" />
+    <ClInclude Include="ReadResult.h" />
   </ItemGroup>
 </Project>

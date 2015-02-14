@@ -61,7 +61,7 @@ extern "C" {
 #include <swscale.h>
 }
 
-#include "Enums.h"
+#include "ReadResult.h"
 #include "TimestampInfo.h"
 #include "SavingContext.h"
 
