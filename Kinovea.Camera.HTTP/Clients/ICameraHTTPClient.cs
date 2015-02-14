@@ -10,7 +10,7 @@ namespace Kinovea.Camera.HTTP
     {
         // At the moment these events are still dependent on AForge for convenience.
         // Ideally these would be redeclared locally and each CameraHTTPClient would be a proxy 
-        // from events declared in the underlying library.
+        // from events declared in an underlying library.
         event NewFrameBufferEventHandler NewFrameBuffer;
         event NewFrameEventHandler NewFrame;
         event VideoSourceErrorEventHandler VideoSourceError;

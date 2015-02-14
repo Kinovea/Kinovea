@@ -88,7 +88,8 @@ namespace Kinovea.Camera
                             continue;
                         
                         CameraManager manager = (CameraManager)Activator.CreateInstance(t, null);
-                        if (manager.SanityCheck())
+                        
+                        if (manager.Enabled && manager.SanityCheck())
                         {
                             manager.CameraThumbnailProduced += CameraManager_CameraThumbnailProduced;
                             cameraManagers.Add(manager);
