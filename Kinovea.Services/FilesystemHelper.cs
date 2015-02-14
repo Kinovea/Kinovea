@@ -169,6 +169,32 @@ namespace Kinovea.Services
             return format;
         }
 
+        public static bool CanWrite(string filename)
+        {
+            // This may suffer from a race condition but should be fine as we mainly use this to test overwriting the file Open in Kinovea itself.
+
+            if (!File.Exists(filename))
+                return true;
+
+            Stream s = null;
+
+            try
+            {
+                s = new FileStream(filename, FileMode.Open, FileAccess.Write, FileShare.None);
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (s != null)
+                    s.Close();
+            }
+
+            return true;
+        }
+
         public static void DeleteOrphanFiles()
         {
             // Delete orphaned temporary files.
