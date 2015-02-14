@@ -38,6 +38,10 @@ namespace Kinovea.Camera.HTTP
     public class CameraManagerHTTP : CameraManager
     {
         #region Properties
+        public override bool Enabled
+        {
+            get { return true; }
+        }
         public override string CameraType 
         { 
             get { return "0F8CF704-97FC-11E2-9919-09C611C84021";}

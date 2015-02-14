@@ -32,9 +32,18 @@ using Kinovea.Services;
 
 namespace Kinovea.Camera.FrameGenerator
 {
+    /// <summary>
+    /// Non-functionnal.
+    /// Needs to use the new capture pipeline where the frame grabber is expected to output a frame buffer directly,
+    /// rather than a complete bitmap.
+    /// </summary>
     public class CameraManagerFrameGenerator : CameraManager
     {
         #region Properties
+        public override bool Enabled
+        {
+            get { return false; }
+        }
         public override string CameraType
         {
             get { return "904E2A6C-126D-45AF-BF08-6CE3925FF67E"; }
@@ -50,11 +59,11 @@ namespace Kinovea.Camera.FrameGenerator
         #endregion
 
         #region Members
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private List<string> snapshotting = new List<string>();
         private Bitmap defaultIcon;
         private string defaultAlias = "Camera simulator";
         private string defaultName = "Camera simulator";
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         public CameraManagerFrameGenerator()

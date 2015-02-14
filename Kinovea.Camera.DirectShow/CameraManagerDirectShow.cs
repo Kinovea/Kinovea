@@ -38,6 +38,10 @@ namespace Kinovea.Camera.DirectShow
     public class CameraManagerDirectShow : CameraManager
     {
         #region Properties
+        public override bool Enabled
+        {
+            get { return true; }
+        }
         public override string CameraType 
         { 
             get { return "4602B70E-8FDD-47FF-B012-7C38BB2A16B9";}

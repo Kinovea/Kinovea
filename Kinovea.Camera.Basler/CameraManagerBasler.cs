@@ -38,6 +38,10 @@ namespace Kinovea.Camera.Basler
     public class CameraManagerBasler : CameraManager
     {
         #region Properties
+        public override bool Enabled
+        {
+            get { return true; }
+        }
         public override string CameraType 
         { 
             get { return "B7FE6FE2-A98C-11E2-97AA-7A3A79957A39";}

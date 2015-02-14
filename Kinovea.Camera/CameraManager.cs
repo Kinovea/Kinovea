@@ -40,10 +40,12 @@ namespace Kinovea.Camera
         protected virtual void OnCameraThumbnailProduced(CameraThumbnailProducedEventArgs e)
         {
             EventHandler<CameraThumbnailProducedEventArgs> invoker = CameraThumbnailProduced;
-            if(invoker != null) 
+            if (invoker != null)
                 invoker(this, e);
         }
-        
+
+        public abstract bool Enabled { get; }
+
         public abstract string CameraType { get; }
         
         public abstract string CameraTypeFriendlyName { get; }
