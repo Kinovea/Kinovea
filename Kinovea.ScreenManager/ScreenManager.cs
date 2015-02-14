@@ -167,7 +167,8 @@ namespace Kinovea.ScreenManager
             ToolStripMenuItem menu = new ToolStripMenuItem(_filter.Name, _filter.Icon);
             menu.MergeAction = MergeAction.Append;
             menu.Tag = _filter;
-            menu.Click += (s,e) => {
+            menu.Click += (s,e) => 
+            {
                 PlayerScreen screen = activeScreen as PlayerScreen;
                 if(screen == null || !screen.IsCaching)
                     return;
@@ -377,7 +378,7 @@ namespace Kinovea.ScreenManager
             // We just check on their type. Ultimately each plugin will have a category or a submenu property.
             foreach(ToolStripMenuItem m in filterMenus)
             {
-                if(m.Tag is AdjustmentFilter)
+                if (m.Tag is AdjustmentFilter)
                     mnuCatchImage.DropDownItems.Add(m);
             }
             
@@ -1058,6 +1059,11 @@ namespace Kinovea.ScreenManager
                 
                 menu.Visible = filter.Experimental ? Software.Experimental : true;
                 menu.Enabled = hasVideo ? player.IsCaching : false;
+
+                // Temporary deactivation of adjustment filters. (Broken with new AForge version).
+                // They will be repurposed in an export feature so they can be used on the whole video.
+                if (filter is AdjustmentFilter)
+                    menu.Enabled = false;
             }
         }
         private void ConfigureImageFormatMenus(AbstractScreen screen)
