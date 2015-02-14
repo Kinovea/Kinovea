@@ -156,29 +156,38 @@ namespace Kinovea.ScreenManager
         {
             // Let the user select what he wants to save exactly.
             formVideoExport fve = new formVideoExport(videoReader.FilePath, metadata, slowmotionPercentage);
-            if(fve.Spawn() == DialogResult.OK)
+            if (fve.Spawn() != DialogResult.OK)
             {
-                if(fve.SaveAnalysis)
-                {
-                    MetadataSerializer serializer = new MetadataSerializer();
-                    serializer.SaveToFile(metadata, fve.Filename);
-                    metadata.AfterManualExport();
-                }
-                else
-                {
-                    DoSave(fve.Filename,
-                            fve.UseSlowMotion ? playbackFrameInterval : videoReader.Info.FrameIntervalMilliseconds,
-                            fve.BlendDrawings,
-                            false,
-                            false,
-                            imageRetriever);
-
-                    PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(fve.Filename);
-                    PreferencesManager.Save();
-                }
+                fve.Dispose();
+                return;
             }
-            
-            // Release configuration form.
+
+            if (!FilesystemHelper.CanWrite(fve.Filename))
+            {
+                DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_FileError);
+                fve.Dispose();
+                return;
+            }
+
+            if(fve.SaveAnalysis)
+            {
+                MetadataSerializer serializer = new MetadataSerializer();
+                serializer.SaveToFile(metadata, fve.Filename);
+                metadata.AfterManualExport();
+            }
+            else
+            {
+                DoSave(fve.Filename,
+                        fve.UseSlowMotion ? playbackFrameInterval : videoReader.Info.FrameIntervalMilliseconds,
+                        fve.BlendDrawings,
+                        false,
+                        false,
+                        imageRetriever);
+
+                PreferencesManager.PlayerPreferences.VideoFormat = FilesystemHelper.GetVideoFormat(fve.Filename);
+                PreferencesManager.Save();
+            }
+
             fve.Dispose();
         }
         public void SaveDiaporama(ImageRetriever imageRetriever, bool diapo)
