@@ -33,12 +33,15 @@ VideoFileWriter::VideoFileWriter()
 {
     av_register_all();
 }
+
 VideoFileWriter::~VideoFileWriter()
 {
 }
+
 VideoFileWriter::!VideoFileWriter()
 {
 }
+
 SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoInfo _info, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker)
 {
     SaveResult result = SaveResult::Success;
@@ -88,6 +91,7 @@ SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoInfo _info, IEnu
 
     return result;
 }
+
 ///<summary>
 /// VideoFileWriter::OpenSavingContext
 /// Open a saving context and configure it with default parameters.
