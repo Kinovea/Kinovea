@@ -10,7 +10,7 @@ namespace Kinovea.Camera.DirectShow
     /// At the bottom of the hierarchy are pairs of media type + framerate.
     /// This abstraction is used to model the two different ways that framerates are presented in filters,
     /// the correct way: a list of media types on the capture pin and a list of associated framerates on the filter,
-    /// the other way: a massive list of media type, one for each framerate.
+    /// the other way: a massive list of media types, one for each framerate.
     /// </summary>
     public class MediaTypeOrganizer
     {

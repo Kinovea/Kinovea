@@ -68,11 +68,12 @@ namespace Kinovea.Camera.HTTP
             if(testing)
                 return;
             
+            // Spawn a thread to get a snapshot.
             testing = true;
             CameraSummary testSummary = GetResult();
             SnapshotRetriever retriever = new SnapshotRetriever(manager, testSummary);
             retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
-            retriever.Run(null);
+            ThreadPool.QueueUserWorkItem(retriever.Run);
         }
         
         public SpecificInfo GetSpecific()

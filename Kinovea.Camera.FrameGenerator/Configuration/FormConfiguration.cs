@@ -58,12 +58,12 @@ namespace Kinovea.Camera.FrameGenerator
             }
         }
         
-        public int Framerate
+        public int FrameInterval
         {
             get
             {
-                int selected = (int)cmbFramerate.SelectedItem;
-                return selected == 0 ? defaultFramerate : selected;
+                Framerate framerate = (Framerate)cmbFramerate.SelectedItem;
+                return framerate == null ? defaultFrameInterval : framerate.FrameInterval;
             }
         }
 
@@ -72,9 +72,9 @@ namespace Kinovea.Camera.FrameGenerator
         private CameraSummary summary;
         private bool loaded;
         private List<FrameSize> frameSizes = new List<FrameSize>();
+        private List<Framerate> framerates = new List<Framerate>();
         private FrameSize defaultFrameSize;
-        private List<int> framerates = new List<int>();
-        private int defaultFramerate;
+        private int defaultFrameInterval = 20000;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FormConfiguration(CameraSummary summary)
@@ -100,23 +100,24 @@ namespace Kinovea.Camera.FrameGenerator
             frameSizes.Add(new FrameSize("VGA (640 × 480)", new Size(640, 480)));
             frameSizes.Add(new FrameSize("DV (720 × 480)", new Size(720, 480)));
             frameSizes.Add(new FrameSize("SVGA (800 × 600)", new Size(800, 600)));
-            frameSizes.Add(new FrameSize("HD 720 (1280 × 720)", new Size(1280, 720)));
-            frameSizes.Add(new FrameSize("HD 1080 (1920 × 1080)", new Size(1920, 1080)));
+            frameSizes.Add(new FrameSize("720p (1280 × 720)", new Size(1280, 720)));
+            frameSizes.Add(new FrameSize("1080p (1920 × 1080)", new Size(1920, 1080)));
             frameSizes.Add(new FrameSize("2K (2048 × 1080)", new Size(2048, 1080)));
+            frameSizes.Add(new FrameSize("4K UHDTV (3840 × 2160)", new Size(3840, 2160)));
             frameSizes.Add(new FrameSize("4K (4096 × 2160)", new Size(4096, 2160)));
-
+            //frameSizes.Add(new FrameSize("8K UHDTV (7680 × 4320)", new Size(7680, 4320)));
+            //frameSizes.Add(new FrameSize("8K (8192 × 4320)", new Size(8192, 4320)));
+            
             defaultFrameSize = frameSizes[3];
 
-            framerates.Add(10);
-            framerates.Add(15);
-            framerates.Add(20);
-            framerates.Add(25);
-            framerates.Add(30);
-            framerates.Add(50);
-            framerates.Add(60);
-            framerates.Add(100);
-
-            defaultFramerate = 25;
+            List<double> commonFramerates = new List<double>() { 10, 15, 20, 24, 25, 29.97, 30, 50, 60, 100, 120, 200, 300, 500, 1000 };
+            
+            framerates.Clear();
+            foreach (double framerate in commonFramerates)
+            {
+                int interval = (int)Math.Round(1000000.0 / framerate);
+                framerates.Add(new Framerate(interval));
+            }
         }
         
         void BtnIconClick(object sender, EventArgs e)
@@ -134,41 +135,42 @@ namespace Kinovea.Camera.FrameGenerator
         
         private void PopulateCapabilities()
         {
+            int selectedFrameInterval = 0;
             Size selectedFrameSize = Size.Empty;
-            int selectedFrameRate = 0;
 
             SpecificInfo info = summary.Specific as SpecificInfo;
             if(info != null)
             {
-                selectedFrameSize = info.SelectedFrameSize;
-                selectedFrameRate = info.SelectedFrameRate;
+                selectedFrameInterval = info.FrameInterval;
+                selectedFrameSize = info.FrameSize;
             }
             else
             {
+                selectedFrameInterval = defaultFrameInterval;
                 selectedFrameSize = defaultFrameSize.Value;
-                selectedFrameRate = defaultFramerate;
             }
 
-            int index = 0;
+            int sizeIndex = 0;
             foreach (FrameSize frameSize in frameSizes)
             {
                 cmbFrameSize.Items.Add(frameSize);
 
                 if (frameSize.Value == selectedFrameSize)
-                    cmbFrameSize.SelectedIndex = index;
+                    cmbFrameSize.SelectedIndex = sizeIndex;
 
-                index++;
+                sizeIndex++;
             }
 
-            index = 0;
-            foreach (int framerate in framerates)
+            int fpsIndex = 0;
+
+            foreach (Framerate framerate in framerates)
             {
                 cmbFramerate.Items.Add(framerate);
+                
+                if (framerate.FrameInterval == selectedFrameInterval)
+                    cmbFramerate.SelectedIndex = fpsIndex;
 
-                if (framerate == selectedFrameRate)
-                    cmbFramerate.SelectedIndex = index;
-
-                index++;
+                fpsIndex++;
             }
         }
         

@@ -65,16 +65,16 @@
     <Compile Include="Clients\CameraHTTPClientJPEG.cs" />
     <Compile Include="Clients\CameraHTTPClientMJPEG.cs" />
     <Compile Include="Clients\ICameraHTTPClient.cs" />
-    <Compile Include="ConnectionWizard.cs">
+    <Compile Include="Configuration\ConnectionWizard.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ConnectionWizard.Designer.cs">
+    <Compile Include="Configuration\ConnectionWizard.Designer.cs">
       <DependentUpon>ConnectionWizard.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormConfiguration.cs">
+    <Compile Include="Configuration\FormConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormConfiguration.Designer.cs">
+    <Compile Include="Configuration\FormConfiguration.Designer.cs">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
     <Compile Include="FrameGrabber.cs" />
@@ -83,10 +83,10 @@
     <Compile Include="SpecificInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ConnectionWizard.resx">
+    <EmbeddedResource Include="Configuration\ConnectionWizard.resx">
       <DependentUpon>ConnectionWizard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormConfiguration.resx">
+    <EmbeddedResource Include="Configuration\FormConfiguration.resx">
       <DependentUpon>FormConfiguration.Designer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

@@ -25,23 +25,12 @@ using System.Runtime.InteropServices;
 using Kinovea.Services;
 using Kinovea.Pipeline;
 using System.Diagnostics;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.FrameGenerator
 {
     public class FrameGrabber : ICaptureSource
     {
-        #region Imports Win32
-        [DllImport("winmm.dll", SetLastError = true)]
-        private static extern uint timeSetEvent(int msDelay, int msResolution, TimerEventHandler handler, ref int userCtx, int eventType);
-
-        [DllImport("winmm.dll", SetLastError = true)]
-        private static extern uint timeKillEvent(uint timerEventId);
-
-        private const int TIME_PERIODIC = 0x01;
-        private const int TIME_KILL_SYNCHRONOUS = 0x0100;
-
-        #endregion
-
         public event EventHandler<FrameProducedEventArgs> FrameProduced;
         public event EventHandler GrabbingStatusChanged;
 
@@ -53,44 +42,61 @@ namespace Kinovea.Camera.FrameGenerator
 
         public Size Size
         {
-            get { return info.SelectedFrameSize; }
+            get { return Size.Empty; }
         }
 
         public float Framerate
         {
-            get { return 25f; }
+            get { return 30; }
         }
         public double LiveDataRate
         {
-            get { return 0; }
+            // Note: this variable is written by the stream thread and read by the UI thread.
+            // We don't lock because freshness of values is not paramount and torn reads are not catastrophic either.
+            // We eventually get an approximate value good enough for the purpose.
+            get { return dataRateAverager.Average; }
         }
         #endregion
 
         #region Members
-        private delegate void TimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
-        private TimerEventHandler timerEventHandler;
-        private uint timerId;
-        
         private CameraSummary summary;
-        private SpecificInfo info;
-        private object locker = new object();
+        private FrameGeneratorDevice device;
         private bool grabbing;
-        private Generator generator = new Generator();
+        private Stopwatch swDataRate = new Stopwatch();
+        private Averager dataRateAverager = new Averager(0.02);
+        private const double megabyte = 1024 * 1024;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        
         #endregion
 
+        #region Public methods
         public FrameGrabber(CameraSummary summary)
         {
             this.summary = summary;
-            this.info = summary.Specific as SpecificInfo;
-            timerEventHandler = new TimerEventHandler(MultimediaTimer_Tick);
         }
 
+        /// <summary>
+        /// Configure device and report frame format that will be used during streaming.
+        /// This method must return a proper ImageDescriptor so we can pre-allocate buffers.
+        /// </summary>
         public ImageDescriptor Prepare()
         {
-            return ImageDescriptor.Invalid;
-        }
+            // Configure according to saved preferences.
+            CreateAndConfigureDevice();
 
+            if (device == null)
+                return ImageDescriptor.Invalid;
+
+            // Read final values from device.
+            int width = device.Configuration.Width;
+            int height = device.Configuration.Height;
+            ImageFormat format = device.Configuration.ImageFormat;
+            int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
+            bool topDown = true;
+
+            return new ImageDescriptor(format, width, height, topDown, bufferSize);
+        }
+        
         /// <summary>
         /// In case of configure failure, we would have retrieved a single image and the corresponding image descriptor.
         /// A limitation of the single snapshot retriever is that the format is always RGB24, even though the grabber may
@@ -104,54 +110,80 @@ namespace Kinovea.Camera.FrameGenerator
         public void Start()
         {
             log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
-            grabbing = true;
-            this.info = summary.Specific as SpecificInfo;
 
-            int framerate = info.SelectedFrameRate;
-            if (framerate == 0)
-                framerate = 25;
+            device.FrameProduced += device_FrameProduced;
+            device.FrameError += device_FrameError;
+            device.GrabbingStarted += device_GrabbingStarted;
 
-            int interval = 1000 / framerate;
-            StartMultimediaTimer(interval);
-
-            if (GrabbingStatusChanged != null)
-                GrabbingStatusChanged(this, EventArgs.Empty);
+            device.Start();
         }
 
         public void Stop()
         {
             log.DebugFormat("Stopping device {0}", summary.Alias);
-            StopMultimediaTimer();
+            device.FrameProduced -= device_FrameProduced;
+            device.FrameError -= device_FrameError;
+            device.GrabbingStarted -= device_GrabbingStarted;
+
+            device.Stop();
 
             grabbing = false;
-            
+            if (GrabbingStatusChanged != null)
+                GrabbingStatusChanged(this, EventArgs.Empty);
+        }
+        #endregion
+
+        #region Private methods
+
+        /// <summary>
+        /// Configure the device according to what is saved in the preferences.
+        /// </summary>
+        private void CreateAndConfigureDevice()
+        {
+            if (grabbing)
+                Stop();
+
+            device = new FrameGeneratorDevice();
+
+            SpecificInfo specific = summary.Specific as SpecificInfo;
+            if (specific == null)
+                return;
+
+            DeviceConfiguration configuration = new DeviceConfiguration(specific.FrameSize.Width, specific.FrameSize.Height, specific.FrameInterval, ImageFormat.RGB24);
+            device.Configuration = configuration;
+        }
+
+        private void ComputeDataRate(int bytes)
+        {
+            double rate = ((double)bytes / megabyte) / swDataRate.Elapsed.TotalSeconds;
+            dataRateAverager.Post(rate);
+            swDataRate.Reset();
+            swDataRate.Start();
+        }
+        #endregion
+
+        #region device event handlers
+        private void device_GrabbingStarted(object sender, EventArgs e)
+        {
+            grabbing = true;
+
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
         }
 
-        private void StartMultimediaTimer(int interval)
+        private void device_FrameProduced(object sender, FrameProducedEventArgs e)
         {
-            int userCtx = 0;
-            timerId = timeSetEvent(interval, interval, timerEventHandler, ref userCtx, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
+            ComputeDataRate(e.PayloadLength);
+
+            if (FrameProduced != null)
+                FrameProduced(this, e);
         }
 
-        private void StopMultimediaTimer()
+        private void device_FrameError(object sender, FrameErrorEventArgs e)
         {
-            if (timerId != 0)
-                timeKillEvent(timerId);
-            
-            timerId = 0;
+            log.ErrorFormat("Error from device {0}: {1}", summary.Alias, e.Description);
         }
+        #endregion
 
-        private void MultimediaTimer_Tick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
-        {
-            Size size = info.SelectedFrameSize;
-            Bitmap image = generator.Generate(size);
-
-            // TODO: Grab byte array and push to clients.
-
-            //if (CameraImageReceived != null)
-              //  CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image, false, false));
-        }
     }
 }

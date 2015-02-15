@@ -111,8 +111,10 @@ namespace Kinovea.Camera.HTTP
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
             image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
-            Graphics g = Graphics.FromImage(image);
-            g.DrawImageUnscaled(e.Frame, Point.Empty);
+            using (Graphics g = Graphics.FromImage(image))
+            {
+                g.DrawImageUnscaled(e.Frame, Point.Empty);
+            }
 
             int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24);
             imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);

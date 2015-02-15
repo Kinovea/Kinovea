@@ -420,11 +420,9 @@ namespace Kinovea.ScreenManager
             if (prepareFailed && prepareFailedImageDescriptor != ImageDescriptor.Invalid)
             {
                 imageDescriptor = cameraGrabber.GetPrepareFailedImageDescriptor(prepareFailedImageDescriptor);
-
             }
             else
             {
-
                 imageDescriptor = cameraGrabber.Prepare();
 
                 if (imageDescriptor == null || imageDescriptor.Format == Video.ImageFormat.None || imageDescriptor.Width <= 0 || imageDescriptor.Height <= 0)
@@ -439,8 +437,6 @@ namespace Kinovea.ScreenManager
                     cameraManager.GetSingleImage(cameraSummary);
                 }
             }
-
-            //ImageDescriptor imageDescriptor = new ImageDescriptor(Video.ImageFormat.JPEG, 640, 480, true, 921600); 
 
             if (imageDescriptor == ImageDescriptor.Invalid)
             {
@@ -472,6 +468,8 @@ namespace Kinovea.ScreenManager
 
         private void cameraManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
+            // This handler is only hit during connection workflow when the connection preparation failed due to insufficient configuration information.
+            // We get a single snapshot back with its image descriptor.
             cameraManager.CameraThumbnailProduced -= cameraManager_CameraThumbnailProduced;
             prepareFailedImageDescriptor = e.ImageDescriptor;
             Connect();
@@ -554,7 +552,7 @@ namespace Kinovea.ScreenManager
 
             // Note: the viewport has a reference on the consumerDisplay allocated bitmap.
             // This means that when the consumerDisplay disposes the bitmap, the viewport must be alerted 
-            // so that it avoids trying to draw the image. The alternative is to copy the image into the viewport.
+            // so that it avoids trying to draw the image. The alternative is an extra copy of the image into the viewport.
             viewportController.Bitmap = consumerDisplay.Bitmap;
             viewportController.Refresh();
 
@@ -616,6 +614,7 @@ namespace Kinovea.ScreenManager
             Disconnect();
             Connect();
         }
+        
         private CaptureAspectRatio Convert(ImageAspectRatio aspectRatio)
         {
             switch(aspectRatio)
@@ -626,6 +625,7 @@ namespace Kinovea.ScreenManager
                 default: return CaptureAspectRatio.Auto;
             }
         }
+        
         private ImageAspectRatio Convert(CaptureAspectRatio aspectRatio)
         {
             switch(aspectRatio)

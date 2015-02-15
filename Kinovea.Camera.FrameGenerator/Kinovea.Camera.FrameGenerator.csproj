@@ -73,21 +73,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraManagerFrameGenerator.cs" />
-    <Compile Include="ConnectionWizard.cs">
+    <Compile Include="Configuration\ConnectionWizard.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ConnectionWizard.designer.cs">
+    <Compile Include="Configuration\ConnectionWizard.designer.cs">
       <DependentUpon>ConnectionWizard.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormConfiguration.cs">
+    <Compile Include="Configuration\DeviceConfiguration.cs" />
+    <Compile Include="Configuration\FormConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormConfiguration.designer.cs">
+    <Compile Include="Configuration\FormConfiguration.designer.cs">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\Framerate.cs" />
     <Compile Include="FrameGrabber.cs" />
-    <Compile Include="FrameSize.cs" />
-    <Compile Include="Generator.cs" />
+    <Compile Include="Configuration\FrameSize.cs" />
+    <Compile Include="Device\FrameGeneratorDevice.cs" />
+    <Compile Include="Device\Generator.cs" />
+    <Compile Include="Device\NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnapshotRetriever.cs" />
     <Compile Include="SpecificInfo.cs" />
@@ -111,10 +115,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ConnectionWizard.resx">
+    <EmbeddedResource Include="Configuration\ConnectionWizard.resx">
       <DependentUpon>ConnectionWizard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormConfiguration.resx">
+    <EmbeddedResource Include="Configuration\FormConfiguration.resx">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

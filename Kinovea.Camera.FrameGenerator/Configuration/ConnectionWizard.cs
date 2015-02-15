@@ -54,14 +54,13 @@ namespace Kinovea.Camera.FrameGenerator
         {
             if(testing)
                 return;
-            
+
+            // Spawn a thread to get a snapshot.
             testing = true;
             CameraSummary testSummary = GetResult();
-            SnapshotRetriever retriever = new SnapshotRetriever(manager, testSummary);
+            SnapshotRetriever retriever = new SnapshotRetriever(testSummary);
             retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
-            retriever.CameraImageTimedOut += SnapshotRetriever_CameraImageTimedOut;
-            retriever.CameraImageError += SnapshotRetriever_CameraImageError;
-            retriever.Run(null);
+            ThreadPool.QueueUserWorkItem(retriever.Run);
         }
         
         public SpecificInfo GetSpecific()
@@ -76,45 +75,21 @@ namespace Kinovea.Camera.FrameGenerator
         private SpecificInfo CreateSpecific()
         {
             SpecificInfo specific = new SpecificInfo();
-            specific.SelectedFrameRate = 25;
-            specific.SelectedFrameSize = new Size(640, 480);
+            specific.FrameInterval = 20000;
+            specific.FrameSize = new Size(1920, 1080);
             return specific;
         }
         
-        private void SnapshotRetriever_CameraImageTimedOut(object sender, EventArgs e)
-        {
-            SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if(retriever == null)
-                return;
-            
-            string title = "Camera connection test failure";
-            string message = "The connection to the camera timed out.";
-            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            AfterCameraTest(retriever);
-        }
-        
-        private void SnapshotRetriever_CameraImageError(object sender, EventArgs e)
-        {
-            SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if(retriever == null)
-                return;
-            
-            string title = "Camera connection test failure";
-            string message = "An error occurred during connection test:\n" + retriever.Error; 
-            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            AfterCameraTest(retriever);
-        }
-
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if(retriever == null)
+            if (retriever == null)
                 return;
-            
+
             FormHandshakeResult result = new FormHandshakeResult(e.Thumbnail);
             result.ShowDialog();
             result.Dispose();
-
+                
             e.Thumbnail.Dispose();
             AfterCameraTest(retriever);
         }
@@ -122,15 +97,7 @@ namespace Kinovea.Camera.FrameGenerator
         private void AfterCameraTest(SnapshotRetriever retriever)
         {
             retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-            retriever.CameraImageTimedOut -= SnapshotRetriever_CameraImageTimedOut;
-            retriever.CameraImageError -= SnapshotRetriever_CameraImageError;
-            
             testing = false;
-        }
-
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

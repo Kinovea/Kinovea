@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2014.
+Copyright © Joan Charmant 2015.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -18,24 +18,19 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
-namespace Kinovea.Camera.FrameGenerator
+namespace Kinovea.Pipeline
 {
-    /// <summary>
-    /// Information about a camera that is specific to the FrameGenerator plugin.
-    /// This info is opaquely transported inside the CameraSummary.
-    /// </summary>
-    public class SpecificInfo
+    public class FrameErrorEventArgs : EventArgs
     {
-        public Size FrameSize { get; set; }
-        public int FrameInterval { get; set; } 
-        
-        public SpecificInfo()
+        public readonly string Description;
+        public FrameErrorEventArgs(string description)
         {
-            FrameSize = Size.Empty;
-            FrameInterval = 20000;
+            this.Description = description;
         }
     }
 }

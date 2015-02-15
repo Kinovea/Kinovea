@@ -32,17 +32,12 @@ using Kinovea.Services;
 
 namespace Kinovea.Camera.FrameGenerator
 {
-    /// <summary>
-    /// Non-functionnal.
-    /// Needs to use the new capture pipeline where the frame grabber is expected to output a frame buffer directly,
-    /// rather than a complete bitmap.
-    /// </summary>
     public class CameraManagerFrameGenerator : CameraManager
     {
         #region Properties
         public override bool Enabled
         {
-            get { return false; }
+            get { return true; }
         }
         public override string CameraType
         {
@@ -110,7 +105,8 @@ namespace Kinovea.Camera.FrameGenerator
             if (snapshotting.IndexOf(summary.Identifier) >= 0)
                 return;
 
-            SnapshotRetriever retriever = new SnapshotRetriever(this, summary);
+            // Spawn a thread to get a snapshot.
+            SnapshotRetriever retriever = new SnapshotRetriever(summary);
             retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
             snapshotting.Add(summary.Identifier);
             ThreadPool.QueueUserWorkItem(retriever.Run);
@@ -141,8 +137,8 @@ namespace Kinovea.Camera.FrameGenerator
                 if (form.SpecificChanged)
                 {
                     SpecificInfo info = new SpecificInfo();
-                    info.SelectedFrameRate = form.Framerate;
-                    info.SelectedFrameSize = form.FrameSize;
+                    info.FrameInterval = form.FrameInterval;
+                    info.FrameSize = form.FrameSize;
                     summary.UpdateSpecific(info);
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
 
@@ -158,7 +154,21 @@ namespace Kinovea.Camera.FrameGenerator
 
         public override string GetSummaryAsText(CameraSummary summary)
         {
-            string result = string.Format("{0}", summary.Alias);
+            string result = "";
+            string alias = summary.Alias;
+
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if (info != null)
+            {
+                Size size = info.FrameSize;
+                float fps = 1000000.0f / info.FrameInterval;
+                result = string.Format("{0} - {1}×{2} @ {3:0.##} fps.", alias, size.Width, size.Height, fps);
+            }
+            else
+            {
+                result = string.Format("{0}", alias);
+            }
+
             return result;
         }
 
@@ -202,23 +212,19 @@ namespace Kinovea.Camera.FrameGenerator
 
                 info = new SpecificInfo();
 
-                int frameRate = 0;
-                XmlNode xmlFrameRate = doc.SelectSingleNode("/FrameGenerator/SelectedFrameRate");
-                if (xmlFrameRate != null)
-                {
-                    string strFrameRate = xmlFrameRate.InnerText;
-                    frameRate = int.Parse(strFrameRate, CultureInfo.InvariantCulture);
-                }
-                info.SelectedFrameRate = frameRate;
-
+                int frameInterval = 20000;
                 Size frameSize = Size.Empty;
-                XmlNode xmlFrameSize = doc.SelectSingleNode("/FrameGenerator/SelectedFrameSize");
+
+                XmlNode xmlFrameInterval = doc.SelectSingleNode("/FrameGenerator/FrameInterval");
+                if (xmlFrameInterval != null)
+                    frameInterval = int.Parse(xmlFrameInterval.InnerText, CultureInfo.InvariantCulture);
+
+                XmlNode xmlFrameSize = doc.SelectSingleNode("/FrameGenerator/FrameSize");
                 if (xmlFrameSize != null)
-                {
-                    string strFrameSize = xmlFrameSize.InnerText;
-                    frameSize = XmlHelper.ParseSize(strFrameSize);
-                }
-                info.SelectedFrameSize = frameSize;
+                    frameSize = XmlHelper.ParseSize(xmlFrameSize.InnerText);
+
+                info.FrameInterval = frameInterval;
+                info.FrameSize = frameSize;
             }
             catch (Exception e)
             {
@@ -237,13 +243,13 @@ namespace Kinovea.Camera.FrameGenerator
             XmlDocument doc = new XmlDocument();
             XmlElement xmlRoot = doc.CreateElement("FrameGenerator");
 
-            XmlElement xmlFrameRate = doc.CreateElement("SelectedFrameRate");
-            string framerate = string.Format("{0}", info.SelectedFrameRate);
-            xmlFrameRate.InnerText = framerate;
-            xmlRoot.AppendChild(xmlFrameRate);
+            XmlElement xmlFrameInterval = doc.CreateElement("FrameInterval");
+            string frameInterval = string.Format("{0}", info.FrameInterval);
+            xmlFrameInterval.InnerText = frameInterval;
+            xmlRoot.AppendChild(xmlFrameInterval);
 
-            XmlElement xmlFrameSize = doc.CreateElement("SelectedFrameSize");
-            string frameSize = string.Format("{0};{1}", info.SelectedFrameSize.Width, info.SelectedFrameSize.Height);
+            XmlElement xmlFrameSize = doc.CreateElement("FrameSize");
+            string frameSize = string.Format("{0};{1}", info.FrameSize.Width, info.FrameSize.Height);
             xmlFrameSize.InnerText = frameSize;
             xmlRoot.AppendChild(xmlFrameSize);
 
