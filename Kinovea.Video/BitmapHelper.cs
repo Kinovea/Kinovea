@@ -104,5 +104,31 @@ namespace Kinovea.Video
 
             bitmap.UnlockBits(bmpData);
         }
+    
+        /// <summary>
+        /// Copy the whole bitmap into a rectangle in the frame buffer.
+        /// The source bitmap is expected to be smaller than destination.
+        /// </summary>
+        public unsafe static void CopyBitmapRectangle(Bitmap bitmap, Point location, byte[] buffer, int dstStride)
+        {
+            Rectangle bmpRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            BitmapData bmpData = bitmap.LockBits(bmpRectangle, ImageLockMode.ReadOnly, bitmap.PixelFormat);
+            int srcStride = bmpData.Stride;
+
+            fixed (byte* pBuffer = buffer)
+            {
+                byte* src = (byte*)bmpData.Scan0.ToPointer();
+                byte* dst = pBuffer + ((location.Y * dstStride) + (location.X * 3));
+
+                for (int i = 0; i < bmpRectangle.Height; i++)
+                {
+                    memcpy(dst, src, srcStride);
+                    src += srcStride;
+                    dst += dstStride;
+                }
+            }
+
+            bitmap.UnlockBits(bmpData);
+        }
     }
 }

@@ -63,7 +63,6 @@ namespace Kinovea.Camera.FrameGenerator
             this.richTextBox1.Text = "This type of camera is intended for testing purposes.\n\nIt continuously generates " +
                 "images at the specified frame rate, with an absolute timestamp drawn on each fra" +
                 "me.";
-            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
             // ConnectionWizard
             // 

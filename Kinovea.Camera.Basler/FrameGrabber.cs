@@ -90,7 +90,7 @@ namespace Kinovea.Camera.Basler
         /// </summary>
         public ImageDescriptor Prepare()
         {
-            ConfigureDevice();
+            CreateAndConfigureDevice();
 
             if (device == null || !deviceHandle.IsValid)
                 return ImageDescriptor.Invalid;
@@ -175,7 +175,7 @@ namespace Kinovea.Camera.Basler
         /// <summary>
         /// Configure the device according to what is saved in the preferences.
         /// </summary>
-        private void ConfigureDevice()
+        private void CreateAndConfigureDevice()
         {
             if(grabbing)
                 Stop();

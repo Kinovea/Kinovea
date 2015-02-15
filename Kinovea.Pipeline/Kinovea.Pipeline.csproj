@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Consumers\ConsumerJPEG.cs" />
     <Compile Include="Consumers\ConsumerFrameNumber.cs" />
+    <Compile Include="Events\FrameErrorEventArgs.cs" />
     <Compile Include="ImageDescriptor.cs" />
     <Compile Include="Events\FrameProducedEventArgs.cs" />
     <Compile Include="MemoryLayout\CacheLineStorageBool.cs" />

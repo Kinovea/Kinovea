@@ -32,42 +32,76 @@ namespace Kinovea.Camera.FrameGenerator
     public class SnapshotRetriever
     {
         public event EventHandler<CameraThumbnailProducedEventArgs> CameraThumbnailProduced;
-        public event EventHandler CameraImageTimedOut;
-        public event EventHandler CameraImageError;
 
         public string Identifier
         {
             get { return this.summary.Identifier; }
         }
 
-        public string Error
-        {
-            get { return "Unknown error"; }
-        }
-
         #region Members
         private static readonly int timeout = 5000;
         private Bitmap image;
+        private ImageDescriptor imageDescriptor = ImageDescriptor.Invalid;
         private CameraSummary summary;
+        private EventWaitHandle waitHandle = new AutoResetEvent(false);
+        private bool cancelled;
+        private bool hadError;
+        private FrameGeneratorDevice device;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public SnapshotRetriever(CameraManagerFrameGenerator manager, CameraSummary summary)
+        public SnapshotRetriever(CameraSummary summary)
         {
             this.summary = summary;
+
+            device = new FrameGeneratorDevice();
         }
 
+        /// <summary>
+        /// Start the device for a frame grab, wait a bit and then return the result.
+        /// This method MUST raise a CameraThumbnailProduced event, even in case of error.
+        /// </summary>
         public void Run(object data)
         {
-            Generator generator = new Generator();
-            image = generator.Generate(new Size(640, 480));
-            
+            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
+            log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
+
+            device.FrameProduced += device_FrameProduced;
+            device.FrameError += device_FrameError;
+
+            device.Start();
+
+            waitHandle.WaitOne(timeout, false);
+
+            device.FrameProduced -= device_FrameProduced;
+            device.FrameError -= device_FrameError;
+
             if (CameraThumbnailProduced != null)
-                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, ImageDescriptor.Invalid, false, false));
+                CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
+            
+            device.Stop();
         }
 
         public void Cancel()
         {
+            cancelled = true;
+            waitHandle.Set();
+        }
+
+        private void device_FrameProduced(object sender, FrameProducedEventArgs e)
+        {
+            imageDescriptor = device.ImageDescriptor;
+            image = device.GetCurrentBitmap();
+            waitHandle.Set();
+        }
+
+        private void device_FrameError(object sender, FrameErrorEventArgs e)
+        {
+            log.ErrorFormat("Error received trying to get a thumbnail for {0}", summary.Alias);
+            log.Error(e.Description);
+
+            hadError = true;
+            waitHandle.Set();
         }
     }
 }
