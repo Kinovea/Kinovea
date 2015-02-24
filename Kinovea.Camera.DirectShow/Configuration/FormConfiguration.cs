@@ -70,6 +70,7 @@ namespace Kinovea.Camera.DirectShow
         private bool iconChanged;
         private bool specificChanged;
         private CameraSummary summary;
+        private string identifier;
         private VideoCaptureDevice device;
         private Dictionary<int, MediaType> mediaTypes;
         private MediaTypeOrganizer organizer = new MediaTypeOrganizer();
@@ -82,7 +83,8 @@ namespace Kinovea.Camera.DirectShow
         public FormConfiguration(CameraSummary summary)
         {
             this.summary = summary;
-   
+            this.identifier = summary.Identifier;
+
             InitializeComponent();
             tbAlias.AutoSize = false;
             tbAlias.Height = 20;
@@ -276,51 +278,13 @@ namespace Kinovea.Camera.DirectShow
         {
             int top = lblAuto.Bottom;
 
-            Func<int, string> defaultValueMapper = (value) => value.ToString();
-
             if (cameraProperties.ContainsKey("exposure_logitech"))
-            {
-                Func<int, string> valueMapper = (value) =>
-                {
-                    if (value < 10)
-                        return string.Format("{0} µs", value * 100);
-                    else
-                        return string.Format("{0:0.#} ms", value / 10F);
-                };
+                AddCameraProperty("exposure_logitech", "Exposure:", VendorHelper.GetValueMapper(identifier, "exposure_logitech"), top);
+            else if (cameraProperties.ContainsKey("exposure"))
+                AddCameraProperty("exposure", "Exposure:", VendorHelper.GetValueMapper(identifier, "exposure"), top);
 
-                AddCameraProperty("exposure_logitech", "Exposure:", valueMapper, top);
-            }
-
-            if (cameraProperties.ContainsKey("exposure"))
-            {
-                AddCameraProperty("exposure", "Exposure:", defaultValueMapper, top);
-            }
-
-            AddCameraProperty("gain", "Gain:", defaultValueMapper, top + 30);
-            AddCameraProperty("focus", "Focus:", defaultValueMapper, top + 60);
-
-            /*
-            if (cameraProperties.ContainsKey("gain"))
-            {
-                CameraPropertyView cpvGain = new CameraPropertyView(cameraProperties["gain"], "Gain:", defaultValueMapper);
-                VideoProcAmpProperty? prop = VideoProcAmpProperty.Gain;
-                cpvGain.Tag = prop;
-                cpvGain.ValueChanged += cpvVideoProcAmp_ValueChanged;
-                cpvGain.Left = 20;
-                cpvGain.Top = top + 30;
-                groupBox1.Controls.Add(cpvGain);
-            }
-            
-            if (cameraProperties.ContainsKey("focus"))
-            {
-                CameraPropertyView cpvFocus = new CameraPropertyView(cameraProperties["focus"], "Focus:", defaultValueMapper);
-                CameraControlProperty? prop = CameraControlProperty.Focus;
-                cpvFocus.Tag = prop;
-                cpvFocus.ValueChanged += cpvCameraControl_ValueChanged;
-                cpvFocus.Left = 20;
-                cpvFocus.Top = top + 60;
-                groupBox1.Controls.Add(cpvFocus);
-            }*/
+            AddCameraProperty("gain", "Gain:", VendorHelper.GetValueMapper(identifier, "gain"), top + 30);
+            AddCameraProperty("focus", "Focus:", VendorHelper.GetValueMapper(identifier, "focus"), top + 60);
         }
 
         private void AddCameraProperty(string key, string localizationToken, Func<int, string> valueMapper, int top)
