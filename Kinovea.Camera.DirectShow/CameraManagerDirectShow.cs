@@ -115,7 +115,9 @@ namespace Kinovea.Camera.DirectShow
                         displayRectangle = blurb.DisplayRectangle;
                         if(!string.IsNullOrEmpty(blurb.AspectRatio))
                             aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
+                        
                         specific = SpecificInfoDeserialize(blurb.Specific);
+                        VendorHelper.IdentifyModel(identifier);
                         break;
                     }
                 }

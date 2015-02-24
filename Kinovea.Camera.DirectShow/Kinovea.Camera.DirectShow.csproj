@@ -73,6 +73,12 @@
   <ItemGroup>
     <Compile Include="CameraManagerDirectShow.cs" />
     <Compile Include="Configuration\CameraPropertyManager.cs" />
+    <Compile Include="Configuration\PropertyValueMapperDefault.cs" />
+    <Compile Include="Configuration\PropertyValueMapperLogitech.cs" />
+    <Compile Include="Configuration\IPropertyValueMapper.cs" />
+    <Compile Include="Configuration\PropertyValueMapperUSB8MP02G.cs" />
+    <Compile Include="Configuration\PropertyValueMapperUSBFHD01M.cs" />
+    <Compile Include="Configuration\VendorHelper.cs" />
     <Compile Include="DeviceHelper.cs" />
     <Compile Include="Configuration\FormConfiguration.cs">
       <SubType>Form</SubType>
