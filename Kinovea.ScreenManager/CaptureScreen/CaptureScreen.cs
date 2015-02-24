@@ -117,6 +117,7 @@ namespace Kinovea.ScreenManager
 
         private bool prepareFailed;
         private ImageDescriptor prepareFailedImageDescriptor;
+        private ImageDescriptor imageDescriptor;
         
         private CameraSummary cameraSummary;
         private CameraManager cameraManager;
@@ -416,7 +417,7 @@ namespace Kinovea.ScreenManager
 
             // First we try to prepare the grabber by pushing preferences and reading back the configuration.
             // If the configuration cannot be known in advance by an API, we try to read a single frame and check its configuration.
-            ImageDescriptor imageDescriptor = ImageDescriptor.Invalid;
+            imageDescriptor = ImageDescriptor.Invalid;
             if (prepareFailed && prepareFailedImageDescriptor != ImageDescriptor.Invalid)
             {
                 imageDescriptor = cameraGrabber.GetPrepareFailedImageDescriptor(prepareFailedImageDescriptor);
@@ -597,8 +598,17 @@ namespace Kinovea.ScreenManager
             if (pipelineManager.Frequency == 0)
                 return;
 
-            view.UpdateInfo(string.Format("Signal: {0:0.00} fps. Data: {1:0.00} MB/s. Drops: {2}.",
-                pipelineManager.Frequency, cameraGrabber.LiveDataRate, pipelineManager.Drops));
+            if (prepareFailed && imageDescriptor != null)
+            {
+                view.UpdateInfo(string.Format("Signal: {0}×{1} @ {2:0.00} fps. Data: {3:0.00} MB/s. Drops: {4}.",
+                    imageDescriptor.Width, imageDescriptor.Height, pipelineManager.Frequency, cameraGrabber.LiveDataRate, pipelineManager.Drops));
+            }
+            else
+            {
+                view.UpdateInfo(string.Format("Signal: {0:0.00} fps. Data: {1:0.00} MB/s. Drops: {2}.",
+                    pipelineManager.Frequency, cameraGrabber.LiveDataRate, pipelineManager.Drops));
+            }
+
         }
 
         private void ChangeAspectRatio(ImageAspectRatio aspectRatio)
