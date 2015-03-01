@@ -168,8 +168,10 @@ namespace Kinovea.Camera.FrameGenerator
 
             dueTime = (generatedFrames + 1) * frameIntervalMilliseconds;
 
+            int length = currentFrameBuffer == null ? 0 : currentFrameBuffer.Length;
+
             if (FrameProduced != null)
-                FrameProduced(this, new FrameProducedEventArgs(currentFrameBuffer, currentFrameBuffer.Length));
+                FrameProduced(this, new FrameProducedEventArgs(currentFrameBuffer, length));
         }
 
         #endregion

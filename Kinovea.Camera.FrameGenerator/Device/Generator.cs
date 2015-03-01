@@ -23,6 +23,7 @@ namespace Kinovea.Camera.FrameGenerator
         private SolidBrush backBrush = new SolidBrush(Color.DarkGray);
         private SolidBrush foreBrush = new SolidBrush(Color.White);
         private Font font;
+        private bool allocated;
 
         public Generator(DeviceConfiguration configuration)
         {
@@ -34,6 +35,9 @@ namespace Kinovea.Camera.FrameGenerator
 
         public byte[] Generate()
         {
+            if (!allocated)
+                return null;
+
             CopyBackground();
             CopyTimestamp();
 
@@ -43,11 +47,20 @@ namespace Kinovea.Camera.FrameGenerator
         private void Initialize()
         {
             int bufferSize = ImageFormatHelper.ComputeBufferSize(configuration.Width, configuration.Height, configuration.ImageFormat);
-            
-            background = new byte[bufferSize];
-            frameBuffer = new byte[bufferSize];
 
-            InitializeTimestamp();
+            try
+            {
+                background = new byte[bufferSize];
+                frameBuffer = new byte[bufferSize];
+
+                InitializeTimestamp();
+
+                allocated = true;
+            }
+            catch
+            {
+            
+            }
         }
 
         private void InitializeTimestamp()

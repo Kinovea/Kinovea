@@ -27,6 +27,11 @@ namespace Kinovea.Pipeline
             get { return drops; }
         }
 
+        public bool Allocated
+        {
+            get { return ringBuffer.Allocated; }
+        }
+
         public double Frequency
         {
             // Note: this variable is written by the stream thread and read by the UI thread.
@@ -68,11 +73,15 @@ namespace Kinovea.Pipeline
             InitializeBenchmarkCounters();
 
             ringBuffer = new RingBuffer(buffers, bufferSize);
-            frameLength = bufferSize;
-            log.DebugFormat("Ring buffer allocated.");
 
-            Bind();
-            GC.Collect();
+            if (ringBuffer.Allocated)
+            {
+                frameLength = bufferSize;
+                log.DebugFormat("Ring buffer allocated.");
+
+                Bind();
+                GC.Collect();
+            }
         }
 
         public void ResetDrops()
