@@ -157,15 +157,16 @@ namespace Kinovea.ScreenManager
             double round = Math.Round(delaySeconds);
             
             if(round < 10)
-                lblDelay.Text = string.Format("Delay: {0:0.00} ({1})", delaySeconds, delayFrames);
+                lblDelay.Text = string.Format("Delay: {0:0.00}s ({1})", delaySeconds, delayFrames);
             else
-                lblDelay.Text = string.Format("Delay: {0} ({1})", round, delayFrames);
+                lblDelay.Text = string.Format("Delay: {0}s ({1})", round, delayFrames);
             
             //lblDelay.Text = String.Format(ScreenManagerLang.lblDelay_Text, delay);
         }
         public void UpdateDelayMaxAge(double delay)
         {
-            sldrDelay.Maximum = delay;
+            // If the delayer was not allocated, fake a number so that we have a slider stuck at the 0th image.
+            sldrDelay.Maximum = delay == 0 ? 0.9 : delay;
         }
         public void UpdateNextImageFilename(string filename, bool editable)
         {
