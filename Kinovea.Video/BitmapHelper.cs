@@ -16,11 +16,21 @@ namespace Kinovea.Video
         /// <summary>
         /// Allocate a new bitmap and copy the passed bitmap into it.
         /// </summary>
-        public unsafe static Bitmap Copy(Bitmap src)
+        public static Bitmap Copy(Bitmap src)
         {
             Bitmap dst = new Bitmap(src.Width, src.Height, src.PixelFormat);
             Rectangle rect = new Rectangle(0, 0, src.Width, src.Height);
 
+            Copy(src, dst, rect);
+            
+            return dst;
+        }
+
+        /// <summary>
+        /// Copy a bitmap into another. Destination bitmap is assumed to already be allocated and at the proper size/pixel format.
+        /// </summary>
+        public unsafe static void Copy(Bitmap src, Bitmap dst, Rectangle rect)
+        {
             BitmapData srcData = src.LockBits(rect, ImageLockMode.ReadOnly, src.PixelFormat);
             BitmapData dstData = dst.LockBits(rect, ImageLockMode.WriteOnly, dst.PixelFormat);
 
@@ -28,8 +38,6 @@ namespace Kinovea.Video
 
             dst.UnlockBits(dstData);
             src.UnlockBits(srcData);
-
-            return dst;
         }
 
         /// <summary>

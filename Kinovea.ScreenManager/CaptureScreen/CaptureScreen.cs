@@ -112,7 +112,6 @@ namespace Kinovea.ScreenManager
 
         private bool cameraLoaded;
         private bool cameraConnected;
-        private bool firstImageReceived;
         private bool recording;
 
         private bool prepareFailed;
@@ -128,12 +127,13 @@ namespace Kinovea.ScreenManager
         private Thread recorderThread;
         private Bitmap recordingThumbnail;
 
+        private Delayer delayer = new Delayer();
+        private int delay; // The current image age in number of frames.
+
         private ViewportController viewportController;
         private FilenameHelper filenameHelper = new FilenameHelper();
         private CapturedFiles capturedFiles = new CapturedFiles();
         
-        private int bufferCapacity = 1;
-        private double availableMemory;
         private bool shared;
         private bool synched;
         
@@ -142,9 +142,6 @@ namespace Kinovea.ScreenManager
         private MetadataManipulator metadataManipulator;
         private ScreenToolManager screenToolManager = new ScreenToolManager();
         private DrawingToolbarPresenter drawingToolbarPresenter = new DrawingToolbarPresenter();
-        private int displayImageAge = 0;
-        private int recordImageAge = 0;
-        private Size currentImageSize;
         private Control dummy = new Control();
         private System.Windows.Forms.Timer nonGrabbingInteractionTimer = new System.Windows.Forms.Timer();
 
@@ -189,7 +186,7 @@ namespace Kinovea.ScreenManager
         public void SetShared(bool shared)
         {
             this.shared = shared;
-            //UpdateMemory();
+            AllocateDelayer();
         }
 
         public void ForceGrabbingStatus(bool grab)
@@ -230,7 +227,7 @@ namespace Kinovea.ScreenManager
         }
         public override void PreferencesUpdated()
         {
-            //UpdateMemory();
+            AllocateDelayer();
             InitializeCaptureFilenames();
         }
         public override void BeforeClose()
@@ -320,16 +317,7 @@ namespace Kinovea.ScreenManager
         }
         public void View_DelayChanged(double value)
         {
-            /*displayImageAge = (int)Math.Round(value);
-            view.UpdateDelayLabel(AgeToSeconds(displayImageAge), displayImageAge);
-            
-            if(cameraGrabber != null && !cameraGrabber.Grabbing)
-            {
-                Bitmap displayImage = buffer.Read(displayImageAge);
-                viewportController.Bitmap = displayImage;
-                viewportController.Timestamp = 0;
-                viewportController.Refresh();
-            }*/
+            DelayChanged(value);
         }
         public void View_SnapshotAsked(string filename)
         {
@@ -397,6 +385,9 @@ namespace Kinovea.ScreenManager
 
             cameraGrabber = null;
 
+            delayer.Free();
+            UpdateDelayMaxAge();
+
             UpdateTitle();
             cameraLoaded = false;
         }
@@ -412,10 +403,7 @@ namespace Kinovea.ScreenManager
             if (cameraConnected)
                 Disconnect();
 
-            firstImageReceived = false;
-            //currentImageSize = Size.Empty;
-
-            // First we try to prepare the grabber by pushing preferences and reading back the configuration.
+            // First we try to prepare the grabber by using the preferences and checking if it succeeded.
             // If the configuration cannot be known in advance by an API, we try to read a single frame and check its configuration.
             imageDescriptor = ImageDescriptor.Invalid;
             if (prepareFailed && prepareFailedImageDescriptor != ImageDescriptor.Invalid)
@@ -444,6 +432,8 @@ namespace Kinovea.ScreenManager
                 UpdateTitle();
                 return;
             }
+
+            AllocateDelayer();
 
             // Start recorder thread. 
             // It will be dormant until recording is started but it has the same lifetime as the pipeline.
@@ -551,16 +541,21 @@ namespace Kinovea.ScreenManager
             // This consumer cannot block because it's on the UI thread.
             consumerDisplay.ConsumeOne();
 
-            // Note: the viewport has a reference on the consumerDisplay allocated bitmap.
-            // This means that when the consumerDisplay disposes the bitmap, the viewport must be alerted 
-            // so that it avoids trying to draw the image. The alternative is an extra copy of the image into the viewport.
-            viewportController.Bitmap = consumerDisplay.Bitmap;
+            Bitmap fresh = consumerDisplay.Bitmap;
+
+            if (fresh == null)
+                return;
+
+            delayer.Push(fresh);
+
+            Bitmap delayed = delayer.Get(delay);
+            viewportController.Bitmap = delayed;
             viewportController.Refresh();
 
             UpdateStats();
 
             if (recording && recordingThumbnail == null)
-                recordingThumbnail = BitmapHelper.Copy(consumerDisplay.Bitmap);
+                recordingThumbnail = BitmapHelper.Copy(fresh);
         }
 
         #endregion
@@ -659,22 +654,7 @@ namespace Kinovea.ScreenManager
             cameraSummary.UpdateDisplayRectangle(viewportController.DisplayRectangle);
             CameraTypeManager.UpdatedCameraSummary(cameraSummary);
         }
-        private double AgeToSeconds(int age)
-        {
-            if(pipelineManager.Frequency == 0)
-                return 0;
-
-            return age / pipelineManager.Frequency;
-        }
         
-        private void UpdateDelayMaxAge()
-        {
-            double maxAge = bufferCapacity - 1;
-            if(maxAge == 0)
-                maxAge = 0.9999;
-
-            view.UpdateDelayMaxAge(maxAge);
-        }
         private void InitializeMetadata()
         {
             metadata = new Metadata(historyStack, null);
@@ -892,7 +872,55 @@ namespace Kinovea.ScreenManager
             capturedFiles.AddFile(filepath, image, video);
         }
         #endregion
+
+        #region Delayer
+        /// <summary>
+        /// Allocates or reallocates the delay buffer.
+        /// This must be done each time the image descriptor changes or when available memory changes.
+        /// </summary>
+        private void AllocateDelayer()
+        {
+            if (!cameraLoaded || imageDescriptor == null || imageDescriptor == ImageDescriptor.Invalid)
+                return;
+
+            long totalMemory = ((long)PreferencesManager.CapturePreferences.CaptureMemoryBuffer * 1024 * 1024);
+            long availableMemory = shared ? totalMemory / 2 : totalMemory;
+            
+            // FIXME: get the size of ring buffer from outside.
+            availableMemory -= (imageDescriptor.BufferSize * 8);
+            
+            delayer.AllocateBuffers(imageDescriptor, availableMemory);
+            UpdateDelayMaxAge();
+        }
+        private void DelayChanged(double age)
+        {
+            this.delay = (int)Math.Round(age);
+            view.UpdateDelayLabel(AgeToSeconds(delay), delay);
+            
+            // Force a refresh if we are not connected to the camera to enable "pause and browse".
+
+            if (cameraLoaded && !cameraConnected)
+            {
+                Bitmap delayed = delayer.Get(delay);
+                viewportController.Bitmap = delayed;
+                viewportController.Refresh();
+            }
+        }
         
+        private void UpdateDelayMaxAge()
+        {
+            view.UpdateDelayMaxAge(delayer.Capacity);
+        }
+        
+        private double AgeToSeconds(int age)
+        {
+            if(pipelineManager.Frequency == 0)
+                return 0;
+
+            return age / pipelineManager.Frequency;
+        }
+        #endregion
+
         #endregion
     }
 }
