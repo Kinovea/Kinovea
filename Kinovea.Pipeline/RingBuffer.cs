@@ -27,6 +27,11 @@ namespace Kinovea.Pipeline
             get { return producerPosition.Data; }
         }
 
+        public bool Allocated
+        {
+            get { return allocated; }
+        }
+
         private Frame[] slots;
         private int capacity;
         private int remainderMask;
@@ -34,20 +39,32 @@ namespace Kinovea.Pipeline
         private List<IFrameConsumer> consumers;
         private CacheLineStorageLong producerPosition = new CacheLineStorageLong(-1); // Last position written to by the producer.
         private BenchmarkMode benchmarkMode;
+        private bool allocated;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public RingBuffer(int capacity, int bufferSize)
         {
             if ((capacity & (capacity - 1)) != 0)
                 throw new ArgumentException("Capacity must be a power of two.");
 
-            remainderMask = capacity - 1;
-
-            this.capacity = capacity;
-            slots = new Frame[capacity];
-
-            for (int i = 0; i < slots.Count(); i++)
+            try
             {
-                slots[i] = new Frame(bufferSize);
+                remainderMask = capacity - 1;
+
+                this.capacity = capacity;
+                slots = new Frame[capacity];
+
+                for (int i = 0; i < slots.Count(); i++)
+                {
+                    slots[i] = new Frame(bufferSize);
+                }
+
+                allocated = true;
+            }
+            catch (Exception e)
+            {
+                log.Error("The buffer could not be allocated.");
+                log.Error(e);
             }
         }
 

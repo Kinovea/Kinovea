@@ -55,6 +55,8 @@ namespace Kinovea.ScreenManager
         private Rectangle rect;
         private Bitmap bitmap;
         private byte[] decoded;
+        private bool allocated;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public void Run()
         {
@@ -96,14 +98,26 @@ namespace Kinovea.ScreenManager
 
             GC.Collect();
 
-            this.imageDescriptor = imageDescriptor;
-            width = imageDescriptor.Width;
-            height = imageDescriptor.Height;
-            rect = new Rectangle(0, 0, width, height);
-            pitch = width * 3;
-            
-            decoded = new byte[pitch * height];
-            bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            allocated = false;
+
+            try
+            {
+                this.imageDescriptor = imageDescriptor;
+                width = imageDescriptor.Width;
+                height = imageDescriptor.Height;
+                rect = new Rectangle(0, 0, width, height);
+                pitch = width * 3;
+
+                decoded = new byte[pitch * height];
+                bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+
+                allocated = true;
+            }
+            catch (Exception e)
+            {
+                log.Error("The buffer could not be allocated.");
+                log.Error(e);
+            }
         }
 
         /// <summary>
@@ -116,9 +130,9 @@ namespace Kinovea.ScreenManager
         {
             // We only consume a single frame to avoid slowing down the chain.
             // Dropping frames is not critical for display.
-            // Always consume the very latest frame. <- Fix this for delayed display.
+            // Always consume the very latest frame.
 
-            if (buffer.ProducerPosition < 0)
+            if (!allocated || buffer.ProducerPosition < 0)
                 return;
 
             long next = buffer.ProducerPosition;
@@ -129,6 +143,9 @@ namespace Kinovea.ScreenManager
 
         private void ProcessEntry(long position, Frame entry)
         {
+            if (!allocated)
+                return;
+
             switch (imageDescriptor.Format)
             {
                 case Video.ImageFormat.RGB24:

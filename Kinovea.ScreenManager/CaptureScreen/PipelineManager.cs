@@ -55,8 +55,11 @@ namespace Kinovea.ScreenManager
             pipeline = new FramePipeline(producer, consumers, buffers, imageDescriptor.BufferSize);
             pipeline.SetBenchmarkMode(BenchmarkMode.None);
 
-            producer.FrameProduced += producer_FrameProduced;
-            connected = true;
+            if (pipeline.Allocated)
+            {
+                producer.FrameProduced += producer_FrameProduced;
+                connected = true;
+            }
         }
 
         public void Disconnect()
