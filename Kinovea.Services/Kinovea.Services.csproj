@@ -137,6 +137,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphanumComparator.cs" />
+    <Compile Include="CaptureHistory\CaptureHistory.cs" />
+    <Compile Include="CaptureHistory\CaptureHistoryEntry.cs" />
     <Compile Include="Diagnostics\BenchmarkCounterBandwidth.cs" />
     <Compile Include="Diagnostics\BenchmarkCounterIntervals.cs" />
     <Compile Include="Diagnostics\BenchmarkCounterValues.cs" />

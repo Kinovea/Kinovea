@@ -126,6 +126,7 @@ namespace Kinovea.ScreenManager
         private ConsumerMJPEGRecorder consumerRecord;
         private Thread recorderThread;
         private Bitmap recordingThumbnail;
+        private DateTime recordingStart;
 
         private Delayer delayer = new Delayer();
         private int delay; // The current image age in number of frames.
@@ -432,6 +433,8 @@ namespace Kinovea.ScreenManager
                 UpdateTitle();
                 return;
             }
+
+            metadata.ImageSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
 
             AllocateDelayer();
 
@@ -830,11 +833,11 @@ namespace Kinovea.ScreenManager
             
             if(recording)
             {
+                recordingStart = DateTime.Now;
                 string next = filenameHelper.Next(filename, true);
                 view.UpdateNextVideoFilename(next, !PreferencesManager.CapturePreferences.CaptureUsePattern);
                 view.UpdateRecordingStatus(recording);
                 view.Toast(ScreenManagerLang.Toast_StartRecord, 1000);
-                NotificationCenter.RaiseRefreshFileExplorer(this, false);
             }
             else
             {
@@ -859,9 +862,28 @@ namespace Kinovea.ScreenManager
                 recordingThumbnail.Dispose();
                 recordingThumbnail = null;
             }
-             
+
+            CaptureHistoryEntry entry = CreateHistoryEntry();
+            CaptureHistory.AddEntry(entry);
+            NotificationCenter.RaiseRefreshFileExplorer(this, false);
+ 
             view.UpdateRecordingStatus(recording);
             view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
+        }
+
+        private CaptureHistoryEntry CreateHistoryEntry()
+        {
+            string captureFile = consumerRecord.Filename;
+            DateTime start = recordingStart;
+            DateTime end = DateTime.Now;
+            string cameraAlias = cameraSummary.Alias;
+            string cameraIdentifier = cameraSummary.Identifier;
+            double configuredFramerate = cameraGrabber.Framerate;
+            double receivedFramerate = pipelineManager.Frequency;
+            int drops = (int)pipelineManager.Drops;
+
+            CaptureHistoryEntry entry = new CaptureHistoryEntry(captureFile, start, end, cameraAlias, cameraIdentifier, configuredFramerate, receivedFramerate, drops);
+            return entry;
         }
 
         private void AddCapturedFile(string filepath, Bitmap image, bool video)

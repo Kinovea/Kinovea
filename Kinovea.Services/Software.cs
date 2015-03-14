@@ -35,6 +35,7 @@ namespace Kinovea.Services
         public static string CameraCalibrationDirectory { get; private set; }
         public static string PreferencesFile { get; private set; }
         public static string TempDirectory { get; private set; }
+        public static string CaptureHistoryDirectory { get; private set; }
         public static string HelpVideosDirectory { get; private set; }
         public static string ManualsDirectory { get; private set; }
         public static string LocalHelpIndex { get; private set; }
@@ -60,6 +61,7 @@ namespace Kinovea.Services
             ColorProfileDirectory = SettingsDirectory + "ColorProfiles\\";
             CameraCalibrationDirectory = SettingsDirectory + "CameraCalibration\\";
             TempDirectory = SettingsDirectory + "Temp\\";
+            CaptureHistoryDirectory = Path.Combine(SettingsDirectory, "CaptureHistory");
             PreferencesFile = SettingsDirectory + "Preferences.xml";
             
             HelpVideosDirectory = applicationDirectory + "HelpVideos\\";

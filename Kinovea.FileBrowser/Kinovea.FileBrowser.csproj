@@ -228,7 +228,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\calendar_view_day.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
       <Project>{2BF373B8-5D33-4FCF-8C30-5E8CAF6777E7}</Project>
@@ -251,6 +253,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\textfield.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\folder_explore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bulletfile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\calendar_view_month.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
