@@ -23,13 +23,64 @@
   </Angles>
   <Handles>
     <Handle type="Point" reference="0" trackable="false"/> <!-- tip of head -->
-    <Handle type="Point" reference="1" trackable="false"/> <!-- shoulder -->
-    <Handle type="Point" reference="2" trackable="false"/> <!-- elbow -->
-    <Handle type="Point" reference="3" trackable="false"/> <!-- hand -->
-    <Handle type="Point" reference="4" trackable="true"/> <!-- hip -->
-    <Handle type="Point" reference="5" trackable="true"/> <!-- knee -->
-    <Handle type="Point" reference="6" trackable="true"/> <!-- ankle or heel -->
-    <Handle type="Point" reference="7" trackable="true"/> <!-- tip of foot -->
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="1"/>
+      </Constraint>
+    <Handle type="Point" reference="1" trackable="false"> <!-- shoulder -->
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="4"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="1" leg1="4" leg2="0"/>
+	<KeepAngle origin="1" leg1="4" leg2="2"/>
+	<KeepAngle origin="2" leg1="1" leg2="3"/>
+      </Impacts>
+    </Handle>	
+    <Handle type="Point" reference="2" trackable="false"> <!-- elbow -->
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="1"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="2" leg1="1" leg2="3"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="3" trackable="false"> <!-- hand -->
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="2"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="4" trackable="true"> <!-- hip -->
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="1"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="4" leg1="1" leg2="5"/>
+        <KeepAngle origin="5" leg1="4" leg2="6"/>
+        <KeepAngle origin="6" leg1="5" leg2="7"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="5" trackable="true"> <!-- knee -->
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="4"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="5" leg1="4" leg2="6"/>
+        <KeepAngle origin="6" leg1="5" leg2="7"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="6" trackable="true"> <!-- ankle or heel -->
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="5"/>
+      </Constraint>
+      <Impacts>
+        <KeepAngle origin="6" leg1="5" leg2="7"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="7" trackable="true"> <!-- tip of foot -->
+      <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
+        <DistanceToPoint point="6"/>
+      </Constraint>
+  	</Handle>
   </Handles>
   <InitialConfiguration>
     <Point>200;200</Point> <!-- tip of head -->
@@ -42,16 +93,6 @@
     <Point>60;450</Point> <!-- tip of foot -->
   </InitialConfiguration>
   <Capabilities flipHorizontal="true"/>
-  <!--Icon>
-    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
-    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAE/SURBVDhPzdO9S4JRFMfxh6ZabGkQGoMMakgiIZpD
-    xxodKhyCtqBwEIloKBoiGoqWJPIfEESCXjCiwaQ3aJByCEtbyqW15en7gyPcIVocavhwrvfec869XvV8
-    3/fa0VayGv+DAtFY0nOMMl7BIgac+SHGl6gg5Oa4yRqP4RVlTNlnzUWwjRK6fiugIsf4QA4nOMUR7uwU
-    nT8VUJdZpHCGGhIIY9jiJrGBNKZbV1HHDUt4IH7hEFvIYATj2MW5naxJvMcz5lTgBXHM2IKOuoZrXOEJ
-    O1jHJy7Qi1XUVUD3U8xD91eBNywjC51Q63oFXUNzC+hARQvqFMAgJjRpXfaISfRYAXXeRzf6oOesqcAj
-    9Dz6Egt2Av0O1C1oydo3iXccYN4aFbWgzVXcQvddssR+J1n7dGQla++NFYj+/X/hG1UdCPO6d1taAAAA
-    AElFTkSuQmCC
-  </Icon-->
   <Icon>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEuSURBVHjaYvz//z8DJYAxJW01Meo0gfgaEH8CYlkoDQZMRFqkA6X5gFgZWYIYAxqBeBWU7QDE54k1IACIQQFUB8SLoWK30BWx4DFgGpQOBOINQKwIxAeAWB2XC4SBWB/qTxB4BaXXA/FpIC4HYjUgjsXmgmIgNgfi50AsCcRz0VxjAsRHkdSCXLEWFB4sUL/KAHEiEH8FYm4gboO6BhlsA+IVQLwH6p1KkEUsUCcqQTUzQOkOIM6D8t2Q0gIsMEEuvQ/EnbAw+IRmG8wwUODtBmIzIL6IpgZkyA8mJD8iAx8groHGAAi8BWJpLDElADJACoiTgTgK6jdQKIcC8TwkhRuhYppoCew6LC9IQhWADHgCxAugtiIDUKBWg5wNxBwgzUBcz0hxbqTUAIAAAwDE1kDafieHrQAAAABJRU5ErkJggg==
   </Icon>
 </KinoveaPostureTool>
