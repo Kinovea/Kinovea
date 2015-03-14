@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
 using System.Linq;
+using System.Globalization;
 
 namespace Kinovea.Services
 {
@@ -98,7 +99,7 @@ namespace Kinovea.Services
         private string imageDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private string videoDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
-        private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MKV;
+        private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MP4;
         private string imageFile = "";
         private string videoFile = "";
         private bool usePattern;
@@ -138,7 +139,7 @@ namespace Kinovea.Services
                 writer.WriteElementString("VideoFile", videoFile);
             writer.WriteElementString("VideoFormat", videoFormat.ToString());
             writer.WriteElementString("VideoCounter", videoCounter.ToString());
-        
+
             writer.WriteElementString("UsePattern", usePattern ? "true" : "false");
             writer.WriteElementString("Pattern", pattern);
         
@@ -200,21 +201,6 @@ namespace Kinovea.Services
                     case "MemoryBuffer":
                         memoryBuffer = reader.ReadElementContentAsInt();
                         break;
-                    /*case "DeviceConfigurations":
-                        ParseDeviceConfigurations(reader);
-                        break;
-                    case "NetworkCameraUrl":
-                        networkCameraUrl = reader.ReadElementContentAsString();
-                        break;
-                    case "NetworkCameraFormat":
-                        networkCameraFormat = (NetworkCameraFormat) Enum.Parse(typeof(NetworkCameraFormat), reader.ReadElementContentAsString());
-                        break;
-                    case "RecentNetworkCameras":
-                        ParseRecentNetworkCameras(reader);
-                        break;
-                    case "MaxRecentNetworkCameras":
-                        maxRecentNetworkCameras = reader.ReadElementContentAsInt();
-                        break;*/
                     case "Cameras":
                         ParseCameras(reader);
                         break;

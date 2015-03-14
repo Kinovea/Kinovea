@@ -47,6 +47,9 @@ namespace Kinovea.FileBrowser
             this.lblFavFiles = new System.Windows.Forms.Label();
             this.lvShortcuts = new System.Windows.Forms.ListView();
             this.tabPageCameras = new System.Windows.Forms.TabPage();
+            this.btnImportHistory = new System.Windows.Forms.Button();
+            this.lblCaptureHistory = new System.Windows.Forms.Label();
+            this.tvCaptureHistory = new System.Windows.Forms.TreeView();
             this.btnManual = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lvCameras = new System.Windows.Forms.ListView();
@@ -325,6 +328,9 @@ namespace Kinovea.FileBrowser
             // 
             // tabPageCameras
             // 
+            this.tabPageCameras.Controls.Add(this.btnImportHistory);
+            this.tabPageCameras.Controls.Add(this.lblCaptureHistory);
+            this.tabPageCameras.Controls.Add(this.tvCaptureHistory);
             this.tabPageCameras.Controls.Add(this.btnManual);
             this.tabPageCameras.Controls.Add(this.label1);
             this.tabPageCameras.Controls.Add(this.lvCameras);
@@ -335,6 +341,51 @@ namespace Kinovea.FileBrowser
             this.tabPageCameras.Size = new System.Drawing.Size(311, 533);
             this.tabPageCameras.TabIndex = 2;
             this.tabPageCameras.UseVisualStyleBackColor = true;
+            // 
+            // btnImportHistory
+            // 
+            this.btnImportHistory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
+            this.btnImportHistory.BackgroundImage = global::Kinovea.FileBrowser.Properties.Resources.folder_explore;
+            this.btnImportHistory.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btnImportHistory.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnImportHistory.FlatAppearance.BorderSize = 0;
+            this.btnImportHistory.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
+            this.btnImportHistory.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
+            this.btnImportHistory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnImportHistory.Location = new System.Drawing.Point(6, 284);
+            this.btnImportHistory.Name = "btnImportHistory";
+            this.btnImportHistory.Size = new System.Drawing.Size(20, 20);
+            this.btnImportHistory.TabIndex = 9;
+            this.btnImportHistory.UseVisualStyleBackColor = false;
+            this.btnImportHistory.Click += new System.EventHandler(this.btnImportHistory_Click);
+            // 
+            // lblCaptureHistory
+            // 
+            this.lblCaptureHistory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCaptureHistory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
+            this.lblCaptureHistory.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCaptureHistory.ForeColor = System.Drawing.Color.SteelBlue;
+            this.lblCaptureHistory.Location = new System.Drawing.Point(3, 284);
+            this.lblCaptureHistory.Name = "lblCaptureHistory";
+            this.lblCaptureHistory.Size = new System.Drawing.Size(305, 20);
+            this.lblCaptureHistory.TabIndex = 6;
+            this.lblCaptureHistory.Text = "Capture History :   ";
+            this.lblCaptureHistory.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tvCaptureHistory
+            // 
+            this.tvCaptureHistory.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tvCaptureHistory.Location = new System.Drawing.Point(3, 307);
+            this.tvCaptureHistory.Name = "tvCaptureHistory";
+            this.tvCaptureHistory.Size = new System.Drawing.Size(305, 220);
+            this.tvCaptureHistory.TabIndex = 5;
+            this.tvCaptureHistory.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvCaptureHistory_BeforeExpand);
+            this.tvCaptureHistory.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.tvCaptureHistory_ItemDrag);
+            this.tvCaptureHistory.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvCaptureHistory_NodeMouseDoubleClick);
+            this.tvCaptureHistory.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tvCaptureHistory_MouseDown);
             // 
             // btnManual
             // 
@@ -434,6 +485,9 @@ namespace Kinovea.FileBrowser
         #endregion
         private System.Windows.Forms.ListView lvExplorer;
         private System.Windows.Forms.ListView lvShortcuts;
+        private System.Windows.Forms.TreeView tvCaptureHistory;
+        public System.Windows.Forms.Label lblCaptureHistory;
+        private System.Windows.Forms.Button btnImportHistory;
 
 
     }

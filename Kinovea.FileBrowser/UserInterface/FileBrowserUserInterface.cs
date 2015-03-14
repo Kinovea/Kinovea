@@ -36,6 +36,7 @@ using Kinovea.FileBrowser.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
 using System.Drawing;
+using System.Globalization;
 
 namespace Kinovea.FileBrowser
 {
@@ -57,6 +58,7 @@ namespace Kinovea.FileBrowser
         private bool externalSelection;
         private string lastOpenedDirectory;
         private ActiveFileBrowserTab activeTab;
+        private Dictionary<string, TreeNode> captureHistoryNodes = new Dictionary<string, TreeNode>();
 
         #region Menu
         private ContextMenuStrip popMenuFolders = new ContextMenuStrip();
@@ -77,9 +79,14 @@ namespace Kinovea.FileBrowser
             InitializeComponent();
             
             lvCameras.SmallImageList = cameraIcons;
+            tvCaptureHistory.ImageList = cameraIcons;
+            cameraIcons.Images.Add("historyEntryDay", Properties.Resources.calendar_view_day);
+            cameraIcons.Images.Add("historyEntryMonth", Properties.Resources.calendar_view_month);
+            cameraIcons.Images.Add("unknownCamera", Properties.Resources.bulletfile);
+
             btnAddShortcut.Parent = lblFavFolders;
             btnDeleteShortcut.Parent = lblFavFolders;
-
+            
             // Drag Drop handling.
             lvExplorer.ItemDrag += lv_ItemDrag;
             lvShortcuts.ItemDrag += lv_ItemDrag;
@@ -95,8 +102,9 @@ namespace Kinovea.FileBrowser
             NotificationCenter.FileSelected += NotificationCenter_FileSelected;
             NotificationCenter.FileOpened += NotificationCenter_FileOpened;
             
-            // Take the list of shortcuts from the prefs and load them.
+            // Reload stored persistent information.
             ReloadShortcuts();
+            ReloadCaptureHistory(true);
             
             // Reload last tab from prefs.
             // We don't reload the splitters here, because we are not at full size yet and they are anchored.
@@ -142,6 +150,7 @@ namespace Kinovea.FileBrowser
 
             lvShortcuts.ContextMenuStrip = popMenuFiles;
             lvExplorer.ContextMenuStrip = popMenuFiles;
+            tvCaptureHistory.ContextMenuStrip = popMenuFiles;
         }
 
         private void IdleDetector(object sender, EventArgs e)
@@ -256,7 +265,8 @@ namespace Kinovea.FileBrowser
             }
             else if(activeTab == ActiveFileBrowserTab.Cameras)
             {
-                // pass
+                ReloadCaptureHistory(false);
+                ReloadCaptureHistoryExpandedSessions();
             }
         }
         public void RefreshUICulture()
@@ -284,6 +294,7 @@ namespace Kinovea.FileBrowser
             ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
             ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
             ttTabs.SetToolTip(btnDeleteShortcut, FileBrowserLang.mnuDeleteShortcut);
+            ttTabs.SetToolTip(btnImportHistory, "Import files from a directory into the capture history");
         }
         public void ReloadShortcuts()
         {
@@ -330,14 +341,115 @@ namespace Kinovea.FileBrowser
         {
             UpdateCamera(summary);
         }
-        
         public void CameraForgotten(CameraSummary summary)
         {
             ForgetCamera(summary);
             List<CameraSummary> newList = new List<CameraSummary>(cameraSummaries);
             UpdateCameraList(newList);
         }
-        
+        public void ReloadCaptureHistory(bool clear)
+        {
+            //------------------------------------------------------------------------------------------------------
+            // Capture history tree view update mechanics.
+            // 1. Deleting a file, we only need to refresh the session node where the deleted file was. We use ReloadCaptureHistoryExpandedNodes alone.
+            // 2. Adding a file through recording. We need to reload the whole list because it could be the first file for today.
+            // We need to add the new session node. But we also want to keep the current expanded nodes.
+            // For this, we use the parallel dictionary (captureHistoryNodes) keeping track of the currently added nodes, whether days or months.
+            // 3. When importing from an existing directory we must insert the new nodes at the correct chronological place. 
+            // For this, we clear and recreate the whole list for simplicity.
+            // 
+            // This function is only concerned with the top level hierarchy (days and months), not the individual files.
+            //------------------------------------------------------------------------------------------------------
+
+            if (clear)
+            {
+                captureHistoryNodes.Clear();
+                tvCaptureHistory.Nodes.Clear();
+            }
+
+            IEnumerable<string> sessions = CaptureHistory.GetRoots();
+            
+            foreach (string session in sessions)
+            {
+                if (captureHistoryNodes.ContainsKey(session))
+                    continue;
+
+                // Find the correct place to insert this node.
+                DateTime dt;
+                bool parsed = DateTime.TryParseExact(session, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+
+                if (!parsed)
+                {
+                    TreeNode node = CreateCaptureHistoryNode(session);
+                    node.Text = session;
+
+                    tvCaptureHistory.Nodes.Add(node);
+                    captureHistoryNodes.Add(session, node);
+                }
+                else
+                {
+                    TreeNode node = CreateCaptureHistoryNodeDated(session, dt);
+
+                    TimeSpan age = DateTime.Now - dt;
+                    if (age.TotalDays < 30)
+                    {
+                        tvCaptureHistory.Nodes.Add(node);
+                        captureHistoryNodes.Add(session, node);
+                    }
+                    else
+                    {
+                        // Archived session (stored by month).
+                        string archiveName = string.Format("{0:yyyy-MM}", dt);
+
+                        if (!captureHistoryNodes.ContainsKey(archiveName))
+                        {
+                            TreeNode archiveNode = CreateCaptureHistoryNodeArchive(archiveName);
+
+                            tvCaptureHistory.Nodes.Add(archiveNode);
+                            captureHistoryNodes.Add(archiveName, archiveNode);
+                        }
+
+                        TreeNode parent = captureHistoryNodes[archiveName];
+                        parent.Nodes.Add(node);
+                        captureHistoryNodes.Add(session, node);
+                    }
+                }   
+            }
+        }
+
+        private TreeNode CreateCaptureHistoryNode(string session)
+        {
+            TreeNode node = new TreeNode();
+            node.Tag = session;
+
+            // Add a dummy child to display the [+] button.
+            TreeNode dummy = new TreeNode();
+            node.Nodes.Add(dummy);
+
+            return node;
+        }
+
+        private TreeNode CreateCaptureHistoryNodeDated(string session, DateTime dt)
+        {
+            TreeNode node = CreateCaptureHistoryNode(session);
+            node.Text = dt.ToString("d");
+
+            node.ImageKey = "historyEntryDay";
+            node.SelectedImageKey = node.ImageKey;
+
+            return node;
+        }
+
+        private TreeNode CreateCaptureHistoryNodeArchive(string archiveName)
+        {
+            TreeNode archiveNode = new TreeNode();
+            archiveNode.Text = archiveName;
+            archiveNode.ImageKey = "historyEntryMonth";
+            archiveNode.SelectedImageKey = archiveNode.ImageKey;
+
+            return archiveNode;
+        }
+
         public void Closing()
         {
             if(currentExptreeItem != null)
@@ -550,10 +662,25 @@ namespace Kinovea.FileBrowser
             // We specify the image by key, but the ListView actually uses the index to 
             // refer to the image. So when we alter the image list, everything is scrambled.
             // Assigning the key again seems to go through the piece of code that recomputes the index and fixes things.
-            foreach(ListViewItem item in lvCameras.Items)
+            foreach (ListViewItem item in lvCameras.Items)
                 item.ImageKey = item.ImageKey;
-            
+
             lvCameras.Invalidate();
+            
+            // If there is a current opened node, update its icons too.
+            foreach (TreeNode sessionNode in tvCaptureHistory.Nodes)
+            {
+                if (!sessionNode.IsExpanded)
+                    continue;
+
+                foreach (TreeNode entryNode in sessionNode.Nodes)
+                {
+                    entryNode.ImageKey = entryNode.ImageKey;
+                    entryNode.SelectedImageKey = entryNode.SelectedImageKey;
+                }
+            }
+
+            tvCaptureHistory.Invalidate();
         }
         
         private int IndexOfCamera(List<CameraSummary> summaries, string id)
@@ -597,6 +724,79 @@ namespace Kinovea.FileBrowser
             int index = IndexOfCamera(cameraSummaries, lvi.Name);
             if(index >= 0)
                 DoDragDrop(cameraSummaries[index], DragDropEffects.All);
+        }
+
+        private void tvCaptureHistory_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        {
+            // Populate the node with actual entries.
+            TreeNode node = e.Node;
+            LoadSessionNode(node);
+        }
+
+        private void tvCaptureHistory_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            // Launch video at node.
+            CaptureHistoryEntry entry = e.Node.Tag as CaptureHistoryEntry;
+            if (entry == null)
+                return;
+
+            string path = entry.CaptureFile;
+            if (path == null)
+                return;
+
+            VideoTypeManager.LoadVideo(path, -1);
+        }
+
+        private void tvCaptureHistory_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            TreeNode node = e.Item as TreeNode;
+            if (node == null)
+                return;
+
+            CaptureHistoryEntry entry = node.Tag as CaptureHistoryEntry;
+            if (entry == null)
+                return;
+
+            string path = entry.CaptureFile;
+            if (path == null)
+                return;
+
+            DoDragDrop(path, DragDropEffects.All);
+        }
+        
+        private void ReloadCaptureHistoryExpandedSessions()
+        {
+            foreach (TreeNode sessionNode in tvCaptureHistory.Nodes)
+            {
+                if (!sessionNode.IsExpanded)
+                    continue;
+
+                LoadSessionNode(sessionNode);    
+            }
+        }
+
+        private void LoadSessionNode(TreeNode sessionNode)
+        {
+            string session = sessionNode.Tag as string;
+            if (string.IsNullOrEmpty(session))
+                return;
+
+            sessionNode.Nodes.Clear();
+
+            IEnumerable<CaptureHistoryEntry> entries = CaptureHistory.GetEntries(session);
+
+            foreach (CaptureHistoryEntry entry in entries)
+            {
+                TreeNode entryNode = new TreeNode();
+                string filename = Path.GetFileName(entry.CaptureFile);
+                string time = entry.Start.ToLongTimeString();
+                entryNode.Text = string.Format("{0}  -  {1}", time, filename);
+                entryNode.ImageKey = string.IsNullOrEmpty(entry.CameraIdentifier) ? "unknownCamera" : entry.CameraIdentifier;
+                entryNode.SelectedImageKey = entryNode.ImageKey;
+                entryNode.Tag = entry;
+
+                sessionNode.Nodes.Add(entryNode);
+            }
         }
         #endregion
         
@@ -712,6 +912,20 @@ namespace Kinovea.FileBrowser
             ShowHideListMenu(true);
         }
 
+        private void tvCaptureHistory_MouseDown(object sender, MouseEventArgs e)
+        {
+            ShowHideListMenu(false);
+
+            if (!tvCaptureHistory.Focused || tvCaptureHistory.SelectedNode == null)
+                return;
+
+            CaptureHistoryEntry entry = tvCaptureHistory.SelectedNode.Tag as CaptureHistoryEntry;
+            if (entry == null)
+                return;
+
+            ShowHideListMenu(true);
+        }
+
         private void ShowHideListMenu(bool visible)
         {
             foreach (ToolStripItem menu in popMenuFiles.Items)
@@ -731,6 +945,21 @@ namespace Kinovea.FileBrowser
                 
             VideoTypeManager.LoadVideo(path, -1);
         }
+
+        private void btnImportHistory_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+
+            fbd.ShowNewFolderButton = false;
+            fbd.RootFolder = Environment.SpecialFolder.Desktop;
+
+            if (fbd.ShowDialog() == DialogResult.OK && fbd.SelectedPath.Length > 0)
+            {
+                CaptureHistory.ImportDirectory(fbd.SelectedPath);
+                ReloadCaptureHistory(true);
+            }
+        }
+
         #endregion
         
         #region Menu Event Handlers
@@ -824,7 +1053,7 @@ namespace Kinovea.FileBrowser
                     LaunchSelectedVideo(lvShortcuts);
                     break;
                 case ActiveFileBrowserTab.Cameras:
-                    LaunchSelectedCamera(lvCameras);
+                    LaunchSelectedCamera(lvCameras, tvCaptureHistory);
                     break;
             }
         }
@@ -844,22 +1073,45 @@ namespace Kinovea.FileBrowser
                 VideoTypeManager.LoadVideo(path, -1);
         }
 
-        private void LaunchSelectedCamera(ListView lv)
+        private void LaunchSelectedCamera(ListView lv, TreeView tv)
         {
-            if (lv == null || lv.SelectedItems == null || lv.SelectedItems.Count != 1)
+            if (lv == null || tv == null)
                 return;
 
-            int index = IndexOfCamera(cameraSummaries, lv.SelectedItems[0].Name);
-            if (index >= 0)
-                CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
+            if (lv.Focused)
+            {
+                if (lv.SelectedItems == null || lv.SelectedItems.Count != 1)
+                    return;
+
+                int index = IndexOfCamera(cameraSummaries, lv.SelectedItems[0].Name);
+                if (index >= 0)
+                    CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
+            }
+            else if (tv.Focused)
+            {
+                if (tv.SelectedNode == null)
+                    return;
+
+                CaptureHistoryEntry entry = tv.SelectedNode.Tag as CaptureHistoryEntry;
+                if (entry == null)
+                    return;
+
+                string path = entry.CaptureFile;
+                if (path == null)
+                    return;
+
+                VideoTypeManager.LoadVideo(path, -1);
+            }
         }
 
         private void CommandDelete()
         {
-            if(activeTab == ActiveFileBrowserTab.Explorer)
+            if (activeTab == ActiveFileBrowserTab.Explorer)
                 DeleteSelectedVideo(lvExplorer);
             else if (activeTab == ActiveFileBrowserTab.Shortcuts)
                 DeleteSelectedVideo(lvShortcuts);
+            else if (activeTab == ActiveFileBrowserTab.Cameras)
+                DeleteSelectedVideo(tvCaptureHistory);
         }
 
         private void DeleteSelectedVideo(ListView lv)
@@ -872,7 +1124,48 @@ namespace Kinovea.FileBrowser
             if (!File.Exists(path))
                 DoRefreshFileList(true);
         }
+
+        private void DeleteSelectedVideo(TreeView tv)
+        {
+            if (!tv.Focused)
+                return;
+
+            if (tv.SelectedNode == null)
+                return;
+
+            CaptureHistoryEntry entry = tv.SelectedNode.Tag as CaptureHistoryEntry;
+            if (entry == null)
+                return;
+
+            TreeNode parent = tv.SelectedNode.Parent;
+            if (parent == null)
+                return;
+
+            string session = parent.Tag as string;
+
+            string path = entry.CaptureFile;
+            if (path == null)
+                return;
+
+            FilesystemHelper.DeleteFile(path);
+            if (!File.Exists(path))
+            {
+                CaptureHistory.RemoveEntry(session, entry);
+                ReloadCaptureHistoryExpandedSessions();
+            }
+        }
         
         #endregion
+
+        
+       
+
+       
+
+        
+
+        
+
+        
     }
 }
