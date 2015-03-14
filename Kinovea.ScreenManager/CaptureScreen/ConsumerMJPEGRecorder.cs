@@ -43,6 +43,8 @@ namespace Kinovea.ScreenManager
             
             VideoInfo info = new VideoInfo();
             info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
+            if (interval < 10)
+                interval = 1000.0/30;
 
             SaveResult result = writer.OpenSavingContext(filename, info, interval);
 
