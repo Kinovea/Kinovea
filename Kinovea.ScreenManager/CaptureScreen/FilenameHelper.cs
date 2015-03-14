@@ -210,15 +210,8 @@ namespace Kinovea.ScreenManager
         }
         public string GetVideoFileExtension()
         {
-            // Container selection is temporary disabled as we force to .mp4.
+            // Container selection is disabled as we force .mp4.
             return ".mp4";
-
-            /*switch(PreferencesManager.CapturePreferences.VideoFormat)
-            {
-                case KinoveaVideoFormat.MP4: return ".mp4";
-                case KinoveaVideoFormat.AVI: return ".avi";
-                default : return ".mkv";
-            }*/
         }
     }
 }

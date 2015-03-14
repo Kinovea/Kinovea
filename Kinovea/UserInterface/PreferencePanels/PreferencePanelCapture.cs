@@ -88,7 +88,6 @@ namespace Kinovea.Root
             imageDirectory = PreferencesManager.CapturePreferences.ImageDirectory;
             videoDirectory = PreferencesManager.CapturePreferences.VideoDirectory;
             imageFormat = PreferencesManager.CapturePreferences.ImageFormat;
-            videoFormat = PreferencesManager.CapturePreferences.VideoFormat;
             usePattern = PreferencesManager.CapturePreferences.CaptureUsePattern;
             pattern = PreferencesManager.CapturePreferences.Pattern;
             counter = PreferencesManager.CapturePreferences.CaptureImageCounter; // Use the image counter for sample.
@@ -108,12 +107,6 @@ namespace Kinovea.Root
             cmbImageFormat.Items.Add("PNG");
             cmbImageFormat.Items.Add("BMP");
             cmbImageFormat.SelectedIndex = ((int)imageFormat < cmbImageFormat.Items.Count) ? (int)imageFormat : 0;
-            
-            lblVideoFormat.Text = RootLang.dlgPreferences_Capture_lblVideoFormat;
-            cmbVideoFormat.Items.Add("MKV");
-            cmbVideoFormat.Items.Add("MP4");
-            cmbVideoFormat.Items.Add("AVI");
-            cmbVideoFormat.SelectedIndex = ((int)videoFormat < cmbVideoFormat.Items.Count) ? (int)videoFormat : 0;
             
             // Naming tab
             tabNaming.Text = RootLang.dlgPreferences_Capture_tabNaming;
@@ -183,10 +176,7 @@ namespace Kinovea.Root
         {
             imageFormat = (KinoveaImageFormat)cmbImageFormat.SelectedIndex;
         }
-        private void cmbVideoFormat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            videoFormat = (KinoveaVideoFormat)cmbVideoFormat.SelectedIndex;
-        }
+        
         #endregion
         
         #region Tab naming
@@ -282,7 +272,6 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.ImageDirectory = imageDirectory;
             PreferencesManager.CapturePreferences.VideoDirectory = videoDirectory;
             PreferencesManager.CapturePreferences.ImageFormat = imageFormat;
-            PreferencesManager.CapturePreferences.VideoFormat = videoFormat;
             
             PreferencesManager.CapturePreferences.CaptureUsePattern = usePattern;
             PreferencesManager.CapturePreferences.Pattern = pattern;
