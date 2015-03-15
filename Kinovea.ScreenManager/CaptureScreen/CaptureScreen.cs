@@ -747,7 +747,10 @@ namespace Kinovea.ScreenManager
             view.UpdateNextImageFilename(next, !PreferencesManager.CapturePreferences.CaptureUsePattern);
             
             view.Toast(ScreenManagerLang.Toast_ImageSaved, 750);
-            
+
+            CaptureHistoryEntry entry = CreateHistoryEntrySnapshot(filename);
+            CaptureHistory.AddEntry(entry);
+ 
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
         
@@ -881,6 +884,21 @@ namespace Kinovea.ScreenManager
             double configuredFramerate = cameraGrabber.Framerate;
             double receivedFramerate = pipelineManager.Frequency;
             int drops = (int)pipelineManager.Drops;
+
+            CaptureHistoryEntry entry = new CaptureHistoryEntry(captureFile, start, end, cameraAlias, cameraIdentifier, configuredFramerate, receivedFramerate, drops);
+            return entry;
+        }
+
+        private CaptureHistoryEntry CreateHistoryEntrySnapshot(string filename)
+        {
+            string captureFile = filename;
+            DateTime start = DateTime.Now;
+            DateTime end = DateTime.Now;
+            string cameraAlias = cameraSummary.Alias;
+            string cameraIdentifier = cameraSummary.Identifier;
+            double configuredFramerate = 0;
+            double receivedFramerate = 0;
+            int drops = 0;
 
             CaptureHistoryEntry entry = new CaptureHistoryEntry(captureFile, start, end, cameraAlias, cameraIdentifier, configuredFramerate, receivedFramerate, drops);
             return entry;

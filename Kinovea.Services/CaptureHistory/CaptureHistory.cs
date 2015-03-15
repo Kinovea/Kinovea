@@ -92,6 +92,7 @@ namespace Kinovea.Services
             // Import all files from the directory into corresponding entries.
             // Used for debugging and as a conveniency for first time use.
 
+            List<CaptureHistoryEntry> entries = new List<CaptureHistoryEntry>();
             foreach (string file in Directory.GetFiles(dir))
             {
                 string extension = Path.GetExtension(file);
@@ -99,8 +100,12 @@ namespace Kinovea.Services
                     continue;
 
                 CaptureHistoryEntry entry = CreateEntryFromFile(file);
-                AddEntry(entry);
+                entries.Add(entry);
             }
+
+            entries.Sort((e1, e2) => e1.Start.CompareTo(e2.Start));
+            foreach (CaptureHistoryEntry entry in entries)
+                AddEntry(entry);
         }
 
         private static List<CaptureHistoryEntry> ImportEntries(string sessionFile)
