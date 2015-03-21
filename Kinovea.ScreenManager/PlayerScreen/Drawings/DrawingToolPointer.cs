@@ -264,6 +264,9 @@ namespace Kinovea.ScreenManager
         #region Helpers
         private bool IsOnDrawing(Metadata metadata, int activeKeyFrameIndex, Point mouseCoordinates, long currentTimeStamp, bool allFrames)
         {
+            if (metadata.Keyframes.Count == 0)
+                return false;
+
             bool bIsOnDrawing = false;
 
             DistortionHelper distorter = metadata.CalibrationHelper.DistortionHelper;

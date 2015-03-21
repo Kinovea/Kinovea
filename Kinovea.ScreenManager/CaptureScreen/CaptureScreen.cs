@@ -91,6 +91,11 @@ namespace Kinovea.ScreenManager
             get { return cameraSummary == null ? ImageAspectRatio.Auto : Convert(cameraSummary.AspectRatio); }
             set { ChangeAspectRatio(value); }
         }
+        public bool TestGridVisible
+        {
+            get { return metadata.TestGridVisible; }
+            set { metadata.TestGridVisible = value; }
+        }
         public HistoryStack HistoryStack
         {
             get { return historyStack; }
@@ -164,6 +169,7 @@ namespace Kinovea.ScreenManager
             
             viewportController = new ViewportController();
             viewportController.DisplayRectangleUpdated += ViewportController_DisplayRectangleUpdated;
+            viewportController.Poked += viewportController_Poked;
 
             view.SetViewport(viewportController.View);
             view.SetCapturedFilesView(capturedFiles.View);
@@ -435,6 +441,7 @@ namespace Kinovea.ScreenManager
             }
 
             metadata.ImageSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
+            metadata.PostSetupCapture();
 
             AllocateDelayer();
 
@@ -657,7 +664,12 @@ namespace Kinovea.ScreenManager
             cameraSummary.UpdateDisplayRectangle(viewportController.DisplayRectangle);
             CameraTypeManager.UpdatedCameraSummary(cameraSummary);
         }
-        
+
+        private void viewportController_Poked(object sender, EventArgs e)
+        {
+            View_SetAsActive();
+        }
+
         private void InitializeMetadata()
         {
             metadata = new Metadata(historyStack, null);

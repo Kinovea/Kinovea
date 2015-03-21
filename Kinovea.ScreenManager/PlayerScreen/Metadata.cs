@@ -234,6 +234,11 @@ namespace Kinovea.ScreenManager
             get { return selectionEnd; }
             set { selectionEnd = value; }
         }
+        public bool TestGridVisible
+        {
+            get { return drawingTestGrid.Visible; }
+            set { drawingTestGrid.Visible = value; }        
+        }
 
         /// <summary>
         /// The ratio between the capture framerate and the video framerate.
@@ -276,6 +281,7 @@ namespace Kinovea.ScreenManager
         private SpotlightManager spotlightManager;
         private AutoNumberManager autoNumberManager;
         private DrawingCoordinateSystem drawingCoordinateSystem;
+        private DrawingTestGrid drawingTestGrid;
         private ChronoManager chronoManager = new ChronoManager();
         private TrackManager trackManager = new TrackManager();
 
@@ -771,6 +777,12 @@ namespace Kinovea.ScreenManager
             initialized = true;
         }
 
+        public void PostSetupCapture()
+        {
+            for (int i = 0; i < totalStaticExtraDrawings; i++)
+                AfterDrawingCreation(extraDrawings[i]);
+        }
+
         public void Reset()
         {
             // Complete reset. (used when over loading a new video)
@@ -849,7 +861,7 @@ namespace Kinovea.ScreenManager
         {
             hitDrawing = drawing;
         }
-        public void AfterDrawingCreation(AbstractDrawing drawing)
+        private void AfterDrawingCreation(AbstractDrawing drawing)
         {
             // When passing here, it is possible that the drawing has already been initialized.
             // (for example, when undeleting a drawing).
@@ -1114,6 +1126,7 @@ namespace Kinovea.ScreenManager
             magnifier.ResetData();
             coordinateSystem.Reset();
             drawingCoordinateSystem.Visible = false;
+            drawingTestGrid.Visible = false;
             calibrationHelper.Reset();
             
             foreach(AbstractDrawing extraDrawing in extraDrawings)
@@ -1185,10 +1198,12 @@ namespace Kinovea.ScreenManager
             spotlightManager = new SpotlightManager();
             autoNumberManager = new AutoNumberManager(ToolManager.GetStylePreset("AutoNumbers"));
             drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.GetStylePreset("CoordinateSystem"));
-            
+            drawingTestGrid = new DrawingTestGrid();
+
             extraDrawings.Add(spotlightManager);
             extraDrawings.Add(autoNumberManager);
             extraDrawings.Add(drawingCoordinateSystem);
+            extraDrawings.Add(drawingTestGrid);
 
             // totalStaticExtraDrawings is used to differenciate between static extra drawings like multidrawing managers
             // and dynamic extra drawings like tracks and chronos.

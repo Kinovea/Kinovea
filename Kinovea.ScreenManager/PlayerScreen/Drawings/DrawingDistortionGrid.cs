@@ -36,7 +36,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType("DistortionGrid")]
-    public class DrawingDistortionGrid : AbstractDrawing, IDecorable, IScalable, IKvaSerializable /*IMeasurable, ITrackable*/
+    public class DrawingDistortionGrid : AbstractDrawing, IDecorable, IScalable, IKvaSerializable
     {
         #region Events
         public event EventHandler LensCalibrationAsked;

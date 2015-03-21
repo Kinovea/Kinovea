@@ -63,6 +63,7 @@ namespace Kinovea.ScreenManager
             tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
             tools.Add("Magnifier", new DrawingToolMagnifier());
             tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
+            tools.Add("TestGrid", new DrawingToolTestGrid());
 
             // Custom tools (externally defined).
             foreach (AbstractDrawingTool customTool in GenericPostureManager.Tools)

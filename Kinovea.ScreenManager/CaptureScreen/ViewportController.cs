@@ -36,6 +36,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler DisplayRectangleUpdated;
+        public event EventHandler Poked;
         #endregion
 
         #region Properties
@@ -149,7 +150,8 @@ namespace Kinovea.ScreenManager
         {
             if(metadataManipulator == null)
                 return false;
-                
+
+            Poke();
             return metadataManipulator.OnMouseLeftDown(mouse, imageLocation, imageZoom);
         }
         
@@ -165,7 +167,7 @@ namespace Kinovea.ScreenManager
         {
             if(metadataManipulator == null)
                 return;
-            
+
             metadataManipulator.OnMouseUp(bitmap);
             Refresh();
         }
@@ -174,7 +176,8 @@ namespace Kinovea.ScreenManager
         {
             if(metadataManipulator == null)
                 return;
-                
+
+            Poke();
             metadataManipulator.HitTest(mouse, imageLocation, imageZoom);
             PrepareContextMenu();
             view.SetContextMenu(popMenu);
@@ -207,6 +210,11 @@ namespace Kinovea.ScreenManager
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
         }
 
+        private void Poke()
+        {
+            if (Poked != null)
+                Poked(this, EventArgs.Empty);
+        }
         private void PrepareContextMenu()
         {
             popMenu.Items.Clear();
