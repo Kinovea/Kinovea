@@ -108,6 +108,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSVGTools = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTestGrid = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCameraCalibration = new ToolStripMenuItem();
 
@@ -358,7 +359,11 @@ namespace Kinovea.ScreenManager
             mnuMirror.MergeAction = MergeAction.Append;
 
             BuildSvgMenu();
-            
+
+            mnuTestGrid.Image = Properties.Resources.grid2;
+            mnuTestGrid.Click += mnuTestGrid_OnClick;
+            mnuTestGrid.MergeAction = MergeAction.Append;
+
             mnuCoordinateAxis.Image = Properties.Resources.coordinate_axis;
             mnuCoordinateAxis.Click += mnuCoordinateAxis_OnClick;
             mnuCoordinateAxis.MergeAction = MergeAction.Append;
@@ -384,6 +389,7 @@ namespace Kinovea.ScreenManager
             
             mnuCatchImage.DropDownItems.Add(new ToolStripSeparator());
             mnuCatchImage.DropDownItems.Add(mnuSVGTools);
+            mnuCatchImage.DropDownItems.Add(mnuTestGrid);
             mnuCatchImage.DropDownItems.Add(mnuCoordinateAxis);
             mnuCatchImage.DropDownItems.Add(mnuCameraCalibration);
             #endregion
@@ -840,6 +846,7 @@ namespace Kinovea.ScreenManager
                     mnuMirror.Enabled = true;
                     mnuSVGTools.Enabled = hasSvgFiles;
                     mnuCoordinateAxis.Enabled = true;
+                    mnuTestGrid.Enabled = false;
                     mnuCameraCalibration.Enabled = true;
                     
                     mnuDeinterlace.Checked = player.Deinterlaced;
@@ -875,10 +882,12 @@ namespace Kinovea.ScreenManager
                     mnuMirror.Enabled = false;
                     mnuSVGTools.Enabled = hasSvgFiles;
                     mnuCoordinateAxis.Enabled = false;
+                    mnuTestGrid.Enabled = true;
                     mnuCameraCalibration.Enabled = false;
-                    
+
                     mnuDeinterlace.Checked = false;
                     mnuMirror.Checked = false;
+                    mnuTestGrid.Checked = captureScreen.TestGridVisible;
                    
                     ConfigureImageFormatMenus(captureScreen);
                     
@@ -919,9 +928,12 @@ namespace Kinovea.ScreenManager
                 mnuMirror.Enabled = false;
                 mnuSVGTools.Enabled = false;
                 mnuCoordinateAxis.Enabled = false;
+                mnuTestGrid.Enabled = false;
                 mnuCameraCalibration.Enabled = false;
+                
                 mnuDeinterlace.Checked = false;
                 mnuMirror.Checked = false;
+                mnuTestGrid.Checked = false;
                 
                 ConfigureImageFormatMenus(null);
                 
@@ -1157,6 +1169,7 @@ namespace Kinovea.ScreenManager
             mnuFormatForce169.Text = ScreenManagerLang.mnuFormatForce169;
             mnuFormat.Text = ScreenManagerLang.mnuFormat;
             mnuMirror.Text = ScreenManagerLang.mnuMirror;
+            mnuTestGrid.Text = "Test grid";
             mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
             mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "…";
             
@@ -1800,6 +1813,16 @@ namespace Kinovea.ScreenManager
                 return;
 
             ps.ShowCoordinateSystem();
+        }
+
+        private void mnuTestGrid_OnClick(object sender, EventArgs e)
+        {
+            CaptureScreen cs = activeScreen as CaptureScreen;
+            if (cs == null)
+                return;
+
+            mnuTestGrid.Checked = !mnuTestGrid.Checked;
+            cs.TestGridVisible = mnuTestGrid.Checked;
         }
 
         private void mnuCameraCalibration_OnClick(object sender, EventArgs e)

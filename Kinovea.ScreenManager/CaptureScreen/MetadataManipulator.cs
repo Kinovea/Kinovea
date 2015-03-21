@@ -158,6 +158,8 @@ namespace Kinovea.ScreenManager
         
         public bool HitTest(Point mouse, Point imageLocation, float imageZoom)
         {
+            // Note: at the moment this method does not support extra drawings.
+
             if(metadata == null)
                 return false;
             

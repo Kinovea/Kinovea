@@ -20,6 +20,5 @@ namespace Kinovea.ScreenManager
             GridLines = new List<GridLine>();
             TickMarks = new List<TickMark>();
         }
-
     }
 }
