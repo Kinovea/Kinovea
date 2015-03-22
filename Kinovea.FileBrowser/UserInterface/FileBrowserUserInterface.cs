@@ -791,13 +791,14 @@ namespace Kinovea.FileBrowser
                 string filename = Path.GetFileName(entry.CaptureFile);
                 string time = entry.Start.ToLongTimeString();
                 entryNode.Text = string.Format("{0}  -  {1}", time, filename);
-                entryNode.SelectedImageKey = entryNode.ImageKey;
                 entryNode.Tag = entry;
 
                 if (string.IsNullOrEmpty(entry.CameraIdentifier) || !tvCaptureHistory.ImageList.Images.ContainsKey(entry.CameraIdentifier))
                     entryNode.ImageKey = "unknownCamera";
                 else
                     entryNode.ImageKey = entry.CameraIdentifier;
+
+                entryNode.SelectedImageKey = entryNode.ImageKey;
 
                 sessionNode.Nodes.Add(entryNode);
             }
