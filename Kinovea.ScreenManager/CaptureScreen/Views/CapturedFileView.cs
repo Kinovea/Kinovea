@@ -45,6 +45,11 @@ namespace Kinovea.ScreenManager
         {
             get { return capturedFile; }
         }
+
+        public bool Editing
+        {
+            get { return editing; }
+        }
         
         private CapturedFile capturedFile;
         private bool selected;
