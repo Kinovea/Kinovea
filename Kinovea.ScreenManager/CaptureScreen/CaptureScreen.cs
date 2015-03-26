@@ -760,7 +760,7 @@ namespace Kinovea.ScreenManager
             
             view.Toast(ScreenManagerLang.Toast_ImageSaved, 750);
 
-            CaptureHistoryEntry entry = CreateHistoryEntrySnapshot(filename);
+            CaptureHistoryEntry entry = CreateHistoryEntrySnapshot(filepath);
             CaptureHistory.AddEntry(entry);
  
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
