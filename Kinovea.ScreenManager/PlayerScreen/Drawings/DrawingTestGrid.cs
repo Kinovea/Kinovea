@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
         private float halfWidth;
         private float halfHeight;
         private ToolStripMenuItem menuHide = new ToolStripMenuItem();
-        private const int divisions = 12;
+        private const int divisions = 10;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
