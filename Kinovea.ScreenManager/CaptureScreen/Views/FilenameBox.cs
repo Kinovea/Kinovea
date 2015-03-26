@@ -73,8 +73,7 @@ namespace Kinovea.ScreenManager
         {
             get { return tbFilename.Focused;}
         }
-        
-        
+
         #endregion
 
         public FilenameBox()

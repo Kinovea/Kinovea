@@ -37,6 +37,14 @@ namespace Kinovea.ScreenManager
         {
             get { return capturedFiles.Count > 0; }
         }
+
+        public bool Editing
+        {
+            get
+            {
+                return capturedFileViews.Values.Any(item => item.Editing);
+            }
+        }
         
         private List<CapturedFile> capturedFiles = new List<CapturedFile>();
         private SortedDictionary<DateTime, CapturedFileView> capturedFileViews = new SortedDictionary<DateTime, CapturedFileView>();

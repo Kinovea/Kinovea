@@ -285,6 +285,12 @@ namespace Kinovea.ScreenManager
         #region Commands
         protected override bool ExecuteCommand(int cmd)
         {
+            if (fnbImage.Focused || fnbVideo.Focused)
+                return false;
+
+            if (capturedFilesView.Editing)
+                return false;
+
             if (!presenter.Synched)
                 return ExecuteScreenCommand(cmd);
 
