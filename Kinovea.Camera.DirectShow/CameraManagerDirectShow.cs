@@ -208,7 +208,7 @@ namespace Kinovea.Camera.DirectShow
                     summary.UpdateSpecific(info);
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
-                    needsReconnection = true;
+                    needsReconnection = form.NeedsReconnection;
                 }
                 
                 CameraTypeManager.UpdatedCameraSummary(summary);

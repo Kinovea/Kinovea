@@ -51,6 +51,11 @@ namespace Kinovea.Camera.DirectShow
         {
             get { return specificChanged; }
         }
+
+        public bool NeedsReconnection
+        {
+            get { return needsReconnection; }
+        }
         
         public int SelectedMediaTypeIndex
         {
@@ -77,6 +82,8 @@ namespace Kinovea.Camera.DirectShow
         private int selectedMediaTypeIndex;
         private float selectedFramerate;
         private bool canStreamConfig;
+        private bool needsReconnection;
+        private bool streamConfigInitialized;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -99,6 +106,8 @@ namespace Kinovea.Camera.DirectShow
                 PopulateFormats();
             else
                 DisableStreamConfig();
+
+            streamConfigInitialized = true;
 
             cameraProperties = CameraPropertyManager.Read(device);
             PopulateCameraControl();
@@ -269,7 +278,12 @@ namespace Kinovea.Camera.DirectShow
 
             selectedMediaTypeIndex = selectable.MediaType.MediaTypeIndex;
             selectedFramerate = selectable.Framerate;
-            specificChanged = true;
+
+            if (streamConfigInitialized)
+            {
+                specificChanged = true;
+                needsReconnection = true;
+            }
         }
         #endregion
 
