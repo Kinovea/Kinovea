@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
             // 
             this.btnReset.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.resettimescale;
             this.btnReset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnReset.Location = new System.Drawing.Point(211, 25);
+            this.btnReset.Location = new System.Drawing.Point(190, 25);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(20, 20);
             this.btnReset.TabIndex = 25;
@@ -93,9 +93,9 @@ namespace Kinovea.ScreenManager
             // 
             // tbCaptureFPS
             // 
-            this.tbCaptureFPS.Location = new System.Drawing.Point(237, 25);
+            this.tbCaptureFPS.Location = new System.Drawing.Point(216, 25);
             this.tbCaptureFPS.Name = "tbCaptureFPS";
-            this.tbCaptureFPS.Size = new System.Drawing.Size(51, 20);
+            this.tbCaptureFPS.Size = new System.Drawing.Size(72, 20);
             this.tbCaptureFPS.TabIndex = 24;
             this.tbCaptureFPS.Text = "0000";
             this.tbCaptureFPS.TextChanged += new System.EventHandler(this.tbCaptureFPS_TextChanged);
