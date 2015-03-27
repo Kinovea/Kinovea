@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
         private readonly double videoFPS;				
         private double captureFPS;
         private double memoHighSpeedFactor;
-        private const double maxCaptureFPS = 10000;
+        private const double maxCaptureFPS = 1000000; // 1MHz.
         private const double minCaptureFPS = 1;
         private bool internalUpdate;
         #endregion
