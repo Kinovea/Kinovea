@@ -243,15 +243,29 @@ namespace Kinovea.Camera.DirectShow
         private void SetPostConnectionOptions()
         {
             // Some options only work after the graph is actually connected.
-            // For example logitech exposure. It might be due to a bug in Logitech drivers/firmware though.
+            // For example logitech exposure. Probably due to a bug in Logitech firmware.
             SpecificInfo info = summary.Specific as SpecificInfo;
-            
-            if (info == null || !info.CameraProperties.ContainsKey("exposure_logitech") || info.CameraProperties["exposure_logitech"].Automatic)
+
+            // Only do this for Logitech devices.
+            if (!summary.Identifier.Contains("usb#vid_046d") || info == null)
                 return;
 
-            int exposure = int.Parse(info.CameraProperties["exposure_logitech"].CurrentValue, CultureInfo.InvariantCulture);
+            if (info.CameraProperties.ContainsKey("exposure_logitech"))
+            {
+                if (info.CameraProperties["exposure_logitech"].Automatic)
+                    return;
 
-            device.Logitech_SetExposure(exposure, true);
+                int exposure = int.Parse(info.CameraProperties["exposure_logitech"].CurrentValue, CultureInfo.InvariantCulture);
+                device.Logitech_SetExposure(exposure, true);
+            }
+            else if (info.CameraProperties.ContainsKey("exposure"))
+            {
+                if (info.CameraProperties["exposure"].Automatic)
+                    return;
+
+                int exposure = int.Parse(info.CameraProperties["exposure"].CurrentValue, CultureInfo.InvariantCulture);
+                device.SetCameraProperty(CameraControlProperty.Exposure, exposure, CameraControlFlags.Manual);
+            }
         }
 
         private void ComputeDataRate(int bytes)
