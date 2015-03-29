@@ -149,6 +149,8 @@ namespace Kinovea.ScreenManager
         private ScreenToolManager screenToolManager = new ScreenToolManager();
         private DrawingToolbarPresenter drawingToolbarPresenter = new DrawingToolbarPresenter();
         private Control dummy = new Control();
+
+        private System.Windows.Forms.Timer grabTimer = new System.Windows.Forms.Timer();
         private System.Windows.Forms.Timer nonGrabbingInteractionTimer = new System.Windows.Forms.Timer();
 
         private HistoryStack historyStack = new HistoryStack();
@@ -182,9 +184,11 @@ namespace Kinovea.ScreenManager
             
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
             
-            nonGrabbingInteractionTimer.Interval = 15;
+            nonGrabbingInteractionTimer.Interval = 40;
             nonGrabbingInteractionTimer.Tick += NonGrabbingInteractionTimer_Tick;
 
+            grabTimer.Tick += grabTimer_Tick;
+            
             pipelineManager.FrameSignaled += pipelineManager_FrameSignaled;
         }
 
@@ -251,7 +255,11 @@ namespace Kinovea.ScreenManager
 
             consumerDisplay = null;
 
+            nonGrabbingInteractionTimer.Stop();
             nonGrabbingInteractionTimer.Tick -= NonGrabbingInteractionTimer_Tick;
+            grabTimer.Stop();
+            grabTimer.Tick -= grabTimer_Tick;
+
             viewportController.DisplayRectangleUpdated -= ViewportController_DisplayRectangleUpdated;
 
             if (view != null)
@@ -460,6 +468,17 @@ namespace Kinovea.ScreenManager
             pipelineManager.Connect(imageDescriptor, (IFrameProducer)cameraGrabber, consumerDisplay, consumerRecord);
             
             nonGrabbingInteractionTimer.Enabled = false;
+
+            if (!PreferencesManager.CapturePreferences.UseCameraSignalSynchronization)
+            {
+                double framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
+                if (framerate == 0)
+                    framerate = 25;
+
+                grabTimer.Interval = (int)(1000.0 / framerate);
+                grabTimer.Enabled = true;
+            }
+
             cameraGrabber.GrabbingStatusChanged += Grabber_GrabbingStatusChanged;
             cameraGrabber.Start();
             
@@ -505,7 +524,9 @@ namespace Kinovea.ScreenManager
             {
                 cameraGrabber.Stop();
                 cameraGrabber.GrabbingStatusChanged -= Grabber_GrabbingStatusChanged;
-                nonGrabbingInteractionTimer.Enabled = true;
+
+                grabTimer.Stop();
+                nonGrabbingInteractionTimer.Start();
             }
 
             prepareFailedImageDescriptor = ImageDescriptor.Invalid;
@@ -546,26 +567,13 @@ namespace Kinovea.ScreenManager
             if (!cameraConnected)
                 return;
 
-            // A frame was received by the camera.
-            // We use this as a clock tick to update the consumer responsible for display.
-            // This consumer cannot block because it's on the UI thread.
-            consumerDisplay.ConsumeOne();
-
-            Bitmap fresh = consumerDisplay.Bitmap;
-
-            if (fresh == null)
-                return;
-
-            delayer.Push(fresh);
-
-            Bitmap delayed = delayer.Get(delay);
-            viewportController.Bitmap = delayed;
-            viewportController.Refresh();
-
             UpdateStats();
 
-            if (recording && recordingThumbnail == null)
-                recordingThumbnail = BitmapHelper.Copy(fresh);
+            if (PreferencesManager.CapturePreferences.UseCameraSignalSynchronization)
+            {
+                GrabFrame();
+                viewportController.Refresh();
+            }
         }
 
         #endregion
@@ -656,6 +664,45 @@ namespace Kinovea.ScreenManager
         {
             viewportController.Refresh();
         }
+        
+        private void grabTimer_Tick(object sender, EventArgs e)
+        {
+            if (PreferencesManager.CapturePreferences.UseCameraSignalSynchronization)
+                return;
+
+            GrabFrame();
+            viewportController.Refresh();
+        }
+
+        private void GrabFrame()
+        {
+            // 1. Consume a frame for display purposes (= push to delay buffer).
+            // 2. Get a frame to display (= pull from delay buffer). 
+            // 
+            // This can be synchronized with the camera frame signals or it can be on an independant timer.
+            // The consumer display never blocks and always get the latest frame from the ring buffer.
+            // This means that it may miss some frames, especially if it is on a lower frequency timer. 
+            // It is considered acceptable for display purposes, the recorder consumer works differently.
+
+            if (!cameraConnected)
+                return;
+            
+            consumerDisplay.ConsumeOne();
+            Bitmap fresh = consumerDisplay.Bitmap;
+
+            if (fresh == null)
+                return;
+
+            delayer.Push(fresh);
+
+            if (recording && recordingThumbnail == null)
+                recordingThumbnail = BitmapHelper.Copy(fresh);
+
+            // Get the image to display.
+            Bitmap delayed = delayer.Get(delay);
+            viewportController.Bitmap = delayed;
+        }
+
         private void ViewportController_DisplayRectangleUpdated(object sender, EventArgs e)
         {
             if (!cameraLoaded || cameraSummary == null)
@@ -969,7 +1016,16 @@ namespace Kinovea.ScreenManager
             if(pipelineManager.Frequency == 0)
                 return 0;
 
-            return age / pipelineManager.Frequency;
+            if (PreferencesManager.CapturePreferences.UseCameraSignalSynchronization)
+                return age / pipelineManager.Frequency;
+
+            double framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
+            if (framerate == 0)
+                return 0;
+
+            framerate = Math.Min(framerate, pipelineManager.Frequency);
+
+            return age / framerate;
         }
         #endregion
 
