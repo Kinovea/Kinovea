@@ -53,7 +53,8 @@ namespace Kinovea.Root
         private string imageDirectory;
         private string videoDirectory;
         private KinoveaImageFormat imageFormat;
-        private KinoveaVideoFormat videoFormat;
+        private bool useCameraSignalSynchronization;
+        private double displaySynchronizationFramerate;
         private bool usePattern;
         private string pattern;
         private bool resetCounter;
@@ -88,6 +89,8 @@ namespace Kinovea.Root
             imageDirectory = PreferencesManager.CapturePreferences.ImageDirectory;
             videoDirectory = PreferencesManager.CapturePreferences.VideoDirectory;
             imageFormat = PreferencesManager.CapturePreferences.ImageFormat;
+            useCameraSignalSynchronization = PreferencesManager.CapturePreferences.UseCameraSignalSynchronization;
+            displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
             usePattern = PreferencesManager.CapturePreferences.CaptureUsePattern;
             pattern = PreferencesManager.CapturePreferences.Pattern;
             counter = PreferencesManager.CapturePreferences.CaptureImageCounter; // Use the image counter for sample.
@@ -107,7 +110,11 @@ namespace Kinovea.Root
             cmbImageFormat.Items.Add("PNG");
             cmbImageFormat.Items.Add("BMP");
             cmbImageFormat.SelectedIndex = ((int)imageFormat < cmbImageFormat.Items.Count) ? (int)imageFormat : 0;
-            
+
+            rbCameraFrameSignal.Checked = useCameraSignalSynchronization;
+            rbForcedFramerate.Checked = !useCameraSignalSynchronization;
+            tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
+
             // Naming tab
             tabNaming.Text = RootLang.dlgPreferences_Capture_tabNaming;
             rbFreeText.Text = RootLang.dlgPreferences_Capture_rbFreeText;
@@ -176,7 +183,21 @@ namespace Kinovea.Root
         {
             imageFormat = (KinoveaImageFormat)cmbImageFormat.SelectedIndex;
         }
-        
+        private void radioDSS_CheckedChanged(object sender, EventArgs e)
+        {
+            useCameraSignalSynchronization = rbCameraFrameSignal.Checked;
+
+            lblFramerate.Enabled = !useCameraSignalSynchronization;
+            tbFramerate.Enabled = !useCameraSignalSynchronization;
+        }
+        private void tbFramerate_TextChanged(object sender, EventArgs e)
+        {
+            // Parse in current culture.
+            double value;
+            bool parsed = double.TryParse(tbFramerate.Text, out value);
+            if (parsed)
+                displaySynchronizationFramerate = value;
+        }
         #endregion
         
         #region Tab naming
@@ -272,7 +293,10 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.ImageDirectory = imageDirectory;
             PreferencesManager.CapturePreferences.VideoDirectory = videoDirectory;
             PreferencesManager.CapturePreferences.ImageFormat = imageFormat;
-            
+
+            PreferencesManager.CapturePreferences.UseCameraSignalSynchronization = useCameraSignalSynchronization;
+            PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate = displaySynchronizationFramerate;
+
             PreferencesManager.CapturePreferences.CaptureUsePattern = usePattern;
             PreferencesManager.CapturePreferences.Pattern = pattern;
             if(resetCounter)
@@ -283,5 +307,9 @@ namespace Kinovea.Root
             
             PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
         }
+
+        
+
+        
     }
 }
