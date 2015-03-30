@@ -78,6 +78,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeFrames = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeMilliseconds = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimecodeMicroseconds = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeTimeAndFrames = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeNormalized = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
@@ -313,10 +314,11 @@ namespace Kinovea.Root
             mnuTimecodeClassic.Click += new EventHandler(mnuTimecodeClassic_OnClick);
             mnuTimecodeFrames.Click += new EventHandler(mnuTimecodeFrames_OnClick);
             mnuTimecodeMilliseconds.Click += new EventHandler(mnuTimecodeMilliseconds_OnClick);
+            mnuTimecodeMicroseconds.Click += new EventHandler(mnuTimecodeMicroseconds_OnClick);
             mnuTimecodeTimeAndFrames.Click += new EventHandler(mnuTimecodeTimeAndFrames_OnClick);
             mnuTimecodeNormalized.Click += new EventHandler(mnuTimecodeNormalized_OnClick);
 
-            mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeMilliseconds, mnuTimecodeTimeAndFrames});
+            mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeMilliseconds, mnuTimecodeMicroseconds, mnuTimecodeTimeAndFrames});
             
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuLanguages, 
@@ -410,6 +412,7 @@ namespace Kinovea.Root
             mnuTimecodeClassic.Text = RootLang.TimeCodeFormat_Classic;
             mnuTimecodeFrames.Text = RootLang.TimeCodeFormat_Frames;
             mnuTimecodeMilliseconds.Text = RootLang.TimeCodeFormat_Milliseconds;
+            mnuTimecodeMicroseconds.Text = "Total microseconds";//RootLang.TimeCodeFormat_Milliseconds;
             mnuTimecodeTimeAndFrames.Text = RootLang.TimeCodeFormat_TimeAndFrames;
             //mnuTimecodeTimeAndFrames.Text = RootLang.TimeCodeFormat_Normalized;
             mnuTimecodeNormalized.Text = "Normalized";
@@ -528,6 +531,7 @@ namespace Kinovea.Root
             mnuTimecodeClassic.Checked = false;
             mnuTimecodeFrames.Checked = false;
             mnuTimecodeMilliseconds.Checked = false;
+            mnuTimecodeMicroseconds.Checked = false;
             mnuTimecodeTimeAndFrames.Checked = false;
             mnuTimecodeNormalized.Checked = false;
             
@@ -543,6 +547,9 @@ namespace Kinovea.Root
                     break;
                 case TimecodeFormat.Milliseconds:
                     mnuTimecodeMilliseconds.Checked = true;
+                    break;
+                case TimecodeFormat.Microseconds:
+                    mnuTimecodeMicroseconds.Checked = true;
                     break;
                 case TimecodeFormat.TimeAndFrames:
                     mnuTimecodeTimeAndFrames.Checked = true;
@@ -565,6 +572,10 @@ namespace Kinovea.Root
         private void mnuTimecodeMilliseconds_OnClick(object sender, EventArgs e)
         {
             SwitchTimecode(TimecodeFormat.Milliseconds);
+        }
+        private void mnuTimecodeMicroseconds_OnClick(object sender, EventArgs e)
+        {
+            SwitchTimecode(TimecodeFormat.Microseconds);
         }
         private void mnuTimecodeTimeAndFrames_OnClick(object sender, EventArgs e)
         {

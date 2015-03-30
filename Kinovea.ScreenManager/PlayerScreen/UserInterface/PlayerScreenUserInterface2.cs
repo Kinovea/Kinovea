@@ -4696,6 +4696,7 @@ namespace Kinovea.ScreenManager
             {
                 case TimecodeFormat.Frames:
                 case TimecodeFormat.Milliseconds:
+                case TimecodeFormat.Microseconds:
                 case TimecodeFormat.TenThousandthOfHours:
                 case TimecodeFormat.HundredthOfMinutes:
                     
