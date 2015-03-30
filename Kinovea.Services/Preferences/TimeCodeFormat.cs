@@ -27,6 +27,7 @@ namespace Kinovea.Services
         ClassicTime,
         Frames,
         Milliseconds,
+        Microseconds,
         TenThousandthOfHours,
         HundredthOfMinutes,
         TimeAndFrames,

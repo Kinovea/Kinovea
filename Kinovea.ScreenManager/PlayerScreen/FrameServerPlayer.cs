@@ -261,6 +261,9 @@ namespace Kinovea.ScreenManager
                 case TimecodeFormat.Milliseconds:
                     outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds));
                     break;
+                case TimecodeFormat.Microseconds:
+                    outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds * 1000));
+                    break;
                 case TimecodeFormat.TenThousandthOfHours:
                     // 1 Ten Thousandth of Hour = 360 ms.
                     double inTenThousandsOfAnHour = milliseconds / 360.0;

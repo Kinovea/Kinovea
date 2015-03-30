@@ -106,7 +106,8 @@ namespace Kinovea.Services
             switch(format)
             {
                 case TimecodeFormat.Frames:
-                case TimecodeFormat.Milliseconds:	
+                case TimecodeFormat.Milliseconds:
+                case TimecodeFormat.Microseconds:
                 case TimecodeFormat.HundredthOfMinutes:
                 case TimecodeFormat.TenThousandthOfHours:
                 case TimecodeFormat.Timestamps:
