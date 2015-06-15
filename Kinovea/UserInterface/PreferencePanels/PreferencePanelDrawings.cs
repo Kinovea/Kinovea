@@ -51,6 +51,7 @@ namespace Kinovea.Root
         private Bitmap icon;
         private InfosFading defaultFading;
         private bool drawOnPlay;
+        private TrackingProfile trackingProfile;
         #endregion
         
         #region Construction & Initialization
@@ -69,6 +70,8 @@ namespace Kinovea.Root
         {
             drawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;
             defaultFading = new InfosFading(0, 0);
+            //defaultFading = PreferencesManager.PlayerPreferences.DefaultFading;
+            trackingProfile = PreferencesManager.PlayerPreferences.TrackingProfile;
         }
         private void InitPage()
         {
@@ -86,6 +89,26 @@ namespace Kinovea.Root
             chkAlwaysVisible.Checked = defaultFading.AlwaysVisible;
             EnableDisableFadingOptions();
             lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);
+
+            tabTracking.Text = "Tracking";
+            lblObjectWindow.Text = "Object window :";
+            lblSearchWindow.Text = "Search window :";
+            cmbBlockWindowUnit.Items.Add("Percentage");
+            cmbBlockWindowUnit.Items.Add("Pixels");
+            cmbSearchWindowUnit.Items.Add("Percentage");
+            cmbSearchWindowUnit.Items.Add("Pixels");
+
+            //------------
+            int blockWindowUnit = (int)trackingProfile.BlockWindowUnit;
+            cmbBlockWindowUnit.SelectedIndex = blockWindowUnit < cmbBlockWindowUnit.Items.Count ? blockWindowUnit : 0;
+
+            int searchWindowUnit = (int)trackingProfile.SearchWindowUnit;
+            cmbSearchWindowUnit.SelectedIndex = searchWindowUnit < cmbSearchWindowUnit.Items.Count ? searchWindowUnit : 0;
+
+            tbBlockWidth.Text = trackingProfile.BlockWindow.Width.ToString();
+            tbBlockHeight.Text = trackingProfile.BlockWindow.Height.ToString();
+            tbSearchWidth.Text = trackingProfile.SearchWindow.Width.ToString();
+            tbSearchHeight.Text = trackingProfile.SearchWindow.Height.ToString();
         }
         #endregion
         
@@ -114,8 +137,69 @@ namespace Kinovea.Root
             defaultFading.AlwaysVisible = chkAlwaysVisible.Checked;
         }
         #endregion
+
+        #region Tracking
+        private void tbBlockWidth_TextChanged(object sender, EventArgs e)
+        {
+            int width;
+            bool parsed = ExtractTrackerParameter(tbBlockWidth, out width);
+            if (!parsed)
+                return;
+
+            trackingProfile.BlockWindow = new Size(width, trackingProfile.BlockWindow.Height);
+        }
+
+        private void tbBlockHeight_TextChanged(object sender, EventArgs e)
+        {
+            int height;
+            bool parsed = ExtractTrackerParameter(tbBlockHeight, out height);
+            if (!parsed)
+                return;
+
+            trackingProfile.BlockWindow = new Size(trackingProfile.BlockWindow.Width, height);
+        }
+
+        private void tbSearchWidth_TextChanged(object sender, EventArgs e)
+        {
+            int width;
+            bool parsed = ExtractTrackerParameter(tbSearchWidth, out width);
+            if (!parsed)
+                return;
+
+            trackingProfile.SearchWindow = new Size(width, trackingProfile.SearchWindow.Height);
+        }
+
+        private void tbSearchHeight_TextChanged(object sender, EventArgs e)
+        {
+            int height;
+            bool parsed = ExtractTrackerParameter(tbSearchHeight, out height);
+            if (!parsed)
+                return;
+
+            trackingProfile.SearchWindow = new Size(trackingProfile.SearchWindow.Width, height);
+        }
+
+        private bool ExtractTrackerParameter(TextBox tb, out int value)
+        {
+            int v;
+            bool parsed = int.TryParse(tb.Text, out v);
+            tbBlockWidth.ForeColor = parsed ? Color.Black : Color.Red;
+            value = parsed ? v : 10;
+            return parsed;
+        }
+
+        private void cmbBlockWindowUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            trackingProfile.BlockWindowUnit = (TrackerParameterUnit)cmbBlockWindowUnit.SelectedIndex;
+        }
+
+        private void cmbSearchWindowUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            trackingProfile.SearchWindowUnit = (TrackerParameterUnit)cmbSearchWindowUnit.SelectedIndex;
+        }
         #endregion
-        
+        #endregion
+
         private void EnableDisableFadingOptions()
         {
             trkFading.Enabled = chkEnablePersistence.Checked;
@@ -127,6 +211,19 @@ namespace Kinovea.Root
         {
             PreferencesManager.PlayerPreferences.DrawOnPlay = drawOnPlay;
             PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(defaultFading);
+            PreferencesManager.PlayerPreferences.TrackingProfile = trackingProfile;
         }
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
     }
 }
