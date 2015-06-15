@@ -229,6 +229,11 @@ namespace Kinovea.Services
             return string.Format(CultureInfo.InvariantCulture, "{0};{1}", size.Width, size.Height);
         }
 
+        public static string WriteSize(Size size)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0};{1}", size.Width, size.Height);
+        }
+
         public static string WriteColor(Color color, bool alpha)
         {
             if (alpha)
@@ -237,5 +242,9 @@ namespace Kinovea.Services
                 return string.Format("{0};{1};{2}", color.R.ToString(), color.G.ToString(), color.B.ToString());
         }
     
+        public static string WriteBoolean(bool value)
+        {
+            return value.ToString().ToLower();
+        }
     }
 }
