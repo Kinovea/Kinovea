@@ -10,15 +10,15 @@ namespace Kinovea.Services
 {
     public class TrackingProfile
     {
-        public string Name { get; private set; }
-        public double SimilarityThreshold { get; private set; }
-        public double TemplateUpdateThreshold { get; private set; }
-        public Size SearchWindow { get; private set; }
-        public Size BlockWindow { get; private set; }
-        public TrackerParameterUnit SearchWindowUnit { get; private set; }
-        public TrackerParameterUnit BlockWindowUnit { get; private set; }
-        public int RefinementNeighborhood { get; private set; }
-        public bool ResetOnMove { get; private set; }
+        public string Name { get; set; }
+        public double SimilarityThreshold { get; set; }
+        public double TemplateUpdateThreshold { get; set; }
+        public Size SearchWindow { get; set; }
+        public Size BlockWindow { get; set; }
+        public TrackerParameterUnit SearchWindowUnit { get; set; }
+        public TrackerParameterUnit BlockWindowUnit { get; set; }
+        public int RefinementNeighborhood { get; set; }
+        public bool ResetOnMove { get; set; }
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -84,6 +84,12 @@ namespace Kinovea.Services
             }
 
             r.ReadEndElement();
+
+            SimilarityThreshold = Math.Min(1.0, SimilarityThreshold);
+            TemplateUpdateThreshold = Math.Min(1.0, TemplateUpdateThreshold);
+
+            if (BlockWindow.Width >= SearchWindow.Width || BlockWindow.Height >= SearchWindow.Height)
+                BlockWindow = new Size(SearchWindow.Width / 2, SearchWindow.Height / 2);
         }
     
         public void WriteXml(XmlWriter w)
