@@ -118,6 +118,11 @@ namespace Kinovea.Services
             get { return videoFormat; }
             set { videoFormat = value; }
         }
+        public TrackingProfile TrackingProfile
+        {
+            get { return trackingProfile; }
+            set { trackingProfile = value; }
+        }
         #endregion
         
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -138,6 +143,7 @@ namespace Kinovea.Services
         private bool syncLockSpeed = true;
         private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
         private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MKV;
+        private TrackingProfile trackingProfile = new TrackingProfile();
         
         public void AddRecentColor(Color _color)
         {
@@ -182,6 +188,10 @@ namespace Kinovea.Services
             }
             
             writer.WriteElementString("MaxRecentColors", maxRecentColors.ToString());
+
+            writer.WriteStartElement("TrackingProfile");
+            trackingProfile.WriteXml(writer);
+            writer.WriteEndElement();
         }
         
         public void ReadXML(XmlReader reader)
@@ -245,6 +255,9 @@ namespace Kinovea.Services
                         break;
                     case "MaxRecentColors":
                         maxRecentColors = reader.ReadElementContentAsInt();
+                        break;
+                    case "TrackingProfile":
+                        trackingProfile.ReadXml(reader);
                         break;
                     default:
                         reader.ReadOuterXml();

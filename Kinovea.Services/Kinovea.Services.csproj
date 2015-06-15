@@ -174,6 +174,8 @@
     <Compile Include="Preferences\AngleUnit.cs" />
     <Compile Include="Preferences\AngularAccelerationUnit.cs" />
     <Compile Include="Preferences\AngularVelocityUnit.cs" />
+    <Compile Include="Preferences\TrackerParameterUnit.cs" />
+    <Compile Include="Preferences\TrackingProfile.cs" />
     <Compile Include="TimestampMapper.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
     <Compile Include="Events\FileActionEventArgs.cs" />

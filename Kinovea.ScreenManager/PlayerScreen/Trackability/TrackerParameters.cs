@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager
             TrackingProfile classic = new TrackingProfile();
             double similarityThreshold = classic.SimilarityThreshold;
             double updateThreshold = classic.TemplateUpdateThreshold;
-            int refinementNeighborhood = 1;
+            int refinementNeighborhood = classic.RefinementNeighborhood;
             Size searchWindow = classic.SearchWindow;
             Size blockWindow = classic.BlockWindow;
             

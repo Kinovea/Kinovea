@@ -1052,12 +1052,28 @@ namespace Kinovea.ScreenManager
         }
         private TrackerParameters GetTrackerParameters(Size size)
         {
-            double similarityThreshold = 0.5;
-            double templateUpdateThreshold = 0.8;
-            int refinementNeighborhood = 1;
-            Size searchWindow = new Size((int)(size.Width * 0.2), (int)(size.Height * 0.2));
-            Size blockWindow = new Size((int)(size.Width * 0.05), (int)(size.Height * 0.05));
+            TrackingProfile profile = PreferencesManager.PlayerPreferences.TrackingProfile;
 
+            double similarityThreshold = profile.SimilarityThreshold;
+            double templateUpdateThreshold = profile.TemplateUpdateThreshold;
+            int refinementNeighborhood = profile.RefinementNeighborhood;
+            Size searchWindow = profile.SearchWindow;
+            Size blockWindow = profile.BlockWindow;
+
+            if (profile.SearchWindowUnit == TrackerParameterUnit.Percentage)
+            {
+                int width = (int)(size.Width * (profile.SearchWindow.Width / 100.0));
+                int height = (int)(size.Height * (profile.SearchWindow.Height / 100.0));
+                searchWindow = new Size(width, height);
+            }
+
+            if (profile.BlockWindowUnit == TrackerParameterUnit.Percentage)
+            {
+                int width = (int)(size.Width * (profile.BlockWindow.Width / 100.0));
+                int height = (int)(size.Height * (profile.BlockWindow.Height / 100.0));
+                blockWindow = new Size(width, height);
+            }
+            
             return new TrackerParameters(similarityThreshold, templateUpdateThreshold, refinementNeighborhood, searchWindow, blockWindow, false);
         }
         #endregion
