@@ -98,6 +98,11 @@ namespace Kinovea.Services
         {
             get { return cameraBlurbs.Values.Cast<CameraBlurb>(); }
         }
+        public DelayCompositeConfiguration DelayCompositeConfiguration
+        {
+            get { return delayCompositeConfiguration; }
+            set { delayCompositeConfiguration = value; }
+        }
         #endregion
         
         #region Members
@@ -114,6 +119,7 @@ namespace Kinovea.Services
         private long videoCounter = 1;
         private int memoryBuffer = 768;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
+        private DelayCompositeConfiguration delayCompositeConfiguration = new DelayCompositeConfiguration();
         
         #endregion
         
@@ -167,6 +173,10 @@ namespace Kinovea.Services
                 
                 writer.WriteEndElement();
             }
+
+            writer.WriteStartElement("DelayCompositeConfiguration");
+            delayCompositeConfiguration.WriteXml(writer);
+            writer.WriteEndElement();
         }
         
         public void ReadXML(XmlReader reader)
@@ -216,6 +226,9 @@ namespace Kinovea.Services
                         break;
                     case "Cameras":
                         ParseCameras(reader);
+                        break;
+                    case "DelayCompositeConfiguration":
+                        delayCompositeConfiguration.ReadXml(reader);
                         break;
                     default:
                         reader.ReadOuterXml();

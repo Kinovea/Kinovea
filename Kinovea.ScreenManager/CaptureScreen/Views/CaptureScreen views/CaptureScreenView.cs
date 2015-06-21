@@ -257,6 +257,10 @@ namespace Kinovea.ScreenManager
         {
             presenter.View_ToggleRecording(fnbVideo.Filename);
         }
+        private void btnConfigureComposite_Click(object sender, EventArgs e)
+        {
+            presenter.View_ConfigureComposite();
+        }
         #endregion
         
         #region Private methods (pure Form logic)
@@ -361,5 +365,7 @@ namespace Kinovea.ScreenManager
         }
 
         #endregion
+
+        
     }
 }
