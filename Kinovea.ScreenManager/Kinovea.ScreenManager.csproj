@@ -180,8 +180,44 @@
     <Compile Include="AbstractScreen.cs" />
     <Compile Include="CaptureScreen\ConsumerDisplay.cs" />
     <Compile Include="CaptureScreen\ConsumerMJPEGRecorder.cs" />
-    <Compile Include="CaptureScreen\Delayer.cs" />
+    <Compile Include="CaptureScreen\Delay\DelayCompositeBasic.cs" />
+    <Compile Include="CaptureScreen\Delay\DelayCompositeFrozenMosaic.cs" />
+    <Compile Include="CaptureScreen\Delay\DelayCompositeMixed.cs" />
+    <Compile Include="CaptureScreen\Delay\DelayCompositeMultiReview.cs" />
+    <Compile Include="CaptureScreen\Delay\DelayCompositer.cs" />
+    <Compile Include="CaptureScreen\Delay\DelayCompositeSlowMotion.cs" />
+    <Compile Include="CaptureScreen\Delay\Delayer.cs" />
+    <Compile Include="CaptureScreen\Delay\DelaySubframeConstant.cs" />
+    <Compile Include="CaptureScreen\Delay\DelaySubframeVariable.cs" />
+    <Compile Include="CaptureScreen\Delay\IDelayComposite.cs" />
+    <Compile Include="CaptureScreen\Delay\IDelaySubframe.cs" />
+    <Compile Include="CaptureScreen\Delay\UserInterface\DelayCompositeFrozenMosaicControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CaptureScreen\Delay\UserInterface\DelayCompositeFrozenMosaicControl.Designer.cs">
+      <DependentUpon>DelayCompositeFrozenMosaicControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaptureScreen\Delay\UserInterface\DelayCompositeSlowMotionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CaptureScreen\Delay\UserInterface\DelayCompositeSlowMotionControl.Designer.cs">
+      <DependentUpon>DelayCompositeSlowMotionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaptureScreen\Delay\UserInterface\DelayCompositeMultiReviewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CaptureScreen\Delay\UserInterface\DelayCompositeMultiReviewControl.Designer.cs">
+      <DependentUpon>DelayCompositeMultiReviewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaptureScreen\ImageProcessing\OIPRollingShutterCalibration.cs" />
+    <Compile Include="CaptureScreen\ImageProcessing\OnlineImageProcessor.cs" />
     <Compile Include="CaptureScreen\PipelineManager.cs" />
+    <Compile Include="CaptureScreen\Delay\UserInterface\FormConfigureComposite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaptureScreen\Delay\UserInterface\FormConfigureComposite.Designer.cs">
+      <DependentUpon>FormConfigureComposite.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\Drawings\DrawingTestGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolTestGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementCurved.cs" />
@@ -287,9 +323,6 @@
     <Compile Include="PlayerScreen\Serialization\MultiDrawingItemSerializer.cs" />
     <Compile Include="PlayerScreen\Serialization\SerializationFilter.cs" />
     <Compile Include="PlayerScreen\TimeType.cs" />
-    <Compile Include="PlayerScreen\Trackability\TrackerParameterUnit.cs" />
-    <Compile Include="PlayerScreen\Trackability\TrackingProfile.cs" />
-    <Compile Include="PlayerScreen\Trackability\TrackingProfileManager.cs" />
     <Compile Include="PlayerScreen\Kinematics\Butterworth.cs" />
     <Compile Include="PlayerScreen\Kinematics\FilteringResult.cs" />
     <Compile Include="PlayerScreen\Kinematics\KinematicsHelper.cs" />
@@ -761,6 +794,15 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UserInterface\UIHelper.cs" />
+    <EmbeddedResource Include="CaptureScreen\Delay\UserInterface\DelayCompositeFrozenMosaicControl.resx">
+      <DependentUpon>DelayCompositeFrozenMosaicControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaptureScreen\Delay\UserInterface\DelayCompositeSlowMotionControl.resx">
+      <DependentUpon>DelayCompositeSlowMotionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaptureScreen\Delay\UserInterface\DelayCompositeMultiReviewControl.resx">
+      <DependentUpon>DelayCompositeMultiReviewControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\CapturedFilesView.resx">
       <DependentUpon>CapturedFilesView.cs</DependentUpon>
     </EmbeddedResource>
@@ -772,6 +814,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\FilenameBox.resx">
       <DependentUpon>FilenameBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaptureScreen\Delay\UserInterface\FormConfigureComposite.resx">
+      <DependentUpon>FormConfigureComposite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.ca.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.cs.resx" />
@@ -1158,6 +1203,7 @@
   <ItemGroup>
     <None Include="Resources\dashpolyarrow.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

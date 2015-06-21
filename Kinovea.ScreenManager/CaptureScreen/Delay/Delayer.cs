@@ -13,7 +13,9 @@ namespace Kinovea.ScreenManager
     /// Circular buffer storing delayed frames.
     /// Images are stored as full RGB24.
     /// This buffer uses the infinite array abstraction.
-    /// This class is not thread safe. For a thread safe and optimised producer/consumer framework, look at Kinovea.Pipeline.
+    /// 
+    /// This class is not thread safe and should only be called from the main thread. 
+    /// For a thread safe and optimised producer/consumer framework, look at Kinovea.Pipeline.
     /// </summary>
     public class Delayer
     {
@@ -101,8 +103,9 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Retrieve a frame from "age" frames ago.
+        /// Retrieve a frame from "age" frames ago without copy.
         /// If the requested frame is no longer in memory, returns the oldest frame.
+        /// Does not have any side-effects.
         /// </summary>
         public Bitmap Get(int age)
         {

@@ -94,7 +94,11 @@ namespace Kinovea.ScreenManager
         public bool TestGridVisible
         {
             get { return metadata.TestGridVisible; }
-            set { metadata.TestGridVisible = value; }
+            set 
+            { 
+                metadata.TestGridVisible = value;
+                //ToggleImageProcessing();
+            }
         }
         public HistoryStack HistoryStack
         {
@@ -133,7 +137,12 @@ namespace Kinovea.ScreenManager
         private Bitmap recordingThumbnail;
         private DateTime recordingStart;
 
+        private OIPRollingShutterCalibration imageProcessor = new OIPRollingShutterCalibration();
+
         private Delayer delayer = new Delayer();
+        private DelayCompositer delayCompositer;
+        private DelayCompositeConfiguration delayCompositeConfiguration;
+        private IDelayComposite delayComposite;
         private int delay; // The current image age in number of frames.
 
         private ViewportController viewportController;
@@ -179,6 +188,11 @@ namespace Kinovea.ScreenManager
             InitializeCaptureFilenames();
             InitializeTools();            
             InitializeMetadata();
+
+            delayCompositer = new DelayCompositer(delayer);
+            delayCompositeConfiguration = PreferencesManager.CapturePreferences.DelayCompositeConfiguration;
+            delayComposite = GetComposite(delayCompositeConfiguration);
+            delayCompositer.SetComposite(delayComposite);
             
             view.SetToolbarView(drawingToolbarPresenter.View);
             
@@ -323,6 +337,10 @@ namespace Kinovea.ScreenManager
         {
             ConfigureCamera();
         }
+        public void View_ConfigureComposite()
+        {
+            ConfigureComposite();
+        }
         public void View_ToggleGrabbing()
         {
             if (!cameraLoaded)
@@ -401,6 +419,7 @@ namespace Kinovea.ScreenManager
             cameraGrabber = null;
 
             delayer.Free();
+            delayCompositer.Free();
             UpdateDelayMaxAge();
 
             UpdateTitle();
@@ -529,6 +548,9 @@ namespace Kinovea.ScreenManager
                 nonGrabbingInteractionTimer.Start();
             }
 
+            if (imageProcessor.Active)
+                imageProcessor.Stop();
+
             prepareFailedImageDescriptor = ImageDescriptor.Invalid;
             UpdateTitle();
         }
@@ -545,6 +567,24 @@ namespace Kinovea.ScreenManager
                 Disconnect();
                 Connect();
             }
+        }
+
+        private void ConfigureComposite()
+        {
+            if (!cameraLoaded || cameraManager == null)
+                return;
+
+            FormConfigureComposite form = new FormConfigureComposite(delayCompositeConfiguration);
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                delayCompositeConfiguration = form.Configuration;
+                delayComposite = GetComposite(delayCompositeConfiguration);
+                delayCompositer.ResetComposite(delayComposite);
+                PreferencesManager.CapturePreferences.DelayCompositeConfiguration = delayCompositeConfiguration;
+                PreferencesManager.Save();
+            }
+
+            form.Dispose();
         }
 
         private void pipelineManager_FrameSignaled(object sender, EventArgs e)
@@ -695,11 +735,14 @@ namespace Kinovea.ScreenManager
 
             delayer.Push(fresh);
 
+            if (imageProcessor.Active)
+                imageProcessor.Update(fresh);
+
             if (recording && recordingThumbnail == null)
                 recordingThumbnail = BitmapHelper.Copy(fresh);
 
             // Get the image to display.
-            Bitmap delayed = delayer.Get(delay);
+            Bitmap delayed = delayCompositer.Get(delay);
             viewportController.Bitmap = delayed;
         }
 
@@ -764,6 +807,17 @@ namespace Kinovea.ScreenManager
         private void MagnifierTool_Click(object sender, EventArgs e)
         {
         
+        }
+
+        private void ToggleImageProcessing()
+        {
+            Bitmap delayed = delayer.Get(delay);
+
+            // Test
+            if (metadata.TestGridVisible)
+                imageProcessor.Start(delayed.Width, delayed.Height, delayed.PixelFormat);
+            else
+                imageProcessor.Stop();
         }
         
         #region Recording/Snapshoting
@@ -989,6 +1043,7 @@ namespace Kinovea.ScreenManager
             availableMemory -= (imageDescriptor.BufferSize * 8);
             
             delayer.AllocateBuffers(imageDescriptor, availableMemory);
+            delayCompositer.AllocateBuffers(imageDescriptor);
             UpdateDelayMaxAge();
         }
         private void DelayChanged(double age)
@@ -1000,7 +1055,7 @@ namespace Kinovea.ScreenManager
 
             if (cameraLoaded && !cameraConnected)
             {
-                Bitmap delayed = delayer.Get(delay);
+                Bitmap delayed = delayCompositer.Get(delay);
                 viewportController.Bitmap = delayed;
                 viewportController.Refresh();
             }
@@ -1026,6 +1081,23 @@ namespace Kinovea.ScreenManager
             framerate = Math.Min(framerate, pipelineManager.Frequency);
 
             return age / framerate;
+        }
+        
+        private IDelayComposite GetComposite(DelayCompositeConfiguration configuration)
+        {
+            switch (configuration.CompositeType)
+            {
+                case DelayCompositeType.MultiReview:
+                    return new DelayCompositeMultiReview(configuration);
+                case DelayCompositeType.SlowMotion:
+                    return new DelayCompositeSlowMotion(configuration);
+                case DelayCompositeType.FrozenMosaic:
+                    return new DelayCompositeFrozenMosaic(configuration);
+                case DelayCompositeType.Mixed:
+                    return new DelayCompositeMixed();
+                default:
+                    return new DelayCompositeBasic();
+            }
         }
         #endregion
 
