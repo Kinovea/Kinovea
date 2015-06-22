@@ -118,6 +118,7 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private bool tracking;
+        private Point origin;
         private GenericPosture genericPosture;
         private List<AngleHelper> angles = new List<AngleHelper>();
         
@@ -131,9 +132,10 @@ namespace Kinovea.ScreenManager
         private const int defaultBackgroundAlpha = 92;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-        
-        public DrawingGenericPosture(GenericPosture posture, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
+
+        public DrawingGenericPosture(Point origin, GenericPosture posture, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
         {
+            this.origin = origin;
             this.genericPosture = posture;
             if(genericPosture != null)
                 Init();
@@ -160,7 +162,7 @@ namespace Kinovea.ScreenManager
             menuFlipVertical.Image = Properties.Drawings.flipvertical;
         }
         public DrawingGenericPosture(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(null, 0, 0, null)
+            : this(Point.Empty, null, 0, 0, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -377,15 +379,25 @@ namespace Kinovea.ScreenManager
                 return;
             
             // The coordinates are defined in a reference image of 800x600 (could be inside the posture file).
-            // Scale the positions and angle radius according to the actual image size.
+            // We scale the positions and angle radius according to the actual image size.
+            // We also translate the whole drawing so that the first point lies at the cursor.
             Size referenceSize = new Size(800, 600);
-            
+
             float ratioWidth = (float)imageSize.Width / referenceSize.Width;
             float ratioHeight = (float)imageSize.Height / referenceSize.Height;
             float ratio = Math.Min(ratioWidth, ratioHeight);
-            
-            for(int i = 0; i < genericPosture.Points.Count; i++)
-                genericPosture.Points[i] = genericPosture.Points[i].Scale(ratio, ratio);
+            float dx = 0;
+            float dy = 0;
+
+            if (genericPosture.Points.Count > 0)
+            {
+                PointF scaled = genericPosture.Points[0].Scale(ratio, ratio);
+                dx = origin.X - scaled.X;
+                dy = origin.Y - scaled.Y;
+            }
+
+            for (int i = 0; i < genericPosture.Points.Count; i++)
+                genericPosture.Points[i] = genericPosture.Points[i].Scale(ratio, ratio).Translate(dx, dy);
             
             for(int i = 0; i < genericPosture.Ellipses.Count; i++)
                 genericPosture.Ellipses[i].Radius = (int)(genericPosture.Ellipses[i].Radius * ratio);
