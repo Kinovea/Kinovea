@@ -132,9 +132,9 @@ namespace Kinovea.ScreenManager
                 g.DrawImage(subframeImage, subframe.Bounds);
                 
                 // Debug
-                int subframePosition = currentPosition - subframeAge;
-                string text = string.Format("frame:{0}, current:{1}.", subframePosition, currentPosition);
-                g.DrawString(text, font, Brushes.Red, subframe.Bounds.Location);
+                //int subframePosition = currentPosition - subframeAge;
+                //string text = string.Format("frame:{0}, current:{1}.", subframePosition, currentPosition);
+                //g.DrawString(text, font, Brushes.Red, subframe.Bounds.Location);
             }
             
             return image;
