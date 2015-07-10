@@ -81,6 +81,15 @@ namespace Kinovea.ScreenManager
         {
             return new Rectangle((int)point.X - radius, (int)point.Y - radius, radius * 2, radius * 2);
         }
+
+        /// <summary>
+        /// Tests whether this point is very close to the other one.
+        /// Used to test for equality on PointF.
+        /// </summary>
+        public static bool NearlyCoincideWith(this PointF p1, PointF p2)
+        {
+            return Math.Abs(p1.X - p2.X) < 0.5f && Math.Abs(p1.Y - p2.Y) < 0.5f;
+        }
         
         // Size
         public static bool FitsIn(this Size size, Size container)
