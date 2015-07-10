@@ -451,7 +451,7 @@ namespace Kinovea.ScreenManager
         
         private void mnuSealMeasure_Click(object sender, EventArgs e)
         {
-            if(points["a"].X == points["b"].X && points["a"].Y == points["b"].Y)
+            if(points["a"].NearlyCoincideWith(points["b"]))
                 return;
             
             if(!ShowMeasurableInfo)
@@ -482,7 +482,7 @@ namespace Kinovea.ScreenManager
         {
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                if (points["a"] == points["b"])
+                if (points["a"].NearlyCoincideWith(points["b"]))
                 {
                     areaPath.AddLine(points["a"].X, points["a"].Y, points["a"].X + 2, points["a"].Y + 2);
                 }

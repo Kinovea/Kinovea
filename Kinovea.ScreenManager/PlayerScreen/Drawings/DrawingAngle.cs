@@ -422,10 +422,11 @@ namespace Kinovea.ScreenManager
         private void FixIfNull(IImageToViewportTransformer transformer)
         {
             int length = transformer.Untransform(50);
-            if (points["a"] == points["o"])
+
+            if (points["a"].NearlyCoincideWith(points["o"]))
                 points["a"] = points["o"].Translate(length, 0);
 
-            if (points["b"] == points["o"])
+            if (points["b"].NearlyCoincideWith(points["o"]))
                 points["b"] = points["o"].Translate(0, -length);
         }
         private bool IsPointInObject(Point point)
