@@ -186,10 +186,11 @@ namespace Kinovea.ScreenManager
             if (drawings.Count == 0)
                 return;
 
+            // Drawings are written in reverse order to match order of addition.
             w.WriteStartElement("Drawings");
-            foreach (AbstractDrawing drawing in drawings)
+            for (int i = drawings.Count - 1; i >= 0; i--)
             {
-                IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
+                IKvaSerializable serializableDrawing = drawings[i] as IKvaSerializable;
                 if (serializableDrawing == null)
                     continue;
 
