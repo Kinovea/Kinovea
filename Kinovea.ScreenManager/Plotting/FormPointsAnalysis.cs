@@ -36,6 +36,10 @@ namespace Kinovea.ScreenManager
             {
                 long t = kf.Position;
                 List<DrawingCrossMark> kfDrawings = kf.Drawings.Where(d => d is DrawingCrossMark).Select(d => (DrawingCrossMark)d).ToList();
+                
+                // Points are revesed to match the order of addition.
+                kfDrawings.Reverse();
+
                 drawings.AddRange(kfDrawings);
                 points.AddRange(kfDrawings.Select(d => new TimedPoint(d.Location.X, d.Location.Y, t)).ToList());
             }
