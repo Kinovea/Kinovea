@@ -172,6 +172,15 @@ namespace Kinovea.ScreenManager
                 Track(context);
         }
 
+        public PointF GetLocation(long time)
+        {
+            if (!isTracking)
+                return currentValue;
+
+            TrackFrame closestFrame = trackTimeline.ClosestFrom(time);
+            return closestFrame.Location;
+        }
+
         public void WriteXml(XmlWriter w)
         {
             w.WriteStartElement("TrackerParameters");

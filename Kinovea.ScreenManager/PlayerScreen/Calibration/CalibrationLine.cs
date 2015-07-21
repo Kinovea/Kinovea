@@ -46,6 +46,13 @@ namespace Kinovea.ScreenManager
             p2 = p2.Scale(scale, scale);
             return p2;
         }
+
+        public PointF Transform(PointF p, PointF origin)
+        {
+            PointF p2 = new PointF(p.X - origin.X, -(p.Y - origin.Y));
+            p2 = p2.Scale(scale, scale);
+            return p2;
+        }
        
         public PointF Untransform(PointF p)
         {

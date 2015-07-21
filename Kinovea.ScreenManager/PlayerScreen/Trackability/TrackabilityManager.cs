@@ -168,7 +168,15 @@ namespace Kinovea.ScreenManager
            
             trackers[drawing.Id].ToggleTracking();
         }
-        
+
+        public PointF GetLocation(ITrackable drawing, string key, long time)
+        {
+            if (!SanityCheck(drawing.Id))
+                return PointF.Empty;
+
+            return trackers[drawing.Id].GetLocation(key, time);
+        }
+
         private bool SanityCheck(Guid id)
         {
             bool contains = trackers.ContainsKey(id);
