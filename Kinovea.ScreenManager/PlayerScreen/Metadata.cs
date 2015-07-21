@@ -760,7 +760,7 @@ namespace Kinovea.ScreenManager
             if (init)
             {
                 trackabilityManager.Initialize(imageSize);
-                calibrationHelper.Initialize(imageSize);
+                calibrationHelper.Initialize(imageSize, GetCalibrationOrigin);
             }
 
             if (!initialized)
@@ -1234,6 +1234,12 @@ namespace Kinovea.ScreenManager
         private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs e)
         {
             showingMeasurables = !showingMeasurables;
+        }
+        private PointF GetCalibrationOrigin(long time)
+        {
+            // When using CalibrationLine and a tracked coordinate system, 
+            // this function retrieves the coordinates origin based on the specified time.
+            return trackabilityManager.GetLocation(drawingCoordinateSystem, "0", time);
         }
         private void SetupTempDirectory(Guid id)
         {

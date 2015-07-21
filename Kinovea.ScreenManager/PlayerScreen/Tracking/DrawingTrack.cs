@@ -1153,7 +1153,7 @@ namespace Kinovea.ScreenManager
                 {
                     w.WriteStartElement("TrackPoint");
                     
-                    PointF p = parentMetadata.CalibrationHelper.GetPoint(tp.Point);
+                    PointF p = parentMetadata.CalibrationHelper.GetPointAtTime(tp.Point, tp.T);
                     string userT = parentMetadata.TimeCodeBuilder(tp.T, TimeType.Time, TimecodeFormat.Unknown, false);
                     
                     w.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));

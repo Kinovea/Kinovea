@@ -78,7 +78,7 @@ namespace Kinovea.ScreenManager
         {
             for (int i = 0; i < input.Count; i++)
             {
-                PointF point = calibrationHelper.GetPoint(input[i].Point);
+                PointF point = calibrationHelper.GetPointAtTime(input[i].Point, input[i].T);
                 kinematics.RawXs[i] = point.X;
                 kinematics.RawYs[i] = point.Y;
                 kinematics.Times[i] = input[i].T;

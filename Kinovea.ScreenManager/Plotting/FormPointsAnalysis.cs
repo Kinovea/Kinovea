@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
 
             foreach (Keyframe kf in metadata.Keyframes)
             {
-                long t = kf.Position;    
+                long t = kf.Position;
                 List<DrawingCrossMark> kfDrawings = kf.Drawings.Where(d => d is DrawingCrossMark).Select(d => (DrawingCrossMark)d).ToList();
                 drawings.AddRange(kfDrawings);
                 points.AddRange(kfDrawings.Select(d => new TimedPoint(d.Location.X, d.Location.Y, t)).ToList());
@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager
 
             foreach (TimedPoint point in points)
             {
-                PointF p = metadata.CalibrationHelper.GetPoint(point.Point);
+                PointF p = metadata.CalibrationHelper.GetPointAtTime(point.Point, point.T);
                 series.Points.Add(new ScatterPoint(p.X, p.Y));
 
                 yDataMinimum = Math.Min(yDataMinimum, p.Y);
@@ -205,7 +205,7 @@ namespace Kinovea.ScreenManager
                 foreach (TimedPoint point in points)
                 {
                     string time = metadata.TimeCodeBuilder(point.T, TimeType.Time, TimecodeFormat.Milliseconds, false);
-                    PointF p = metadata.CalibrationHelper.GetPoint(point.Point);
+                    PointF p = metadata.CalibrationHelper.GetPointAtTime(point.Point, point.T);
                     w.WriteLine(string.Format("{0};{1};{2}", time, p.X, p.Y));
                 }
             }
@@ -221,7 +221,7 @@ namespace Kinovea.ScreenManager
             foreach (TimedPoint point in points)
             {
                 string time = metadata.TimeCodeBuilder(point.T, TimeType.Time, TimecodeFormat.Milliseconds, false);
-                PointF p = metadata.CalibrationHelper.GetPoint(point.Point);
+                PointF p = metadata.CalibrationHelper.GetPointAtTime(point.Point, point.T);
                 b.AppendLine(string.Format("{0};{1};{2}", time, p.X, p.Y));
             }
 

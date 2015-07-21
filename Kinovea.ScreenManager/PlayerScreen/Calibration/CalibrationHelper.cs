@@ -132,6 +132,7 @@ namespace Kinovea.ScreenManager
         private AngularVelocityUnit angularVelocityUnit = AngularVelocityUnit.DegreesPerSecond;
         private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
         private double captureFramesPerSecond = 25;
+        private Func<long, PointF> getCalibrationOrigin;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -147,10 +148,11 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        public void Initialize(Size imageSize)
+        public void Initialize(Size imageSize, Func<long, PointF> getCalibrationOrigin)
         {
             this.imageSize = imageSize;
             SetOrigin(imageSize.Center());
+            this.getCalibrationOrigin = getCalibrationOrigin;
             initialized = true;
             ComputeCoordinateSystemGrid();
         }
@@ -276,6 +278,19 @@ namespace Kinovea.ScreenManager
         public PointF GetPoint(PointF p)
         {
             return calibrator.Transform(distortionHelper.Undistort(p));
+        }
+
+        /// <summary>
+        /// Takes a point in image space and returns it in world space, 
+        /// based on the value of the coordinate system origin at the specified time.
+        /// </summary>
+        public PointF GetPointAtTime(PointF p, long time)
+        {
+            if (calibratorType != CalibratorType.Line)
+                return GetPoint(p);
+
+            PointF origin = getCalibrationOrigin(time);
+            return calibrationLine.Transform(distortionHelper.Undistort(p), origin);
         }
 
         /// <summary>

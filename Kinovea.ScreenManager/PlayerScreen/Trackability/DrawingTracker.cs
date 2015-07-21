@@ -136,6 +136,14 @@ namespace Kinovea.ScreenManager
             AfterToggleTracking();
         }
 
+        public PointF GetLocation(string key, long time)
+        {
+            if (!trackablePoints.ContainsKey(key))
+                return PointF.Empty;
+
+            return trackablePoints[key].GetLocation(time);
+        }
+
         private void AfterToggleTracking()
         {
             foreach(KeyValuePair<string, TrackablePoint> pair in trackablePoints)
