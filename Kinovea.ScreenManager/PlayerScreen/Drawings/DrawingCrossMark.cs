@@ -167,7 +167,7 @@ namespace Kinovea.ScreenManager
             
             if(ShowMeasurableInfo)
             {
-                labelCoordinates.SetText(CalibrationHelper.GetPointText(new PointF(points["0"].X, points["0"].Y), true, true));
+                labelCoordinates.SetText(CalibrationHelper.GetPointText(new PointF(points["0"].X, points["0"].Y), true, true, infosFading.ReferenceTimestamp));
                 labelCoordinates.Draw(canvas, transformer, opacityFactor);
             }
         }
