@@ -351,10 +351,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Value as text
-        public string GetPointText(PointF p, bool precise, bool abbreviation)
+        public string GetPointText(PointF p, bool precise, bool abbreviation, long time)
         {
-            // TODO: remove this function in favore of getting the raw value and formatting in the caller ?
-            PointF a = GetPoint(p);
+            PointF a = GetPointAtTime(p, time);
             
             string valueTemplate = precise ? "{{{0:0.00};{1:0.00}}}" : "{{{0:0};{1:0}}}";
             string text = String.Format(valueTemplate, a.X, a.Y);

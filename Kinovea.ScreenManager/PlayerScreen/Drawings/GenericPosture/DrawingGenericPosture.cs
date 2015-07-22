@@ -621,7 +621,7 @@ namespace Kinovea.ScreenManager
                     continue;
                 
                 PointF untransformedP = position.Point >= 0 ? genericPosture.Points[position.Point] : GetUntransformedComputedPoint(position.Point);
-                string label = CalibrationHelper.GetPointText(untransformedP, true, true);
+                string label = CalibrationHelper.GetPointText(untransformedP, true, true, infosFading.ReferenceTimestamp);
                 
                 if(!string.IsNullOrEmpty(position.Symbol))
                     label = string.Format("{0} = {1}", position.Symbol, label);
