@@ -258,7 +258,7 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
             
-            if(ShowMeasurableInfo && ShouldSerializeAll(filter))
+            if(ShouldSerializeAll(filter))
             {
                 // Spreadsheet support.
                 w.WriteStartElement("Coordinates");
