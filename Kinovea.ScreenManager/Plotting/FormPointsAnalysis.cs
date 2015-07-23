@@ -13,6 +13,7 @@ using OxyPlot.Series;
 using OxyPlot.Annotations;
 using System.IO;
 using Kinovea.Services;
+using System.Globalization;
 
 namespace Kinovea.ScreenManager
 {
@@ -201,16 +202,18 @@ namespace Kinovea.ScreenManager
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;
 
+            string separator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+
             using (StreamWriter w = File.CreateText(saveFileDialog.FileName))
             {
                 string unit = UnitHelper.LengthAbbreviation(metadata.CalibrationHelper.LengthUnit);
-                w.WriteLine(string.Format("t (ms);x ({0});y ({1})", unit, unit));
+                w.WriteLine(string.Format("t (ms){0}x ({1}){0}y ({1})", separator, unit));
 
                 foreach (TimedPoint point in points)
                 {
                     string time = metadata.TimeCodeBuilder(point.T, TimeType.Time, TimecodeFormat.Milliseconds, false);
                     PointF p = metadata.CalibrationHelper.GetPointAtTime(point.Point, point.T);
-                    w.WriteLine(string.Format("{0};{1};{2}", time, p.X, p.Y));
+                    w.WriteLine(string.Format("{0}{3}{1}{3}{2}", time, p.X, p.Y, separator));
                 }
             }
         }
@@ -220,13 +223,14 @@ namespace Kinovea.ScreenManager
             StringBuilder b = new StringBuilder();
 
             string unit = UnitHelper.LengthAbbreviation(metadata.CalibrationHelper.LengthUnit);
-            b.AppendLine(string.Format("t (ms);x ({0});y ({1})", unit, unit));
+            string separator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+            b.AppendLine(string.Format("t (ms){0}x ({1}){0}y ({1})", separator, unit));
 
             foreach (TimedPoint point in points)
             {
                 string time = metadata.TimeCodeBuilder(point.T, TimeType.Time, TimecodeFormat.Milliseconds, false);
                 PointF p = metadata.CalibrationHelper.GetPointAtTime(point.Point, point.T);
-                b.AppendLine(string.Format("{0};{1};{2}", time, p.X, p.Y));
+                b.AppendLine(string.Format("{0}{3}{1}{3}{2}", time, p.X, p.Y, separator));
             }
 
             string text = b.ToString();

@@ -11,6 +11,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using Kinovea.Services;
 using System.IO;
+using System.Globalization;
 
 namespace Kinovea.ScreenManager
 {
@@ -295,8 +296,9 @@ namespace Kinovea.ScreenManager
         private void btnDataCopy_Click(object sender, EventArgs e)
         {
             StringBuilder b = new StringBuilder();
+            string separator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
 
-            b.AppendLine(string.Format("{0};{1}", currentPlot.PlotModel.Axes[0].Title, currentPlot.PlotModel.Axes[1].Title));
+            b.AppendLine(string.Format("{0}{1}{2}", currentPlot.PlotModel.Axes[0].Title, separator, currentPlot.PlotModel.Axes[1].Title));
 
             double[] data = currentPlot.Data;
             for (int i = 0; i < data.Length; i++)
@@ -304,7 +306,7 @@ namespace Kinovea.ScreenManager
                 double value = Math.Round(data[i], 3);
                 double time = Math.Round(TimestampToMilliseconds(kinematics.Times[i]));
                 if (!double.IsNaN(value))
-                    b.AppendLine(string.Format("{0};{1}", time, value));
+                    b.AppendLine(string.Format("{0}{1}{2}", time, separator, value));
             }
 
             string text = b.ToString();
@@ -322,9 +324,11 @@ namespace Kinovea.ScreenManager
             if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
                 return;
 
+            string separator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+
             using (StreamWriter w = File.CreateText(saveFileDialog.FileName))
             {
-                w.WriteLine(string.Format("{0};{1}", currentPlot.PlotModel.Axes[0].Title, currentPlot.PlotModel.Axes[1].Title));
+                w.WriteLine(string.Format("{0}{1}{2}", currentPlot.PlotModel.Axes[0].Title, separator, currentPlot.PlotModel.Axes[1].Title));
 
                 double[] data = currentPlot.Data;
                 for (int i = 0; i < data.Length; i++)
@@ -332,7 +336,7 @@ namespace Kinovea.ScreenManager
                     double value = Math.Round(data[i], 3);
                     double time = Math.Round(TimestampToMilliseconds(kinematics.Times[i]));
                     if (!double.IsNaN(value))
-                        w.WriteLine(string.Format("{0};{1}", time, value));
+                        w.WriteLine(string.Format("{0}{1}{2}", time, separator, value));
                 }
             }
         }
