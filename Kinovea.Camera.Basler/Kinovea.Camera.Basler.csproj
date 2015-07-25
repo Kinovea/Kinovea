@@ -48,7 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
-      <HintPath>..\Refs\log4net.dll</HintPath>
+      <HintPath>..\Refs\Log4Net\log4net.dll</HintPath>
     </Reference>
     <Reference Include="PylonC.NET">
       <HintPath>..\Refs\Basler\PylonC.NET.dll</HintPath>

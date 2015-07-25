@@ -52,7 +52,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\Refs\log4net.dll</HintPath>
+      <HintPath>..\Refs\Log4Net\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

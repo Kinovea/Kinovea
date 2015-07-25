@@ -49,25 +49,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
-      <HintPath>..\Refs\log4net.dll</HintPath>
+      <HintPath>..\Refs\Log4Net\log4net.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorBindings, Version=0.3.1.41361, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorBindings.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorCss, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorCss.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorCss.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorDom, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorDom.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorDom.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorObjectModel, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorObjectModel.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorObjectModel.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorRenderingEngine, Version=0.3.1.34123, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\Refs\SharpVectorRenderingEngine.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorRenderingEngine.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorUtil, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorUtil.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorUtil.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
