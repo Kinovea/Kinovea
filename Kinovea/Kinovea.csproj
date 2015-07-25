@@ -130,7 +130,7 @@
     <Reference Include="Kinovea.Camera, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\log4net.dll</HintPath>
+      <HintPath>..\Refs\Log4Net\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -290,17 +290,17 @@
       <DependentUpon>KinoveaMainWindow.cs</DependentUpon>
     </EmbeddedResource>
     <BaseApplicationManifest Include="Properties\app.manifest" />
-    <None Include="..\Refs\cv200.dll">
+    <None Include="..\Refs\OpenCV\cv200.dll">
       <Visible>False</Visible>
       <Link>cv200.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\cvaux200.dll">
+    <None Include="..\Refs\OpenCV\cvaux200.dll">
       <Visible>False</Visible>
       <Link>cvaux200.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\cxcore200.dll">
+    <None Include="..\Refs\OpenCV\cxcore200.dll">
       <Visible>False</Visible>
       <Link>cxcore200.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

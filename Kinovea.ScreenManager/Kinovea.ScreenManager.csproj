@@ -125,17 +125,17 @@
       <HintPath>..\Refs\AForge\AForge.Math.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV">
-      <HintPath>..\Refs\Emgu.CV.dll</HintPath>
+      <HintPath>..\Refs\OpenCV\Emgu.CV.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.Util">
-      <HintPath>..\Refs\Emgu.Util.dll</HintPath>
+      <HintPath>..\Refs\OpenCV\Emgu.Util.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\Refs\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\Refs\SharpZipLib\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\log4net.dll</HintPath>
+      <HintPath>..\Refs\Log4Net\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Iridium">
       <HintPath>..\Refs\Math.Net\MathNet.Iridium.dll</HintPath>
@@ -149,22 +149,22 @@
       <HintPath>..\Refs\OxyPlot\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorBindings">
-      <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorBindings.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorCss">
-      <HintPath>..\Refs\SharpVectorCss.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorCss.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorDom">
-      <HintPath>..\Refs\SharpVectorDom.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorDom.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorObjectModel">
-      <HintPath>..\Refs\SharpVectorObjectModel.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorObjectModel.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorRenderingEngine">
-      <HintPath>..\Refs\SharpVectorRenderingEngine.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorRenderingEngine.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorUtil">
-      <HintPath>..\Refs\SharpVectorUtil.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorUtil.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
