@@ -44,13 +44,15 @@ namespace Kinovea.ScreenManager
             VideoInfo info = new VideoInfo();
             info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
 
+            string formatString = FilenameHelper.GetFormatString(filename);
+            
             // If the capture happens at more than 100fps, set the video itself to be at 30fps.
             // This avoids erratic playback because the player can't cope with the framerate, drawback: prevents review in real time.
             // FIXME: fix the player so that it can playback high speed video in real time.
             if (interval < 10)
                 interval = 1000.0/30;
 
-            SaveResult result = writer.OpenSavingContext(filename, info, interval);
+            SaveResult result = writer.OpenSavingContext(filename, info, formatString, interval);
 
             return result;
         }

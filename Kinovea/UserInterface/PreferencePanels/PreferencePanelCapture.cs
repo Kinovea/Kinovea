@@ -53,6 +53,7 @@ namespace Kinovea.Root
         private string imageDirectory;
         private string videoDirectory;
         private KinoveaImageFormat imageFormat;
+        private KinoveaVideoFormat videoFormat;
         private bool useCameraSignalSynchronization;
         private double displaySynchronizationFramerate;
         private bool usePattern;
@@ -89,6 +90,7 @@ namespace Kinovea.Root
             imageDirectory = PreferencesManager.CapturePreferences.ImageDirectory;
             videoDirectory = PreferencesManager.CapturePreferences.VideoDirectory;
             imageFormat = PreferencesManager.CapturePreferences.ImageFormat;
+            videoFormat = PreferencesManager.CapturePreferences.VideoFormat;
             useCameraSignalSynchronization = PreferencesManager.CapturePreferences.UseCameraSignalSynchronization;
             displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
             usePattern = PreferencesManager.CapturePreferences.CaptureUsePattern;
@@ -110,6 +112,12 @@ namespace Kinovea.Root
             cmbImageFormat.Items.Add("PNG");
             cmbImageFormat.Items.Add("BMP");
             cmbImageFormat.SelectedIndex = ((int)imageFormat < cmbImageFormat.Items.Count) ? (int)imageFormat : 0;
+
+            lblVideoFormat.Text = RootLang.dlgPreferences_Capture_lblVideoFormat;
+            cmbVideoFormat.Items.Add("MP4");
+            cmbVideoFormat.Items.Add("MKV");
+            cmbVideoFormat.Items.Add("AVI");
+            cmbVideoFormat.SelectedIndex = ((int)videoFormat < cmbVideoFormat.Items.Count) ? (int)videoFormat : 0;
 
             rbCameraFrameSignal.Checked = useCameraSignalSynchronization;
             rbForcedFramerate.Checked = !useCameraSignalSynchronization;
@@ -182,6 +190,10 @@ namespace Kinovea.Root
         private void cmbImageFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
             imageFormat = (KinoveaImageFormat)cmbImageFormat.SelectedIndex;
+        }
+        private void cmbVideoFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            videoFormat = (KinoveaVideoFormat)cmbVideoFormat.SelectedIndex;
         }
         private void radioDSS_CheckedChanged(object sender, EventArgs e)
         {
@@ -293,6 +305,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.ImageDirectory = imageDirectory;
             PreferencesManager.CapturePreferences.VideoDirectory = videoDirectory;
             PreferencesManager.CapturePreferences.ImageFormat = imageFormat;
+            PreferencesManager.CapturePreferences.VideoFormat = videoFormat;
 
             PreferencesManager.CapturePreferences.UseCameraSignalSynchronization = useCameraSignalSynchronization;
             PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate = displaySynchronizationFramerate;

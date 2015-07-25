@@ -44,7 +44,7 @@ MJPEGWriter::!MJPEGWriter()
 /// MJPEGWriter::OpenSavingContext
 /// Open a saving context and configure it with default parameters.
 ///</summary>
-SaveResult MJPEGWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info, double _fFramesInterval)
+SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, String^ _formatString, double _fFramesInterval)
 {
     //---------------------------------------------------------------------------------------------------
     // Set the saving context up.
@@ -59,7 +59,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info, do
     
     m_SavingContext = gcnew SavingContext();
 
-    m_SavingContext->pFilePath = static_cast<char*>(Marshal::StringToHGlobalAnsi(_FilePath).ToPointer());
+    m_SavingContext->pFilePath = static_cast<char*>(Marshal::StringToHGlobalAnsi(_filePath).ToPointer());
     
     // Apparently not all output size are ok, some crash sws_scale.
     // We will keep the input size and use the input pixel aspect ratio for maximum compatibility.
@@ -78,13 +78,17 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info, do
     do
     {
         // 1. Muxer selection.
-		AVOutputFormat* format = av_guess_format("mp4", nullptr, nullptr);
+        char* pFormatString = static_cast<char*>(Marshal::StringToHGlobalAnsi(_formatString).ToPointer());
+        AVOutputFormat* format = av_guess_format(pFormatString, nullptr, nullptr);
         if (format == nullptr) 
         {
             result = SaveResult::MuxerNotFound;
+            Marshal::FreeHGlobal(safe_cast<IntPtr>(pFormatString));
             log->Error("Muxer not found");
             break;
         }
+
+        Marshal::FreeHGlobal(safe_cast<IntPtr>(pFormatString));
 
         m_SavingContext->pOutputFormat = format;
 
@@ -136,6 +140,8 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info, do
             break;
         }
 
+        m_SavingContext->pOutputFormatContext->video_codec_id = m_SavingContext->pOutputCodec->id;
+
         // 8. Open encoder.
         int openResult = avcodec_open2(m_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec, nullptr);
         if (openResult < 0)
@@ -159,8 +165,9 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info, do
             break;
         }
 
-        // 11. Write file header.
         SanityCheck(m_SavingContext->pOutputFormatContext);
+
+        // 11. Write file header.
         if((iFFMpegResult = avformat_write_header(m_SavingContext->pOutputFormatContext, nullptr)) < 0)
         {
             result = SaveResult::FileHeaderNotWritten;

@@ -50,6 +50,8 @@ namespace Kinovea.Root
 		{
             this.tabSubPages = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.cmbVideoFormat = new System.Windows.Forms.ComboBox();
+            this.lblVideoFormat = new System.Windows.Forms.Label();
             this.grpDSS = new System.Windows.Forms.GroupBox();
             this.lblFramerate = new System.Windows.Forms.Label();
             this.tbFramerate = new System.Windows.Forms.TextBox();
@@ -109,6 +111,8 @@ namespace Kinovea.Root
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.cmbVideoFormat);
+            this.tabGeneral.Controls.Add(this.lblVideoFormat);
             this.tabGeneral.Controls.Add(this.grpDSS);
             this.tabGeneral.Controls.Add(this.btnBrowseVideo);
             this.tabGeneral.Controls.Add(this.btnBrowseImage);
@@ -125,6 +129,24 @@ namespace Kinovea.Root
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // cmbVideoFormat
+            // 
+            this.cmbVideoFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbVideoFormat.FormattingEnabled = true;
+            this.cmbVideoFormat.Location = new System.Drawing.Point(170, 86);
+            this.cmbVideoFormat.Name = "cmbVideoFormat";
+            this.cmbVideoFormat.Size = new System.Drawing.Size(52, 21);
+            this.cmbVideoFormat.TabIndex = 41;
+            this.cmbVideoFormat.SelectedIndexChanged += new System.EventHandler(this.cmbVideoFormat_SelectedIndexChanged);
+            // 
+            // lblVideoFormat
+            // 
+            this.lblVideoFormat.Location = new System.Drawing.Point(15, 89);
+            this.lblVideoFormat.Name = "lblVideoFormat";
+            this.lblVideoFormat.Size = new System.Drawing.Size(149, 18);
+            this.lblVideoFormat.TabIndex = 40;
+            this.lblVideoFormat.Text = "Video format :";
             // 
             // grpDSS
             // 
@@ -188,7 +210,7 @@ namespace Kinovea.Root
             this.btnBrowseVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.btnBrowseVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBrowseVideo.Image = global::Kinovea.Root.Properties.Resources.folder;
-            this.btnBrowseVideo.Location = new System.Drawing.Point(374, 39);
+            this.btnBrowseVideo.Location = new System.Drawing.Point(374, 25);
             this.btnBrowseVideo.MinimumSize = new System.Drawing.Size(25, 25);
             this.btnBrowseVideo.Name = "btnBrowseVideo";
             this.btnBrowseVideo.Size = new System.Drawing.Size(30, 25);
@@ -206,7 +228,7 @@ namespace Kinovea.Root
             this.btnBrowseImage.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.btnBrowseImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBrowseImage.Image = global::Kinovea.Root.Properties.Resources.folder;
-            this.btnBrowseImage.Location = new System.Drawing.Point(374, 10);
+            this.btnBrowseImage.Location = new System.Drawing.Point(374, 2);
             this.btnBrowseImage.MinimumSize = new System.Drawing.Size(25, 25);
             this.btnBrowseImage.Name = "btnBrowseImage";
             this.btnBrowseImage.Size = new System.Drawing.Size(30, 25);
@@ -217,7 +239,7 @@ namespace Kinovea.Root
             // 
             // tbVideoDirectory
             // 
-            this.tbVideoDirectory.Location = new System.Drawing.Point(170, 44);
+            this.tbVideoDirectory.Location = new System.Drawing.Point(170, 30);
             this.tbVideoDirectory.Name = "tbVideoDirectory";
             this.tbVideoDirectory.Size = new System.Drawing.Size(198, 20);
             this.tbVideoDirectory.TabIndex = 7;
@@ -225,7 +247,7 @@ namespace Kinovea.Root
             // 
             // tbImageDirectory
             // 
-            this.tbImageDirectory.Location = new System.Drawing.Point(170, 15);
+            this.tbImageDirectory.Location = new System.Drawing.Point(170, 7);
             this.tbImageDirectory.Name = "tbImageDirectory";
             this.tbImageDirectory.Size = new System.Drawing.Size(198, 20);
             this.tbImageDirectory.TabIndex = 6;
@@ -235,7 +257,7 @@ namespace Kinovea.Root
             // 
             this.cmbImageFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbImageFormat.FormattingEnabled = true;
-            this.cmbImageFormat.Location = new System.Drawing.Point(170, 73);
+            this.cmbImageFormat.Location = new System.Drawing.Point(170, 59);
             this.cmbImageFormat.Name = "cmbImageFormat";
             this.cmbImageFormat.Size = new System.Drawing.Size(52, 21);
             this.cmbImageFormat.TabIndex = 5;
@@ -243,7 +265,7 @@ namespace Kinovea.Root
             // 
             // lblImageFormat
             // 
-            this.lblImageFormat.Location = new System.Drawing.Point(15, 76);
+            this.lblImageFormat.Location = new System.Drawing.Point(15, 62);
             this.lblImageFormat.Name = "lblImageFormat";
             this.lblImageFormat.Size = new System.Drawing.Size(149, 18);
             this.lblImageFormat.TabIndex = 2;
@@ -251,7 +273,7 @@ namespace Kinovea.Root
             // 
             // lblVideoDirectory
             // 
-            this.lblVideoDirectory.Location = new System.Drawing.Point(15, 47);
+            this.lblVideoDirectory.Location = new System.Drawing.Point(15, 33);
             this.lblVideoDirectory.Name = "lblVideoDirectory";
             this.lblVideoDirectory.Size = new System.Drawing.Size(149, 17);
             this.lblVideoDirectory.TabIndex = 1;
@@ -259,7 +281,7 @@ namespace Kinovea.Root
             // 
             // lblImageDirectory
             // 
-            this.lblImageDirectory.Location = new System.Drawing.Point(15, 18);
+            this.lblImageDirectory.Location = new System.Drawing.Point(15, 10);
             this.lblImageDirectory.Name = "lblImageDirectory";
             this.lblImageDirectory.Size = new System.Drawing.Size(149, 17);
             this.lblImageDirectory.TabIndex = 0;
@@ -629,5 +651,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.TextBox tbFramerate;
         private System.Windows.Forms.RadioButton rbForcedFramerate;
         private System.Windows.Forms.RadioButton rbCameraFrameSignal;
+        private System.Windows.Forms.ComboBox cmbVideoFormat;
+        private System.Windows.Forms.Label lblVideoFormat;
 	}
 }

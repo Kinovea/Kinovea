@@ -59,7 +59,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
 	// Public Methods
 	public:
-		SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, double _fFramesInterval);
+		SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval);
 		SaveResult CloseSavingContext(bool _bEncodingSuccess);
 		SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length);
 	
