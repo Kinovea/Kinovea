@@ -86,7 +86,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info, do
             break;
         }
 
-		m_SavingContext->pOutputFormat = format;
+        m_SavingContext->pOutputFormat = format;
 
         // 2. Allocate muxer parameters object.
         if ((m_SavingContext->pOutputFormatContext = avformat_alloc_context()) == nullptr) 
@@ -187,19 +187,19 @@ void MJPEGWriter::SanityCheck(AVFormatContext* s)
 
     if (s->nb_streams != 1) 
     {
-		log->Error("MJPEGWriter sanity check failed: no streams.");
-		return;
-	}
+        log->Error("MJPEGWriter sanity check failed: no streams.");
+        return;
+    }
 
     AVStream *st = s->streams[0];
     
-	if (st->codec->codec_type != AVMEDIA_TYPE_VIDEO)
-	{
-		log->Error("MJPEGWriter sanity check failed: not a video codec.");
-		return;
-	}
+    if (st->codec->codec_type != AVMEDIA_TYPE_VIDEO)
+    {
+        log->Error("MJPEGWriter sanity check failed: not a video codec.");
+        return;
+    }
 
-	if(st->codec->time_base.num <= 0 || st->codec->time_base.den <= 0)
+    if(st->codec->time_base.num <= 0 || st->codec->time_base.den <= 0)
         log->Error("MJPEGWriter sanity check failed: time base not set.");
 
     if(st->codec->width <= 0 || st->codec->height <= 0)
@@ -263,21 +263,21 @@ SaveResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
 SaveResult MJPEGWriter::SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length)
 {
     SaveResult result = SaveResult::Success;
-	bool saved = false;
+    bool saved = false;
 
-	switch (format)
-	{
-	case ImageFormat::RGB24:
-		saved = EncodeAndWriteVideoFrameRGB24(m_SavingContext, buffer, length);
-		break;
-	case ImageFormat::Y800:
-		saved = EncodeAndWriteVideoFrameY800(m_SavingContext, buffer, length);
-		break;
-	case ImageFormat::JPEG:
-		saved = EncodeAndWriteVideoFrameJPEG(m_SavingContext, buffer, length);
-		break;
+    switch (format)
+    {
+    case ImageFormat::RGB24:
+        saved = EncodeAndWriteVideoFrameRGB24(m_SavingContext, buffer, length);
+        break;
+    case ImageFormat::Y800:
+        saved = EncodeAndWriteVideoFrameY800(m_SavingContext, buffer, length);
+        break;
+    case ImageFormat::JPEG:
+        saved = EncodeAndWriteVideoFrameJPEG(m_SavingContext, buffer, length);
+        break;
 
-	}
+    }
 
     if(!saved)
     {
@@ -292,7 +292,7 @@ double MJPEGWriter::ComputeBitrate(Size outputSize, double frameInterval)
 {
     // Note that this parameter is not used anyway as we switched to constant quantization.
     
-	// Compute a bitrate equivalent to DV quality.
+    // Compute a bitrate equivalent to DV quality.
     // DV quality has a bitrate of 25 Mb/s for 720x576 px @ 30fps.
     // That translates to 2.01 bit per pixel.
 
@@ -350,7 +350,7 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext)
     _SavingContext->pOutputCodecContext->codec_type = AVMEDIA_TYPE_VIDEO;
 
     // FourCC
-	_SavingContext->pOutputCodecContext->codec_tag = ('G'<<24) + ('P'<<16) + ('J'<<8) + 'M';
+    _SavingContext->pOutputCodecContext->codec_tag = ('G'<<24) + ('P'<<16) + ('J'<<8) + 'M';
 
     // The average bitrate (unused for constant quantizer encoding.)
     // Source: statically fixed to 25Mb/s for now. 
@@ -496,45 +496,45 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
     
     AVFrame* pYUV420Frame = nullptr;
     uint8_t* pYUV420Buffer = nullptr;
-	uint8_t* pJpegBuffer = nullptr;
+    uint8_t* pJpegBuffer = nullptr;
     
     do
     {
-		int outWidth = _SavingContext->outputSize.Width;
-		int outHeight = _SavingContext->outputSize.Height;
-		int inWidth = outWidth;
-		int inHeight = outHeight;
+        int outWidth = _SavingContext->outputSize.Width;
+        int outHeight = _SavingContext->outputSize.Height;
+        int inWidth = outWidth;
+        int inHeight = outHeight;
 
-		pin_ptr<uint8_t> pRGB24Buffer = &managedBuffer[0];
-		avpicture_fill((AVPicture*)_SavingContext->pInputFrame, pRGB24Buffer, AV_PIX_FMT_BGR24, inWidth, inHeight);
-		
-		// Alter planes and stride to vertically flip image during conversion.
-		_SavingContext->pInputFrame->data[0] += _SavingContext->pInputFrame->linesize[0] * (inHeight - 1);
-		_SavingContext->pInputFrame->linesize[0] = - _SavingContext->pInputFrame->linesize[0];
+        pin_ptr<uint8_t> pRGB24Buffer = &managedBuffer[0];
+        avpicture_fill((AVPicture*)_SavingContext->pInputFrame, pRGB24Buffer, AV_PIX_FMT_BGR24, inWidth, inHeight);
+        
+        // Alter planes and stride to vertically flip image during conversion.
+        _SavingContext->pInputFrame->data[0] += _SavingContext->pInputFrame->linesize[0] * (inHeight - 1);
+        _SavingContext->pInputFrame->linesize[0] = - _SavingContext->pInputFrame->linesize[0];
 
-		// Prepare the color space converted frame.
-		if ((pYUV420Frame = avcodec_alloc_frame()) == nullptr) 
+        // Prepare the color space converted frame.
+        if ((pYUV420Frame = avcodec_alloc_frame()) == nullptr) 
         {
             log->Error("YUV420P frame not allocated");
             break;
         }
 
-		int yuvBufferSize = avpicture_get_size(AV_PIX_FMT_YUV420P, outWidth, outHeight);
-		pYUV420Buffer = (uint8_t*)av_malloc(yuvBufferSize);
+        int yuvBufferSize = avpicture_get_size(AV_PIX_FMT_YUV420P, outWidth, outHeight);
+        pYUV420Buffer = (uint8_t*)av_malloc(yuvBufferSize);
 
-		if (pYUV420Buffer == nullptr) 
+        if (pYUV420Buffer == nullptr) 
         {
             log->Error("YUV frame buffer not allocated");
             break;
         }
-		
-		avpicture_fill((AVPicture*)pYUV420Frame, pYUV420Buffer, AV_PIX_FMT_YUV420P, outWidth, outHeight);
-		
-		// Perform the color space conversion.
+        
+        avpicture_fill((AVPicture*)pYUV420Frame, pYUV420Buffer, AV_PIX_FMT_YUV420P, outWidth, outHeight);
+        
+        // Perform the color space conversion.
         SwsContext* scalingContext = sws_getContext(
-			inWidth, inHeight, AV_PIX_FMT_BGR24, 
-			outWidth, outHeight, AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR,
-			NULL, NULL, NULL);
+            inWidth, inHeight, AV_PIX_FMT_BGR24, 
+            outWidth, outHeight, AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR,
+            NULL, NULL, NULL);
 
         if (sws_scale(scalingContext, _SavingContext->pInputFrame->data, _SavingContext->pInputFrame->linesize, 0, inHeight, pYUV420Frame->data, pYUV420Frame->linesize) < 0) 
         {
@@ -546,7 +546,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
         sws_freeContext(scalingContext);
 
         // Allocated JPEG frame buffer. 
-		// Assumes uncompressed size is always smaller than compressed. (Not technically true).
+        // Assumes uncompressed size is always smaller than compressed. (Not technically true).
         int jpegBufferSize = yuvBufferSize;
         pJpegBuffer = (uint8_t*)av_malloc(jpegBufferSize);
 
@@ -556,27 +556,27 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
             break;
         }
 
-		// Actual encode.
+        // Actual encode.
         int jpegSize = avcodec_encode_video(_SavingContext->pOutputCodecContext, pJpegBuffer, jpegBufferSize, pYUV420Frame);
 
-		if (jpegSize > 0)
-			WriteFrame(jpegSize, _SavingContext, pJpegBuffer, true);
+        if (jpegSize > 0)
+            WriteFrame(jpegSize, _SavingContext, pJpegBuffer, true);
 
         written = true;
     }
     while(false);
 
-	if (pJpegBuffer != nullptr)
-		av_free(pJpegBuffer);
+    if (pJpegBuffer != nullptr)
+        av_free(pJpegBuffer);
 
-	if (pYUV420Frame != nullptr)
-		av_free(pYUV420Frame);
+    if (pYUV420Frame != nullptr)
+        av_free(pYUV420Frame);
 
-	if (pYUV420Buffer != nullptr)
-		av_free(pYUV420Buffer);
+    if (pYUV420Buffer != nullptr)
+        av_free(pYUV420Buffer);
 
-	//if (pRGB24Frame != nullptr)
-		//av_free(pRGB24Frame);
+    //if (pRGB24Frame != nullptr)
+        //av_free(pRGB24Frame);
 
     return written;
 }
@@ -589,60 +589,60 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
     bool written = false;
     bool yuvFrameAllocated = false;
     
-	// init to nullptr.
-	AVFrame* pInputFrame;
+    // init to nullptr.
+    AVFrame* pInputFrame;
     AVFrame* pYuvFrame;
     uint8_t* pYuvBuffer;
     
     do
     {
-		int outWidth = _SavingContext->outputSize.Width;
-		int outHeight = _SavingContext->outputSize.Height;
-		int inWidth = outWidth;
-		int inHeight = outHeight;
+        int outWidth = _SavingContext->outputSize.Width;
+        int outHeight = _SavingContext->outputSize.Height;
+        int inWidth = outWidth;
+        int inHeight = outHeight;
 
-		pin_ptr<uint8_t> pInputBuffer = &managedBuffer[0];
+        pin_ptr<uint8_t> pInputBuffer = &managedBuffer[0];
 
-		// Put the input buffer inside an AVFrame.
-		// This is needed only because we need to convert color space.
-		if ((pInputFrame = avcodec_alloc_frame()) == nullptr) 
+        // Put the input buffer inside an AVFrame.
+        // This is needed only because we need to convert color space.
+        if ((pInputFrame = avcodec_alloc_frame()) == nullptr) 
         {
             log->Error("input frame not allocated");
             break;
-		}
+        }
 
-		avpicture_fill((AVPicture*)pInputFrame, pInputBuffer, AV_PIX_FMT_GRAY8, inWidth, inHeight);
+        avpicture_fill((AVPicture*)pInputFrame, pInputBuffer, AV_PIX_FMT_GRAY8, inWidth, inHeight);
         
-		
-		// Convert color space.
-		// Unfortunately the MJPEG encoder doesn't know how to work directly with Y800/GRAY8 images.
-		// Instead of directly pushing the buffer to the AVFrame we need to allocate a new buffer and convert it.
+        
+        // Convert color space.
+        // Unfortunately the MJPEG encoder doesn't know how to work directly with Y800/GRAY8 images.
+        // Instead of directly pushing the buffer to the AVFrame we need to allocate a new buffer and convert it.
 
-		if ((pYuvFrame = avcodec_alloc_frame()) == nullptr) 
+        if ((pYuvFrame = avcodec_alloc_frame()) == nullptr) 
         {
             log->Error("YUV420P frame not allocated");
             break;
         }
 
-		int yuvBufferSize = avpicture_get_size(AV_PIX_FMT_YUV420P, outWidth, outHeight);
-		pYuvBuffer = (uint8_t*)av_malloc(yuvBufferSize);
+        int yuvBufferSize = avpicture_get_size(AV_PIX_FMT_YUV420P, outWidth, outHeight);
+        pYuvBuffer = (uint8_t*)av_malloc(yuvBufferSize);
 
-		if (pYuvBuffer == nullptr) 
+        if (pYuvBuffer == nullptr) 
         {
             log->Error("Yuv frame buffer not allocated");
             av_free(pYuvFrame);
             break;
         }
-		
-		avpicture_fill((AVPicture*)pYuvFrame, pYuvBuffer, AV_PIX_FMT_YUV420P, outWidth, outHeight);
+        
+        avpicture_fill((AVPicture*)pYuvFrame, pYuvBuffer, AV_PIX_FMT_YUV420P, outWidth, outHeight);
 
-		yuvFrameAllocated = true;
-		
-		// Perform the color space conversion.
+        yuvFrameAllocated = true;
+        
+        // Perform the color space conversion.
         SwsContext* scalingContext = sws_getContext(
-			inWidth, inHeight, AV_PIX_FMT_GRAY8, 
-			outWidth, outHeight, AV_PIX_FMT_YUV420P, 
-			SWS_BICUBIC, NULL, NULL, NULL); 
+            inWidth, inHeight, AV_PIX_FMT_GRAY8, 
+            outWidth, outHeight, AV_PIX_FMT_YUV420P, 
+            SWS_BICUBIC, NULL, NULL, NULL); 
 
         if (sws_scale(scalingContext, pInputFrame->data, pInputFrame->linesize, 0, inHeight, pYuvFrame->data, pYuvFrame->linesize) < 0) 
         {
@@ -654,7 +654,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
         sws_freeContext(scalingContext);
 
         // Allocate output frame buffer. 
-		// Assumes uncompressed size is always smaller than compressed. (Not technically true).
+        // Assumes uncompressed size is always smaller than compressed. (Not technically true).
         int jpegBufferSize = yuvBufferSize;
         uint8_t* pJpegBuffer = (uint8_t*)av_malloc(jpegBufferSize);
         if (pJpegBuffer == nullptr) 
@@ -663,11 +663,11 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
             break;
         }
 
-		// Actual encode.
+        // Actual encode.
         int jpegSize = avcodec_encode_video(_SavingContext->pOutputCodecContext, pJpegBuffer, jpegBufferSize, pYuvFrame);
 
-		if (jpegSize > 0)
-			WriteFrame(jpegSize, _SavingContext, pJpegBuffer, true);
+        if (jpegSize > 0)
+            WriteFrame(jpegSize, _SavingContext, pJpegBuffer, true);
         
         av_free(pJpegBuffer);
 
@@ -677,11 +677,11 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
 
     if(yuvFrameAllocated)
     {
-		av_free(pYuvFrame);
+        av_free(pYuvFrame);
         av_free(pYuvBuffer);
     }
 
-	// Test y800FrameAllocated and free it.
+    // Test y800FrameAllocated and free it.
 
     return written;
 }
@@ -691,14 +691,14 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
 ///</summary>
 bool MJPEGWriter::EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length)
 {
-	// As the buffer is already a JPEG sample, we bypass the encoding step entirely.
+    // As the buffer is already a JPEG sample, we bypass the encoding step entirely.
     bool bWritten = false;
     
     do
     {     
         pin_ptr<uint8_t> pOutputVideoBuffer = &managedBuffer[0];
         WriteFrame(length, _SavingContext, pOutputVideoBuffer, true);
-		pOutputVideoBuffer = nullptr;
+        pOutputVideoBuffer = nullptr;
         bWritten = true;
     }
     while(false);
@@ -715,23 +715,23 @@ bool MJPEGWriter::WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, u
     AVPacket OutputPacket;
     av_init_packet(&OutputPacket);
 
-	OutputPacket.stream_index = _SavingContext->pOutputVideoStream->index;
+    OutputPacket.stream_index = _SavingContext->pOutputVideoStream->index;
     OutputPacket.flags |= AV_PKT_FLAG_KEY;
     OutputPacket.data= _pOutputVideoBuffer;
     OutputPacket.size= _iEncodedSize;
-	OutputPacket.pts = 0;
+    OutputPacket.pts = 0;
 
     // Commit the packet to the file.
     av_write_frame(_SavingContext->pOutputFormatContext, &OutputPacket);
 
-	// Test save to individual file for debugging purposes.
-	/*array<System::Byte>^ managedBuffer = gcnew array<System::Byte>(_iEncodedSize);
-	Marshal::Copy(IntPtr((void*)_pOutputVideoBuffer), managedBuffer, 0, _iEncodedSize);
-	
-	FileStream^ fs = gcnew FileStream("frame-net" + m_iFrameIndex.ToString() + ".jpg", FileMode::Create, FileAccess::Write);
-	fs->Write(managedBuffer, 0, _iEncodedSize);
+    // Test save to individual file for debugging purposes.
+    /*array<System::Byte>^ managedBuffer = gcnew array<System::Byte>(_iEncodedSize);
+    Marshal::Copy(IntPtr((void*)_pOutputVideoBuffer), managedBuffer, 0, _iEncodedSize);
+    
+    FileStream^ fs = gcnew FileStream("frame-net" + m_iFrameIndex.ToString() + ".jpg", FileMode::Create, FileAccess::Write);
+    fs->Write(managedBuffer, 0, _iEncodedSize);
     fs->Close();*/
-	
+    
     return true;
 }
 
