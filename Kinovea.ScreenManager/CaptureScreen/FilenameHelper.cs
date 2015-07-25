@@ -199,6 +199,7 @@ namespace Kinovea.ScreenManager
             else
                 PreferencesManager.CapturePreferences.CaptureImageCounter++;
         }
+        
         public string GetImageFileExtension()
         {
             switch(PreferencesManager.CapturePreferences.ImageFormat)
@@ -208,10 +209,28 @@ namespace Kinovea.ScreenManager
                 default : return ".jpg";
             }
         }
+        
         public string GetVideoFileExtension()
         {
-            // Container selection is disabled as we force .mp4.
-            return ".mp4";
+            switch (PreferencesManager.CapturePreferences.VideoFormat)
+            {
+                case KinoveaVideoFormat.MKV: return ".mkv";
+                case KinoveaVideoFormat.AVI: return ".avi";
+                default: return ".mp4";
+            }
+        }
+        
+        /// <summary>
+        /// Retrieves a string suitable for FFMpeg av_guess_format function.
+        /// </summary>
+        public static string GetFormatString(string filename)
+        {
+            switch (PreferencesManager.CapturePreferences.VideoFormat)
+            {
+                case KinoveaVideoFormat.MKV: return "matroska";
+                case KinoveaVideoFormat.AVI: return "avi";
+                default: return "mp4";
+            }
         }
     }
 }

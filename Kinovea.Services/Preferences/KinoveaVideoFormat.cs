@@ -24,8 +24,8 @@ namespace Kinovea.Services
 {
     public enum KinoveaVideoFormat
     {
-        MKV,
         MP4,
+        MKV,
         AVI
     }
 }

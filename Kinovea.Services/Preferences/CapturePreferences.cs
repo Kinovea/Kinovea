@@ -49,6 +49,11 @@ namespace Kinovea.Services
             get { return imageFormat; }
             set { imageFormat = value; }
         }
+        public KinoveaVideoFormat VideoFormat
+        {
+            get { return videoFormat; }
+            set { videoFormat = value; }
+        }
         public string ImageFile
         {
             get { return imageFile; }
@@ -109,6 +114,7 @@ namespace Kinovea.Services
         private string imageDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private string videoDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
+        private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MP4;
         private bool useCameraSignalSynchronization = false;
         private double displaySynchronizationFramerate = 25.0;
         private string imageFile = "";
@@ -149,6 +155,7 @@ namespace Kinovea.Services
             writer.WriteElementString("VideoDirectory", videoDirectory);
             if(!string.IsNullOrEmpty(videoFile))
                 writer.WriteElementString("VideoFile", videoFile);
+            writer.WriteElementString("VideoFormat", videoFormat.ToString());
             writer.WriteElementString("VideoCounter", videoCounter.ToString());
 
             writer.WriteElementString("UseCameraSignalSynchronization", useCameraSignalSynchronization ? "true" : "false");
@@ -204,6 +211,9 @@ namespace Kinovea.Services
                         break;
                     case "VideoFile":
                         videoFile = reader.ReadElementContentAsString();
+                        break;
+                    case "VideoFormat":
+                        videoFormat = (KinoveaVideoFormat)Enum.Parse(typeof(KinoveaVideoFormat), reader.ReadElementContentAsString());
                         break;
                     case "VideoCounter":
                         videoCounter = reader.ReadElementContentAsLong();
