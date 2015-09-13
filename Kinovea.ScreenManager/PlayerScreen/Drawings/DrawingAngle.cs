@@ -166,6 +166,9 @@ namespace Kinovea.ScreenManager
             Point pointB = transformer.Transform(points["b"]);
             Rectangle boundingBox = transformer.Transform(angleHelper.BoundingBox);
 
+            if (boundingBox.Size == Size.Empty)
+                return;
+
             using(Pen penEdges = styleHelper.GetBackgroundPen((int)(opacityFactor*255)))
             using(SolidBrush brushEdges = styleHelper.GetBackgroundBrush((int)(opacityFactor*255)))
             using(SolidBrush brushFill = styleHelper.GetBackgroundBrush((int)(opacityFactor*defaultBackgroundAlpha)))
