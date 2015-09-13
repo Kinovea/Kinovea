@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
             if (hitRegion == null)
                 return false;
 
-           if (BoundingBox == Rectangle.Empty)
+           if (BoundingBox.Size == Size.Empty)
                 return false;
             else
                 return hitRegion.IsVisible(p);
@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
         }
         private void ComputeHitRegion(Rectangle boundingBox, Angle angle)
         {
-            if (BoundingBox == Rectangle.Empty)
+            if (BoundingBox.Size == Size.Empty)
                 return;
             
             try
