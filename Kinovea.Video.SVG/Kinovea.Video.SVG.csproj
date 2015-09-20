@@ -64,7 +64,7 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
+    <OutputPath>..\Kinovea\bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -84,22 +84,22 @@
     <Reference Include="log4net">
       <HintPath>..\Refs\Log4Net\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorBindings, Version=0.3.1.41361, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+    <Reference Include="SharpVectorBindings, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
       <HintPath>..\Refs\SharpVectorGraphics\SharpVectorBindings.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorCss, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+    <Reference Include="SharpVectorCss, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
       <HintPath>..\Refs\SharpVectorGraphics\SharpVectorCss.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorDom, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+    <Reference Include="SharpVectorDom, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
       <HintPath>..\Refs\SharpVectorGraphics\SharpVectorDom.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorObjectModel, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+    <Reference Include="SharpVectorObjectModel, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
       <HintPath>..\Refs\SharpVectorGraphics\SharpVectorObjectModel.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorRenderingEngine, Version=0.3.1.34123, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="SharpVectorRenderingEngine, Version=0.3.1.31092, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\Refs\SharpVectorGraphics\SharpVectorRenderingEngine.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorUtil, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+    <Reference Include="SharpVectorUtil, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
       <HintPath>..\Refs\SharpVectorGraphics\SharpVectorUtil.dll</HintPath>
     </Reference>
     <Reference Include="System" />
