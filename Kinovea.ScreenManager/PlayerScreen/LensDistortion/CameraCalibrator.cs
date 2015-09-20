@@ -67,6 +67,11 @@ namespace Kinovea.ScreenManager
             }
 
             IntrinsicCameraParameters icp = new IntrinsicCameraParameters();
+            
+            MCvTermCriteria termCriteria = new MCvTermCriteria();
+            termCriteria.type = TERMCRIT.CV_TERMCRIT_ITER | TERMCRIT.CV_TERMCRIT_EPS;
+            termCriteria.max_iter = 30;
+            termCriteria.epsilon = 0.001;
 
             using (Matrix<float> objectPointMatrix = EmguHelper.ToMatrix(allObjectPoints))
             using (Matrix<float> imagePointMatrix = EmguHelper.ToMatrix(allImagePoints))
@@ -83,7 +88,8 @@ namespace Kinovea.ScreenManager
                     icp.DistortionCoeffs,
                     rotationVectors,
                     translationVectors,
-                    flags);
+                    flags,
+                    termCriteria);
             }
 
             double k1 = icp.DistortionCoeffs[0, 0];

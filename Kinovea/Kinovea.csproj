@@ -19,9 +19,7 @@
     <SignManifests>false</SignManifests>
     <TargetZone>LocalIntranet</TargetZone>
     <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <AssemblyOriginatorKeyFile></AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
@@ -34,7 +32,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
     <TargetFrameworkProfile />
-    <PublishUrl>C:\Documents and Settings\Administrateur\Mes documents\Dev  Prog\Videa\Sources - Kinovea\publish\</PublishUrl>
+    <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -52,21 +50,6 @@
     <ApplicationVersion>0.7.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -102,17 +85,6 @@
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <StartAction>Project</StartAction>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugExternals|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\DebugExternals\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <NoWarn>1591</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugExternals|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -290,104 +262,9 @@
       <DependentUpon>KinoveaMainWindow.cs</DependentUpon>
     </EmbeddedResource>
     <BaseApplicationManifest Include="Properties\app.manifest" />
-    <None Include="..\Refs\OpenCV\cv200.dll">
-      <Visible>False</Visible>
-      <Link>cv200.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\OpenCV\cvaux200.dll">
-      <Visible>False</Visible>
-      <Link>cvaux200.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\OpenCV\cxcore200.dll">
-      <Visible>False</Visible>
-      <Link>cxcore200.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\FFmpeg\bin\avcodec-55.dll">
-      <Visible>False</Visible>
-      <Link>avcodec-55.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\FFmpeg\bin\avdevice-55.dll">
-      <Visible>False</Visible>
-      <Link>avdevice-55.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\FFmpeg\bin\avfilter-4.dll">
-      <Visible>False</Visible>
-      <Link>avfilter-4.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\FFmpeg\bin\avformat-55.dll">
-      <Visible>False</Visible>
-      <Link>avformat-55.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\FFmpeg\bin\avutil-52.dll">
-      <Visible>False</Visible>
-      <Link>avutil-52.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\FFmpeg\bin\postproc-52.dll">
-      <Visible>False</Visible>
-      <Link>postproc-52.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\FFmpeg\bin\swresample-0.dll">
-      <Visible>False</Visible>
-      <Link>swresample-0.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\FFmpeg\bin\swscale-2.dll">
-      <Visible>False</Visible>
-      <Link>swscale-2.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\Microsoft.VC90.CRT\msvcm90.dll">
-      <Visible>False</Visible>
-      <Link>msvcm90.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\Microsoft.VC90.CRT\msvcp90.dll">
-      <Visible>False</Visible>
-      <Link>msvcp90.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\Microsoft.VC90.CRT\msvcr90.dll">
-      <Visible>False</Visible>
-      <Link>msvcr90.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest">
-      <Visible>False</Visible>
-      <Link>Microsoft.VC90.CRT.manifest</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\Microsoft.VC90.OpenMP\vcomp90.dll">
-      <Visible>False</Visible>
-      <Link>vcomp90.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\Microsoft.VC90.OpenMP\Microsoft.VC90.OpenMP.manifest">
-      <Visible>False</Visible>
-      <Link>Microsoft.VC90.OpenMP.manifest</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Refs\TurboJpeg\turbojpeg.dll">
-      <Visible>False</Visible>
-      <Link>turbojpeg.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="app.config" />
     <None Include="app.manifest">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="..\Installer\OtherFiles\HelpIndex.xml">
-      <Visible>False</Visible>
-      <Link>HelpIndex.xml</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -556,47 +433,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <!-- List of extra files to copy to output dir 
-        The Visible element doesn't seem to have any effect.
-        How do we put them under ExtraFiles directory ? -->
-    <SVGItem Include="$(MSBuildProjectDirectory)\..\Tools\svg\*.svg">
-      <Visible>False</Visible>
-      <InProject>false</InProject>
-    </SVGItem>
-    <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\XML\Kva to Spreadsheets\*.xsl">
-      <Visible>False</Visible>
-      <InProject>false</InProject>
-    </XSLTItem>
-    <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\XML\Kva to Kva\*.xsl">
-      <Visible>False</Visible>
-      <InProject>false</InProject>
-    </XSLTItem>
-    <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\XML\Preferences\*.xsl">
-      <Visible>False</Visible>
-      <InProject>false</InProject>
-    </XSLTItem>
-    <DrawingTools Include="$(MSBuildProjectDirectory)\..\Tools\DrawingTools\**\*.xml">
-      <Visible>False</Visible>
-      <InProject>false</InProject>
-    </DrawingTools>
-  </ItemGroup>
+
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+  <Import Project="..\Kinovea.targets" />
+
+  <!--
   <Target Name="BeforeBuild">
   </Target>
-  -->
   <Target Name="AfterBuild">
-    <!-- Clean the svg and xslt directories, and copy files over -->
-    <RemoveDir Directories="$(OutputPath)guides" />
-    <MakeDir Directories="$(OutputPath)guides" Condition="!Exists('$(OutputPath)guides')" />
-    <Copy SourceFiles="@(SVGItem)" DestinationFolder="$(OutputPath)guides" />
-    <RemoveDir Directories="$(OutputPath)xslt" />
-    <MakeDir Directories="$(OutputPath)xslt" Condition="!Exists('$(OutputPath)xslt')" />
-    <Copy SourceFiles="@(XSLTItem)" DestinationFolder="$(OutputPath)xslt" />
-    <RemoveDir Directories="$(OutputPath)DrawingTools" />
-    <MakeDir Directories="$(OutputPath)DrawingTools" Condition="!Exists('$(OutputPath)DrawingTools')" />
-    <Copy SourceFiles="@(DrawingTools)" DestinationFolder="$(OutputPath)\DrawingTools\%(RecursiveDir)" />
   </Target>
+  -->
+
 </Project>
