@@ -1,16 +1,18 @@
 #! python
-import os, glob, shutil
+import os
+import glob
+import shutil
 import re
 import zipfile
 
-#------------------------------------------------------------------------------------------
+#
 # deploy.py
 # joan@kinovea.org
 #
 # Generate and export all the language .resx files to their final destination.
 # Python >= 2.6.
 #
-# - The cells in the opendocument file MUST have different styles for different columns.
+# - The cells in the ODF file MUST have different styles for different columns.
 # otherwise the OpenDocument may save identical cells as "repeated".
 # This would break the XSLT stylesheet and mix languages strings.
 # To have a different style for each language column, 
@@ -18,101 +20,89 @@ import zipfile
 #
 # Directory tree:
 # this script + ooo2resx.xsl + Kinovea-l14n-*.ods must be in the same directory.
-#------------------------------------------------------------------------------------------
+#
 
 
-#------------------------------------------------------------------------------------------
-# Function that moves resx files of a specific module to this module's language directory.
-#------------------------------------------------------------------------------------------
-def MoveToDestination(module, target):
-	print "Moving to " + target + " directory."
-	for file in glob.glob(module + "Lang*.resx"):
-		shutil.copy(file, os.path.join("..\\..\\" + target + "\\Languages", file))
+#
+# Function moving resx files of a specific module to this module's language directory.
+#
+def move_to_destination(module, target):
+    print("Moving to " + target + " directory.")
+    for f in glob.glob(module + "Lang*.resx"):
+        shutil.copy(f, os.path.join("..\\..\\" + target + "\\Languages", f))
 
-#------------------------------------------------------------------------------------------
+
+#
 # Function that removes empty resource strings from a resx file.
 # Empty lines will be in the form of : 
 # <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value/></data>
-#------------------------------------------------------------------------------------------
-def ValidateResx(file):
-	print "Validating " + file
-	f = open( file, "r")
-	resx = f.read()
-	f.close()
-	
-	p = re.compile("<data name=\".+\" xml:space=\"preserve\"><value/></data>", re.IGNORECASE)
-	resx = p.sub('', resx)
-	
-	p = re.compile("<data name=\"\" xml:space=\"preserve\"/>", re.IGNORECASE)
-	resx = p.sub('', resx)
-	
-	p = re.compile("<data name=\"\" xml:space=\"preserve\"><value/></data>", re.IGNORECASE)
-	resx = p.sub('', resx)
-	
-	f = open( file, "wb")
-	f.write(resx)
-	f.close()
+#
+def validate_resx(filename):
+    print("Validating " + filename)
+    f = open(filename, encoding='utf-8')
+    resx = f.read()
+    f.close()
+    
+    p = re.compile("<data name=\".+\" xml:space=\"preserve\"><value/></data>", re.IGNORECASE)
+    resx = p.sub('', resx)
+    
+    p = re.compile("<data name=\"\" xml:space=\"preserve\"/>", re.IGNORECASE)
+    resx = p.sub('', resx)
+    
+    p = re.compile("<data name=\"\" xml:space=\"preserve\"><value/></data>", re.IGNORECASE)
+    resx = p.sub('', resx)
+    
+    f = open(filename, "wb")
+    f.write(resx.encode('utf-8'))
+    f.close()
 
-#------------------------------------------------------------------------------------------
-# Function that call the resgen executable to create a strongly typed ressource accessor
-#------------------------------------------------------------------------------------------
-def ResGen(module, target):
-	print "Generating " + module + " ressources accessor."
-	# Sample command : "ScreenManagerLang.resx" /str:cs,Kinovea.ScreenManager.Languages,ScreenManagerLang,ScreenManagerLang.Designer.cs
-	
-	moduleLang = module + "Lang"
-		
-	os.chdir("..\\..\\" + target + "\\Languages")
-	os.system(resgenDir + " " + moduleLang + ".resx /str:cs,Kinovea." + module + ".Languages," + moduleLang + "," + moduleLang + ".Designer.cs") 
 
-#------------------------------------------------------------------------------------------
+# Function that call the resgen executable to create a strongly typed resource accessor
+def call_resgen(module, target):
+    print("Generating " + module + " resources accessor.")
+    # Example:
+    # "ScreenManagerLang.resx" /str:cs,Kinovea.ScreenManager.Languages,ScreenManagerLang,ScreenManagerLang.Designer.cs
+
+    module_lang = module + "Lang"
+
+    os.chdir("..\\..\\" + target + "\\Languages")
+    os.system(resgen + " " + module_lang + ".resx /str:cs,Kinovea." + module + ".Languages," + module_lang + "," + module_lang + ".Designer.cs")
+
 # Program Entry point.
-#------------------------------------------------------------------------------------------
+saxon = '"C:\\Program Files\\Saxonica\\SaxonHE9.6N\\bin\\Transform.exe"'
+resgen = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\resgen.exe"'
 
-# saxonDir : the saxon executable.
-# resgenDir : the resgen executable.
-saxonDir = '"C:\\Program Files\\saxonhe9-2-1-5n\\bin\\Transform.exe"'
-resgenDir = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\resgen.exe"'
-
-print "Cleanup"
-if (os.path.isfile('content.xml')):
-	os.remove("content.xml")
+print("Cleanup")
+if os.path.isfile('content.xml'):
+    os.remove("content.xml")
 
 for file in glob.glob("*.resx"):
-	os.remove(file)
-
+    os.remove(file)
 
 # 0. Extract content.xml from the OpenOffice document.
 z = zipfile.ZipFile("Kinovea-l14n-rev0016.ods", "r")
 z.extract("content.xml")
 
+print("\nGenerate all Resx, first pass.")
+os.system(saxon + " -t -s:content.xml -xsl:ooo2resx.xsl -o:dummy.resx")
 
-# 1. Generate all the .resx through SAXON with a specially crafted XSLT stylesheet.
-print "\nGenerate all Resx, first pass."
-os.system(saxonDir + " -t -s:content.xml -xsl:ooo2resx.xsl -o:dummy.resx") 
-
-
-# 2. Remove empty lines from generated .resx files.
-print "\nGenerate all Resx, second pass."
+print("\nGenerate all Resx, second pass.")
 for file in glob.glob("*.resx"):
-	ValidateResx(file)
+    validate_resx(file)
 
+print("\nMoving resources to their final destination")
+move_to_destination("Root", "Kinovea")
+move_to_destination("Updater", "Kinovea.Updater")
+move_to_destination("FileBrowser", "Kinovea.FileBrowser")
+move_to_destination("ScreenManager", "Kinovea.ScreenManager")
 
-# 3. Move final files to their destination.
-print "\nMoving resources to their final destination"
-MoveToDestination("Root", "Kinovea")
-MoveToDestination("Updater", "Kinovea.Updater")
-MoveToDestination("FileBrowser", "Kinovea.FileBrowser")
-MoveToDestination("ScreenManager", "Kinovea.ScreenManager")
+print("\nRegenerating the strongly typed resource accessors.")
+call_resgen("Root", "Kinovea")
+call_resgen("Updater", "Kinovea.Updater")
+call_resgen("FileBrowser", "Kinovea.FileBrowser")
+call_resgen("ScreenManager", "Kinovea.ScreenManager")
 
-#4. Regenerate the strongly typed ressource accessors
-print "\nRegenerating the strongly typed ressources accessors"
-ResGen("Root", "Kinovea")
-ResGen("Updater", "Kinovea.Updater")
-ResGen("FileBrowser", "Kinovea.FileBrowser")
-ResGen("ScreenManager", "Kinovea.ScreenManager")
-
-print "Done."
+print("Done.")
 
 
 
