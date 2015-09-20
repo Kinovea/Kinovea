@@ -39,30 +39,35 @@
     </ConfigurationOverrideFile>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
+    <OutputPath>..\Refs\SharpVectorGraphics\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
+    <OutputPath>..\Refs\SharpVectorGraphics\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug + xmldoc|AnyCPU' ">
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
+    <OutputPath>..\Refs\SharpVectorGraphics\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release + xmldoc|AnyCPU' ">
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
+    <OutputPath>..\Refs\SharpVectorGraphics\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Test|AnyCPU' ">
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
+    <OutputPath>..\Refs\SharpVectorGraphics\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
@@ -103,20 +108,25 @@
     <FileAlignment>1024</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpVectorBindings">
-      <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
+    <Reference Include="SharpVectorBindings, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorBindings.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorCss">
-      <HintPath>..\Refs\SharpVectorCss.dll</HintPath>
+    <Reference Include="SharpVectorCss, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorCss.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorDom">
-      <HintPath>..\Refs\SharpVectorDom.dll</HintPath>
+    <Reference Include="SharpVectorDom, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorDom.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorObjectModel">
-      <HintPath>..\Refs\SharpVectorObjectModel.dll</HintPath>
+    <Reference Include="SharpVectorObjectModel, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorObjectModel.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorUtil">
-      <HintPath>..\Refs\SharpVectorUtil.dll</HintPath>
+    <Reference Include="SharpVectorUtil, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorUtil.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
