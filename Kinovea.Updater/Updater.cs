@@ -42,9 +42,9 @@ namespace Kinovea.Updater
         }
         public void ExtendMenu(ToolStrip menu)
         {
-            //Catch Options Menu (5)  
+            //Catch Options Menu (6)  
             ToolStripMenuItem mnuCatchOptions = new ToolStripMenuItem();            
-            mnuCatchOptions.MergeIndex = 5;
+            mnuCatchOptions.MergeIndex = 6;
             mnuCatchOptions.MergeAction = MergeAction.MatchOnly;
 
             // sep    

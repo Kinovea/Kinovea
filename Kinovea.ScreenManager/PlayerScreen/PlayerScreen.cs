@@ -550,7 +550,7 @@ namespace Kinovea.ScreenManager
         {
             view.Save();
         }
-        public void ConfigureHighSpeedCamera()
+        public void ConfigureTimebase()
         {
             if (!frameServer.Loaded)
                 return;

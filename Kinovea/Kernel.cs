@@ -69,7 +69,8 @@ namespace Kinovea.Root
         public ToolStripMenuItem mnuToggleFileExplorer = new ToolStripMenuItem();
         public ToolStripMenuItem mnuFullScreen = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImage = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuMotion = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuVideo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTools = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLanguages = new ToolStripMenuItem();
         private Dictionary<string, ToolStripMenuItem> languageMenus = new Dictionary<string, ToolStripMenuItem>();
@@ -356,7 +357,7 @@ namespace Kinovea.Root
 
             // Top level merge.
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuMotion, mnuOptions, mnuHelp });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuOptions, mnuHelp });
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, menu);
@@ -403,7 +404,8 @@ namespace Kinovea.Root
             mnuFullScreen.Text = RootLang.mnuFullScreen;
             
             mnuImage.Text = RootLang.mnuImage;
-            mnuMotion.Text = RootLang.mnuMotion;
+            mnuVideo.Text = RootLang.mnuVideo;
+            mnuTools.Text = RootLang.mnuTools;
             
             mnuOptions.Text = RootLang.mnuOptions;
             mnuLanguages.Text = RootLang.mnuLanguages;
