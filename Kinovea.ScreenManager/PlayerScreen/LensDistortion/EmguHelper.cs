@@ -6,6 +6,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using Emgu.CV.Util;
 
 namespace Kinovea.ScreenManager
 {
