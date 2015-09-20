@@ -109,7 +109,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         }
 
         // 4. Create video stream.
-        if ((m_SavingContext->pOutputVideoStream = av_new_stream(m_SavingContext->pOutputFormatContext, 0)) == nullptr) 
+        if ((m_SavingContext->pOutputVideoStream = avformat_new_stream(m_SavingContext->pOutputFormatContext, nullptr)) == nullptr) 
         {
             result = SaveResult::VideoStreamNotCreated;
             log->Error("Video stream not created");
@@ -176,7 +176,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         }
 
         // 12. Allocate memory for the current incoming frame holder. (will be reused for each frame). 
-        if ((m_SavingContext->pInputFrame = avcodec_alloc_frame()) == nullptr) 
+        if ((m_SavingContext->pInputFrame = av_frame_alloc()) == nullptr) 
         {
             result = SaveResult::InputFrameNotAllocated;
             log->Error("input frame not allocated");
@@ -221,6 +221,7 @@ void MJPEGWriter::SanityCheck(AVFormatContext* s)
 
     if(s->oformat->flags & AVFMT_GLOBALHEADER && !(st->codec->flags & CODEC_FLAG_GLOBAL_HEADER))
         log->Debug("MJPEGWriter sanity check warning: Codec does not use global headers but container format requires global headers");
+    
 }
 
 ///<summary>
@@ -328,7 +329,7 @@ bool MJPEGWriter::SetupMuxer(SavingContext^ _SavingContext)
     
     // ?
     //_SavingContext->pOutputFormatContext->preload   = (int)(0.5 * AV_TIME_BASE);
-    _SavingContext->pOutputFormatContext->max_delay = (int)(0.7 * AV_TIME_BASE); 
+    _SavingContext->pOutputFormatContext->max_delay = (int)(0.7 * AV_TIME_BASE);
 
     return bResult;
 }
@@ -489,7 +490,7 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext)
     // sample_rate
     // codecContext->channels = 2;
     // codecContext->mb_decision = 0;
-
+    
     return true;
 
 }
@@ -520,7 +521,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
         _SavingContext->pInputFrame->linesize[0] = - _SavingContext->pInputFrame->linesize[0];
 
         // Prepare the color space converted frame.
-        if ((pYUV420Frame = avcodec_alloc_frame()) == nullptr) 
+        if ((pYUV420Frame = av_frame_alloc()) == nullptr) 
         {
             log->Error("YUV420P frame not allocated");
             break;
@@ -584,7 +585,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
 
     //if (pRGB24Frame != nullptr)
         //av_free(pRGB24Frame);
-
+    
     return written;
 }
 
@@ -612,7 +613,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
 
         // Put the input buffer inside an AVFrame.
         // This is needed only because we need to convert color space.
-        if ((pInputFrame = avcodec_alloc_frame()) == nullptr) 
+        if ((pInputFrame = av_frame_alloc()) == nullptr) 
         {
             log->Error("input frame not allocated");
             break;
@@ -625,7 +626,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
         // Unfortunately the MJPEG encoder doesn't know how to work directly with Y800/GRAY8 images.
         // Instead of directly pushing the buffer to the AVFrame we need to allocate a new buffer and convert it.
 
-        if ((pYuvFrame = avcodec_alloc_frame()) == nullptr) 
+        if ((pYuvFrame = av_frame_alloc()) == nullptr) 
         {
             log->Error("YUV420P frame not allocated");
             break;
@@ -689,7 +690,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
     }
 
     // Test y800FrameAllocated and free it.
-
+    
     return written;
 }
 

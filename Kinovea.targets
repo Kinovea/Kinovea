@@ -22,14 +22,14 @@
   <Target Name="CopyNativeDependencies">
     <Message Text="Copying native dependencies."/>
     
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\avcodec-55.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\avdevice-55.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\avfilter-4.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\avformat-55.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\avutil-52.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\postproc-52.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\swresample-0.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\FFmpeg\bin\swscale-2.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\bin\x86\avcodec-56.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\bin\x86\avdevice-56.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\bin\x86\avfilter-5.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\bin\x86\avformat-56.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\bin\x86\avutil-54.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\bin\x86\postproc-53.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\bin\x86\swresample-1.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\FFmpeg\bin\x86\swscale-3.dll" DestinationFolder="$(TargetDir)"/>
         
     <Copy SourceFiles="..\Refs\Microsoft.VC90.CRT\msvcm90.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\Microsoft.VC90.CRT\msvcp90.dll" DestinationFolder="$(TargetDir)"/>

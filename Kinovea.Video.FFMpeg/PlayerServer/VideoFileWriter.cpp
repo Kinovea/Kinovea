@@ -180,7 +180,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
         }
 
         // 4. Create video stream.
-        if ((m_SavingContext->pOutputVideoStream = av_new_stream(m_SavingContext->pOutputFormatContext, 0)) == nullptr) 
+        if ((m_SavingContext->pOutputVideoStream = avformat_new_stream(m_SavingContext->pOutputFormatContext, nullptr)) == nullptr) 
         {
             result = SaveResult::VideoStreamNotCreated;
             log->Error("Video stream not created");
@@ -244,7 +244,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
         }
 
         // 12. Allocate memory for the current incoming frame holder. (will be reused for each frame). 
-        if ((m_SavingContext->pInputFrame = avcodec_alloc_frame()) == nullptr) 
+        if ((m_SavingContext->pInputFrame = av_frame_alloc()) == nullptr) 
         {
             result = SaveResult::InputFrameNotAllocated;
             log->Error("input frame not allocated");
@@ -688,7 +688,7 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
     do
     {
         // Allocate the input frame that we will fill up with the bitmap.
-        if ((pInputFrame = avcodec_alloc_frame()) == nullptr) 
+        if ((pInputFrame = av_frame_alloc()) == nullptr) 
         {
             log->Error("input frame not allocated");
             break;
@@ -725,7 +725,7 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
         //------------------------------------------------------------------------------------------
 
         // f. L'objet frame receptacle de sortie.
-        if ((pOutputFrame = avcodec_alloc_frame()) == nullptr) 
+        if ((pOutputFrame = av_frame_alloc()) == nullptr) 
         {
             log->Error("output frame not allocated");
             break;
