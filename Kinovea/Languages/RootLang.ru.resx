@@ -7,8 +7,8 @@
 		This file follow MS Resx schema.
 	-->
 <root>
-   <xsd:schema xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
-               xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+               xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
                id="root">
       <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
       <xsd:element name="root" msdata:IsDataSet="true">
@@ -35,7 +35,10 @@
                   <xsd:complexType>
                      <xsd:sequence>
                         <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                        <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                        <xsd:element name="comment"
+                                     type="xsd:string"
+                                     minOccurs="0"
+                                     msdata:Ordinal="2"/>
                      </xsd:sequence>
                      <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
                      <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
@@ -136,7 +139,8 @@
    <data name="mnuHistoryReset" xml:space="preserve"><value>Сбросить историю</value></data>
    <data name="mnuImage" xml:space="preserve"><value>Картинка</value></data>
    <data name="mnuLanguages" xml:space="preserve"><value>Язык</value></data>
-   <data name="mnuMotion" xml:space="preserve"><value>Показ</value></data>
+   <data name="mnuVideo" xml:space="preserve"><value>Видео</value></data>
+   
    <data name="mnuOpenFile" xml:space="preserve"><value>Открыть видеофайл</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Настройки</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Предпочтение</value></data>

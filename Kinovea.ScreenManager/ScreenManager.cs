@@ -112,7 +112,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCameraCalibration = new ToolStripMenuItem();
 
-        private ToolStripMenuItem mnuHighspeedCamera = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimebase = new ToolStripMenuItem();
         #endregion
 
         #region Toolbar
@@ -358,20 +358,6 @@ namespace Kinovea.ScreenManager
             mnuMirror.Click += new EventHandler(mnuMirrorOnClick);
             mnuMirror.MergeAction = MergeAction.Append;
 
-            BuildSvgMenu();
-
-            mnuTestGrid.Image = Properties.Resources.grid2;
-            mnuTestGrid.Click += mnuTestGrid_OnClick;
-            mnuTestGrid.MergeAction = MergeAction.Append;
-
-            mnuCoordinateAxis.Image = Properties.Resources.coordinate_axis;
-            mnuCoordinateAxis.Click += mnuCoordinateAxis_OnClick;
-            mnuCoordinateAxis.MergeAction = MergeAction.Append;
-
-            mnuCameraCalibration.Image = Properties.Resources.checkerboard;
-            mnuCameraCalibration.Click += mnuCameraCalibration_OnClick;
-            mnuCameraCalibration.MergeAction = MergeAction.Append;
-
             ConfigureVideoFilterMenus(null);
 
             mnuCatchImage.DropDownItems.Add(mnuDeinterlace);
@@ -387,33 +373,53 @@ namespace Kinovea.ScreenManager
                     mnuCatchImage.DropDownItems.Add(m);
             }
             
-            mnuCatchImage.DropDownItems.Add(new ToolStripSeparator());
-            mnuCatchImage.DropDownItems.Add(mnuSVGTools);
-            mnuCatchImage.DropDownItems.Add(mnuTestGrid);
-            mnuCatchImage.DropDownItems.Add(mnuCoordinateAxis);
-            mnuCatchImage.DropDownItems.Add(mnuCameraCalibration);
             #endregion
 
-            #region Motion
-            ToolStripMenuItem mnuCatchMotion = new ToolStripMenuItem();
-            mnuCatchMotion.MergeIndex = 4;
-            mnuCatchMotion.MergeAction = MergeAction.MatchOnly;
+            #region Video
+            ToolStripMenuItem mnuCatchVideo = new ToolStripMenuItem();
+            mnuCatchVideo.MergeIndex = 4;
+            mnuCatchVideo.MergeAction = MergeAction.MatchOnly;
 
-            mnuHighspeedCamera.Image = Properties.Resources.camera_speed;
-            mnuHighspeedCamera.Click += new EventHandler(mnuHighspeedCamera_OnClick);
-            mnuHighspeedCamera.MergeAction = MergeAction.Append;
+            mnuTimebase.Image = Properties.Resources.camera_speed;
+            mnuTimebase.Click += new EventHandler(mnuTimebase_OnClick);
+            mnuTimebase.MergeAction = MergeAction.Append;
             
-            mnuCatchMotion.DropDownItems.Add(mnuHighspeedCamera);
-            mnuCatchMotion.DropDownItems.Add(new ToolStripSeparator());
+            mnuCatchVideo.DropDownItems.Add(mnuTimebase);
+            mnuCatchVideo.DropDownItems.Add(new ToolStripSeparator());
             foreach(ToolStripMenuItem m in filterMenus)
             {
                 if(!(m.Tag is AdjustmentFilter))
-                    mnuCatchMotion.DropDownItems.Add(m);
+                    mnuCatchVideo.DropDownItems.Add(m);
             }
             #endregion
-            
+
+            #region Tools
+            ToolStripMenuItem mnuCatchTools = new ToolStripMenuItem();
+            mnuCatchTools.MergeIndex = 5;
+            mnuCatchTools.MergeAction = MergeAction.MatchOnly;
+
+            BuildSvgMenu();
+
+            mnuTestGrid.Image = Properties.Resources.grid2;
+            mnuTestGrid.Click += mnuTestGrid_OnClick;
+            mnuTestGrid.MergeAction = MergeAction.Append;
+
+            mnuCoordinateAxis.Image = Properties.Resources.coordinate_axis;
+            mnuCoordinateAxis.Click += mnuCoordinateAxis_OnClick;
+            mnuCoordinateAxis.MergeAction = MergeAction.Append;
+
+            mnuCameraCalibration.Image = Properties.Resources.checkerboard;
+            mnuCameraCalibration.Click += mnuCameraCalibration_OnClick;
+            mnuCameraCalibration.MergeAction = MergeAction.Append;
+
+            mnuCatchTools.DropDownItems.Add(mnuSVGTools);
+            mnuCatchTools.DropDownItems.Add(mnuTestGrid);
+            mnuCatchTools.DropDownItems.Add(mnuCoordinateAxis);
+            mnuCatchTools.DropDownItems.Add(mnuCameraCalibration);
+            #endregion
+
             MenuStrip ThisMenu = new MenuStrip();
-            ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchFile, mnuCatchScreens, mnuCatchImage, mnuCatchMotion });
+            ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchFile, mnuCatchScreens, mnuCatchImage, mnuCatchVideo, mnuCatchTools });
             ThisMenu.AllowMerge = true;
 
             ToolStripManager.Merge(ThisMenu, menu);
@@ -858,7 +864,7 @@ namespace Kinovea.ScreenManager
                         ConfigureImageFormatMenus(null);
                     
                     // Motion
-                    mnuHighspeedCamera.Enabled = true;
+                    mnuTimebase.Enabled = true;
                     ConfigureVideoFilterMenus(player);
 
                     HistoryMenuManager.SwitchContext(player.HistoryStack);
@@ -892,7 +898,7 @@ namespace Kinovea.ScreenManager
                     ConfigureImageFormatMenus(captureScreen);
                     
                     // Motion
-                    mnuHighspeedCamera.Enabled = false;
+                    mnuTimebase.Enabled = false;
                     ConfigureVideoFilterMenus(null);
 
                     HistoryMenuManager.SwitchContext(captureScreen.HistoryStack);
@@ -938,7 +944,7 @@ namespace Kinovea.ScreenManager
                 ConfigureImageFormatMenus(null);
                 
                 // Motion
-                mnuHighspeedCamera.Enabled = false;
+                mnuTimebase.Enabled = false;
                 ConfigureVideoFilterMenus(null);
             }
             #endregion
@@ -1176,7 +1182,7 @@ namespace Kinovea.ScreenManager
             mnuSVGTools.Text = ScreenManagerLang.mnuSVGTools;
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
             RefreshCultureMenuFilters();
-            mnuHighspeedCamera.Text = ScreenManagerLang.mnuSetCaptureSpeed;
+            mnuTimebase.Text = ScreenManagerLang.mnuSetCaptureSpeed;
         }
             
         private void RefreshCultureMenuFilters()
@@ -1836,11 +1842,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Motion
-        private void mnuHighspeedCamera_OnClick(object sender, EventArgs e)
+        private void mnuTimebase_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;
             if (ps != null)
-                ps.ConfigureHighSpeedCamera();
+                ps.ConfigureTimebase();
         }
         #endregion
         #endregion
