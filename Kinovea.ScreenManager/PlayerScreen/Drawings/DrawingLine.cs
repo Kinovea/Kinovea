@@ -367,7 +367,7 @@ namespace Kinovea.ScreenManager
             }
             
             
-            if(ShowMeasurableInfo && ShouldSerializeAll(filter))
+            if(ShouldSerializeAll(filter))
             {
                 // Spreadsheet support.
                 w.WriteStartElement("Measure");
