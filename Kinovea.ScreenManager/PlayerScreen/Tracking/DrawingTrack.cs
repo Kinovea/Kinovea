@@ -64,6 +64,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Properties
+        public override string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
         public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.mnuTrackTrajectory; }
@@ -207,7 +212,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        
+        private string name;
+
         // Current state.
         private TrackView trackView = TrackView.Complete;
         private TrackStatus trackStatus = TrackStatus.Interactive;

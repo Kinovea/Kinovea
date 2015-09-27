@@ -47,6 +47,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public override string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
         public PointF A
         {
             get { return points["a"]; }
@@ -110,6 +115,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        private string name;
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         private bool initializing = true;

@@ -45,6 +45,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public override string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
         public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.mnuCoordinateSystem; }
@@ -102,6 +107,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        private string name;
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool showAxis = true;
         private bool showGrid = true;

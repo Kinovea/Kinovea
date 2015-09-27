@@ -866,6 +866,9 @@ namespace Kinovea.ScreenManager
             // When passing here, it is possible that the drawing has already been initialized.
             // (for example, when undeleting a drawing).
 
+            if (string.IsNullOrEmpty(drawing.Name))
+                SetDrawingName(drawing);
+
             if (drawing is IScalable)
                 ((IScalable)drawing).Scale(this.ImageSize);
 
@@ -1167,6 +1170,31 @@ namespace Kinovea.ScreenManager
             }
 
             return isOnDrawing;
+        }
+        private void SetDrawingName(AbstractDrawing drawing)
+        {
+            // Use a unique name based on drawing type.
+            string toolDisplayName = drawing.ToolDisplayName;
+            int index = 1;
+            bool done = false;
+            string name = "";
+            while (!done)
+            {
+                name = string.Format("{0} {1}", toolDisplayName, index);
+                if (!IsNameTaken(name))
+                    break;
+
+                index++;
+            }
+
+            drawing.Name = name;
+        }
+        private bool IsNameTaken(string name)
+        {
+            // Lookup all drawing names to find a match.
+            return AttachedDrawings().Any(d => d.Name == name) || 
+                   chronoManager.Drawings.Any(d => d.Name == name) ||
+                   trackManager.Drawings.Any(d => d.Name == name);
         }
         private int GetKeyframesContentHash()
         {

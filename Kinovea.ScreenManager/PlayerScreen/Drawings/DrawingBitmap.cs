@@ -36,6 +36,11 @@ namespace Kinovea.ScreenManager
     public class DrawingBitmap : AbstractDrawing, IScalable, IKvaSerializable
     {
         #region Properties
+        public override string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
         public override string ToolDisplayName
         {
             get {  return "Bitmap Image"; }
@@ -64,6 +69,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        private string name;
         private bool valid;
         private string filename;
         private Bitmap bitmap;
