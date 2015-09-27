@@ -140,6 +140,7 @@
    
    
    
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0} setnych sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0:0.00} sekund.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Zapisz wideo</value></data>
@@ -222,6 +223,7 @@
    <data name="Generic_Close" xml:space="preserve"><value>Zamknij</value></data>
    
    <data name="Generic_Configuration" xml:space="preserve"><value>Konfiguracja</value></data>
+   <data name="Generic_ConfigurationElipsis" xml:space="preserve"><value>Konfiguracja…</value></data>
    
    
    
@@ -282,8 +284,6 @@
    
    
    <data name="mnuCloseScreen" xml:space="preserve"><value>Zamknij ten ekran</value></data>
-   
-   
    
    
    

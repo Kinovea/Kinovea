@@ -105,9 +105,9 @@ namespace Kinovea.ScreenManager
             // 
             this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbName.Location = new System.Drawing.Point(23, 24);
+            this.tbName.Location = new System.Drawing.Point(22, 24);
             this.tbName.Name = "tbName";
-            this.tbName.Size = new System.Drawing.Size(190, 20);
+            this.tbName.Size = new System.Drawing.Size(191, 20);
             this.tbName.TabIndex = 39;
             this.tbName.TextChanged += new System.EventHandler(this.tbName_TextChanged);
             // 

@@ -103,6 +103,7 @@
    <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>레이블:</value></data>
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>초 시계 구성</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>그림 그리기 구성</value></data>
+   
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>항상 보이기</value></data>
    <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>기본 값 사용</value></data>
    <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>지속 가능하게 함</value></data>
@@ -111,7 +112,7 @@
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>나누는 수:</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>그리드 구성</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>투명도 구성</value></data>
-   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value> 투명도: {0:0}%</value></data>
+   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value> 투명도:  {0:0}%</value></data>
    
    
    
@@ -204,7 +205,7 @@
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>슬라이드 쇼는 비디오 형식(format)으로 저장된 '키 이미지'임.\n슬라이드 쇼를 만들기 전에 몇 개의 '키 이미지'를 만드세요.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – 멈춤 비디오를 만들 수 없음</value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>이 기능을 쓰기 전에 몇 개의 '키 이미지'를 만들어야 함.</value></data>
-   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>파일을 기록할 수 없음.\n타깃 폴더에 쓰기 권한이 있는지, 이 파일이 현재 사용되고 있지 않은지를 확인해야 함.</value></data>
+   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>파일을 기록할 수 없음.\n타깃 폴더에 쓰기 권한이 있는지, 이 파일이 현재 사용되고 있지 않은지를  확인해야 함.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - 비디오 저장 불가</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>비디오 저장 불가.\n다른 형식으로 다시 시도해 보십시오.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>진행:</value></data>
@@ -222,6 +223,7 @@
    <data name="Generic_Close" xml:space="preserve"><value>닫기</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>색상:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>구성</value></data>
+   <data name="Generic_ConfigurationElipsis" xml:space="preserve"><value>구성...</value></data>
    
    
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>글자 크기:</value></data>
@@ -282,8 +284,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>초 시계 시작</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>초 시계 멈춤</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>이 화면 닫음</value></data>
-   <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>색상</value></data>
-   <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>색상과 크기…</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>지속성…</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>경로 표시 구성</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>디인터레이스</value></data>

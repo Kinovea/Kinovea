@@ -103,6 +103,7 @@
    <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>ラベル:</value></data>
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>ストップウォッチの設定</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>ドローイングの設定</value></data>
+   
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>常に表示</value></data>
    <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>デフォルト設定</value></data>
    <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>継続時間を有効化</value></data>
@@ -222,6 +223,7 @@
    <data name="Generic_Close" xml:space="preserve"><value>閉じる</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>色</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>設定</value></data>
+   <data name="Generic_ConfigurationElipsis" xml:space="preserve"><value>設定...</value></data>
    <data name="Generic_Calibration" xml:space="preserve"><value>較正</value></data>
    <data name="Generic_GridDivisionsPicker" xml:space="preserve"><value>分割数:</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>フォントのサイズ:</value></data>
@@ -282,8 +284,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>ストップウォッチをスタートする</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>ストップウォッチを止める</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>このスクリーンを閉じる</value></data>
-   <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>色</value></data>
-   <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>色とサイズ…</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>継続時間…</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>軌道表示設定</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>インターランス解除</value></data>

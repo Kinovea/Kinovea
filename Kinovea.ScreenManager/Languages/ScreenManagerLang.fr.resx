@@ -103,6 +103,7 @@
    <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Label :</value></data>
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configurer le Chronomètre</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurer le Dessin</value></data>
+   <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Nom</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Toujours Visible</value></data>
    <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Utiliser la valeur par défaut</value></data>
    <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Activer la persistance</value></data>
@@ -222,6 +223,7 @@
    <data name="Generic_Close" xml:space="preserve"><value>Fermer</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Couleur :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuration</value></data>
+   <data name="Generic_ConfigurationElipsis" xml:space="preserve"><value>Configuration…</value></data>
    <data name="Generic_Calibration" xml:space="preserve"><value>Calibration</value></data>
    <data name="Generic_GridDivisionsPicker" xml:space="preserve"><value>Divisions :</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Taille de la police :</value></data>
@@ -282,8 +284,6 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Démarrer le Chronomètre</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Arrêter le Chronomètre</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Fermer cet Écran</value></data>
-   <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Couleur</value></data>
-   <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Couleur et Taille...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistance...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configurer l'affichage de la Trajectoire</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Désentrelacer</value></data>

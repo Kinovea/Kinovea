@@ -205,7 +205,7 @@ namespace Kinovea.ScreenManager
 
         private void ReloadMenuCulture()
         {
-            mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+            mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
         }
@@ -228,15 +228,10 @@ namespace Kinovea.ScreenManager
             if(drawing == null)
                 return;
 
-            if((drawing.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
+            if((drawing.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor ||
+               (drawing.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
             {
-                mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
-                popMenu.Items.Add(mnuConfigureDrawing);
-            }
-            
-            if((drawing.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
-            {
-                mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+                mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 popMenu.Items.Add(mnuConfigureDrawing);
             }
             
