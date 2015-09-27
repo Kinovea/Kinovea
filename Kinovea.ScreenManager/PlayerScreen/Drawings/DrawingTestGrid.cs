@@ -39,11 +39,6 @@ namespace Kinovea.ScreenManager
     public class DrawingTestGrid : AbstractDrawing, IScalable
     {
         #region Properties
-        public override string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
         public override string ToolDisplayName
         {
             get { return "Test grid"; }
@@ -72,7 +67,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private string name;
         private SizeF imageSize;
         private float halfWidth;
         private float halfHeight;

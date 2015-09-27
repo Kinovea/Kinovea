@@ -40,11 +40,6 @@ namespace Kinovea.ScreenManager
     public class DrawingChrono : AbstractDrawing, IDecorable, IKvaSerializable
     {
         #region Properties
-        public override string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
         public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolChrono; }
@@ -137,8 +132,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private string name;
-
         // Core
         private long startCountingTimestamp;         	// chrono starts counting.
         private long stopCountingTimestamp;          	// chrono stops counting. 
@@ -320,6 +313,9 @@ namespace Kinovea.ScreenManager
         {
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());
+
+            if (xmlReader.MoveToAttribute("name"))
+                name = xmlReader.ReadContentAsString();
 
             xmlReader.ReadStartElement();
             

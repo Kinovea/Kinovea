@@ -38,11 +38,6 @@ namespace Kinovea.ScreenManager
     public class AutoNumberManager : AbstractMultiDrawing, IDecorable
     {
         #region Properties
-        public override string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
         public override string ToolDisplayName
         {
             get { return ScreenManagerLang.ToolTip_DrawingToolAutonumbers;}
@@ -88,7 +83,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private string name;
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private const int defaultFontSize = 16;

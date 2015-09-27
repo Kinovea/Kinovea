@@ -233,6 +233,12 @@ namespace Kinovea.ScreenManager
         }
         private void ParseDrawings(XmlReader r, PointF scale)
         {
+            // Note:
+            // We do not do a metadata.AddDrawing at this point, only add the drawing internally to the keyframe without side-effects.
+            // We wait for the complete keyframe to be parsed and ready, and then merge-insert it into the existing collection.
+            // The drawing post-initialization will only be done at that point. 
+            // This prevents doing post-initializations too early when the keyframe is not yet added to the metadata collection.
+
             bool isEmpty = r.IsEmptyElement;
             
             r.ReadStartElement();
@@ -243,7 +249,12 @@ namespace Kinovea.ScreenManager
             while (r.NodeType == XmlNodeType.Element)
             {
                 AbstractDrawing drawing = DrawingSerializer.Deserialize(r, scale, TimeHelper.IdentityTimestampMapper, metadata);
-                metadata.AddDrawing(this, drawing);
+                if (!drawing.IsValid)
+                    continue;
+
+                AddDrawing(drawing);
+                drawing.InfosFading.ReferenceTimestamp = this.Position;
+                drawing.InfosFading.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerFrame;
             }
 
             r.ReadEndElement();

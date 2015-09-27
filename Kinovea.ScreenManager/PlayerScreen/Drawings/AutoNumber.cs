@@ -37,6 +37,10 @@ namespace Kinovea.ScreenManager
     public class AutoNumber : AbstractMultiDrawingItem, IKvaSerializable
     {
         #region Properties
+        public string Name
+        {
+            get { return "AutoNumber"; }
+        }
         public int Value 
         {
             get { return value;}

@@ -43,11 +43,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Properties
-        public override string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
         public override string ToolDisplayName
         {
             get { return ToolManager.Tools["DistortionGrid"].DisplayName; }
@@ -97,7 +92,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private string name;
         private List<PointF> points = new List<PointF>();
         
         private InfosFading infosFading;
@@ -218,7 +212,10 @@ namespace Kinovea.ScreenManager
         {
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());
-
+            
+            if (xmlReader.MoveToAttribute("name"))
+                name = xmlReader.ReadContentAsString();
+            
             xmlReader.ReadStartElement();
 
             while (xmlReader.NodeType == XmlNodeType.Element)

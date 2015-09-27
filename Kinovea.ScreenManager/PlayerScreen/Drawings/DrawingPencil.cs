@@ -42,11 +42,6 @@ namespace Kinovea.ScreenManager
     public class DrawingPencil : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
         #region Properties
-        public override string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
         public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolPencil; }
@@ -89,7 +84,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private string name;
         private List<PointF> pointList = new List<PointF>();
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -156,6 +150,9 @@ namespace Kinovea.ScreenManager
         {
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());
+
+            if (xmlReader.MoveToAttribute("name"))
+                name = xmlReader.ReadContentAsString();
 
             xmlReader.ReadStartElement();
             

@@ -39,6 +39,16 @@ namespace Kinovea.ScreenManager
         {
             get { return identifier; }
         }
+
+        /// <summary>
+        /// The name of this instance of the drawing.
+        /// May be changed by the user.
+        /// </summary>
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
         public virtual bool IsValid
         {
             get { return true; }
@@ -87,20 +97,11 @@ namespace Kinovea.ScreenManager
         {
             get;
         }
-
-        /// <summary>
-        /// The name of this instance of the drawing.
-        /// May be changed by the user.
-        /// </summary>
-        public abstract string Name
-        {
-            get;
-            set;
-        }
         #endregion
 
         #region Concrete members
         protected Guid identifier = Guid.NewGuid();
+        protected string name;
         #endregion
 
         #region Abstract methods
