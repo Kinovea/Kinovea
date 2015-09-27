@@ -93,10 +93,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingPencil(Point origin, Point second, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset)
+        public DrawingPencil(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
         {
             pointList.Add(origin);
-            pointList.Add(second);
+            pointList.Add(origin.Translate(1, 0));
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
             styleHelper.Color = Color.Black;
@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
             }
         }
         public DrawingPencil(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, Point.Empty, 0, 0, ToolManager.GetStylePreset("Pencil"))
+            : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Pencil"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -134,7 +134,7 @@ namespace Kinovea.ScreenManager
         {
             pointList = pointList.Select(p => p.Translate(dx, dy)).ToList();
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
@@ -272,7 +272,7 @@ namespace Kinovea.ScreenManager
             
             pointList.Add(newPoint);
         }
-        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
+        private bool IsPointInObject(PointF point, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {

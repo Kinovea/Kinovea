@@ -128,10 +128,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingLine(Point start, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingLine(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
         {
-            points["a"] = start;
-            points["b"] = new Point(start.X + 10, start.Y);
+            points["a"] = origin;
+            points["b"] = origin.Translate(10, 0);
             labelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black, transformer);
 
             styleHelper.Color = Color.DarkSlateGray;
@@ -153,7 +153,7 @@ namespace Kinovea.ScreenManager
             mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingLine(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, 0, 0)
+            : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -240,7 +240,7 @@ namespace Kinovea.ScreenManager
 
         
 
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
@@ -478,7 +478,7 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "LineShape", "line shape");
             style.Bind(styleHelper, "LineEnding", "arrows");
         }
-        private bool IsPointInObject(Point point, DistortionHelper distorter, IImageToViewportTransformer transformer)
+        private bool IsPointInObject(PointF point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath areaPath = new GraphicsPath())
             {
@@ -502,10 +502,10 @@ namespace Kinovea.ScreenManager
                 return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
             }
         }
-        private Point GetMiddlePoint()
+        private PointF GetMiddlePoint()
         {
             // Used only to attach the measure.
-            return GeometryHelper.GetMiddlePoint(points["a"], points["b"]).ToPoint();
+            return GeometryHelper.GetMiddlePoint(points["a"], points["b"]);
         }
         
         #endregion

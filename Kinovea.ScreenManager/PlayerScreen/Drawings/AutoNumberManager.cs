@@ -116,7 +116,7 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int currentNumber = 0;
             int handle = -1;

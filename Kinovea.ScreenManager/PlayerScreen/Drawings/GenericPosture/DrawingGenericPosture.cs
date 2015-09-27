@@ -118,7 +118,7 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private bool tracking;
-        private Point origin;
+        private PointF origin;
         private GenericPosture genericPosture;
         private List<AngleHelper> angles = new List<AngleHelper>();
         
@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public DrawingGenericPosture(Point origin, GenericPosture posture, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
+        public DrawingGenericPosture(PointF origin, GenericPosture posture, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
         {
             this.origin = origin;
             this.genericPosture = posture;
@@ -162,7 +162,7 @@ namespace Kinovea.ScreenManager
             menuFlipVertical.Image = Properties.Drawings.flipvertical;
         }
         public DrawingGenericPosture(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, null, 0, 0, null)
+            : this(PointF.Empty, null, 0, 0, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -203,7 +203,7 @@ namespace Kinovea.ScreenManager
                 DrawPositions(brushFill, baseBrushFillColor, alphaBackground, opacity, canvas, transformer, points);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
@@ -573,10 +573,10 @@ namespace Kinovea.ScreenManager
                 try
                 {
                     brushFill.Color = angle.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, angle.Color);
-                    canvas.FillPie(brushFill, box, (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
+                    canvas.FillPie(brushFill, box, angles[i].Angle.Start, angles[i].Angle.Sweep);
                 
                     penEdge.Color = angle.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, angle.Color);
-                    canvas.DrawArc(penEdge, box, (float)angles[i].Angle.Start, (float)angles[i].Angle.Sweep);
+                    canvas.DrawArc(penEdge, box, angles[i].Angle.Start, angles[i].Angle.Sweep);
                 }
                 catch(Exception e)
                 {
@@ -799,7 +799,7 @@ namespace Kinovea.ScreenManager
             
             return result;
         }
-        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
+        private bool IsPointInObject(PointF point, IImageToViewportTransformer transformer)
         {
             // Angles, hit zones, segments.
             
@@ -843,7 +843,7 @@ namespace Kinovea.ScreenManager
             
             return hit;
         }
-        private bool IsPointInHitZone(GenericPostureAbstractHitZone hitZone, Point point)
+        private bool IsPointInHitZone(GenericPostureAbstractHitZone hitZone, PointF point)
         {
             bool hit = false;
             
@@ -870,7 +870,7 @@ namespace Kinovea.ScreenManager
             
             return hit;
         }
-        private bool IsPointOnSegment(GenericPostureSegment segment, Point point, IImageToViewportTransformer transformer)
+        private bool IsPointOnSegment(GenericPostureSegment segment, PointF point, IImageToViewportTransformer transformer)
         {
             PointF start = segment.Start >= 0 ? genericPosture.Points[segment.Start] : GetUntransformedComputedPoint(segment.Start);
             PointF end = segment.End >= 0 ? genericPosture.Points[segment.End] : GetUntransformedComputedPoint(segment.End);
@@ -884,7 +884,7 @@ namespace Kinovea.ScreenManager
                 return HitTester.HitTest(path, point, segment.Width, false, transformer);
             }
         }
-        private bool IsPointInsideEllipse(GenericPostureEllipse ellipse, Point point, IImageToViewportTransformer transformer)
+        private bool IsPointInsideEllipse(GenericPostureEllipse ellipse, PointF point, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {
@@ -893,7 +893,7 @@ namespace Kinovea.ScreenManager
                 return HitTester.HitTest(path, point, 0, true, transformer);
             }
         }
-        private bool IsPointOnEllipseArc(GenericPostureEllipse ellipse, Point point, IImageToViewportTransformer transformer)
+        private bool IsPointOnEllipseArc(GenericPostureEllipse ellipse, PointF point, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {

@@ -2549,7 +2549,7 @@ namespace Kinovea.ScreenManager
         {
             bool hitMagnifier = false;
             if(m_ActiveTool == m_PointerTool)
-                hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse.ToPoint(), m_FrameServer.Metadata.CoordinateSystem);
+                hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse, m_FrameServer.Metadata.CoordinateSystem);
                 
             if(hitMagnifier || InteractiveFiltering)
                 return;
@@ -2605,7 +2605,7 @@ namespace Kinovea.ScreenManager
             {
                 foreach (DrawingText label in m_FrameServer.Metadata.Labels())
                 {
-                    int hit = label.HitTest(m_DescaledMouse.ToPoint(), m_iCurrentPosition, distorter, transformer, zooming);
+                    int hit = label.HitTest(m_DescaledMouse, m_iCurrentPosition, distorter, transformer, zooming);
                     if (hit < 0)
                         continue;
                     
@@ -2617,7 +2617,7 @@ namespace Kinovea.ScreenManager
            
             if (!editingLabel)
             {
-                AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
+                AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
 
                 if (drawing is DrawingText)
                 {
@@ -2716,14 +2716,14 @@ namespace Kinovea.ScreenManager
                 mnuSendPic.Visible = false;
                 panelCenter.ContextMenuStrip = popMenu;
             }
-            else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse.ToPoint(), m_iCurrentPosition))
+            else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
             {
                 AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
                 PrepareDrawingContextMenu(drawing, popMenuDrawings);
                 popMenuDrawings.Items.Add(mnuDeleteDrawing);
                 panelCenter.ContextMenuStrip = popMenuDrawings;
             }
-            else if ((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition)) != null)
+            else if ((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             { 
                 // Unlike attached drawings, each extra drawing type has its own context menu for now.
                 // TODO: Maybe we could use the custom menus system to host these menus in the drawing instead of here.
@@ -2776,7 +2776,8 @@ namespace Kinovea.ScreenManager
                     panelCenter.ContextMenuStrip = popMenuDrawings;
                 }
             }
-            else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse.ToPoint(), m_FrameServer.Metadata.CoordinateSystem))
+            else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && 
+                     m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse, m_FrameServer.Metadata.CoordinateSystem))
             {
                 mnuMagnifierTrack.Checked = ToggleTrackingCommand.CurrentState(m_FrameServer.Metadata.Magnifier);
                 panelCenter.ContextMenuStrip = popMenuMagnifier;
@@ -2899,7 +2900,7 @@ namespace Kinovea.ScreenManager
                         
             if (e.Button == MouseButtons.None && m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
             {
-                m_FrameServer.Metadata.Magnifier.Move(m_DescaledMouse.ToPoint());
+                m_FrameServer.Metadata.Magnifier.Move(m_DescaledMouse);
                 
                 if (!m_bIsCurrentlyPlaying)
                     DoInvalidate();
@@ -2936,7 +2937,7 @@ namespace Kinovea.ScreenManager
                     bool bMovingMagnifier = false;
                     if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect)
                     {
-                        bMovingMagnifier = m_FrameServer.Metadata.Magnifier.Move(m_DescaledMouse.ToPoint());
+                        bMovingMagnifier = m_FrameServer.Metadata.Magnifier.Move(m_DescaledMouse);
                     }
 
                     if (!bMovingMagnifier && m_ActiveTool == m_PointerTool)
@@ -2990,7 +2991,7 @@ namespace Kinovea.ScreenManager
                 ReportForSyncMerge();
             }
 
-            m_FrameServer.Metadata.InitializeCommit(m_FrameServer.VideoReader.Current, m_DescaledMouse.ToPoint());
+            m_FrameServer.Metadata.InitializeCommit(m_FrameServer.VideoReader.Current, m_DescaledMouse);
 
             if (m_bTextEdit && m_ActiveTool != m_PointerTool && m_iActiveKeyFrameIndex >= 0)
                 m_bTextEdit = false;
@@ -3037,7 +3038,7 @@ namespace Kinovea.ScreenManager
             {
                 ToggleImageFillMode();
             }
-            else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse.ToPoint(), m_iCurrentPosition))
+            else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
             {
                 // Double click on a drawing:
                 // turn text tool into edit mode, launch config for others.
@@ -3057,7 +3058,7 @@ namespace Kinovea.ScreenManager
                     mnuConfigureDrawing_Click(null, EventArgs.Empty);
                 }
             }
-            else if((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse.ToPoint(), m_iCurrentPosition)) != null)
+            else if((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             {
                 if(hitDrawing is DrawingChrono)
                 {
@@ -3834,7 +3835,7 @@ namespace Kinovea.ScreenManager
             style.Elements.Add("line size", new StyleElementLineSize(3));
             style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
 
-            DrawingTrack track = new DrawingTrack(m_DescaledMouse.ToPoint(), m_iCurrentPosition, style);
+            DrawingTrack track = new DrawingTrack(m_DescaledMouse, m_iCurrentPosition, style);
             track.Status = TrackStatus.Edit;
 
             if (DrawingAdding != null)

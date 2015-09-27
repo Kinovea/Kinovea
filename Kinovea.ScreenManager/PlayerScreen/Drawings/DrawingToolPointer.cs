@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractDrawingTool Implementation
-        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
             return null;
         }
@@ -144,23 +144,20 @@ namespace Kinovea.ScreenManager
             manipulationType = ManipulationType.None;
             metadata.UnselectAll();
 
-            // Hit testing doesn't need subpixel accuracy.
-            Point coords = mouseCoordinates.ToPoint();
-
             // Store position (descaled: in original image coords).
             lastPoint.X = mouseCoordinates.X;
             lastPoint.Y = mouseCoordinates.Y;
 
-            if (IsOnDrawing(metadata, activeKeyFrameIndex, coords, currentTimeStamp, allFrames))
+            if (IsOnDrawing(metadata, activeKeyFrameIndex, mouseCoordinates, currentTimeStamp, allFrames))
                 return true;
 
-            if (IsOnTrack(metadata, coords, currentTimeStamp))
+            if (IsOnTrack(metadata, mouseCoordinates, currentTimeStamp))
                 return true;
 
-            if (IsOnChronometer(metadata, coords, currentTimeStamp))
+            if (IsOnChronometer(metadata, mouseCoordinates, currentTimeStamp))
                 return true;
-            
-            if (IsOnExtraDrawing(metadata, coords, currentTimeStamp))
+
+            if (IsOnExtraDrawing(metadata, mouseCoordinates, currentTimeStamp))
                 return true;
 
             // Moving the whole image (Direct Zoom)
@@ -262,7 +259,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Helpers
-        private bool IsOnDrawing(Metadata metadata, int activeKeyFrameIndex, Point mouseCoordinates, long currentTimeStamp, bool allFrames)
+        private bool IsOnDrawing(Metadata metadata, int activeKeyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, bool allFrames)
         {
             if (metadata.Keyframes.Count == 0)
                 return false;
@@ -289,7 +286,7 @@ namespace Kinovea.ScreenManager
 
             return bIsOnDrawing;
         }
-        private bool DrawingHitTest(Metadata metadata, int keyFrameIndex, Point mouseCoordinates, long currentTimeStamp, DistortionHelper distorter, CoordinateSystem transformer)
+        private bool DrawingHitTest(Metadata metadata, int keyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, DistortionHelper distorter, CoordinateSystem transformer)
         {
             bool isOnDrawing = false;
             int hitResult = -1;
@@ -324,7 +321,7 @@ namespace Kinovea.ScreenManager
 
             return isOnDrawing;
         }
-        private bool IsOnExtraDrawing(Metadata metadata, Point mouseCoordinates, long currentTimestamp)
+        private bool IsOnExtraDrawing(Metadata metadata, PointF mouseCoordinates, long currentTimestamp)
         {
             // Test if we hit an unattached drawing.
             
@@ -359,7 +356,7 @@ namespace Kinovea.ScreenManager
             
             return isOnDrawing;
         }
-        private bool IsOnChronometer(Metadata metadata, Point point, long currentTimestamp)
+        private bool IsOnChronometer(Metadata metadata, PointF point, long currentTimestamp)
         {
             bool isOnDrawing = false;
             foreach (AbstractDrawing drawing in metadata.ChronoManager.Drawings)
@@ -387,7 +384,7 @@ namespace Kinovea.ScreenManager
 
             return isOnDrawing;
         }
-        private bool IsOnTrack(Metadata metadata, Point mouseCoordinates, long currentTimeStamp)
+        private bool IsOnTrack(Metadata metadata, PointF mouseCoordinates, long currentTimeStamp)
         {
             // Track have their own special hit test because we need to differenciate the interactive case from the edit case.
             bool isOnDrawing = false;

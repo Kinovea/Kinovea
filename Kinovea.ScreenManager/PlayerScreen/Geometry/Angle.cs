@@ -22,6 +22,10 @@ using System;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Note: the angle values follow the .NET System.Drawing convention, (not the Atan2 convention):
+    /// Values range from 0 to 360°, always positive, clockwise direction, 0 start at the X axis.
+    /// </summary>
     public struct Angle
     {
         public float Start;

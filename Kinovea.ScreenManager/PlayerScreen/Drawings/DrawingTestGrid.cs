@@ -195,7 +195,7 @@ namespace Kinovea.ScreenManager
             return new PointF(halfWidth + (p.X * halfWidth), halfHeight + (p.Y * halfHeight));
         }
         
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             return -1;
         }

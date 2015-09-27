@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingCircle(Point center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingCircle(PointF center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
         {
             this.center = center;
 
@@ -114,7 +114,7 @@ namespace Kinovea.ScreenManager
             BindStyle();
         }
         public DrawingCircle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, 0, 0)
+            : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
         {
             center = center.Translate(dx, dy);
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
@@ -252,7 +252,7 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "pen size");
         }
-        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
+        private bool IsPointInObject(PointF point, IImageToViewportTransformer transformer)
         {
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
@@ -262,7 +262,7 @@ namespace Kinovea.ScreenManager
             }
             return hit;
         }
-        private bool IsPointOnHandler(Point point, IImageToViewportTransformer transformer)
+        private bool IsPointOnHandler(PointF point, IImageToViewportTransformer transformer)
         {
             if(radius < 0)
                 return false;

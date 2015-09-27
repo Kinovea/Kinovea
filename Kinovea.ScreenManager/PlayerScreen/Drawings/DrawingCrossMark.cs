@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingCrossMark(Point center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
+        public DrawingCrossMark(PointF center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
         {
             points["0"] = center;
             labelCoordinates = new KeyframeLabel(points["0"], Color.Black, transformer);
@@ -137,7 +137,7 @@ namespace Kinovea.ScreenManager
             mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
         public DrawingCrossMark(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, 0, 0, ToolManager.GetStylePreset("CrossMark"), null)
+            : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("CrossMark"), null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -182,7 +182,7 @@ namespace Kinovea.ScreenManager
             SignalTrackablePointMoved();
             labelCoordinates.SetAttach(points["0"], true);
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;

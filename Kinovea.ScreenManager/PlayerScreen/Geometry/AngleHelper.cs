@@ -54,28 +54,34 @@ namespace Kinovea.ScreenManager
                 return;
 
             Origin = o;
-            Angle = ComputeAngle(o, a, b);
+            Angle = ComputeAngle(o, a, b, false);
             Color = color;
-            
-            if(calibration != null && calibration.CalibratorType == CalibratorType.Plane)
-            {
-                // FIXME: use a single method to compute angles. Currently we have one method here and another in GeometryHelper.
-                PointF calibratedO = calibration.GetPoint(o);
-                PointF calibratedA = calibration.GetPoint(a);
-                PointF calibratedB = calibration.GetPoint(b);
 
-                CalibratedAngle = ComputeAngle(calibratedO, calibratedB, calibratedA);
-            }
-            else
+            if (calibration == null)
             {
                 CalibratedAngle = Angle;
             }
-            
+            else if(calibration.CalibratorType == CalibratorType.Plane)
+            {
+                PointF calibratedO = calibration.GetPoint(o);
+                PointF calibratedA = calibration.GetPoint(a);
+                PointF calibratedB = calibration.GetPoint(b);
+                CalibratedAngle = ComputeAngle(calibratedO, calibratedA, calibratedB, true);
+            }
+            else if (calibration.CalibratorType == CalibratorType.Line)
+            {
+                // Note that direction of Y-axis is not the same that the one used for the uncalibrated space.
+                PointF calibratedO = calibration.GetPoint(o);
+                PointF calibratedA = calibration.GetPoint(a);
+                PointF calibratedB = calibration.GetPoint(b);
+                CalibratedAngle = ComputeAngle(calibratedO, calibratedA, calibratedB, true);
+            }
+
             ComputeBoundingBox(o, a, b, (float)radius);
             ComputeTextPosition(Angle, transformer);
             ComputeHitRegion(BoundingBox, Angle);
         }
-        public bool Hit(Point p)
+        public bool Hit(PointF p)
         {
             if (hitRegion == null)
                 return false;
@@ -85,51 +91,40 @@ namespace Kinovea.ScreenManager
             else
                 return hitRegion.IsVisible(p);
         }
-        private double GetAbsoluteAngle(PointF o, PointF p)
+        
+        private float GetAbsoluteAngle(PointF o, PointF p, bool yUp)
         {
-            double radians = Math.Atan((double)(p.Y - o.Y) / (double)(p.X - o.X));
-            double angle = radians * MathHelper.RadiansToDegrees;
+            // Note that angles in Kinovea are generally expressed using the convention of .NET System.Drawing:
+            // Values range from 0 to 360°, always positive, clockwise direction, start at X axis.
+            // This differs from Atan2 which has values ranging from 0 to π, positive for counter-clockwise, negative for clockwise.
+            // The direction of Y is up for calibrated spaces, and down for drawing space.
+            float dx = p.X - o.X;
+            float dy = p.Y - o.Y;
             
-            // We get a value between -90 and +90, depending on the quadrant.
-            // Translate to 0 -> 360 clockwise with 0 at right.
-            if(p.X >= o.X)
-            {
-                if(p.Y <= o.Y)
-                    angle = 360 + angle;
-            }
-            else
-            {
-                angle = 180 + angle;
-            }
-            
-            return angle % 360;
+            if (!yUp)
+                dy = -dy;
+
+            double angle = Math.Atan2(dy, dx);
+            double ccwTau = angle > 0 ? Math.PI * 2 - angle : -angle;
+            return (float)(ccwTau * MathHelper.RadiansToDegrees);
         }
-        private Angle ComputeAngle(PointF o, PointF a, PointF b)
+        
+        private Angle ComputeAngle(PointF o, PointF a, PointF b, bool yUp)
         {
-            float oa = (float)GetAbsoluteAngle(o, a);
-            float ob = (float)GetAbsoluteAngle(o, b);
+            float oa = GetAbsoluteAngle(o, a, yUp);
+            float ob = GetAbsoluteAngle(o, b, yUp);
             
-            float start = 0;
-            float sweep = 0;
+            float start = oa;
+            float sweep = ob > oa ? ob - oa : (360 - oa) + ob;
             
-            start = oa;
-            if(ob > oa)
-            {
-                sweep = ob - oa;
-                if(relative && sweep > 180)
-                    sweep = -(360 - sweep);
-            }
-            else
-            {
-                sweep = (360 - oa) + ob;
-                if(relative && sweep > 180)
-                    sweep = -(360 - sweep);
-            }
+            if (relative && sweep > 180)
+                sweep = -(360 - sweep);
             
             sweep %= 360;
             
             return new Angle(start, sweep);
         }
+ 
         private void ComputeBoundingBox(PointF o, PointF a, PointF b, float radius)
         {
             if(radius == 0)
@@ -141,8 +136,9 @@ namespace Kinovea.ScreenManager
                 radius = smallest > 20 ? smallest - 10 : Math.Min(smallest, 10);
             }
             
-            BoundingBox = o.Box((int)radius);
+            BoundingBox = o.Box((int)radius).ToRectangle();
         }
+
         private void ComputeTextPosition(Angle angle, IImageToViewportTransformer transformer)
         {
             int imageTextDistance = transformer.Untransform(textDistance);
@@ -152,6 +148,7 @@ namespace Kinovea.ScreenManager
             
             TextPosition = new Point(adjacent, opposed);
         }
+
         private void ComputeHitRegion(Rectangle boundingBox, Angle angle)
         {
             if (BoundingBox.Size == Size.Empty)
@@ -171,6 +168,35 @@ namespace Kinovea.ScreenManager
             {
                 log.DebugFormat("Error while computing hit region of angle helper.");
             }
+        }
+
+        private void Tests()
+        {
+            PointF o = PointF.Empty;
+            PointF a = new PointF(-1, -1);
+            PointF b = new PointF(1, -1);
+            PointF c = new PointF(1, 1);
+            PointF d = new PointF(-1, +1);
+
+            Angle tabf = ComputeAngle(o, a, b, false);
+            Angle tbaf = ComputeAngle(o, b, a, false);
+            Angle tabt = ComputeAngle(o, a, b, true);
+            Angle tbat = ComputeAngle(o, b, a, true);
+
+            Angle tbcf = ComputeAngle(o, b, c, false);
+            Angle tcbf = ComputeAngle(o, c, b, false);
+            Angle tbct = ComputeAngle(o, b, c, true);
+            Angle tcbt = ComputeAngle(o, c, b, true);
+
+            Angle tcdf = ComputeAngle(o, c, d, false);
+            Angle tdcf = ComputeAngle(o, d, c, false);
+            Angle tcdt = ComputeAngle(o, c, d, true);
+            Angle tdct = ComputeAngle(o, d, c, true);
+
+            Angle tdaf = ComputeAngle(o, d, a, false);
+            Angle tadf = ComputeAngle(o, a, d, false);
+            Angle tdat = ComputeAngle(o, d, a, true);
+            Angle tadt = ComputeAngle(o, a, d, true);
         }
     }
 }

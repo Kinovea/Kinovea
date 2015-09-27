@@ -153,7 +153,7 @@ namespace Kinovea.ScreenManager
             if (yv.Z != 0)
             {
                 yVanish = new PointF(yv.X / yv.Z, yv.Y / yv.Z);
-                yVanishVisible = clipWindow.Contains(yVanish.ToPoint());
+                yVanishVisible = clipWindow.Contains(yVanish);
             }
 
             CreateVerticalGridLines(grid, 0, -stepHorizontal, calibrator, clipWindow, plane, extendedPlane, orthogonal, yVanishVisible, yVanish);
@@ -166,7 +166,7 @@ namespace Kinovea.ScreenManager
             if (xv.Z != 0)
             {
                 xVanish = new PointF(xv.X / xv.Z, xv.Y / xv.Z);
-                xVanishVisible = clipWindow.Contains(xVanish.ToPoint());
+                xVanishVisible = clipWindow.Contains(xVanish);
             }
 
             CreateHorizontalGridLines(grid, 0, -stepVertical, calibrator, clipWindow, plane, extendedPlane, orthogonal, xVanishVisible, xVanish);

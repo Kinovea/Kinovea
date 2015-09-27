@@ -79,9 +79,9 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public Methods
-        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            return new DrawingPencil(origin, new Point(origin.X + 1, origin.Y), timestamp, averageTimeStampsPerFrame, stylePreset);
+            return new DrawingPencil(origin, timestamp, averageTimeStampsPerFrame, stylePreset, transformer);
         }
         public override Cursor GetCursor(double stretchFactor)
         {

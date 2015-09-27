@@ -266,7 +266,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingTrack(Point origin, long t, DrawingStyle preset)
+        public DrawingTrack(PointF origin, long t, DrawingStyle preset)
         {
             tracker = new TrackerBlock2(GetTrackerParameters(new Size(800, 600)));
             positions.Add(new TrackPointBlock(origin.X, origin.Y, t));
@@ -292,7 +292,7 @@ namespace Kinovea.ScreenManager
         }
 
         public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
-            : this(Point.Empty, 0, null)
+            : this(PointF.Empty, 0, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -406,7 +406,7 @@ namespace Kinovea.ScreenManager
                     TrackerParametersChanged(this, EventArgs.Empty);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             if (currentTimestamp < beginTimeStamp || currentTimestamp > endTimeStamp)
             {
@@ -432,16 +432,16 @@ namespace Kinovea.ScreenManager
             
             return result;
         }
-        private int HitTestEdit(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        private int HitTestEdit(PointF point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             // 1: search window.
-            Rectangle search = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow).ToRectangle();
+            RectangleF search = positions[currentPoint].Point.Box(tracker.Parameters.SearchWindow);
             if (search.Contains(point))
                 return 1;
 
             return -1;
         }
-        private int HitTestConfiguration(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        private int HitTestConfiguration(PointF point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             // 1: search window, 2-5: search window corners, 6-10: block window corners.
             int blockWindowHit = blockWindow.HitTest(point, transformer);
@@ -454,7 +454,7 @@ namespace Kinovea.ScreenManager
 
             return -1;
         }
-        private int HitTestInteractive(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        private int HitTestInteractive(PointF point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             // 0: track, 1: current point on track, 2: main label, 3+: keyframe label.
             int result = IsOnKeyframesLabels(point, transformer);
@@ -471,7 +471,7 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
-        private int HitTestTrajectory(Point point, IImageToViewportTransformer transformer)
+        private int HitTestTrajectory(PointF point, IImageToViewportTransformer transformer)
         {
             // 0: track. -1: not on track.
             int result = -1;
@@ -879,7 +879,7 @@ namespace Kinovea.ScreenManager
                 mainLabel.MoveLabel(dx, dy);
             }
         }
-        private int IsOnKeyframesLabels(Point point, IImageToViewportTransformer transformer)
+        private int IsOnKeyframesLabels(PointF point, IImageToViewportTransformer transformer)
         {
             // Convention: -1 = miss, 2 = on main label, 3+ = on keyframe label.
             int hitResult = -1;

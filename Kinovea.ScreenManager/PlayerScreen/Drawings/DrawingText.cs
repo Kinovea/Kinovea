@@ -106,10 +106,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingText(Point p, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
+        public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
         {
             text = " ";
-            background.Rectangle = new Rectangle(p, Size.Empty);
+            background.Rectangle = new RectangleF(p, SizeF.Empty);
             
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
@@ -136,7 +136,7 @@ namespace Kinovea.ScreenManager
             UpdateLabelRectangle();
         }
         public DrawingText(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty,0,0, ToolManager.GetStylePreset("Label"))
+            : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Label"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -166,7 +166,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawString(text, fontText, brushText, rect.Location);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);

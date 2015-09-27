@@ -76,10 +76,9 @@ namespace Kinovea.ScreenManager
         {
             return new RectangleF(point.X - size.Width / 2, point.Y - size.Height / 2, size.Width, size.Height);
         }
-        
-        public static Rectangle Box(this PointF point, int radius)
+        public static RectangleF Box(this PointF point, int radius)
         {
-            return new Rectangle((int)point.X - radius, (int)point.Y - radius, radius * 2, radius * 2);
+            return new RectangleF(point.X - radius, point.Y - radius, radius * 2, radius * 2);
         }
 
         /// <summary>

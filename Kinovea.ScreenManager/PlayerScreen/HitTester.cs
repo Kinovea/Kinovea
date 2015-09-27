@@ -10,14 +10,14 @@ namespace Kinovea.ScreenManager
     public static class HitTester
     {
 
-        public static bool HitTest(PointF target, Point mouse, IImageToViewportTransformer transformer)
+        public static bool HitTest(PointF target, PointF mouse, IImageToViewportTransformer transformer)
         {
             int radius = 10;
             int boxRadius = Math.Max(1, transformer.Untransform(radius));
             return target.Box(boxRadius).Contains(mouse);
         }
 
-        public static bool HitTest(GraphicsPath path, Point mouse, int lineSize, bool area, IImageToViewportTransformer transformer)
+        public static bool HitTest(GraphicsPath path, PointF mouse, int lineSize, bool area, IImageToViewportTransformer transformer)
         {
             if (!area)
             {

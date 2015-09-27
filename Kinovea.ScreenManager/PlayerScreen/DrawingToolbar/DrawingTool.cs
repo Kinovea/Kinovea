@@ -96,9 +96,15 @@ namespace Kinovea.ScreenManager
             this.currentStyle = defaultStyle.Clone();
         }
 
-        public override AbstractDrawing GetNewDrawing(Point origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
+        public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            ConstructorInfo ci = drawingType.GetConstructor(new[] { typeof(Point), typeof(long), typeof(long), typeof(DrawingStyle), typeof(IImageToViewportTransformer) });
+            // Drawings constructors must follow one of two convention prototypes:
+            // (PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null).
+            // (PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset).
+            // Exemple for 1: DrawingAngle.
+            // Exemple for 2: DrawingText.
+
+            ConstructorInfo ci = drawingType.GetConstructor(new[] { typeof(PointF), typeof(long), typeof(long), typeof(DrawingStyle), typeof(IImageToViewportTransformer) });
             if (ci != null)
             {
                 object[] parameters = new object[] { origin, timestamp, averageTimeStampsPerFrame, currentStyle, transformer };
@@ -106,7 +112,7 @@ namespace Kinovea.ScreenManager
                 return drawing;
             }
             
-            ci = drawingType.GetConstructor(new[] { typeof(Point), typeof(long), typeof(long), typeof(DrawingStyle)});
+            ci = drawingType.GetConstructor(new[] { typeof(PointF), typeof(long), typeof(long), typeof(DrawingStyle)});
             if (ci != null)
             {
                 object[] parameters = new object[] { origin, timestamp, averageTimeStampsPerFrame, currentStyle};
