@@ -25,7 +25,7 @@ namespace Kinovea.ScreenManager
             this.manager = manager;
             this.itemId = itemId;
             
-            commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandAddDrawing_FriendlyName, manager.DisplayName);
+            commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandAddDrawing_FriendlyName, manager.ToolDisplayName);
         }
 
         public override HistoryMemento PerformUndo()

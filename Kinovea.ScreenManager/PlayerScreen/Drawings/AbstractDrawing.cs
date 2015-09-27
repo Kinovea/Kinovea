@@ -75,7 +75,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// The friendly name of the drawing tool. Used for undo menu for example.
         /// </summary>
-        public abstract string DisplayName
+        public abstract string ToolDisplayName
         {
             get;
         }

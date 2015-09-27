@@ -40,7 +40,7 @@ namespace Kinovea.ScreenManager
     public class DrawingChrono : AbstractDrawing, IDecorable, IKvaSerializable
     {
         #region Properties
-        public override string DisplayName
+        public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolChrono; }
         }

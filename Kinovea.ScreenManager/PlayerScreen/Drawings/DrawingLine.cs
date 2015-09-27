@@ -55,7 +55,7 @@ namespace Kinovea.ScreenManager
         {
             get { return points["b"]; }
         }
-        public override string DisplayName
+        public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
         }
