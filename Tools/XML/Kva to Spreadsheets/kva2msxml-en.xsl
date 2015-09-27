@@ -191,7 +191,7 @@
     <Cell ss:MergeAcross="1" ss:StyleID="keyimages-title"><Data ss:Type="String">Key Images</Data></Cell>
   </Row>
   <Row>
-    <Cell ss:StyleID="header"><Data ss:Type="String">Title</Data></Cell>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Name</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Time</Data></Cell>  
   </Row>
   <xsl:for-each select="Keyframe">
@@ -211,17 +211,17 @@
     <Cell ss:MergeAcross="3" ss:StyleID="keyimages-title"><Data ss:Type="String">Points</Data></Cell>
   </Row>
   <Row>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Name</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">X</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Y</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Time</Data></Cell>
-    <Cell ss:StyleID="header"><Data ss:Type="String">Key Image</Data></Cell>
   </Row>
   <xsl:for-each select="Keyframe/Drawings/CrossMark/Coordinates">
     <Row>
+      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../@name"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserXInvariant"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserYInvariant"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Position/@UserTime"/></Data></Cell>
-      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Title"/></Data></Cell>
     </Row>
   </xsl:for-each>
 </xsl:template>
@@ -235,15 +235,15 @@
     <Cell ss:MergeAcross="2" ss:StyleID="keyimages-title"><Data ss:Type="String">Lines</Data></Cell>
   </Row>
   <Row>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Name</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Length (<xsl:value-of select="../Calibration/Unit/@Abbreviation"/>)</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Time</Data></Cell>
-    <Cell ss:StyleID="header"><Data ss:Type="String">Key Image</Data></Cell>
   </Row>
   <xsl:for-each select="Keyframe/Drawings/Line/Measure">
     <Row>
+      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../@name"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserLengthInvariant"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Position/@UserTime"/></Data></Cell>
-      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Title"/></Data></Cell>
     </Row>
   </xsl:for-each>
 </xsl:template>
@@ -256,15 +256,15 @@
     <Cell ss:MergeAcross="2" ss:StyleID="keyimages-title"><Data ss:Type="String">Angles</Data></Cell>
   </Row>
   <Row>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Name</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Value (°)</Data></Cell>
     <Cell ss:StyleID="header"><Data ss:Type="String">Time</Data></Cell>
-    <Cell ss:StyleID="header"><Data ss:Type="String">Key Image</Data></Cell>
   </Row>
   <xsl:for-each select="Keyframe/Drawings/Angle/Measure">
     <Row>
+      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../@name"/></Data></Cell>  
       <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserAngle"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Position/@UserTime"/></Data></Cell>
-      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Title"/></Data></Cell>  
     </Row>
   </xsl:for-each>
 </xsl:template>
