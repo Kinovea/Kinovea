@@ -93,7 +93,7 @@ namespace Kinovea.ScreenManager
             Vector ab = new Vector(a,b);
             Vector ac = new Vector(a,c);
             float  perpDot = ab.X*ac.Y - ab.Y*ac.X;
-            return  (float)Math.Atan2(perpDot, ab.Dot(ac));
+            return (float)Math.Atan2(perpDot, ab.Dot(ac));
         }
         
         /// <summary>

@@ -122,7 +122,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawString(text, f, brushFront, textLocation);
             }
         }
-        public int HitTest(Point point, long currentTimeStamp, IImageToViewportTransformer transformer)
+        public int HitTest(PointF point, long currentTimeStamp, IImageToViewportTransformer transformer)
         {
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimeStamp);

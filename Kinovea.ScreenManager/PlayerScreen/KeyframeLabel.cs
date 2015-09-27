@@ -75,7 +75,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Construction
-        public KeyframeLabel() : this(Point.Empty, Color.Black, null){}
+        public KeyframeLabel() : this(PointF.Empty, Color.Black, null){}
         public KeyframeLabel(PointF attachPoint, Color color, IImageToViewportTransformer transformer)
         {
             this.attachLocation = attachPoint;
@@ -92,14 +92,14 @@ namespace Kinovea.ScreenManager
             styleHelper.Bicolor = new Bicolor(Color.FromArgb(160, color));
         }
         public KeyframeLabel(XmlReader xmlReader, PointF scale)
-            : this(Point.Empty, Color.Black, null)
+            : this(PointF.Empty, Color.Black, null)
         {
             ReadXml(xmlReader, scale);
         }
         #endregion
 
         #region Public methods
-        public bool HitTest(Point point, IImageToViewportTransformer transformer)
+        public bool HitTest(PointF point, IImageToViewportTransformer transformer)
         {
             return (background.HitTest(point, false, transformer) > -1);
         }

@@ -251,7 +251,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawLine(pen, transformer.Transform(a), transformer.Transform(b));
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             if(infosFading.GetOpacityFactor(currentTimestamp) <= 0)
                 return -1;

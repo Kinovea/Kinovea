@@ -122,7 +122,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawEllipse(penBorder, rescaledRect);
             }
         }
-        public int HitTest(Point point, long timeStamp, IImageToViewportTransformer transformer)
+        public int HitTest(PointF point, long timeStamp, IImageToViewportTransformer transformer)
         {
             // Hit Result: -1: miss, 0: on object, 1 on handle.
             int result = -1;
@@ -181,7 +181,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Private methods
-        private bool IsPointInObject(Point point, IImageToViewportTransformer transformer)
+        private bool IsPointInObject(PointF point, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {
@@ -189,7 +189,7 @@ namespace Kinovea.ScreenManager
                 return HitTester.HitTest(path, point, 0, true, transformer);
             }
         }
-        private bool IsPointOnHandler(Point point, IImageToViewportTransformer transformer)
+        private bool IsPointOnHandler(PointF point, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {

@@ -31,8 +31,6 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class Magnifier : ITrackable
     {
-        // As always, coordinates are expressed in terms of the original image size.
-        // They are converted to display size at the last moment, using the CoordinateSystem transformer.
         // TODO: save positions in the KVA.
         // TODO: support for rendering unscaled.
         
@@ -63,10 +61,10 @@ namespace Kinovea.ScreenManager
         private Guid id = Guid.NewGuid();
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private BoundingBox source = new BoundingBox();   // Wrapper for the region of interest in the original image.
-        private Rectangle insert;                         // The location and size of the insert window, where we paint the region of interest magnified.
+        private RectangleF insert;                         // The location and size of the insert window, where we paint the region of interest magnified.
         private MagnifierMode mode;
-        private Point sourceLastLocation;
-        private Point insertLastLocation;
+        private PointF sourceLastLocation;
+        private PointF insertLastLocation;
         private int hitHandle = -1;
         private double magnificationFactor = MagnificationFactors[1];
         #endregion
@@ -105,12 +103,12 @@ namespace Kinovea.ScreenManager
             canvas.DrawImage(bitmap, transformer.Transform(insert), src, GraphicsUnit.Pixel);
             canvas.DrawRectangle(Pens.White, transformer.Transform(insert));
         }
-        public void InitializeCommit(Point location)
+        public void InitializeCommit(PointF location)
         {
             if(Mode == MagnifierMode.Direct)
                 Mode = MagnifierMode.Indirect;
         }
-        public bool Move(Point location)
+        public bool Move(PointF location)
         {
             // Currently the magnifier does not use the same move/moveHandle mechanics as other drawings.
             // (Going through the pointer tool to keep track of last mouse location and calling move or moveHandle from there)
@@ -131,13 +129,13 @@ namespace Kinovea.ScreenManager
             }
             else if(hitHandle == 5)
             {
-                insert = new Rectangle(insert.X + (location.X - insertLastLocation.X), insert.Y + (location.Y - insertLastLocation.Y), insert.Width, insert.Height);
+                insert = new RectangleF(insert.X + (location.X - insertLastLocation.X), insert.Y + (location.Y - insertLastLocation.Y), insert.Width, insert.Height);
                 insertLastLocation = location;
             }
 
             return false;
         }
-        public bool OnMouseDown(Point location, CoordinateSystem transformer)
+        public bool OnMouseDown(PointF location, CoordinateSystem transformer)
         {
             if(mode != MagnifierMode.Indirect)
                 return false;
@@ -151,11 +149,11 @@ namespace Kinovea.ScreenManager
 
             return hitHandle >= 0;
         }
-        public bool IsOnObject(Point location, CoordinateSystem transformer)
+        public bool IsOnObject(PointF location, CoordinateSystem transformer)
         {
             return HitTest(location, transformer) >= 0;
         }
-        public int HitTest(Point point, CoordinateSystem transformer)
+        public int HitTest(PointF point, CoordinateSystem transformer)
         {
             int result = -1;
             if(insert.Contains(point))
@@ -167,12 +165,12 @@ namespace Kinovea.ScreenManager
         }
         public void ResetData()
         {
-            points["0"] = Point.Empty;
-            source.Rectangle = points["0"].Box(50);
-            insert = new Rectangle(10, 10, (int)(source.Rectangle.Width * magnificationFactor), (int)(source.Rectangle.Height * magnificationFactor));
+            points["0"] = PointF.Empty;
+            source.Rectangle = points["0"].Box(50).ToRectangle();
+            insert = new RectangleF(10, 10, (float)(source.Rectangle.Width * magnificationFactor), (float)(source.Rectangle.Height * magnificationFactor));
             
-            sourceLastLocation = points["0"].ToPoint();
-            insertLastLocation = points["0"].ToPoint();
+            sourceLastLocation = points["0"];
+            insertLastLocation = points["0"];
             
             mode = MagnifierMode.None;
         }
@@ -213,7 +211,7 @@ namespace Kinovea.ScreenManager
         
         private void ResizeInsert()
         {
-            insert = new Rectangle(insert.Left, insert.Top, (int)(source.Rectangle.Width * magnificationFactor), (int)(source.Rectangle.Height * magnificationFactor));
+            insert = new RectangleF(insert.Left, insert.Top, (float)(source.Rectangle.Width * magnificationFactor), (float)(source.Rectangle.Height * magnificationFactor));
         }
     }
     

@@ -237,7 +237,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             if(!Visible)
@@ -417,7 +417,7 @@ namespace Kinovea.ScreenManager
             
             return textPosition;
         }
-        private bool IsPointOnRectifiedLine(Point p, PointF a, PointF b, DistortionHelper distorter, IImageToViewportTransformer transformer)
+        private bool IsPointOnRectifiedLine(PointF p, PointF a, PointF b, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             if (a == b)
                 return false;

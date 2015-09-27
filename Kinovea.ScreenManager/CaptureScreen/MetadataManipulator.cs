@@ -90,7 +90,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 handled = true;
-                CreateNewDrawing(imagePoint.ToPoint(), transformer);
+                CreateNewDrawing(imagePoint, transformer);
             }
             
             return handled;
@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
                 // Setting second point of a drawing.
                 IInitializable drawing = metadata.HitDrawing as IInitializable;
                 if(drawing != null)
-                    drawing.InitializeMove(imagePoint.ToPoint(), modifiers);
+                    drawing.InitializeMove(imagePoint, modifiers);
             }
             
             return handled;
@@ -167,7 +167,7 @@ namespace Kinovea.ScreenManager
             PointF imagePoint = transformer.Untransform(mouse);
             
             int keyframeIndex = 0;
-            return metadata.IsOnDrawing(keyframeIndex, imagePoint.ToPoint(), fixedTimestamp);
+            return metadata.IsOnDrawing(keyframeIndex, imagePoint, fixedTimestamp);
         }
         
         public Cursor GetCursor(float scale)
@@ -213,7 +213,7 @@ namespace Kinovea.ScreenManager
             screenToolManager.SetActiveTool(null);
         }
         
-        private void CreateNewDrawing(Point imagePoint, ImageToViewportTransformer transformer)
+        private void CreateNewDrawing(PointF imagePoint, ImageToViewportTransformer transformer)
         {
             int keyframeIndex = 0;
             int timestampPerFrame = 1;
@@ -229,7 +229,7 @@ namespace Kinovea.ScreenManager
             AddDrawing(imagePoint, keyframeIndex, timestampPerFrame, transformer);
         }
         
-        private bool LabelMouseDown(Point imagePoint, long currentTimestamp, ImageToViewportTransformer transformer)
+        private bool LabelMouseDown(PointF imagePoint, long currentTimestamp, ImageToViewportTransformer transformer)
         {
             bool hitExisting = false;
             foreach(DrawingText label in metadata.Labels())
@@ -245,7 +245,7 @@ namespace Kinovea.ScreenManager
             return hitExisting;
         }
         
-        private void AddDrawing(Point imagePoint, int keyframeIndex, int timestampPerFrame, ImageToViewportTransformer transformer)
+        private void AddDrawing(PointF imagePoint, int keyframeIndex, int timestampPerFrame, ImageToViewportTransformer transformer)
         {
             AbstractDrawing drawing = screenToolManager.ActiveTool.GetNewDrawing(imagePoint, keyframeIndex, timestampPerFrame, transformer);
             Guid keyframeId = metadata.GetKeyframeId(keyframeIndex);

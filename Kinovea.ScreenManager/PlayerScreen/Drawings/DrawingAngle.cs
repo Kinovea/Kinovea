@@ -113,18 +113,15 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingAngle(Point o, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
+        public DrawingAngle(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
         {
             int length = 50;
             if (transformer != null)
                 length = transformer.Untransform(50);
 
-            Point a = new Point(o.X, o.Y - length);
-            Point b = new Point(o.X + length, o.Y);
-
-            points.Add("o", o);
-            points.Add("a", a);
-            points.Add("b", b);
+            points.Add("o", origin);
+            points.Add("a", origin.Translate(0, -length));
+            points.Add("b", origin.Translate(length, 0));
 
             styleHelper.Bicolor = new Bicolor(Color.Empty);
             styleHelper.Font = new Font("Arial", 12, FontStyle.Bold);
@@ -142,7 +139,7 @@ namespace Kinovea.ScreenManager
             mnuInvertAngle.Image = Properties.Drawings.angleinvert;
         }
         public DrawingAngle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, 0, 0)
+            : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -211,7 +208,7 @@ namespace Kinovea.ScreenManager
                 fontBrush.Dispose();
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
@@ -341,7 +338,7 @@ namespace Kinovea.ScreenManager
             {
                 // Spreadsheet support.
                 w.WriteStartElement("Measure");
-                int angle = (int)Math.Floor(-angleHelper.CalibratedAngle.Sweep);
+                int angle = (int)Math.Floor(angleHelper.CalibratedAngle.Sweep);
                 w.WriteAttributeString("UserAngle", angle.ToString());
                 w.WriteEndElement();
             }
@@ -427,12 +424,12 @@ namespace Kinovea.ScreenManager
             int length = transformer.Untransform(50);
 
             if (points["a"].NearlyCoincideWith(points["o"]))
-                points["a"] = points["o"].Translate(length, 0);
+                points["a"] = points["o"].Translate(0, -length);
 
             if (points["b"].NearlyCoincideWith(points["o"]))
-                points["b"] = points["o"].Translate(0, -length);
+                points["b"] = points["o"].Translate(length, 0);
         }
-        private bool IsPointInObject(Point point)
+        private bool IsPointInObject(PointF point)
         {
             return angleHelper.Hit(point);
         }

@@ -111,7 +111,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingDistortionGrid(Point point, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
+        public DrawingDistortionGrid(PointF point, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
         {
             styleHelper.Color = Color.Empty;
             if (preset == null)
@@ -128,7 +128,7 @@ namespace Kinovea.ScreenManager
             mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingDistortionGrid(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, 0, 0)
+            : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -182,7 +182,7 @@ namespace Kinovea.ScreenManager
                     canvas.FillEllipse(br, p.Box(4));
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
 

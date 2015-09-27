@@ -40,14 +40,14 @@ namespace Kinovea.ScreenManager
             canvas.FillEllipse(brush, rect.Right - widen, rect.Top - widen, widen * 2, widen * 2);
             canvas.FillEllipse(brush, rect.Right - widen, rect.Bottom - widen, widen * 2, widen * 2);
         }
-        public int HitTest(Point point, IImageToViewportTransformer transformer)
+        public int HitTest(PointF point, IImageToViewportTransformer transformer)
         {
             int result = -1;
             
-            Point topLeft = rectangle.Location;
-            Point topRight = new Point(rectangle.Right, rectangle.Top);
-            Point botRight = new Point(rectangle.Right, rectangle.Bottom);
-            Point botLeft = new Point(rectangle.Left, rectangle.Bottom);
+            PointF topLeft = new PointF(rectangle.Left, rectangle.Top);
+            PointF topRight = new PointF(rectangle.Right, rectangle.Top);
+            PointF botRight = new PointF(rectangle.Right, rectangle.Bottom);
+            PointF botLeft = new PointF(rectangle.Left, rectangle.Bottom);
 
             if (HitTester.HitTest(topLeft, point, transformer))
                 result = 1;
@@ -57,22 +57,23 @@ namespace Kinovea.ScreenManager
                 result = 3;
             else if (HitTester.HitTest(botLeft, point, transformer))
                 result = 4;
-            else if (rectangle.Contains(point))
+            else if (rectangle.Contains(point.ToPoint()))
                 result = 0;
 
             return result;
         }
-        public void MoveHandle(Point point, int handleNumber, Size originalSize, bool keepAspectRatio)
+
+        public void MoveHandle(PointF point, int handleNumber, Size originalSize, bool keepAspectRatio)
         {
             if (keepAspectRatio)
-                MoveHandleKeepAspectRatio(point, handleNumber, originalSize);
+                MoveHandleKeepAspectRatio(point.ToPoint(), handleNumber, originalSize);
             else
-                MoveHandleFree(point, handleNumber);
+                MoveHandleFree(point.ToPoint(), handleNumber);
         }
         
-        public void Move(int deltaX, int deltaY)
+        public void Move(float dx, float dy)
         {
-            rectangle = new Rectangle(rectangle.X + deltaX, rectangle.Y + deltaY, rectangle.Width, rectangle.Height);
+            rectangle = new Rectangle((int)(rectangle.X + dx), (int)(rectangle.Y + dy), rectangle.Width, rectangle.Height);
         }
         public void MoveAndSnap(int deltaX, int deltaY, Size containerSize, int snapMargin)
         {
@@ -95,7 +96,6 @@ namespace Kinovea.ScreenManager
         }
         private void MoveHandleKeepAspectRatio(Point point, int handleNumber, Size originalSize)
         {
-            
             // TODO: refactor/simplify.
             
             switch (handleNumber)

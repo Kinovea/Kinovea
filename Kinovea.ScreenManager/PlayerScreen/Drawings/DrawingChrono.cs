@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingChrono(Point p, long start, long averageTimeStampsPerFrame, DrawingStyle preset = null)
+        public DrawingChrono(PointF p, long start, long averageTimeStampsPerFrame, DrawingStyle preset = null)
         {
             // Core
             visibleTimestamp = start;
@@ -162,7 +162,7 @@ namespace Kinovea.ScreenManager
             stopCountingTimestamp = long.MaxValue;
             invisibleTimestamp = long.MaxValue;
             countdown = false;
-            mainBackground.Rectangle = new Rectangle(p, Size.Empty);
+            mainBackground.Rectangle = new RectangleF(p, SizeF.Empty);
 
             timecode = "error";
 
@@ -186,7 +186,7 @@ namespace Kinovea.ScreenManager
             infosFading.UseDefault = false;
         }
         public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
-            : this(Point.Empty, 0, 1, null)
+            : this(PointF.Empty, 0, 1, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -235,7 +235,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;

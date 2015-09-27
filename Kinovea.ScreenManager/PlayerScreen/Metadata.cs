@@ -721,7 +721,7 @@ namespace Kinovea.ScreenManager
             lastUsedTrackerParameters = track.TrackerParameters;
         }
         
-        public void InitializeCommit(VideoFrame videoFrame, Point point)
+        public void InitializeCommit(VideoFrame videoFrame, PointF point)
         {
             magnifier.InitializeCommit(point);
 
@@ -975,7 +975,7 @@ namespace Kinovea.ScreenManager
         // The main difference is that here we only need to know if the drawing was hit at all,
         // in the pointer tool, we need to differenciate which handle was hit.
         // For example, Tracks can here be handled with all other ExtraDrawings.
-        public bool IsOnDrawing(int _iActiveKeyframeIndex, Point _MouseLocation, long _iTimestamp)
+        public bool IsOnDrawing(int _iActiveKeyframeIndex, PointF point, long _iTimestamp)
         {
             // Returns whether the mouse is on a drawing attached to a key image.
             bool hit = false;
@@ -986,7 +986,7 @@ namespace Kinovea.ScreenManager
 
                 for(int i=0;i<zOrder.Length;i++)
                 {
-                    hit = DrawingsHitTest(zOrder[i], _MouseLocation, _iTimestamp);
+                    hit = DrawingsHitTest(zOrder[i], point, _iTimestamp);
                     if (hit)
                         break;
                 }
@@ -994,12 +994,12 @@ namespace Kinovea.ScreenManager
             else if (_iActiveKeyframeIndex >= 0)
             {
                 // If fading is off, only try the current keyframe (if any)
-                hit = DrawingsHitTest(_iActiveKeyframeIndex, _MouseLocation, _iTimestamp);
+                hit = DrawingsHitTest(_iActiveKeyframeIndex, point, _iTimestamp);
             }
 
             return hit;
         }
-        public AbstractDrawing IsOnExtraDrawing(Point point, long timestamp)
+        public AbstractDrawing IsOnExtraDrawing(PointF point, long timestamp)
         {
             // Check if the mouse is on one of the drawings not attached to any key image.
             // Returns the drawing on which we stand (or null if none), and select it on the way.
@@ -1138,7 +1138,7 @@ namespace Kinovea.ScreenManager
             mirrored = false;
             UnselectAll();
         }
-        private bool DrawingsHitTest(int keyFrameIndex, Point mouseLocation, long timestamp)
+        private bool DrawingsHitTest(int keyFrameIndex, PointF mouseLocation, long timestamp)
         {
             // Look for a hit in all drawings of a particular Key Frame.
             // Important side effect : the drawing being hit becomes Selected. This is then used for right click menu.

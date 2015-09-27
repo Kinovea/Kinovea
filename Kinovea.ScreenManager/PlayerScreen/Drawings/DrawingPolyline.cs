@@ -118,10 +118,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingPolyline(Point start, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
+        public DrawingPolyline(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
         {
-            points["0"] = start;
-            points["1"] = start;
+            points["0"] = origin;
+            points["1"] = origin;
 
             styleHelper.Color = Color.DarkSlateGray;
             styleHelper.LineSize = 1;
@@ -143,7 +143,7 @@ namespace Kinovea.ScreenManager
             mnuCloseMenu.Image = Properties.Drawings.cross_small;
         }
         public DrawingPolyline(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(Point.Empty, 0, 0)
+            : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -227,7 +227,7 @@ namespace Kinovea.ScreenManager
         }
 
 
-        public override int HitTest(Point point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
+        public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
@@ -474,7 +474,7 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "LineEnding", "arrows");
             style.Bind(styleHelper, "Curved", "curved");
         }
-        private bool IsPointInObject(Point point, DistortionHelper distorter, IImageToViewportTransformer transformer)
+        private bool IsPointInObject(PointF point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
             if (points.Count < 1)
                 return false;

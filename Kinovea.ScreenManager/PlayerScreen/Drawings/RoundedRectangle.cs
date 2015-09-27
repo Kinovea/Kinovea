@@ -81,7 +81,7 @@ namespace Kinovea.ScreenManager
             
             gp.Dispose();
         }
-        public int HitTest(Point point, bool hiddenHandle, IImageToViewportTransformer transformer)
+        public int HitTest(PointF point, bool hiddenHandle, IImageToViewportTransformer transformer)
         {
             int result = -1;
 

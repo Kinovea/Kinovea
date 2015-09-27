@@ -105,10 +105,6 @@ namespace Kinovea.ScreenManager
         {
             return new PointF(X, Y);
         }
-        public Point ToPoint()
-        {
-            return new Point((int)X, (int)Y);
-        }
         public override string ToString()
         {
             return string.Format("[Vector X={0}, Y={1}]", X, Y);
