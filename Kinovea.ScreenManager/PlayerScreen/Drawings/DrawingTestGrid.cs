@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
     public class DrawingTestGrid : AbstractDrawing, IScalable
     {
         #region Properties
-        public override string DisplayName
+        public override string ToolDisplayName
         {
             get { return "Test grid"; }
         }

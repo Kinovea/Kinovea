@@ -35,7 +35,6 @@ namespace Kinovea.ScreenManager
             get;
         }
 
-
     	/// <summary>
         /// The display name of the tool. Used for tooltips and in tool presets config.
         /// </summary>

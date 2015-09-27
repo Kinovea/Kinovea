@@ -28,7 +28,7 @@ namespace Kinovea.ScreenManager
             this.manager = manager;
             this.itemId = itemId;
 
-            commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandDeleteDrawing_FriendlyName, manager.DisplayName);
+            commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandDeleteDrawing_FriendlyName, manager.ToolDisplayName);
 
             if (manager != null)
                 data = MultiDrawingItemSerializer.SerializeMemento(metadata, manager, manager.GetItem(itemId), filter);

@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
     public class DrawingCircle : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
         #region Properties
-        public override string DisplayName
+        public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolCircle; }
         }

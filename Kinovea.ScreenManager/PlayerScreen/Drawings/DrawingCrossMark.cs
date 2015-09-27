@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
-        public override string DisplayName
+        public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolCross2D; }
         }

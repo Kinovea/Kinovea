@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
     public class DrawingText : AbstractDrawing, IKvaSerializable, IDecorable
     {
         #region Properties
-        public override string DisplayName
+        public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolText; }
         }

@@ -3865,7 +3865,7 @@ namespace Kinovea.ScreenManager
 
             HistoryMemento memento = null;
             if (!coordinateSystem)
-                memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, m_FrameServer.Metadata.HitDrawing.Id, m_FrameServer.Metadata.HitDrawing.DisplayName, SerializationFilter.Style);
+                memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, m_FrameServer.Metadata.HitDrawing.Id, m_FrameServer.Metadata.HitDrawing.ToolDisplayName, SerializationFilter.Style);
             
             FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing.DrawingStyle, DoInvalidate);
             FormsHelper.Locate(fcd);
@@ -3881,7 +3881,7 @@ namespace Kinovea.ScreenManager
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
 
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, drawing.Id, drawing.DisplayName, SerializationFilter.Fading);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, drawing.Id, drawing.ToolDisplayName, SerializationFilter.Fading);
 
             formConfigureFading fcf = new formConfigureFading(drawing, pbSurfaceScreen);
             FormsHelper.Locate(fcf);
@@ -3975,7 +3975,7 @@ namespace Kinovea.ScreenManager
             if (track == null)
                 return;
 
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.DisplayName, SerializationFilter.Core);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.ToolDisplayName, SerializationFilter.Core);
 
             track.ChopTrajectory(m_iCurrentPosition);
 
@@ -4014,7 +4014,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Note that we use SerializationFilter.All to backup all data as the dialog allows to modify not only style option but also tracker parameters.
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.DisplayName, SerializationFilter.All);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.TrackManager.Id, track.Id, track.ToolDisplayName, SerializationFilter.All);
 
             formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(track, m_FrameServer.Metadata, m_FrameServer.CurrentImage, m_iCurrentPosition, DoInvalidate);
             fctd.StartPosition = FormStartPosition.CenterScreen;
@@ -4100,7 +4100,7 @@ namespace Kinovea.ScreenManager
             if (chrono == null)
                 return;
 
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.DisplayName, SerializationFilter.Core);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.ToolDisplayName, SerializationFilter.Core);
             chrono.Start(m_iCurrentPosition);
             m_FrameServer.HistoryStack.PushNewCommand(memento);
 
@@ -4112,7 +4112,7 @@ namespace Kinovea.ScreenManager
             if (chrono == null)
                 return;
 
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.DisplayName, SerializationFilter.Core);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.ToolDisplayName, SerializationFilter.Core);
             chrono.Stop(m_iCurrentPosition);
             m_FrameServer.HistoryStack.PushNewCommand(memento);
 
@@ -4124,7 +4124,7 @@ namespace Kinovea.ScreenManager
             if (chrono == null)
                 return;
 
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.DisplayName, SerializationFilter.Core);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.ToolDisplayName, SerializationFilter.Core);
             chrono.Hide(m_iCurrentPosition);
             m_FrameServer.HistoryStack.PushNewCommand(memento);
 
@@ -4138,7 +4138,7 @@ namespace Kinovea.ScreenManager
             if (chrono == null)
                 return;
 
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.DisplayName, SerializationFilter.Core);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.ToolDisplayName, SerializationFilter.Core);
             mnuChronoCountdown.Checked = !mnuChronoCountdown.Checked;
             chrono.CountDown = mnuChronoCountdown.Checked;
             m_FrameServer.HistoryStack.PushNewCommand(memento);
@@ -4160,7 +4160,7 @@ namespace Kinovea.ScreenManager
             if (chrono == null)
                 return;
 
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.DisplayName, SerializationFilter.Style);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.ToolDisplayName, SerializationFilter.Style);
             
             formConfigureChrono fcc = new formConfigureChrono(chrono, DoInvalidate);
             FormsHelper.Locate(fcc);
