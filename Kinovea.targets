@@ -32,12 +32,12 @@
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\swresample-1.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\FFmpeg\bin\$(Platform)\swscale-3.dll" DestinationFolder="$(TargetDir)"/>
         
-    <Copy SourceFiles="..\Refs\Microsoft.VC90.CRT\$(Platform)\msvcm90.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\Microsoft.VC90.CRT\$(Platform)\msvcp90.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\Microsoft.VC90.CRT\$(Platform)\msvcr90.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\Microsoft.VC90.CRT\$(Platform)\Microsoft.VC90.CRT.manifest" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\Microsoft.VC90.OpenMP\$(Platform)\vcomp90.dll" DestinationFolder="$(TargetDir)"/>
-    <Copy SourceFiles="..\Refs\Microsoft.VC90.OpenMP\$(Platform)\Microsoft.VC90.OpenMP.manifest" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcm90.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcp90.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcr90.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\Microsoft.VC90.CRT.manifest" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\vcomp90.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\Microsoft.VC90.OpenMP.manifest" DestinationFolder="$(TargetDir)"/>
     
     <Copy SourceFiles="..\Refs\TurboJpeg\$(Platform)\turbojpeg.dll" DestinationFolder="$(TargetDir)"/>
 
