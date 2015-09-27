@@ -23,11 +23,17 @@ using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
-	public interface IDecorable
-	{
-		DrawingStyle DrawingStyle
-		{
-			get;
-		}
-	}
+    public interface IDecorable
+    {
+        string Name
+        {
+            get;
+            set;
+        }
+        
+        DrawingStyle DrawingStyle
+        {
+            get;
+        }
+    }
 }

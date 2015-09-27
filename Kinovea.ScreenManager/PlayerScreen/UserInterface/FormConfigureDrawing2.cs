@@ -34,20 +34,25 @@ namespace Kinovea.ScreenManager
     public partial class FormConfigureDrawing2 : Form
     {
         #region Members
-        private DrawingStyle m_Style;
-        private Action m_Invalidate;
-        private bool m_bManualClose;
+        private IDecorable drawing;
+        private DrawingStyle style;
+        private Action invalidator;
+        private bool manualClose;
+        private string oldName;
         private List<AbstractStyleElement> m_Elements = new List<AbstractStyleElement>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
-        public FormConfigureDrawing2(DrawingStyle _style, Action _invalidate)
+        public FormConfigureDrawing2(IDecorable drawing, Action invalidator)
         {
-            m_Style = _style;
-            m_Style.ReadValue();
-            m_Style.Memorize();
-            m_Invalidate = _invalidate;
+            this.drawing = drawing;
+            this.oldName = drawing.Name;
+            this.style = drawing.DrawingStyle;
+            this.style.ReadValue();
+            this.style.Memorize();
+            this.invalidator = invalidator;
+
             InitializeComponent();
             LocalizeForm();
             SetupForm();
@@ -64,10 +69,13 @@ namespace Kinovea.ScreenManager
         }
         private void SetupForm()
         {
+            tbName.Text = drawing.Name;
+
             // Dynamic layout:
             // Any number of mini editor lines. (must scale vertically)
             // High dpi vs normal dpi (scales vertically and horizontally)
             // Verbose languages (scales horizontally)
+            // All the dynamic layout is confined to the grpConfig box, it is possible to add elements before it.
             
             // Clean up
             grpConfig.Controls.Clear();
@@ -81,7 +89,7 @@ namespace Kinovea.ScreenManager
             
             int lastEditorBottom = 10;
             
-            foreach(KeyValuePair<string, AbstractStyleElement> pair in m_Style.Elements)
+            foreach(KeyValuePair<string, AbstractStyleElement> pair in style.Elements)
             {
                 AbstractStyleElement styleElement = pair.Value;
                 m_Elements.Add(styleElement);
@@ -103,11 +111,9 @@ namespace Kinovea.ScreenManager
                 
                 SizeF labelSize = helper.MeasureString(lbl.Text, lbl.Font);
                 
+                // dynamic horizontal layout for high dpi and verbose languages.
                 if(lbl.Left + labelSize.Width + 25 > editorsLeft)
-                {
-                    // dynamic horizontal layout for high dpi and verbose languages.
                     editorsLeft = (int)(lbl.Left + labelSize.Width + 25);
-                }
                 
                 Control miniEditor = styleElement.GetEditor();
                 miniEditor.Size = editorSize;
@@ -127,7 +133,8 @@ namespace Kinovea.ScreenManager
             {
                 if(!(c is Label) && !(c is Button))
                 {
-                    if(c.Left < editorsLeft) c.Left = editorsLeft;
+                    if(c.Left < editorsLeft) 
+                        c.Left = editorsLeft;
                 }
             }
             
@@ -147,13 +154,14 @@ namespace Kinovea.ScreenManager
         }
         private void element_ValueChanged(object sender, EventArgs e)
         {
-            if(m_Invalidate != null) m_Invalidate();
+            if(invalidator != null) 
+                invalidator();
         }
         
         #region Closing
         private void Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(!m_bManualClose)
+            if(!manualClose)
             {
                 UnhookEvents();
                 Revert();
@@ -169,25 +177,36 @@ namespace Kinovea.ScreenManager
         }
         private void Revert()
         {
+            drawing.Name = oldName;
+
             // Revert to memo and re-update data.
-            m_Style.Revert();
-            m_Style.RaiseValueChanged();
+            style.Revert();
+            style.RaiseValueChanged();
             
             // Update main UI.
-            if(m_Invalidate != null) m_Invalidate();
+            if(invalidator != null) 
+                invalidator();
         }
         private void BtnCancel_Click(object sender, EventArgs e)
         {	
             UnhookEvents();
             Revert();
-            m_bManualClose = true;
+            manualClose = true;
         }
         private void BtnOK_Click(object sender, EventArgs e)
         {
             UnhookEvents();
-            m_bManualClose = true;	
+            manualClose = true;	
         }
         #endregion
+
+        private void tbName_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(tbName.Text))
+                return;
+
+            drawing.Name = tbName.Text;
+        }
         
         #endregion
         

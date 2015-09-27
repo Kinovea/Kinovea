@@ -3867,7 +3867,7 @@ namespace Kinovea.ScreenManager
             if (!coordinateSystem)
                 memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, m_FrameServer.Metadata.HitDrawing.Id, m_FrameServer.Metadata.HitDrawing.ToolDisplayName, SerializationFilter.Style);
             
-            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing.DrawingStyle, DoInvalidate);
+            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing, DoInvalidate);
             FormsHelper.Locate(fcd);
             fcd.ShowDialog();
 

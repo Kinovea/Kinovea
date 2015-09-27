@@ -197,7 +197,7 @@ namespace Kinovea.ScreenManager
 
             HistoryMemento memento = new HistoryMementoModifyDrawing(metadata, keyframe.Id, drawing.Id, drawing.ToolDisplayName, SerializationFilter.Style);
 
-            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorable.DrawingStyle, refresh);
+            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorable, refresh);
             FormsHelper.Locate(fcd);
             fcd.ShowDialog();
 
