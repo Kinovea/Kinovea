@@ -406,6 +406,8 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteStartElement("Chrono");
+                w.WriteAttributeString("id", chrono.Id.ToString());
+                w.WriteAttributeString("name", chrono.Name);
                 chrono.WriteXml(w, SerializationFilter.All);
                 w.WriteEndElement();
             }
@@ -425,6 +427,8 @@ namespace Kinovea.ScreenManager
                 }
 
                 w.WriteStartElement("Track");
+                w.WriteAttributeString("id", track.Id.ToString());
+                w.WriteAttributeString("name", track.Name);
                 track.WriteXml(w, SerializationFilter.All);
                 w.WriteEndElement();
             }
