@@ -230,6 +230,12 @@ namespace Kinovea.ScreenManager
         {
             // TODO: catch empty tag <Keyframes/>.
 
+            // Note: unlike chrono and tracks, keyframes are "merged" into existing keyframes if one already exists at the same position.
+            // This has an impact on how we add drawings.
+            // We keep the drawings internally to the keyframe during the parse, and only perform the post-drawing init at the end, 
+            // when the keyframe is merge-inserted into the collection.
+            // For chrono and tracks on the other hand, we perform the post-drawing init on the fly during the parse.
+
             r.ReadStartElement();
 
             while (r.NodeType == XmlNodeType.Element)
@@ -448,6 +454,7 @@ namespace Kinovea.ScreenManager
         {
             w.WriteStartElement("CoordinateSystem");
             w.WriteAttributeString("id", metadata.DrawingCoordinateSystem.Id.ToString());
+            w.WriteAttributeString("name", metadata.DrawingCoordinateSystem.Name);
             metadata.DrawingCoordinateSystem.WriteXml(w, SerializationFilter.All);
             w.WriteEndElement();
         }

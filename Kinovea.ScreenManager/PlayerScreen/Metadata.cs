@@ -449,9 +449,7 @@ namespace Kinovea.ScreenManager
                 else if (keyframe.Position == k.Position)
                 {
                     foreach (AbstractDrawing ad in keyframe.Drawings)
-                    {
                         k.Drawings.Add(ad);
-                    }
 
                     processed = true;
                     break;
@@ -460,6 +458,10 @@ namespace Kinovea.ScreenManager
 
             if (!processed)
                 keyframes.Add(keyframe);
+
+            // Post-init for the new drawings.
+            foreach (AbstractDrawing ad in keyframe.Drawings)
+                AfterDrawingCreation(ad);
         }
         #endregion
         

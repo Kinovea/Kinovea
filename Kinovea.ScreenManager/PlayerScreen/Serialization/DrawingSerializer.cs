@@ -134,6 +134,7 @@ namespace Kinovea.ScreenManager
 
             w.WriteStartElement(xmlName);
             w.WriteAttributeString("id", drawing.Id.ToString());
+            w.WriteAttributeString("name", drawing.Name);
             drawing.WriteXml(w, filter);
             w.WriteEndElement();
         }

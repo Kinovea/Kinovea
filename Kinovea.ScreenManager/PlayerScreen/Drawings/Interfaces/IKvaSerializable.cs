@@ -36,6 +36,7 @@ namespace Kinovea.ScreenManager
     public interface IKvaSerializable
     {
         Guid Id { get; }
+        string Name { get; }
         
         void WriteXml(XmlWriter xmlWriter, SerializationFilter filter);
         void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper);

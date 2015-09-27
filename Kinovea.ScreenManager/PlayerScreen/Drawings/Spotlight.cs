@@ -42,6 +42,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Properties
+        public string Name
+        {
+            get { return "Spotlight"; }
+        }
         public override int ContentHash
         {
             get { return position.GetHashCode() ^ radius.GetHashCode() ^ points["o"].GetHashCode(); }

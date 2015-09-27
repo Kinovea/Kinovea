@@ -42,11 +42,6 @@ namespace Kinovea.ScreenManager
     public class DrawingCircle : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
         #region Properties
-        public override string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
         public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolCircle; }
@@ -85,8 +80,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private string name;
-
         // Core
         private PointF center;
         private int radius;
@@ -183,6 +176,9 @@ namespace Kinovea.ScreenManager
         {
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());
+
+            if (xmlReader.MoveToAttribute("name"))
+                name = xmlReader.ReadContentAsString();
 
             xmlReader.ReadStartElement();
             
