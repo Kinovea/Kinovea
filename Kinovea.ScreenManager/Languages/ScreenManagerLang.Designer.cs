@@ -430,6 +430,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string dlgConfigureDrawing_Name {
+            get {
+                return ResourceManager.GetString("dlgConfigureDrawing_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configure Drawing.
         /// </summary>
         internal static string dlgConfigureDrawing_Title {
@@ -1483,6 +1492,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configuration....
+        /// </summary>
+        internal static string Generic_ConfigurationElipsis {
+            get {
+                return ResourceManager.GetString("Generic_ConfigurationElipsis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Curve:.
         /// </summary>
         internal static string Generic_Curved {
@@ -1965,24 +1983,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string mnuCloseScreen {
             get {
                 return ResourceManager.GetString("mnuCloseScreen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color.
-        /// </summary>
-        internal static string mnuConfigureDrawing_Color {
-            get {
-                return ResourceManager.GetString("mnuConfigureDrawing_Color", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color and Size....
-        /// </summary>
-        internal static string mnuConfigureDrawing_ColorSize {
-            get {
-                return ResourceManager.GetString("mnuConfigureDrawing_ColorSize", resourceCulture);
             }
         }
         

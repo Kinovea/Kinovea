@@ -2419,7 +2419,7 @@ namespace Kinovea.ScreenManager
             mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
             
             // 2. Drawings context menu.
-            mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+            mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuConfigureFading.Text = ScreenManagerLang.mnuConfigureFading;
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
@@ -2432,10 +2432,10 @@ namespace Kinovea.ScreenManager
             mnuRestartTracking.Text = ScreenManagerLang.mnuRestartTracking;
             mnuDeleteTrajectory.Text = ScreenManagerLang.mnuDeleteTrajectory;
             mnuDeleteEndOfTrajectory.Text = ScreenManagerLang.mnuDeleteEndOfTrajectory;
-            mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_Configuration;
+            mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             
             // 4. Chrono pop menu (Start, Stop, Hide, etc.)
-            mnuChronoConfigure.Text = ScreenManagerLang.Generic_Configuration;
+            mnuChronoConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuChronoStart.Text = ScreenManagerLang.mnuChronoStart;
             mnuChronoStop.Text = ScreenManagerLang.mnuChronoStop;
             mnuChronoHide.Text = ScreenManagerLang.mnuChronoHide;
@@ -2828,15 +2828,10 @@ namespace Kinovea.ScreenManager
         private void PrepareDrawingContextMenuCapabilities(AbstractDrawing drawing, ContextMenuStrip popMenu)
         {
             // Generic context menu from drawing capabilities.
-            if((drawing.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
+            if((drawing.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor ||
+               (drawing.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
             {
-                mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
-                popMenu.Items.Add(mnuConfigureDrawing);
-            }
-            
-            if((drawing.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
-            {
-                mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+                mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 popMenu.Items.Add(mnuConfigureDrawing);
             }
             
