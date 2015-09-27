@@ -177,7 +177,7 @@
     <table:table-cell table:style-name="keyimages-title" table:number-columns-spanned="2"><text:p>Key Images</text:p></table:table-cell>
   </table:table-row>	
   <table:table-row>
-    <table:table-cell table:style-name="header"><text:p>Title</text:p></table:table-cell>
+    <table:table-cell table:style-name="header"><text:p>Name</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Time</text:p></table:table-cell>
   </table:table-row>
 	<xsl:for-each select="Keyframe">
@@ -197,13 +197,15 @@
     <table:table-cell table:style-name="keyimages-title" table:number-columns-spanned="4"><text:p>Points</text:p></table:table-cell>
   </table:table-row>
   <table:table-row>
+    <table:table-cell table:style-name="header"><text:p>Name</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>X</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Y</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Time</text:p></table:table-cell>
-    <table:table-cell table:style-name="header"><text:p>Key Image</text:p></table:table-cell>
   </table:table-row>
   <xsl:for-each select="Keyframe/Drawings/CrossMark/Coordinates">
     <table:table-row>
+			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="../@name"/></text:p></table:table-cell>
+
       <!-- Numerical data must be formatted using point as decimal separator. Hence the use of User*Invariant -->
       <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
@@ -211,8 +213,8 @@
         <xsl:attribute name="office:value"><xsl:value-of select="@UserXInvariant"/></xsl:attribute>
         <text:p><xsl:value-of select="@UserX"/></text:p>
       </table:table-cell>
-	  
-	  <table:table-cell>
+    
+      <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
         <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>
         <xsl:attribute name="office:value"><xsl:value-of select="@UserYInvariant"/></xsl:attribute>
@@ -220,7 +222,6 @@
       </table:table-cell>
       
       <table:table-cell table:style-name="data"><text:p><xsl:value-of select="../../../Position/@UserTime"/></text:p></table:table-cell>
-			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="../../../Title"/></text:p></table:table-cell>
     </table:table-row>
   </xsl:for-each>
 </xsl:template>
@@ -234,12 +235,14 @@
     <table:table-cell table:style-name="keyimages-title" table:number-columns-spanned="3"><text:p>Lines</text:p></table:table-cell>
   </table:table-row>
   <table:table-row>
+    <table:table-cell table:style-name="header"><text:p>Name</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Length (<xsl:value-of select="../Calibration/Unit/@Abbreviation"/>)</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Time</text:p></table:table-cell>
-    <table:table-cell table:style-name="header"><text:p>Key Image</text:p></table:table-cell>
   </table:table-row>
   <xsl:for-each select="Keyframe/Drawings/Line/Measure">
     <table:table-row>
+			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="../@name"/></text:p></table:table-cell>
+
       <!-- Numerical data must be formatted using point as decimal separator. Hence the use of UserLengthInvariant -->
       <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
@@ -249,7 +252,6 @@
       </table:table-cell>
     
       <table:table-cell table:style-name="data"><text:p><xsl:value-of select="../../../Position/@UserTime"/></text:p></table:table-cell>
-			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="../../../Title"/></text:p></table:table-cell>
     </table:table-row>
   </xsl:for-each>
 </xsl:template>
@@ -262,12 +264,13 @@
     <table:table-cell table:style-name="keyimages-title" table:number-columns-spanned="3"><text:p>Angles</text:p></table:table-cell>
   </table:table-row>
   <table:table-row>
+    <table:table-cell table:style-name="header"><text:p>Name</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Value (°)</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Time</text:p></table:table-cell>
-    <table:table-cell table:style-name="header"><text:p>Key Image</text:p></table:table-cell>
   </table:table-row>
   <xsl:for-each select="Keyframe/Drawings/Angle/Measure">
     <table:table-row>
+			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="../@name"/></text:p></table:table-cell>
     
       <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
@@ -277,7 +280,6 @@
       </table:table-cell>
     
       <table:table-cell table:style-name="data"><text:p><xsl:value-of select="../../../Position/@UserTime"/></text:p></table:table-cell>
-			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="../../../Title"/></text:p></table:table-cell>
     </table:table-row>
   </xsl:for-each>
 </xsl:template>
