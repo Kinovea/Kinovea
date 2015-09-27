@@ -87,6 +87,16 @@ namespace Kinovea.ScreenManager
         {
             get;
         }
+
+        /// <summary>
+        /// The name of this instance of the drawing.
+        /// May be changed by the user.
+        /// </summary>
+        public abstract string Name
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region Concrete members

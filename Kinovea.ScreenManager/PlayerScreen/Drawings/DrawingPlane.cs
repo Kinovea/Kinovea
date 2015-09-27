@@ -44,6 +44,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public override string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
         public override string ToolDisplayName
         {
             get 
@@ -104,6 +109,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        private string name;
         private QuadrilateralF quadImage = QuadrilateralF.UnitSquare;        // Quadrilateral defined by user.
         private QuadrilateralF quadPlane;                                       // Corresponding rectangle in plane system.
         private ProjectiveMapping projectiveMapping = new ProjectiveMapping();  // maps quadImage to quadPlane and back.

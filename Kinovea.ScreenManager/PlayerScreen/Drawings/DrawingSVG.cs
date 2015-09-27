@@ -42,6 +42,11 @@ namespace Kinovea.ScreenManager
     public class DrawingSVG : AbstractDrawing, IScalable, IKvaSerializable
     {
         #region Properties
+        public override string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
         public override string ToolDisplayName
         {
             get {  return "SVG Image"; }
@@ -70,6 +75,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
+        private string name;
         private bool valid;
         private string filename;
         // SVG

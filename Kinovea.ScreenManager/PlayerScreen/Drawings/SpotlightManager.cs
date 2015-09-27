@@ -44,6 +44,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public override string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
         public override string ToolDisplayName
         {
             get {  return ScreenManagerLang.ToolTip_DrawingToolSpotlight; }
@@ -91,6 +96,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
+        private string name;
         private List<Spotlight> spotlights = new List<Spotlight>();
         private int selected = -1;
         private bool initializing = true;
