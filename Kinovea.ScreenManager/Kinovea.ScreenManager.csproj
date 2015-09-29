@@ -304,7 +304,6 @@
     <Compile Include="Metadata\Drawings\CoordinateSystem\RangeHelper.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\GridLine.cs" />
     <Compile Include="Metadata\DrawingManager\ChronoManager.cs" />
-    <Compile Include="CommandProcessedEventArgs.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="ImageToViewportTransformer.cs" />
