@@ -84,6 +84,5 @@ namespace Kinovea.ScreenManager
         {
             return ClipLine(rect, a, b, double.MinValue, double.MaxValue);
         }
-
     }
 }
