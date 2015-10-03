@@ -23,6 +23,7 @@ namespace Kinovea.ScreenManager
             this.btnClose = new System.Windows.Forms.Button();
             this.lblSelDuration = new System.Windows.Forms.Label();
             this.panelVideoControls = new System.Windows.Forms.Panel();
+            this.sldrSpeed = new Kinovea.ScreenManager.SliderLinear();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnSnapShot = new System.Windows.Forms.Button();
             this.btnPausedVideo = new System.Windows.Forms.Button();
@@ -42,7 +43,6 @@ namespace Kinovea.ScreenManager
             this.buttonGotoPrevious = new System.Windows.Forms.Button();
             this.buttonGotoNext = new System.Windows.Forms.Button();
             this.buttonPlay = new System.Windows.Forms.Button();
-            this.sldrSpeed = new Kinovea.ScreenManager.SpeedSlider();
             this.lblSpeedTuner = new System.Windows.Forms.Label();
             this.buttonGotoLast = new System.Windows.Forms.Button();
             this.btnPlayingMode = new System.Windows.Forms.Button();
@@ -138,6 +138,7 @@ namespace Kinovea.ScreenManager
             // 
             this.panelVideoControls.BackColor = System.Drawing.Color.White;
             this.panelVideoControls.Controls.Add(this.panel1);
+            this.panelVideoControls.Controls.Add(this.sldrSpeed);
             this.panelVideoControls.Controls.Add(this.btnHandlersReset);
             this.panelVideoControls.Controls.Add(this.btnSetHandlerRight);
             this.panelVideoControls.Controls.Add(this.btnSetHandlerLeft);
@@ -152,7 +153,6 @@ namespace Kinovea.ScreenManager
             this.panelVideoControls.Controls.Add(this.buttonGotoNext);
             this.panelVideoControls.Controls.Add(this.lblSelDuration);
             this.panelVideoControls.Controls.Add(this.buttonPlay);
-            this.panelVideoControls.Controls.Add(this.sldrSpeed);
             this.panelVideoControls.Controls.Add(this.lblSpeedTuner);
             this.panelVideoControls.Controls.Add(this.buttonGotoLast);
             this.panelVideoControls.Controls.Add(this.btnPlayingMode);
@@ -164,6 +164,19 @@ namespace Kinovea.ScreenManager
             this.panelVideoControls.TabIndex = 2;
             this.panelVideoControls.MouseEnter += new System.EventHandler(this.PanelVideoControls_MouseEnter);
             this.panelVideoControls.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
+            // 
+            // sldrSpeed
+            // 
+            this.sldrSpeed.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.sldrSpeed.Location = new System.Drawing.Point(196, 63);
+            this.sldrSpeed.Maximum = 100D;
+            this.sldrSpeed.Minimum = 0D;
+            this.sldrSpeed.Name = "sldrSpeed";
+            this.sldrSpeed.Size = new System.Drawing.Size(176, 23);
+            this.sldrSpeed.TabIndex = 28;
+            this.sldrSpeed.Text = "sliderLinear1";
+            this.sldrSpeed.Value = 0D;
+            this.sldrSpeed.ValueChanged += new System.EventHandler(this.sldrSpeed_ValueChanged);
             // 
             // panel1
             // 
@@ -360,6 +373,7 @@ namespace Kinovea.ScreenManager
             this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.trkFrame.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.trkFrame.LeftHairline = ((long)(0));
             this.trkFrame.Location = new System.Drawing.Point(5, 45);
             this.trkFrame.Maximum = ((long)(100));
             this.trkFrame.Minimum = ((long)(0));
@@ -367,6 +381,7 @@ namespace Kinovea.ScreenManager
             this.trkFrame.Name = "trkFrame";
             this.trkFrame.Position = ((long)(0));
             this.trkFrame.ReportOnMouseMove = false;
+            this.trkFrame.RightHairline = ((long)(0));
             this.trkFrame.Size = new System.Drawing.Size(410, 20);
             this.trkFrame.TabIndex = 16;
             this.trkFrame.PositionChanging += new System.EventHandler<Kinovea.ScreenManager.PositionChangedEventArgs>(this.trkFrame_PositionChanging);
@@ -405,7 +420,7 @@ namespace Kinovea.ScreenManager
             this.lblTimeCode.AutoSize = true;
             this.lblTimeCode.BackColor = System.Drawing.Color.Transparent;
             this.lblTimeCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTimeCode.Location = new System.Drawing.Point(14, 63);
+            this.lblTimeCode.Location = new System.Drawing.Point(14, 64);
             this.lblTimeCode.Name = "lblTimeCode";
             this.lblTimeCode.Size = new System.Drawing.Size(89, 12);
             this.lblTimeCode.TabIndex = 2;
@@ -477,25 +492,6 @@ namespace Kinovea.ScreenManager
             this.buttonPlay.UseVisualStyleBackColor = true;
             this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
-            // sldrSpeed
-            // 
-            this.sldrSpeed.BackColor = System.Drawing.Color.White;
-            this.sldrSpeed.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.sldrSpeed.Enabled = false;
-            this.sldrSpeed.LargeChange = 5;
-            this.sldrSpeed.Location = new System.Drawing.Point(195, 65);
-            this.sldrSpeed.Maximum = 200;
-            this.sldrSpeed.Minimum = 1;
-            this.sldrSpeed.MinimumSize = new System.Drawing.Size(20, 10);
-            this.sldrSpeed.Name = "sldrSpeed";
-            this.sldrSpeed.Size = new System.Drawing.Size(150, 10);
-            this.sldrSpeed.SmallChange = 1;
-            this.sldrSpeed.StickyMark = true;
-            this.sldrSpeed.StickyValue = 100;
-            this.sldrSpeed.TabIndex = 15;
-            this.sldrSpeed.Value = 100;
-            this.sldrSpeed.ValueChanged += new System.EventHandler(this.sldrSpeed_ValueChanged);
-            // 
             // lblSpeedTuner
             // 
             this.lblSpeedTuner.AutoSize = true;
@@ -503,7 +499,7 @@ namespace Kinovea.ScreenManager
             this.lblSpeedTuner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.lblSpeedTuner.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSpeedTuner.ForeColor = System.Drawing.Color.Black;
-            this.lblSpeedTuner.Location = new System.Drawing.Point(120, 63);
+            this.lblSpeedTuner.Location = new System.Drawing.Point(120, 64);
             this.lblSpeedTuner.Margin = new System.Windows.Forms.Padding(0);
             this.lblSpeedTuner.Name = "lblSpeedTuner";
             this.lblSpeedTuner.Size = new System.Drawing.Size(67, 12);
@@ -976,12 +972,12 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.SplitContainer splitKeyframes;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Panel pnlThumbnails;
-        private SpeedSlider sldrSpeed;
         private System.Windows.Forms.Button btnDockBottom;
         private System.Windows.Forms.Button btnRafale;
         private System.Windows.Forms.Button btnHandlersReset;
         private System.Windows.Forms.Button btnDiaporama;
         private System.Windows.Forms.ToolStrip stripDrawingTools;
+        private SliderLinear sldrSpeed;
         
     }
 }

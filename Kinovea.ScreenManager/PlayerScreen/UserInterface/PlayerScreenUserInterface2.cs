@@ -98,14 +98,14 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                return (m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds / (m_fSlowmotionPercentage / 100));
+                return timeMapper.GetInterval(sldrSpeed.Value);
             }
         }
         public double RealtimePercentage
         {
             get 
             { 
-                return m_fSlowmotionPercentage / m_FrameServer.Metadata.HighSpeedFactor;
+                return timeMapper.GetRealtimeMultiplier(sldrSpeed.Value) * 100;
             }
             set
             {
@@ -113,11 +113,14 @@ namespace Kinovea.ScreenManager
                 // when the other video changed its speed percentage (user or forced).
                 // We must NOT trigger the event here, or it will impact the other screen in an infinite loop.
                 // Compute back the slow motion percentage relative to the playback framerate.
-                double playbackPercentage = value * m_FrameServer.Metadata.HighSpeedFactor;
+                
+                // FIXME: refactoring in progress.
+                
+                /*double playbackPercentage = value * m_FrameServer.Metadata.HighSpeedFactor;
                 playbackPercentage = Math.Max(1, Math.Min(playbackPercentage, 200));
                 m_fSlowmotionPercentage = playbackPercentage;
 
-                sldrSpeed.Value = (int)playbackPercentage;
+                //sldrSpeed.Value = (int)playbackPercentage;
                 
                 // Reset timer with new value.
                 if (m_bIsCurrentlyPlaying)
@@ -126,7 +129,7 @@ namespace Kinovea.ScreenManager
                     StartMultimediaTimer((int)GetPlaybackFrameInterval());
                 }
 
-                UpdateSpeedLabel();
+                UpdateSpeedLabel();*/
             }
         }
         public bool Synched
@@ -235,11 +238,14 @@ namespace Kinovea.ScreenManager
         private int m_iFramesToDecode = 1;
         private uint m_IdMultimediaTimer;
         private PlayingMode m_ePlayingMode = PlayingMode.Loop;
-        private double m_fSlowmotionPercentage = 100.0f;	// Always between 1 and 200 : this specific value is not impacted by high speed cameras.
         private bool m_bIsBusyRendering;
         private int m_RenderingDrops;
         private object m_TimingSync = new object();
-        
+
+        // Timing
+        private TimeMapper timeMapper = new TimeMapper();
+        private double slowMotion = 1;
+
         // Synchronisation
         private bool m_bSynched;
         private long m_iSyncPosition;
@@ -362,7 +368,6 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.MultiDrawingItemAdded += (s, e) => AfterMultiDrawingItemAdded();
             m_FrameServer.Metadata.MultiDrawingItemDeleted += (s, e) => AfterMultiDrawingItemDeleted();
 
-           
             InitializeComponent();
             InitializeDrawingTools(drawingToolbarPresenter);
             BuildContextMenus();
@@ -384,6 +389,13 @@ namespace Kinovea.ScreenManager
             m_TimerCallback = MultimediaTimer_Tick;
             m_DeselectionTimer.Interval = 3000;
             m_DeselectionTimer.Tick += DeselectionTimer_OnTick;
+
+            sldrSpeed.Minimum = 0;
+            sldrSpeed.Maximum = 1000;
+            timeMapper.SetInputRange(sldrSpeed.Minimum, sldrSpeed.Maximum);
+            timeMapper.SetSlowMotionRange(0, 2);
+            slowMotion = 1;
+            sldrSpeed.Initialize(timeMapper.GetInputFromSlowMotion(slowMotion));
 
             EnableDisableActions(false);
 
@@ -416,7 +428,8 @@ namespace Kinovea.ScreenManager
             EnableDisableDrawingTools(true);
             EnableDisableSnapshot(true);
             buttonPlay.Image = Player.flatplay;
-            sldrSpeed.Value = 100;
+            slowMotion = 1;
+            sldrSpeed.Force(timeMapper.GetInputFromSlowMotion(slowMotion));
             sldrSpeed.Enabled = false;
             lblFileName.Text = "";
             m_KeyframeCommentsHub.Hide();
@@ -524,7 +537,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.CoordinateSystem.ReinitZoom();
             SetUpForNewMovie();
             m_KeyframeCommentsHub.UserActivated = false;
-            
+
             // Check for launch description and startup kva
             bool recoveredMetadata = false;
             if (m_LaunchDescription != null)
@@ -535,12 +548,8 @@ namespace Kinovea.ScreenManager
                     recoveredMetadata = true;
                 }
 
-                if (m_LaunchDescription.SpeedPercentage != m_fSlowmotionPercentage)
-                {
-                    m_fSlowmotionPercentage = m_LaunchDescription.SpeedPercentage;
-                    sldrSpeed.Value = (int)m_fSlowmotionPercentage;
-                    UpdateSpeedLabel();
-                }
+                if (m_LaunchDescription.SpeedPercentage != (slowMotion * 100))
+                    slowMotion = m_LaunchDescription.SpeedPercentage / 100.0;
             }
             else
             {
@@ -550,7 +559,12 @@ namespace Kinovea.ScreenManager
                 string startupFile = Path.Combine(Software.SettingsDirectory, "playback.kva");
                 LookForLinkedAnalysis(startupFile);
             }
-            
+
+            timeMapper.FileInterval = m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds;
+            timeMapper.UserInterval = timeMapper.FileInterval;
+            timeMapper.CaptureInterval = timeMapper.FileInterval;
+
+            sldrSpeed.Force(timeMapper.GetInputFromSlowMotion(slowMotion));
             sldrSpeed.Enabled = true;
 
             if (!recoveredMetadata)
@@ -602,8 +616,8 @@ namespace Kinovea.ScreenManager
 
             if (oldHSF != m_FrameServer.Metadata.HighSpeedFactor)
             {
-                m_fSlowmotionPercentage = 100;
-                sldrSpeed.Value = (int)m_fSlowmotionPercentage;
+                slowMotion = 1;
+                sldrSpeed.Force(timeMapper.GetInputFromSlowMotion(slowMotion));
             }
             
             m_FrameServer.SetupMetadata(false);
@@ -890,7 +904,7 @@ namespace Kinovea.ScreenManager
         {
             m_iFramesToDecode = 1;
             
-            m_fSlowmotionPercentage = 100.0;
+            slowMotion = 1;
             DeactivateInteractiveEffect();
             m_bIsCurrentlyPlaying = false;
             m_ePlayingMode = PlayingMode.Loop;
@@ -1536,7 +1550,7 @@ namespace Kinovea.ScreenManager
             {
                 // Go into Play mode
                 buttonPlay.Image = Resources.flatpause3b;
-                StartMultimediaTimer((int)GetPlaybackFrameInterval());
+                StartMultimediaTimer((int)Math.Round(timeMapper.GetInterval(sldrSpeed.Value)));
             }
         }
         public void Common_MouseWheel(object sender, MouseEventArgs e)
@@ -1846,7 +1860,7 @@ namespace Kinovea.ScreenManager
         #region Speed Slider
         private void sldrSpeed_ValueChanged(object sender, EventArgs e)
         {
-            m_fSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
+            double slowMotion = timeMapper.GetSlowMotion(sldrSpeed.Value);
             
             if (m_FrameServer.Loaded)
             {
@@ -1865,29 +1879,39 @@ namespace Kinovea.ScreenManager
         }
         private void ChangeSpeed(int change)
         {
+            // The value is a target diff percentage.
+            // Ex: we are on 86%, value = -25, the target is 75%.
+
             if (change == 0)
                 return;
-
-            if (change < 0)
-                sldrSpeed.ForceValue(change * ((sldrSpeed.Value - 1) / change));
-            else
-                sldrSpeed.ForceValue(change * ((sldrSpeed.Value / change) + 1));
+            
+            sldrSpeed.StepJump(change / 200.0);
         }
         private void lblSpeedTuner_DoubleClick(object sender, EventArgs e)
         {
-            // Double click on the speed label : Back to 100%
-            sldrSpeed.ForceValue(sldrSpeed.StickyValue);
+            slowMotion = 1;
+            sldrSpeed.Force(timeMapper.GetInputFromSlowMotion(slowMotion));
         }
         private void UpdateSpeedLabel()
         {
-            double realtimePercentage = (double)m_fSlowmotionPercentage / m_FrameServer.Metadata.HighSpeedFactor;
-            string percentage = realtimePercentage % 1 != 0 ? string.Format("{0:0.00}%", realtimePercentage) : string.Format("{0}%", (int)realtimePercentage);
-            lblSpeedTuner.Text = string.Format("{0} {1}", ScreenManagerLang.lblSpeedTuner_Text, percentage);
+            double multiplier = timeMapper.GetRealtimeMultiplier(sldrSpeed.Value);
+
+            if (multiplier < 1.0)
+                lblSpeedTuner.Text = string.Format("{0} {1:0.##}%", ScreenManagerLang.lblSpeedTuner_Text, multiplier * 100);
+            else
+                lblSpeedTuner.Text = string.Format("{0} {1:0.##}x", ScreenManagerLang.lblSpeedTuner_Text, multiplier);
         }
         private void RepositionSpeedControl()
         {
-            lblSpeedTuner.Left = lblTimeCode.Left + lblTimeCode.Width + 8;
-            sldrSpeed.Left = lblSpeedTuner.Left + lblSpeedTuner.Width + 8;
+            lblSpeedTuner.Left = lblTimeCode.Right + 8;
+
+            // Fake the longest speed string possible for positioning.
+            string temp = lblSpeedTuner.Text;
+            lblSpeedTuner.Text = string.Format("{0} {1:0.00}%", ScreenManagerLang.lblSpeedTuner_Text, 99.99);
+
+            sldrSpeed.Left = lblSpeedTuner.Right + 8;
+
+            lblSpeedTuner.Text = temp;
         }
         #endregion
 
@@ -2259,7 +2283,7 @@ namespace Kinovea.ScreenManager
         {
             m_FrameServer.VideoReader.ResetDrops();
             m_iFramesToDecode = 0;
-            sldrSpeed.ForceValue(sldrSpeed.Value - sldrSpeed.LargeChange);
+            sldrSpeed.StepJump(-0.05);
         }
         private void ComputeOrStopTracking(bool _contiguous)
         {
@@ -2365,16 +2389,7 @@ namespace Kinovea.ScreenManager
         }
         private double GetPlaybackFrameInterval()
         {
-            // Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
-            // m_iSlowmotionPercentage must be > 0.
-            if (m_FrameServer.Loaded && m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds > 0 && m_fSlowmotionPercentage > 0)
-            {
-                return (m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds / ((double)m_fSlowmotionPercentage / 100.0));
-            }
-            else
-            {
-                return 40;
-            }
+            return timeMapper.GetInterval(sldrSpeed.Value);
         }
         private void DeselectionTimer_OnTick(object sender, EventArgs e) 
         {
@@ -2474,7 +2489,6 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnSetHandlerRight, ScreenManagerLang.ToolTip_SetHandlerRight);
             toolTips.SetToolTip(btnHandlersReset, ScreenManagerLang.ToolTip_ResetWorkingZone);
             trkSelection.ToolTip = ScreenManagerLang.ToolTip_trkSelection;
-            sldrSpeed.ToolTip = ScreenManagerLang.ToolTip_sldrSpeed;
         }
         private void ReloadToolsCulture()
         {
@@ -4345,8 +4359,7 @@ namespace Kinovea.ScreenManager
             
             lblSpeedTuner.Enabled = _bEnable;
             trkFrame.EnableDisable(_bEnable);
-            
-            sldrSpeed.EnableDisable(_bEnable);
+
             trkFrame.Enabled = _bEnable;
             trkSelection.Enabled = _bEnable;
             sldrSpeed.Enabled = _bEnable;
@@ -4560,7 +4573,7 @@ namespace Kinovea.ScreenManager
         public void Save()
         {
             saveInProgress = true;
-            m_FrameServer.Save(GetPlaybackFrameInterval(), m_fSlowmotionPercentage, GetOutputBitmap);
+            m_FrameServer.Save(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetOutputBitmap);
             saveInProgress = false;
         }
         public long GetOutputBitmap(Graphics _canvas, Bitmap _source, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
