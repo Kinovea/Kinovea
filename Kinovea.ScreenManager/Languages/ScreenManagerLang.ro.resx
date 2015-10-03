@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configurează viteza originală</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Reseteză</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Reseteză</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Arată markerul ţintă</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Arată numele cadrelor cheie </value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Arată traiectoria </value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibreaza...</value></data>
    
    <data name="mnuSendPic" xml:space="preserve"><value>Trimite imaginea către alt fişier video</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Cameră de mare viteză...</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>Accentuare de contururi...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Afişează coordonatele</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afiseaza indicator</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Privire de ansamblu</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inversează...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast automat...</value></data>
-   
    
    
    

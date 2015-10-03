@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Конфигурация оригинальной скорости</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Сброс параметров</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Сброс параметров</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Показать целевые маркеры</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Показать названия ключевых кадров</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Показать путь</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Калибровка измерений…</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Калибровка….</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Отправить изображение в другое видео</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Высокоскоростная камера…</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>Резкость…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Координаты дисплея</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Отображение размерностей</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Раскадровка…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Реверс…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Авто контраст…</value></data>
-   
    
    
    

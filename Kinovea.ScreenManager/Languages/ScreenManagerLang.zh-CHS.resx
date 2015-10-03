@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>配置原始速度</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>重设</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>重设</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>显示目标标记</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>显示关键帧标题</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>显示路径</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>校准测量...</value></data>
    
    
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>设置原始速度...</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>锐化...</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>显示测量</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>马赛克...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>反向...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>自动对比度...</value></data>
-   
    
    
    

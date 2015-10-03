@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>원래 속도의 구성 </value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>초기화</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>초기화</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>타깃 표식 보이기</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>키 이미지' 의 제목 보이기</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>경로 보이기</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>자를 측정함</value></data>
    
    <data name="mnuSendPic" xml:space="preserve"><value>다른 비디오로 이미지를 보냄</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>고속 카메라…</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>날카롭게..</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>좌표 표시</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>자 표시</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>개관(overview)…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>반대(reverse)…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value></data>
-   
    
    
    

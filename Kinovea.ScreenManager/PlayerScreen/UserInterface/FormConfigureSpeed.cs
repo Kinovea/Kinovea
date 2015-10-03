@@ -71,19 +71,25 @@ namespace Kinovea.ScreenManager
         }
         private void LocalizeForm()
         {
-            //this.Text = "   " + ScreenManagerLang.dlgConfigureSpeed_Title;
+            this.Text = ScreenManagerLang.dlgTimebase_Title;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
             btnOK.Text = ScreenManagerLang.Generic_Apply;
-            //grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            //lblCaptureFPS.Text = ScreenManagerLang.dlgConfigureSpeed_lblFPSCaptureTime.Replace("\\n", "\n");
-            //toolTips.SetToolTip(btnReset, ScreenManagerLang.dlgConfigureSpeed_ToolTip_Reset);
-            //lblVideoFPS.Text = string.Format(ScreenManagerLang.dlgConfigureSpeed_lblFPSDisplayTime, videoFPS);
 
+            grpHighSpeedCamera.Text = ScreenManagerLang.dlgTimebase_GroupCapture;
+            lblCapture.Text = ScreenManagerLang.dlgTimebase_lblCapture;
+            toolTips.SetToolTip(btnResetCapture, ScreenManagerLang.dlgTimebase_ToolTip_Reset);
+            tbCaptureInfo.Clear();
+            tbCaptureInfo.AppendText(ScreenManagerLang.dlgTimebase_InfoCapture);
+
+            grpVideo.Text = ScreenManagerLang.Generic_Video;
+            lblFile.Text = string.Format(ScreenManagerLang.dlgTimebase_lblFileFPS, 1000 / fileInterval);
+            lblUser.Text = ScreenManagerLang.dlgTimebase_lblUserFPS;
+            toolTips.SetToolTip(btnResetUser, ScreenManagerLang.dlgTimebase_ToolTip_Reset);
+            tbVideoInfo.Clear();
+            tbVideoInfo.AppendText(ScreenManagerLang.dlgTimebase_InfoUser);
+            
             UpdateCaptureText();
             UpdateUserText();
-
-            string format = "Framerate read in the file: {0:0.##} fps";
-            lblFile.Text = string.Format(format, 1000 / fileInterval);
         }
 
         #region High speed camera

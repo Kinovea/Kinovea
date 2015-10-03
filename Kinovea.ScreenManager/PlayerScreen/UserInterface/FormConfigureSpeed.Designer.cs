@@ -29,7 +29,6 @@ namespace Kinovea.ScreenManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formConfigureSpeed));
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.grpHighSpeedCamera = new System.Windows.Forms.GroupBox();
@@ -52,7 +51,7 @@ namespace Kinovea.ScreenManager
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(265, 330);
+            this.btnOK.Location = new System.Drawing.Point(265, 306);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(99, 24);
             this.btnOK.TabIndex = 25;
@@ -63,7 +62,7 @@ namespace Kinovea.ScreenManager
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(370, 330);
+            this.btnCancel.Location = new System.Drawing.Point(370, 306);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(99, 24);
             this.btnCancel.TabIndex = 30;
@@ -80,7 +79,7 @@ namespace Kinovea.ScreenManager
             this.grpHighSpeedCamera.Controls.Add(this.lblCapture);
             this.grpHighSpeedCamera.Location = new System.Drawing.Point(10, 12);
             this.grpHighSpeedCamera.Name = "grpHighSpeedCamera";
-            this.grpHighSpeedCamera.Size = new System.Drawing.Size(459, 147);
+            this.grpHighSpeedCamera.Size = new System.Drawing.Size(459, 124);
             this.grpHighSpeedCamera.TabIndex = 29;
             this.grpHighSpeedCamera.TabStop = false;
             this.grpHighSpeedCamera.Text = "High speed camera";
@@ -93,9 +92,11 @@ namespace Kinovea.ScreenManager
             this.tbCaptureInfo.Multiline = true;
             this.tbCaptureInfo.Name = "tbCaptureInfo";
             this.tbCaptureInfo.ReadOnly = true;
-            this.tbCaptureInfo.Size = new System.Drawing.Size(445, 80);
+            this.tbCaptureInfo.Size = new System.Drawing.Size(445, 55);
             this.tbCaptureInfo.TabIndex = 26;
-            this.tbCaptureInfo.Text = resources.GetString("tbCaptureInfo.Text");
+            this.tbCaptureInfo.Text = "This option defines the difference between video speed and real time. It impacts " +
+                "labels containing times and kinematics measurements. Use it when the video was f" +
+                "ilmed in high speed mode. ";
             // 
             // btnResetCapture
             // 
@@ -138,7 +139,7 @@ namespace Kinovea.ScreenManager
             this.grpVideo.Controls.Add(this.btnResetUser);
             this.grpVideo.Controls.Add(this.tbUser);
             this.grpVideo.Controls.Add(this.lblUser);
-            this.grpVideo.Location = new System.Drawing.Point(10, 165);
+            this.grpVideo.Location = new System.Drawing.Point(10, 142);
             this.grpVideo.Name = "grpVideo";
             this.grpVideo.Size = new System.Drawing.Size(459, 158);
             this.grpVideo.TabIndex = 30;
@@ -167,8 +168,8 @@ namespace Kinovea.ScreenManager
             this.tbVideoInfo.ReadOnly = true;
             this.tbVideoInfo.Size = new System.Drawing.Size(445, 43);
             this.tbVideoInfo.TabIndex = 26;
-            this.tbVideoInfo.Text = "Set the reference framerate that Kinovea will use to play this video. Use this wh" +
-                "en the video contains a wrong framerate or Kinovea cannot read it. ";
+            this.tbVideoInfo.Text = "This option defines the reference framerate used by Kinovea to play the video. Us" +
+                "e it when the video contains a wrong framerate or Kinovea cannot read it.";
             // 
             // btnResetUser
             // 
@@ -207,7 +208,7 @@ namespace Kinovea.ScreenManager
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(481, 364);
+            this.ClientSize = new System.Drawing.Size(481, 340);
             this.Controls.Add(this.grpVideo);
             this.Controls.Add(this.grpHighSpeedCamera);
             this.Controls.Add(this.btnOK);
