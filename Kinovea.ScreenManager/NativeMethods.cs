@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace Kinovea.Camera.FrameGenerator
+namespace Kinovea.ScreenManager
 {
-    internal static class NativeMethods    
-    {        
+    internal static class NativeMethods
+    {
         [DllImport("winmm.dll", SetLastError = true)]
         internal static extern uint timeSetEvent(UInt32 msDelay, UInt32 msResolution, TimerCallback handler, UIntPtr dwUser, UInt32 eventType);
 

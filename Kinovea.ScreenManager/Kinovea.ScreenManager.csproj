@@ -329,6 +329,7 @@
     <Compile Include="Metadata\Drawings\Styling\LineShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementLineShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\TrackShape.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="Measurement\Geometry\ClipResult.cs" />
     <Compile Include="Measurement\Geometry\LiangBarsky.cs" />

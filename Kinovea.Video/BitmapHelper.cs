@@ -10,9 +10,6 @@ namespace Kinovea.Video
 {
     public static class BitmapHelper
     {
-        [DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-        public static unsafe extern int memcpy(void* dest, void* src, int count);
-
         /// <summary>
         /// Allocate a new bitmap and copy the passed bitmap into it.
         /// </summary>
@@ -34,7 +31,7 @@ namespace Kinovea.Video
             BitmapData srcData = src.LockBits(rect, ImageLockMode.ReadOnly, src.PixelFormat);
             BitmapData dstData = dst.LockBits(rect, ImageLockMode.WriteOnly, dst.PixelFormat);
 
-            memcpy(dstData.Scan0.ToPointer(), srcData.Scan0.ToPointer(), srcData.Height * srcData.Stride);
+            NativeMethods.memcpy(dstData.Scan0.ToPointer(), srcData.Scan0.ToPointer(), srcData.Height * srcData.Stride);
 
             dst.UnlockBits(dstData);
             src.UnlockBits(srcData);
@@ -61,7 +58,7 @@ namespace Kinovea.Video
 
                     for (int i = 0; i < rect.Height; i++)
                     {
-                        memcpy(dst, src, srcStride);
+                        NativeMethods.memcpy(dst, src, srcStride);
                         src += srcStride;
                         dst += dstStride;
                     }
@@ -72,7 +69,7 @@ namespace Kinovea.Video
 
                     for (int i = 0; i < rect.Height; i++)
                     {
-                        memcpy(dst, src, srcStride);
+                        NativeMethods.memcpy(dst, src, srcStride);
                         src += srcStride;
                         dst -= dstStride;
                     }
@@ -130,7 +127,7 @@ namespace Kinovea.Video
 
                 for (int i = 0; i < bmpRectangle.Height; i++)
                 {
-                    memcpy(dst, src, srcStride);
+                    NativeMethods.memcpy(dst, src, srcStride);
                     src += srcStride;
                     dst += dstStride;
                 }

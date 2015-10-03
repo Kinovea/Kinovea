@@ -45,22 +45,6 @@ namespace Kinovea.ScreenManager
 {
     public partial class PlayerScreenUserInterface : KinoveaControl
     {
-        #region Imports Win32
-        [DllImport("winmm.dll", SetLastError = true)]
-        private static extern uint timeSetEvent(int msDelay, int msResolution, TimerEventHandler handler, ref int userCtx, int eventType);
-
-        [DllImport("winmm.dll", SetLastError = true)]
-        private static extern uint timeKillEvent(uint timerEventId);
-
-        private const int TIME_PERIODIC         = 0x01;
-        private const int TIME_KILL_SYNCHRONOUS = 0x0100;
-        #endregion
-
-        #region Internal delegates for async methods
-        private delegate void TimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
-        private TimerEventHandler m_TimerEventHandler;
-        #endregion
-
         #region Enums
         private enum PlayingMode
         {
@@ -299,6 +283,7 @@ namespace Kinovea.ScreenManager
         private PointF m_DescaledMouse;    // The current mouse point expressed in the original image size coordinates.
 
         // Others
+        private NativeMethods.TimerCallback m_TimerCallback;
         private ScreenDescriptionPlayback m_LaunchDescription;
         private InteractiveEffect m_InteractiveEffect;
         private const float m_MaxZoomFactor = 6.0F;
@@ -396,7 +381,7 @@ namespace Kinovea.ScreenManager
             thumbnails.Clear();
             DockKeyframePanel(true);
 
-            m_TimerEventHandler = new TimerEventHandler(MultimediaTimer_Tick);
+            m_TimerCallback = MultimediaTimer_Tick;
             m_DeselectionTimer.Interval = 3000;
             m_DeselectionTimer.Tick += DeselectionTimer_OnTick;
 
@@ -2133,14 +2118,14 @@ namespace Kinovea.ScreenManager
             m_FrameServer.VideoReader.BeforePlayloop();
             m_FrameServer.Metadata.PauseAutosave();
 
-            int userCtx = 0;
-            m_IdMultimediaTimer = timeSetEvent(_interval, _interval, m_TimerEventHandler, ref userCtx, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
+            uint eventType = NativeMethods.TIME_PERIODIC | NativeMethods.TIME_KILL_SYNCHRONOUS;
+            m_IdMultimediaTimer = NativeMethods.timeSetEvent((uint)_interval, (uint)_interval, m_TimerCallback, UIntPtr.Zero, eventType);
             m_bIsCurrentlyPlaying = true;
         }
         private void StopMultimediaTimer()
         {
             if (m_IdMultimediaTimer != 0)
-                timeKillEvent(m_IdMultimediaTimer);
+                NativeMethods.timeKillEvent(m_IdMultimediaTimer);
             m_IdMultimediaTimer = 0;
             m_bIsCurrentlyPlaying = false;
             Application.Idle -= Application_Idle;
@@ -2149,7 +2134,7 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Rendering drops ratio: {0:0.00}", m_DropWatcher.Ratio);
             log.DebugFormat("Average rendering loop time: {0:0.000}ms", m_LoopWatcher.Average);
         }
-        private void MultimediaTimer_Tick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
+        private void MultimediaTimer_Tick(uint uTimerID, uint uMsg, UIntPtr dwUser, UIntPtr dw1, UIntPtr dw2)
         {
             if(!m_FrameServer.Loaded)
                 return;

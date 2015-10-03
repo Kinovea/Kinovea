@@ -163,6 +163,7 @@
     <Compile Include="IFrameGenerator.cs" />
     <Compile Include="ImageFormat.cs" />
     <Compile Include="ImageFormatHelper.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="VideoReaderAlwaysCaching.cs" />
     <Compile Include="VideoReader.cs" />
     <Compile Include="ThreadCanceler.cs" />
