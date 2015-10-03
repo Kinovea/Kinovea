@@ -567,7 +567,8 @@ namespace Kinovea.ScreenManager
             frameServer.Metadata.HighSpeedFactor = fcs.HighSpeedFactor;
             fcs.Dispose();
 
-            view.UpdateTimedLabels();
+            view.UpdateTimebase();
+            view.UpdateTimeLabels();
 
             if (HighSpeedFactorChanged != null)
                 HighSpeedFactorChanged(this, EventArgs.Empty);

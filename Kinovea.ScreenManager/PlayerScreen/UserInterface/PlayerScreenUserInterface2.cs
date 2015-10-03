@@ -560,9 +560,7 @@ namespace Kinovea.ScreenManager
                 LookForLinkedAnalysis(startupFile);
             }
 
-            timeMapper.FileInterval = m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds;
-            timeMapper.UserInterval = timeMapper.FileInterval;
-            timeMapper.CaptureInterval = timeMapper.FileInterval;
+            UpdateTimebase();
 
             sldrSpeed.Force(timeMapper.GetInputFromSlowMotion(slowMotion));
             sldrSpeed.Enabled = true;
@@ -610,9 +608,9 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
             ActivateKeyframe(m_iCurrentPosition);
 
-            
             double oldHSF = m_FrameServer.Metadata.HighSpeedFactor;
             m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond / m_FrameServer.VideoReader.Info.FramesPerSeconds;
+            UpdateTimebase();
 
             if (oldHSF != m_FrameServer.Metadata.HighSpeedFactor)
             {
@@ -625,11 +623,19 @@ namespace Kinovea.ScreenManager
 
             if (KVAImported != null)
                 KVAImported(this, EventArgs.Empty);
-            
-            UpdateTimedLabels();
+
+            UpdateTimeLabels();
             DoInvalidate();
         }
-        public void UpdateTimedLabels()
+        public void UpdateTimebase()
+        {
+            timeMapper.FileInterval = m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds;
+            
+            // TODO: user interval.
+            timeMapper.UserInterval = timeMapper.FileInterval;
+            timeMapper.CaptureInterval = timeMapper.UserInterval / m_FrameServer.Metadata.HighSpeedFactor;
+        }
+        public void UpdateTimeLabels()
         {
             UpdateSelectionLabels();
             UpdateCurrentPositionLabel();
@@ -756,7 +762,7 @@ namespace Kinovea.ScreenManager
             lblSelDuration.AutoSize = true;
 
             lblWorkingZone.Text = ScreenManagerLang.lblWorkingZone_Text;
-            UpdateTimedLabels();
+            UpdateTimeLabels();
             
             RepositionSpeedControl();			
             ReloadTooltipsCulture();
@@ -931,7 +937,8 @@ namespace Kinovea.ScreenManager
             m_bTextEdit = false;
             
             m_FrameServer.Metadata.HighSpeedFactor = 1.0f;
-            UpdateTimedLabels();
+            UpdateTimebase();
+            UpdateTimeLabels();
         }
         private void SetupPrimarySelectionData()
         {
