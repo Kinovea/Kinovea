@@ -137,6 +137,7 @@ namespace Kinovea.ScreenManager
             if (init)
             {
                 metadata.ImageSize = videoReader.Info.AspectRatioSize;
+                metadata.UserInterval = videoReader.Info.FrameIntervalMilliseconds;
                 metadata.AverageTimeStampsPerFrame = videoReader.Info.AverageTimeStampsPerFrame;
                 metadata.AverageTimeStampsPerSecond = videoReader.Info.AverageTimeStampsPerSeconds;
                 metadata.CalibrationHelper.CaptureFramesPerSecond = videoReader.Info.FramesPerSeconds;
@@ -178,7 +179,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 DoSave(fve.Filename,
-                        fve.UseSlowMotion ? playbackFrameInterval : videoReader.Info.FrameIntervalMilliseconds,
+                        fve.UseSlowMotion ? playbackFrameInterval : metadata.UserInterval,
                         fve.BlendDrawings,
                         false,
                         false,
@@ -239,9 +240,10 @@ namespace Kinovea.ScreenManager
             }
 
             // timestamp to milliseconds. (Needed for most formats)
-            double seconds = (double)actualTimestamps / videoReader.Info.AverageTimeStampsPerSeconds;
-            double milliseconds = (seconds * 1000) / metadata.HighSpeedFactor;
-            bool showThousandth = (metadata.HighSpeedFactor * videoReader.Info.FramesPerSeconds) >= 100;
+            double correctedTPS = videoReader.Info.FrameIntervalMilliseconds * videoReader.Info.AverageTimeStampsPerSeconds / metadata.UserInterval;
+            double seconds = (double)actualTimestamps / correctedTPS;
+            double milliseconds = 1000 * (seconds / metadata.HighSpeedFactor);
+            bool showThousandth = (metadata.UserInterval / metadata.HighSpeedFactor) <= 10;
 
             int frames = 1;
             if (videoReader.Info.AverageTimeStampsPerFrame != 0)
@@ -363,8 +365,8 @@ namespace Kinovea.ScreenManager
                     // For paused video, slow motion is not supported.
                     // InputFrameInterval will have been set to a multiple of the original frame interval.
                     settings.Duplication = 1;
-                    settings.KeyframeDuplication = (int)(settings.InputFrameInterval / videoReader.Info.FrameIntervalMilliseconds);
-                    settings.OutputFrameInterval = videoReader.Info.FrameIntervalMilliseconds;
+                    settings.KeyframeDuplication = (int)(settings.InputFrameInterval / metadata.UserInterval);
+                    settings.OutputFrameInterval = metadata.UserInterval;
                     
                     long regularFramesTotal = videoReader.EstimatedFrames - metadata.Count;
                     long keyframesTotal = metadata.Count * settings.KeyframeDuplication;

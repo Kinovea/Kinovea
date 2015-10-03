@@ -554,8 +554,9 @@ namespace Kinovea.ScreenManager
         {
             if (!frameServer.Loaded)
                 return;
-            
-            formConfigureSpeed fcs = new formConfigureSpeed(frameServer.VideoReader.Info.FramesPerSeconds, frameServer.Metadata.HighSpeedFactor);
+
+            double captureInterval = frameServer.Metadata.UserInterval / frameServer.Metadata.HighSpeedFactor;
+            formConfigureSpeed fcs = new formConfigureSpeed(frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.UserInterval, captureInterval);
             fcs.StartPosition = FormStartPosition.CenterScreen;
 
             if (fcs.ShowDialog() != DialogResult.OK)
@@ -564,17 +565,21 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            frameServer.Metadata.HighSpeedFactor = fcs.HighSpeedFactor;
+            frameServer.Metadata.UserInterval = fcs.UserInterval;
+            frameServer.Metadata.HighSpeedFactor = fcs.UserInterval / fcs.CaptureInterval;
             fcs.Dispose();
 
-            view.UpdateTimebase();
-            view.UpdateTimeLabels();
+            log.DebugFormat("Time configuration. File interval:{0:0.###}ms, User interval:{1:0.###}ms, Capture interval:{2:0.###}ms.",
+                frameServer.VideoReader.Info.FrameIntervalMilliseconds, frameServer.Metadata.UserInterval, fcs.CaptureInterval);
 
             if (HighSpeedFactorChanged != null)
                 HighSpeedFactorChanged(this, EventArgs.Empty);
 
-            frameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond = frameServer.VideoReader.Info.FramesPerSeconds * frameServer.Metadata.HighSpeedFactor;
+            frameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond = 1000 * frameServer.Metadata.HighSpeedFactor / frameServer.Metadata.UserInterval;
+            frameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
+            view.UpdateTimebase();
+            view.UpdateTimeLabels();
             view.RefreshImage();
         }
         public long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
@@ -630,11 +635,11 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private long RealtimeToTimestamp(long time)
         {
-            
             double realtimeSeconds = (double)time / 1000000;
             double videoSeconds = realtimeSeconds * frameServer.Metadata.HighSpeedFactor;
 
-            double timestamp = videoSeconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+            double correctedTPS = frameServer.VideoReader.Info.FrameIntervalMilliseconds * frameServer.VideoReader.Info.AverageTimeStampsPerSeconds / frameServer.Metadata.UserInterval;
+            double timestamp = videoSeconds * correctedTPS;
             timestamp = Math.Round(timestamp);
 
             long relativeTimestamp = (long)timestamp;

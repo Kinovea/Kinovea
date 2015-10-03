@@ -609,7 +609,8 @@ namespace Kinovea.ScreenManager
             ActivateKeyframe(m_iCurrentPosition);
 
             double oldHSF = m_FrameServer.Metadata.HighSpeedFactor;
-            m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond / m_FrameServer.VideoReader.Info.FramesPerSeconds;
+            double captureInterval = 1000 / m_FrameServer.Metadata.CalibrationHelper.CaptureFramesPerSecond;
+            m_FrameServer.Metadata.HighSpeedFactor = m_FrameServer.Metadata.UserInterval / captureInterval;
             UpdateTimebase();
 
             if (oldHSF != m_FrameServer.Metadata.HighSpeedFactor)
@@ -630,9 +631,7 @@ namespace Kinovea.ScreenManager
         public void UpdateTimebase()
         {
             timeMapper.FileInterval = m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds;
-            
-            // TODO: user interval.
-            timeMapper.UserInterval = timeMapper.FileInterval;
+            timeMapper.UserInterval = m_FrameServer.Metadata.UserInterval;
             timeMapper.CaptureInterval = timeMapper.UserInterval / m_FrameServer.Metadata.HighSpeedFactor;
         }
         public void UpdateTimeLabels()
@@ -1387,10 +1386,13 @@ namespace Kinovea.ScreenManager
             // Takes input in timestamps relative to sel start.
             // convert it into video time then to real time using high speed factor.
             // returned value is in microseconds.
-            if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds == 0 || m_FrameServer.Metadata.HighSpeedFactor == 0)
+
+            double correctedTPS = m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds * m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds / m_FrameServer.Metadata.UserInterval;
+
+            if (correctedTPS == 0 || m_FrameServer.Metadata.HighSpeedFactor == 0)
                 return 0;
 
-            double videoSeconds = (double)timestamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
+            double videoSeconds = (double)timestamp / correctedTPS;
             double realSeconds = videoSeconds / m_FrameServer.Metadata.HighSpeedFactor;
             double realMicroseconds = realSeconds * 1000000;
             return (long)realMicroseconds;
@@ -1557,7 +1559,8 @@ namespace Kinovea.ScreenManager
             {
                 // Go into Play mode
                 buttonPlay.Image = Resources.flatpause3b;
-                StartMultimediaTimer((int)Math.Round(timeMapper.GetInterval(sldrSpeed.Value)));
+                double interval = GetPlaybackFrameInterval();
+                StartMultimediaTimer((int)Math.Round(interval));
             }
         }
         public void Common_MouseWheel(object sender, MouseEventArgs e)

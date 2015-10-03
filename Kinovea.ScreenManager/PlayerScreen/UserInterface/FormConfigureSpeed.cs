@@ -35,101 +35,134 @@ namespace Kinovea.ScreenManager
     public partial class formConfigureSpeed : Form
     {
         #region Properties
-        public double HighSpeedFactor
+        public double UserInterval
         {
-            get 
-            {
-                return captureFPS < 1 ? memoHighSpeedFactor : captureFPS / videoFPS;
-            }
+            get { return userInterval; }
+        }
+
+        public double CaptureInterval
+        {
+            get { return captureInterval; }
         }
         #endregion
         
         #region Members
-        private readonly double videoFPS;				
-        private double captureFPS;
-        private double memoHighSpeedFactor;
-        private const double maxCaptureFPS = 1000000; // 1MHz.
-        private const double minCaptureFPS = 1;
-        private bool internalUpdate;
+        private double fileInterval;
+       
+        private double userInterval;
+        private double minUserFPS = 1;
+        private double maxUserFPS = 1000;
+        
+        private double captureInterval;
+        private double minCaptureFPS = 0.1;
+        private double maxCaptureFPS = 1000000; // 1MHz.
+        
+        private bool manualUpdate;
         #endregion
 
-        public formConfigureSpeed(double videoFPS, double memoHighSpeedFactor)
+        public formConfigureSpeed(double fileInterval, double userInterval, double captureInterval)
         {
-            this.videoFPS = videoFPS;
-            this.memoHighSpeedFactor = memoHighSpeedFactor;
-            captureFPS = videoFPS * memoHighSpeedFactor;
-            
+            this.fileInterval = fileInterval;
+            this.userInterval = userInterval;
+            this.captureInterval = captureInterval;
+
             InitializeComponent();
             LocalizeForm();
         }
         private void LocalizeForm()
         {
-            this.Text = "   " + ScreenManagerLang.dlgConfigureSpeed_Title;
+            //this.Text = "   " + ScreenManagerLang.dlgConfigureSpeed_Title;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
             btnOK.Text = ScreenManagerLang.Generic_Apply;
-            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblCaptureFPS.Text = ScreenManagerLang.dlgConfigureSpeed_lblFPSCaptureTime.Replace("\\n", "\n");
-            toolTips.SetToolTip(btnReset, ScreenManagerLang.dlgConfigureSpeed_ToolTip_Reset);
-            
-            lblVideoFPS.Text = string.Format(ScreenManagerLang.dlgConfigureSpeed_lblFPSDisplayTime, videoFPS);
+            //grpConfig.Text = ScreenManagerLang.Generic_Configuration;
+            //lblCaptureFPS.Text = ScreenManagerLang.dlgConfigureSpeed_lblFPSCaptureTime.Replace("\\n", "\n");
+            //toolTips.SetToolTip(btnReset, ScreenManagerLang.dlgConfigureSpeed_ToolTip_Reset);
+            //lblVideoFPS.Text = string.Format(ScreenManagerLang.dlgConfigureSpeed_lblFPSDisplayTime, videoFPS);
 
-            UpdateCaptureFPSText();
-            UpdateSlowFactorText();
+            UpdateCaptureText();
+            UpdateUserText();
+
+            string format = "Framerate read in the file: {0:0.##} fps";
+            lblFile.Text = string.Format(format, 1000 / fileInterval);
         }
 
-        private void tbCaptureFPS_TextChanged(object sender, EventArgs e)
-        {
-            if (internalUpdate)
-                return;
-
-            // Text is parsed using the current culture.
-            double result;
-            bool parsed = double.TryParse(tbCaptureFPS.Text, out result);
-            if (!parsed)
-                return;
-
-            captureFPS = Math.Min(maxCaptureFPS, result);
-
-            if (captureFPS < minCaptureFPS)
-                captureFPS = videoFPS;
-
-            if (captureFPS != result)
-                UpdateCaptureFPSText();
-
-            UpdateSlowFactorText();            
-        }
-        private void tbCaptureFPS_KeyPress(object sender, KeyPressEventArgs e)
+        #region High speed camera
+        private void tbCapture_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!IsNumerical(e.KeyChar))
                 e.Handled = true;
         }
-        private void btnReset_Click(object sender, EventArgs e)
+        private void tbCapture_TextChanged(object sender, EventArgs e)
         {
-            captureFPS = videoFPS;
-            UpdateCaptureFPSText();
-        }
-        private void UpdateCaptureFPSText()
-        {
-            internalUpdate = true;
-            tbCaptureFPS.Text = String.Format("{0:0.00}", captureFPS);
-            internalUpdate = false;
-        }
-        private void UpdateSlowFactorText()
-        {
-            double timeStretchFactor = captureFPS / videoFPS;
-            string format = "{0:0.000}";
+            if (manualUpdate)
+                return;
 
-            if (timeStretchFactor % 1 == 0)
-                format = "{0:0}";
+            // Text is parsed using the current culture.
+            double result;
+            bool parsed = double.TryParse(tbCapture.Text, out result);
+            if (!parsed)
+                return;
 
-            string text = ScreenManagerLang.dlgConfigureSpeed_lblTimeStretchFactor;
-            string formattingText = string.Format(text, format);
-            string finalText = string.Format(formattingText, timeStretchFactor);
-            lblTimeStretchFactor.Text = finalText;
+            double captureFPS = Math.Max(Math.Min(result, maxCaptureFPS), minCaptureFPS);
+            captureInterval = 1000 / captureFPS;
+
+            if (captureFPS != result)
+                UpdateCaptureText();
         }
+        private void UpdateCaptureText()
+        {
+            manualUpdate = true;
+            tbCapture.Text = String.Format("{0:0.##}", 1000 / captureInterval);
+            manualUpdate = false;
+        }
+        private void btnResetCapture_Click(object sender, EventArgs e)
+        {
+            captureInterval = userInterval;
+            UpdateCaptureText();
+        }
+        #endregion
+
+        #region Video
+        private void tbUser_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!IsNumerical(e.KeyChar))
+                e.Handled = true;
+        }
+        private void tbUser_TextChanged(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            // Text is parsed using the current culture.
+            double result;
+            bool parsed = double.TryParse(tbUser.Text, out result);
+            if (!parsed)
+                return;
+
+            double userFPS = Math.Max(Math.Min(result, maxUserFPS), minUserFPS);
+            userInterval = 1000 / userFPS;
+
+            if (userFPS != result)
+                UpdateUserText();
+        }
+        private void UpdateUserText()
+        {
+            manualUpdate = true;
+            tbUser.Text = String.Format("{0:0.##}", 1000 / userInterval);
+            manualUpdate = false;
+        }
+        private void btnResetUser_Click(object sender, EventArgs e)
+        {
+            userInterval = fileInterval;
+            UpdateUserText();
+        }
+        #endregion
+
+
         private bool IsNumerical(char key)
         {
             return (key >= '0' && key <= '9') || key == ',' || key == '.' || key == '\b';
         }
+
     }
 }

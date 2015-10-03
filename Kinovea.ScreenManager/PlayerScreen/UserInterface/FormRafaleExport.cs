@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
             this.fullPath = fullPath;
             this.info = info;
 
-            frameInterval = info.FrameIntervalMilliseconds;
+            frameInterval = metadata.UserInterval;
             totalFrames = (int)((metadata.SelectionEnd - metadata.SelectionStart) / metadata.AverageTimeStampsPerFrame) + 1;
             maxDecimationFrames = totalFrames / 2;
             maxDecimationFrames = Math.Min(limitDecimationFrames, maxDecimationFrames);

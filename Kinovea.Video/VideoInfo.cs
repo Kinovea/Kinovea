@@ -33,7 +33,7 @@ namespace Kinovea.Video
         public Size AspectRatioSize;
         public bool HasKva;
         
-        // Timing info
+        // Timing info - some of this might be overriden by the user.
         public long AverageTimeStampsPerFrame;
         public double AverageTimeStampsPerSeconds;
         public double FramesPerSeconds;
