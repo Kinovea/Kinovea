@@ -350,6 +350,7 @@
     <Compile Include="Metadata\Serialization\MetadataConverter.cs" />
     <Compile Include="Metadata\Serialization\MultiDrawingItemSerializer.cs" />
     <Compile Include="Metadata\Serialization\SerializationFilter.cs" />
+    <Compile Include="PlayerScreen\TimeMapper.cs" />
     <Compile Include="PlayerScreen\TimeType.cs" />
     <Compile Include="Measurement\Kinematics\Butterworth.cs" />
     <Compile Include="Measurement\Kinematics\FilteringResult.cs" />

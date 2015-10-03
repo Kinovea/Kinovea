@@ -17,6 +17,8 @@ namespace Kinovea.Tests
             //TestHistoryStack();
             //TestLineClipping();
 
+            TestTime();
+
             // Performance
             //ImageCopy.Test();
         }
@@ -53,6 +55,12 @@ namespace Kinovea.Tests
         private static void TestLineClipping()
         {
             LineClippingTester tester = new LineClippingTester();
+            tester.Test();
+        }
+    
+        private static void TestTime()
+        {
+            TimeTester tester = new TimeTester();
             tester.Test();
         }
     }
