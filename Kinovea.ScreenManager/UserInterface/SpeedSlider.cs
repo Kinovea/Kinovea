@@ -18,7 +18,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-
 using Kinovea.ScreenManager.Properties;
 using System;
 using System.ComponentModel;
@@ -202,6 +201,17 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public Methods
+        public void Initialize(double value)
+        {
+            m_iMinimum = 0;
+            m_iMaximum = 1000;
+            m_iValue = (int)Math.Round(value);
+            m_iStickyValue = m_iValue;
+            m_iSmallChange = 1;
+            m_iLargeChange = 10;
+
+            UpdateCursorPosition();
+        }
         public void EnableDisable(bool _bEnable)
         {
             m_bEnabled = _bEnable;

@@ -8,7 +8,7 @@ namespace Kinovea.Tests
 {
     public class TimeTester
     {
-        public void Test()
+        public void TestTimeMapper()
         {
             TimeMapper mapper = new TimeMapper();
 
@@ -28,16 +28,16 @@ namespace Kinovea.Tests
             t = mapper.GetInterval(1000);
             t = mapper.GetInterval(1001);
 
-            t = mapper.GetPercentage(-1);
-            t = mapper.GetPercentage(0);
-            t = mapper.GetPercentage(10);
-            t = mapper.GetPercentage(100);
-            t = mapper.GetPercentage(500);
-            t = mapper.GetPercentage(999);
-            t = mapper.GetPercentage(1000);
-            t = mapper.GetPercentage(1001);
+            t = mapper.GetRealtimeMultiplier(-1);
+            t = mapper.GetRealtimeMultiplier(0);
+            t = mapper.GetRealtimeMultiplier(10);
+            t = mapper.GetRealtimeMultiplier(100);
+            t = mapper.GetRealtimeMultiplier(500);
+            t = mapper.GetRealtimeMultiplier(999);
+            t = mapper.GetRealtimeMultiplier(1000);
+            t = mapper.GetRealtimeMultiplier(1001);
 
-            int i = 0;
+            double i = 0;
             i = mapper.GetInputFromSlowMotion(-1);
             i = mapper.GetInputFromSlowMotion(0);
             i = mapper.GetInputFromSlowMotion(0.1);
@@ -46,6 +46,34 @@ namespace Kinovea.Tests
             i = mapper.GetInputFromSlowMotion(1.5);
             i = mapper.GetInputFromSlowMotion(2);
             i = mapper.GetInputFromSlowMotion(2.1);
+        }
+        
+        public void TestSliderSpeed()
+        {
+            SliderLinear s = new SliderLinear();
+            s.Minimum = 0;
+            s.Maximum = 1000;
+            s.Value = 500;
+            
+            double v = 0;
+            v = s.StepJump(0.1);
+            v = s.StepJump(0.1);
+            v = s.StepJump(0.1);
+
+            v = s.StepJump(-0.2);
+            v = s.StepJump(-0.25);
+
+            s.Value = 0;
+            v = s.StepJump(-0.1);
+
+            s.Value = 5;
+            v = s.StepJump(-0.1);
+
+            s.Value = 1000;
+            v = s.StepJump(0.1);
+
+            s.Value = 995;
+            v = s.StepJump(0.1);
         }
     }
 }
