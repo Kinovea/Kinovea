@@ -29,23 +29,30 @@ namespace Kinovea.ScreenManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formConfigureSpeed));
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.grpConfig = new System.Windows.Forms.GroupBox();
-            this.btnReset = new System.Windows.Forms.Button();
-            this.tbCaptureFPS = new System.Windows.Forms.TextBox();
-            this.lblTimeStretchFactor = new System.Windows.Forms.Label();
-            this.lblVideoFPS = new System.Windows.Forms.Label();
-            this.lblCaptureFPS = new System.Windows.Forms.Label();
+            this.grpHighSpeedCamera = new System.Windows.Forms.GroupBox();
+            this.tbCaptureInfo = new System.Windows.Forms.TextBox();
+            this.btnResetCapture = new System.Windows.Forms.Button();
+            this.tbCapture = new System.Windows.Forms.TextBox();
+            this.lblCapture = new System.Windows.Forms.Label();
             this.toolTips = new System.Windows.Forms.ToolTip(this.components);
-            this.grpConfig.SuspendLayout();
+            this.grpVideo = new System.Windows.Forms.GroupBox();
+            this.lblFile = new System.Windows.Forms.Label();
+            this.tbVideoInfo = new System.Windows.Forms.TextBox();
+            this.btnResetUser = new System.Windows.Forms.Button();
+            this.tbUser = new System.Windows.Forms.TextBox();
+            this.lblUser = new System.Windows.Forms.Label();
+            this.grpHighSpeedCamera.SuspendLayout();
+            this.grpVideo.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(110, 144);
+            this.btnOK.Location = new System.Drawing.Point(265, 330);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(99, 24);
             this.btnOK.TabIndex = 25;
@@ -56,91 +63,153 @@ namespace Kinovea.ScreenManager
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(215, 144);
+            this.btnCancel.Location = new System.Drawing.Point(370, 330);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(99, 24);
             this.btnCancel.TabIndex = 30;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // grpConfig
+            // grpHighSpeedCamera
             // 
-            this.grpConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
+            this.grpHighSpeedCamera.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpConfig.Controls.Add(this.btnReset);
-            this.grpConfig.Controls.Add(this.tbCaptureFPS);
-            this.grpConfig.Controls.Add(this.lblTimeStretchFactor);
-            this.grpConfig.Controls.Add(this.lblVideoFPS);
-            this.grpConfig.Controls.Add(this.lblCaptureFPS);
-            this.grpConfig.Location = new System.Drawing.Point(12, 12);
-            this.grpConfig.Name = "grpConfig";
-            this.grpConfig.Size = new System.Drawing.Size(304, 126);
-            this.grpConfig.TabIndex = 29;
-            this.grpConfig.TabStop = false;
-            this.grpConfig.Text = "Configuration";
+            this.grpHighSpeedCamera.Controls.Add(this.tbCaptureInfo);
+            this.grpHighSpeedCamera.Controls.Add(this.btnResetCapture);
+            this.grpHighSpeedCamera.Controls.Add(this.tbCapture);
+            this.grpHighSpeedCamera.Controls.Add(this.lblCapture);
+            this.grpHighSpeedCamera.Location = new System.Drawing.Point(10, 12);
+            this.grpHighSpeedCamera.Name = "grpHighSpeedCamera";
+            this.grpHighSpeedCamera.Size = new System.Drawing.Size(459, 147);
+            this.grpHighSpeedCamera.TabIndex = 29;
+            this.grpHighSpeedCamera.TabStop = false;
+            this.grpHighSpeedCamera.Text = "High speed camera";
             // 
-            // btnReset
+            // tbCaptureInfo
             // 
-            this.btnReset.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.resettimescale;
-            this.btnReset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnReset.Location = new System.Drawing.Point(190, 25);
-            this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(20, 20);
-            this.btnReset.TabIndex = 25;
-            this.btnReset.UseVisualStyleBackColor = true;
-            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            this.tbCaptureInfo.BackColor = System.Drawing.Color.White;
+            this.tbCaptureInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbCaptureInfo.Location = new System.Drawing.Point(8, 59);
+            this.tbCaptureInfo.Multiline = true;
+            this.tbCaptureInfo.Name = "tbCaptureInfo";
+            this.tbCaptureInfo.ReadOnly = true;
+            this.tbCaptureInfo.Size = new System.Drawing.Size(445, 80);
+            this.tbCaptureInfo.TabIndex = 26;
+            this.tbCaptureInfo.Text = resources.GetString("tbCaptureInfo.Text");
             // 
-            // tbCaptureFPS
+            // btnResetCapture
             // 
-            this.tbCaptureFPS.Location = new System.Drawing.Point(216, 25);
-            this.tbCaptureFPS.Name = "tbCaptureFPS";
-            this.tbCaptureFPS.Size = new System.Drawing.Size(72, 20);
-            this.tbCaptureFPS.TabIndex = 24;
-            this.tbCaptureFPS.Text = "0000";
-            this.tbCaptureFPS.TextChanged += new System.EventHandler(this.tbCaptureFPS_TextChanged);
-            this.tbCaptureFPS.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbCaptureFPS_KeyPress);
+            this.btnResetCapture.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.resettimescale;
+            this.btnResetCapture.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnResetCapture.Location = new System.Drawing.Point(213, 25);
+            this.btnResetCapture.Name = "btnResetCapture";
+            this.btnResetCapture.Size = new System.Drawing.Size(20, 20);
+            this.btnResetCapture.TabIndex = 25;
+            this.btnResetCapture.UseVisualStyleBackColor = true;
+            this.btnResetCapture.Click += new System.EventHandler(this.btnResetCapture_Click);
             // 
-            // lblTimeStretchFactor
+            // tbCapture
             // 
-            this.lblTimeStretchFactor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tbCapture.Location = new System.Drawing.Point(135, 25);
+            this.tbCapture.Name = "tbCapture";
+            this.tbCapture.Size = new System.Drawing.Size(72, 20);
+            this.tbCapture.TabIndex = 24;
+            this.tbCapture.Text = "0000";
+            this.tbCapture.TextChanged += new System.EventHandler(this.tbCapture_TextChanged);
+            this.tbCapture.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbCapture_KeyPress);
+            // 
+            // lblCapture
+            // 
+            this.lblCapture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTimeStretchFactor.Location = new System.Drawing.Point(10, 84);
-            this.lblTimeStretchFactor.Name = "lblTimeStretchFactor";
-            this.lblTimeStretchFactor.Size = new System.Drawing.Size(288, 21);
-            this.lblTimeStretchFactor.TabIndex = 23;
-            this.lblTimeStretchFactor.Text = "Time stretch factor : {0}x.";
-            this.lblTimeStretchFactor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblCapture.Location = new System.Drawing.Point(10, 22);
+            this.lblCapture.Name = "lblCapture";
+            this.lblCapture.Size = new System.Drawing.Size(424, 25);
+            this.lblCapture.TabIndex = 21;
+            this.lblCapture.Text = "Capture framerate:";
+            this.lblCapture.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblVideoFPS
+            // grpVideo
             // 
-            this.lblVideoFPS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.grpVideo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVideoFPS.Location = new System.Drawing.Point(10, 54);
-            this.lblVideoFPS.Name = "lblVideoFPS";
-            this.lblVideoFPS.Size = new System.Drawing.Size(288, 23);
-            this.lblVideoFPS.TabIndex = 22;
-            this.lblVideoFPS.Text = "Playback framerate : {0:0.00} fps.";
-            this.lblVideoFPS.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.grpVideo.Controls.Add(this.lblFile);
+            this.grpVideo.Controls.Add(this.tbVideoInfo);
+            this.grpVideo.Controls.Add(this.btnResetUser);
+            this.grpVideo.Controls.Add(this.tbUser);
+            this.grpVideo.Controls.Add(this.lblUser);
+            this.grpVideo.Location = new System.Drawing.Point(10, 165);
+            this.grpVideo.Name = "grpVideo";
+            this.grpVideo.Size = new System.Drawing.Size(459, 158);
+            this.grpVideo.TabIndex = 30;
+            this.grpVideo.TabStop = false;
+            this.grpVideo.Text = "Video";
             // 
-            // lblCaptureFPS
+            // lblFile
             // 
-            this.lblCaptureFPS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.lblFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCaptureFPS.Location = new System.Drawing.Point(10, 22);
-            this.lblCaptureFPS.Name = "lblCaptureFPS";
-            this.lblCaptureFPS.Size = new System.Drawing.Size(198, 25);
-            this.lblCaptureFPS.TabIndex = 21;
-            this.lblCaptureFPS.Text = "Capture framerate (ex:300) :";
-            this.lblCaptureFPS.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFile.Location = new System.Drawing.Point(10, 21);
+            this.lblFile.Name = "lblFile";
+            this.lblFile.Size = new System.Drawing.Size(424, 25);
+            this.lblFile.TabIndex = 21;
+            this.lblFile.Text = "Framerate read in the file: 0 fps";
+            this.lblFile.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tbVideoInfo
+            // 
+            this.tbVideoInfo.BackColor = System.Drawing.Color.White;
+            this.tbVideoInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbVideoInfo.Location = new System.Drawing.Point(8, 99);
+            this.tbVideoInfo.Multiline = true;
+            this.tbVideoInfo.Name = "tbVideoInfo";
+            this.tbVideoInfo.ReadOnly = true;
+            this.tbVideoInfo.Size = new System.Drawing.Size(445, 43);
+            this.tbVideoInfo.TabIndex = 26;
+            this.tbVideoInfo.Text = "Set the reference framerate that Kinovea will use to play this video. Use this wh" +
+                "en the video contains a wrong framerate or Kinovea cannot read it. ";
+            // 
+            // btnResetUser
+            // 
+            this.btnResetUser.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.resettimescale;
+            this.btnResetUser.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnResetUser.Location = new System.Drawing.Point(209, 61);
+            this.btnResetUser.Name = "btnResetUser";
+            this.btnResetUser.Size = new System.Drawing.Size(20, 20);
+            this.btnResetUser.TabIndex = 25;
+            this.btnResetUser.UseVisualStyleBackColor = true;
+            this.btnResetUser.Click += new System.EventHandler(this.btnResetUser_Click);
+            // 
+            // tbUser
+            // 
+            this.tbUser.Location = new System.Drawing.Point(131, 61);
+            this.tbUser.Name = "tbUser";
+            this.tbUser.Size = new System.Drawing.Size(72, 20);
+            this.tbUser.TabIndex = 24;
+            this.tbUser.Text = "0000";
+            this.tbUser.TextChanged += new System.EventHandler(this.tbUser_TextChanged);
+            this.tbUser.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbUser_KeyPress);
+            // 
+            // lblUser
+            // 
+            this.lblUser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblUser.Location = new System.Drawing.Point(10, 58);
+            this.lblUser.Name = "lblUser";
+            this.lblUser.Size = new System.Drawing.Size(424, 25);
+            this.lblUser.TabIndex = 21;
+            this.lblUser.Text = "Video framerate:";
+            this.lblUser.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // formConfigureSpeed
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(326, 178);
-            this.Controls.Add(this.grpConfig);
+            this.ClientSize = new System.Drawing.Size(481, 364);
+            this.Controls.Add(this.grpVideo);
+            this.Controls.Add(this.grpHighSpeedCamera);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -150,9 +219,11 @@ namespace Kinovea.ScreenManager
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "   Configure Original Speed";
-            this.grpConfig.ResumeLayout(false);
-            this.grpConfig.PerformLayout();
+            this.Text = "   Configure Video time";
+            this.grpHighSpeedCamera.ResumeLayout(false);
+            this.grpHighSpeedCamera.PerformLayout();
+            this.grpVideo.ResumeLayout(false);
+            this.grpVideo.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -161,13 +232,18 @@ namespace Kinovea.ScreenManager
 
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.GroupBox grpConfig;
-        private System.Windows.Forms.Label lblCaptureFPS;
-        private System.Windows.Forms.Label lblTimeStretchFactor;
-        private System.Windows.Forms.Label lblVideoFPS;
-        private System.Windows.Forms.TextBox tbCaptureFPS;
-        private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.GroupBox grpHighSpeedCamera;
+        private System.Windows.Forms.Label lblCapture;
+        private System.Windows.Forms.TextBox tbCapture;
+        private System.Windows.Forms.Button btnResetCapture;
         private System.Windows.Forms.ToolTip toolTips;
+        private System.Windows.Forms.TextBox tbCaptureInfo;
+        private System.Windows.Forms.GroupBox grpVideo;
+        private System.Windows.Forms.TextBox tbVideoInfo;
+        private System.Windows.Forms.Button btnResetUser;
+        private System.Windows.Forms.TextBox tbUser;
+        private System.Windows.Forms.Label lblUser;
+        private System.Windows.Forms.Label lblFile;
 
     }
 }

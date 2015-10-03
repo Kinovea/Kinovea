@@ -249,6 +249,16 @@ namespace Kinovea.ScreenManager
             get { return highSpeedFactor; }
             set { highSpeedFactor = value; }
         }
+
+        /// <summary>
+        /// The frame interval used for playback timer, as specified by the user.
+        /// </summary>
+        public double UserInterval
+        {
+            get { return userInterval; }
+            set { userInterval = value; }
+        }
+
         public CalibrationHelper CalibrationHelper 
         {
             get { return calibrationHelper; }
@@ -299,6 +309,7 @@ namespace Kinovea.ScreenManager
         private long selectionStart;
         private long selectionEnd;
         private double highSpeedFactor = 1.0;
+        private double userInterval = 40;
         private int referenceHash;
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
         private CoordinateSystem coordinateSystem = new CoordinateSystem();
@@ -330,9 +341,14 @@ namespace Kinovea.ScreenManager
         public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder, ClosestFrameDisplayer closestFrameDisplayer)
             : this(historyStack, timecodeBuilder)
         {
+            // This should reflect what we do in FrameServerPlayer.SetupMetadata
             imageSize = info.AspectRatioSize;
+            userInterval = info.FrameIntervalMilliseconds;
             averageTimeStampsPerFrame = info.AverageTimeStampsPerFrame;
             averageTimeStampsPerSecond = info.AverageTimeStampsPerSeconds;
+            calibrationHelper.CaptureFramesPerSecond = info.FramesPerSeconds;
+            firstTimeStamp = info.FirstTimeStamp;
+            
             fullPath = info.FilePath;
 
             MetadataSerializer serializer = new MetadataSerializer();
@@ -1147,6 +1163,9 @@ namespace Kinovea.ScreenManager
         {
             // Look for a hit in all drawings of a particular Key Frame.
             // Important side effect : the drawing being hit becomes Selected. This is then used for right click menu.
+
+            if (keyframes.Count == 0)
+                return false;
 
             bool isOnDrawing = false;
             Keyframe keyframe = keyframes[keyFrameIndex];
