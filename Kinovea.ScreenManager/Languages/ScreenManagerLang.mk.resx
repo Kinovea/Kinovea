@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Прилагодување на оригиналната брзина</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Ресетирање</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Ресетирање</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Прикажи го целниот означувач</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Покажи ги насловите на клучните слики</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Покажи го патот</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Мерка за калибрирање...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Калибрирај...</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Прати ја сликата на друго видео</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Камера со голема брзина</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>Изострување...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Прикажи координати</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Прикажи мерка</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Преглед...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Обратно...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Автоматско прилагодување на контрастот...</value></data>
-   
    
    
    

@@ -538,51 +538,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Capture framerate (ex:300) :.
-        /// </summary>
-        internal static string dlgConfigureSpeed_lblFPSCaptureTime {
-            get {
-                return ResourceManager.GetString("dlgConfigureSpeed_lblFPSCaptureTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Video framerate : {0:0.00} fps..
-        /// </summary>
-        internal static string dlgConfigureSpeed_lblFPSDisplayTime {
-            get {
-                return ResourceManager.GetString("dlgConfigureSpeed_lblFPSDisplayTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Time stretch factor : {0}x..
-        /// </summary>
-        internal static string dlgConfigureSpeed_lblTimeStretchFactor {
-            get {
-                return ResourceManager.GetString("dlgConfigureSpeed_lblTimeStretchFactor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure original speed.
-        /// </summary>
-        internal static string dlgConfigureSpeed_Title {
-            get {
-                return ResourceManager.GetString("dlgConfigureSpeed_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reset.
-        /// </summary>
-        internal static string dlgConfigureSpeed_ToolTip_Reset {
-            get {
-                return ResourceManager.GetString("dlgConfigureSpeed_ToolTip_Reset", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show the Target Marker.
         /// </summary>
         internal static string dlgConfigureTrajectory_chkShowTarget {
@@ -1011,6 +966,78 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgSaveVideoTitle {
             get {
                 return ResourceManager.GetString("dlgSaveVideoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to High speed camera.
+        /// </summary>
+        internal static string dlgTimebase_GroupCapture {
+            get {
+                return ResourceManager.GetString("dlgTimebase_GroupCapture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This option defines the difference between video speed and real time. It impacts labels containing times and kinematics measurements. Use it when the video was filmed in high speed mode. .
+        /// </summary>
+        internal static string dlgTimebase_InfoCapture {
+            get {
+                return ResourceManager.GetString("dlgTimebase_InfoCapture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This option defines the reference framerate used by Kinovea to play the video. Use it when the video contains a wrong framerate or Kinovea cannot read it. .
+        /// </summary>
+        internal static string dlgTimebase_InfoUser {
+            get {
+                return ResourceManager.GetString("dlgTimebase_InfoUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Capture framerate:.
+        /// </summary>
+        internal static string dlgTimebase_lblCapture {
+            get {
+                return ResourceManager.GetString("dlgTimebase_lblCapture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Framerate read in the file: {0:0.##} fps.
+        /// </summary>
+        internal static string dlgTimebase_lblFileFPS {
+            get {
+                return ResourceManager.GetString("dlgTimebase_lblFileFPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video framerate:.
+        /// </summary>
+        internal static string dlgTimebase_lblUserFPS {
+            get {
+                return ResourceManager.GetString("dlgTimebase_lblUserFPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure video timing.
+        /// </summary>
+        internal static string dlgTimebase_Title {
+            get {
+                return ResourceManager.GetString("dlgTimebase_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        internal static string dlgTimebase_ToolTip_Reset {
+            get {
+                return ResourceManager.GetString("dlgTimebase_ToolTip_Reset", resourceCulture);
             }
         }
         
@@ -2392,15 +2419,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to High-speed camera....
-        /// </summary>
-        internal static string mnuSetCaptureSpeed {
-            get {
-                return ResourceManager.GetString("mnuSetCaptureSpeed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sharpen....
         /// </summary>
         internal static string mnuSharpen {
@@ -2487,6 +2505,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string mnuThumbnailRename {
             get {
                 return ResourceManager.GetString("mnuThumbnailRename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure video timing....
+        /// </summary>
+        internal static string mnuTimebase {
+            get {
+                return ResourceManager.GetString("mnuTimebase", resourceCulture);
             }
         }
         

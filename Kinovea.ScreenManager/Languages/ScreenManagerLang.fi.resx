@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Konfiguroi alkuperäistä nopeutta.</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Palauta</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Palauta</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Näytä kohdemerkki</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Näytä avainkuvien nimet</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Näytä liikerata</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Sulje mitta...</value></data>
    
    <data name="mnuSendPic" xml:space="preserve"><value>Lähetä kuva toiseen videoon</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Suurnopeuskamera</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>Tarkenna...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Näytä koordinaatit</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Näytä mitta</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Katsaus...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Käänteinen...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automaattinen tarkennus...</value></data>
-   
    
    
    

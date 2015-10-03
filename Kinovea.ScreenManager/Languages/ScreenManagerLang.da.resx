@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Konfigurer original hastighed</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Nulstil</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Nulstil</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Vis Målmarkør</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Vis Nøglebilleders titler</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Vis stien</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrer måling…</value></data>
    
    <data name="mnuSendPic" xml:space="preserve"><value>Send billede til den anden video</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>High speed kamera</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>Gør skarp…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Vis koordinater</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overblik…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Omvendt rækkefølge…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast…</value></data>
-   
    
    
    

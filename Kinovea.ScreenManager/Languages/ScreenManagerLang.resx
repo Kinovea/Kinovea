@@ -113,11 +113,14 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configure Grid</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configure Opacity</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacity: {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Capture framerate (ex:300) :</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Video framerate : {0:0.00} fps.</value></data>
-   <data name="dlgConfigureSpeed_lblTimeStretchFactor" xml:space="preserve"><value>Time stretch factor : {0}x.</value></data>
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configure original speed</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Reset</value></data>
+   <data name="dlgTimebase_Title" xml:space="preserve"><value>Configure video timing</value></data>
+   <data name="dlgTimebase_GroupCapture" xml:space="preserve"><value>High speed camera</value></data>
+   <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Capture framerate:</value></data>
+   <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>This option defines the difference between video speed and real time. It impacts labels containing times and kinematics measurements. Use it when the video was filmed in high speed mode. </value></data>
+   <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>Framerate read in the file: {0:0.##} fps</value></data>
+   <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Video framerate:</value></data>
+   <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>This option defines the reference framerate used by Kinovea to play the video. Use it when the video contains a wrong framerate or Kinovea cannot read it. </value></data>
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Reset</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Show the Target Marker</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Show Key Images Titles</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Show Path</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrate measure...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrate...</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Send image to the other video</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>High-speed camera...</value></data>
+   <data name="mnuTimebase" xml:space="preserve"><value>Configure video timing...</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Sharpen...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Display coordinates</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Display Measure</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overview...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reverse...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto Contrast...</value></data>
-   
    
    
    

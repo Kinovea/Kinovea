@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configura velocita' originale</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Azzera</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Azzera</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Mostra riquadro marcatore bersaglio</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Mostra Titoli delle Immagini Chiave</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Mostra la Traiettoria</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Misura stabilita...</value></data>
    
    <data name="mnuSendPic" xml:space="preserve"><value>Invia un'immagine all'altro video</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Videocamera ad alta velocita'...</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>Nitidezza...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Visualizza le coordinate</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Visualizza la misura</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Panoramica...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>A ritroso...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrasto automatico...</value></data>
-   
    
    
    

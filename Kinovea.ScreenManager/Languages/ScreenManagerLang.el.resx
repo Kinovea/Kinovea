@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Διευθέτηση αρχικής ταχύτητας</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Επανάθεση</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Επανάθεση</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Εμφάνιση Σελιδοδείκτη Προορισμού</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Εμφάνιση Τίτλων εικόνων κλειδιά</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Εμφάνιση Διαδρομής</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Μέτρηση σφραγίδας…</value></data>
    
    <data name="mnuSendPic" xml:space="preserve"><value>Αποστολή εικόνας στο άλλο βίντεο</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Κάμερα Υψηλής–Ταχύτητας</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>Όξυνση…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Απεικόνηση συντεταγμένων</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Απεικόνιση Μέτρησης</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Περίληψη…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Αντιστροφή…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Αυτόματη Αντίθεση...</value></data>
-   
    
    
    

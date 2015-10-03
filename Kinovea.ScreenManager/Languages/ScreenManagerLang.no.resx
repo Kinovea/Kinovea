@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Konfigurer opptakshastighet</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Tilbakestill</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Tilbakestill</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Vis markør</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Vis nøkkelbilde titler</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Vis bane</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrere måling</value></data>
    
    
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Sett original fart</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>Skarp opp</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
-   
    
    
    

@@ -116,8 +116,11 @@
    
    
    
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configurar la velocitat d'orígen</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Restablir</value></data>
+   
+   
+   
+   
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Restablir</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Mostrar el marcador de l'objectiu</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Mostrar el títols de les imatges clau</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Mostrar la trajectòria</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar la mesura...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar...</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Enviar l'imatge a l'altre vídeo</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Càmera d'alta velocitat...</value></data>
+   
    <data name="mnuSharpen" xml:space="preserve"><value>Ressalta els contorns</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Mostrar coordenades</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar mesura</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resum...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverteix</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast Automàtic</value></data>
-   
    
    
    

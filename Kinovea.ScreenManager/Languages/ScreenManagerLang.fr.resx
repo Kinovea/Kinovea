@@ -113,11 +113,14 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configurer la Grille</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configurer l'opacité</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacité : {0:0}%</value></data>
-   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Fréquence de capture (ex : 300) :</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Fréquence de la vidéo : {0:0.00} ips.</value></data>
-   <data name="dlgConfigureSpeed_lblTimeStretchFactor" xml:space="preserve"><value>Facteur d'étirement temporel : {0}x.</value></data>
-   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configurer la vitesse d'origine</value></data>
-   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Remettre à zéro</value></data>
+   <data name="dlgTimebase_Title" xml:space="preserve"><value>Configurer le timing de la vidéo</value></data>
+   <data name="dlgTimebase_GroupCapture" xml:space="preserve"><value>Camera haute vitesse</value></data>
+   <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Fréquence de capture :</value></data>
+   <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Cette option définit la différence entre la fréquence de la vidéo et le temps réel. Elle impacte les labels contenant des temps et les mesures cinématiques. Utilisez cette option lorsque la vidéo a été filmée en mode haute-vitesse.</value></data>
+   <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>Fréquence d'images lue dans le fichier : {0:0.##} fps</value></data>
+   <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Fréquence de la vidéo :</value></data>
+   <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Cette option définit la fréquence de référence utilisée par Kinovea pour jouer la vidéo. À utiliser si la vidéo contient une mauvaise fréquence d'images ou si Kinovea ne peut pas la relire correctement.</value></data>
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Remettre à zéro</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Montrer le Marqueur de Cible</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Montrer les Titres des Images Clés</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Montrer la Trajectoire</value></data>
@@ -324,7 +327,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Étalonner la mesure...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrer…</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Envoyer l'image vers l'autre vidéo</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Caméra haute-vitesse...</value></data>
+   <data name="mnuTimebase" xml:space="preserve"><value>Configurer le timing de la vidéo…</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Renforcement des Contours...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Afficher les coordonnées</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afficher la mesure</value></data>
@@ -404,7 +407,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Vue d'ensemble...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverse...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste Automatique...</value></data>
-   
    
    
    
