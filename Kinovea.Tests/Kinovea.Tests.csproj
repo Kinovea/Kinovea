@@ -99,6 +99,7 @@
     <Compile Include="Kinematics\MovingObject.cs" />
     <Compile Include="Kinematics\VideoSynthesizer.cs" />
     <Compile Include="RandomExtension.cs" />
+    <Compile Include="Time\TimeTester.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kinovea.ScreenManager\Kinovea.ScreenManager.csproj">
