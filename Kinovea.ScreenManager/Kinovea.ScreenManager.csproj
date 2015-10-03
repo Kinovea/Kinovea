@@ -414,6 +414,9 @@
     <Compile Include="DualCapture\CommonControlsCapture.Designer.cs">
       <DependentUpon>CommonControlsCapture.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\SliderLinear.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UserInterface\FormCrashRecovery.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -553,43 +556,43 @@
     <Compile Include="Measurement\Tracking\DrawingTrack.cs" />
     <Compile Include="Measurement\Tracking\TrackerBlock2.cs" />
     <Compile Include="Measurement\Tracking\TrackPointBlock.cs" />
-    <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.cs">
+    <Compile Include="UserInterface\DropDownMenuContainer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.Designer.cs">
+    <Compile Include="UserInterface\DropDownMenuContainer.Designer.cs">
       <DependentUpon>DropDownMenuContainer.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\FrameTracker.cs">
+    <Compile Include="UserInterface\FrameTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\FrameTracker.Designer.cs">
+    <Compile Include="UserInterface\FrameTracker.Designer.cs">
       <DependentUpon>FrameTracker.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\FrequencyViewer.cs">
+    <Compile Include="UserInterface\FrequencyViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\FrequencyViewer.Designer.cs">
+    <Compile Include="UserInterface\FrequencyViewer.Designer.cs">
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\KeyframeBox.cs">
+    <Compile Include="UserInterface\KeyframeBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\KeyframeBox.Designer.cs">
+    <Compile Include="UserInterface\KeyframeBox.Designer.cs">
       <DependentUpon>KeyframeBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\SelectionTracker.cs">
+    <Compile Include="UserInterface\SelectionTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\SelectionTracker.Designer.cs">
+    <Compile Include="UserInterface\SelectionTracker.Designer.cs">
       <DependentUpon>SelectionTracker.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\SpeedSlider.cs">
+    <Compile Include="UserInterface\SpeedSlider.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\SpeedSlider.designer.cs">
+    <Compile Include="UserInterface\SpeedSlider.designer.cs">
       <DependentUpon>SpeedSlider.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\ToolStripButtonWithDropDown.cs">
+    <Compile Include="UserInterface\ToolStripButtonWithDropDown.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.cs">
@@ -818,11 +821,11 @@
     <Compile Include="UserInterface\ScreenManagerUserInterface.Designer.cs">
       <DependentUpon>ScreenManagerUserInterface.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\MessageToaster.cs" />
+    <Compile Include="MessageToaster.cs" />
     <Compile Include="UserInterface\SliderLogScale.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UserInterface\UIHelper.cs" />
+    <Compile Include="UIHelper.cs" />
     <EmbeddedResource Include="CaptureScreen\Delay\UserInterface\DelayCompositeFrozenMosaicControl.resx">
       <DependentUpon>DelayCompositeFrozenMosaicControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -879,23 +882,23 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Player.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\Controls\FrameTracker.resx">
+    <EmbeddedResource Include="UserInterface\FrameTracker.resx">
       <DependentUpon>FrameTracker.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\Controls\FrequencyViewer.resx">
+    <EmbeddedResource Include="UserInterface\FrequencyViewer.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\Controls\KeyframeBox.resx">
+    <EmbeddedResource Include="UserInterface\KeyframeBox.resx">
       <SubType>Designer</SubType>
       <DependentUpon>KeyframeBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\Controls\SelectionTracker.resx">
+    <EmbeddedResource Include="UserInterface\SelectionTracker.resx">
       <DependentUpon>SelectionTracker.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\Controls\SpeedSlider.resx">
+    <EmbeddedResource Include="UserInterface\SpeedSlider.resx">
       <DependentUpon>SpeedSlider.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -962,6 +965,9 @@
     <EmbeddedResource Include="DualCapture\CommonControlsCapture.resx">
       <DependentUpon>CommonControlsCapture.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\SliderLinear.resx">
+      <DependentUpon>SliderLinear.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormColorPicker.resx">
       <DependentUpon>FormColorPicker.cs</DependentUpon>

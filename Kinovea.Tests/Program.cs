@@ -61,7 +61,7 @@ namespace Kinovea.Tests
         private static void TestTime()
         {
             TimeTester tester = new TimeTester();
-            tester.Test();
+            tester.TestSliderSpeed();
         }
     }
 }

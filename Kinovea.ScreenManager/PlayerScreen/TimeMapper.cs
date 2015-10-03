@@ -39,11 +39,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private const double epsilon = 0.0001;
+        private const double epsilon = 0.000001;
 
         // Slow motion slider input values.
-        private int minInput = 0; 
-        private int maxInput = 1000;
+        private double minInput = 0; 
+        private double maxInput = 1000;
 
         // Slow motion factor values. 1 = file baseline.
         private double minSlowMotion = epsilon;
@@ -59,7 +59,7 @@ namespace Kinovea.ScreenManager
         /// Set the range of slider input values.
         /// This should be directly coming from the UI.
         /// </summary>
-        public void SetInputRange(int minInput, int maxInput)
+        public void SetInputRange(double minInput, double maxInput)
         {
             this.minInput = minInput;
             this.maxInput = maxInput;
@@ -77,34 +77,40 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Returns the factor of slow motion corresponding to the input.
+        /// </summary>
+        public double GetSlowMotion(double input)
+        {
+            return MapInput(input);
+        }
+
+        /// <summary>
         /// Returns the frame interval in ms, to be used by the playback timer.
         /// </summary>
-        public double GetInterval(int input)
+        public double GetInterval(double input)
         {
             double slowMotion = MapInput(input);
             return userInterval / slowMotion;
         }
 
         /// <summary>
-        /// Returns the percentage of real-time, for information purposes.
+        /// Returns the fraction of real-time speed of the given input, for information purposes.
+        /// Used to display percentage or multiplier of real-time.
         /// </summary>
-        public double GetPercentage(int input)
+        public double GetRealtimeMultiplier(double input)
         {
             double slowdownFactor = userInterval / captureInterval;
-            
             double slowMotion = MapInput(input);
-            double percentage = slowMotion * 100.0 / slowdownFactor;
-            return percentage;
+            return slowMotion / slowdownFactor;
         }
 
         /// <summary>
         /// Returns the slider input corresponding to a specific slow motion factor.
         /// Used to draw tick marks.
         /// </summary>
-        public int GetInputFromSlowMotion(double slowMotion)
+        public double GetInputFromSlowMotion(double slowMotion)
         {
-            int input = MapSlowMotion(slowMotion);
-            return input;
+            return MapSlowMotion(slowMotion);
         }
         #endregion
 
@@ -112,7 +118,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Maps from slider input value to slow motion factor.
         /// </summary>
-        private double MapInput(int input)
+        private double MapInput(double input)
         {
             input = Math.Min(Math.Max(input, minInput), maxInput);
             return MapInputLinear(input);
@@ -121,24 +127,24 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Maps from slider input value to slow motion factor linearly.
         /// </summary>
-        private double MapInputLinear(int input)
+        private double MapInputLinear(double input)
         {
-            double inputNormalized = ((double)input - minInput) / ((double)maxInput - minInput);
+            double inputNormalized = (input - minInput) / (maxInput - minInput);
             double result = minSlowMotion + (inputNormalized * (maxSlowMotion - minSlowMotion));
             return result;
         }
 
-        private int MapSlowMotion(double slowMotion)
+        private double MapSlowMotion(double slowMotion)
         {
             slowMotion = Math.Min(Math.Max(slowMotion, minSlowMotion), maxSlowMotion);
             return MapSlowMotionLinear(slowMotion);
         }
 
-        private int MapSlowMotionLinear(double slowMotion)
+        private double MapSlowMotionLinear(double slowMotion)
         {
-            double slowMotionNormalized = ((double)slowMotion - minSlowMotion) / ((double)maxSlowMotion - minSlowMotion);
+            double slowMotionNormalized = (slowMotion - minSlowMotion) / (maxSlowMotion - minSlowMotion);
             double result = minInput + (slowMotionNormalized * (maxInput - minInput));
-            return (int)Math.Round(result);
+            return result;
         }
         #endregion
 
