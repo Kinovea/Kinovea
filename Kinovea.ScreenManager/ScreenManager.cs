@@ -1182,7 +1182,8 @@ namespace Kinovea.ScreenManager
             mnuSVGTools.Text = ScreenManagerLang.mnuSVGTools;
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
             RefreshCultureMenuFilters();
-            mnuTimebase.Text = ScreenManagerLang.mnuSetCaptureSpeed;
+            //mnuTimebase.Text = ScreenManagerLang.mnuSetCaptureSpeed;
+            mnuTimebase.Text = "Configure video time";
         }
             
         private void RefreshCultureMenuFilters()
