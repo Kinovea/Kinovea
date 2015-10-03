@@ -133,6 +133,8 @@ namespace Kinovea.ScreenManager
             if (manualUpdate)
                 return;
 
+            bool usingNominalCaptureFramerate = captureInterval == userInterval;
+
             // Text is parsed using the current culture.
             double result;
             bool parsed = double.TryParse(tbUser.Text, out result);
@@ -144,6 +146,13 @@ namespace Kinovea.ScreenManager
 
             if (userFPS != result)
                 UpdateUserText();
+
+            if (usingNominalCaptureFramerate)
+            {
+                // Update the capture framerate if the user wasn't using a special capture framerate.
+                captureInterval = userInterval;
+                UpdateCaptureText();
+            }
         }
         private void UpdateUserText()
         {
