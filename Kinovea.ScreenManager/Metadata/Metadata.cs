@@ -242,7 +242,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// The ratio between the capture framerate and the video framerate.
-        /// A value of 10 means that the video is 10 times slower than real time, and that 10 times as much frames are packed in a given unit of real time.
+        /// The slowdown factor of the video relatively to real time.
         /// </summary>
         public double HighSpeedFactor
         {
