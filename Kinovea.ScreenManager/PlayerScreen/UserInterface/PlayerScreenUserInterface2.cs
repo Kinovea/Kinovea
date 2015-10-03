@@ -111,25 +111,20 @@ namespace Kinovea.ScreenManager
             {
                 // This happens only in the context of synching 
                 // when the other video changed its speed percentage (user or forced).
-                // We must NOT trigger the event here, or it will impact the other screen in an infinite loop.
-                // Compute back the slow motion percentage relative to the playback framerate.
+                // We must NOT trigger the SpeedChanged event here, or it will impact the other screen in an infinite loop.
                 
-                // FIXME: refactoring in progress.
-                
-                /*double playbackPercentage = value * m_FrameServer.Metadata.HighSpeedFactor;
-                playbackPercentage = Math.Max(1, Math.Min(playbackPercentage, 200));
-                m_fSlowmotionPercentage = playbackPercentage;
+                slowMotion = value * m_FrameServer.Metadata.HighSpeedFactor / 100;
+                sldrSpeed.Value = timeMapper.GetInputFromSlowMotion(slowMotion);
+                sldrSpeed.Invalidate();
 
-                //sldrSpeed.Value = (int)playbackPercentage;
-                
                 // Reset timer with new value.
                 if (m_bIsCurrentlyPlaying)
                 {
                     StopMultimediaTimer();
-                    StartMultimediaTimer((int)GetPlaybackFrameInterval());
+                    StartMultimediaTimer(GetPlaybackFrameInterval());
                 }
 
-                UpdateSpeedLabel();*/
+                UpdateSpeedLabel();
             }
         }
         public bool Synched
@@ -1559,8 +1554,7 @@ namespace Kinovea.ScreenManager
             {
                 // Go into Play mode
                 buttonPlay.Image = Resources.flatpause3b;
-                double interval = GetPlaybackFrameInterval();
-                StartMultimediaTimer((int)Math.Round(interval));
+                StartMultimediaTimer(GetPlaybackFrameInterval());
             }
         }
         public void Common_MouseWheel(object sender, MouseEventArgs e)
@@ -1878,7 +1872,7 @@ namespace Kinovea.ScreenManager
                 if (m_bIsCurrentlyPlaying)
                 {
                     StopMultimediaTimer();
-                    StartMultimediaTimer((int)GetPlaybackFrameInterval());
+                    StartMultimediaTimer(GetPlaybackFrameInterval());
                 }
 
                 if (SpeedChanged != null)
@@ -2277,7 +2271,7 @@ namespace Kinovea.ScreenManager
                 bool rewound = ShowNextFrame(m_iSelStart, true);
                 
                 if(rewound)
-                    StartMultimediaTimer((int)GetPlaybackFrameInterval());
+                    StartMultimediaTimer(GetPlaybackFrameInterval());
                 else
                     StopPlaying();
             }
@@ -2397,9 +2391,9 @@ namespace Kinovea.ScreenManager
                 UpdatePositionUI();
             }
         }
-        private double GetPlaybackFrameInterval()
+        private int GetPlaybackFrameInterval()
         {
-            return timeMapper.GetInterval(sldrSpeed.Value);
+            return (int)Math.Round(timeMapper.GetInterval(sldrSpeed.Value));
         }
         private void DeselectionTimer_OnTick(object sender, EventArgs e) 
         {
