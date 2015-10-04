@@ -68,8 +68,7 @@ namespace Kinovea.ScreenManager
         private bool m_IsError;
         private List<Bitmap> m_Bitmaps;
         private Bitmap currentThumbnail;
-        private string m_DurationText = "0:00:00";
-        private string imageSize = "";
+        private FileDetails details = new FileDetails();
         private bool m_bIsImage;
         private bool hasKva;
         private string m_ImageText;
@@ -220,19 +219,22 @@ namespace Kinovea.ScreenManager
                 if(summary.IsImage)
                 {
                     m_bIsImage = true;
-                    m_DurationText = "0";
+                    details.Duration = "0";
                 }
                 else
                 {
-                    m_DurationText = TimeHelper.MillisecondsToTimecode((double)summary.DurationMilliseconds, false, true);
+                    details.Duration = TimeHelper.MillisecondsToTimecode((double)summary.DurationMilliseconds, false, true);
                 }
 
                 if (summary.ImageSize == Size.Empty)
-                    imageSize = "";
+                    details.Size = "";
                 else
-                    imageSize = String.Format("{0}×{1}", summary.ImageSize.Width, summary.ImageSize.Height);
+                    details.Size = String.Format("{0}×{1}", summary.ImageSize.Width, summary.ImageSize.Height);
+                
                 hasKva = summary.HasKva;
                 
+
+
                 SetSize(this.Width, this.Height);
             }
         }
@@ -443,20 +445,20 @@ namespace Kinovea.ScreenManager
             // MeasureString doesn't support trailing spaces.
             // We used # as placeholders, remove them just before drawing.
             _canvas.SmoothingMode = SmoothingMode.AntiAlias;
-            SizeF bgSize = bgSize = _canvas.MeasureString(m_bIsImage ? m_ImageText : m_DurationText, m_FontDuration);;
-            string actualText = m_bIsImage ? m_ImageText.Replace('#', ' ') : m_DurationText;
+            SizeF bgSize = bgSize = _canvas.MeasureString(m_bIsImage ? m_ImageText : details.Duration, m_FontDuration);;
+            string actualText = m_bIsImage ? m_ImageText.Replace('#', ' ') : details.Duration;
             _canvas.DrawLine(m_PenDuration, (float)picBox.Width - bgSize.Width - 1, 12, (float)picBox.Width - 4, 12);
             _canvas.DrawString(actualText, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize.Width - 3, 5);
         }
         private void DrawImageSize(Graphics _canvas)
         {
-            if (string.IsNullOrEmpty(imageSize))
+            if (string.IsNullOrEmpty(details.Size))
                 return;
 
-            SizeF bgSize2 = _canvas.MeasureString(imageSize, m_FontDuration);
+            SizeF bgSize2 = _canvas.MeasureString(details.Size, m_FontDuration);
             int sizeTop = 29;
             _canvas.DrawLine(m_PenDuration, (float)picBox.Width - bgSize2.Width - 1, sizeTop, (float)picBox.Width - 4, sizeTop);
-            _canvas.DrawString(imageSize, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize2.Width - 3, sizeTop - 7);
+            _canvas.DrawString(details.Size, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize2.Width - 3, sizeTop - 7);
         }
         private void DrawKVAHint(Graphics _canvas)
         {
