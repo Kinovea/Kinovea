@@ -56,24 +56,24 @@ namespace Kinovea.Tests
             s.Value = 500;
             
             double v = 0;
-            v = s.StepJump(0.1);
-            v = s.StepJump(0.1);
-            v = s.StepJump(0.1);
+            s.StepJump(0.1);
+            s.StepJump(0.1);
+            s.StepJump(0.1);
 
-            v = s.StepJump(-0.2);
-            v = s.StepJump(-0.25);
+            s.StepJump(-0.2);
+            s.StepJump(-0.25);
 
             s.Value = 0;
-            v = s.StepJump(-0.1);
+             s.StepJump(-0.1);
 
             s.Value = 5;
-            v = s.StepJump(-0.1);
+            s.StepJump(-0.1);
 
             s.Value = 1000;
-            v = s.StepJump(0.1);
+            s.StepJump(0.1);
 
             s.Value = 995;
-            v = s.StepJump(0.1);
+            s.StepJump(0.1);
         }
     }
 }
