@@ -92,19 +92,12 @@ namespace Kinovea.Services
         
         public static void LogInfo()
         {
-            log.Info("");
             log.Info("--------------------------------------------------");
-            
-            if(Experimental)
-                 log.InfoFormat("{0} version {1}.", ApplicationName, Version.ToString());
-            else
-                log.InfoFormat("{0} version {1} - Experimental release.", ApplicationName, Version.ToString());
-            
-            log.InfoFormat(".NET Framework Version : {0}", Environment.Version.ToString());
-            log.InfoFormat("OS Version : {0}", Environment.OSVersion.ToString());
-            log.InfoFormat("CLR bitness : {0}", IntPtr.Size == 8 ? "x64" : "x86");
-            log.InfoFormat("Primary Screen : {0}", SystemInformation.PrimaryMonitorSize.ToString());
-            log.InfoFormat("Virtual Screen : {0}", SystemInformation.VirtualScreen.ToString());
+            log.InfoFormat("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now); 
+            log.InfoFormat("{0} {1}, {2}.", ApplicationName, Version.ToString(), (IntPtr.Size == 8) ? "x64" : "x86");
+            log.InfoFormat("{0}", Environment.OSVersion.ToString());
+            log.InfoFormat(".NET Framework {0}", Environment.Version.ToString());
+            log.Info("--------------------------------------------------");
         }
     }
 }
