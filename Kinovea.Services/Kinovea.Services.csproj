@@ -200,6 +200,7 @@
     <Compile Include="Preferences\AngularVelocityUnit.cs" />
     <Compile Include="Preferences\DelayCompositeConfiguration.cs" />
     <Compile Include="Preferences\DelayCompositeType.cs" />
+    <Compile Include="Preferences\FileProperty.cs" />
     <Compile Include="Preferences\TrackerParameterUnit.cs" />
     <Compile Include="Preferences\TrackingProfile.cs" />
     <Compile Include="TimestampMapper.cs" />
