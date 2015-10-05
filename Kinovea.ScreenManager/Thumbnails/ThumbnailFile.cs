@@ -63,6 +63,7 @@ namespace Kinovea.ScreenManager
         private bool m_Loaded;
         private int paddingHorizontal = 6;
         private int paddingVertical = 21;
+        private int minWidthForDetails = 150;
 
         private bool m_bIsSelected = false;
         private bool m_IsError;
@@ -399,7 +400,8 @@ namespace Kinovea.ScreenManager
                     DrawBorder(e.Graphics);
                     DrawPreviewRectangles(e.Graphics);
 
-                    DrawFileProperties(e.Graphics);
+                    if (this.Width > minWidthForDetails)
+                        DrawFileProperties(e.Graphics);
                 }
             }
             else
