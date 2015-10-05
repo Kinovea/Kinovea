@@ -92,10 +92,11 @@ namespace Kinovea.Video.SVG
         }
         public override VideoSummary ExtractSummary(string filePath, int thumbs, Size maxSize)
         {
+            VideoSummary summary = new VideoSummary(filePath);
             OpenVideoResult res = Open(filePath);
 
             if (res != OpenVideoResult.Success || generator == null)
-                return VideoSummary.GetInvalid(filePath);
+                return summary;
 
             Bitmap bmp = generator.Generate(0, maxSize);
             Bitmap thumb = new Bitmap(bmp.Width, bmp.Height);
@@ -104,9 +105,12 @@ namespace Kinovea.Video.SVG
             g.Dispose();
             Close();
 
-            bool hasKva = VideoSummary.HasCompanionKva(filePath);
+            summary.Thumbs.Add(thumb);
+            summary.IsImage = true;
+            summary.ImageSize = Size.Empty;
+            summary.DurationMilliseconds = 0;
 
-            return new VideoSummary(filePath, true, hasKva, Size.Empty, 0, new List<Bitmap> { thumb });
+            return summary;
         }
         public override void PostLoad() { }
         public override bool MoveNext(int skip, bool decodeIfNecessary)

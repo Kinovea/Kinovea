@@ -88,12 +88,14 @@ namespace Kinovea.Video.Bitmap
         public override VideoSummary ExtractSummary(string filePath, int thumbs, Size maxSize)
         {
             OpenVideoResult res = Open(filePath);
-            
-            if(res != OpenVideoResult.Success || generator == null)
-                return VideoSummary.GetInvalid(filePath);
+            VideoSummary summary = new VideoSummary(filePath);
+
+            if (res != OpenVideoResult.Success || generator == null)
+                return summary;
             
             SystemBitmap bmp = generator.Generate(0);
             Size size = bmp.Size;
+            summary.ImageSize = size;
 
             // TODO: compute the correct ratio stretched size. Currently this uses the maxSize.width
             // which is not the actual final width of the thumbnail if the ratio is more vertical than 4:3.
@@ -104,10 +106,13 @@ namespace Kinovea.Video.Bitmap
             g.DrawImage(bmp, 0, 0, maxSize.Width, height);
             g.Dispose();
             Close();
-            
-            bool hasKva = VideoSummary.HasCompanionKva(filePath);
 
-            return new VideoSummary(filePath, true, hasKva, size, 0, new List<SystemBitmap>{ thumb });
+            summary.Thumbs.Add(thumb);
+
+            summary.IsImage = true;
+            summary.DurationMilliseconds = 0;
+
+            return summary;
         }
         public override void PostLoad(){}
         public override bool MoveNext(int skip, bool decodeIfNecessary)

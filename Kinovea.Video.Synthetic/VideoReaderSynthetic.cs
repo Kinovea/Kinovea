@@ -90,24 +90,28 @@ namespace Kinovea.Video.Synthetic
         }
         public override VideoSummary ExtractSummary(string filePath, int thumbs, Size maxSize)
         {
+            VideoSummary summary = new VideoSummary(filePath);
             OpenVideoResult res = Open(filePath);
             
             if(res != OpenVideoResult.Success || generator == null)
-                return VideoSummary.GetInvalid(filePath);
+                return summary;
             
             Bitmap bmp = generator.Generate(0, maxSize);
             Size size = bmp.Size;
+            summary.ImageSize = size;
+
             int height = (int)(size.Height / ((float)size.Width / maxSize.Width));
             Bitmap thumb = new Bitmap(maxSize.Width, height);
             Graphics g = Graphics.FromImage(thumb);
             g.DrawImage(bmp, 0, 0, maxSize.Width, height);
             g.Dispose();
             Close();
+
+            summary.Thumbs.Add(thumb);
+            summary.DurationMilliseconds = (int)((videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame) * videoInfo.FrameIntervalMilliseconds);
+            summary.IsImage = false;
             
-            bool hasKva = VideoSummary.HasCompanionKva(filePath);
-            int durationMillisecs = (int)((videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame) * videoInfo.FrameIntervalMilliseconds);
-            
-            return new VideoSummary(filePath, false, hasKva, size, durationMillisecs, new List<Bitmap>{ thumb });
+            return summary;
         }
         public override void PostLoad()
         {

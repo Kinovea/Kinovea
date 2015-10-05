@@ -74,30 +74,24 @@ namespace Kinovea.Video.GIF
         }
         public override VideoSummary ExtractSummary(string filePath, int thumbsToGet, Size maxSize)
         {
-            VideoSummary summary = null;
+            VideoSummary summary = new VideoSummary(filePath);
            
             OpenVideoResult res = LoadFile(filePath, false);
             FrameDimension dimension = new FrameDimension(gif.FrameDimensionsList[0]);
             
             if(res == OpenVideoResult.Success)
             {
-                bool hasKva = VideoSummary.HasCompanionKva(filePath);
-                bool isImage = count == 1;
-                int durationMillisecs = (int)((double)count * videoInfo.FrameIntervalMilliseconds);
+                summary.IsImage = count == 1;
+                summary.DurationMilliseconds = (int)((double)count * videoInfo.FrameIntervalMilliseconds);
                 
-                List<Bitmap> thumbs = new List<Bitmap>();
                 if (thumbsToGet > 0)
                 {
                     int step = (int)Math.Ceiling(count / (double)thumbsToGet);
-                    for(int i = 0; i<count; i+=step)
-                        thumbs.Add(GetFrameAt(dimension, i));
+                    for (int i = 0; i < count; i += step)
+                        summary.Thumbs.Add(GetFrameAt(dimension, i));
                 }
                 
-                summary = new VideoSummary(filePath, isImage, hasKva, videoInfo.OriginalSize, durationMillisecs, thumbs);
-            }
-            else
-            {
-                summary = VideoSummary.GetInvalid(filePath);
+                summary.ImageSize = videoInfo.OriginalSize;
             }
             
             if(loaded)
