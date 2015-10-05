@@ -88,11 +88,23 @@ namespace Kinovea.Camera
                             continue;
                         
                         CameraManager manager = (CameraManager)Activator.CreateInstance(t, null);
-                        
-                        if (manager.Enabled && manager.SanityCheck())
+
+                        if (manager.Enabled)
                         {
-                            manager.CameraThumbnailProduced += CameraManager_CameraThumbnailProduced;
-                            cameraManagers.Add(manager);
+                            if (manager.SanityCheck())
+                            {
+                                manager.CameraThumbnailProduced += CameraManager_CameraThumbnailProduced;
+                                cameraManagers.Add(manager);
+                                log.InfoFormat("Initialized {0} camera manager.", manager.CameraTypeFriendlyName);
+                            }
+                            else
+                            {
+                                log.InfoFormat("{0} camera manager failed sanity check.", manager.CameraTypeFriendlyName);
+                            }
+                        }
+                        else
+                        {
+                            log.InfoFormat("{0} camera manager is disabled.", manager.CameraTypeFriendlyName);
                         }
                     }
                 }
