@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
                 }
                 
                 if(summary == null)
-                    summary = VideoSummary.GetInvalid(filename);
+                    summary = new VideoSummary(filename);
                 
     			bgWorker.ReportProgress(i, summary);
             }

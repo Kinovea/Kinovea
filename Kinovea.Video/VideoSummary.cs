@@ -30,35 +30,41 @@ namespace Kinovea.Video
     /// </summary>
     public class VideoSummary
     {
-        public string Filename { get; private set; }
-        public bool IsImage { get; private set; }
-        public bool HasKva { get; private set; }
-        public Size ImageSize { get; private set; }
-        public long DurationMilliseconds { get; private set; }
-        public List<Bitmap> Thumbs { get; private set; }
-        
-        private static readonly VideoSummary invalid = new VideoSummary("", false, false, Size.Empty, 0, null);
-        
-        public VideoSummary(string filename, bool isImage, bool hasKva, Size imageSize, long durationMs, List<Bitmap> thumbs)
+        #region Properties
+        public static VideoSummary Invalid
         {
-            this.Filename = filename;
-            this.IsImage = isImage;
-            this.HasKva = hasKva;
-            this.ImageSize = imageSize;
-            this.DurationMilliseconds = durationMs;
-            this.Thumbs = thumbs;
-        }
-        
-        public static VideoSummary Invalid {
             get { return invalid; }
         }
-        public static VideoSummary GetInvalid(string filename)
+
+        public string Filename { get; private set; }
+        public bool IsImage { get; set; }
+        public bool HasKva { get; set; }
+        public Size ImageSize { get; set; }
+        public long DurationMilliseconds { get; set; }
+        public List<Bitmap> Thumbs { get; private set; }
+        #endregion
+
+        private static readonly VideoSummary invalid = new VideoSummary("");
+        
+        public VideoSummary(string filename)
         {
-            return new VideoSummary(filename, false, false, Size.Empty, 0, null);
+            this.Filename = filename;
+            
+            this.IsImage = false;
+            this.HasKva = false;
+            this.ImageSize = Size.Empty;
+            this.DurationMilliseconds = 0;
+            this.Thumbs = new List<Bitmap>();
+
+            HasKva = HasCompanionKva();
         }
-        public static bool HasCompanionKva(string filename)
+        
+        private bool HasCompanionKva()
         {
-            string kvaFile = string.Format("{0}\\{1}.kva", Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename));
+            if (string.IsNullOrEmpty(Filename) || !File.Exists(Filename))
+                return false;
+
+            string kvaFile = string.Format("{0}\\{1}.kva", Path.GetDirectoryName(Filename), Path.GetFileNameWithoutExtension(Filename));
             return File.Exists(kvaFile);
         }
     }
