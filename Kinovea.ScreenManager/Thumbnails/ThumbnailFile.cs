@@ -71,7 +71,6 @@ namespace Kinovea.ScreenManager
         private FileDetails details = new FileDetails();
         private bool m_bIsImage;
         private bool hasKva;
-        private string m_ImageText;
         private int currentThumbnailIndex;
         private bool m_Hovering;
         private Bitmap bmpKvaAnalysis = Resources.bullet_white;
@@ -92,11 +91,11 @@ namespace Kinovea.ScreenManager
         private static readonly Pen m_PenSelected = new Pen(Color.DodgerBlue, 2);
         private static readonly Pen m_PenUnselected = new Pen(Color.Silver, 2);
         private static readonly Pen m_PenShadow = new Pen(Color.Lavender, 2);
-        private static readonly Font m_FontDuration = new Font("Arial", 8, FontStyle.Bold);
+        private static readonly Font fontFileDetails = new Font("Arial", 8, FontStyle.Regular);
         private static readonly SolidBrush m_BrushQuickPreviewActive = new SolidBrush(Color.FromArgb(128, Color.SteelBlue));
         private static readonly SolidBrush m_BrushQuickPreviewInactive = new SolidBrush(Color.FromArgb(128, Color.LightSteelBlue));
         private static readonly SolidBrush m_BrushDuration = new SolidBrush(Color.FromArgb(150, Color.Black));
-        private Pen m_PenDuration = new Pen(m_BrushDuration);
+        private Pen penFileDetails = new Pen(m_BrushDuration);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -106,8 +105,8 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             
             m_FileName = _fileName;
-            m_PenDuration.StartCap = LineCap.Round;
-            m_PenDuration.Width = 14;
+            penFileDetails.StartCap = LineCap.Round;
+            penFileDetails.Width = 14;
             
             SetupTimer();
             SetupTextbox();
@@ -181,7 +180,7 @@ namespace Kinovea.ScreenManager
                 popMenu.Dispose();
                 this.ContextMenuStrip = null;
 
-                m_PenDuration.Dispose();
+                penFileDetails.Dispose();
 
                 tmrThumbs.Tick -= tmrThumbs_Tick;
                 tmrThumbs.Dispose();
@@ -219,21 +218,22 @@ namespace Kinovea.ScreenManager
                 if(summary.IsImage)
                 {
                     m_bIsImage = true;
-                    details.Duration = "0";
+                    details.Details[FileProperty.Duration] = "0";
                 }
                 else
                 {
-                    details.Duration = TimeHelper.MillisecondsToTimecode((double)summary.DurationMilliseconds, false, true);
+                    details.Details[FileProperty.Duration] = TimeHelper.MillisecondsToTimecode((double)summary.DurationMilliseconds, false, true);
+                    details.Details[FileProperty.Framerate] = string.Format("{0:0.##} fps", summary.Framerate);
                 }
 
                 if (summary.ImageSize == Size.Empty)
-                    details.Size = "";
+                    details.Details[FileProperty.Size] = "";
                 else
-                    details.Size = String.Format("{0}×{1}", summary.ImageSize.Width, summary.ImageSize.Height);
+                    details.Details[FileProperty.Size] = string.Format("{0}×{1}", summary.ImageSize.Width, summary.ImageSize.Height);
                 
                 hasKva = summary.HasKva;
-                
 
+                details.Details[FileProperty.CreationTime] = string.Format("{0:g}", summary.Creation);
 
                 SetSize(this.Width, this.Height);
             }
@@ -331,11 +331,6 @@ namespace Kinovea.ScreenManager
             mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
             mnuOpenInExplorer.Text = "Locate file in Windows Explorer";
             
-            // The # char is just a placeholder for a space,
-            // Because MeasureString doesn't support trailing spaces. 
-            // (see PicBoxPaint)
-            m_ImageText = String.Format("{0}#", ScreenManagerLang.Generic_Image);	
-            
             picBox.Invalidate();
         }
         public void DisposeImages()
@@ -403,9 +398,8 @@ namespace Kinovea.ScreenManager
                     DrawImage(e.Graphics);
                     DrawBorder(e.Graphics);
                     DrawPreviewRectangles(e.Graphics);
-                    DrawDuration(e.Graphics);
-                    DrawImageSize(e.Graphics);
-                    DrawKVAHint(e.Graphics);
+
+                    DrawFileProperties(e.Graphics);
                 }
             }
             else
@@ -440,38 +434,66 @@ namespace Kinovea.ScreenManager
                 _canvas.FillRectangle(b, rectWidth * i, picBox.Height - rectHeight, rectWidth, rectHeight);	
             }
         }
-        private void DrawDuration(Graphics _canvas)
-        {
-            // MeasureString doesn't support trailing spaces.
-            // We used # as placeholders, remove them just before drawing.
-            _canvas.SmoothingMode = SmoothingMode.AntiAlias;
-            SizeF bgSize = bgSize = _canvas.MeasureString(m_bIsImage ? m_ImageText : details.Duration, m_FontDuration);;
-            string actualText = m_bIsImage ? m_ImageText.Replace('#', ' ') : details.Duration;
-            _canvas.DrawLine(m_PenDuration, (float)picBox.Width - bgSize.Width - 1, 12, (float)picBox.Width - 4, 12);
-            _canvas.DrawString(actualText, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize.Width - 3, 5);
-        }
-        private void DrawImageSize(Graphics _canvas)
-        {
-            if (string.IsNullOrEmpty(details.Size))
-                return;
 
-            SizeF bgSize2 = _canvas.MeasureString(details.Size, m_FontDuration);
-            int sizeTop = 29;
-            _canvas.DrawLine(m_PenDuration, (float)picBox.Width - bgSize2.Width - 1, sizeTop, (float)picBox.Width - 4, sizeTop);
-            _canvas.DrawString(details.Size, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize2.Width - 3, sizeTop - 7);
-        }
-        private void DrawKVAHint(Graphics _canvas)
+        #region Draw file details
+        private void DrawFileProperties(Graphics canvas)
         {
-            if(!hasKva)
+            int top = 12;
+            int verticalMargin = (int)penFileDetails.Width + 3;
+
+            if (details.Details.ContainsKey(FileProperty.Size))
+            {
+                string size = details.Details[FileProperty.Size];
+                DrawPropertyString(canvas, size, top);
+                top += verticalMargin;
+            }
+
+            if (details.Details.ContainsKey(FileProperty.Framerate))
+            {
+                string framerate = details.Details[FileProperty.Framerate];
+                DrawPropertyString(canvas, framerate, top);
+                top += verticalMargin;
+            }
+
+            if (details.Details.ContainsKey(FileProperty.Duration))
+            {
+                string duration = m_bIsImage ? ScreenManagerLang.Generic_Image + " " : details.Details[FileProperty.Duration];
+                DrawPropertyString(canvas, duration, top);
+                top += verticalMargin;
+            }
+
+            if (details.Details.ContainsKey(FileProperty.CreationTime))
+            {
+                string creationTime = details.Details[FileProperty.CreationTime];
+                DrawPropertyString(canvas, creationTime, top);
+                top += verticalMargin;
+            }
+
+            if (hasKva)
+            {
+                DrawPropertyString(canvas, "kva", top);
+                top += verticalMargin;
+            }
+        }
+
+        private void DrawPropertyString(Graphics canvas, string text, int top)
+        {
+            if (string.IsNullOrEmpty(text))
                 return;
             
-            _canvas.DrawLine(m_PenDuration, (float)picBox.Width - 20, 45, (float)picBox.Width - 4, 45);
-            _canvas.DrawImage(bmpKvaAnalysis, picBox.Width - 25, 38);
+            canvas.SmoothingMode = SmoothingMode.AntiAlias;
+            
+            SizeF bgSize = canvas.MeasureString(text, fontFileDetails);
+            canvas.DrawLine(penFileDetails, (float)picBox.Width - bgSize.Width - 1, top, (float)picBox.Width - 4, top);
+            canvas.DrawString(text, fontFileDetails, Brushes.White, (float)picBox.Width - bgSize.Width - 3, top - penFileDetails.Width / 2);
         }
+        #endregion
+
         private void DrawPlaceHolder(Graphics _canvas)
         {
             _canvas.DrawRectangle(Pens.Gainsboro, 0, 0, picBox.Width-1, picBox.Height-1);
         }
+
         private void DrawError(Graphics _canvas)
         {
             Bitmap bmp = Properties.Resources.film_error2;
@@ -479,6 +501,7 @@ namespace Kinovea.ScreenManager
             int top = (picBox.Height - bmp.Height) / 2;
             _canvas.DrawImage(bmp, left, top);
         }
+
         private void PicBoxMouseMove(object sender, MouseEventArgs e)
         {
             if(m_IsError || m_Bitmaps == null || m_Bitmaps.Count < 1)
@@ -497,6 +520,7 @@ namespace Kinovea.ScreenManager
                 tmrThumbs.Start();
             }
         }
+
         private void ThumbListViewItemPaint(object sender, PaintEventArgs e)
         {
             // Draw the shadow
@@ -506,6 +530,7 @@ namespace Kinovea.ScreenManager
                 e.Graphics.DrawLine(m_PenShadow, picBox.Left + m_PenShadow.Width, picBox.Top + picBox.Height + 1, picBox.Left + m_PenShadow.Width + picBox.Width, picBox.Top + picBox.Height + 1);
             }
         }
+
         private void tmrThumbs_Tick(object sender, EventArgs e) 
         {
             // This event occur when the user has been staying for a while on the same thumbnail. Loop between all stored images.
@@ -519,6 +544,7 @@ namespace Kinovea.ScreenManager
             currentThumbnail = m_Bitmaps[currentThumbnailIndex];
             picBox.Invalidate();
         }
+
         private void PicBoxMouseEnter(object sender, EventArgs e)
         {
             m_Hovering = true;
@@ -534,6 +560,7 @@ namespace Kinovea.ScreenManager
             // Then start timer to slideshow.
             tmrThumbs.Start();
         }
+
         private void PicBoxMouseLeave(object sender, EventArgs e)
         {
             m_Hovering = false;
@@ -549,6 +576,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+
         private void TbFileNameKeyPress(object sender, KeyPressEventArgs e)
         {
             // Editing a file name.

@@ -109,6 +109,7 @@ namespace Kinovea.Video.Synthetic
 
             summary.Thumbs.Add(thumb);
             summary.DurationMilliseconds = (int)((videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame) * videoInfo.FrameIntervalMilliseconds);
+            summary.Framerate = videoInfo.FramesPerSeconds;
             summary.IsImage = false;
             
             return summary;

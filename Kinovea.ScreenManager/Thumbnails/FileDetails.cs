@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     public class FileDetails
     {
-        public string Duration { get; set; }
-        public string Size { get; set; }
-        public string Date { get; set; }
-        public string Time { get; set; }
-        public string Framerate { get; set; }
-        public string AspectRatio { get; set; }
+        public Dictionary<FileProperty, string> Details { get; private set; }
+
+        public FileDetails()
+        {
+            Details = new Dictionary<FileProperty, string>();
+        }
     }
 }

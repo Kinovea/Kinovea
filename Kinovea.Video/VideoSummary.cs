@@ -41,6 +41,8 @@ namespace Kinovea.Video
         public bool HasKva { get; set; }
         public Size ImageSize { get; set; }
         public long DurationMilliseconds { get; set; }
+        public DateTime Creation { get; set; }
+        public double Framerate { get; set; }
         public List<Bitmap> Thumbs { get; private set; }
         #endregion
 
@@ -49,21 +51,26 @@ namespace Kinovea.Video
         public VideoSummary(string filename)
         {
             this.Filename = filename;
-            
+
             this.IsImage = false;
             this.HasKva = false;
             this.ImageSize = Size.Empty;
             this.DurationMilliseconds = 0;
             this.Thumbs = new List<Bitmap>();
 
-            HasKva = HasCompanionKva();
+            if (!string.IsNullOrEmpty(Filename) && File.Exists(Filename))
+            {
+                this.HasKva = HasCompanionKva();
+                this.Creation = File.GetCreationTime(Filename);
+            }
+            else
+            {
+                this.HasKva = false;
+            }
         }
         
         private bool HasCompanionKva()
         {
-            if (string.IsNullOrEmpty(Filename) || !File.Exists(Filename))
-                return false;
-
             string kvaFile = string.Format("{0}\\{1}.kva", Path.GetDirectoryName(Filename), Path.GetFileNameWithoutExtension(Filename));
             return File.Exists(kvaFile);
         }

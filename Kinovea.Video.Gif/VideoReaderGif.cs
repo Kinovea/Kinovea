@@ -83,7 +83,8 @@ namespace Kinovea.Video.GIF
             {
                 summary.IsImage = count == 1;
                 summary.DurationMilliseconds = (int)((double)count * videoInfo.FrameIntervalMilliseconds);
-                
+                summary.Framerate = videoInfo.FramesPerSeconds;
+
                 if (thumbsToGet > 0)
                 {
                     int step = (int)Math.Ceiling(count / (double)thumbsToGet);
