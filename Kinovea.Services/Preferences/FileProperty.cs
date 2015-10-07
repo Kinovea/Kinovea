@@ -7,10 +7,11 @@ namespace Kinovea.Services
 {
     public enum FileProperty
     {
-        IsImage,
-        Duration,
         Size,
+        Framerate,
+        Duration,
         CreationTime,
-        Framerate
+        HasKva,
+        IsImage
     }
 }

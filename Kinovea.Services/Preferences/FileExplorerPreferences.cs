@@ -85,16 +85,20 @@ namespace Kinovea.Services
             get { return lastBrowsedDirectory; }
             set { lastBrowsedDirectory = value;}
         }
-        
+        public FilePropertyVisibility FilePropertyVisibility
+        {
+            get { return filePropertyVisibility; }
+        }
+
         private List<string> recentFiles = new List<string>();
         private int maxRecentFiles = 5;
         private int explorerFilesSplitterDistance = 350;
         private int shortcutsFilesSplitterDistance = 350;
         private ExplorerThumbSize explorerThumbsSize = ExplorerThumbSize.Medium; 
-        
         private List<ShortcutFolder> shortcutFolders = new List<ShortcutFolder>();
         private ActiveFileBrowserTab activeTab = ActiveFileBrowserTab.Explorer;
         private string lastBrowsedDirectory;
+        private FilePropertyVisibility filePropertyVisibility = new FilePropertyVisibility();
         
         public void AddRecentFile(string file)
         {
@@ -127,6 +131,11 @@ namespace Kinovea.Services
         public bool IsShortcutKnown(string path)
         {
             return shortcutFolders.Any(s => s.Location == path);
+        }
+
+        public void SetFilePropertyVisible(FileProperty prop, bool state)
+        {
+            filePropertyVisibility.Visible[prop] = state;
         }
         
         public void WriteXML(XmlWriter writer)
@@ -170,6 +179,10 @@ namespace Kinovea.Services
             writer.WriteElementString("ExplorerFilesSplitterDistance", explorerFilesSplitterDistance.ToString());
             writer.WriteElementString("ShortcutsFilesSplitterDistance", shortcutsFilesSplitterDistance.ToString());
             writer.WriteElementString("ActiveTab", activeTab.ToString());
+
+            writer.WriteStartElement("FilePropertyVisibility");
+            filePropertyVisibility.WriteXML(writer);
+            writer.WriteEndElement();
         }
         
         public void ReadXML(XmlReader reader)
@@ -200,6 +213,9 @@ namespace Kinovea.Services
                         break;                        
                     case "ActiveTab":
                         activeTab = (ActiveFileBrowserTab) Enum.Parse(typeof(ActiveFileBrowserTab), reader.ReadElementContentAsString());
+                        break;
+                    case "FilePropertyVisibility":
+                        filePropertyVisibility = FilePropertyVisibility.FromXML(reader);
                         break;
                     default:
                         reader.ReadOuterXml();
