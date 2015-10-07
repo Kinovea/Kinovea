@@ -243,6 +243,11 @@
    
    
    
+   
+   
+   
+   
+   
    <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>Obrazy JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Obrazy PNG (*.png)|*.png|Bitmapy (*.bmp)|*.bmp</value></data>
    

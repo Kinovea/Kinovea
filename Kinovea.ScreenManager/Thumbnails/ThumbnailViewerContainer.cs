@@ -71,8 +71,9 @@ namespace Kinovea.ScreenManager
         #region Public methods
         public void RefreshUICulture()
         {
-            // tool tips of content type buttons.
-            // Forward to viewer.
+            viewerFiles.RefreshUICulture();
+            viewerShortcuts.RefreshUICulture();
+            viewerCameras.RefreshUICulture();
         }
         
         public void HideContent()

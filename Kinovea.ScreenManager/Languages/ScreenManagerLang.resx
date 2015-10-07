@@ -243,6 +243,11 @@
    <data name="Generic_Import" xml:space="preserve"><value>Import</value></data>
    <data name="Generic_Restore" xml:space="preserve"><value>Restore default</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Quit</value></data>
+   <data name="FileProperty_Size" xml:space="preserve"><value>Size</value></data>
+   <data name="FileProperty_Framerate" xml:space="preserve"><value>Framerate</value></data>
+   <data name="FileProperty_Duration" xml:space="preserve"><value>Duration</value></data>
+   <data name="FileProperty_CreationTime" xml:space="preserve"><value>Creation time</value></data>
+   <data name="FileProperty_HasKva" xml:space="preserve"><value>Kva file</value></data>
    <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>All supported files (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>

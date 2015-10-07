@@ -1384,6 +1384,51 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creation time.
+        /// </summary>
+        internal static string FileProperty_CreationTime {
+            get {
+                return ResourceManager.GetString("FileProperty_CreationTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duration.
+        /// </summary>
+        internal static string FileProperty_Duration {
+            get {
+                return ResourceManager.GetString("FileProperty_Duration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Framerate.
+        /// </summary>
+        internal static string FileProperty_Framerate {
+            get {
+                return ResourceManager.GetString("FileProperty_Framerate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kva file.
+        /// </summary>
+        internal static string FileProperty_HasKva {
+            get {
+                return ResourceManager.GetString("FileProperty_HasKva", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        internal static string FileProperty_Size {
+            get {
+                return ResourceManager.GetString("FileProperty_Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Progress :.
         /// </summary>
         internal static string FormFileSave_Infos {
