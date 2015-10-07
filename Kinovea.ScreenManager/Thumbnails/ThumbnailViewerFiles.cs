@@ -50,6 +50,7 @@ namespace Kinovea.ScreenManager
         private bool editing;
         private bool externalSelection;
         private string lastSelectedFile;
+        private ContextMenuStrip popMenu = new ContextMenuStrip();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -64,6 +65,8 @@ namespace Kinovea.ScreenManager
             NotificationCenter.FileSelected += NotificationCenter_FileSelected;
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerFiles");
+
+            BuildContextMenus();
         }
 
         #region Public methods
@@ -117,7 +120,35 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private methods
-        
+
+        private void BuildContextMenus()
+        {
+            foreach (FileProperty prop in Enum.GetValues(typeof(FileProperty)))
+            {
+                if (!PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible.ContainsKey(prop))
+                    continue;
+
+                ToolStripMenuItem mnu = new ToolStripMenuItem();
+                // FIXME: L14N
+                mnu.Text = prop.ToString();
+                bool value = PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible[prop];
+                mnu.Checked = value;
+
+                FileProperty closureProp = prop;
+                mnu.Click += (s, e) =>
+                {
+                    bool v = PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible[closureProp];
+                    PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible[closureProp] = !v;
+                    mnu.Checked = !v;
+                    InvalidateThumbnails();
+                };
+
+                popMenu.Items.Add(mnu);
+            }
+
+            this.ContextMenuStrip = popMenu;
+        }
+
         #region Organize and Display
         private void PopulateViewer()
         {
@@ -234,6 +265,13 @@ namespace Kinovea.ScreenManager
         {
             foreach(ThumbnailFile tlvi in thumbnails)
                 yield return tlvi;
+        }
+        private void InvalidateThumbnails()
+        {
+            // When the thumbnails must be redrawn but the file hasn't changed. 
+            // For example when the user changes the visibility of file properties.
+            foreach (ThumbnailFile tf in thumbnails)
+                tf.Invalidate();
         }
         #endregion
 

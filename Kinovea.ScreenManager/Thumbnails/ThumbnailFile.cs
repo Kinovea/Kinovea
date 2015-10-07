@@ -233,6 +233,8 @@ namespace Kinovea.ScreenManager
                     details.Details[FileProperty.Size] = string.Format("{0}×{1}", summary.ImageSize.Width, summary.ImageSize.Height);
                 
                 hasKva = summary.HasKva;
+                if (hasKva)
+                    details.Details[FileProperty.HasKva] = "kva";
 
                 details.Details[FileProperty.CreationTime] = string.Format("{0:g}", summary.Creation);
 
@@ -440,42 +442,51 @@ namespace Kinovea.ScreenManager
         #region Draw file details
         private void DrawFileProperties(Graphics canvas)
         {
+            Dictionary<FileProperty, bool> visibility = PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible;
+
             int top = 12;
             int verticalMargin = (int)penFileDetails.Width + 3;
 
-            if (details.Details.ContainsKey(FileProperty.Size))
+            if (ShouldShowProperty(FileProperty.Size))
             {
                 string size = details.Details[FileProperty.Size];
                 DrawPropertyString(canvas, size, top);
                 top += verticalMargin;
             }
 
-            if (details.Details.ContainsKey(FileProperty.Framerate))
+            if (ShouldShowProperty(FileProperty.Framerate))
             {
                 string framerate = details.Details[FileProperty.Framerate];
                 DrawPropertyString(canvas, framerate, top);
                 top += verticalMargin;
             }
 
-            if (details.Details.ContainsKey(FileProperty.Duration))
+            if (ShouldShowProperty(FileProperty.Duration))
             {
                 string duration = m_bIsImage ? ScreenManagerLang.Generic_Image + " " : details.Details[FileProperty.Duration];
                 DrawPropertyString(canvas, duration, top);
                 top += verticalMargin;
             }
 
-            if (details.Details.ContainsKey(FileProperty.CreationTime))
+            if (ShouldShowProperty(FileProperty.CreationTime))
             {
                 string creationTime = details.Details[FileProperty.CreationTime];
                 DrawPropertyString(canvas, creationTime, top);
                 top += verticalMargin;
             }
 
-            if (hasKva)
+            if (ShouldShowProperty(FileProperty.HasKva))
             {
                 DrawPropertyString(canvas, "kva", top);
                 top += verticalMargin;
             }
+        }
+
+        private bool ShouldShowProperty(FileProperty prop)
+        {
+            return details.Details.ContainsKey(prop) &&
+                   PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible.ContainsKey(prop) &&
+                   PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible[prop];
         }
 
         private void DrawPropertyString(Graphics canvas, string text, int top)
