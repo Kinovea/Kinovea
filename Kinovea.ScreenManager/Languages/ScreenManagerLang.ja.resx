@@ -243,6 +243,11 @@
    
    
    
+   
+   
+   
+   
+   
    <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG 画像 (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG 画像 (*.png)|*.png|Bitmap 画像 (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>すべてのファイル拡張子(*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>

@@ -243,6 +243,11 @@
    
    
    
+   
+   
+   
+   
+   
    <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Bilder (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Bilder (*.png)|*.png|Pixelgrafik (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>Alle unterstützten Formate (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>

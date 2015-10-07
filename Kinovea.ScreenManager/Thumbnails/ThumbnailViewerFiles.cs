@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using System.Linq;
 
 using Kinovea.Services;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -66,6 +67,7 @@ namespace Kinovea.ScreenManager
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerFiles");
 
+            this.ContextMenuStrip = popMenu;
             BuildContextMenus();
         }
 
@@ -108,6 +110,14 @@ namespace Kinovea.ScreenManager
         {
             foreach(ThumbnailFile tlvi in thumbnails)
                 tlvi.RefreshUICulture();
+
+            foreach (ToolStripMenuItem mnu in popMenu.Items)
+            {
+                FileProperty prop = (FileProperty)mnu.Tag;
+                string resourceName = "FileProperty_" + prop.ToString();
+                string text = ScreenManagerLang.ResourceManager.GetString(resourceName);
+                mnu.Text = text;
+            }
         }
         public void UpdateThumbnailsSize(ExplorerThumbSize newSize)
         {
@@ -129,8 +139,12 @@ namespace Kinovea.ScreenManager
                     continue;
 
                 ToolStripMenuItem mnu = new ToolStripMenuItem();
-                // FIXME: L14N
-                mnu.Text = prop.ToString();
+                
+                string resourceName = "FileProperty_" + prop.ToString();
+                string text = ScreenManagerLang.ResourceManager.GetString(resourceName);
+                mnu.Text = text;
+                mnu.Tag = prop;
+
                 bool value = PreferencesManager.FileExplorerPreferences.FilePropertyVisibility.Visible[prop];
                 mnu.Checked = value;
 
@@ -145,8 +159,6 @@ namespace Kinovea.ScreenManager
 
                 popMenu.Items.Add(mnu);
             }
-
-            this.ContextMenuStrip = popMenu;
         }
 
         #region Organize and Display

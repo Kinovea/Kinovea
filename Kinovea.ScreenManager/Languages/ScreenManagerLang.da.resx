@@ -243,6 +243,11 @@
    
    
    
+   
+   
+   
+   
+   
    <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG billeder (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG billeder (*.png)|*.png|Bitmap billeder (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>Filtyper der understøttes (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>

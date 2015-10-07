@@ -102,6 +102,10 @@ namespace Kinovea.ScreenManager
             if(thumbnailControls.Count > 0)
                 DoLayout();
         }
+
+        public void RefreshUICulture()
+        {
+        }
         #endregion
 
         #region Private methods

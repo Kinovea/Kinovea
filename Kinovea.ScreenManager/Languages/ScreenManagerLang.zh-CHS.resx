@@ -244,6 +244,11 @@
    
    
    
+   
+   
+   
+   
+   
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
