@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Video Konumlarını Tersine Çevir</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Dosyayı sil</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Dosya ismini değiştir</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Videoyu oynat</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Ortak Kontrolleri Göster/Gizle</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>İzlenen Yol</value></data>

@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Обратить видео</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Удалить файл</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Переименовать файл</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Воспроизвести файл</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Показать/скрыть общие настройки</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Прорисовка пути</value></data>

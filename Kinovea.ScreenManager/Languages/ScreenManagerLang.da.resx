@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Byt om på vinduer</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Slet fil</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Omdøb fil</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Afspil video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Vis/skjul almindlig styring</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Følg spor</value></data>

@@ -332,7 +332,7 @@ namespace Kinovea.ScreenManager
             mnuLaunch.Text = ScreenManagerLang.mnuThumbnailPlay;
             mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
             mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
-            mnuOpenInExplorer.Text = "Locate file in Windows Explorer";
+            mnuOpenInExplorer.Text = ScreenManagerLang.mnuThumbnailLocate;
             
             picBox.Invalidate();
         }

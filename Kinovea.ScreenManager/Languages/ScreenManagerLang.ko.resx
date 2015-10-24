@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>비디오의 위치를 도치</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>파일 지우기</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>파일 이름 바꾸기</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>비디오 재생</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>공통 조절을 보임/감춤</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>경로를 추적</value></data>

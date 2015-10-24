@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>反转视频位置</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>删除文件</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>更名文件</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>播放视频</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>显示/隐藏 常见控制</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>跟踪路径</value></data>

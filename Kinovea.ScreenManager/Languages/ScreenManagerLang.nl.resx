@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Draai Video posities om</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Verwijder bestand</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Hernoem bestand</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Speel video af</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Toon/Verberg standaard bediening</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Baan Trajectpad</value></data>

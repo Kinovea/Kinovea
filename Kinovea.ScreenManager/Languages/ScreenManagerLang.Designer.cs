@@ -2536,6 +2536,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Locate file in Windows Explorer.
+        /// </summary>
+        internal static string mnuThumbnailLocate {
+            get {
+                return ResourceManager.GetString("mnuThumbnailLocate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Play video.
         /// </summary>
         internal static string mnuThumbnailPlay {

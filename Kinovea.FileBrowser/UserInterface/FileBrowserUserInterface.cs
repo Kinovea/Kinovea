@@ -68,6 +68,7 @@ namespace Kinovea.FileBrowser
 
         private ContextMenuStrip popMenuFiles = new ContextMenuStrip();
         private ToolStripMenuItem mnuLaunch = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLocate = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
         #endregion
 
@@ -140,13 +141,19 @@ namespace Kinovea.FileBrowser
             mnuLaunch.Click += (s, e) => CommandLaunch();
             mnuLaunch.Visible = false;
 
+            mnuLocate.Image = Properties.Resources.folder_explore;
+            mnuLocate.Click += mnuLocate_Click;
+            mnuLocate.Visible = false;
+
             mnuDelete.Image = Properties.Resources.delete;
             mnuDelete.Click += (s, e) => CommandDelete();
             mnuDelete.Visible = false;
 
             popMenuFiles.Items.AddRange(new ToolStripItem[] 
             {
-                mnuLaunch, 
+                mnuLaunch,
+                new ToolStripSeparator(), 
+                mnuLocate,
                 new ToolStripSeparator(), 
                 mnuDelete
             });
@@ -154,6 +161,11 @@ namespace Kinovea.FileBrowser
             lvShortcuts.ContextMenuStrip = popMenuFiles;
             lvExplorer.ContextMenuStrip = popMenuFiles;
             tvCaptureHistory.ContextMenuStrip = popMenuFiles;
+        }
+
+        private void mnuLocate_Click(object sender, EventArgs e)
+        {
+            CommandLocate();
         }
 
         private void IdleDetector(object sender, EventArgs e)
@@ -289,8 +301,9 @@ namespace Kinovea.FileBrowser
             // Menus
             mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
             mnuDeleteShortcut.Text = FileBrowserLang.mnuDeleteShortcut;
-            mnuLaunch.Text = "Launch";
-            mnuDelete.Text = "Delete";
+            mnuLaunch.Text = FileBrowserLang.mnuVideoPlay;
+            mnuLocate.Text = FileBrowserLang.mnuVideoLocate;
+            mnuDelete.Text = FileBrowserLang.mnuVideoDelete;
 
             // ToolTips
             ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
@@ -1118,6 +1131,21 @@ namespace Kinovea.FileBrowser
             return lv.SelectedItems[0].Tag as string;
         }
 
+        private string GetSelectedVideoPath(TreeView tv)
+        {
+            if (!tv.Focused)
+                return null;
+
+            if (tv.SelectedNode == null)
+                return null;
+
+            CaptureHistoryEntry entry = tv.SelectedNode.Tag as CaptureHistoryEntry;
+            if (entry == null)
+                return null;
+
+            return entry.CaptureFile;
+        }
+        
         private void LaunchSelectedVideo(ListView lv)
         {
             string path = GetSelectedVideoPath(lv);
@@ -1206,7 +1234,31 @@ namespace Kinovea.FileBrowser
                 ReloadCaptureHistoryExpandedSessions();
             }
         }
-        
+
+        private void CommandLocate()
+        {
+            if (activeTab == ActiveFileBrowserTab.Explorer)
+                LocateSelectedVideo(lvExplorer);
+            else if (activeTab == ActiveFileBrowserTab.Shortcuts)
+                LocateSelectedVideo(lvShortcuts);
+            else if (activeTab == ActiveFileBrowserTab.Cameras)
+                LocateSelectedVideo(tvCaptureHistory);
+        }
+
+        private void LocateSelectedVideo(ListView lv)
+        {
+            string path = GetSelectedVideoPath(lv);
+            if (path != null)
+                FilesystemHelper.LocateFile(path);
+        }
+
+        private void LocateSelectedVideo(TreeView tv)
+        {
+            string path = GetSelectedVideoPath(tv);
+            if (path != null)
+                FilesystemHelper.LocateFile(path);
+        }
+
         #endregion
        
     }
