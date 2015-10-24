@@ -747,11 +747,11 @@
     <Compile Include="Thumbnails\ThumbnailFile.Designer.cs">
       <DependentUpon>ThumbnailFile.cs</DependentUpon>
     </Compile>
-    <Compile Include="Thumbnails\Selector.cs">
+    <Compile Include="Thumbnails\ViewerSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Thumbnails\Selector.Designer.cs">
-      <DependentUpon>Selector.cs</DependentUpon>
+    <Compile Include="Thumbnails\ViewerSelector.Designer.cs">
+      <DependentUpon>ViewerSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="Thumbnails\SelectorOption.cs" />
     <Compile Include="Thumbnails\ThumbnailViewerContent.cs" />
@@ -942,8 +942,8 @@
     <EmbeddedResource Include="Thumbnails\FormCameraAlias.resx">
       <DependentUpon>FormCameraAlias.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Thumbnails\Selector.resx">
-      <DependentUpon>Selector.cs</DependentUpon>
+    <EmbeddedResource Include="Thumbnails\ViewerSelector.resx">
+      <DependentUpon>ViewerSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails\SizeSelector.resx">
       <DependentUpon>SizeSelector.cs</DependentUpon>
@@ -1083,6 +1083,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Resources\clipboard-block.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1239,7 +1240,12 @@
   <ItemGroup>
     <None Include="Resources\dashpolyarrow.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\fullscreen_close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow_inout.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

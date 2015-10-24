@@ -26,28 +26,31 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-    /// <summary>
-    /// A simple generic visual selector with buttons.
-    /// </summary>
-    public partial class Selector : UserControl
+    public partial class ViewerSelector : UserControl
     {
+        [Category("Behavior"), Browsable(true)]
         public event EventHandler SelectionChanged;
         
-        public SelectorOption Selected
+        public ViewerSelectorOption Selected
         {
             get { return selected; }
         }
         
-        private List<SelectorOption> options;
-        private SelectorOption selected = null;
+        private List<ViewerSelectorOption> options;
+        private ViewerSelectorOption selected = null;
         
-        public Selector(List<SelectorOption> options, int defaultSelection)
+        public ViewerSelector()
         {
-            if(options == null || options.Count == 0)
-                throw new ArgumentException("options");
-            
-            if(defaultSelection < 0 || defaultSelection > options.Count)
-                throw new ArgumentOutOfRangeException("defaultSelection");
+            ViewerSelectorOption optionFiles = new ViewerSelectorOption(ScreenManager.Properties.Resources.explorer_video, "", ThumbnailViewerContent.Files);
+            ViewerSelectorOption optionShortcuts = new ViewerSelectorOption(ScreenManager.Properties.Resources.explorer_shortcut, "", ThumbnailViewerContent.Shortcuts);
+            ViewerSelectorOption optionCameras = new ViewerSelectorOption(ScreenManager.Properties.Resources.explorer_camera, "", ThumbnailViewerContent.Cameras);
+
+            List<ViewerSelectorOption> options = new List<ViewerSelectorOption>();
+            options.Add(optionFiles);
+            options.Add(optionShortcuts);
+            options.Add(optionCameras);
+
+            int defaultSelection = 0;
                 
             InitializeComponent();
             
@@ -55,8 +58,8 @@ namespace Kinovea.ScreenManager
             
             int index = 0;
             int left = 0;
-            int spacing = 2;
-            foreach(SelectorOption option in options)
+            int spacing = 8;
+            foreach(ViewerSelectorOption option in options)
             {
                 Button btn = new Button();
                 btn.BackgroundImage = option.Image;
@@ -66,7 +69,7 @@ namespace Kinovea.ScreenManager
                 btn.FlatAppearance.MouseDownBackColor = Color.WhiteSmoke;
                 btn.FlatAppearance.MouseOverBackColor = Color.WhiteSmoke;
                 btn.FlatAppearance.BorderSize = 0;
-                btn.Size = new Size(18,18);
+                btn.Size = new Size(20, 20);
                 btn.Left = left;
                 btn.Cursor = Cursors.Hand;
                 btn.Tag = option;
@@ -75,7 +78,7 @@ namespace Kinovea.ScreenManager
                 if(index == defaultSelection)
                     selected = option;
 
-                left += btn.Width + spacing;
+                left = btn.Right + spacing;
                 index++;
             }
             
@@ -89,7 +92,7 @@ namespace Kinovea.ScreenManager
                 return;
                 
             Button btn = sender as Button;
-            SelectorOption option = btn.Tag as SelectorOption;
+            ViewerSelectorOption option = btn.Tag as ViewerSelectorOption;
             if(option != null)
             {
                 selected = option;

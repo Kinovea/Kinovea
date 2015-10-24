@@ -23,13 +23,13 @@ using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
-    public class SelectorOption
+    public class ViewerSelectorOption
     {
         public Bitmap Image { get; private set;}
         public string Text { get; private set;}
         public object Data { get; private set;}
         
-        public SelectorOption(Bitmap image, string text, object data)
+        public ViewerSelectorOption(Bitmap image, string text, object data)
         {
             this.Image = image;
             this.Text = text;

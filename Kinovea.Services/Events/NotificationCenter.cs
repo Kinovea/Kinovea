@@ -87,5 +87,12 @@ namespace Kinovea.Services
             if (StatusUpdated != null)
                 StatusUpdated(sender, new StatusUpdatedEventArgs(status));
         }
+
+        public static EventHandler FullScreenToggle;
+        public static void RaiseFullScreenToggle(object sender)
+        {
+            if (FullScreenToggle != null)
+                FullScreenToggle(sender, EventArgs.Empty);
+        }
     }
 }
