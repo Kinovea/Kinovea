@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Invertuoti vaizdo pozicija</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Trinti dokumentą</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Pervardinti dokumentą</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Groti video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Rodyti / slepti įrankių juostą</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Sekimo kelias</value></data>

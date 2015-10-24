@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Обрни видео позиције</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Избриши датотеку</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Преименуј датотеку</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Репродукуј видео</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Прикажи/сакриј заједничке контроле </value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Прати путању</value></data>

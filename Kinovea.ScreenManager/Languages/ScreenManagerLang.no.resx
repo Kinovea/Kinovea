@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Inverter videoposisjoner</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Slett fil</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Endre filnavn</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Spill av video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Vis/Skjul Standardverktøy</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Følg banen</value></data>

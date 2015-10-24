@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>ビデオポジションの反転</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>ファイルの削除</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>ファイルのリネーム</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>ビデオの再生</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>共通コントロールの表示/非表示</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>軌道追跡</value></data>

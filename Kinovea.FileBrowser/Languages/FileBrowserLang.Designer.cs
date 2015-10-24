@@ -106,6 +106,33 @@ namespace Kinovea.FileBrowser.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete file.
+        /// </summary>
+        internal static string mnuVideoDelete {
+            get {
+                return ResourceManager.GetString("mnuVideoDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locate file in Windows Explorer .
+        /// </summary>
+        internal static string mnuVideoLocate {
+            get {
+                return ResourceManager.GetString("mnuVideoLocate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play video.
+        /// </summary>
+        internal static string mnuVideoPlay {
+            get {
+                return ResourceManager.GetString("mnuVideoPlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Explorer.
         /// </summary>
         internal static string tabExplorer {

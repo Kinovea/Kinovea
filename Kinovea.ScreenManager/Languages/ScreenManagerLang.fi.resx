@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Vaihda videoiden järjestys</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Poista tiedosto</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Uudelleennimeä tiedosto</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Näytä video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Näytä/Piilota yleiset toiminnot</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Seuraa liikerataa</value></data>

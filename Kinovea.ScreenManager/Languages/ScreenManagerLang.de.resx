@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Invertiere Video Positionen</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Datei löschen</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Datei umbenennen</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Video abspielen</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Zeige/Verstecke Standardauswahlwerkzeuge</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Verfolge Trajektorien</value></data>

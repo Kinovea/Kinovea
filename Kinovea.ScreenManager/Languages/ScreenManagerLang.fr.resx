@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Inverser les Emplacements des Vidéos</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Supprimer le fichier</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Renommer le fichier</value></data>
+   <data name="mnuThumbnailLocate" xml:space="preserve"><value>Trouver le fichier dans l'Explorateur Windows</value></data>
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Lancer la vidéo</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Montrer/Cacher les Contrôles Communs</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Suivre la Trajectoire</value></data>

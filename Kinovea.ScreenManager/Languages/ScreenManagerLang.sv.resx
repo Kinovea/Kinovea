@@ -342,6 +342,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Byt videonas platser</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Radera fil</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Byt filnamn</value></data>
+   
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Starta video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Visa/Dölj gemensamma kontroller</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Spåra banan</value></data>
