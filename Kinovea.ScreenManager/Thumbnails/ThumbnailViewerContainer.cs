@@ -30,15 +30,13 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Host the current thumbnail viewer and exposes some common controls to change size,
-    /// type of content, etc.
+    /// Host the current thumbnail viewer and exposes some common controls to change size, type of content, etc.
     /// </summary>
     public partial class ThumbnailViewerContainer : KinoveaControl
     {
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
         
         #region Members
-        private Selector selector;
         private SizeSelector sizeSelector = new SizeSelector();
         private ThumbnailViewerContent currentContent = ThumbnailViewerContent.Files;
         private List<string> files;
@@ -52,9 +50,8 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             InitializeSizeSelector();
-            InitializeViewerSelector();
             InitializeViewers();
-            progressBar.Left = selector.Right + 10;
+            progressBar.Left = sizeSelector.Right + 10;
             progressBar.Visible = false;
 
             NotificationCenter.CurrentDirectoryChanged += NotificationCenter_CurrentDirectoryChanged;
@@ -170,29 +167,9 @@ namespace Kinovea.ScreenManager
             PreferencesManager.Save();
         }
         
-        private void InitializeViewerSelector()
-        {
-            SelectorOption optionFiles = new SelectorOption(ScreenManager.Properties.Resources.explorer_video, "", ThumbnailViewerContent.Files);
-            SelectorOption optionShortcuts = new SelectorOption(ScreenManager.Properties.Resources.explorer_shortcut, "", ThumbnailViewerContent.Shortcuts);
-            SelectorOption optionCameras = new SelectorOption(ScreenManager.Properties.Resources.explorer_camera, "", ThumbnailViewerContent.Cameras);
-            
-            List<SelectorOption> options = new List<SelectorOption>();
-            options.Add(optionFiles);
-            options.Add(optionShortcuts);
-            options.Add(optionCameras);
-            
-            selector = new Selector(options, 0);
-            selector.Location = new Point(160, 6);
-            selector.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-            selector.SelectionChanged += Selector_SelectionChanged;
-            
-            this.Controls.Add(selector);
-            selector.BringToFront();
-        }
-        
         private void Selector_SelectionChanged(object sender, EventArgs e)
         {
-            SelectorOption option = selector.Selected;
+            ViewerSelectorOption option = viewerSelector.Selected;
             ThumbnailViewerContent selectedContent = (ThumbnailViewerContent)option.Data;
             SwitchContent(selectedContent);
             NotificationCenter.RaiseExplorerTabChanged(this, Convert(selectedContent));
@@ -374,5 +351,10 @@ namespace Kinovea.ScreenManager
             sizeSelector.Decrease();
         }
         #endregion
+
+        private void btnCloseFullscreen_Click(object sender, EventArgs e)
+        {
+            NotificationCenter.RaiseFullScreenToggle(this);
+        }
     }
 }

@@ -49,7 +49,9 @@ namespace Kinovea.ScreenManager
         private void InitializeComponent()
         {
             this.splitMain = new System.Windows.Forms.SplitContainer();
+            this.btnCloseFullscreen = new System.Windows.Forms.Button();
             this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.viewerSelector = new Kinovea.ScreenManager.ViewerSelector();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.SuspendLayout();
             this.SuspendLayout();
@@ -66,20 +68,49 @@ namespace Kinovea.ScreenManager
             // 
             // splitMain.Panel1
             // 
-            this.splitMain.Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
+            this.splitMain.Panel1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.splitMain.Panel1.Controls.Add(this.viewerSelector);
+            this.splitMain.Panel1.Controls.Add(this.btnCloseFullscreen);
             this.splitMain.Panel1.Controls.Add(this.progressBar);
             this.splitMain.Size = new System.Drawing.Size(553, 387);
             this.splitMain.SplitterDistance = 30;
             this.splitMain.TabIndex = 0;
             // 
+            // btnCloseFullscreen
+            // 
+            this.btnCloseFullscreen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCloseFullscreen.BackColor = System.Drawing.Color.Transparent;
+            this.btnCloseFullscreen.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCloseFullscreen.FlatAppearance.BorderSize = 0;
+            this.btnCloseFullscreen.FlatAppearance.MouseDownBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnCloseFullscreen.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnCloseFullscreen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCloseFullscreen.Image = global::Kinovea.ScreenManager.Properties.Resources.arrow_inout;
+            this.btnCloseFullscreen.Location = new System.Drawing.Point(524, 2);
+            this.btnCloseFullscreen.Name = "btnCloseFullscreen";
+            this.btnCloseFullscreen.Size = new System.Drawing.Size(25, 25);
+            this.btnCloseFullscreen.TabIndex = 25;
+            this.btnCloseFullscreen.UseVisualStyleBackColor = false;
+            this.btnCloseFullscreen.Click += new System.EventHandler(this.btnCloseFullscreen_Click);
+            // 
             // progressBar
             // 
             this.progressBar.ForeColor = System.Drawing.Color.LightSteelBlue;
-            this.progressBar.Location = new System.Drawing.Point(273, 8);
+            this.progressBar.Location = new System.Drawing.Point(197, 7);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(154, 15);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar.TabIndex = 24;
+            // 
+            // viewerSelector
+            // 
+            this.viewerSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.viewerSelector.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.viewerSelector.Location = new System.Drawing.Point(433, 6);
+            this.viewerSelector.Name = "viewerSelector";
+            this.viewerSelector.Size = new System.Drawing.Size(84, 18);
+            this.viewerSelector.TabIndex = 26;
+            this.viewerSelector.SelectionChanged += new System.EventHandler(this.Selector_SelectionChanged);
             // 
             // ThumbnailViewerContainer
             // 
@@ -96,5 +127,7 @@ namespace Kinovea.ScreenManager
         }
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.SplitContainer splitMain;
+        private System.Windows.Forms.Button btnCloseFullscreen;
+        private ViewerSelector viewerSelector;
     }
 }

@@ -108,9 +108,8 @@ namespace Kinovea.Root
             BuildSubTree();
             mainWindow = new KinoveaMainWindow(this);
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
+            NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
             NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
-
-
 
             log.Debug("Plug sub modules at UI extension points (Menus, ToolBars, StatusBAr, Windows).");
             ExtendMenu(mainWindow.menuStrip);
@@ -465,19 +464,7 @@ namespace Kinovea.Root
         }
         private void mnuFullScreenOnClick(object sender, EventArgs e)
         {
-            mainWindow.ToggleFullScreen();
-            
-            if(mainWindow.FullScreen)
-            {
-                mainWindow.SupervisorControl.CollapseExplorer();    
-            }
-            else
-            {
-                mainWindow.SupervisorControl.ExpandExplorer(true);    
-            }
-            
-           // Propagates the call to screens.
-           screenManager.FullScreen(mainWindow.FullScreen);
+            FullscreenToggle();
         }
         #endregion
 
@@ -674,6 +661,11 @@ namespace Kinovea.Root
             
             mnuHistory.Enabled = added > 0;
         }
+
+        private void NotificationCenter_FullscreenToggle(object sender, EventArgs e)
+        {
+            FullscreenToggle();
+        }
        
         #region Lower Level Methods
         private void OpenFileFromPath(string filePath)
@@ -740,6 +732,18 @@ namespace Kinovea.Root
                 resourceUri = englishUri;
             
             return resourceUri;
+        }
+        private void FullscreenToggle()
+        {
+            mainWindow.ToggleFullScreen();
+
+            if (mainWindow.FullScreen)
+                mainWindow.SupervisorControl.CollapseExplorer();
+            else
+                mainWindow.SupervisorControl.ExpandExplorer(true);
+
+            // Propagates the call to screens.
+            screenManager.FullScreen(mainWindow.FullScreen);
         }
         #endregion
     }
