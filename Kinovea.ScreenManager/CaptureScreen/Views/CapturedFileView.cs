@@ -168,11 +168,11 @@ namespace Kinovea.ScreenManager
         {
             // Reload the text for each menu.
             // this is done at construction time and at RefreshUICulture time.
-            mnuLoadVideo.Text = "Launch playback"; //ScreenManagerLang.mnuThumbnailPlay;
-            mnuLocate.Text = "Locate on disk";
-            mnuRename.Text = "Rename file";
-            mnuHide.Text = "Remove thumbnail"; //ScreenManagerLang.mnuGridsHide;
-            mnuDelete.Text = "Remove thumbnail and delete file"; //ScreenManagerLang.mnuThumbnailDelete;
+            mnuLoadVideo.Text = ScreenManagerLang.mnuThumbnailPlay;
+            mnuLocate.Text = ScreenManagerLang.mnuThumbnailLocate;
+            mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
+            mnuHide.Text = ScreenManagerLang.mnuGridsHide;
+            mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
         }
         private void Close()
         {
