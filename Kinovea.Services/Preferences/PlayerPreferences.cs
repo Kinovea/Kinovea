@@ -74,6 +74,11 @@ namespace Kinovea.Services
             get { return deinterlaceByDefault; }
             set { deinterlaceByDefault = value; }
         }
+        public bool InteractiveFrameTracker
+        {
+            get { return interactiveFrameTracker; }
+            set { interactiveFrameTracker = value; }
+        }
         public int WorkingZoneSeconds
         {
             get { return workingZoneSeconds; }
@@ -133,6 +138,7 @@ namespace Kinovea.Services
         private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
         private ImageAspectRatio aspectRatio = ImageAspectRatio.Auto;
         private bool deinterlaceByDefault;
+        private bool interactiveFrameTracker = true;
         private int workingZoneSeconds = 12;
         private int workingZoneMemory = 512;
         private InfosFading defaultFading = new InfosFading();
@@ -160,6 +166,7 @@ namespace Kinovea.Services
             writer.WriteElementString("AngularAccelerationUnit", angularAccelerationUnit.ToString());
             writer.WriteElementString("AspectRatio", aspectRatio.ToString());
             writer.WriteElementString("DeinterlaceByDefault", deinterlaceByDefault ? "true" : "false");
+            writer.WriteElementString("InteractiveFrameTracker", interactiveFrameTracker ? "true" : "false");
             writer.WriteElementString("WorkingZoneSeconds", workingZoneSeconds.ToString());
             writer.WriteElementString("WorkingZoneMemory", workingZoneMemory.ToString());
             writer.WriteElementString("SyncLockSpeed", syncLockSpeed ? "true" : "false");
@@ -225,6 +232,9 @@ namespace Kinovea.Services
                         break;
                     case "DeinterlaceByDefault":
                         deinterlaceByDefault = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "InteractiveFrameTracker":
+                        interactiveFrameTracker = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "WorkingZoneSeconds":
                         workingZoneSeconds = reader.ReadElementContentAsInt();

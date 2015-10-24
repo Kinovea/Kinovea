@@ -88,12 +88,6 @@ namespace Kinovea.ScreenManager
                 UpdateCursorPosition();
             }
         }
-        [Category("Behavior"), Browsable(true)]
-        public bool ReportOnMouseMove
-        {
-            get { return reportOnMouseMove;  }
-            set { reportOnMouseMove = value; }
-        }
         public long SyncPosition
         {
             get { return syncPointTimestamp; }
@@ -124,7 +118,6 @@ namespace Kinovea.ScreenManager
         private int halfCursorWidth = Resources.liqcursor.Width / 2;
         private int spacers = 10;
         
-        private bool reportOnMouseMove = false;
         private bool enabled = true;
         private bool commonTimeline;
         private Bitmap bmpNavCursor = Resources.liqcursor;
@@ -276,7 +269,7 @@ namespace Kinovea.ScreenManager
                 Invalidate();
                 invalidateAsked = true;
             
-                if (reportOnMouseMove && PositionChanging != null)
+                if (PositionChanging != null)
                 {
                     position = GetTimestampFromCoord(pixelPosition + halfCursorWidth);
                     PositionChanging(this, new PositionChangedEventArgs(position));

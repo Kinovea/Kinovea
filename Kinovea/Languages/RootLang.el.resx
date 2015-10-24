@@ -104,6 +104,7 @@
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Ενεργοποίηση Επιμονής</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Απόπλεξη πάντα όταν ανοίγει ένα νέο video</value></data>
    
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Εφαρμογή 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Εφαρμογή 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Αυτόματη Ανίχνευση</value></data>
@@ -156,7 +157,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Δεκάδες Χιλιοστά της ώρας</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Χρονικά Σημάδια</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Κλασσικό + Αριθμητικά πλαίσια</value></data>
-   
    
    
    

@@ -63,7 +63,6 @@ namespace Kinovea.ScreenManager
             this.trkFrame.MinimumSize = new System.Drawing.Size(50, 20);
             this.trkFrame.Name = "trkFrame";
             this.trkFrame.Position = ((long)(0));
-            this.trkFrame.ReportOnMouseMove = true;
             this.trkFrame.Size = new System.Drawing.Size(212, 20);
             this.trkFrame.TabIndex = 14;
             this.trkFrame.PositionChanging += new System.EventHandler<Kinovea.ScreenManager.PositionChangedEventArgs>(this.trkFrame_PositionChanged);

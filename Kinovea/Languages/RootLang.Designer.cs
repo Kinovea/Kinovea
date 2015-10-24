@@ -403,6 +403,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update image during time cursor movement.
+        /// </summary>
+        internal static string dlgPreferences_InteractiveFrameTracker {
+            get {
+                return ResourceManager.GetString("dlgPreferences_InteractiveFrameTracker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number of files in history:.
         /// </summary>
         internal static string dlgPreferences_LabelHistoryCount {

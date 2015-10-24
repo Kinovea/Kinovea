@@ -103,6 +103,7 @@
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>ビデオ再生中にドローイングを表示する</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>継続時間の有効化</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>新しいビデオを開くときはインターレースを解除する</value></data>
+   
    <data name="dlgPreferences_SyncLockSpeeds" xml:space="preserve"><value>ビデオを比較する際、スピードスライダーを連動させる</value></data>
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>16:9に変換</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>4:3に変換</value></data>
@@ -156,7 +157,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>1/10,000時間</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>タイムスタンプ</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>クラシック + フレーム 数</value></data>
-   
    
    
    

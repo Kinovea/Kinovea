@@ -103,6 +103,7 @@
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Montrer les dessins pendant la lecture vidéo</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activer la persistance</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Toujours désentrelacer à l'ouverture d'une nouvelle vidéo.</value></data>
+   <data name="dlgPreferences_InteractiveFrameTracker" xml:space="preserve"><value>Mettre à jour l'image pendant le déplacement du curseur de temps</value></data>
    <data name="dlgPreferences_SyncLockSpeeds" xml:space="preserve"><value>Lier les contrôles de vitesse lors de la comparaison de vidéos.</value></data>
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Forcer 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forcer 4:3</value></data>
@@ -156,7 +157,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dix millièmes d'heure</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classique + Numéros des images</value></data>
-   
    
    
    

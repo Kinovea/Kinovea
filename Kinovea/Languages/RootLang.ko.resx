@@ -104,6 +104,7 @@
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>지속 가능하게 함</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>새 비디오를 열때 항상 디인터레이싱을 가능하게 함.</value></data>
    
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>16:9로 만듬</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>4:3으로 만듬</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>자동 탐지</value></data>
@@ -156,7 +157,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>한 시간을 만 등분한 시간</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>시간 스탬프들</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>전통+프레임 숫자</value></data>
-   
    
    
    
