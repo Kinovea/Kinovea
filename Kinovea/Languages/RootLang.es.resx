@@ -104,6 +104,7 @@
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activar persistencia</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Siempre desentrelazar al abrir un vídeo nuevo</value></data>
    
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Forzar 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forzar 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Detección automática</value></data>
@@ -156,7 +157,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Diez milésimas de una hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clásico + Número de imágenes</value></data>
-   
    
    
    

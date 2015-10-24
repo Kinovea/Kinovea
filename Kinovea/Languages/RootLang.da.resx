@@ -104,6 +104,7 @@
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Aktiver vedholdenhed</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Altid deinterlace når ny video åbnes.</value></data>
    
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Gennemtving 16:9 format</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Gennemtving 4:3 format</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Auto detektering</value></data>
@@ -156,7 +157,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>10/1000 time</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tidsstempler</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassisk + Billednumre</value></data>
-   
    
    
    

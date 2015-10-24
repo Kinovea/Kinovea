@@ -103,6 +103,7 @@
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Toon tekening als de video speelt</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Sta Persistentie toe</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Altijd de-interlace toepassen bij het openen van nieuwe video</value></data>
+   
    <data name="dlgPreferences_SyncLockSpeeds" xml:space="preserve"><value>Verbind de snelheid-regelaars tijdens het vergelijken van de videos.</value></data>
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Forceer 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forceer 4:3</value></data>
@@ -156,7 +157,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een uur</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassiek + Beeldnummers</value></data>
-   
    
    
    

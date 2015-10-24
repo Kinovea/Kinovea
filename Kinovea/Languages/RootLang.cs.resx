@@ -104,6 +104,7 @@
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Umožnit přetrvání zobrazení</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Při otevření nového souboru vždy použít deinterlace.</value></data>
    
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Formát 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Formát 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Autodetekce</value></data>
@@ -156,7 +157,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Desetitisícina hodiny</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Časová razítka</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasické zobarzení + číslo snímku</value></data>
-   
    
    
    

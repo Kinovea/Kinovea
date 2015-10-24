@@ -103,6 +103,7 @@
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Покажи ги цртежите додека видеото се репродуцира</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Овозможи постојаност</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Секогаш расплети кога отвораш ново видео.</value></data>
+   
    <data name="dlgPreferences_SyncLockSpeeds" xml:space="preserve"><value>Поврзи ги брзите лизгачи кога се споредуваат видеата.</value></data>
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Сила 19:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Сила 4:3</value></data>
@@ -156,7 +157,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет илјадити дел од часот</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Бележење на времето</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Класично + Број на фрејмови</value></data>
-   
    
    
    

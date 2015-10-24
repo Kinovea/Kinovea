@@ -662,7 +662,6 @@ namespace Kinovea.ScreenManager
                 trkSelection.SelEnd = m_iSelEnd;
                     
             trkFrame.Remap(m_iSelStart, m_iSelEnd);
-            trkFrame.ReportOnMouseMove = m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
             
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
@@ -1788,7 +1787,9 @@ namespace Kinovea.ScreenManager
         #region Frame Tracker
         private void trkFrame_PositionChanging(object sender, PositionChangedEventArgs e)
         {
-            // This one should only fire during analysis mode.
+            if (!PreferencesManager.PlayerPreferences.InteractiveFrameTracker)
+                return;
+
             if (m_FrameServer.Loaded)
             {
                 // Update image but do not touch cursor, as the user is manipulating it.

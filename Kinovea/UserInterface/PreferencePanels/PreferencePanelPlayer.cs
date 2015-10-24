@@ -51,6 +51,7 @@ namespace Kinovea.Root
         private string description;
         private Bitmap icon;
         private bool deinterlaceByDefault;
+        private bool interactiveFrameTracker;
         private TimecodeFormat timecodeFormat;
         private ImageAspectRatio imageAspectRatio;
         private SpeedUnit speedUnit;
@@ -78,6 +79,7 @@ namespace Kinovea.Root
         private void ImportPreferences()
         {
             deinterlaceByDefault = PreferencesManager.PlayerPreferences.DeinterlaceByDefault;
+            interactiveFrameTracker = PreferencesManager.PlayerPreferences.InteractiveFrameTracker;
             timecodeFormat = PreferencesManager.PlayerPreferences.TimecodeFormat;
             imageAspectRatio = PreferencesManager.PlayerPreferences.AspectRatio;       
             speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
@@ -96,6 +98,7 @@ namespace Kinovea.Root
             // General tab
             tabGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
             chkDeinterlace.Text = RootLang.dlgPreferences_DeinterlaceByDefault;
+            chkInteractiveTracker.Text = RootLang.dlgPreferences_DeinterlaceByDefault;
             chkLockSpeeds.Text = RootLang.dlgPreferences_SyncLockSpeeds; 
                 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
@@ -152,6 +155,7 @@ namespace Kinovea.Root
             // Fill in initial values.            
             chkDeinterlace.Checked = deinterlaceByDefault;
             chkLockSpeeds.Checked = syncLockSpeeds;
+            chkInteractiveTracker.Checked = interactiveFrameTracker;
             SelectCurrentUnits();
             SelectCurrentImageFormat();
             
@@ -196,6 +200,10 @@ namespace Kinovea.Root
         private void ChkLockSpeedsCheckedChanged(object sender, EventArgs e)
         {
             syncLockSpeeds = chkLockSpeeds.Checked;
+        }
+        private void ChkInteractiveTrackerCheckedChanged(object sender, EventArgs e)
+        {
+            interactiveFrameTracker = chkInteractiveTracker.Checked;
         }
         private void cmbTimeCodeFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -242,6 +250,7 @@ namespace Kinovea.Root
         {
             PreferencesManager.PlayerPreferences.DeinterlaceByDefault = deinterlaceByDefault;
             PreferencesManager.PlayerPreferences.SyncLockSpeed = syncLockSpeeds;
+            PreferencesManager.PlayerPreferences.InteractiveFrameTracker = interactiveFrameTracker;
             PreferencesManager.PlayerPreferences.TimecodeFormat = timecodeFormat;
             PreferencesManager.PlayerPreferences.AspectRatio = imageAspectRatio;
             PreferencesManager.PlayerPreferences.SpeedUnit = speedUnit;
