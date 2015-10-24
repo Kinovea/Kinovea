@@ -59,6 +59,7 @@ namespace Kinovea.FileBrowser
         private string lastOpenedDirectory;
         private ActiveFileBrowserTab activeTab;
         private Dictionary<string, TreeNode> captureHistoryNodes = new Dictionary<string, TreeNode>();
+        private FileSystemWatcher fileWatcher = new FileSystemWatcher();
 
         #region Menu
         private ContextMenuStrip popMenuFolders = new ContextMenuStrip();
@@ -105,6 +106,8 @@ namespace Kinovea.FileBrowser
             // Reload stored persistent information.
             ReloadShortcuts();
             ReloadCaptureHistory(true);
+
+            InitializeFileWatcher();
             
             // Reload last tab from prefs.
             // We don't reload the splitters here, because we are not at full size yet and they are anchored.
@@ -218,7 +221,6 @@ namespace Kinovea.FileBrowser
             // Create a virtual shortcut for the current video directory.
 
             lastOpenedDirectory = Path.GetDirectoryName(e.File);
-            
             
             if (activeTab == ActiveFileBrowserTab.Shortcuts && currentShortcutItem != null && currentShortcutItem.Path == lastOpenedDirectory)
                 return;
@@ -837,7 +839,6 @@ namespace Kinovea.FileBrowser
             listView.Columns.Add("", listView.Width);
             listView.GridLines = true;
             listView.HeaderStyle = ColumnHeaderStyle.None;
-
             
             // Each list element will store the CShItem it's referring to in its Tag property.
             ArrayList fileList = folder.GetFiles();
@@ -876,7 +877,9 @@ namespace Kinovea.FileBrowser
             }
             
             listView.EndUpdate();
-                                        
+
+            UpdateFileWatcher(folder);
+                            
             // Even if we don't want to reload the thumbnails, we must ensure that 
             // the screen manager backup list is in sync with the actual file list.
             // desync can happen in case of renaming and deleting files.
@@ -1023,6 +1026,50 @@ namespace Kinovea.FileBrowser
             externalSelection = false;
         }
 
+        #region File watcher
+        private void InitializeFileWatcher()
+        {
+            fileWatcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
+            fileWatcher.Filter = "*.*";
+            fileWatcher.IncludeSubdirectories = false;
+            fileWatcher.EnableRaisingEvents = false;
+            fileWatcher.Changed += fileWatcher_Changed;
+            fileWatcher.Created += fileWatcher_Created;
+            fileWatcher.Deleted += fileWatcher_Deleted;
+            fileWatcher.Renamed += fileWatcher_Renamed;
+        }
+
+        private void UpdateFileWatcher(CShItem folder)
+        {
+            fileWatcher.EnableRaisingEvents = false;
+
+            if (folder == null || folder.Path.StartsWith("::"))
+                return;
+
+            fileWatcher.Path = folder.Path;
+            fileWatcher.EnableRaisingEvents = true;
+        }
+        
+        private void fileWatcher_Renamed(object sender, RenamedEventArgs e)
+        {
+            this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+        }
+
+        private void fileWatcher_Deleted(object sender, FileSystemEventArgs e)
+        {
+            this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+        }
+
+        private void fileWatcher_Created(object sender, FileSystemEventArgs e)
+        {
+            this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+        }
+
+        private void fileWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+        }
+        #endregion
 
         #region Commands
         protected override bool ExecuteCommand(int cmd)
@@ -1161,16 +1208,6 @@ namespace Kinovea.FileBrowser
         }
         
         #endregion
-
-        
        
-
-       
-
-        
-
-        
-
-        
     }
 }
