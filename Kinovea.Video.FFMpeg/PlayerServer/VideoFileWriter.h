@@ -55,39 +55,37 @@ using namespace System::Windows::Forms;
 
 namespace Kinovea { namespace Video { namespace FFMpeg
 {
-	public ref class VideoFileWriter
-	{
-	// Construction/Destruction
-	public:
-		VideoFileWriter();
-		~VideoFileWriter();
-	protected:
-		!VideoFileWriter();
+    public ref class VideoFileWriter
+    {
+    // Construction/Destruction
+    public:
+        VideoFileWriter();
+        ~VideoFileWriter();
+    protected:
+        !VideoFileWriter();
 
-	// Public Methods
-	public:
-		SaveResult Save(SavingSettings _settings,  VideoInfo _info, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker);
-		SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, double _fFramesInterval, bool _bHasMetadata);
-		SaveResult CloseSavingContext(bool _bEncodingSuccess);
-		SaveResult SaveFrame(Bitmap^ _image);
-		SaveResult SaveMetadata(String^ _Metadata);
-	
-	// Private Methods
-	private:
-		static AVOutputFormat* GuessOutputFormat(String^ _FilePath, bool _bHasMetadata);
-		int ComputeBitrate(Size outputSize, double frameInterval);
-		bool SetupMuxer(SavingContext^ _SavingContext);
-		bool SetupEncoder(SavingContext^ _SavingContext);
-		
-		bool WriteMetadata(SavingContext^ _SavingContext, String^ _Metadata);
-		bool EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bitmap^ _InputBitmap);
-		bool WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
-		void SanityCheck(AVFormatContext* s);
-		static int GreatestCommonDenominator(int a, int b);
-	
-	// Members
-	private :
-		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
-		SavingContext^ m_SavingContext;
-	};
+    // Public Methods
+    public:
+        SaveResult Save(SavingSettings _settings,  VideoInfo _info, String^ _formatString, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker);
+        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval);
+        SaveResult CloseSavingContext(bool _bEncodingSuccess);
+        SaveResult SaveFrame(Bitmap^ _image);
+    
+    // Private Methods
+    private:
+        double ComputeBitrate(Size outputSize, double frameInterval);
+        bool SetupMuxer(SavingContext^ _SavingContext);
+        bool SetupEncoder(SavingContext^ _SavingContext);
+        
+        bool EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bitmap^ _InputBitmap);
+        bool WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
+        void SanityCheck(AVFormatContext* s);
+        void LogError(String^ context, int ffmpegError);
+        static int GreatestCommonDenominator(int a, int b);
+    
+    // Members
+    private :
+        static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
+        SavingContext^ m_SavingContext;
+    };
 }}}

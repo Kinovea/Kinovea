@@ -1083,7 +1083,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Resources\clipboard-block.png" />
   </ItemGroup>
   <ItemGroup>

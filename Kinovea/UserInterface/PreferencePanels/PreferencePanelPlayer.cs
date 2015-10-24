@@ -98,7 +98,7 @@ namespace Kinovea.Root
             // General tab
             tabGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
             chkDeinterlace.Text = RootLang.dlgPreferences_DeinterlaceByDefault;
-            chkInteractiveTracker.Text = RootLang.dlgPreferences_DeinterlaceByDefault;
+            chkInteractiveTracker.Text = RootLang.dlgPreferences_InteractiveFrameTracker;
             chkLockSpeeds.Text = RootLang.dlgPreferences_SyncLockSpeeds; 
                 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)

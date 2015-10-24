@@ -89,17 +89,18 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         }
 
         Marshal::FreeHGlobal(safe_cast<IntPtr>(pFormatString));
-
         m_SavingContext->pOutputFormat = format;
 
-        // 2. Allocate muxer parameters object.
-        if ((m_SavingContext->pOutputFormatContext = avformat_alloc_context()) == nullptr) 
+        // 2. Allocate muxer context.
+        pin_ptr<AVFormatContext*> pinOutputFormatContext = &m_SavingContext->pOutputFormatContext;
+        int averror = avformat_alloc_output_context2(pinOutputFormatContext, format, nullptr, nullptr);
+        if (averror < 0)
         {
             result = SaveResult::MuxerParametersNotAllocated;
-            log->Error("Muxer parameters object not allocated");
+            LogError("Muxer parameters object not allocated", averror);
             break;
         }
-        
+
         // 3. Configure muxer.
         if(!SetupMuxer(m_SavingContext))
         {
@@ -108,15 +109,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
             break;
         }
 
-        // 4. Create video stream.
-        if ((m_SavingContext->pOutputVideoStream = avformat_new_stream(m_SavingContext->pOutputFormatContext, nullptr)) == nullptr) 
-        {
-            result = SaveResult::VideoStreamNotCreated;
-            log->Error("Video stream not created");
-            break;
-        }
-
-        // 5. Select encoder.
+        // 4. Find encoder.
         if ((m_SavingContext->pOutputCodec = avcodec_find_encoder(AV_CODEC_ID_MJPEG)) == nullptr)
         {
             result = SaveResult::EncoderNotFound;
@@ -124,15 +117,18 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
             break;
         }
 
-        // 6. Allocate encoder parameters object.
-        if ((m_SavingContext->pOutputCodecContext = avcodec_alloc_context3(nullptr)) == nullptr) 
+        // 5. Create video stream.
+        m_SavingContext->pOutputVideoStream = avformat_new_stream(m_SavingContext->pOutputFormatContext, m_SavingContext->pOutputCodec);
+        if (m_SavingContext->pOutputVideoStream == nullptr) 
         {
-            result = SaveResult::EncoderParametersNotAllocated;
-            log->Error("Encoder parameters object not allocated");
+            result = SaveResult::VideoStreamNotCreated;
+            log->Error("Video stream not created");
             break;
         }
 
-        // 7. Configure encoder.
+        m_SavingContext->pOutputVideoStream->id = m_SavingContext->pOutputFormatContext->nb_streams - 1;
+
+        // 6. Configure encoder.
         if(!SetupEncoder(m_SavingContext))
         {
             result = SaveResult::EncoderParametersNotSet;
@@ -142,44 +138,46 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
 
         m_SavingContext->pOutputFormatContext->video_codec_id = m_SavingContext->pOutputCodec->id;
 
-        // 8. Open encoder.
-        int openResult = avcodec_open2(m_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec, nullptr);
-        if (openResult < 0)
+        // 7. Open the encoder.
+        averror = avcodec_open2(m_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec, nullptr);
+        if (averror < 0)
         {
             result = SaveResult::EncoderNotOpened;
-            log->Error("Encoder not opened");
+            LogError("Encoder not opened", averror);
             break;
         }
 
         m_SavingContext->bEncoderOpened = true;
         
-        // 9. Associate encoder to stream.
+        // 8. Associate encoder to stream.
         m_SavingContext->pOutputVideoStream->codec = m_SavingContext->pOutputCodecContext;
 
-        // 10. Open the file.
-        int iFFMpegResult;
-        if ((iFFMpegResult = avio_open(&(m_SavingContext->pOutputFormatContext)->pb, m_SavingContext->pFilePath, AVIO_FLAG_WRITE)) < 0) 
+        
+        // 9. Open the file.
+        averror = avio_open(&(m_SavingContext->pOutputFormatContext)->pb, m_SavingContext->pFilePath, AVIO_FLAG_WRITE);
+        if (averror < 0) 
         {
             result = SaveResult::FileNotOpened;
-            log->Error(String::Format("File not opened, AVERROR:{0}", iFFMpegResult));
+            LogError("File not opened", averror);
             break;
         }
 
         SanityCheck(m_SavingContext->pOutputFormatContext);
 
-        // 11. Write file header.
-        if((iFFMpegResult = avformat_write_header(m_SavingContext->pOutputFormatContext, nullptr)) < 0)
+        // 10. Write file header.
+        averror = avformat_write_header(m_SavingContext->pOutputFormatContext, nullptr);
+        if (averror < 0)
         {
             result = SaveResult::FileHeaderNotWritten;
-            log->Error(String::Format("File header not written, AVERROR:{0}", iFFMpegResult));
+            LogError("File header not written", averror);
             break;
         }
 
-        // 12. Allocate memory for the current incoming frame holder. (will be reused for each frame). 
+        // 11. Allocate memory for the current incoming frame holder. (will be reused for each frame). 
         if ((m_SavingContext->pInputFrame = av_frame_alloc()) == nullptr) 
         {
             result = SaveResult::InputFrameNotAllocated;
-            log->Error("input frame not allocated");
+            log->Error("Input frame not allocated");
             break;
         }
     }
@@ -194,15 +192,15 @@ void MJPEGWriter::SanityCheck(AVFormatContext* s)
 
     if (s->nb_streams != 1) 
     {
-        log->Error("MJPEGWriter sanity check failed: no streams.");
+        log->Error("Sanity check failed: no streams.");
         return;
     }
 
-    AVStream *st = s->streams[0];
+    AVStream* st = s->streams[0];
     
     if (st->codec->codec_type != AVMEDIA_TYPE_VIDEO)
     {
-        log->Error("MJPEGWriter sanity check failed: not a video codec.");
+        log->Error("Sanity check failed: not a video codec.");
         return;
     }
 
@@ -349,30 +347,31 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext)
     // TODO:
     // Implement from ref: http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-dvd-mpeg4.html
 
-
     log->Debug("Setting up the encoder.");
 
+    _SavingContext->pOutputCodecContext = m_SavingContext->pOutputVideoStream->codec;
+    avcodec_get_context_defaults3(_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec);
+
     // Codec.
-    // Equivalent to : -vcodec mpeg4
     _SavingContext->pOutputCodecContext->codec_id = _SavingContext->pOutputCodec->id;
     _SavingContext->pOutputCodecContext->codec_type = AVMEDIA_TYPE_VIDEO;
 
     // FourCC
-    _SavingContext->pOutputCodecContext->codec_tag = ('G'<<24) + ('P'<<16) + ('J'<<8) + 'M';
-
+    // Setting the four CC make avcodec_open2 fail.
+    //_SavingContext->pOutputCodecContext->codec_tag = ('G'<<24) + ('P'<<16) + ('J'<<8) + 'M';
+    
     // The average bitrate (unused for constant quantizer encoding.)
-    // Source: statically fixed to 25Mb/s for now. 
     _SavingContext->pOutputCodecContext->bit_rate = _SavingContext->iBitrate;
-
+    
     // Number of bits the bitstream is allowed to diverge from the reference.
     // the reference can be CBR (for CBR pass1) or VBR (for pass2)
     // Source: Avidemux.
     _SavingContext->pOutputCodecContext->bit_rate_tolerance = 8000000;
-
+    
     // Motion estimation algorithm used for video coding. 
     // src: MEncoder.
     _SavingContext->pOutputCodecContext->me_method = ME_EPZS;
-
+    
     // Framerate - timebase.
     if(_SavingContext->fFramesInterval == 0)
         _SavingContext->fFramesInterval = 40;
@@ -385,10 +384,9 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext)
     // If we are transcoding from a video, this will be the same as the input size.
     // (not the decoding size).
     // src: [kinovea]
-    _SavingContext->pOutputCodecContext->width				= _SavingContext->outputSize.Width;
-    _SavingContext->pOutputCodecContext->height				= _SavingContext->outputSize.Height;
+    _SavingContext->pOutputCodecContext->width = _SavingContext->outputSize.Width;
+    _SavingContext->pOutputCodecContext->height = _SavingContext->outputSize.Height;
     
-
     //-------------------------------------------------------------------------------------------
     // Encoding mode (i, b, p frames)
     //
@@ -399,14 +397,14 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext)
     // [kinovea]	: Intra only so we can always access prev frame right away in the Player.
     // [kinovea]	: Player doesn't support B-frames.
     //-------------------------------------------------------------------------------------------
-    _SavingContext->pOutputCodecContext->gop_size				= 0;	
-    _SavingContext->pOutputCodecContext->max_b_frames			= 0;								
+    //_SavingContext->pOutputCodecContext->gop_size				= 0;	
+    //_SavingContext->pOutputCodecContext->max_b_frames			= 0;								
 
     // Pixel format
     // src:ffmpeg.
     _SavingContext->pOutputCodecContext->pix_fmt = AV_PIX_FMT_YUV420P; 	
 
-
+    
     // Frame rate emulation. If not zero, the lower layer (i.e. format handler) has to read frames at native frame rate.
     // src: ?
     // ->rate_emu
@@ -477,22 +475,24 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext)
     _SavingContext->pOutputVideoStream->sample_aspect_ratio.den = _SavingContext->pOutputCodecContext->sample_aspect_ratio.den;
 
     
+    _SavingContext->pOutputCodecContext->strict_std_compliance = FF_COMPLIANCE_UNOFFICIAL;
+    
     //-----------------------------------
     // h. Other settings. (From MEncoder) 
     //-----------------------------------
-    _SavingContext->pOutputCodecContext->strict_std_compliance= -1;		// strictly follow the standard (MPEG4, ...)
     //_SavingContext->pOutputCodecContext->i_luma_elim = 0;		// luma single coefficient elimination threshold
     //_SavingContext->pOutputCodecContext->i_chroma_elim = 0;		// chroma single coeff elimination threshold
-    _SavingContext->pOutputCodecContext->lumi_masking = 0.0;;
+    _SavingContext->pOutputCodecContext->lumi_masking = 0.0;
     _SavingContext->pOutputCodecContext->dark_masking = 0.0;
-    // codecContext->codec_tag							// 4CC : if not set then the default based on codec_id will be used.
     // pre_me (prepass for motion estimation)
     // sample_rate
     // codecContext->channels = 2;
     // codecContext->mb_decision = 0;
     
-    return true;
+    if (_SavingContext->pOutputFormatContext->oformat->flags & AVFMT_GLOBALHEADER)
+        _SavingContext->pOutputCodecContext->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
+    return true;
 }
 
 ///<summary>
@@ -741,6 +741,14 @@ bool MJPEGWriter::WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, u
     fs->Close();*/
     
     return true;
+}
+
+void MJPEGWriter::LogError(String^ context, int error)
+{
+    char errbuf[256];
+    av_strerror(error, errbuf, sizeof(errbuf));
+    String^ message = Marshal::PtrToStringAnsi((IntPtr)errbuf);
+    log->Error(String::Format("{0}, Error:{1}", context, message));
 }
 
 int MJPEGWriter::GreatestCommonDenominator(int a, int b)

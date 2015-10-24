@@ -379,7 +379,8 @@ namespace Kinovea.ScreenManager
                 IEnumerable<Bitmap> images = FrameEnumerator(settings);
 
                 VideoFileWriter w = new VideoFileWriter();
-                saveResult = w.Save(settings, videoReader.Info, images, bgWorker);
+                string formatString = FilenameHelper.GetFormatString(settings.File);
+                saveResult = w.Save(settings, videoReader.Info, formatString, images, bgWorker);
                 videoReader.AfterFrameEnumeration();
             }
             catch (Exception exp)
