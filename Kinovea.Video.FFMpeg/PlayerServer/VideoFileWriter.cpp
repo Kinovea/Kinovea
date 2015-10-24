@@ -42,14 +42,14 @@ VideoFileWriter::!VideoFileWriter()
 {
 }
 
-SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoInfo _info, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker)
+SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoInfo _info, String^ _formatString, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker)
 {
     SaveResult result = SaveResult::Success;
 
     if(_frames == nullptr || _worker == nullptr)
         return SaveResult::UnknownError;
 
-    result = OpenSavingContext(	_settings.File, _info, _settings.OutputFrameInterval, false);
+    result = OpenSavingContext(	_settings.File, _info, _formatString, _settings.OutputFrameInterval);
 
     if(result != SaveResult::Success)
     {
@@ -96,7 +96,7 @@ SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoInfo _info, IEnu
 /// VideoFileWriter::OpenSavingContext
 /// Open a saving context and configure it with default parameters.
 ///</summary>
-SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info, double _fFramesInterval, bool _bHasMetadata)
+SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval)
 {
     //---------------------------------------------------------------------------------------------------
     // Set the saving context.
@@ -156,18 +156,26 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
     do
     {
         // 1. Muxer selection.
-        if ((m_SavingContext->pOutputFormat = VideoFileWriter::GuessOutputFormat(_FilePath, _bHasMetadata)) == nullptr) 
+        char* pFormatString = static_cast<char*>(Marshal::StringToHGlobalAnsi(_formatString).ToPointer());
+        AVOutputFormat* format = av_guess_format(pFormatString, nullptr, nullptr);
+        if (format == nullptr) 
         {
             result = SaveResult::MuxerNotFound;
+            Marshal::FreeHGlobal(safe_cast<IntPtr>(pFormatString));
             log->Error("Muxer not found");
             break;
         }
 
-        // 2. Allocate muxer parameters object.
-        if ((m_SavingContext->pOutputFormatContext = avformat_alloc_context()) == nullptr) 
+        Marshal::FreeHGlobal(safe_cast<IntPtr>(pFormatString));
+        m_SavingContext->pOutputFormat = format;
+
+        // 2. Allocate muxer context.
+        pin_ptr<AVFormatContext*> pinOutputFormatContext = &m_SavingContext->pOutputFormatContext;
+        int averror = avformat_alloc_output_context2(pinOutputFormatContext, format, nullptr, nullptr);
+        if (averror < 0)
         {
             result = SaveResult::MuxerParametersNotAllocated;
-            log->Error("Muxer parameters object not allocated");
+            LogError("Muxer parameters object not allocated", averror);
             break;
         }
         
@@ -179,31 +187,26 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
             break;
         }
 
-        // 4. Create video stream.
-        if ((m_SavingContext->pOutputVideoStream = avformat_new_stream(m_SavingContext->pOutputFormatContext, nullptr)) == nullptr) 
-        {
-            result = SaveResult::VideoStreamNotCreated;
-            log->Error("Video stream not created");
-            break;
-        }
-
-        // 5. Encoder selection
+        // 4. Encoder selection
         if ((m_SavingContext->pOutputCodec = avcodec_find_encoder(CODEC_ID_MPEG4)) == nullptr)
         {
             result = SaveResult::EncoderNotFound;
             log->Error("Encoder not found");
             break;
         }
-
-        // 6. Allocate encoder parameters object.
-        if ((m_SavingContext->pOutputCodecContext = avcodec_alloc_context3(nullptr)) == nullptr) 
+        
+        // 5. Create video stream.
+        m_SavingContext->pOutputVideoStream = avformat_new_stream(m_SavingContext->pOutputFormatContext, m_SavingContext->pOutputCodec);
+        if (m_SavingContext->pOutputVideoStream == nullptr) 
         {
-            result = SaveResult::EncoderParametersNotAllocated;
-            log->Error("Encoder parameters object not allocated");
+            result = SaveResult::VideoStreamNotCreated;
+            log->Error("Video stream not created");
             break;
         }
 
-        // 7. Configure encoder.
+        m_SavingContext->pOutputVideoStream->id = m_SavingContext->pOutputFormatContext->nb_streams - 1;
+
+        // 6. Configure encoder.
         if(!SetupEncoder(m_SavingContext))
         {
             result = SaveResult::EncoderParametersNotSet;
@@ -211,39 +214,43 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
             break;
         }
 
-        // 8. Open encoder.
-        if (avcodec_open2(m_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec, nullptr) < 0)
+        m_SavingContext->pOutputFormatContext->video_codec_id = m_SavingContext->pOutputCodec->id;
+
+        // 7. Open the encoder.
+        averror = avcodec_open2(m_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec, nullptr);
+        if (averror < 0)
         {
             result = SaveResult::EncoderNotOpened;
-            log->Error("Encoder not opened");
+            LogError("Encoder not opened", averror);
             break;
         }
 
         m_SavingContext->bEncoderOpened = true;
         
-        // 9. Associate encoder to stream.
+        // 8. Associate encoder to stream.
         m_SavingContext->pOutputVideoStream->codec = m_SavingContext->pOutputCodecContext;
 
-        int iFFMpegResult;
-
-        // 10. Open the file.
-        if ((iFFMpegResult = avio_open(&(m_SavingContext->pOutputFormatContext)->pb, m_SavingContext->pFilePath, AVIO_FLAG_WRITE)) < 0) 
+        // 9. Open the file.
+        averror = avio_open(&(m_SavingContext->pOutputFormatContext)->pb, m_SavingContext->pFilePath, AVIO_FLAG_WRITE);
+        if (averror < 0) 
         {
             result = SaveResult::FileNotOpened;
-            log->Error(String::Format("File not opened, AVERROR:{0}", iFFMpegResult));
+            LogError("File not opened", averror);
             break;
         }
 
-        // 11. Write file header.
         SanityCheck(m_SavingContext->pOutputFormatContext);
-        if((iFFMpegResult = avformat_write_header(m_SavingContext->pOutputFormatContext, nullptr)) < 0)
+
+        // 10. Write file header.
+        averror = avformat_write_header(m_SavingContext->pOutputFormatContext, nullptr);
+        if(averror < 0)
         {
             result = SaveResult::FileHeaderNotWritten;
-            log->Error(String::Format("File header not written, AVERROR:{0}", iFFMpegResult));
+            LogError("File header not written", averror);
             break;
         }
 
-        // 12. Allocate memory for the current incoming frame holder. (will be reused for each frame). 
+        // 11. Allocate memory for the current incoming frame holder. (will be reused for each frame). 
         if ((m_SavingContext->pInputFrame = av_frame_alloc()) == nullptr) 
         {
             result = SaveResult::InputFrameNotAllocated;
@@ -259,41 +266,35 @@ void VideoFileWriter::SanityCheck(AVFormatContext* s)
 {
     // Taken/Adapted from the real sanity check from utils.c av_write_header.
 
-    if (s->nb_streams == 0) 
+    if (s->nb_streams != 1) 
     {
-        log->Error("VideoFileWriter sanity check failed: no streams.");
+        log->Error("Sanity check failed: no streams.");
+        return;
     }
 
-    AVStream *st;
-    for(unsigned int i=0;i < s->nb_streams;i++) 
+    AVStream* st = s->streams[0];
+    
+    if (st->codec->codec_type != AVMEDIA_TYPE_VIDEO)
     {
-        st = s->streams[i];
-
-        switch (st->codec->codec_type) 
-        {
-            case AVMEDIA_TYPE_VIDEO:
-                if(st->codec->time_base.num <= 0 || st->codec->time_base.den <= 0)
-                { 
-                    log->Error("VideoFileWriter sanity check failed: time base not set.");
-                }
-                if(st->codec->width <= 0 || st->codec->height <= 0)
-                {
-                    log->Error("VideoFileWriter sanity check failed: dimensions not set.");
-                }
-                if(av_cmp_q(st->sample_aspect_ratio, st->codec->sample_aspect_ratio))
-                {
-                    log->Error("VideoFileWriter sanity check failed: Aspect ratio mismatch between encoder and muxer layer.");
-                    log->Debug(String::Format("stream SAR={0}:{1}, codec SAR:{2}:{3}", 
-                        st->sample_aspect_ratio.num, st->sample_aspect_ratio.den, st->codec->sample_aspect_ratio.num, st->codec->sample_aspect_ratio.den));
-                }
-                break;
-        }
-
-        if(s->oformat->flags & AVFMT_GLOBALHEADER && !(st->codec->flags & CODEC_FLAG_GLOBAL_HEADER))
-        {
-            log->Debug("VideoFileWriter sanity check warning: Codec does not use global headers but container format requires global headers");
-        }
+        log->Error("Sanity check failed: not a video codec.");
+        return;
     }
+    
+    if(st->codec->time_base.num <= 0 || st->codec->time_base.den <= 0)
+        log->Error("VideoFileWriter sanity check failed: time base not set.");
+        
+    if(st->codec->width <= 0 || st->codec->height <= 0)
+        log->Error("VideoFileWriter sanity check failed: dimensions not set.");
+        
+    if(av_cmp_q(st->sample_aspect_ratio, st->codec->sample_aspect_ratio))
+    {
+        log->Error("VideoFileWriter sanity check failed: Aspect ratio mismatch between encoder and muxer layer.");
+        log->Debug(String::Format("stream SAR={0}:{1}, codec SAR:{2}:{3}", 
+            st->sample_aspect_ratio.num, st->sample_aspect_ratio.den, st->codec->sample_aspect_ratio.num, st->codec->sample_aspect_ratio.den));
+    }
+
+    if(s->oformat->flags & AVFMT_GLOBALHEADER && !(st->codec->flags & CODEC_FLAG_GLOBAL_HEADER))
+        log->Debug("VideoFileWriter sanity check warning: Codec does not use global headers but container format requires global headers");
 }
 
 ///<summary>
@@ -360,59 +361,7 @@ SaveResult VideoFileWriter::SaveFrame(Bitmap^ _image)
     return result;
 }
 
-///<summary>
-/// VideoFileWriter::SaveMetadata
-/// Save an xml string in the file opened in a previous call to OpenSaving context.
-///</summary>
-SaveResult VideoFileWriter::SaveMetadata(String^ _Metadata)
-{
-    log->Debug("Saving metadata to file.");
-    SaveResult result = SaveResult::Success;
-
-    if(!WriteMetadata(m_SavingContext, _Metadata))
-    {
-        log->Error("metadata not written");
-        result = SaveResult::MetadataNotWritten;
-    }
-    
-    return result;
-}
-
-///<summary>
-/// VideoFileWriter::GuessOutputFormat
-/// Return the AVOutputFormat corresponding to a specific filename.
-/// Forces to Matroska if Metadata must be saved.
-///</summary>
-AVOutputFormat* VideoFileWriter::GuessOutputFormat(String^ _FilePath, bool _bHasMetadata)
-{
-    //---------------------------------------------------------------
-    // Hint:
-    // To find a particular format name for ffmpeg,
-    // search for the AVOutputFormat struct in source code for the format.
-    // generally at the end of the file.
-    //---------------------------------------------------------------
-
-    AVOutputFormat*		pOutputFormat;
-
-    String^ Filepath = gcnew String(_FilePath->ToLower());
-
-    if(Filepath->EndsWith("mkv") || _bHasMetadata)
-    {
-        pOutputFormat = av_guess_format("matroska", nullptr, nullptr);
-    }
-    else if(Filepath->EndsWith("mp4")) 
-    {
-        pOutputFormat = av_guess_format("mp4", nullptr, nullptr);
-    }
-    else
-    {
-        pOutputFormat = av_guess_format("avi", nullptr, nullptr);
-    }
-
-    return pOutputFormat;
-}
-
-int VideoFileWriter::ComputeBitrate(Size outputSize, double frameInterval)
+double VideoFileWriter::ComputeBitrate(Size outputSize, double frameInterval)
 {
     // Compute a bitrate equivalent to DV quality.
     // DV quality has a bitrate of 25 Mb/s for 720x576 px @ 30fps.
@@ -464,20 +413,19 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
     // TODO:
     // Implement from ref: http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-dvd-mpeg4.html
 
-
     log->Debug("Setting up the encoder.");
 
+    _SavingContext->pOutputCodecContext = m_SavingContext->pOutputVideoStream->codec;
+    avcodec_get_context_defaults3(_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec);
+
     // Codec.
-    // Equivalent to : -vcodec mpeg4
     _SavingContext->pOutputCodecContext->codec_id = _SavingContext->pOutputCodec->id;
     _SavingContext->pOutputCodecContext->codec_type = AVMEDIA_TYPE_VIDEO;
 
-    // By default the fourcc is 'FMP4' but Windows Media Player doesn't recognize it.
-    // We'll force to 'XVID' fourcc. (similar as -vtag XVID) even if it wasn't the XviD codec that encoded the video :-(
-    _SavingContext->pOutputCodecContext->codec_tag = ('D'<<24) + ('I'<<16) + ('V'<<8) + 'X';
+    // Setting the four CC make avcodec_open2 fail.
+    //_SavingContext->pOutputCodecContext->codec_tag = ('D'<<24) + ('I'<<16) + ('V'<<8) + 'X';
 
     // The average bitrate (unused for constant quantizer encoding.)
-    // Source: statically fixed to 25Mb/s for now. 
     _SavingContext->pOutputCodecContext->bit_rate = _SavingContext->iBitrate;
 
     // Number of bits the bitstream is allowed to diverge from the reference.
@@ -502,21 +450,20 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
     if(iTimebase == 29970)
     {
         log->Debug(String::Format("Pushing special timebase: 30000:1001"));
-        _SavingContext->pOutputCodecContext->time_base.den			= 30000;
-        _SavingContext->pOutputCodecContext->time_base.num			= 1001;
+        _SavingContext->pOutputCodecContext->time_base.den	= 30000;
+        _SavingContext->pOutputCodecContext->time_base.num	= 1001;
     }
     else if(iTimebase == 24975)
     {
         log->Debug(String::Format("Pushing special timebase: 25000:1001"));
-        _SavingContext->pOutputCodecContext->time_base.den			= 25000;
-        _SavingContext->pOutputCodecContext->time_base.num			= 1001;
+        _SavingContext->pOutputCodecContext->time_base.den	= 25000;
+        _SavingContext->pOutputCodecContext->time_base.num	= 1001;
     }
     else
     {
-        iTimebase = (int)Math::Round((double)iTimebase / 1000);
-        log->Debug(String::Format("Pushing timebase: {0}:1", iTimebase));
-        _SavingContext->pOutputCodecContext->time_base.den			= iTimebase;
-        _SavingContext->pOutputCodecContext->time_base.num			= 1;
+        double fps = 1000 / _SavingContext->fFramesInterval;
+        _SavingContext->pOutputCodecContext->time_base.den = (int)Math::Round(1000 * fps);
+        _SavingContext->pOutputCodecContext->time_base.num	= 1000;
     }
     
     // Picture width / height.
@@ -615,51 +562,26 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
     _SavingContext->pOutputVideoStream->sample_aspect_ratio.den = _SavingContext->pOutputCodecContext->sample_aspect_ratio.den;
 
     
+    _SavingContext->pOutputCodecContext->strict_std_compliance = FF_COMPLIANCE_UNOFFICIAL;
+    
     //-----------------------------------
     // h. Other settings. (From MEncoder) 
     //-----------------------------------
-    _SavingContext->pOutputCodecContext->strict_std_compliance= -1;		// strictly follow the standard (MPEG4, ...)
     //_SavingContext->pOutputCodecContext->i_luma_elim = 0;		// luma single coefficient elimination threshold
     //_SavingContext->pOutputCodecContext->i_chroma_elim = 0;		// chroma single coeff elimination threshold
-    _SavingContext->pOutputCodecContext->lumi_masking = 0.0;;
+    _SavingContext->pOutputCodecContext->lumi_masking = 0.0;
     _SavingContext->pOutputCodecContext->dark_masking = 0.0;
-    // codecContext->codec_tag							// 4CC : if not set then the default based on codec_id will be used.
     // pre_me (prepass for motion estimation)
     // sample_rate
     // codecContext->channels = 2;
     // codecContext->mb_decision = 0;
 
+    if (_SavingContext->pOutputFormatContext->oformat->flags & AVFMT_GLOBALHEADER)
+        _SavingContext->pOutputCodecContext->flags |= CODEC_FLAG_GLOBAL_HEADER;
+
     return true;
-
 }
-///<summary>
-/// VideoFileWriter::WriteMetadata
-/// Save the xml data in the video file.
-///</summary>
-bool VideoFileWriter::WriteMetadata(SavingContext^ _SavingContext, String^ _Metadata)
-{
-    // Create packet.
-    AVPacket OutputPacket;
-    av_init_packet(&OutputPacket);					
-    
-    // Packet position.
-    OutputPacket.pts = av_rescale_q(_SavingContext->pOutputCodecContext->coded_frame->pts, _SavingContext->pOutputCodecContext->time_base, _SavingContext->pOutputVideoStream->time_base);
 
-    // Associate packet to subtitle stream.
-    OutputPacket.stream_index = _SavingContext->pOutputDataStream->index;
-
-    char* pMetadata	= static_cast<char*>(Marshal::StringToHGlobalAnsi(_Metadata).ToPointer());
-
-    OutputPacket.data = (uint8_t*)pMetadata;
-    OutputPacket.size = _Metadata->Length;
-    
-    // Write to output file.
-    int iWriteRes = av_write_frame(_SavingContext->pOutputFormatContext, &OutputPacket);
-    
-    Marshal::FreeHGlobal(safe_cast<IntPtr>(pMetadata));
-
-    return (iWriteRes == 0);
-}
 ///<summary>
 /// VideoFileWriter::EncodeAndWriteVideoFrame
 /// Save a single frame in the video file. Takes a Bitmap as input.
@@ -852,8 +774,13 @@ bool VideoFileWriter::WriteFrame(int _iEncodedSize, SavingContext^ _SavingContex
     return true;
 }
 
-
-
+void VideoFileWriter::LogError(String^ context, int error)
+{
+    char errbuf[256];
+    av_strerror(error, errbuf, sizeof(errbuf));
+    String^ message = Marshal::PtrToStringAnsi((IntPtr)errbuf);
+    log->Error(String::Format("{0}, Error:{1}", context, message));
+}
 
 int VideoFileWriter::GreatestCommonDenominator(int a, int b)
 {

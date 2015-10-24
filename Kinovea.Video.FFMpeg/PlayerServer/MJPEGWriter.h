@@ -48,38 +48,39 @@ using namespace Kinovea::Video;
 
 namespace Kinovea { namespace Video { namespace FFMpeg
 {
-	public ref class MJPEGWriter
-	{
-	// Construction/Destruction
-	public:
-		MJPEGWriter();
-		~MJPEGWriter();
-	protected:
-		!MJPEGWriter();
+    public ref class MJPEGWriter
+    {
+    // Construction/Destruction
+    public:
+        MJPEGWriter();
+        ~MJPEGWriter();
+    protected:
+        !MJPEGWriter();
 
-	// Public Methods
-	public:
-		SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval);
-		SaveResult CloseSavingContext(bool _bEncodingSuccess);
-		SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length);
-	
-	// Private Methods
-	private:
-		double ComputeBitrate(Size outputSize, double frameInterval);
-		bool SetupMuxer(SavingContext^ _SavingContext);
-		bool SetupEncoder(SavingContext^ _SavingContext);
-		
-		bool EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
-		bool EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
-		bool EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
+    // Public Methods
+    public:
+        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval);
+        SaveResult CloseSavingContext(bool _bEncodingSuccess);
+        SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length);
+    
+    // Private Methods
+    private:
+        double ComputeBitrate(Size outputSize, double frameInterval);
+        bool SetupMuxer(SavingContext^ _SavingContext);
+        bool SetupEncoder(SavingContext^ _SavingContext);
+        
+        bool EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
+        bool EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
+        bool EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
 
-		bool WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
-		void SanityCheck(AVFormatContext* s);
-		static int GreatestCommonDenominator(int a, int b);
-	
-	// Members
-	private :
-		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
-		SavingContext^ m_SavingContext;
-	};
+        bool WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
+        void SanityCheck(AVFormatContext* s);
+        void LogError(String^ context, int ffmpegError);
+        static int GreatestCommonDenominator(int a, int b);
+    
+    // Members
+    private :
+        static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
+        SavingContext^ m_SavingContext;
+    };
 }}}
