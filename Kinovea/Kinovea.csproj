@@ -200,6 +200,7 @@
     <Compile Include="UserInterface\PreferencePanelButtton.Designer.cs">
       <DependentUpon>PreferencePanelButtton.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\PreferencePanels\CaptureVariable.cs" />
     <Compile Include="UserInterface\PreferencePanels\IPreferencePanel.cs" />
     <Compile Include="UserInterface\PreferencePanels\PreferencePanelCapture.cs">
       <SubType>UserControl</SubType>
@@ -459,6 +460,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
+    <None Include="Resources\percent.png" />
     <None Include="Resources\wrench.png" />
     <None Include="Resources\website.png" />
     <None Include="Resources\video.png" />

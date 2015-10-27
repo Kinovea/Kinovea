@@ -54,7 +54,7 @@ namespace Kinovea.Services
 
                 reader.ReadEndElement();
             }
-            catch (Exception e)
+            catch
             {
                 log.ErrorFormat("Error while parsing file property visiblity.");
             }

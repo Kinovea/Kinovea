@@ -28,6 +28,7 @@ using Kinovea.Root.Languages;
 using Kinovea.Root.Properties;
 using Kinovea.ScreenManager;
 using Kinovea.Services;
+using System.Collections.Generic;
 
 namespace Kinovea.Root
 {
@@ -50,16 +51,10 @@ namespace Kinovea.Root
         #region Members
         private string description;
         private Bitmap icon;
-        private string imageDirectory;
-        private string videoDirectory;
-        private KinoveaImageFormat imageFormat;
-        private KinoveaVideoFormat videoFormat;
+        private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
+        private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
         private bool useCameraSignalSynchronization;
         private double displaySynchronizationFramerate;
-        private bool usePattern;
-        private string pattern;
-        private bool resetCounter;
-        private long counter;
         private int memoryBuffer;
         private FilenameHelper filenameHelper = new FilenameHelper();
         #endregion
@@ -73,127 +68,136 @@ namespace Kinovea.Root
             description = RootLang.dlgPreferences_btnCapture;
             icon = Resources.pref_capture;
             
-            // Use the tag property of labels to store the actual marker.
-            lblYear.Tag = "%y";
-            lblMonth.Tag = "%mo";
-            lblDay.Tag = "%d";
-            lblHour.Tag = "%h";
-            lblMinute.Tag = "%mi";
-            lblSecond.Tag = "%s";
-            lblCounter.Tag = "%i";
-            
             ImportPreferences();
             InitPage();
         }
         private void ImportPreferences()
         {
-            imageDirectory = PreferencesManager.CapturePreferences.ImageDirectory;
-            videoDirectory = PreferencesManager.CapturePreferences.VideoDirectory;
-            imageFormat = PreferencesManager.CapturePreferences.ImageFormat;
-            videoFormat = PreferencesManager.CapturePreferences.VideoFormat;
+            capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
             useCameraSignalSynchronization = PreferencesManager.CapturePreferences.UseCameraSignalSynchronization;
             displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
-            usePattern = PreferencesManager.CapturePreferences.CaptureUsePattern;
-            pattern = PreferencesManager.CapturePreferences.Pattern;
-            counter = PreferencesManager.CapturePreferences.CaptureImageCounter; // Use the image counter for sample.
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
         }
         private void InitPage()
         {
-            // General tab
+            InitPageGeneral();
+            InitPageImageNaming();
+            InitPageVideoNaming();
+            InitNamingTextBoxes();
+            InitPageMemory();
+        }
+
+        private void InitPageGeneral()
+        {
             tabGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
-            lblImageDirectory.Text = RootLang.dlgPreferences_Capture_lblImageDirectory;
-            lblVideoDirectory.Text = RootLang.dlgPreferences_Capture_lblVideoDirectory;
-            tbImageDirectory.Text = imageDirectory;
-            tbVideoDirectory.Text = videoDirectory;
-            
+
             lblImageFormat.Text = RootLang.dlgPreferences_Capture_lblImageFormat;
             cmbImageFormat.Items.Add("JPG");
             cmbImageFormat.Items.Add("PNG");
             cmbImageFormat.Items.Add("BMP");
+            int imageFormat = (int)capturePathConfiguration.ImageFormat;
             cmbImageFormat.SelectedIndex = ((int)imageFormat < cmbImageFormat.Items.Count) ? (int)imageFormat : 0;
 
             lblVideoFormat.Text = RootLang.dlgPreferences_Capture_lblVideoFormat;
             cmbVideoFormat.Items.Add("MP4");
             cmbVideoFormat.Items.Add("MKV");
             cmbVideoFormat.Items.Add("AVI");
+            int videoFormat = (int)capturePathConfiguration.VideoFormat;
             cmbVideoFormat.SelectedIndex = ((int)videoFormat < cmbVideoFormat.Items.Count) ? (int)videoFormat : 0;
 
+            // grpDSS.Text = 
+            // rbCameraFrameSignal
+            // rbForcedFramerate
+            // lblFramerate
             rbCameraFrameSignal.Checked = useCameraSignalSynchronization;
             rbForcedFramerate.Checked = !useCameraSignalSynchronization;
             tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
+        }
 
-            // Naming tab
-            tabNaming.Text = RootLang.dlgPreferences_Capture_tabNaming;
-            rbFreeText.Text = RootLang.dlgPreferences_Capture_rbFreeText;
-            rbPattern.Text = RootLang.dlgPreferences_Capture_rbPattern;
-            lblYear.Text = RootLang.dlgPreferences_Capture_lblYear;
-            lblMonth.Text = RootLang.dlgPreferences_Capture_lblMonth;
-            lblDay.Text = RootLang.dlgPreferences_Capture_lblDay;
-            lblHour.Text = RootLang.dlgPreferences_Capture_lblHour;
-            lblMinute.Text = RootLang.dlgPreferences_Capture_lblMinute;
-            lblSecond.Text = RootLang.dlgPreferences_Capture_lblSecond;
-            lblCounter.Text = RootLang.dlgPreferences_Capture_lblCounter;
-            btnResetCounter.Text = RootLang.dlgPreferences_Capture_btnResetCounter;
+        private void InitPageImageNaming()
+        {
+            tabImageNaming.Text = "Image naming";
+
+            grpLeftImage.Text = "Left";
+            grpRightImage.Text = "Right";
             
-            tbPattern.Text = pattern;
-            UpdateSample();
+            lblLeftImageRoot.Text = "Root :";
+            lblLeftImageSubdir.Text = "Sub directory :";
+            lblLeftImageFile.Text = "File :";
+            lblRightImageRoot.Text = "Root :";
+            lblRightImageSubdir.Text = "Sub directory :";
+            lblRightImageFile.Text = "File :";
             
-            rbPattern.Checked = usePattern;
-            rbFreeText.Checked = !usePattern;
+            tbLeftImageRoot.Text = capturePathConfiguration.LeftImageRoot;
+            tbLeftImageSubdir.Text = capturePathConfiguration.LeftImageSubdir;
+            tbLeftImageFile.Text = capturePathConfiguration.LeftImageFile;
+            tbRightImageRoot.Text = capturePathConfiguration.RightImageRoot;
+            tbRightImageSubdir.Text = capturePathConfiguration.RightImageSubdir;
+            tbRightImageFile.Text = capturePathConfiguration.RightImageFile;
+        }
+
+        private void InitPageVideoNaming()
+        {
+            tabVideoNaming.Text = "Video naming";
+
+            grpLeftVideo.Text = "Left";
+            grpRightVideo.Text = "Right";
             
-            // Memory tab
+            lblLeftVideoRoot.Text = "Root :";
+            lblLeftVideoSubdir.Text = "Sub directory :";
+            lblLeftVideoFile.Text = "File :";
+            lblRightVideoRoot.Text = "Root :";
+            lblRightVideoSubdir.Text = "Sub directory :";
+            lblRightVideoFile.Text = "File :";
+            
+            tbLeftVideoRoot.Text = capturePathConfiguration.LeftVideoRoot;
+            tbLeftVideoSubdir.Text = capturePathConfiguration.LeftVideoSubdir;
+            tbLeftVideoFile.Text = capturePathConfiguration.LeftVideoFile;
+            tbRightVideoRoot.Text = capturePathConfiguration.RightVideoRoot;
+            tbRightVideoSubdir.Text = capturePathConfiguration.RightVideoSubdir;
+            tbRightVideoFile.Text = capturePathConfiguration.RightVideoFile;
+        }
+
+        private void InitPageMemory()
+        {
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
             trkMemoryBuffer.Value = memoryBuffer;
             UpdateMemoryLabel();
+        }
+
+        private void InitNamingTextBoxes()
+        {
+            namingTextBoxes[CaptureVariable.LeftImageRoot] = tbLeftImageRoot;
+            namingTextBoxes[CaptureVariable.LeftImageSubdir] = tbLeftImageSubdir;
+            namingTextBoxes[CaptureVariable.LeftImageFile] = tbLeftImageFile;
+            namingTextBoxes[CaptureVariable.RightImageRoot] = tbRightImageRoot;
+            namingTextBoxes[CaptureVariable.RightImageSubdir] = tbRightImageSubdir;
+            namingTextBoxes[CaptureVariable.RightImageFile] = tbRightImageFile;
+            namingTextBoxes[CaptureVariable.LeftVideoRoot] = tbLeftVideoRoot;
+            namingTextBoxes[CaptureVariable.LeftVideoSubdir] = tbLeftVideoSubdir;
+            namingTextBoxes[CaptureVariable.LeftVideoFile] = tbLeftVideoFile;
+            namingTextBoxes[CaptureVariable.RightVideoRoot] = tbRightVideoRoot;
+            namingTextBoxes[CaptureVariable.RightVideoSubdir] = tbRightVideoSubdir;
+            namingTextBoxes[CaptureVariable.RightVideoFile] = tbRightVideoFile;
+
+            foreach (CaptureVariable v in namingTextBoxes.Keys)
+            {
+                namingTextBoxes[v].TextChanged += tbNamingVariable_TextChanged;
+                namingTextBoxes[v].Tag = v;
+            }
         }
         #endregion
         
         #region Handlers
         
         #region Tab general
-        private void btnBrowseImageLocation_Click(object sender, EventArgs e)
-        {
-            SelectSavingDirectory(tbImageDirectory);
-        }
-        private void btnBrowseVideoLocation_Click(object sender, EventArgs e)
-        {
-            SelectSavingDirectory(tbVideoDirectory);
-        }
-        private void SelectSavingDirectory(TextBox tb)
-        {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            folderBrowserDialog.Description = ""; // TODO.
-            folderBrowserDialog.ShowNewFolderButton = true;
-            folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
-
-            if(Directory.Exists(tb.Text))
-                folderBrowserDialog.SelectedPath = tb.Text;
-            
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                tb.Text = folderBrowserDialog.SelectedPath;
-        }
-        private void tbImageDirectory_TextChanged(object sender, EventArgs e)
-        {
-            if(!filenameHelper.ValidateFilename(tbImageDirectory.Text, true))
-                ScreenManagerKernel.AlertInvalidFileName();
-            else
-                imageDirectory = tbImageDirectory.Text;
-        }
-        private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
-        {
-            if(!filenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
-                ScreenManagerKernel.AlertInvalidFileName();
-            else
-                videoDirectory = tbVideoDirectory.Text;
-        }
         private void cmbImageFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            imageFormat = (KinoveaImageFormat)cmbImageFormat.SelectedIndex;
+            capturePathConfiguration.ImageFormat = (KinoveaImageFormat)cmbImageFormat.SelectedIndex;
         }
         private void cmbVideoFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            videoFormat = (KinoveaVideoFormat)cmbVideoFormat.SelectedIndex;
+            capturePathConfiguration.VideoFormat = (KinoveaVideoFormat)cmbVideoFormat.SelectedIndex;
         }
         private void radioDSS_CheckedChanged(object sender, EventArgs e)
         {
@@ -212,49 +216,99 @@ namespace Kinovea.Root
         }
         #endregion
         
-        #region Tab naming
-        private void tbPattern_TextChanged(object sender, EventArgs e)
+        #region Tabs naming
+        private void tbNamingVariable_TextChanged(object sender, EventArgs e)
         {
-            if(filenameHelper.ValidateFilename(tbPattern.Text, true))
-                UpdateSample();
+            Control tb = sender as Control;
+            if (tb == null)
+                return;
+
+            CaptureVariable v = (CaptureVariable)tb.Tag;
+            WriteVariable(v, tb.Text);
+        }
+
+        private void WriteVariable(CaptureVariable v, string text)
+        {
+            switch (v)
+            {
+                case CaptureVariable.LeftImageRoot:
+                    capturePathConfiguration.LeftImageRoot = text;
+                    break;
+                case CaptureVariable.LeftImageSubdir:
+                    capturePathConfiguration.LeftImageSubdir = text;
+                    break;
+                case CaptureVariable.LeftImageFile:
+                    capturePathConfiguration.LeftImageFile = text;
+                    break;
+                case CaptureVariable.RightImageRoot:
+                    capturePathConfiguration.RightImageRoot = text;
+                    break;
+                case CaptureVariable.RightImageSubdir:
+                    capturePathConfiguration.RightImageSubdir = text;
+                    break;
+                case CaptureVariable.RightImageFile:
+                    capturePathConfiguration.RightImageFile = text;
+                    break;
+                case CaptureVariable.LeftVideoRoot:
+                    capturePathConfiguration.LeftVideoRoot = text;
+                    break;
+                case CaptureVariable.LeftVideoSubdir:
+                    capturePathConfiguration.LeftVideoSubdir = text;
+                    break;
+                case CaptureVariable.LeftVideoFile:
+                    capturePathConfiguration.LeftVideoFile = text;
+                    break;
+                case CaptureVariable.RightVideoRoot:
+                    capturePathConfiguration.RightVideoRoot = text;
+                    break;
+                case CaptureVariable.RightVideoSubdir:
+                    capturePathConfiguration.RightVideoSubdir = text;
+                    break;
+                case CaptureVariable.RightVideoFile:
+                    capturePathConfiguration.RightVideoFile = text;
+                    break;
+            }
+        }
+        
+        /*private void btnBrowseImageLocation_Click(object sender, EventArgs e)
+        {
+            SelectSavingDirectory(tbLeftImageRoot);
+        }
+        private void btnBrowseVideoLocation_Click(object sender, EventArgs e)
+        {
+            SelectSavingDirectory(tbVideoDirectory);
+        }
+        private void SelectSavingDirectory(TextBox tb)
+        {
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            folderBrowserDialog.Description = ""; // TODO.
+            folderBrowserDialog.ShowNewFolderButton = true;
+            folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
+
+            if (Directory.Exists(tb.Text))
+                folderBrowserDialog.SelectedPath = tb.Text;
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                tb.Text = folderBrowserDialog.SelectedPath;
+        }
+        private void tbImageDirectory_TextChanged(object sender, EventArgs e)
+        {
+            /*if(!filenameHelper.ValidateFilename(tbImageDirectory.Text, true))
+                ScreenManagerKernel.AlertInvalidFileName();
             else
-                ScreenManager.ScreenManagerKernel.AlertInvalidFileName();
+                imageDirectory = tbImageDirectory.Text;* /
+
+            imageDirectory = tbLeftImageRoot.Text;
         }
-        private void btnMarker_Click(object sender, EventArgs e)
+        private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
         {
-            Button btn = sender as Button;
-            if (btn == null)
-                return;
-            
-            int selStart = tbPattern.SelectionStart;
-            tbPattern.Text = tbPattern.Text.Insert(selStart, btn.Text);
-            tbPattern.SelectionStart = selStart + btn.Text.Length;
-        }
-        private void lblMarker_Click(object sender, EventArgs e)
-        {
-            Label lbl = sender as Label;
-            if (lbl == null)
-                return;
-            
-            string macro = lbl.Tag as string;
-            if (macro == null)
-                return;
-            
-            int selStart = tbPattern.SelectionStart;
-            tbPattern.Text = tbPattern.Text.Insert(selStart, macro);
-            tbPattern.SelectionStart = selStart + macro.Length;
-        }
-        private void btnResetCounter_Click(object sender, EventArgs e)
-        {
-            resetCounter = true;
-            counter = 1;
-            UpdateSample();
-        }
-        private void radio_CheckedChanged(object sender, EventArgs e)
-        {
-            usePattern = rbPattern.Checked;
-            EnableDisablePattern(usePattern);
-        }
+            /*if(!filenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
+                ScreenManagerKernel.AlertInvalidFileName();
+            else
+                videoDirectory = tbVideoDirectory.Text;* /
+
+            videoDirectory = tbVideoDirectory.Text;
+        }*/
         #endregion
         
         #region Tab Memory
@@ -263,66 +317,21 @@ namespace Kinovea.Root
             memoryBuffer = trkMemoryBuffer.Value;
             UpdateMemoryLabel();
         }
-        #endregion
-        
-        #endregion
-        
-        #region Private methods
-        private void UpdateSample()
-        {
-            string sample = filenameHelper.ConvertPattern(tbPattern.Text, counter);
-            lblSample.Text = sample;
-            pattern = tbPattern.Text;
-        }
-        private void EnableDisablePattern(bool _bEnable)
-        {
-            tbPattern.Enabled = _bEnable;
-            lblSample.Enabled = _bEnable;
-            btnYear.Enabled = _bEnable;
-            btnMonth.Enabled = _bEnable;
-            btnDay.Enabled = _bEnable;
-            btnHour.Enabled = _bEnable;
-            btnMinute.Enabled = _bEnable;
-            btnSecond.Enabled = _bEnable;
-            btnIncrement.Enabled = _bEnable;
-            btnResetCounter.Enabled = _bEnable;
-            lblYear.Enabled = _bEnable;
-            lblMonth.Enabled = _bEnable;
-            lblDay.Enabled = _bEnable;
-            lblHour.Enabled = _bEnable;
-            lblMinute.Enabled = _bEnable;
-            lblSecond.Enabled = _bEnable;
-            lblCounter.Enabled = _bEnable;
-        }
+
         private void UpdateMemoryLabel()
         {
             lblMemoryBuffer.Text = String.Format(RootLang.dlgPreferences_Capture_lblMemoryBuffer, trkMemoryBuffer.Value);
         }
         #endregion
         
+        #endregion
+        
         public void CommitChanges()
         {
-            PreferencesManager.CapturePreferences.ImageDirectory = imageDirectory;
-            PreferencesManager.CapturePreferences.VideoDirectory = videoDirectory;
-            PreferencesManager.CapturePreferences.ImageFormat = imageFormat;
-            PreferencesManager.CapturePreferences.VideoFormat = videoFormat;
-
+            PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
             PreferencesManager.CapturePreferences.UseCameraSignalSynchronization = useCameraSignalSynchronization;
             PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate = displaySynchronizationFramerate;
-
-            PreferencesManager.CapturePreferences.CaptureUsePattern = usePattern;
-            PreferencesManager.CapturePreferences.Pattern = pattern;
-            if(resetCounter)
-            {
-                PreferencesManager.CapturePreferences.CaptureImageCounter = 1;
-                PreferencesManager.CapturePreferences.CaptureVideoCounter = 1;
-            }
-            
             PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
         }
-
-        
-
-        
     }
 }

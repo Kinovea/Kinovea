@@ -227,12 +227,12 @@ namespace Kinovea.ScreenManager
             if (recording == record)
                 return;
 
-            ToggleRecording(view.CurrentVideoFilename);
+            ToggleRecording();
         }
 
         public void PerformSnapshot()
         {
-            MakeSnapshot(view.CurrentImageFilename);
+            MakeSnapshot();
         }
 
         #region AbstractScreen Implementation
@@ -352,19 +352,19 @@ namespace Kinovea.ScreenManager
         {
             DelayChanged(value);
         }
-        public void View_SnapshotAsked(string filename)
+        public void View_SnapshotAsked()
         {
-            MakeSnapshot(filename);
+            MakeSnapshot();
         }
-        public void View_ToggleRecording(string filename)
+        public void View_ToggleRecording()
         {
-            ToggleRecording(filename);
+            ToggleRecording();
         }
         
         public void View_ValidateFilename(string filename)
         {
             bool allowEmpty = true;
-            if(!filenameHelper.ValidateFilename(filename, allowEmpty))
+            if (!FilenameHelper.IsFilenameValid(filename, allowEmpty))
                 ScreenManagerKernel.AlertInvalidFileName();
         }
         public void View_OpenInExplorer(string path)
@@ -823,56 +823,91 @@ namespace Kinovea.ScreenManager
         #region Recording/Snapshoting
         private void InitializeCaptureFilenames()
         {
-            string imageFilename = filenameHelper.GetImageFilename();
-            view.UpdateNextImageFilename(imageFilename, !PreferencesManager.CapturePreferences.CaptureUsePattern);
-            string videoFilename = filenameHelper.GetVideoFilename();
-            view.UpdateNextVideoFilename(videoFilename, !PreferencesManager.CapturePreferences.CaptureUsePattern);
+            string defaultName = "Capture";
+
+            string image = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageFile;
+            string nextImage = string.IsNullOrEmpty(image) ? defaultName : Filenamer.ComputeNextFilename(image);
+            view.UpdateNextImageFilename(nextImage);
+
+            string video = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoFile;
+            string nextVideo = string.IsNullOrEmpty(video) ? defaultName : Filenamer.ComputeNextFilename(video);
+            view.UpdateNextVideoFilename(nextVideo);
         }
-        private void MakeSnapshot(string filename)
+        
+        private void MakeSnapshot()
         {
             if (!cameraLoaded || consumerDisplay.Bitmap == null)
                 return;
 
-            bool ok = SanityCheckRecording(filename);
-            if(!ok)
+            string root = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageRoot;
+            string subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageSubdir;
+            string filenameWithoutExtension = view.CurrentImageFilename;
+            string extension = Filenamer.GetImageFileExtension();
+            
+            Dictionary<FilePatternContexts, string> context = BuildCaptureContext();
+
+            string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context);
+            
+            FilesystemHelper.CreateDirectory(path);
+
+            if(!FilePathSanityCheck(path))
                 return;
                 
-            string filepath = GetFilePath(filename, false);
-            filename = Path.GetFileNameWithoutExtension(filepath);
-            if(!OverwriteCheck(filepath))
+            if(!OverwriteCheck(path))
                 return;
-            
+
+            //Actual save.
             Bitmap outputImage = BitmapHelper.Copy(consumerDisplay.Bitmap);
             if(outputImage == null)
                 return;
             
-            ImageHelper.Save(filepath, outputImage);
-            
-            AddCapturedFile(filepath, outputImage, false);
-
-            if(PreferencesManager.CapturePreferences.CaptureUsePattern)
-                filenameHelper.AutoIncrement(false);
-            
-            PreferencesManager.CapturePreferences.ImageFile = filename;
-            PreferencesManager.Save();
-            
-            string next = filenameHelper.Next(filename, false);
-            view.UpdateNextImageFilename(next, !PreferencesManager.CapturePreferences.CaptureUsePattern);
-            
+            ImageHelper.Save(path, outputImage);
             view.Toast(ScreenManagerLang.Toast_ImageSaved, 750);
 
-            CaptureHistoryEntry entry = CreateHistoryEntrySnapshot(filepath);
-            CaptureHistory.AddEntry(entry);
- 
+            // After save routines.
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
+
+            AddCapturedFile(path, outputImage, false);
+            CaptureHistoryEntry entry = CreateHistoryEntrySnapshot(path);
+            CaptureHistory.AddEntry(entry);
+
+            PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageFile = filenameWithoutExtension;
+            PreferencesManager.Save();
+ 
+            // Compute next name for user feedback.
+            string next = Filenamer.ComputeNextFilename(filenameWithoutExtension);
+            view.UpdateNextImageFilename(next);
         }
         
-        private bool SanityCheckRecording(string filename)
+        private Dictionary<FilePatternContexts, string> BuildCaptureContext()
+        {
+            // TODO: 
+            // We need to know if we are left or right screen to grab the correct top level variables from prefs.
+
+            Dictionary<FilePatternContexts, string> context = new Dictionary<FilePatternContexts, string>();
+
+            DateTime now = DateTime.Now;
+
+            context[FilePatternContexts.Year] = string.Format("{0:yyyy}", now);
+            context[FilePatternContexts.Month] = string.Format("{0:MM}", now);
+            context[FilePatternContexts.Day] = string.Format("{0:dd}", now);
+            context[FilePatternContexts.Hour] = string.Format("{0:HH}", now);
+            context[FilePatternContexts.Minute] = string.Format("{0:mm}", now);
+            context[FilePatternContexts.Second] = string.Format("{0:ss}", now);
+
+            context[FilePatternContexts.CameraAlias] = cameraSummary.Alias;
+            context[FilePatternContexts.ConfiguredFramerate] = string.Format("{0:0.00}", cameraGrabber.Framerate); 
+            context[FilePatternContexts.ReceivedFramerate] = string.Format("{0:0.00}", pipelineManager.Frequency);
+
+            return context;
+        }
+
+        private bool FilePathSanityCheck(string path)
         {
             if(cameraGrabber == null)
                 return false;
-            
-            if(!filenameHelper.ValidateFilename(filename, false))
+
+            if (!FilenameHelper.IsFilenameValid(path, false))
             {
                 ScreenManagerKernel.AlertInvalidFileName();
                 return false;
@@ -880,58 +915,47 @@ namespace Kinovea.ScreenManager
             
             return true;
         }
-        private string GetFilePath(string filename, bool video)
+
+        private bool OverwriteCheck(string path)
         {
-            string directory = video ? PreferencesManager.CapturePreferences.VideoDirectory : PreferencesManager.CapturePreferences.ImageDirectory;
-            
-            if(PreferencesManager.CapturePreferences.CaptureUsePattern)
-                filename = video ? filenameHelper.GetVideoFilename() : filenameHelper.GetImageFilename();
-            
-            string extension = video ? filenameHelper.GetVideoFileExtension() : filenameHelper.GetImageFileExtension();
-            string filepath = Path.Combine(directory, filename + extension);
-            
-            filenameHelper.CreateDirectory(filepath);
-            
-            return filepath;
-        }
-        private bool OverwriteCheck(string filepath)
-        {
-            if(!File.Exists(filepath))
+            if (!File.Exists(path))
                 return true;
-            
+
             string msgTitle = ScreenManagerLang.Error_Capture_FileExists_Title;
-            string msgText = String.Format(ScreenManagerLang.Error_Capture_FileExists_Text, filepath).Replace("\\n", "\n");
-        
+            string msgText = String.Format(ScreenManagerLang.Error_Capture_FileExists_Text, path).Replace("\\n", "\n");
+
             DialogResult result = MessageBox.Show(msgText, msgTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             return result == DialogResult.Yes;
         }
-
-        private void ToggleRecording(string filename)
+        
+        private void ToggleRecording()
         {
             if (recording)
                 StopRecording();
             else
-                StartRecording(filename);
+                StartRecording();
         }
         
-        private void StartRecording(string filename)
+        private void StartRecording()
         {
             if (!cameraLoaded || !cameraConnected || recording)
                 return;
 
-            bool ok = SanityCheckRecording(filename);
-            if(!ok)
-                return;
-                
-            string filepath = GetFilePath(Path.GetFileName(filename), true);
-            filename = Path.GetFileNameWithoutExtension(filepath);
-            if(!OverwriteCheck(filepath))
+            string root = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoRoot;
+            string subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoSubdir;
+            string filenameWithoutExtension = view.CurrentVideoFilename;
+            string extension = Filenamer.GetVideoFileExtension();
+
+            Dictionary<FilePatternContexts, string> context = BuildCaptureContext();
+
+            string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context);
+
+            FilesystemHelper.CreateDirectory(path);
+
+            if (!FilePathSanityCheck(path))
                 return;
 
-            if (!cameraConnected)
-                Connect();
-
-            if (!cameraConnected)
+            if (!OverwriteCheck(path))
                 return;
 
             if (consumerRecord.Active)
@@ -944,14 +968,13 @@ namespace Kinovea.ScreenManager
             }
             
             double interval = cameraGrabber.Framerate > 0 ? 1000.0 / cameraGrabber.Framerate : 40;
-            SaveResult result = pipelineManager.StartRecord(filepath, interval);
+            SaveResult result = pipelineManager.StartRecord(path, interval);
             recording = result == SaveResult.Success;
             
             if(recording)
             {
                 recordingStart = DateTime.Now;
-                string next = filenameHelper.Next(filename, true);
-                view.UpdateNextVideoFilename(next, !PreferencesManager.CapturePreferences.CaptureUsePattern);
+                                
                 view.UpdateRecordingStatus(recording);
                 view.Toast(ScreenManagerLang.Toast_StartRecord, 1000);
             }
@@ -968,9 +991,9 @@ namespace Kinovea.ScreenManager
              
             recording = false;
             consumerRecord.Deactivate();
+            view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
 
-            PreferencesManager.CapturePreferences.VideoFile = Path.GetFileNameWithoutExtension(consumerRecord.Filename);
-            PreferencesManager.Save();
+            NotificationCenter.RaiseRefreshFileExplorer(this, false);
              
             if(recordingThumbnail != null)
             {
@@ -981,10 +1004,17 @@ namespace Kinovea.ScreenManager
 
             CaptureHistoryEntry entry = CreateHistoryEntry();
             CaptureHistory.AddEntry(entry);
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
- 
+
+            // We need to use the original filename with patterns still in it.
+            string filenameWithoutExtension = view.CurrentVideoFilename;
+
+            PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoFile = filenameWithoutExtension;
+            PreferencesManager.Save();
+
+            string next = Filenamer.ComputeNextFilename(filenameWithoutExtension);
+            view.UpdateNextVideoFilename(next);
+
             view.UpdateRecordingStatus(recording);
-            view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
         }
 
         private CaptureHistoryEntry CreateHistoryEntry()

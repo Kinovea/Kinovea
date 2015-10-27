@@ -168,15 +168,15 @@ namespace Kinovea.ScreenManager
             // If the delayer was not allocated, fake a number so that we have a slider stuck at the 0th image.
             sldrDelay.Maximum = delay == 0 ? 0.9 : delay;
         }
-        public void UpdateNextImageFilename(string filename, bool editable)
+        public void UpdateNextImageFilename(string filename)
         {
             fnbImage.Filename = filename;
-            fnbImage.Editable = editable;
+            fnbImage.Editable = true;
         }
-        public void UpdateNextVideoFilename(string filename, bool editable)
+        public void UpdateNextVideoFilename(string filename)
         {
             fnbVideo.Filename = filename;
-            fnbVideo.Editable = editable;
+            fnbVideo.Editable = true;
         }
         public void Toast(string message, int duration)
         {
@@ -235,11 +235,11 @@ namespace Kinovea.ScreenManager
         }
         private void FNBImage_ImageClick(object sender, EventArgs e)
         {
-            presenter.View_OpenInExplorer(PreferencesManager.CapturePreferences.ImageDirectory);
+            //presenter.View_OpenInExplorer(PreferencesManager.CapturePreferences.ImageDirectory);
         }
         private void FNBVideo_ImageClick(object sender, EventArgs e)
         {
-            presenter.View_OpenInExplorer(PreferencesManager.CapturePreferences.VideoDirectory);
+            //presenter.View_OpenInExplorer(PreferencesManager.CapturePreferences.VideoDirectory);
         }
         private void FnbImage_FilenameChanged(object sender, EventArgs e)
         {
@@ -251,11 +251,11 @@ namespace Kinovea.ScreenManager
         }
         private void BtnSnapshot_Click(object sender, EventArgs e)
         {
-            presenter.View_SnapshotAsked(fnbImage.Filename);
+            presenter.View_SnapshotAsked();
         }
         private void BtnRecordClick(object sender, EventArgs e)
         {
-            presenter.View_ToggleRecording(fnbVideo.Filename);
+            presenter.View_ToggleRecording();
         }
         private void btnConfigureComposite_Click(object sender, EventArgs e)
         {
@@ -326,10 +326,10 @@ namespace Kinovea.ScreenManager
                     presenter.View_ToggleGrabbing();
                     break;
                 case CaptureScreenCommands.ToggleRecording:
-                    presenter.View_ToggleRecording(fnbVideo.Filename);
+                    presenter.View_ToggleRecording();
                     break;
                 case CaptureScreenCommands.TakeSnapshot:
-                    presenter.View_SnapshotAsked(fnbImage.Filename);
+                    presenter.View_SnapshotAsked();
                     break;
                 case CaptureScreenCommands.ResetViewport:
                     presenter.View_DeselectTool();
