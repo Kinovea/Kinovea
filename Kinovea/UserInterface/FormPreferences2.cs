@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Kinovea.Root.Languages;
 using Kinovea.Services;
 
@@ -48,16 +47,25 @@ namespace Kinovea.Root
         #region Construction and Initialization
         public FormPreferences2()
         {
+            Init();
+
+            int initPage = PreferencesManager.GeneralPreferences.PreferencePage;
+            DisplayPage(initPage);
+        }
+        public FormPreferences2(PreferenceTab tab)
+        {
+            Init();
+            DisplayTab(tab);
+        }
+        private void Init()
+        {
             InitializeComponent();
-            
+
             this.Text = "   " + RootLang.dlgPreferences_Title;
             btnSave.Text = RootLang.Generic_Save;
             btnCancel.Text = RootLang.Generic_Cancel;
-
-            int initPage = PreferencesManager.GeneralPreferences.PreferencesTab;
-
             ImportPages();
-            DisplayPage(initPage);
+
         }
         private void ImportPages()
         {
@@ -157,12 +165,35 @@ namespace Kinovea.Root
                 pages[i].Visible = selected;
             }
         }
+
+        private void DisplayTab(PreferenceTab tab)
+        {
+            int index = -1;
+            IPreferencePanel panel = null;
+            for (int i = 0; i < pages.Count; i++)
+            {
+                panel = pages[i] as IPreferencePanel;
+                if (panel == null || !panel.Tabs.Contains(tab))
+                    continue;
+
+                index = i;
+                break;
+            }
+
+            if (index < 0 || panel == null)
+                return;
+
+            DisplayPage(index);
+            panel.OpenTab(tab);
+        }
+
+
         private void LoadPage(PreferencePanelButtton button)
         {
             for (int i = 0; i < pages.Count; i++)
             {
                 if (button.PreferencePanel == pages[i])
-                    PreferencesManager.GeneralPreferences.PreferencesTab = i;
+                    PreferencesManager.GeneralPreferences.PreferencePage = i;
 
                 pages[i].Visible = (pages[i] == button.PreferencePanel);
             }

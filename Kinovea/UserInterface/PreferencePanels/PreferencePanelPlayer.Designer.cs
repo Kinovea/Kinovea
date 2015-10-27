@@ -20,34 +20,34 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 namespace Kinovea.Root
 {
-	partial class PreferencePanelPlayer
-	{
-		/// <summary>
-		/// Designer variable used to keep track of non-visual components.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
-		
-		/// <summary>
-		/// Disposes resources used by the control.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing) {
-				if (components != null) {
-					components.Dispose();
-				}
-			}
-			base.Dispose(disposing);
-		}
-		
-		/// <summary>
-		/// This method is required for Windows Forms designer support.
-		/// Do not change the method contents inside the source code editor. The Forms designer might
-		/// not be able to load this method if it was changed manually.
-		/// </summary>
-		private void InitializeComponent()
-		{
+    partial class PreferencePanelPlayer
+    {
+        /// <summary>
+        /// Designer variable used to keep track of non-visual components.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+        
+        /// <summary>
+        /// Disposes resources used by the control.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
+        
+        /// <summary>
+        /// This method is required for Windows Forms designer support.
+        /// Do not change the method contents inside the source code editor. The Forms designer might
+        /// not be able to load this method if it was changed manually.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.chkDeinterlace = new System.Windows.Forms.CheckBox();
             this.grpSwitchToAnalysis = new System.Windows.Forms.GroupBox();
             this.lblWorkingZoneLogic = new System.Windows.Forms.Label();
@@ -388,19 +388,19 @@ namespace Kinovea.Root
             this.ResumeLayout(false);
 
         }
-		private System.Windows.Forms.Label lblImageFormat;
+        private System.Windows.Forms.Label lblImageFormat;
         private System.Windows.Forms.ComboBox cmbImageFormats;
-		private System.Windows.Forms.CheckBox chkLockSpeeds;
-		private System.Windows.Forms.TabPage tabMemory;
-		private System.Windows.Forms.TabPage tabGeneral;
-		private System.Windows.Forms.TabControl tabSubPages;
-		private System.Windows.Forms.Label lblWorkingZoneSeconds;
-		private System.Windows.Forms.TrackBar trkWorkingZoneSeconds;
-		private System.Windows.Forms.Label lblWorkingZoneLogic;
-		private System.Windows.Forms.Label lblWorkingZoneMemory;
-		private System.Windows.Forms.TrackBar trkWorkingZoneMemory;
-		private System.Windows.Forms.GroupBox grpSwitchToAnalysis;
-		private System.Windows.Forms.CheckBox chkDeinterlace;
+        private System.Windows.Forms.CheckBox chkLockSpeeds;
+        private System.Windows.Forms.TabPage tabMemory;
+        private System.Windows.Forms.TabPage tabGeneral;
+        private System.Windows.Forms.TabControl tabSubPages;
+        private System.Windows.Forms.Label lblWorkingZoneSeconds;
+        private System.Windows.Forms.TrackBar trkWorkingZoneSeconds;
+        private System.Windows.Forms.Label lblWorkingZoneLogic;
+        private System.Windows.Forms.Label lblWorkingZoneMemory;
+        private System.Windows.Forms.TrackBar trkWorkingZoneMemory;
+        private System.Windows.Forms.GroupBox grpSwitchToAnalysis;
+        private System.Windows.Forms.CheckBox chkDeinterlace;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.ComboBox cmbAngleUnit;
         private System.Windows.Forms.Label lblAngleUnit;
@@ -415,5 +415,5 @@ namespace Kinovea.Root
         private System.Windows.Forms.ComboBox cmbAngularAccelerationUnit;
         private System.Windows.Forms.Label lblAngularAcceleration;
         private System.Windows.Forms.CheckBox chkInteractiveTracker;
-	}
+    }
 }

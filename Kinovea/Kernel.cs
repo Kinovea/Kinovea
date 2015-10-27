@@ -110,6 +110,7 @@ namespace Kinovea.Root
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
             NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
             NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
+            NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked; 
 
             log.Debug("Plug sub modules at UI extension points (Menus, ToolBars, StatusBAr, Windows).");
             ExtendMenu(mainWindow.menuStrip);
@@ -515,6 +516,8 @@ namespace Kinovea.Root
             Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
             PreferencesUpdated();
         }
+
+
         private void CheckTimecodeMenu()
         {
             mnuTimecodeClassic.Checked = false;
@@ -665,6 +668,16 @@ namespace Kinovea.Root
         private void NotificationCenter_FullscreenToggle(object sender, EventArgs e)
         {
             FullscreenToggle();
+        }
+
+        private void NotificationCenter_PreferenceTabAsked(object sender, PreferenceTabEventArgs e)
+        {
+            FormPreferences2 fp = new FormPreferences2(e.Tab);
+            fp.ShowDialog();
+            fp.Dispose();
+
+            Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
+            PreferencesUpdated();
         }
        
         #region Lower Level Methods

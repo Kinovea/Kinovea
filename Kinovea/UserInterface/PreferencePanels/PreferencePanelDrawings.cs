@@ -27,6 +27,7 @@ using Kinovea.Root.Languages;
 using Kinovea.Root.Properties;
 using Kinovea.ScreenManager;
 using Kinovea.Services;
+using System.Collections.Generic;
 
 namespace Kinovea.Root
 {
@@ -44,11 +45,16 @@ namespace Kinovea.Root
         {
             get { return icon;}
         }
+        public List<PreferenceTab> Tabs
+        {
+            get { return tabs; }
+        }
         #endregion
         
         #region Members
         private string description;
         private Bitmap icon;
+        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Drawings_General, PreferenceTab.Drawings_Persistence, PreferenceTab.Drawings_Tracking };
         private InfosFading defaultFading;
         private bool drawOnPlay;
         private TrackingProfile trackingProfile;
@@ -66,6 +72,16 @@ namespace Kinovea.Root
             ImportPreferences();
             InitPage();
         }
+
+        public void OpenTab(PreferenceTab tab)
+        {
+            int index = tabs.IndexOf(tab);
+            if (index < 0)
+                return;
+
+            tabSubPages.SelectedIndex = index;
+        }
+
         private void ImportPreferences()
         {
             drawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;

@@ -235,11 +235,11 @@ namespace Kinovea.ScreenManager
         }
         private void FNBImage_ImageClick(object sender, EventArgs e)
         {
-            //presenter.View_OpenInExplorer(PreferencesManager.CapturePreferences.ImageDirectory);
+            presenter.View_EditPathConfiguration(false);
         }
         private void FNBVideo_ImageClick(object sender, EventArgs e)
         {
-            //presenter.View_OpenInExplorer(PreferencesManager.CapturePreferences.VideoDirectory);
+            presenter.View_EditPathConfiguration(true);
         }
         private void FnbImage_FilenameChanged(object sender, EventArgs e)
         {

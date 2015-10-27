@@ -94,5 +94,12 @@ namespace Kinovea.Services
             if (FullScreenToggle != null)
                 FullScreenToggle(sender, EventArgs.Empty);
         }
+
+        public static EventHandler<PreferenceTabEventArgs> PreferenceTabAsked;
+        public static void RaisePreferenceTabAsked(object sender, PreferenceTab tab)
+        {
+            if (PreferenceTabAsked != null)
+                PreferenceTabAsked(sender, new PreferenceTabEventArgs(tab));
+        }
     }
 }

@@ -28,6 +28,7 @@ using Kinovea.Root.Properties;
 using Kinovea.ScreenManager;
 using Kinovea.Services;
 using Kinovea.Video;
+using System.Collections.Generic;
 
 namespace Kinovea.Root
 {
@@ -45,11 +46,16 @@ namespace Kinovea.Root
         {
             get { return icon;}
         }
+        public List<PreferenceTab> Tabs
+        {
+            get { return tabs; }
+        }
         #endregion
         
         #region Members
         private string description;
         private Bitmap icon;
+        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Player_General, PreferenceTab.Player_Units, PreferenceTab.Player_Memory };
         private bool deinterlaceByDefault;
         private bool interactiveFrameTracker;
         private TimecodeFormat timecodeFormat;
@@ -75,6 +81,14 @@ namespace Kinovea.Root
             
             ImportPreferences();
             InitPage();
+        }
+        public void OpenTab(PreferenceTab tab)
+        {
+            int index = tabs.IndexOf(tab);
+            if (index < 0)
+                return;
+
+            tabSubPages.SelectedIndex = index;
         }
         private void ImportPreferences()
         {
