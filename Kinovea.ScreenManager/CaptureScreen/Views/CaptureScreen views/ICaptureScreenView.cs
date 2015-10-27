@@ -52,8 +52,8 @@ namespace Kinovea.ScreenManager
         void UpdateRecordingStatus(bool recording);
         void UpdateDelayLabel(double delaySeconds, int delayFrames);
         void UpdateDelayMaxAge(double max);
-        void UpdateNextImageFilename(string filename, bool editable);
-        void UpdateNextVideoFilename(string filename, bool editable);
+        void UpdateNextImageFilename(string filename);
+        void UpdateNextVideoFilename(string filename);
         
         void Toast(string message, int duration);
     }

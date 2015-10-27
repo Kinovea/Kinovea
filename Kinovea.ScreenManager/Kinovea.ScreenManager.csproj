@@ -246,6 +246,9 @@
     <Compile Include="CaptureScreen\Delay\UserInterface\FormConfigureComposite.Designer.cs">
       <DependentUpon>FormConfigureComposite.cs</DependentUpon>
     </Compile>
+    <Compile Include="FilePatterns\Filenamer.cs" />
+    <Compile Include="FilePatterns\FilePatternContexts.cs" />
+    <Compile Include="FilePatterns\FilePatternSymbols.cs" />
     <Compile Include="Metadata\Drawings\DrawingTestGrid.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolTestGrid.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementCurved.cs" />
@@ -256,7 +259,7 @@
     <Compile Include="CaptureScreen\CapturedFile.cs" />
     <Compile Include="CaptureScreen\CapturedFiles.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
-    <Compile Include="CaptureScreen\FilenameHelper.cs" />
+    <Compile Include="FilePatterns\FilenameHelper.cs" />
     <Compile Include="CaptureScreen\ImageManipulator.cs" />
     <Compile Include="CaptureScreen\MetadataManipulator.cs" />
     <Compile Include="CaptureScreen\MetadataRenderer.cs" />

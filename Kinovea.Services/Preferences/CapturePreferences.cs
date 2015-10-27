@@ -34,36 +34,13 @@ namespace Kinovea.Services
         {
             get { return "Capture"; }
         }
-        public string ImageDirectory
+
+        public CapturePathConfiguration CapturePathConfiguration
         {
-            get { return imageDirectory; }
-            set { imageDirectory = value; }
+            get { return capturePathConfiguration; }
+            set { capturePathConfiguration = value; }
         }
-        public string VideoDirectory 
-        {
-            get { return videoDirectory; }
-            set { videoDirectory = value; }
-        }        
-        public KinoveaImageFormat ImageFormat
-        {
-            get { return imageFormat; }
-            set { imageFormat = value; }
-        }
-        public KinoveaVideoFormat VideoFormat
-        {
-            get { return videoFormat; }
-            set { videoFormat = value; }
-        }
-        public string ImageFile
-        {
-            get { return imageFile; }
-            set { imageFile = value; }
-        }
-        public string VideoFile
-        {
-            get { return videoFile; }
-            set { videoFile = value; }
-        }
+
         public bool UseCameraSignalSynchronization
         {
             get { return useCameraSignalSynchronization; }
@@ -74,26 +51,7 @@ namespace Kinovea.Services
             get { return displaySynchronizationFramerate; }
             set { displaySynchronizationFramerate = value; }
         }
-        public bool CaptureUsePattern
-        {
-            get { return usePattern; }
-            set { usePattern = value; }
-        }
-        public string Pattern
-        {
-            get { return pattern; }
-            set { pattern = value; }
-        }
-        public long CaptureImageCounter
-        {
-            get { return imageCounter; }
-            set { imageCounter = value;}	
-        }
-        public long CaptureVideoCounter
-        {
-            get { return videoCounter; }
-            set { videoCounter = value;}	
-        }
+        
         public int CaptureMemoryBuffer
         {
             get { return memoryBuffer; }
@@ -111,22 +69,13 @@ namespace Kinovea.Services
         #endregion
         
         #region Members
-        private string imageDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        private string videoDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
-        private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MP4;
+        private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private bool useCameraSignalSynchronization = false;
         private double displaySynchronizationFramerate = 25.0;
-        private string imageFile = "";
-        private string videoFile = "";
-        private bool usePattern;
-        private string pattern = "Cap-%y-%mo-%d - %i";
-        private long imageCounter = 1;
-        private long videoCounter = 1;
+        
         private int memoryBuffer = 768;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
         private DelayCompositeConfiguration delayCompositeConfiguration = new DelayCompositeConfiguration();
-        
         #endregion
         
         public void AddCamera(CameraBlurb blurb)
@@ -146,25 +95,14 @@ namespace Kinovea.Services
         
         public void WriteXML(XmlWriter writer)
         {
-            writer.WriteElementString("ImageDirectory", imageDirectory);
-            if(!string.IsNullOrEmpty(imageFile))
-                writer.WriteElementString("ImageFile", imageFile);
-            writer.WriteElementString("ImageFormat", imageFormat.ToString());
-            writer.WriteElementString("ImageCounter", imageCounter.ToString());
-            
-            writer.WriteElementString("VideoDirectory", videoDirectory);
-            if(!string.IsNullOrEmpty(videoFile))
-                writer.WriteElementString("VideoFile", videoFile);
-            writer.WriteElementString("VideoFormat", videoFormat.ToString());
-            writer.WriteElementString("VideoCounter", videoCounter.ToString());
+            writer.WriteStartElement("CapturePathConfiguration");
+            capturePathConfiguration.WriteXml(writer);
+            writer.WriteEndElement();
 
             writer.WriteElementString("UseCameraSignalSynchronization", useCameraSignalSynchronization ? "true" : "false");
             string dsf = displaySynchronizationFramerate.ToString("0.000", CultureInfo.InvariantCulture);
             writer.WriteElementString("DisplaySynchronizationFramerate", dsf);
-
-            writer.WriteElementString("UsePattern", usePattern ? "true" : "false");
-            writer.WriteElementString("Pattern", pattern);
-        
+            
             writer.WriteElementString("MemoryBuffer", memoryBuffer.ToString());
             
             if(cameraBlurbs.Count > 0)
@@ -194,29 +132,8 @@ namespace Kinovea.Services
             {
                 switch(reader.Name)
                 {
-                    case "ImageDirectory":
-                        imageDirectory = reader.ReadElementContentAsString();
-                        break;
-                    case "ImageFile":
-                        imageFile = reader.ReadElementContentAsString();
-                        break;
-                    case "ImageFormat":
-                        imageFormat = (KinoveaImageFormat) Enum.Parse(typeof(KinoveaImageFormat), reader.ReadElementContentAsString());
-                        break;
-                    case "ImageCounter":
-                        imageCounter = reader.ReadElementContentAsLong();
-                        break;
-                    case "VideoDirectory":
-                        videoDirectory = reader.ReadElementContentAsString();
-                        break;
-                    case "VideoFile":
-                        videoFile = reader.ReadElementContentAsString();
-                        break;
-                    case "VideoFormat":
-                        videoFormat = (KinoveaVideoFormat)Enum.Parse(typeof(KinoveaVideoFormat), reader.ReadElementContentAsString());
-                        break;
-                    case "VideoCounter":
-                        videoCounter = reader.ReadElementContentAsLong();
+                    case "CapturePathConfiguration":
+                        capturePathConfiguration.ReadXml(reader);
                         break;
                     case "UseCameraSignalSynchronization":
                         useCameraSignalSynchronization = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
@@ -224,12 +141,6 @@ namespace Kinovea.Services
                     case "DisplaySynchronizationFramerate":
                         string str = reader.ReadElementContentAsString();
                         displaySynchronizationFramerate = double.Parse(str, CultureInfo.InvariantCulture);
-                        break;
-                    case "UsePattern":
-                        usePattern = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
-                    case "Pattern":
-                        pattern = reader.ReadElementContentAsString();
                         break;
                     case "MemoryBuffer":
                         memoryBuffer = reader.ReadElementContentAsInt();

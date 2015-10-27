@@ -42,6 +42,10 @@ namespace Kinovea.Services
             {
                 // User cancelled confirmation box.
             }
+            catch
+            {
+                // Other error. e.g. file is opened somewhere else.
+            }
         }
         
         public static void LocateDirectory(string path)
@@ -193,6 +197,17 @@ namespace Kinovea.Services
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Creates a missing directory before we write the file into it.
+        /// Input is the whole file path.
+        /// </summary>
+        public static void CreateDirectory(string filepath)
+        {
+            string directory = Path.GetDirectoryName(filepath);
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
         }
 
         public static void DeleteOrphanFiles()
