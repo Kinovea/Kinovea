@@ -679,6 +679,9 @@ namespace Kinovea.ScreenManager
         {
             view.OrganizeScreens(screenList);
             UpdateStatusBar();
+
+            for (int i = 0; i < screenList.Count; i++)
+                screenList[i].Identify(i);
         }
 
         public void UpdateStatusBar()
@@ -2023,7 +2026,6 @@ namespace Kinovea.ScreenManager
 
             if (screen is PlayerScreen)
                 AddPlayerScreenEventHandlers(screen as PlayerScreen);
-            
         }
         private void AddPlayerScreenEventHandlers(PlayerScreen player)
         {

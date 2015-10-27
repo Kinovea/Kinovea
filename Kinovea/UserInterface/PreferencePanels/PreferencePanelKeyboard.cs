@@ -22,11 +22,16 @@ namespace Kinovea.Root
         {
             get { return icon; }
         }
+        public List<PreferenceTab> Tabs
+        {
+            get { return tabs; }
+        }
         #endregion
 
         #region Members
         private string description;
         private Bitmap icon;
+        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Keyboard_General };
         private Dictionary<string, HotkeyCommand[]> hotkeys;
         private string selectedCategory;
         private HotkeyCommand selectedCommand;
@@ -42,6 +47,10 @@ namespace Kinovea.Root
 
             ImportPreferences();
             InitPage();
+        }
+
+        public void OpenTab(PreferenceTab tab)
+        {
         }
 
         private void ImportPreferences()

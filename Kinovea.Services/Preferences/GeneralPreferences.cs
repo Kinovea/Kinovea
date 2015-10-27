@@ -43,17 +43,17 @@ namespace Kinovea.Services
             set { explorerSplitterDistance = value; }
         }
 
-        public int PreferencesTab
+        public int PreferencePage
         {
-            get { return preferencesTab; }
-            set { preferencesTab = value; }
+            get { return preferencePage; }
+            set { preferencePage = value; }
         }
         
 
         private string uiCultureName;
         private bool explorerVisible = true;
         private int explorerSplitterDistance = 250;
-        private int preferencesTab;
+        private int preferencePage;
         
         
         public GeneralPreferences()
@@ -81,7 +81,7 @@ namespace Kinovea.Services
             writer.WriteElementString("Culture", uiCultureName);
             writer.WriteElementString("ExplorerVisible", explorerVisible ? "true" : "false");
             writer.WriteElementString("ExplorerSplitterDistance", explorerSplitterDistance.ToString());
-            writer.WriteElementString("PreferencesTab", preferencesTab.ToString());
+            writer.WriteElementString("PreferencesPage", preferencePage.ToString());
         }
         
         public void ReadXML(XmlReader reader)
@@ -101,8 +101,8 @@ namespace Kinovea.Services
                     case "ExplorerSplitterDistance":
                         explorerSplitterDistance = reader.ReadElementContentAsInt();
                         break;
-                    case "PreferencesTab":
-                        preferencesTab = reader.ReadElementContentAsInt();
+                    case "PreferencesPage":
+                        preferencePage = reader.ReadElementContentAsInt();
                         break;
                     default:
                         reader.ReadOuterXml();

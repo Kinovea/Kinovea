@@ -151,6 +151,7 @@ namespace Kinovea.ScreenManager
         
         private bool shared;
         private bool synched;
+        private int index;
         
         private Metadata metadata;
         private MetadataRenderer metadataRenderer;
@@ -305,6 +306,12 @@ namespace Kinovea.ScreenManager
         {
             view.FullScreen(fullScreen);
         }
+
+        public override void Identify(int index)
+        {
+            this.index = index;
+            InitializeCaptureFilenames();
+        }
         
         public override void ExecuteScreenCommand(int cmd)
         {
@@ -367,9 +374,12 @@ namespace Kinovea.ScreenManager
             if (!FilenameHelper.IsFilenameValid(filename, allowEmpty))
                 ScreenManagerKernel.AlertInvalidFileName();
         }
-        public void View_OpenInExplorer(string path)
+        public void View_EditPathConfiguration(bool video)
         {
-            FilesystemHelper.LocateDirectory(path);
+            if (video)
+                NotificationCenter.RaisePreferenceTabAsked(this, PreferenceTab.Capture_VideoNaming);
+            else
+                NotificationCenter.RaisePreferenceTabAsked(this, PreferenceTab.Capture_ImageNaming);
         }
         public void View_DeselectTool()
         {
@@ -824,12 +834,24 @@ namespace Kinovea.ScreenManager
         private void InitializeCaptureFilenames()
         {
             string defaultName = "Capture";
+            
+            string image;
+            string video;
 
-            string image = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageFile;
+            if (index == 0)
+            {
+                image = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageFile;
+                video = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoFile;
+            }
+            else
+            {
+                image = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightImageFile;
+                video = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightVideoFile;
+            }
+
             string nextImage = string.IsNullOrEmpty(image) ? defaultName : Filenamer.ComputeNextFilename(image);
             view.UpdateNextImageFilename(nextImage);
 
-            string video = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoFile;
             string nextVideo = string.IsNullOrEmpty(video) ? defaultName : Filenamer.ComputeNextFilename(video);
             view.UpdateNextVideoFilename(nextVideo);
         }
@@ -839,8 +861,19 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded || consumerDisplay.Bitmap == null)
                 return;
 
-            string root = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageRoot;
-            string subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageSubdir;
+            string root;
+            string subdir;
+            if (index == 0)
+            {
+                root = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageRoot;
+                subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageSubdir;
+            }
+            else
+            {
+                root = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightImageRoot;
+                subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightImageSubdir;
+            }
+
             string filenameWithoutExtension = view.CurrentImageFilename;
             string extension = Filenamer.GetImageFileExtension();
             
@@ -871,7 +904,11 @@ namespace Kinovea.ScreenManager
             CaptureHistoryEntry entry = CreateHistoryEntrySnapshot(path);
             CaptureHistory.AddEntry(entry);
 
-            PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageFile = filenameWithoutExtension;
+            if (index == 0)
+                PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageFile = filenameWithoutExtension;
+            else
+                PreferencesManager.CapturePreferences.CapturePathConfiguration.RightImageFile = filenameWithoutExtension;
+
             PreferencesManager.Save();
  
             // Compute next name for user feedback.
@@ -941,8 +978,20 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded || !cameraConnected || recording)
                 return;
 
-            string root = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoRoot;
-            string subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoSubdir;
+            string root;
+            string subdir;
+
+            if (index == 0)
+            {
+                root = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoRoot;
+                subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoSubdir;
+            }
+            else
+            {
+                root = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightVideoRoot;
+                subdir = PreferencesManager.CapturePreferences.CapturePathConfiguration.RightVideoSubdir;
+            }
+            
             string filenameWithoutExtension = view.CurrentVideoFilename;
             string extension = Filenamer.GetVideoFileExtension();
 
@@ -1008,7 +1057,11 @@ namespace Kinovea.ScreenManager
             // We need to use the original filename with patterns still in it.
             string filenameWithoutExtension = view.CurrentVideoFilename;
 
-            PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoFile = filenameWithoutExtension;
+            if (index == 0)
+                PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoFile = filenameWithoutExtension;
+            else
+                PreferencesManager.CapturePreferences.CapturePathConfiguration.RightVideoFile = filenameWithoutExtension;
+
             PreferencesManager.Save();
 
             string next = Filenamer.ComputeNextFilename(filenameWithoutExtension);

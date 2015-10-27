@@ -259,6 +259,7 @@ namespace Kinovea.ScreenManager
         private HistoryStack historyStack; 
         private FrameServerPlayer frameServer;
         private bool synched;
+        private int index;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -482,7 +483,13 @@ namespace Kinovea.ScreenManager
         {
             view.FullScreen(_bFullScreen);
         }
+
+        public override void Identify(int index)
+        {
+            this.index = index;
+        }
         
+
         public override void ExecuteScreenCommand(int cmd)
         {
             view.ExecuteScreenCommand(cmd);

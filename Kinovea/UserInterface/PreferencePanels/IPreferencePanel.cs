@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Kinovea.Services;
+using System.Collections.Generic;
 
 namespace Kinovea.Root
 {
@@ -41,7 +42,9 @@ namespace Kinovea.Root
         Bitmap Icon { get; }
         bool Visible { get; set; }
         Point Location { get; set; }
-        
+        List<PreferenceTab> Tabs { get; }
+
+        void OpenTab(PreferenceTab tab);
         void CommitChanges();
     }
 }

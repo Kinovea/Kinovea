@@ -46,11 +46,16 @@ namespace Kinovea.Root
         {
             get { return icon;}
         }
+        public List<PreferenceTab> Tabs
+        {
+            get { return tabs; }
+        }
         #endregion
         
         #region Members
         private string description;
         private Bitmap icon;
+        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Capture_General, PreferenceTab.Capture_ImageNaming, PreferenceTab.Capture_VideoNaming, PreferenceTab.Capture_Memory};
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
         private bool useCameraSignalSynchronization;
@@ -71,6 +76,16 @@ namespace Kinovea.Root
             ImportPreferences();
             InitPage();
         }
+
+        public void OpenTab(PreferenceTab tab)
+        {
+            int index = tabs.IndexOf(tab);
+            if (index < 0)
+                return;
+
+            tabSubPages.SelectedIndex = index;
+        }
+
         private void ImportPreferences()
         {
             capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
