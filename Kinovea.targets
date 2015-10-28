@@ -38,6 +38,8 @@
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\Microsoft.VC90.CRT.manifest" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\vcomp90.dll" DestinationFolder="$(TargetDir)"/>
     <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\Microsoft.VC90.OpenMP.manifest" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcp110.dll" DestinationFolder="$(TargetDir)"/>
+    <Copy SourceFiles="..\Refs\Microsoft\$(Platform)\msvcr110.dll" DestinationFolder="$(TargetDir)"/>
     
     <Copy SourceFiles="..\Refs\TurboJpeg\$(Platform)\turbojpeg.dll" DestinationFolder="$(TargetDir)"/>
 
