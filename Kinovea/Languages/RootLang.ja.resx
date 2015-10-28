@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>ドローイング</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>一般</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>プレイバック</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>イメージディレクトリ:</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>ビデオディレクトリ:</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>イメージフォーマット:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>ビデオフォーマット:</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>ファイル名</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>オートカウンターとフリーテキスト</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>ネーミングパターン</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>年</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>月</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>日</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>時</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>分</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>秒</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>カウンター</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>カウンターのリセット</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>年</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>月</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>日</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>時</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>分</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>秒</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>メモリー</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>キャプチャバッファー用メモリー: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>常に表示</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>1/10,000時間</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>タイムスタンプ</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>クラシック + フレーム 数</value></data>
+   
    
    
    

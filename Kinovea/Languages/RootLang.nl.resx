@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Tekeningen</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Algemeen</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Afspelen</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Afbeeldingen map :</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Videobeelden map :</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Afbeeldingstype :</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videotype :</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Bestandsnaam</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Vrije tekst met automatische teller</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Vormgeving naam</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Jaar</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Maand</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Dag</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Uur</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minuut</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Seconde</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Teller</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Herstart teller</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Jaar</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Maand</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dag</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Uur</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Minuut</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Seconde</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Geheugen</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Toegewezen geheugen voor buffering van opname: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Altijd zichtbaar</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een uur</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassiek + Beeldnummers</value></data>
+   
    
    
    

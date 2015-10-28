@@ -169,47 +169,38 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset counters.
+        ///   Looks up a localized string similar to Context.
         /// </summary>
-        internal static string dlgPreferences_Capture_btnResetCounter {
+        internal static string dlgPreferences_Capture_Context {
             get {
-                return ResourceManager.GetString("dlgPreferences_Capture_btnResetCounter", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Capture_Context", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Counter.
+        ///   Looks up a localized string similar to Context variables.
         /// </summary>
-        internal static string dlgPreferences_Capture_lblCounter {
+        internal static string dlgPreferences_Capture_ContextVariables {
             get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblCounter", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Capture_ContextVariables", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Day.
+        ///   Looks up a localized string similar to File :.
         /// </summary>
-        internal static string dlgPreferences_Capture_lblDay {
+        internal static string dlgPreferences_Capture_File {
             get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblDay", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Capture_File", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hour.
+        ///   Looks up a localized string similar to Image naming.
         /// </summary>
-        internal static string dlgPreferences_Capture_lblHour {
+        internal static string dlgPreferences_Capture_ImageNaming {
             get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblHour", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Image directory:.
-        /// </summary>
-        internal static string dlgPreferences_Capture_lblImageDirectory {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblImageDirectory", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Capture_ImageNaming", resourceCulture);
             }
         }
         
@@ -232,42 +223,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minute.
-        /// </summary>
-        internal static string dlgPreferences_Capture_lblMinute {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblMinute", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Month.
-        /// </summary>
-        internal static string dlgPreferences_Capture_lblMonth {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblMonth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Second.
-        /// </summary>
-        internal static string dlgPreferences_Capture_lblSecond {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblSecond", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Video directory:.
-        /// </summary>
-        internal static string dlgPreferences_Capture_lblVideoDirectory {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblVideoDirectory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Video format:.
         /// </summary>
         internal static string dlgPreferences_Capture_lblVideoFormat {
@@ -277,29 +232,128 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Left.
+        /// </summary>
+        internal static string dlgPreferences_Capture_Left {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_Left", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Macro.
+        /// </summary>
+        internal static string dlgPreferences_Capture_Macro {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_Macro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera alias.
+        /// </summary>
+        internal static string dlgPreferences_Capture_PatternCameraAlias {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_PatternCameraAlias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configured framerate.
+        /// </summary>
+        internal static string dlgPreferences_Capture_PatternConfiguredFramerate {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_PatternConfiguredFramerate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Day.
+        /// </summary>
+        internal static string dlgPreferences_Capture_PatternDay {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_PatternDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hour.
+        /// </summary>
+        internal static string dlgPreferences_Capture_PatternHour {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_PatternHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minute.
+        /// </summary>
+        internal static string dlgPreferences_Capture_PatternMinute {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_PatternMinute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Month.
+        /// </summary>
+        internal static string dlgPreferences_Capture_PatternMonth {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_PatternMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received framerate.
+        /// </summary>
+        internal static string dlgPreferences_Capture_PatternReceivedFramerate {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_PatternReceivedFramerate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Second.
+        /// </summary>
+        internal static string dlgPreferences_Capture_PatternSecond {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_PatternSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Year.
         /// </summary>
-        internal static string dlgPreferences_Capture_lblYear {
+        internal static string dlgPreferences_Capture_PatternYear {
             get {
-                return ResourceManager.GetString("dlgPreferences_Capture_lblYear", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Capture_PatternYear", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Free text with automatic counter.
+        ///   Looks up a localized string similar to Right.
         /// </summary>
-        internal static string dlgPreferences_Capture_rbFreeText {
+        internal static string dlgPreferences_Capture_Right {
             get {
-                return ResourceManager.GetString("dlgPreferences_Capture_rbFreeText", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Capture_Right", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Naming pattern.
+        ///   Looks up a localized string similar to Root :.
         /// </summary>
-        internal static string dlgPreferences_Capture_rbPattern {
+        internal static string dlgPreferences_Capture_Root {
             get {
-                return ResourceManager.GetString("dlgPreferences_Capture_rbPattern", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Capture_Root", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sub directory :.
+        /// </summary>
+        internal static string dlgPreferences_Capture_Subdir {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_Subdir", resourceCulture);
             }
         }
         
@@ -313,11 +367,11 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File naming.
+        ///   Looks up a localized string similar to Video naming.
         /// </summary>
-        internal static string dlgPreferences_Capture_tabNaming {
+        internal static string dlgPreferences_Capture_VideoNaming {
             get {
-                return ResourceManager.GetString("dlgPreferences_Capture_tabNaming", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Capture_VideoNaming", resourceCulture);
             }
         }
         

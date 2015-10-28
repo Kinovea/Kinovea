@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Piirrokset</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Yleinen</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Näytä</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Kuvahakemisto :</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Videohakemisto :</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Kuvamuoto :</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videomuoto :</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Tiedoston nimeäminen</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Vapaa teksti automaattisella numeroinnilla</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Nimeämisasetukset</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Vuosi</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Kuukausi</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Päivä</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Tunti</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minuutti</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Sekunti</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Laskuri</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Laskurin nollaus</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Vuosi</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Kuukausi</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Päivä</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Tunti</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Minuutti</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Sekunti</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Muisti</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Tallennukseen varattu muistimäärä : {0} Mb.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Aina näkyvillä</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tunnin kymmenestuhannesosa</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Aikaleimat</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassinen + kuvanumeroinnit</value></data>
+   
    
    
    

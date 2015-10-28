@@ -130,17 +130,17 @@ namespace Kinovea.Root
 
         private void InitPageImageNaming()
         {
-            tabImageNaming.Text = "Image naming";
+            tabImageNaming.Text = RootLang.dlgPreferences_Capture_ImageNaming;
 
-            grpLeftImage.Text = "Left";
-            grpRightImage.Text = "Right";
-            
-            lblLeftImageRoot.Text = "Root :";
-            lblLeftImageSubdir.Text = "Sub directory :";
-            lblLeftImageFile.Text = "File :";
-            lblRightImageRoot.Text = "Root :";
-            lblRightImageSubdir.Text = "Sub directory :";
-            lblRightImageFile.Text = "File :";
+            grpLeftImage.Text = RootLang.dlgPreferences_Capture_Left;
+            grpRightImage.Text = RootLang.dlgPreferences_Capture_Right;
+
+            lblLeftImageRoot.Text = RootLang.dlgPreferences_Capture_Root;
+            lblLeftImageSubdir.Text = RootLang.dlgPreferences_Capture_Subdir;
+            lblLeftImageFile.Text = RootLang.dlgPreferences_Capture_File;
+            lblRightImageRoot.Text = RootLang.dlgPreferences_Capture_Root;
+            lblRightImageSubdir.Text = RootLang.dlgPreferences_Capture_Subdir;
+            lblRightImageFile.Text = RootLang.dlgPreferences_Capture_File;
             
             tbLeftImageRoot.Text = capturePathConfiguration.LeftImageRoot;
             tbLeftImageSubdir.Text = capturePathConfiguration.LeftImageSubdir;
@@ -152,17 +152,17 @@ namespace Kinovea.Root
 
         private void InitPageVideoNaming()
         {
-            tabVideoNaming.Text = "Video naming";
+            tabVideoNaming.Text = RootLang.dlgPreferences_Capture_VideoNaming;
 
-            grpLeftVideo.Text = "Left";
-            grpRightVideo.Text = "Right";
-            
-            lblLeftVideoRoot.Text = "Root :";
-            lblLeftVideoSubdir.Text = "Sub directory :";
-            lblLeftVideoFile.Text = "File :";
-            lblRightVideoRoot.Text = "Root :";
-            lblRightVideoSubdir.Text = "Sub directory :";
-            lblRightVideoFile.Text = "File :";
+            grpLeftVideo.Text = RootLang.dlgPreferences_Capture_Left;
+            grpRightVideo.Text = RootLang.dlgPreferences_Capture_Right;
+
+            lblLeftVideoRoot.Text = RootLang.dlgPreferences_Capture_Root;
+            lblLeftVideoSubdir.Text = RootLang.dlgPreferences_Capture_Subdir;
+            lblLeftVideoFile.Text = RootLang.dlgPreferences_Capture_File;
+            lblRightVideoRoot.Text = RootLang.dlgPreferences_Capture_Root;
+            lblRightVideoSubdir.Text = RootLang.dlgPreferences_Capture_Subdir;
+            lblRightVideoFile.Text = RootLang.dlgPreferences_Capture_File;
             
             tbLeftVideoRoot.Text = capturePathConfiguration.LeftVideoRoot;
             tbLeftVideoSubdir.Text = capturePathConfiguration.LeftVideoSubdir;

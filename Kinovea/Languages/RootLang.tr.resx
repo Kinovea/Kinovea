@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Çizimler</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Genel</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>İzle</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>İmaj klasörü:</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Video klasörü:</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>İmaj formatı:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Video formatı:</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Dosya isimlendirme</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Otomatik sayaçlı boş metin</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>İsimlendirme şablonu</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Yıl</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Ay</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Gün</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Saat</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Dakika</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Saniye</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Sayaç</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Sayaçları sıfırla</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Yıl</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Ay</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Gün</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Saat</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Dakika</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Saniye</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Bellek</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Capture tamponu için ayrılmış bellek: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Her zaman Görünür</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin on bindesi</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Zaman Etiketleri</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasik + Kare sayıları</value></data>
+   
    
    
    

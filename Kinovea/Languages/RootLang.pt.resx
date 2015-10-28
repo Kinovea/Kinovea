@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Desenhos</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Geral</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Reproduzir</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Pasta de Imagens:</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Pasta de Videos:</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Formato da Imagem:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Formato do Video:</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Nome dos arquivos</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Texto livre com contador automático</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Padrão de nomeação</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Ano</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Mês</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Dia</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Hora</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minuto</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Segundo</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Contador</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Resetar contadores</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Ano</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mês</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dia</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Hora</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Minuto</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Segundo</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memória</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memória usada para captura de buffers: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Sempre Visível</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dez milésimos de uma hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Contador de Tempo</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clássico + Número de Quadros</value></data>
+   
    
    
    

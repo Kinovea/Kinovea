@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Σχέδια</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Γενικά</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Αναπαραγωγή</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Κατεύθυνση προορισμού εικόνας:</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Κατεύθυνση προορισμού βίντεο:</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Μορφή εικονας:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Μορφή βίντεο:</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Ονοματοδοσία αρχείου</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Ελεύθερο κείμενο με αυτόματο μετρητή</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Σχέδιο ονοματοδοσίας</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Έτος</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Μήνας</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Ημέρα</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Ώρα</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Λεπτό</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Δευτερόλεπτο</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Μετρητής</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Μηδενισμός μετρητών</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Έτος</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Μήνας</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Ημέρα</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Ώρα</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Λεπτό</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Δευτερόλεπτο</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Μνήμη</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Προσδιορισμένη ενδιάμεση μνήμη αποτύπωσης: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Ορατό Πάντα</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Δεκάδες Χιλιοστά της ώρας</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Χρονικά Σημάδια</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Κλασσικό + Αριθμητικά πλαίσια</value></data>
+   
    
    
    

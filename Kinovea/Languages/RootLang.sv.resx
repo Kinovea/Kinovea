@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Ritningar</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Allmänt</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Uppspelning</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Bildbibliotek:</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Videobibliotek:</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Bildformat:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videoformat:</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Namnge fil</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Fri text med automatisk räknare</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Namngivningsmönster</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>År</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Månad</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Dag</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Timme</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minuter</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Sekunder</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Räknare</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Återställning av räknare</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>År</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Månad</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dag</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Timme</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Minuter</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Sekunder</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Minne</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Minne som tilldelats upptagen buffer: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>tiotusendels timme</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tidsstämpel</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassiskt + Bildnummer</value></data>
+   
    
    
    

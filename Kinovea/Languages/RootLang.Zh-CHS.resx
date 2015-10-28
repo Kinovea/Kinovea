@@ -99,6 +99,12 @@
    
    
    
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>一直可见</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>当播放视频的时候显示绘制信息</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>允许持久性</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>万分之一小时</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>时间戳</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>传统 + 帧数</value></data>
+   
    
    
    
