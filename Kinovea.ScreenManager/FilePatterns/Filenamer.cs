@@ -50,15 +50,16 @@ namespace Kinovea.ScreenManager
             string next = "";
             if (mc.Count > 0)
             {
-                // Number(s) found. Increment the last one.
+                // Number(s) found. Increment the last one retaining leading zeroes.
                 // Note that the parameter passed in is without extension, to avoid incrementing "mp4" for example.
-                // TODO: handle leading zeroes in the original (001 -> 002).
                 Match m = mc[mc.Count - 1];
-                int number = int.Parse(m.Value);
-                number++;
+                int value = int.Parse(m.Value);
+                value++;
+
+                string token = value.ToString().PadLeft(m.Value.Length, '0');
 
                 // Replace the number in the original.
-                next = r.Replace(previous, number.ToString(), 1, m.Index);
+                next = r.Replace(previous, token, 1, m.Index);
             }
             else
             {
