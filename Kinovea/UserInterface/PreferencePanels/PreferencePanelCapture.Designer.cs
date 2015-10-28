@@ -153,6 +153,7 @@ namespace Kinovea.Root
             this.cmbVideoFormat.Name = "cmbVideoFormat";
             this.cmbVideoFormat.Size = new System.Drawing.Size(52, 21);
             this.cmbVideoFormat.TabIndex = 41;
+            this.cmbVideoFormat.SelectedIndexChanged += new System.EventHandler(this.cmbVideoFormat_SelectedIndexChanged);
             // 
             // lblVideoFormat
             // 
@@ -221,6 +222,7 @@ namespace Kinovea.Root
             this.cmbImageFormat.Name = "cmbImageFormat";
             this.cmbImageFormat.Size = new System.Drawing.Size(52, 21);
             this.cmbImageFormat.TabIndex = 5;
+            this.cmbImageFormat.SelectedIndexChanged += new System.EventHandler(this.cmbImageFormat_SelectedIndexChanged);
             // 
             // lblImageFormat
             // 
