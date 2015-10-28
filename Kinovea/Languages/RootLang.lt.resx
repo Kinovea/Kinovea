@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Piešimas</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Pagrindinis</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Groti</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Paveikslėlio aplankas:</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Vaizdo aplankas:</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Paveikslėlio formatas:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Vaizdo formatas:</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Failų pavadinimo struktūra</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Laisvas tekstas su automatiniu skaitikliu</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Pavadinimų sistema</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Metai</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Mėnuo</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Diena</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Valanda</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minutė</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Sekundė</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Skaitiklis</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Išvalyti skaitiklį</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Metai</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mėnuo</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Diena</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Valanda</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Minutė</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Sekundė</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Atmintis</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Užimta atminties įrašymo buferiui: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Visą laiką rodyti</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dešimt tūkstantoji valandos</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Laiko žyma</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Standartinis + Kadro numeriai</value></data>
+   
    
    
    

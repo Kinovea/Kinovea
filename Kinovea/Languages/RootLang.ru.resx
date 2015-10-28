@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Нарисовать</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Общие</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Воспроизвести</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Директория изображения</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Директория видео</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Формат изображения</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Формат видео</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Название файла</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Свободный текст с автоматическим счетчиком</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Название шаблона</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Год</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Месяц</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>День</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Час</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Минута</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Секунда</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Счетчик</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Сбросить счетчик</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Год</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Месяц</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>День</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Час</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Минута</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Секунда</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Память</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Выделенная память для съемки в буфер : {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Всегда видеть</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десятитысячные часа</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Классический формат +номера кадров</value></data>
+   
    
    
    

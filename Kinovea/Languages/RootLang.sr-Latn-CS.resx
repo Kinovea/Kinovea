@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Crteži</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Opšte</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Reprodukovanje</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Direktorijum slika:</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Video direktorijum:</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Grafički format:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Video format:</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Imenovanje datoteke</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Slobodan tekst sa automatskim brojačem</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Šema imenovanja </value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Godina</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Mesec</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Dan</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Sat</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minut</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Sekund</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Brojač</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Resetovanje brojača</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Godina</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mesec</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dan</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Sat</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Minut</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Sekund</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memorija</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memorija rezervisana za hvatenje bafera: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Uvek vidljivo</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deset stotinki sata</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Vremenske oznake </value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasični + brojevi okvira </value></data>
+   
    
    
    

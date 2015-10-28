@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>그림들</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>일반</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>재생</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>그림 디렉토리:</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>비디오 디렉토리:</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>이미지 포맷:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>비디오 포맷:</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>파일 이름짓기</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>자동 카운터가 있는 자유 텍스트</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>이름짓기 양식</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>연도</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>월</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>일</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>시</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>분</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>초</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>카운터</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>카운터 초기화</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>연도</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>월</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>일</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>시</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>분</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>초</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>메모리</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>캡처 버퍼에 메모리 할당됨:{0}</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>항상 보임</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>한 시간을 만 등분한 시간</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>시간 스탬프들</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>전통+프레임 숫자</value></data>
+   
    
    
    

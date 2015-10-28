@@ -99,6 +99,12 @@
    
    
    
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Vis tegninger samtidig meg videoavspilling</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Start likevekt</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Titusendedels time</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tidsmarkør format:</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Standard + Bildenummer</value></data>
+   
    
    
    

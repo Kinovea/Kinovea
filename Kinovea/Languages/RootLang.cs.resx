@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Kreslení</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Obecné</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Přehrávání</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Adresář obrazu</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Adresář videa</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Formát obrazu:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Formát videa</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Pojmenování souboru</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Text s automatickým počitadlem</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Pojmenování vzorku</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Rok</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Měsíc</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Den</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Hodina</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minuta</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Sekunda</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Počítadlo</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Vynulovat počítadlo</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Rok</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Měsíc</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Den</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Hodina</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Minuta</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Sekunda</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Paměť</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Alokovaná paměť pro záznam: {0} MB</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Vždy viditelné</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Desetitisícina hodiny</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Časová razítka</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasické zobarzení + číslo snímku</value></data>
+   
    
    
    

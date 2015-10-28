@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Цртежи</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Опште</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Репродуковање</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Директоријум слика:</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Видео директоријум:</value></data>
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Графички формат:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Видео формат:</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Именовање датотеке</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Слободан текст са аутоматским бројачем</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Шема именовања </value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Година</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Месец</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Дан</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Сат</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Минут</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Секунд</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Бројач</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Ресетовање бројача</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Година</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Месец</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Дан</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Сат</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Минут</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Секунд</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Меморија</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Меморија резервисана за хватање бафера: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Увек видљиво</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет стотинки сата</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Временске ознаке </value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Класични + бројеви оквира </value></data>
+   
    
    
    

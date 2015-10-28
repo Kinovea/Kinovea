@@ -82,21 +82,27 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Drawings</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>General</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Playback</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Image directory:</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Video directory:</value></data>
+   <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Left</value></data>
+   <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Right</value></data>
+   <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Root :</value></data>
+   <data name="dlgPreferences_Capture_Subdir" xml:space="preserve"><value>Sub directory :</value></data>
+   <data name="dlgPreferences_Capture_File" xml:space="preserve"><value>File :</value></data>
+   <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve"><value>Image naming</value></data>
+   <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Video naming</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Image format:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Video format:</value></data>
-   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>File naming</value></data>
-   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Free text with automatic counter</value></data>
-   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Naming pattern</value></data>
-   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Year</value></data>
-   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Month</value></data>
-   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Day</value></data>
-   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Hour</value></data>
-   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minute</value></data>
-   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Second</value></data>
-   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Counter</value></data>
-   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Reset counters</value></data>
+   <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Year</value></data>
+   <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Month</value></data>
+   <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Day</value></data>
+   <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Hour</value></data>
+   <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Minute</value></data>
+   <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Second</value></data>
+   <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve"><value>Camera alias</value></data>
+   <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>Configured framerate</value></data>
+   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>Received framerate</value></data>
+   <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>Context variables</value></data>
+   <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>Context</value></data>
+   <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Macro</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memory</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memory allocated for capture buffers: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Always Visible</value></data>
@@ -157,6 +163,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Ten thousandth of an hour</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classic + Frame numbers</value></data>
+   
    
    
    
