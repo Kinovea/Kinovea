@@ -32,9 +32,6 @@ using System.Collections.Generic;
 
 namespace Kinovea.Root
 {
-    /// <summary>
-    /// PreferencePanelCapture.
-    /// </summary>
     public partial class PreferencePanelCapture : UserControl, IPreferencePanel
     {
         #region IPreferencePanel properties
@@ -62,6 +59,8 @@ namespace Kinovea.Root
         private double displaySynchronizationFramerate;
         private int memoryBuffer;
         private FilenameHelper filenameHelper = new FilenameHelper();
+        private FormPatterns formPatterns;
+        private bool formPatternsVisible;
         #endregion
         
         #region Construction & Initialization
@@ -200,6 +199,11 @@ namespace Kinovea.Root
                 namingTextBoxes[v].TextChanged += tbNamingVariable_TextChanged;
                 namingTextBoxes[v].Tag = v;
             }
+
+            btnLeftImageRoot.Tag = CaptureVariable.LeftImageRoot;
+            btnRightImageRoot.Tag = CaptureVariable.RightImageRoot;
+            btnLeftVideoRoot.Tag = CaptureVariable.LeftVideoRoot;
+            btnRightVideoRoot.Tag = CaptureVariable.RightVideoRoot;
         }
         #endregion
         
@@ -284,19 +288,18 @@ namespace Kinovea.Root
                     break;
             }
         }
-        
-        /*private void btnBrowseImageLocation_Click(object sender, EventArgs e)
+
+        private void btnFolderSelection_Click(object sender, EventArgs e)
         {
-            SelectSavingDirectory(tbLeftImageRoot);
-        }
-        private void btnBrowseVideoLocation_Click(object sender, EventArgs e)
-        {
-            SelectSavingDirectory(tbVideoDirectory);
-        }
-        private void SelectSavingDirectory(TextBox tb)
-        {
+            Control button = sender as Control;
+            CaptureVariable captureVariable = (CaptureVariable)button.Tag;
+            if (!namingTextBoxes.ContainsKey(captureVariable))
+                return;
+
+            TextBox tb = namingTextBoxes[captureVariable];
+
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            folderBrowserDialog.Description = ""; // TODO.
+            folderBrowserDialog.Description = "";
             folderBrowserDialog.ShowNewFolderButton = true;
             folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
 
@@ -306,24 +309,6 @@ namespace Kinovea.Root
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 tb.Text = folderBrowserDialog.SelectedPath;
         }
-        private void tbImageDirectory_TextChanged(object sender, EventArgs e)
-        {
-            /*if(!filenameHelper.ValidateFilename(tbImageDirectory.Text, true))
-                ScreenManagerKernel.AlertInvalidFileName();
-            else
-                imageDirectory = tbImageDirectory.Text;* /
-
-            imageDirectory = tbLeftImageRoot.Text;
-        }
-        private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
-        {
-            /*if(!filenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
-                ScreenManagerKernel.AlertInvalidFileName();
-            else
-                videoDirectory = tbVideoDirectory.Text;* /
-
-            videoDirectory = tbVideoDirectory.Text;
-        }*/
         #endregion
         
         #region Tab Memory
@@ -347,6 +332,23 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.UseCameraSignalSynchronization = useCameraSignalSynchronization;
             PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate = displaySynchronizationFramerate;
             PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
+        }
+
+        private void btnMacroReference_Click(object sender, EventArgs e)
+        {
+            if (formPatternsVisible)
+                return;
+            
+            formPatterns = new FormPatterns();
+            formPatterns.FormClosed += formPatterns_FormClosed;
+            formPatternsVisible = true;
+            formPatterns.Show(this);
+        }
+
+        private void formPatterns_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            formPatterns.FormClosed -= formPatterns_FormClosed;
+            formPatternsVisible = false;
         }
     }
 }
