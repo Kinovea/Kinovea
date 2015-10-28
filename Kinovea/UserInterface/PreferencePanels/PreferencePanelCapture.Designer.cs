@@ -61,6 +61,9 @@ namespace Kinovea.Root
             this.lblImageFormat = new System.Windows.Forms.Label();
             this.tabImageNaming = new System.Windows.Forms.TabPage();
             this.grpRightImage = new System.Windows.Forms.GroupBox();
+            this.btnRightImageFile = new System.Windows.Forms.Button();
+            this.btnRightImageSubdir = new System.Windows.Forms.Button();
+            this.btnRightImageRoot = new System.Windows.Forms.Button();
             this.lblRightImageFile = new System.Windows.Forms.Label();
             this.tbRightImageFile = new System.Windows.Forms.TextBox();
             this.lblRightImageSubdir = new System.Windows.Forms.Label();
@@ -68,14 +71,20 @@ namespace Kinovea.Root
             this.lblRightImageRoot = new System.Windows.Forms.Label();
             this.tbRightImageRoot = new System.Windows.Forms.TextBox();
             this.grpLeftImage = new System.Windows.Forms.GroupBox();
+            this.btnLeftImageFile = new System.Windows.Forms.Button();
+            this.btnLeftImageSubdir = new System.Windows.Forms.Button();
             this.lblLeftImageFile = new System.Windows.Forms.Label();
             this.tbLeftImageFile = new System.Windows.Forms.TextBox();
             this.lblLeftImageSubdir = new System.Windows.Forms.Label();
             this.tbLeftImageSubdir = new System.Windows.Forms.TextBox();
             this.lblLeftImageRoot = new System.Windows.Forms.Label();
             this.tbLeftImageRoot = new System.Windows.Forms.TextBox();
+            this.btnLeftImageRoot = new System.Windows.Forms.Button();
             this.tabVideoNaming = new System.Windows.Forms.TabPage();
             this.grpRightVideo = new System.Windows.Forms.GroupBox();
+            this.btnRightVideoFile = new System.Windows.Forms.Button();
+            this.btnRightVideoSubdir = new System.Windows.Forms.Button();
+            this.btnRightVideoRoot = new System.Windows.Forms.Button();
             this.lblRightVideoFile = new System.Windows.Forms.Label();
             this.tbRightVideoFile = new System.Windows.Forms.TextBox();
             this.lblRightVideoSubdir = new System.Windows.Forms.Label();
@@ -83,6 +92,9 @@ namespace Kinovea.Root
             this.lblRightVideoRoot = new System.Windows.Forms.Label();
             this.tbRightVideoRoot = new System.Windows.Forms.TextBox();
             this.grpLeftVideo = new System.Windows.Forms.GroupBox();
+            this.btnLeftVideoRoot = new System.Windows.Forms.Button();
+            this.btnLeftVideoFile = new System.Windows.Forms.Button();
+            this.btnLeftVideoSubdir = new System.Windows.Forms.Button();
             this.lblLeftVideoFile = new System.Windows.Forms.Label();
             this.tbLeftVideoFile = new System.Windows.Forms.TextBox();
             this.lblLeftVideoSubdir = new System.Windows.Forms.Label();
@@ -92,18 +104,6 @@ namespace Kinovea.Root
             this.tabMemory = new System.Windows.Forms.TabPage();
             this.lblMemoryBuffer = new System.Windows.Forms.Label();
             this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
-            this.btnRightImageFile = new System.Windows.Forms.Button();
-            this.btnRightImageSubdir = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.btnLeftImageFile = new System.Windows.Forms.Button();
-            this.btnLeftImageSubdir = new System.Windows.Forms.Button();
-            this.btnBrowseImage = new System.Windows.Forms.Button();
-            this.btnRightVideoFile = new System.Windows.Forms.Button();
-            this.btnRightVideoSubdir = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
-            this.btnLeftVideoFile = new System.Windows.Forms.Button();
-            this.btnLeftVideoSubdir = new System.Windows.Forms.Button();
             this.tabSubPages.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.grpDSS.SuspendLayout();
@@ -246,7 +246,7 @@ namespace Kinovea.Root
             // 
             this.grpRightImage.Controls.Add(this.btnRightImageFile);
             this.grpRightImage.Controls.Add(this.btnRightImageSubdir);
-            this.grpRightImage.Controls.Add(this.button5);
+            this.grpRightImage.Controls.Add(this.btnRightImageRoot);
             this.grpRightImage.Controls.Add(this.lblRightImageFile);
             this.grpRightImage.Controls.Add(this.tbRightImageFile);
             this.grpRightImage.Controls.Add(this.lblRightImageSubdir);
@@ -259,6 +259,57 @@ namespace Kinovea.Root
             this.grpRightImage.TabIndex = 47;
             this.grpRightImage.TabStop = false;
             this.grpRightImage.Text = "Right";
+            // 
+            // btnRightImageFile
+            // 
+            this.btnRightImageFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnRightImageFile.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRightImageFile.FlatAppearance.BorderSize = 0;
+            this.btnRightImageFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnRightImageFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRightImageFile.Image = global::Kinovea.Root.Properties.Resources.percent;
+            this.btnRightImageFile.Location = new System.Drawing.Point(382, 64);
+            this.btnRightImageFile.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnRightImageFile.Name = "btnRightImageFile";
+            this.btnRightImageFile.Size = new System.Drawing.Size(20, 20);
+            this.btnRightImageFile.TabIndex = 51;
+            this.btnRightImageFile.Tag = "";
+            this.btnRightImageFile.UseVisualStyleBackColor = true;
+            this.btnRightImageFile.Click += new System.EventHandler(this.btnMacroReference_Click);
+            // 
+            // btnRightImageSubdir
+            // 
+            this.btnRightImageSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnRightImageSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRightImageSubdir.FlatAppearance.BorderSize = 0;
+            this.btnRightImageSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnRightImageSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRightImageSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
+            this.btnRightImageSubdir.Location = new System.Drawing.Point(382, 38);
+            this.btnRightImageSubdir.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnRightImageSubdir.Name = "btnRightImageSubdir";
+            this.btnRightImageSubdir.Size = new System.Drawing.Size(20, 20);
+            this.btnRightImageSubdir.TabIndex = 50;
+            this.btnRightImageSubdir.Tag = "";
+            this.btnRightImageSubdir.UseVisualStyleBackColor = true;
+            this.btnRightImageSubdir.Click += new System.EventHandler(this.btnMacroReference_Click);
+            // 
+            // btnRightImageRoot
+            // 
+            this.btnRightImageRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnRightImageRoot.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRightImageRoot.FlatAppearance.BorderSize = 0;
+            this.btnRightImageRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnRightImageRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRightImageRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
+            this.btnRightImageRoot.Location = new System.Drawing.Point(382, 12);
+            this.btnRightImageRoot.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnRightImageRoot.Name = "btnRightImageRoot";
+            this.btnRightImageRoot.Size = new System.Drawing.Size(20, 20);
+            this.btnRightImageRoot.TabIndex = 49;
+            this.btnRightImageRoot.Tag = "";
+            this.btnRightImageRoot.UseVisualStyleBackColor = true;
+            this.btnRightImageRoot.Click += new System.EventHandler(this.btnFolderSelection_Click);
             // 
             // lblRightImageFile
             // 
@@ -315,13 +366,47 @@ namespace Kinovea.Root
             this.grpLeftImage.Controls.Add(this.tbLeftImageSubdir);
             this.grpLeftImage.Controls.Add(this.lblLeftImageRoot);
             this.grpLeftImage.Controls.Add(this.tbLeftImageRoot);
-            this.grpLeftImage.Controls.Add(this.btnBrowseImage);
+            this.grpLeftImage.Controls.Add(this.btnLeftImageRoot);
             this.grpLeftImage.Location = new System.Drawing.Point(6, 6);
             this.grpLeftImage.Name = "grpLeftImage";
             this.grpLeftImage.Size = new System.Drawing.Size(412, 94);
             this.grpLeftImage.TabIndex = 44;
             this.grpLeftImage.TabStop = false;
             this.grpLeftImage.Text = "Left";
+            // 
+            // btnLeftImageFile
+            // 
+            this.btnLeftImageFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnLeftImageFile.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLeftImageFile.FlatAppearance.BorderSize = 0;
+            this.btnLeftImageFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnLeftImageFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLeftImageFile.Image = global::Kinovea.Root.Properties.Resources.percent;
+            this.btnLeftImageFile.Location = new System.Drawing.Point(382, 64);
+            this.btnLeftImageFile.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnLeftImageFile.Name = "btnLeftImageFile";
+            this.btnLeftImageFile.Size = new System.Drawing.Size(20, 20);
+            this.btnLeftImageFile.TabIndex = 48;
+            this.btnLeftImageFile.Tag = "";
+            this.btnLeftImageFile.UseVisualStyleBackColor = true;
+            this.btnLeftImageFile.Click += new System.EventHandler(this.btnMacroReference_Click);
+            // 
+            // btnLeftImageSubdir
+            // 
+            this.btnLeftImageSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnLeftImageSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLeftImageSubdir.FlatAppearance.BorderSize = 0;
+            this.btnLeftImageSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnLeftImageSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLeftImageSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
+            this.btnLeftImageSubdir.Location = new System.Drawing.Point(382, 38);
+            this.btnLeftImageSubdir.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnLeftImageSubdir.Name = "btnLeftImageSubdir";
+            this.btnLeftImageSubdir.Size = new System.Drawing.Size(20, 20);
+            this.btnLeftImageSubdir.TabIndex = 47;
+            this.btnLeftImageSubdir.Tag = "";
+            this.btnLeftImageSubdir.UseVisualStyleBackColor = true;
+            this.btnLeftImageSubdir.Click += new System.EventHandler(this.btnMacroReference_Click);
             // 
             // lblLeftImageFile
             // 
@@ -368,6 +453,23 @@ namespace Kinovea.Root
             this.tbLeftImageRoot.Size = new System.Drawing.Size(231, 20);
             this.tbLeftImageRoot.TabIndex = 40;
             // 
+            // btnLeftImageRoot
+            // 
+            this.btnLeftImageRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnLeftImageRoot.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLeftImageRoot.FlatAppearance.BorderSize = 0;
+            this.btnLeftImageRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnLeftImageRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLeftImageRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
+            this.btnLeftImageRoot.Location = new System.Drawing.Point(382, 12);
+            this.btnLeftImageRoot.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnLeftImageRoot.Name = "btnLeftImageRoot";
+            this.btnLeftImageRoot.Size = new System.Drawing.Size(20, 20);
+            this.btnLeftImageRoot.TabIndex = 42;
+            this.btnLeftImageRoot.Tag = "";
+            this.btnLeftImageRoot.UseVisualStyleBackColor = true;
+            this.btnLeftImageRoot.Click += new System.EventHandler(this.btnFolderSelection_Click);
+            // 
             // tabVideoNaming
             // 
             this.tabVideoNaming.Controls.Add(this.grpRightVideo);
@@ -384,7 +486,7 @@ namespace Kinovea.Root
             // 
             this.grpRightVideo.Controls.Add(this.btnRightVideoFile);
             this.grpRightVideo.Controls.Add(this.btnRightVideoSubdir);
-            this.grpRightVideo.Controls.Add(this.button8);
+            this.grpRightVideo.Controls.Add(this.btnRightVideoRoot);
             this.grpRightVideo.Controls.Add(this.lblRightVideoFile);
             this.grpRightVideo.Controls.Add(this.tbRightVideoFile);
             this.grpRightVideo.Controls.Add(this.lblRightVideoSubdir);
@@ -397,6 +499,57 @@ namespace Kinovea.Root
             this.grpRightVideo.TabIndex = 49;
             this.grpRightVideo.TabStop = false;
             this.grpRightVideo.Text = "Right";
+            // 
+            // btnRightVideoFile
+            // 
+            this.btnRightVideoFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnRightVideoFile.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRightVideoFile.FlatAppearance.BorderSize = 0;
+            this.btnRightVideoFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnRightVideoFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRightVideoFile.Image = global::Kinovea.Root.Properties.Resources.percent;
+            this.btnRightVideoFile.Location = new System.Drawing.Point(382, 64);
+            this.btnRightVideoFile.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnRightVideoFile.Name = "btnRightVideoFile";
+            this.btnRightVideoFile.Size = new System.Drawing.Size(20, 20);
+            this.btnRightVideoFile.TabIndex = 51;
+            this.btnRightVideoFile.Tag = "";
+            this.btnRightVideoFile.UseVisualStyleBackColor = true;
+            this.btnRightVideoFile.Click += new System.EventHandler(this.btnMacroReference_Click);
+            // 
+            // btnRightVideoSubdir
+            // 
+            this.btnRightVideoSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnRightVideoSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRightVideoSubdir.FlatAppearance.BorderSize = 0;
+            this.btnRightVideoSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnRightVideoSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRightVideoSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
+            this.btnRightVideoSubdir.Location = new System.Drawing.Point(382, 38);
+            this.btnRightVideoSubdir.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnRightVideoSubdir.Name = "btnRightVideoSubdir";
+            this.btnRightVideoSubdir.Size = new System.Drawing.Size(20, 20);
+            this.btnRightVideoSubdir.TabIndex = 50;
+            this.btnRightVideoSubdir.Tag = "";
+            this.btnRightVideoSubdir.UseVisualStyleBackColor = true;
+            this.btnRightVideoSubdir.Click += new System.EventHandler(this.btnMacroReference_Click);
+            // 
+            // btnRightVideoRoot
+            // 
+            this.btnRightVideoRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnRightVideoRoot.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRightVideoRoot.FlatAppearance.BorderSize = 0;
+            this.btnRightVideoRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnRightVideoRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRightVideoRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
+            this.btnRightVideoRoot.Location = new System.Drawing.Point(382, 12);
+            this.btnRightVideoRoot.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnRightVideoRoot.Name = "btnRightVideoRoot";
+            this.btnRightVideoRoot.Size = new System.Drawing.Size(20, 20);
+            this.btnRightVideoRoot.TabIndex = 49;
+            this.btnRightVideoRoot.Tag = "";
+            this.btnRightVideoRoot.UseVisualStyleBackColor = true;
+            this.btnRightVideoRoot.Click += new System.EventHandler(this.btnFolderSelection_Click);
             // 
             // lblRightVideoFile
             // 
@@ -445,7 +598,7 @@ namespace Kinovea.Root
             // 
             // grpLeftVideo
             // 
-            this.grpLeftVideo.Controls.Add(this.button12);
+            this.grpLeftVideo.Controls.Add(this.btnLeftVideoRoot);
             this.grpLeftVideo.Controls.Add(this.btnLeftVideoFile);
             this.grpLeftVideo.Controls.Add(this.btnLeftVideoSubdir);
             this.grpLeftVideo.Controls.Add(this.lblLeftVideoFile);
@@ -460,6 +613,57 @@ namespace Kinovea.Root
             this.grpLeftVideo.TabIndex = 48;
             this.grpLeftVideo.TabStop = false;
             this.grpLeftVideo.Text = "Left";
+            // 
+            // btnLeftVideoRoot
+            // 
+            this.btnLeftVideoRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnLeftVideoRoot.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLeftVideoRoot.FlatAppearance.BorderSize = 0;
+            this.btnLeftVideoRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnLeftVideoRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLeftVideoRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
+            this.btnLeftVideoRoot.Location = new System.Drawing.Point(381, 12);
+            this.btnLeftVideoRoot.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnLeftVideoRoot.Name = "btnLeftVideoRoot";
+            this.btnLeftVideoRoot.Size = new System.Drawing.Size(20, 20);
+            this.btnLeftVideoRoot.TabIndex = 49;
+            this.btnLeftVideoRoot.Tag = "";
+            this.btnLeftVideoRoot.UseVisualStyleBackColor = true;
+            this.btnLeftVideoRoot.Click += new System.EventHandler(this.btnFolderSelection_Click);
+            // 
+            // btnLeftVideoFile
+            // 
+            this.btnLeftVideoFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnLeftVideoFile.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLeftVideoFile.FlatAppearance.BorderSize = 0;
+            this.btnLeftVideoFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnLeftVideoFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLeftVideoFile.Image = global::Kinovea.Root.Properties.Resources.percent;
+            this.btnLeftVideoFile.Location = new System.Drawing.Point(382, 64);
+            this.btnLeftVideoFile.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnLeftVideoFile.Name = "btnLeftVideoFile";
+            this.btnLeftVideoFile.Size = new System.Drawing.Size(20, 20);
+            this.btnLeftVideoFile.TabIndex = 48;
+            this.btnLeftVideoFile.Tag = "";
+            this.btnLeftVideoFile.UseVisualStyleBackColor = true;
+            this.btnLeftVideoFile.Click += new System.EventHandler(this.btnMacroReference_Click);
+            // 
+            // btnLeftVideoSubdir
+            // 
+            this.btnLeftVideoSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnLeftVideoSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLeftVideoSubdir.FlatAppearance.BorderSize = 0;
+            this.btnLeftVideoSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnLeftVideoSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLeftVideoSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
+            this.btnLeftVideoSubdir.Location = new System.Drawing.Point(382, 38);
+            this.btnLeftVideoSubdir.MinimumSize = new System.Drawing.Size(20, 20);
+            this.btnLeftVideoSubdir.Name = "btnLeftVideoSubdir";
+            this.btnLeftVideoSubdir.Size = new System.Drawing.Size(20, 20);
+            this.btnLeftVideoSubdir.TabIndex = 47;
+            this.btnLeftVideoSubdir.Tag = "";
+            this.btnLeftVideoSubdir.UseVisualStyleBackColor = true;
+            this.btnLeftVideoSubdir.Click += new System.EventHandler(this.btnMacroReference_Click);
             // 
             // lblLeftVideoFile
             // 
@@ -538,198 +742,6 @@ namespace Kinovea.Root
             this.trkMemoryBuffer.TickFrequency = 50;
             this.trkMemoryBuffer.Value = 16;
             // 
-            // btnRightImageFile
-            // 
-            this.btnRightImageFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnRightImageFile.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnRightImageFile.FlatAppearance.BorderSize = 0;
-            this.btnRightImageFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnRightImageFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRightImageFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-            this.btnRightImageFile.Location = new System.Drawing.Point(382, 64);
-            this.btnRightImageFile.MinimumSize = new System.Drawing.Size(20, 20);
-            this.btnRightImageFile.Name = "btnRightImageFile";
-            this.btnRightImageFile.Size = new System.Drawing.Size(20, 20);
-            this.btnRightImageFile.TabIndex = 51;
-            this.btnRightImageFile.Tag = "";
-            this.btnRightImageFile.UseVisualStyleBackColor = true;
-            // 
-            // btnRightImageSubdir
-            // 
-            this.btnRightImageSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnRightImageSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnRightImageSubdir.FlatAppearance.BorderSize = 0;
-            this.btnRightImageSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnRightImageSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRightImageSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-            this.btnRightImageSubdir.Location = new System.Drawing.Point(382, 38);
-            this.btnRightImageSubdir.MinimumSize = new System.Drawing.Size(20, 20);
-            this.btnRightImageSubdir.Name = "btnRightImageSubdir";
-            this.btnRightImageSubdir.Size = new System.Drawing.Size(20, 20);
-            this.btnRightImageSubdir.TabIndex = 50;
-            this.btnRightImageSubdir.Tag = "";
-            this.btnRightImageSubdir.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            this.button5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.button5.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button5.FlatAppearance.BorderSize = 0;
-            this.button5.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.Image = global::Kinovea.Root.Properties.Resources.folder;
-            this.button5.Location = new System.Drawing.Point(382, 12);
-            this.button5.MinimumSize = new System.Drawing.Size(20, 20);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(20, 20);
-            this.button5.TabIndex = 49;
-            this.button5.Tag = "";
-            this.button5.UseVisualStyleBackColor = true;
-            // 
-            // btnLeftImageFile
-            // 
-            this.btnLeftImageFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnLeftImageFile.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnLeftImageFile.FlatAppearance.BorderSize = 0;
-            this.btnLeftImageFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnLeftImageFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLeftImageFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-            this.btnLeftImageFile.Location = new System.Drawing.Point(382, 64);
-            this.btnLeftImageFile.MinimumSize = new System.Drawing.Size(20, 20);
-            this.btnLeftImageFile.Name = "btnLeftImageFile";
-            this.btnLeftImageFile.Size = new System.Drawing.Size(20, 20);
-            this.btnLeftImageFile.TabIndex = 48;
-            this.btnLeftImageFile.Tag = "";
-            this.btnLeftImageFile.UseVisualStyleBackColor = true;
-            // 
-            // btnLeftImageSubdir
-            // 
-            this.btnLeftImageSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnLeftImageSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnLeftImageSubdir.FlatAppearance.BorderSize = 0;
-            this.btnLeftImageSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnLeftImageSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLeftImageSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-            this.btnLeftImageSubdir.Location = new System.Drawing.Point(382, 38);
-            this.btnLeftImageSubdir.MinimumSize = new System.Drawing.Size(20, 20);
-            this.btnLeftImageSubdir.Name = "btnLeftImageSubdir";
-            this.btnLeftImageSubdir.Size = new System.Drawing.Size(20, 20);
-            this.btnLeftImageSubdir.TabIndex = 47;
-            this.btnLeftImageSubdir.Tag = "";
-            this.btnLeftImageSubdir.UseVisualStyleBackColor = true;
-            // 
-            // btnBrowseImage
-            // 
-            this.btnBrowseImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnBrowseImage.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnBrowseImage.FlatAppearance.BorderSize = 0;
-            this.btnBrowseImage.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnBrowseImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBrowseImage.Image = global::Kinovea.Root.Properties.Resources.folder;
-            this.btnBrowseImage.Location = new System.Drawing.Point(382, 12);
-            this.btnBrowseImage.MinimumSize = new System.Drawing.Size(20, 20);
-            this.btnBrowseImage.Name = "btnBrowseImage";
-            this.btnBrowseImage.Size = new System.Drawing.Size(20, 20);
-            this.btnBrowseImage.TabIndex = 42;
-            this.btnBrowseImage.Tag = "";
-            this.btnBrowseImage.UseVisualStyleBackColor = true;
-            // 
-            // btnRightVideoFile
-            // 
-            this.btnRightVideoFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnRightVideoFile.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnRightVideoFile.FlatAppearance.BorderSize = 0;
-            this.btnRightVideoFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnRightVideoFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRightVideoFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-            this.btnRightVideoFile.Location = new System.Drawing.Point(382, 64);
-            this.btnRightVideoFile.MinimumSize = new System.Drawing.Size(20, 20);
-            this.btnRightVideoFile.Name = "btnRightVideoFile";
-            this.btnRightVideoFile.Size = new System.Drawing.Size(20, 20);
-            this.btnRightVideoFile.TabIndex = 51;
-            this.btnRightVideoFile.Tag = "";
-            this.btnRightVideoFile.UseVisualStyleBackColor = true;
-            // 
-            // btnRightVideoSubdir
-            // 
-            this.btnRightVideoSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnRightVideoSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnRightVideoSubdir.FlatAppearance.BorderSize = 0;
-            this.btnRightVideoSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnRightVideoSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRightVideoSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-            this.btnRightVideoSubdir.Location = new System.Drawing.Point(382, 38);
-            this.btnRightVideoSubdir.MinimumSize = new System.Drawing.Size(20, 20);
-            this.btnRightVideoSubdir.Name = "btnRightVideoSubdir";
-            this.btnRightVideoSubdir.Size = new System.Drawing.Size(20, 20);
-            this.btnRightVideoSubdir.TabIndex = 50;
-            this.btnRightVideoSubdir.Tag = "";
-            this.btnRightVideoSubdir.UseVisualStyleBackColor = true;
-            // 
-            // button8
-            // 
-            this.button8.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.button8.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button8.FlatAppearance.BorderSize = 0;
-            this.button8.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button8.Image = global::Kinovea.Root.Properties.Resources.folder;
-            this.button8.Location = new System.Drawing.Point(382, 12);
-            this.button8.MinimumSize = new System.Drawing.Size(20, 20);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(20, 20);
-            this.button8.TabIndex = 49;
-            this.button8.Tag = "";
-            this.button8.UseVisualStyleBackColor = true;
-            // 
-            // button12
-            // 
-            this.button12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.button12.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button12.FlatAppearance.BorderSize = 0;
-            this.button12.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button12.Image = global::Kinovea.Root.Properties.Resources.folder;
-            this.button12.Location = new System.Drawing.Point(381, 12);
-            this.button12.MinimumSize = new System.Drawing.Size(20, 20);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(20, 20);
-            this.button12.TabIndex = 49;
-            this.button12.Tag = "";
-            this.button12.UseVisualStyleBackColor = true;
-            // 
-            // btnLeftVideoFile
-            // 
-            this.btnLeftVideoFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnLeftVideoFile.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnLeftVideoFile.FlatAppearance.BorderSize = 0;
-            this.btnLeftVideoFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnLeftVideoFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLeftVideoFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-            this.btnLeftVideoFile.Location = new System.Drawing.Point(382, 64);
-            this.btnLeftVideoFile.MinimumSize = new System.Drawing.Size(20, 20);
-            this.btnLeftVideoFile.Name = "btnLeftVideoFile";
-            this.btnLeftVideoFile.Size = new System.Drawing.Size(20, 20);
-            this.btnLeftVideoFile.TabIndex = 48;
-            this.btnLeftVideoFile.Tag = "";
-            this.btnLeftVideoFile.UseVisualStyleBackColor = true;
-            // 
-            // btnLeftVideoSubdir
-            // 
-            this.btnLeftVideoSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnLeftVideoSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnLeftVideoSubdir.FlatAppearance.BorderSize = 0;
-            this.btnLeftVideoSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnLeftVideoSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLeftVideoSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-            this.btnLeftVideoSubdir.Location = new System.Drawing.Point(382, 38);
-            this.btnLeftVideoSubdir.MinimumSize = new System.Drawing.Size(20, 20);
-            this.btnLeftVideoSubdir.Name = "btnLeftVideoSubdir";
-            this.btnLeftVideoSubdir.Size = new System.Drawing.Size(20, 20);
-            this.btnLeftVideoSubdir.TabIndex = 47;
-            this.btnLeftVideoSubdir.Tag = "";
-            this.btnLeftVideoSubdir.UseVisualStyleBackColor = true;
-            // 
             // PreferencePanelCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -786,17 +798,17 @@ namespace Kinovea.Root
         private System.Windows.Forms.TextBox tbLeftImageSubdir;
         private System.Windows.Forms.Label lblLeftImageRoot;
         private System.Windows.Forms.TextBox tbLeftImageRoot;
-        private System.Windows.Forms.Button btnBrowseImage;
+        private System.Windows.Forms.Button btnLeftImageRoot;
         private System.Windows.Forms.Button btnRightImageFile;
         private System.Windows.Forms.Button btnRightImageSubdir;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button btnRightImageRoot;
         private System.Windows.Forms.Button btnLeftImageFile;
         private System.Windows.Forms.Button btnLeftImageSubdir;
         private System.Windows.Forms.TabPage tabVideoNaming;
         private System.Windows.Forms.GroupBox grpRightVideo;
         private System.Windows.Forms.Button btnRightVideoFile;
         private System.Windows.Forms.Button btnRightVideoSubdir;
-        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button btnRightVideoRoot;
         private System.Windows.Forms.Label lblRightVideoFile;
         private System.Windows.Forms.TextBox tbRightVideoFile;
         private System.Windows.Forms.Label lblRightVideoSubdir;
@@ -812,6 +824,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.TextBox tbLeftVideoSubdir;
         private System.Windows.Forms.Label lblLeftVideoRoot;
         private System.Windows.Forms.TextBox tbLeftVideoRoot;
-        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Button btnLeftVideoRoot;
 	}
 }

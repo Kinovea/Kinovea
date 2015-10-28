@@ -201,6 +201,12 @@
       <DependentUpon>PreferencePanelButtton.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\PreferencePanels\CaptureVariable.cs" />
+    <Compile Include="UserInterface\PreferencePanels\FormPatterns.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\PreferencePanels\FormPatterns.Designer.cs">
+      <DependentUpon>FormPatterns.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\PreferencePanels\IPreferencePanel.cs" />
     <Compile Include="UserInterface\PreferencePanels\PreferencePanelCapture.cs">
       <SubType>UserControl</SubType>
@@ -294,6 +300,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\PreferencePanelButtton.resx">
       <DependentUpon>PreferencePanelButtton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\PreferencePanels\FormPatterns.resx">
+      <DependentUpon>FormPatterns.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\PreferencePanels\PreferencePanelCapture.resx">
       <DependentUpon>PreferencePanelCapture.cs</DependentUpon>
