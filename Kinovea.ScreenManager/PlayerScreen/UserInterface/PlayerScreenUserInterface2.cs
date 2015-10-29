@@ -524,8 +524,6 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.SelectionEnd = m_iSelEnd;
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
             m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
-            
-            UpdateFilenameLabel();
 
             // Screen position and size.
             m_FrameServer.CoordinateSystem.SetOriginalSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
@@ -556,6 +554,7 @@ namespace Kinovea.ScreenManager
             }
 
             UpdateTimebase();
+            UpdateFilenameLabel();
 
             sldrSpeed.Force(timeMapper.GetInputFromSlowMotion(slowMotion));
             sldrSpeed.Enabled = true;
@@ -634,6 +633,7 @@ namespace Kinovea.ScreenManager
             UpdateSelectionLabels();
             UpdateCurrentPositionLabel();
             UpdateSpeedLabel();
+            UpdateFilenameLabel();
         }
         public void UpdateWorkingZone(bool _bForceReload)
         {
@@ -979,7 +979,15 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateFilenameLabel()
         {
-            lblFileName.Text = Path.GetFileName(m_FrameServer.VideoReader.FilePath);
+            if (!m_FrameServer.Loaded)
+                return;
+
+            string name = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
+
+            string info = string.Format("{0} - {1}×{2} @ {3:0.00} fps",
+                name, m_FrameServer.Metadata.ImageSize.Width, m_FrameServer.Metadata.ImageSize.Height, 1000 / timeMapper.UserInterval);
+            
+            lblFileName.Text = info;
         }
         private void ShowHideRenderingSurface(bool _bShow)
         {
@@ -3855,22 +3863,23 @@ namespace Kinovea.ScreenManager
         #region Drawings Menus
         private void mnuConfigureDrawing_Click(object sender, EventArgs e)
         {
+            Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
             IDecorable drawing = m_FrameServer.Metadata.HitDrawing as IDecorable;
             if(drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
                 return;
 
-            // FIXME: memento for coordinate system.
-            bool coordinateSystem = m_FrameServer.Metadata.HitDrawing is DrawingCoordinateSystem;
+            // FIXME: memento for coordinate system and autonumbers.
+            bool canMemento = kf != null && !(m_FrameServer.Metadata.HitDrawing is DrawingCoordinateSystem);
 
             HistoryMemento memento = null;
-            if (!coordinateSystem)
+            if (canMemento)
                 memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, m_FrameServer.Metadata.HitDrawing.Id, m_FrameServer.Metadata.HitDrawing.ToolDisplayName, SerializationFilter.Style);
             
             FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing, DoInvalidate);
             FormsHelper.Locate(fcd);
             fcd.ShowDialog();
 
-            if (!coordinateSystem && fcd.DialogResult == DialogResult.OK)
+            if (canMemento && fcd.DialogResult == DialogResult.OK)
                 m_FrameServer.HistoryStack.PushNewCommand(memento);
             
             fcd.Dispose();
