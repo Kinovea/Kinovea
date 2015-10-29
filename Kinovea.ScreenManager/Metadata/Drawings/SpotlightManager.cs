@@ -94,7 +94,8 @@ namespace Kinovea.ScreenManager
         private List<Spotlight> spotlights = new List<Spotlight>();
         private int selected = -1;
         private bool initializing = true;
-        private static readonly int defaultBackgroundAlpha = 150; // <-- opacity of the dim layer. Higher value => darker.
+        private static readonly int defaultBackgroundAlpha = 160; // <-- opacity of the dim layer. Higher value => darker.
+        private Color backgroundColor = Color.Black;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -130,7 +131,7 @@ namespace Kinovea.ScreenManager
             
             // Draw the mask with the spot holes on top of the frame.
             int backgroundAlpha = (int)((double)defaultBackgroundAlpha * maxOpacity);
-            using(SolidBrush brushBackground = new SolidBrush(Color.FromArgb(backgroundAlpha, Color.Black)))
+            using (SolidBrush brushBackground = new SolidBrush(Color.FromArgb(backgroundAlpha, backgroundColor)))
             {
                 canvas.FillPath(brushBackground, globalPath);
             }
