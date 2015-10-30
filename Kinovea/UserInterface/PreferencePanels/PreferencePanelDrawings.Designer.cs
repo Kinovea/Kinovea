@@ -57,6 +57,9 @@ namespace Kinovea.Root
             this.trkFading = new System.Windows.Forms.TrackBar();
             this.chkEnablePersistence = new System.Windows.Forms.CheckBox();
             this.tabTracking = new System.Windows.Forms.TabPage();
+            this.lblDescription = new System.Windows.Forms.Label();
+            this.cmbSearchWindowUnit = new System.Windows.Forms.ComboBox();
+            this.cmbBlockWindowUnit = new System.Windows.Forms.ComboBox();
             this.tbSearchHeight = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tbSearchWidth = new System.Windows.Forms.TextBox();
@@ -65,9 +68,6 @@ namespace Kinovea.Root
             this.label4 = new System.Windows.Forms.Label();
             this.tbBlockWidth = new System.Windows.Forms.TextBox();
             this.lblObjectWindow = new System.Windows.Forms.Label();
-            this.cmbBlockWindowUnit = new System.Windows.Forms.ComboBox();
-            this.cmbSearchWindowUnit = new System.Windows.Forms.ComboBox();
-            this.lblDescription = new System.Windows.Forms.Label();
             this.tabSubPages.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabPersistence.SuspendLayout();
@@ -189,6 +189,33 @@ namespace Kinovea.Root
             this.tabTracking.Text = "Tracking";
             this.tabTracking.UseVisualStyleBackColor = true;
             // 
+            // lblDescription
+            // 
+            this.lblDescription.AutoSize = true;
+            this.lblDescription.Location = new System.Drawing.Point(16, 13);
+            this.lblDescription.Name = "lblDescription";
+            this.lblDescription.Size = new System.Drawing.Size(137, 13);
+            this.lblDescription.TabIndex = 67;
+            this.lblDescription.Text = "Default tracking parameters";
+            // 
+            // cmbSearchWindowUnit
+            // 
+            this.cmbSearchWindowUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSearchWindowUnit.Location = new System.Drawing.Point(288, 72);
+            this.cmbSearchWindowUnit.Name = "cmbSearchWindowUnit";
+            this.cmbSearchWindowUnit.Size = new System.Drawing.Size(116, 21);
+            this.cmbSearchWindowUnit.TabIndex = 66;
+            this.cmbSearchWindowUnit.SelectedIndexChanged += new System.EventHandler(this.cmbSearchWindowUnit_SelectedIndexChanged);
+            // 
+            // cmbBlockWindowUnit
+            // 
+            this.cmbBlockWindowUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBlockWindowUnit.Location = new System.Drawing.Point(288, 45);
+            this.cmbBlockWindowUnit.Name = "cmbBlockWindowUnit";
+            this.cmbBlockWindowUnit.Size = new System.Drawing.Size(116, 21);
+            this.cmbBlockWindowUnit.TabIndex = 65;
+            this.cmbBlockWindowUnit.SelectedIndexChanged += new System.EventHandler(this.cmbBlockWindowUnit_SelectedIndexChanged);
+            // 
             // tbSearchHeight
             // 
             this.tbSearchHeight.Location = new System.Drawing.Point(241, 72);
@@ -256,33 +283,6 @@ namespace Kinovea.Root
             this.lblObjectWindow.Size = new System.Drawing.Size(83, 13);
             this.lblObjectWindow.TabIndex = 56;
             this.lblObjectWindow.Text = "Object window :";
-            // 
-            // cmbBlockWindowUnit
-            // 
-            this.cmbBlockWindowUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbBlockWindowUnit.Location = new System.Drawing.Point(288, 45);
-            this.cmbBlockWindowUnit.Name = "cmbBlockWindowUnit";
-            this.cmbBlockWindowUnit.Size = new System.Drawing.Size(82, 21);
-            this.cmbBlockWindowUnit.TabIndex = 65;
-            this.cmbBlockWindowUnit.SelectedIndexChanged += new System.EventHandler(this.cmbBlockWindowUnit_SelectedIndexChanged);
-            // 
-            // cmbSearchWindowUnit
-            // 
-            this.cmbSearchWindowUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSearchWindowUnit.Location = new System.Drawing.Point(288, 72);
-            this.cmbSearchWindowUnit.Name = "cmbSearchWindowUnit";
-            this.cmbSearchWindowUnit.Size = new System.Drawing.Size(82, 21);
-            this.cmbSearchWindowUnit.TabIndex = 66;
-            this.cmbSearchWindowUnit.SelectedIndexChanged += new System.EventHandler(this.cmbSearchWindowUnit_SelectedIndexChanged);
-            // 
-            // lblDescription
-            // 
-            this.lblDescription.AutoSize = true;
-            this.lblDescription.Location = new System.Drawing.Point(16, 13);
-            this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(137, 13);
-            this.lblDescription.TabIndex = 67;
-            this.lblDescription.Text = "Default tracking parameters";
             // 
             // PreferencePanelDrawings
             // 

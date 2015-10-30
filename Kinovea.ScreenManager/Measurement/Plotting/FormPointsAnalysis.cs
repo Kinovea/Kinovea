@@ -14,6 +14,7 @@ using OxyPlot.Annotations;
 using System.IO;
 using Kinovea.Services;
 using System.Globalization;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -63,11 +64,11 @@ namespace Kinovea.ScreenManager
             
             gbExportGraph.Text = "Export graph";
             lblPixels.Text = "pixels";
-            btnImageCopy.Text = "Copy to Clipboard";
+            btnImageCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
             btnExportGraph.Text = "Save to file";
 
             gbExportData.Text = "Export data";
-            btnDataCopy.Text = "Copy to Clipboard";
+            btnDataCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
             btnExportData.Text = "Save to file";
         }
 

@@ -131,6 +131,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Miles per sekund ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knop ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Instillinger</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laster brukerinstillinger</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Avbryt</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>End </value></data>
@@ -159,11 +179,11 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Standard (h:mm:ss:hundredel)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Bildenummer</value></data>
    
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundredels minutt</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Titusendedels time</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tidsmarkør format:</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Standard + Bildenummer</value></data>
-   
    
    
    

@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override string ToolDisplayName
         {
-            get { return "Test grid"; }
+            get { return ScreenManagerLang.DrawingName_TestGrid; }
         }
         public override int ContentHash
         {

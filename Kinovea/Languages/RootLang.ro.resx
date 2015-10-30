@@ -131,6 +131,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mile (1609 m) pe oră ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Noduri (milă pe oră) ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferinţe...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Încarc Interfaţa Grafica... </value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Anulează</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Renunţ</value></data>
@@ -159,11 +179,11 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clasic (h:mm:ss:sutimi)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numărul imaginilor</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total în milisecunde</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sutimi de minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zece miimi de oră</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Markeri timp</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clasic+Numarul cadrelor</value></data>
-   
    
    
    

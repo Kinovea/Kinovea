@@ -1,4 +1,5 @@
-﻿namespace Kinovea.ScreenManager
+﻿using Kinovea.ScreenManager.Languages;
+namespace Kinovea.ScreenManager
 {
     partial class FormPointsAnalysis
     {

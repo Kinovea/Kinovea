@@ -126,40 +126,35 @@ namespace Kinovea.Root
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Milliseconds);
-            cmbTimeCodeFormat.Items.Add("Total microseconds");
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Microseconds);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
-            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Normalized);
-            //cmbTimeCodeFormat.Items.Add("Normalized");
             //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps); // Debug purposes.
             
             // Combo Speed units (MUST be filled in the order of the enum)
-            //lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
-            lblSpeedUnit.Text = "Speed:";
+            lblSpeedUnit.Text = RootLang.dlgPreferences_Player_UnitsSpeed;
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.MetersPerSecond)));
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.KilometersPerHour)));
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.FeetPerSecond)));
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.MilesPerHour)));
-            //cmbSpeedUnit.Items.Add(RootLang.dlgPreferences_Speed_Knots); // Is this useful at all ?
 
-            //lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
-            lblAccelerationUnit.Text = "Acceleration:";
-            cmbAccelerationUnit.Items.Add(String.Format("Meters per second squared ({0})", UnitHelper.AccelerationAbbreviation(AccelerationUnit.MetersPerSecondSquared)));
-            cmbAccelerationUnit.Items.Add(String.Format("Feet per second squared ({0})", UnitHelper.AccelerationAbbreviation(AccelerationUnit.FeetPerSecondSquared)));
+            lblAccelerationUnit.Text = RootLang.dlgPreferences_Player_UnitsAcceleration;
+            cmbAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsMetersPerSecondSquared, UnitHelper.AccelerationAbbreviation(AccelerationUnit.MetersPerSecondSquared)));
+            cmbAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsFeetPerSecondSquared, UnitHelper.AccelerationAbbreviation(AccelerationUnit.FeetPerSecondSquared)));
 
-            lblAngleUnit.Text = "Angle:";
-            cmbAngleUnit.Items.Add(String.Format("Degrees ({0})", UnitHelper.AngleAbbreviation(AngleUnit.Degree)));
-            cmbAngleUnit.Items.Add(String.Format("Radians ({0})", UnitHelper.AngleAbbreviation(AngleUnit.Radian)));
+            lblAngleUnit.Text = RootLang.dlgPreferences_Player_UnitsAngle;
+            cmbAngleUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsDegrees, UnitHelper.AngleAbbreviation(AngleUnit.Degree)));
+            cmbAngleUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRadians, UnitHelper.AngleAbbreviation(AngleUnit.Radian)));
 
-            lblAngularVelocityUnit.Text = "Angular velocity:";
-            cmbAngularVelocityUnit.Items.Add(String.Format("Degrees per second ({0})", UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.DegreesPerSecond)));
-            cmbAngularVelocityUnit.Items.Add(String.Format("Radians per second ({0})", UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.RadiansPerSecond)));
-            cmbAngularVelocityUnit.Items.Add(String.Format("Revolutions per minute ({0})", UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.RevolutionsPerMinute)));
+            lblAngularVelocityUnit.Text = RootLang.dlgPreferences_Player_UnitsAngularVelocity;
+            cmbAngularVelocityUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsDegreesPerSecond, UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.DegreesPerSecond)));
+            cmbAngularVelocityUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRadiansPerSecond, UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.RadiansPerSecond)));
+            cmbAngularVelocityUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRevolutionsPerMinute, UnitHelper.AngularVelocityAbbreviation(AngularVelocityUnit.RevolutionsPerMinute)));
 
-            lblAngularAcceleration.Text = "Angular acceleration:";
-            cmbAngularAccelerationUnit.Items.Add(String.Format("Degrees per second squared ({0})", UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.DegreesPerSecondSquared)));
-            cmbAngularAccelerationUnit.Items.Add(String.Format("Radians per second squared ({0})", UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.RadiansPerSecondSquared)));
+            lblAngularAcceleration.Text = RootLang.dlgPreferences_Player_UnitsAngularAcceleration;
+            cmbAngularAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsDegreesPerSecondSquared, UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.DegreesPerSecondSquared)));
+            cmbAngularAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRadiansPerSecondSquared, UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.RadiansPerSecondSquared)));
 
             // Memory tab
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;

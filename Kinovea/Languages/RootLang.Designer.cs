@@ -547,6 +547,186 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tracking.
+        /// </summary>
+        internal static string dlgPreferences_Player_Tracking {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_Tracking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default tracking parameters.
+        /// </summary>
+        internal static string dlgPreferences_Player_TrackingDescription {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_TrackingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object window:.
+        /// </summary>
+        internal static string dlgPreferences_Player_TrackingObjectWindow {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_TrackingObjectWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Percentage.
+        /// </summary>
+        internal static string dlgPreferences_Player_TrackingPercentage {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_TrackingPercentage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pixels.
+        /// </summary>
+        internal static string dlgPreferences_Player_TrackingPixels {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_TrackingPixels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search window:.
+        /// </summary>
+        internal static string dlgPreferences_Player_TrackingSearchWindow {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_TrackingSearchWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Acceleration:.
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsAcceleration {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsAcceleration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Angle:.
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsAngle {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Angular acceleration:.
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsAngularAcceleration {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsAngularAcceleration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Angular velocity:.
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsAngularVelocity {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsAngularVelocity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Degrees ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsDegrees {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsDegrees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Degrees per second ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsDegreesPerSecond {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsDegreesPerSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Degrees per second squared ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsDegreesPerSecondSquared {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsDegreesPerSecondSquared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feet per second squared ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsFeetPerSecondSquared {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsFeetPerSecondSquared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meters per second squared ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsMetersPerSecondSquared {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsMetersPerSecondSquared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radians ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsRadians {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsRadians", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radians per second ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsRadiansPerSecond {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsRadiansPerSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radians per second squared ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsRadiansPerSecondSquared {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsRadiansPerSecondSquared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revolutions per minute ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsRevolutionsPerMinute {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsRevolutionsPerMinute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed:.
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsSpeed {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feet per second ({0}).
         /// </summary>
         internal static string dlgPreferences_Speed_FeetPerSecond {
@@ -858,6 +1038,15 @@ namespace Kinovea.Root.Languages {
         internal static string TimeCodeFormat_HundredthOfMinutes {
             get {
                 return ResourceManager.GetString("TimeCodeFormat_HundredthOfMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total microseconds.
+        /// </summary>
+        internal static string TimeCodeFormat_Microseconds {
+            get {
+                return ResourceManager.GetString("TimeCodeFormat_Microseconds", resourceCulture);
             }
         }
         

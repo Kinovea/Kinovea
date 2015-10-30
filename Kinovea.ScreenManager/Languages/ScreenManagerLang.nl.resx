@@ -198,6 +198,7 @@
    
    
    
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Kan niet verbinden met video apparaat.</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Kan geen apparaat vinden om mee te verbinden.\n Zorg er voor dat het apparaat verbonden is met de computer.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overschrijf bestand</value></data>
@@ -292,6 +293,9 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Start Stopwatch</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stop Stopwatch</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Sluit dit scherm</value></data>
+   
+   
+   
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistentie...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configureer Trajectpad beeldscherm</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>

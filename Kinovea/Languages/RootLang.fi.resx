@@ -131,6 +131,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mailia tunnissa ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Solmua ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Asetukset...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Ladataan käyttäjäliittymää...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Peruuta</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Lopeta</value></data>
@@ -159,11 +179,11 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassinen (t:mm:ss:sadasosat)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kehysnumerointi</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Kokonaisaika millisekunnit</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sadasosaminuutti</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tunnin kymmenestuhannesosa</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Aikaleimat</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassinen + kuvanumeroinnit</value></data>
-   
    
    
    

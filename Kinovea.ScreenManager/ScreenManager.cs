@@ -1178,7 +1178,7 @@ namespace Kinovea.ScreenManager
             mnuFormatForce169.Text = ScreenManagerLang.mnuFormatForce169;
             mnuFormat.Text = ScreenManagerLang.mnuFormat;
             mnuMirror.Text = ScreenManagerLang.mnuMirror;
-            mnuTestGrid.Text = "Test grid";
+            mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
             mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
             mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "…";
             

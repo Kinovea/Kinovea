@@ -131,6 +131,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Eng.mil/timme ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knop ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Inställningar...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laddar användargränssnitt...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Ångra</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Avsluta</value></data>
@@ -159,11 +179,11 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassiskt (t:mm:ss:hundradelar)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Bild nummer</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Totala millisekunder</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundradels minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>tiotusendels timme</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tidsstämpel</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassiskt + Bildnummer</value></data>
-   
    
    
    

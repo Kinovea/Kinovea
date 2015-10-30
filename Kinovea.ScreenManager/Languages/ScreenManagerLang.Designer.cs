@@ -1213,6 +1213,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera test grid.
+        /// </summary>
+        internal static string DrawingName_TestGrid {
+            get {
+                return ResourceManager.GetString("DrawingName_TestGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Couldn&apos;t find any device to connect to.\nPlease make sure the device is properly plugged to the computer..
         /// </summary>
         internal static string Error_Capture_CannotConnect_Text {
@@ -2118,6 +2127,33 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string mnuCoordinateSystemShowTickMarks {
             get {
                 return ResourceManager.GetString("mnuCoordinateSystemShowTickMarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy image to Clipboard.
+        /// </summary>
+        internal static string mnuCopyImageToClipboard {
+            get {
+                return ResourceManager.GetString("mnuCopyImageToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to Clipboard.
+        /// </summary>
+        internal static string mnuCopyToClipboard {
+            get {
+                return ResourceManager.GetString("mnuCopyToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data analysis....
+        /// </summary>
+        internal static string mnuDataAnalysis {
+            get {
+                return ResourceManager.GetString("mnuDataAnalysis", resourceCulture);
             }
         }
         

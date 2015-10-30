@@ -131,6 +131,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Miles per hour ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knots ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferences…</value></data>
+   <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve"><value>Speed:</value></data>
+   <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve"><value>Acceleration:</value></data>
+   <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve"><value>Angle:</value></data>
+   <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve"><value>Angular velocity:</value></data>
+   <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve"><value>Angular acceleration:</value></data>
+   <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve"><value>Meters per second squared ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve"><value>Feet per second squared ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve"><value>Degrees ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve"><value>Radians ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve"><value>Degrees per second ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve"><value>Radians per second ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve"><value>Revolutions per minute ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve"><value>Degrees per second squared ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve"><value>Radians per second squared ({0})</value></data>
+   <data name="dlgPreferences_Player_Tracking" xml:space="preserve"><value>Tracking</value></data>
+   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve"><value>Default tracking parameters</value></data>
+   <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve"><value>Object window:</value></data>
+   <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve"><value>Search window:</value></data>
+   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve"><value>Percentage</value></data>
+   <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve"><value>Pixels</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Loading User Interface…</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancel</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Quit</value></data>
@@ -159,11 +179,11 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Classic (h:mm:ss:hundredth)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frames numbers</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total milliseconds</value></data>
+   <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Total microseconds</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundredth of a minute</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Ten thousandth of an hour</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classic + Frame numbers</value></data>
-   
    
    
    

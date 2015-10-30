@@ -131,6 +131,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mil bölü saat ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Deniz mili ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Tercihler...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Kullanıcı Arayüzünü Yüklüyor...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>İptal Et</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Çık</value></data>
@@ -159,11 +179,11 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klasik (h:mm:ss:yüzdesi)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kare Sayıları</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Toplam milisaniye</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Bir dakikanın yüzdesi</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin on bindesi</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Zaman Etiketleri</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasik + Kare sayıları</value></data>
-   
    
    
    

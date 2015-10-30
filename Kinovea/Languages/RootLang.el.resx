@@ -131,6 +131,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Μίλια ανά δευτερόλεπτο ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Κόμβοι ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Προτιμήσεις…</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Φόρτωση Διεπαφής/Διασύνδεσης Χρήστη</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Άκυρο</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Παραίτηση</value></data>
@@ -159,11 +179,11 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Κλασικό (ω:λλ:δδ:εκατοστά)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Αριθμητικά Πλαίσια</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Συνολικά χιλιοστά δευτερολέπτου</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Εκατοστό του Λεπτού</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Δεκάδες Χιλιοστά της ώρας</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Χρονικά Σημάδια</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Κλασσικό + Αριθμητικά πλαίσια</value></data>
-   
    
    
    

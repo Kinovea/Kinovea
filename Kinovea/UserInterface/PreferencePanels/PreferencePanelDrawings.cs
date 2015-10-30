@@ -106,13 +106,14 @@ namespace Kinovea.Root
             EnableDisableFadingOptions();
             lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);
 
-            tabTracking.Text = "Tracking";
-            lblObjectWindow.Text = "Object window :";
-            lblSearchWindow.Text = "Search window :";
-            cmbBlockWindowUnit.Items.Add("Percentage");
-            cmbBlockWindowUnit.Items.Add("Pixels");
-            cmbSearchWindowUnit.Items.Add("Percentage");
-            cmbSearchWindowUnit.Items.Add("Pixels");
+            tabTracking.Text = RootLang.dlgPreferences_Player_Tracking;
+            lblDescription.Text = RootLang.dlgPreferences_Player_TrackingDescription;
+            lblObjectWindow.Text = RootLang.dlgPreferences_Player_TrackingObjectWindow;
+            lblSearchWindow.Text = RootLang.dlgPreferences_Player_TrackingSearchWindow;
+            cmbBlockWindowUnit.Items.Add(RootLang.dlgPreferences_Player_TrackingPercentage);
+            cmbBlockWindowUnit.Items.Add(RootLang.dlgPreferences_Player_TrackingPixels);
+            cmbSearchWindowUnit.Items.Add(RootLang.dlgPreferences_Player_TrackingPercentage);
+            cmbSearchWindowUnit.Items.Add(RootLang.dlgPreferences_Player_TrackingPixels);
 
             //------------
             int blockWindowUnit = (int)trackingProfile.BlockWindowUnit;
