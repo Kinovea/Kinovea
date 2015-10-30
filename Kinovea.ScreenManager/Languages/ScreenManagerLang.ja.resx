@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>スクリーンの表示</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>スクリーンの交換</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>同時コントロールの切り替え</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>色</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>カラープロファイル…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>デフォルトのカラープロファイルへ戻す</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>概要…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>逆再生…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>オートコントラスト…</value></data>
+   
    
    
    

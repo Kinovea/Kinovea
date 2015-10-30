@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Mostrar Pantallas</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Cambiar Pantallas</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Mostrar/Ocultar Controles Comunes</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Colores</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Perfil Colores...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Perfil de Color Predeterminado</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resumen</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertido...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste...</value></data>
+   
    
    
    

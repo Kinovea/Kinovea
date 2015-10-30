@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Показать экраны</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Поменять экраны</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Изменить общие элементы управления</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Цвета</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Цветовой профиль</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Восстановить цветовой профиль по умолчанию</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Раскадровка…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Реверс…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Авто контраст…</value></data>
+   
    
    
    

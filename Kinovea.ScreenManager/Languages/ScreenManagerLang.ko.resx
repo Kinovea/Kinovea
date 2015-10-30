@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>스크린 보이기</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>스크린 바꾸기</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>명령 조절을 바꿈</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>색상</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>색상 프로파일…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>기본 색상 프로파일로 돌이킴</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>개관(overview)…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>반대(reverse)…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value></data>
+   
    
    
    

@@ -51,25 +51,25 @@ namespace Kinovea.ScreenManager
         
         private void Localize()
         {
-            Text = "Data analysis";
+            Text = ScreenManagerLang.DataAnalysis;
+            pagePlot.Text = ScreenManagerLang.DataAnalysis_PagePlot;
+            gbLabels.Text = ScreenManagerLang.DataAnalysis_Labels;
+            lblTitle.Text = ScreenManagerLang.DataAnalysis_Title;
+            lblXAxis.Text = ScreenManagerLang.DataAnalysis_XaxisLabel;
+            lblYAxis.Text = ScreenManagerLang.DataAnalysis_YaxisLabel;
+            tbTitle.Text = ScreenManagerLang.DataAnalysis_ScatterPlot;
+            tbXAxis.Text = ScreenManagerLang.DataAnalysis_XaxisDefaultPoints;
+            tbYAxis.Text = ScreenManagerLang.DataAnalysis_YaxisDefaultPoints;
+            cbCalibrationPlane.Text = ScreenManagerLang.DataAnalysis_CalibrationPlane;
             
-            gbLabels.Text = "Labels";
-            lblTitle.Text = "Title :";
-            lblXAxis.Text = "X axis :";
-            lblYAxis.Text = "Y axis :";
-            tbTitle.Text = "Scatter plot";
-            tbXAxis.Text = "X axis";
-            tbYAxis.Text = "Y axis";
-            cbCalibrationPlane.Text = "Calibration plane";
-            
-            gbExportGraph.Text = "Export graph";
-            lblPixels.Text = "pixels";
+            gbExportGraph.Text = ScreenManagerLang.DataAnalysis_ExportGraph;
+            lblPixels.Text = ScreenManagerLang.DataAnalysis_Pixels;
             btnImageCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
-            btnExportGraph.Text = "Save to file";
+            btnExportGraph.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
 
-            gbExportData.Text = "Export data";
+            gbExportData.Text = ScreenManagerLang.DataAnalysis_ExportData;
             btnDataCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
-            btnExportData.Text = "Save to file";
+            btnExportData.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
         }
 
         private void CreateScatterPlot()
@@ -175,6 +175,9 @@ namespace Kinovea.ScreenManager
 
         private void LabelsChanged(object sender, EventArgs e)
         {
+            if (plotScatter.Model == null)
+                return;
+
             plotScatter.Model.Title = tbTitle.Text;
             plotScatter.Model.Axes[0].Title = tbXAxis.Text;
             plotScatter.Model.Axes[1].Title = tbYAxis.Text;
@@ -195,7 +198,7 @@ namespace Kinovea.ScreenManager
         private void btnExportData_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = "Export data";
+            saveFileDialog.Title = ScreenManagerLang.DataAnalysis_ExportData;
             saveFileDialog.Filter = "Comma Separated Values (*.csv)|*.csv";
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.RestoreDirectory = true;

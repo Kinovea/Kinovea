@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Vis vinduer</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Byt om på vinduer</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Vis/skjul almindlig styring</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Farver</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Farveprofil…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Genskab standard farveprofil</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overblik…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Omvendt rækkefølge…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast…</value></data>
+   
    
    
    

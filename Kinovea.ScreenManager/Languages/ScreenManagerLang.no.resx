@@ -95,6 +95,22 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Bytt vindu</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Åpne standardverktøy</value></data>
    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Fargeprofil...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Standard fargeprofil</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Last inn fargeprofil</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
+   
    
    
    

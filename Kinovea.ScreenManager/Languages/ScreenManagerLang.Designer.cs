@@ -277,6 +277,150 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Data analysis.
+        /// </summary>
+        internal static string DataAnalysis {
+            get {
+                return ResourceManager.GetString("DataAnalysis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calibration plane.
+        /// </summary>
+        internal static string DataAnalysis_CalibrationPlane {
+            get {
+                return ResourceManager.GetString("DataAnalysis_CalibrationPlane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data :.
+        /// </summary>
+        internal static string DataAnalysis_DataLabel {
+            get {
+                return ResourceManager.GetString("DataAnalysis_DataLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data source.
+        /// </summary>
+        internal static string DataAnalysis_DataSource {
+            get {
+                return ResourceManager.GetString("DataAnalysis_DataSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export data.
+        /// </summary>
+        internal static string DataAnalysis_ExportData {
+            get {
+                return ResourceManager.GetString("DataAnalysis_ExportData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export graph.
+        /// </summary>
+        internal static string DataAnalysis_ExportGraph {
+            get {
+                return ResourceManager.GetString("DataAnalysis_ExportGraph", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Labels.
+        /// </summary>
+        internal static string DataAnalysis_Labels {
+            get {
+                return ResourceManager.GetString("DataAnalysis_Labels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plot.
+        /// </summary>
+        internal static string DataAnalysis_PagePlot {
+            get {
+                return ResourceManager.GetString("DataAnalysis_PagePlot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pixels.
+        /// </summary>
+        internal static string DataAnalysis_Pixels {
+            get {
+                return ResourceManager.GetString("DataAnalysis_Pixels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save to file.
+        /// </summary>
+        internal static string DataAnalysis_SaveToFile {
+            get {
+                return ResourceManager.GetString("DataAnalysis_SaveToFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scatter plot.
+        /// </summary>
+        internal static string DataAnalysis_ScatterPlot {
+            get {
+                return ResourceManager.GetString("DataAnalysis_ScatterPlot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title:.
+        /// </summary>
+        internal static string DataAnalysis_Title {
+            get {
+                return ResourceManager.GetString("DataAnalysis_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X axis.
+        /// </summary>
+        internal static string DataAnalysis_XaxisDefaultPoints {
+            get {
+                return ResourceManager.GetString("DataAnalysis_XaxisDefaultPoints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X axis :.
+        /// </summary>
+        internal static string DataAnalysis_XaxisLabel {
+            get {
+                return ResourceManager.GetString("DataAnalysis_XaxisLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Y axis.
+        /// </summary>
+        internal static string DataAnalysis_YaxisDefaultPoints {
+            get {
+                return ResourceManager.GetString("DataAnalysis_YaxisDefaultPoints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Y axis :.
+        /// </summary>
+        internal static string DataAnalysis_YaxisLabel {
+            get {
+                return ResourceManager.GetString("DataAnalysis_YaxisLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Line calibration.
         /// </summary>
         internal static string dlgCalibrateLine_Title {
