@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
         }
         public override string DisplayName
         {
-            get { return "Test grid"; /*ScreenManagerLang.mnuPerspectiveGrid;*/ }
+            get { return ScreenManagerLang.DrawingName_TestGrid; }
         }
         public override Bitmap Icon
         {

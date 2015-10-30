@@ -131,6 +131,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Milles per hora ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Nusos ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferències...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Carregant l'interfície d'usuari</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancel·lar</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Sortir</value></data>
@@ -159,11 +179,11 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Classic (h:mm:ss:centèssimes)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de fotogrames</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total en milisegons</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centèssimes de minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deumilèssimes d'hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Marques de temps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classic + Número de fotogrames</value></data>
-   
    
    
    

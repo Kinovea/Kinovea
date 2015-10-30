@@ -131,6 +131,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mijl per uur ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knopen ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Voorkeuren…</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laden Gebruikers Interface...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuleer</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Stop</value></data>
@@ -159,11 +179,11 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassiek (h:mm:ss:hondersten)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frame nummers</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Totaal millisecondes</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hondersten van een minuut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een uur</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassiek + Beeldnummers</value></data>
-   
    
    
    

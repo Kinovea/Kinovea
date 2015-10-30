@@ -204,6 +204,7 @@
    
    
    
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - nie można utworzyć pokazu slajdów.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Pokaz slajdów jest to sekwencja kluczowy obrazów zapisanych w formacie wideo.\n Dodaj proszę kilka kluczowych obrazów przed generacją pokazu.</value></data>
    
@@ -292,6 +293,9 @@
    
    
    <data name="mnuCloseScreen" xml:space="preserve"><value>Zamknij ten ekran</value></data>
+   
+   
+   
    
    
    

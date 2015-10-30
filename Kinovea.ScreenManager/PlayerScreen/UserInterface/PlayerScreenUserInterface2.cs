@@ -2428,7 +2428,7 @@ namespace Kinovea.ScreenManager
             mnuPlayPause.Text = ScreenManagerLang.mnuPlayPause;
             mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
             mnuSendPic.Text = ScreenManagerLang.mnuSendPic;
-            mnuCopyPic.Text = "Copy image to clipboard";
+            mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
             mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
             
             // 2. Drawings context menu.
@@ -2437,7 +2437,7 @@ namespace Kinovea.ScreenManager
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
             mnuTrackDrawing.Text = ScreenManagerLang.mnuTrackTrajectory;
-            mnuDataAnalysis.Text = "Data analysis";
+            mnuDataAnalysis.Text = ScreenManagerLang.mnuDataAnalysis;
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
             
             // 3. Tracking pop menu (Restart, Stop tracking)

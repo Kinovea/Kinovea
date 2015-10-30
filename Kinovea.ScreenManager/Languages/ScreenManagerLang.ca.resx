@@ -198,6 +198,7 @@
    
    
    
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>No s'ha pogut connectar al dispositiu de vídeo</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>No s'ha trobat cap dispositiu al qual connectar. Si us plau, asseguri's de que el dispositiu està degudament endollat. </value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobreescriure l'arixiu</value></data>
@@ -292,6 +293,9 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Inicia el Cronòmetre</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Atura el Cronòmetre</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Tanca aquesta finestra</value></data>
+   
+   
+   
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistència...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configurar la visualització de la trajectòria</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Des-entrellaçar</value></data>

@@ -131,6 +131,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Míle za hodinu ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Uzly ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preference…</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Nahrávání uživatelského rozhraní…</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Zrušit</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Zavřít</value></data>
@@ -159,11 +179,11 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klasické (h:mm:ss:setiny)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Číslo snímku</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Celkem milisekund</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Setina minuty</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Desetitisícina hodiny</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Časová razítka</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasické zobarzení + číslo snímku</value></data>
-   
    
    
    

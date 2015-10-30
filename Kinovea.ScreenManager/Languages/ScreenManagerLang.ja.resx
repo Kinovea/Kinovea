@@ -198,6 +198,7 @@
    
    
    
+   
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>ビデオデバイスと接続できません</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>接続可能デバイスが検出されません。\nデバイスが正しくコンピューターに接続されていることを確認して下さい。</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>ファイル上書き</value></data>
@@ -292,6 +293,9 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>ストップウォッチをスタートする</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>ストップウォッチを止める</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>このスクリーンを閉じる</value></data>
+   
+   
+   
    <data name="mnuConfigureFading" xml:space="preserve"><value>継続時間…</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>軌道表示設定</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>インターランス解除</value></data>

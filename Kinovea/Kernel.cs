@@ -414,10 +414,8 @@ namespace Kinovea.Root
             mnuTimecodeClassic.Text = RootLang.TimeCodeFormat_Classic;
             mnuTimecodeFrames.Text = RootLang.TimeCodeFormat_Frames;
             mnuTimecodeMilliseconds.Text = RootLang.TimeCodeFormat_Milliseconds;
-            mnuTimecodeMicroseconds.Text = "Total microseconds";//RootLang.TimeCodeFormat_Milliseconds;
+            mnuTimecodeMicroseconds.Text = RootLang.TimeCodeFormat_Microseconds;
             mnuTimecodeTimeAndFrames.Text = RootLang.TimeCodeFormat_TimeAndFrames;
-            //mnuTimecodeTimeAndFrames.Text = RootLang.TimeCodeFormat_Normalized;
-            mnuTimecodeNormalized.Text = "Normalized";
             
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
