@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Εμφάνιση Οθονών</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Εναλλαγή Οθονών</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Κοινές Λειτουργίες On/Off</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Χρώματα</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Προφίλ Χρώματος…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Επανάθεση στο προκαθορισμένο Προφίλ Χρώματος</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Περίληψη…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Αντιστροφή…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Αυτόματη Αντίθεση...</value></data>
+   
    
    
    

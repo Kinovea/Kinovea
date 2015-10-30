@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Show Screens</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Swap Screens</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Toggle Common Controls</value></data>
+   <data name="DataAnalysis" xml:space="preserve"><value>Data analysis</value></data>
+   <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>Plot</value></data>
+   <data name="DataAnalysis_Labels" xml:space="preserve"><value>Labels</value></data>
+   <data name="DataAnalysis_Title" xml:space="preserve"><value>Title:</value></data>
+   <data name="DataAnalysis_XaxisLabel" xml:space="preserve"><value>X axis :</value></data>
+   <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve"><value>X axis</value></data>
+   <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>Y axis :</value></data>
+   <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve"><value>Y axis</value></data>
+   <data name="DataAnalysis_ScatterPlot" xml:space="preserve"><value>Scatter plot</value></data>
+   <data name="DataAnalysis_CalibrationPlane" xml:space="preserve"><value>Calibration plane</value></data>
+   <data name="DataAnalysis_ExportGraph" xml:space="preserve"><value>Export graph</value></data>
+   <data name="DataAnalysis_Pixels" xml:space="preserve"><value>pixels</value></data>
+   <data name="DataAnalysis_SaveToFile" xml:space="preserve"><value>Save to file</value></data>
+   <data name="DataAnalysis_ExportData" xml:space="preserve"><value>Export data</value></data>
+   <data name="DataAnalysis_DataSource" xml:space="preserve"><value>Data source</value></data>
+   <data name="DataAnalysis_DataLabel" xml:space="preserve"><value>Data :</value></data>
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Colors</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Color Profile...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Reset to default Color Profile</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overview...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reverse...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto Contrast...</value></data>
+   
    
    
    

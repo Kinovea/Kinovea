@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Prikaži ekrane </value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Prebaci ekrane </value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Promeni kontrolne komande</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Boje</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Profil boja...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Vrati na podrazumevane boje profila</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Pregled...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverzija...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatsko podešavanje kontrasta...</value></data>
+   
    
    
    

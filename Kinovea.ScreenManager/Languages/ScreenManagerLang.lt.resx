@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Rodyti ekranus</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Sukeisti ekranus</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Perjungti bendrą kontrolę</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Spalvos</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Spalvos profilis...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Atkurti numatytajį spalvos profilį</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Apžvalga...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reversas...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatinis kontrastas...</value></data>
+   
    
    
    

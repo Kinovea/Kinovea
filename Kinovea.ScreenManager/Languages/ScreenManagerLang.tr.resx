@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Ekranları Göster</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Ekranları Karşılıklı Değiştir</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Ortak Kontrollere Geç</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Renkler</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Renk Profili...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Varsayılan Renk Profiline Dön</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Göz Atma...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Geri...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Oto Kontrast...</value></data>
+   
    
    
    

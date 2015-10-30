@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Ukázat obrazovky</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Přepnout obrazovky</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Přepnout ovládací prvky</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Barvy…</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Barevný profil…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Nastavit na předvolený barevný profil</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Celkový přehled</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Zpětné přehrávání…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast….</value></data>
+   
    
    
    

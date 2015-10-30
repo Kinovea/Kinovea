@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Näytä katselunäytöt</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Vaihda katselunäytöt</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Avaa yleiset työkalut</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Värit</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Väriprofiili...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Palauta väriprofiilin oletukset</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Katsaus...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Käänteinen...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automaattinen tarkennus...</value></data>
+   
    
    
    

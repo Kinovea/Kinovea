@@ -40,28 +40,28 @@ namespace Kinovea.ScreenManager
 
         private void Localize()
         {
-            Text = "Data analysis";
-
-            gbSource.Text = "Data source";
-            lblData.Text = "Data :";
+            Text = ScreenManagerLang.DataAnalysis;
+            pagePlot.Text = ScreenManagerLang.DataAnalysis_PagePlot;
+            gbSource.Text = ScreenManagerLang.DataAnalysis_DataSource;
+            lblData.Text = ScreenManagerLang.DataAnalysis_DataLabel;
             //cmbDataSource
 
-            gbLabels.Text = "Labels";
-            lblTitle.Text = "Title :";
-            lblXAxis.Text = "X axis :";
-            lblYAxis.Text = "Y axis :";
-            tbTitle.Text = "Scatter plot";
-            tbXAxis.Text = "Time";
-            tbYAxis.Text = "Y axis";
+            gbLabels.Text = ScreenManagerLang.DataAnalysis_Labels;
+            lblTitle.Text = ScreenManagerLang.DataAnalysis_Title;
+            lblXAxis.Text = ScreenManagerLang.DataAnalysis_XaxisLabel;
+            lblYAxis.Text = ScreenManagerLang.DataAnalysis_YaxisLabel;
+            tbTitle.Text = ScreenManagerLang.DataAnalysis_ScatterPlot;
+            //tbXAxis.Text = ScreenManagerLang.;
+            //tbYAxis.Text = "Y axis";
 
-            gbExportGraph.Text = "Export graph";
-            lblPixels.Text = "pixels";
+            gbExportGraph.Text = ScreenManagerLang.DataAnalysis_ExportGraph;
+            lblPixels.Text = ScreenManagerLang.DataAnalysis_Pixels;
             btnImageCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
-            btnExportGraph.Text = "Save to file";
+            btnExportGraph.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
 
-            gbExportData.Text = "Export data";
+            gbExportData.Text = ScreenManagerLang.DataAnalysis_ExportData;
             btnDataCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
-            btnExportData.Text = "Save to file";
+            btnExportData.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
 
             lblCutoffFrequencies.Text = "Selected cutoff frequencies:";
 
@@ -317,7 +317,7 @@ namespace Kinovea.ScreenManager
         private void btnExportData_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = "Export data";
+            saveFileDialog.Title = ScreenManagerLang.DataAnalysis_ExportData;
             saveFileDialog.Filter = "Comma Separated Values (*.csv)|*.csv";
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.RestoreDirectory = true;

@@ -94,6 +94,22 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Прикажи ги екраните</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Смени ги екраните</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Вклучувач на вообичаните контроли</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Бои:</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Боја на профилот...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Ресетирај во стандардна боја на профилот</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Преглед...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Обратно...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Автоматско прилагодување на контрастот...</value></data>
+   
    
    
    

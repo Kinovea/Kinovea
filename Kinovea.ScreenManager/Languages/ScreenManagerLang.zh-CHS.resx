@@ -95,6 +95,22 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>交换屏幕</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>切换公共控件</value></data>
    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>颜色配置…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>默认颜色配置</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>载入颜色配置</value></data>
@@ -417,6 +433,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>马赛克...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>反向...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>自动对比度...</value></data>
+   
    
    
    
