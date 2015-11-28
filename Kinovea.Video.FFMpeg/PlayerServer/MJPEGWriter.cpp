@@ -273,6 +273,9 @@ SaveResult MJPEGWriter::SaveFrame(ImageFormat format, array<System::Byte>^ buffe
 
     switch (format)
     {
+    case ImageFormat::RGB32:
+        saved = EncodeAndWriteVideoFrameRGB32(m_SavingContext, buffer, length);
+        break;
     case ImageFormat::RGB24:
         saved = EncodeAndWriteVideoFrameRGB24(m_SavingContext, buffer, length);
         break;
@@ -496,6 +499,98 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext)
 }
 
 ///<summary>
+/// Encode an RGB32 image into a JPEG and push it to the file.
+///</summary>
+bool MJPEGWriter::EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length)
+{
+    bool written = false;
+    
+    AVFrame* pYUV420Frame = nullptr;
+    uint8_t* pYUV420Buffer = nullptr;
+    uint8_t* pJpegBuffer = nullptr;
+    
+    do
+    {
+        int outWidth = _SavingContext->outputSize.Width;
+        int outHeight = _SavingContext->outputSize.Height;
+        int inWidth = outWidth;
+        int inHeight = outHeight;
+
+        pin_ptr<uint8_t> pRGB32Buffer = &managedBuffer[0];
+        avpicture_fill((AVPicture*)_SavingContext->pInputFrame, pRGB32Buffer, AV_PIX_FMT_BGRA, inWidth, inHeight);
+        
+        // Alter planes and stride to vertically flip image during conversion.
+        //_SavingContext->pInputFrame->data[0] += _SavingContext->pInputFrame->linesize[0] * (inHeight - 1);
+        //_SavingContext->pInputFrame->linesize[0] = - _SavingContext->pInputFrame->linesize[0];
+
+        // Prepare the color space converted frame.
+        if ((pYUV420Frame = av_frame_alloc()) == nullptr) 
+        {
+            log->Error("YUV420P frame not allocated");
+            break;
+        }
+
+        int yuvBufferSize = avpicture_get_size(AV_PIX_FMT_YUV420P, outWidth, outHeight);
+        pYUV420Buffer = (uint8_t*)av_malloc(yuvBufferSize);
+
+        if (pYUV420Buffer == nullptr) 
+        {
+            log->Error("YUV frame buffer not allocated");
+            break;
+        }
+        
+        avpicture_fill((AVPicture*)pYUV420Frame, pYUV420Buffer, AV_PIX_FMT_YUV420P, outWidth, outHeight);
+        
+        // Perform the color space conversion.
+        SwsContext* scalingContext = sws_getContext(
+            inWidth, inHeight, AV_PIX_FMT_BGRA, 
+            outWidth, outHeight, AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR,
+            NULL, NULL, NULL);
+
+        if (sws_scale(scalingContext, _SavingContext->pInputFrame->data, _SavingContext->pInputFrame->linesize, 0, inHeight, pYUV420Frame->data, pYUV420Frame->linesize) < 0) 
+        {
+            log->Error("scaling failed");
+            sws_freeContext(scalingContext);
+            break;
+        }
+
+        sws_freeContext(scalingContext);
+
+        // Allocated JPEG frame buffer. 
+        // Assumes uncompressed size is always smaller than compressed. (Not technically true).
+        int jpegBufferSize = yuvBufferSize;
+        pJpegBuffer = (uint8_t*)av_malloc(jpegBufferSize);
+
+        if (pJpegBuffer == nullptr) 
+        {
+            log->Error("output video buffer not allocated");
+            break;
+        }
+
+        // Actual encode.
+        int jpegSize = avcodec_encode_video(_SavingContext->pOutputCodecContext, pJpegBuffer, jpegBufferSize, pYUV420Frame);
+
+        if (jpegSize > 0)
+            WriteFrame(jpegSize, _SavingContext, pJpegBuffer, true);
+
+        written = true;
+    }
+    while(false);
+
+    if (pJpegBuffer != nullptr)
+        av_free(pJpegBuffer);
+
+    if (pYUV420Frame != nullptr)
+        av_free(pYUV420Frame);
+
+    if (pYUV420Buffer != nullptr)
+        av_free(pYUV420Buffer);
+
+    return written;
+}
+
+
+///<summary>
 /// Encode an RGB24 image into a JPEG and push it to the file.
 ///</summary>
 bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length)
@@ -588,6 +683,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
     
     return written;
 }
+
 
 ///<summary>
 /// VideoFileWriter::EncodeAndWriteVideoFrameRGB24

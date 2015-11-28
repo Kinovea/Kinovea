@@ -191,6 +191,7 @@ namespace Kinovea.Root
             this.tbFramerate.Name = "tbFramerate";
             this.tbFramerate.Size = new System.Drawing.Size(61, 20);
             this.tbFramerate.TabIndex = 40;
+            this.tbFramerate.TextChanged += new System.EventHandler(this.tbFramerate_TextChanged);
             // 
             // rbForcedFramerate
             // 
@@ -202,6 +203,7 @@ namespace Kinovea.Root
             this.rbForcedFramerate.TabStop = true;
             this.rbForcedFramerate.Text = "Forced framerate";
             this.rbForcedFramerate.UseVisualStyleBackColor = true;
+            this.rbForcedFramerate.CheckedChanged += new System.EventHandler(this.radioDSS_CheckedChanged);
             // 
             // rbCameraFrameSignal
             // 
@@ -213,6 +215,7 @@ namespace Kinovea.Root
             this.rbCameraFrameSignal.TabStop = true;
             this.rbCameraFrameSignal.Text = "Camera frame signal";
             this.rbCameraFrameSignal.UseVisualStyleBackColor = true;
+            this.rbCameraFrameSignal.CheckedChanged += new System.EventHandler(this.radioDSS_CheckedChanged);
             // 
             // cmbImageFormat
             // 
@@ -743,6 +746,7 @@ namespace Kinovea.Root
             this.trkMemoryBuffer.TabIndex = 38;
             this.trkMemoryBuffer.TickFrequency = 50;
             this.trkMemoryBuffer.Value = 16;
+            this.trkMemoryBuffer.ValueChanged += new System.EventHandler(this.trkMemoryBuffer_ValueChanged);
             // 
             // PreferencePanelCapture
             // 

@@ -151,6 +151,9 @@ namespace Kinovea.ScreenManager
                 case Video.ImageFormat.RGB24:
                     BitmapHelper.FillFromRGB24(bitmap, rect, imageDescriptor.TopDown, entry.Buffer);
                     break;
+                case Video.ImageFormat.RGB32:
+                    BitmapHelper.FillFromRGB32(bitmap, rect, imageDescriptor.TopDown, entry.Buffer);
+                    break;
                 case Video.ImageFormat.Y800:
                     BitmapHelper.FillFromY800(bitmap, rect, imageDescriptor.TopDown, entry.Buffer);
                     break;

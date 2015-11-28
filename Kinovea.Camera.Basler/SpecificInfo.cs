@@ -32,8 +32,8 @@ namespace Kinovea.Camera.Basler
     public class SpecificInfo
     {
         public PYLON_DEVICE_HANDLE Handle { get; set; }
-        public string StreamFormat { get; set; }
         public Dictionary<string, CameraProperty> CameraProperties { get; set; }
+        public string StreamFormat { get; set; } 
 
         public SpecificInfo()
         {

@@ -26,9 +26,9 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-
 using PylonC.NET;
 using Kinovea.Services;
+using PylonC.NETSupportLibrary;
 
 namespace Kinovea.Camera.Basler
 {
@@ -104,30 +104,28 @@ namespace Kinovea.Camera.Basler
             discoveryStep = 1;
             List<CameraSummary> found = new List<CameraSummary>();
             
-            // Takes about 250ms.
-            uint count = Pylon.EnumerateDevices();
-            
-            for( uint i = 0; i < count; i++)
+            List<DeviceEnumerator.Device> devices = DeviceEnumerator.EnumerateDevices();
+            foreach (DeviceEnumerator.Device device in devices)
             {
-                Device device = new Device(i);
-                string identifier = device.SerialNumber;
+                string identifier = device.FullName;
                 
                 bool cached = cache.ContainsKey(identifier);
                 if(cached)
                 {
-                    deviceIndices[identifier] = i;
+                    deviceIndices[identifier] = device.Index;
                     summaries.Add(cache[identifier]);
                     found.Add(cache[identifier]);
                     continue;
                 }
                 
+
                 string alias = device.Name;
                 Bitmap icon = null;
                 SpecificInfo specific = new SpecificInfo();
                 Rectangle displayRectangle = Rectangle.Empty;
                 CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
-                deviceIndices[identifier] = i;
-                
+                deviceIndices[identifier] = device.Index;
+
                 if(blurbs != null)
                 {
                     foreach(CameraBlurb blurb in blurbs)
@@ -140,7 +138,7 @@ namespace Kinovea.Camera.Basler
                         displayRectangle = blurb.DisplayRectangle;
                         if(!string.IsNullOrEmpty(blurb.AspectRatio))
                             aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
-                        //specific = SpecificInfoDeserialize(blurb.Specific);
+                        
                         break;
                     }
                 }
@@ -217,7 +215,6 @@ namespace Kinovea.Camera.Basler
                     info.CameraProperties = form.CameraProperties;
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
-
                     needsReconnection = true;
                 }
                 

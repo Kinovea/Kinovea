@@ -97,23 +97,18 @@
     <Compile Include="Configuration\FormConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Configuration\FormConfiguration.Designer.cs">
+    <Compile Include="Configuration\FormConfiguration.designer.cs">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\StreamFormat.cs" />
     <Compile Include="FrameGrabber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Pylon\BitmapFactory.cs" />
-    <Compile Include="Pylon\Device.cs" />
-    <Compile Include="Pylon\ImageProvider.cs" />
-    <Compile Include="Pylon\PylonHelper.cs" />
+    <Compile Include="Pylon.NETSupportLibrary\BitmapFactory.cs" />
+    <Compile Include="Pylon.NETSupportLibrary\DeviceEnumerator.cs" />
+    <Compile Include="Pylon.NETSupportLibrary\ImageProvider.cs" />
+    <Compile Include="PylonHelper.cs" />
     <Compile Include="SnapshotRetriever.cs" />
     <Compile Include="SpecificInfo.cs" />
-    <Compile Include="Configuration\StreamFormat.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Configuration\FormConfiguration.resx">
-      <DependentUpon>FormConfiguration.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
@@ -133,6 +128,10 @@
       <Name>Kinovea.Video</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Configuration\FormConfiguration.resx">
+      <DependentUpon>FormConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

@@ -69,6 +69,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool SetupMuxer(SavingContext^ _SavingContext);
         bool SetupEncoder(SavingContext^ _SavingContext);
         
+        bool EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
         bool EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
         bool EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
         bool EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);

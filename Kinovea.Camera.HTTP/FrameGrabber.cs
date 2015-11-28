@@ -43,15 +43,9 @@ namespace Kinovea.Camera.HTTP
         { 
             get { return grabbing;}
         }
-        
-        public Size Size
-        {
-            get { return Size.Empty; }
-        }
-        
         public float Framerate
         {
-            get { return 0;}
+            get { return 30; }
         }
         public double LiveDataRate
         {
@@ -148,6 +142,10 @@ namespace Kinovea.Camera.HTTP
             grabbing = false;
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
+        }
+
+        public void Close()
+        {
         }
 
         private void device_NewFrameBuffer(object sender, NewFrameBufferEventArgs e)

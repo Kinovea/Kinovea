@@ -15,6 +15,8 @@ namespace Kinovea.Video
             {
                 case ImageFormat.RGB24:
                     return width * height * 3;
+                case ImageFormat.RGB32:
+                    return width * height * 4;
                 case ImageFormat.JPEG:
                     return width * height * 3;
                 case ImageFormat.Y800:
