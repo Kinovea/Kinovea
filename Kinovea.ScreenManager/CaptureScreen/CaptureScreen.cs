@@ -460,6 +460,8 @@ namespace Kinovea.ScreenManager
 
                 if (imageDescriptor == null || imageDescriptor.Format == Video.ImageFormat.None || imageDescriptor.Width <= 0 || imageDescriptor.Height <= 0)
                 {
+                    cameraGrabber.Close();
+
                     imageDescriptor = ImageDescriptor.Invalid;
                     prepareFailed = true;
                     log.ErrorFormat("The camera does not support configuration and we could not preallocate buffers.");
@@ -553,6 +555,7 @@ namespace Kinovea.ScreenManager
             {
                 cameraGrabber.Stop();
                 cameraGrabber.GrabbingStatusChanged -= Grabber_GrabbingStatusChanged;
+                cameraGrabber.Close();
 
                 grabTimer.Stop();
                 nonGrabbingInteractionTimer.Start();

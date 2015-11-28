@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using PylonC.NET;
 using System.Globalization;
+using PylonC.NETSupportLibrary;
 
 namespace Kinovea.Camera.Basler
 {
@@ -14,15 +15,51 @@ namespace Kinovea.Camera.Basler
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static Dictionary<string, CameraProperty> Read(PYLON_DEVICE_HANDLE deviceHandle)
+        public static Dictionary<string, CameraProperty> Read(PYLON_DEVICE_HANDLE deviceHandle, string fullName)
         {
             Dictionary<string, CameraProperty> properties = new Dictionary<string, CameraProperty>();
 
+            // Enumerate devices again to make sure we have the correct device index and find the device class.
+            DeviceEnumerator.Device device = null;
+            List<DeviceEnumerator.Device> devices = DeviceEnumerator.EnumerateDevices();
+            foreach (DeviceEnumerator.Device candidate in devices)
+            {
+                if (candidate.FullName != fullName)
+                    continue;
+
+                device = candidate;
+                break;
+            }
+
+            if (device == null)
+                return properties;
+
+            string deviceClass = "BaslerGigE";
+            try
+            {
+                deviceClass = Pylon.DeviceInfoGetPropertyValueByName(device.DeviceInfoHandle, Pylon.cPylonDeviceInfoDeviceClassKey);
+            }
+            catch
+            {
+                log.ErrorFormat("Could not read Basler device class. Assuming BaslerGigE.");
+            }
+            
             properties.Add("width", ReadIntegerProperty(deviceHandle, "Width"));
             properties.Add("height", ReadIntegerProperty(deviceHandle, "Height"));
-            properties.Add("framerate", ReadFloatProperty(deviceHandle, "AcquisitionFrameRateAbs"));
-            properties.Add("exposure", ReadFloatProperty(deviceHandle, "ExposureTimeAbs"));
-            properties.Add("gain", ReadIntegerProperty(deviceHandle, "GainRaw"));
+            properties.Add("enableFramerate", ReadBooleanProperty(deviceHandle, "AcquisitionFrameRateEnable"));
+
+            if (deviceClass == "BaslerUsb")
+            {
+                properties.Add("framerate", ReadFloatProperty(deviceHandle, "AcquisitionFrameRate"));
+                properties.Add("exposure", ReadFloatProperty(deviceHandle, "ExposureTime"));
+                properties.Add("gain", ReadFloatProperty(deviceHandle, "Gain"));
+            }
+            else
+            {
+                properties.Add("framerate", ReadFloatProperty(deviceHandle, "AcquisitionFrameRateAbs"));
+                properties.Add("exposure", ReadFloatProperty(deviceHandle, "ExposureTimeAbs"));
+                properties.Add("gain", ReadIntegerProperty(deviceHandle, "GainRaw"));
+            }
 
             return properties;
         }
@@ -46,6 +83,11 @@ namespace Kinovea.Camera.Basler
                 case CameraPropertyType.Integer:
                     {
                         long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+                        long step = long.Parse(property.Step, CultureInfo.InvariantCulture);
+                        long remainder = value % step;
+                        if (remainder > 0)
+                            value = value - remainder;
+
                         GenApi.IntegerSetValue(nodeHandle, value);
                         break;
                     }
@@ -55,32 +97,15 @@ namespace Kinovea.Camera.Basler
                         GenApi.FloatSetValue(nodeHandle, value);
                         break;
                     }
+                case CameraPropertyType.Boolean:
+                    {
+                        bool value = bool.Parse(property.CurrentValue);
+                        GenApi.BooleanSetValue(nodeHandle, value);
+                        break;
+                    }
                 default:
                     break;
             }
-
-        }
-
-        public static long ReadIntegerValue(PYLON_DEVICE_HANDLE deviceHandle, string symbol)
-        {
-            long currentValue = 0;
-
-            try
-            {
-                NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
-                NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, symbol);
-                if (!nodeHandle.IsValid)
-                    throw new InvalidOperationException();
-
-                currentValue = GenApi.IntegerGetValue(nodeHandle);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Error while reading {0} from GenICam API");
-                log.Error(e.ToString());
-            }
-
-            return currentValue;
         }
 
         private static CameraProperty ReadIntegerProperty(PYLON_DEVICE_HANDLE deviceHandle, string symbol)
@@ -170,6 +195,38 @@ namespace Kinovea.Camera.Basler
             return p;
         }
 
+        private static CameraProperty ReadBooleanProperty(PYLON_DEVICE_HANDLE deviceHandle, string symbol)
+        {
+            CameraProperty p = new CameraProperty();
+            p.Identifier = symbol;
+
+            NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
+            NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, symbol);
+            if (!nodeHandle.IsValid)
+                return p;
+
+            EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
+            if (accessMode == EGenApiAccessMode._UndefinedAccesMode || accessMode == EGenApiAccessMode.NA ||
+                accessMode == EGenApiAccessMode.NI || accessMode == EGenApiAccessMode.WO)
+                return p;
+
+            p.Supported = true;
+            p.ReadOnly = accessMode != EGenApiAccessMode.RW;
+
+            EGenApiNodeType type = GenApi.NodeGetType(nodeHandle);
+            if (type != EGenApiNodeType.BooleanNode)
+                return p;
+
+            p.Type = CameraPropertyType.Boolean;
+
+            bool currentValue = GenApi.BooleanGetValue(nodeHandle);
+
+            p.Representation = CameraPropertyRepresentation.Checkbox;
+            p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
+
+            return p;
+        }
+
         private static CameraPropertyRepresentation ConvertRepresentation(EGenApiRepresentation representation)
         {
             switch (representation)
@@ -188,5 +245,8 @@ namespace Kinovea.Camera.Basler
                     return CameraPropertyRepresentation.Undefined;
             }
         }
+        
+
+    
     }
 }

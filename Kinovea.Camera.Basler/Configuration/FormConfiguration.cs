@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Kinovea.Camera;
 using PylonC.NET;
 using Kinovea.Services;
@@ -86,8 +85,11 @@ namespace Kinovea.Camera.Basler
                 return;
 
             deviceHandle = specific.Handle;
+            cameraProperties = CameraPropertyManager.Read(specific.Handle, summary.Identifier);
+            
+            if (cameraProperties.Count != specific.CameraProperties.Count)
+                specificChanged = true;
 
-            cameraProperties = CameraPropertyManager.Read(deviceHandle);
             Populate();
         }
         
@@ -208,231 +210,6 @@ namespace Kinovea.Camera.Basler
         
         /*
         
-        #region GainRaw
-        private void PopulateGainRaw()
-        {
-            string featureName = "GainRaw";
-            if(!Pylon.DeviceFeatureIsReadable(deviceHandle, featureName))
-                return;
-
-            long min = Pylon.DeviceGetIntegerFeatureMin(deviceHandle, featureName);
-            long max = Pylon.DeviceGetIntegerFeatureMax(deviceHandle, featureName);
-            long incr = Pylon.DeviceGetIntegerFeatureInc(deviceHandle, featureName);
-            long val = Pylon.DeviceGetIntegerFeature(deviceHandle, featureName);
-            
-            trkGainRaw.Minimum = (int)min;
-            trkGainRaw.Maximum = (int)max;
-            trkGainRaw.SmallChange = (int)incr;
-            trkGainRaw.Value = (int)val;
-            
-            memoGain = val;
-        }
-        
-        private void TrkGainRaw_ValueChanged(object sender, EventArgs e)
-        {
-            if(manualTrackbar)
-                return;
-                
-            gainRaw = (long)trkGainRaw.Value;
-            UpdateGain();
-            
-            manualTextbox = true;
-            tbGainRaw.Text = string.Format("{0}", gainRaw);
-            manualTextbox = false;
-        }
-        
-        private void TbGainRawTextChanged(object sender, EventArgs e)
-        {
-            if(manualTextbox)
-                return;
-                
-            long tryGainRaw;
-            bool parsed = long.TryParse(tbGainRaw.Text, out tryGainRaw);
-            
-            if(tryGainRaw < trkGainRaw.Minimum || tryGainRaw > trkGainRaw.Maximum)
-                parsed = false;
-            
-            if(!parsed)
-                return;
-                
-            gainRaw = tryGainRaw;
-            UpdateGain();
-            
-            manualTrackbar = true;
-            trkGainRaw.Value = (int)gainRaw;
-            manualTrackbar = false;
-        }
-        
-        private void UpdateGain()
-        {
-            if(Pylon.DeviceFeatureIsWritable(deviceHandle, "GainRaw"))
-                Pylon.DeviceSetIntegerFeature(deviceHandle, "GainRaw", gainRaw);
-        }
-        #endregion
-        
-        #region ExposureTimeAbs
-        private void PopulateExposureTimeAbs()
-        {
-            string featureName = "ExposureTimeAbs";
-            if(!Pylon.DeviceFeatureIsReadable(deviceHandle, featureName))
-                return;
-            
-            minExposure = Pylon.DeviceGetFloatFeatureMin(deviceHandle, featureName);
-            maxExposure = Pylon.DeviceGetFloatFeatureMax(deviceHandle, featureName);
-            maxExposure = Math.Min(maxExposure, 1000000);
-            double val = Pylon.DeviceGetFloatFeature(deviceHandle, featureName);
-            
-            exposureLogMapper = new LogarithmicMapper((int)minExposure, (int)maxExposure, trkExposure.Minimum, trkExposure.Maximum);
-            
-            int proxyValue = exposureLogMapper.Map((int)val);
-            proxyValue = Math.Min(trkExposure.Maximum, Math.Max(trkExposure.Minimum, proxyValue));
-            
-            manualTrackbar = true;
-            trkExposure.Value = proxyValue;
-            UpdateExposureText((int)val);
-            manualTrackbar = false;
-            memoExposureTimeAbs = val;
-        }
-        
-        private void TrkExposureTimeAbs_ValueChanged(object sender, EventArgs e)
-        {
-            if(manualTrackbar)
-                return;
-            
-            double dataValue = (double)exposureLogMapper.Unmap(trkExposure.Value);
-            dataValue = Math.Min(maxExposure, Math.Max(minExposure, dataValue));
-            
-            exposureTimeAbs = dataValue;
-            UpdateExposureTimeAbs();
-            
-            manualTextbox = true;
-            UpdateExposureText((int)exposureTimeAbs);
-            manualTextbox = false;
-        }
-        
-        private void TbExposureTimeAbs_TextChanged(object sender, EventArgs e)
-        {
-            if(manualTextbox)
-                return;
-                
-            AfterExposureTextChanged();
-        }
-
-        private void UpdateExposureText(int val)
-        {
-            manualTextbox = true;
-            
-            // val is in microseconds.
-            if(val < 2000)
-            {
-                tbExposureTimeAbs.Text = string.Format("{0}", val);
-                cbExposureUnit.Text = "µs";
-            }
-            else
-            {
-                tbExposureTimeAbs.Text = string.Format("{0}", val/1000);
-                cbExposureUnit.Text = "ms";
-            }
-            
-            manualTextbox = false;
-        }
-
-        private void UpdateExposureTimeAbs()
-        {
-            if(Pylon.DeviceFeatureIsWritable(deviceHandle, "ExposureTimeAbs"))
-                Pylon.DeviceSetFloatFeature(deviceHandle, "ExposureTimeAbs", exposureTimeAbs);
-
-            ChangedResultingFramerate();
-        }
-        
-        private void CbExposureUnitSelectedIndexChanged(object sender, EventArgs e)
-        {
-            if(manualTextbox)
-                return;
-                
-            AfterExposureTextChanged();
-        }
-        
-        private void AfterExposureTextChanged()
-        {
-            long tryExposure;
-            bool parsed = long.TryParse(tbExposureTimeAbs.Text, out tryExposure);
-            if(!parsed)
-                return;
-            
-            if(cbExposureUnit.Text == "ms")
-                tryExposure *= 1000;
-            
-            if(tryExposure < minExposure || tryExposure > maxExposure)
-                return;
-            
-            exposureTimeAbs = tryExposure;
-            UpdateExposureTimeAbs();
-            
-            manualTrackbar = true;
-            int proxyValue = exposureLogMapper.Map((int)exposureTimeAbs);
-            proxyValue = Math.Min(trkExposure.Maximum, Math.Max(trkExposure.Minimum, proxyValue));
-            trkExposure.Value = proxyValue;
-            manualTrackbar = false;
-        }
-        #endregion
-        
-        #region Acquisition framerate
-        private void PopulateAcquisitionFramerate()
-        {
-            if (Pylon.DeviceFeatureIsReadable(deviceHandle, "AcquisitionFrameRateAbs"))
-                acquisitionFramerate = Pylon.DeviceGetFloatFeature(deviceHandle, "AcquisitionFrameRateAbs");
-
-            memoAcquisitionFramerate = acquisitionFramerate;
-            
-            manualTextbox = true;
-            tbFramerate.Text = string.Format("{0:0.000}", acquisitionFramerate);
-            manualTextbox = false;
-
-            ChangedResultingFramerate();
-        }
-
-
-        private void tbFramerate_TextChanged(object sender, EventArgs e)
-        {
-            if (manualTextbox)
-                return;
-            
-            double tryFramerate;
-            bool parsed = double.TryParse(tbFramerate.Text, out tryFramerate);
-            if (!parsed)
-                return;
-
-            acquisitionFramerate = tryFramerate;
-            UpdateAcquisitionFramerate();
-            ChangedResultingFramerate();
-        }
-
-        private void ChangedResultingFramerate()
-        {
-            if (Pylon.DeviceFeatureIsReadable(deviceHandle, "ResultingFrameRateAbs"))
-            {
-                double resulting = Pylon.DeviceGetFloatFeature(deviceHandle, "ResultingFrameRateAbs");
-                resulting = Math.Round(resulting, 3);
-                
-                lblResultingFrameRate.Text = string.Format("Forced to : {0:0.000}", resulting);
-                lblResultingFrameRate.Visible = (resulting < acquisitionFramerate);
-            }
-        }
-
-        private void UpdateAcquisitionFramerate()
-        {
-            try
-            {
-                if (Pylon.DeviceFeatureIsWritable(deviceHandle, "AcquisitionFrameRateAbs"))
-                    Pylon.DeviceSetFloatFeature(deviceHandle, "AcquisitionFrameRateAbs", acquisitionFramerate);
-            }
-            catch
-            {
-                log.DebugFormat("Error while trying to set the acquisition framerate.");
-            }
-        }
-        #endregion
         
         #region Use trigger
         private void PopulateUseTrigger()

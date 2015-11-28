@@ -45,15 +45,6 @@ namespace Kinovea.Camera.DirectShow
         { 
             get { return grabbing;}
         }
-        
-        public Size Size
-        {
-            get 
-            { 
-                return Size.Empty; 
-            }
-        }
-        
         public float Framerate
         {
             get 
@@ -180,6 +171,10 @@ namespace Kinovea.Camera.DirectShow
             grabbing = false;
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
+        }
+
+        public void Close()
+        {
         }
 
         /// <summary>

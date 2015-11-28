@@ -32,7 +32,6 @@ namespace Kinovea.Camera
         event EventHandler GrabbingStatusChanged;
         
         bool Grabbing { get; }
-        Size Size { get; }
         float Framerate { get; }
         double LiveDataRate { get; }
 
@@ -40,5 +39,6 @@ namespace Kinovea.Camera
         ImageDescriptor GetPrepareFailedImageDescriptor(ImageDescriptor input);
         void Start();
         void Stop();
+        void Close();
     }
 }

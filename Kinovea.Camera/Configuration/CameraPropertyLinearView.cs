@@ -29,18 +29,22 @@ namespace Kinovea.Camera
 
         private void Populate()
         {
+            // FIXME: doesn't play well with non integer values.
+
             cbAuto.Enabled = property.CanBeAutomatic;
             
-            tbValue.Minimum = int.Parse(property.Minimum, CultureInfo.InvariantCulture);
-            tbValue.Maximum = int.Parse(property.Maximum, CultureInfo.InvariantCulture);
-            int value = int.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+            tbValue.Minimum = (int)double.Parse(property.Minimum, CultureInfo.InvariantCulture);
+            tbValue.Maximum = (int)double.Parse(property.Maximum, CultureInfo.InvariantCulture);
+            int value = (int)double.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             
             updatingValue = true;
             tbValue.Value = value;
             cbAuto.Checked = property.Automatic;
             updatingValue = false;
 
-            tbValue.Enabled = !property.ReadOnly;
+            // We allow the change of the properties even if they are readonly.
+            // Sometimes the properties are readonly because we are currently streaming, but we'll have a chance to write them during the disconnection/reconnection.
+            //tbValue.Enabled = !property.ReadOnly;
 
             lblValue.Text = valueMapper(value);
         }

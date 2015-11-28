@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2013.
+Copyright © Joan Charmant 2014.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -21,10 +21,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Threading;
-
-using PylonC.NET;
-using PylonC.NETSupportLibrary;
 using Kinovea.Pipeline;
+using PylonC.NETSupportLibrary;
 using Kinovea.Video;
 
 namespace Kinovea.Camera.Basler
@@ -41,35 +39,36 @@ namespace Kinovea.Camera.Basler
         {
             get { return this.summary.Identifier; }
         }
-        
+
         #region Members
-        private static readonly int timeout = 5000;
+        private static readonly int timeoutGrabbing = 5000;
+        private static readonly int timeoutOpening = 100;
+
         private Bitmap image;
         private ImageDescriptor imageDescriptor = ImageDescriptor.Invalid;
         private CameraSummary summary;
-        private object locker = new object();
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
+        private ImageProvider imageProvider = new ImageProvider();
         private bool cancelled;
         private bool hadError;
-        private PYLON_DEVICE_HANDLE deviceHandle;
-        private ImageProvider device;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-        
+
         public SnapshotRetriever(CameraSummary summary, uint deviceIndex)
         {
             this.summary = summary;
 
-            device = new ImageProvider();
+            imageProvider.GrabErrorEvent += imageProvider_GrabErrorEvent;
+            imageProvider.DeviceRemovedEvent += imageProvider_DeviceRemovedEvent;
+            imageProvider.ImageReadyEvent += imageProvider_ImageReadyEvent;
             
             try
             {
-                deviceHandle = Pylon.CreateDeviceByIndex(deviceIndex);                
-                device.Open(deviceHandle);
+                imageProvider.Open(deviceIndex);
             }
-            catch(Exception)
+            catch (Exception e) 
             {
-                log.Error(PylonHelper.GetLastError());
+                LogError(e, imageProvider.GetLastErrorMessage());
             }
         }
 
@@ -82,36 +81,35 @@ namespace Kinovea.Camera.Basler
             Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
 
-            if (!device.IsOpen)
+            if (!imageProvider.IsOpen)
+                Thread.Sleep(timeoutOpening);
+
+            if (!imageProvider.IsOpen)
             {
                 if (CameraThumbnailProduced != null)
                     CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, null, imageDescriptor, true, false));
 
                 return;
             }
-             
-            device.ImageReadyEvent += ImageProvider_ImageReadyEvent;
-            device.GrabErrorEvent += ImageProvider_GrabErrorEvent;
-            device.GrabbingStartedEvent += ImageProvider_GrabbingStartedEvent;
-            
+
             try
             {
-                device.BeforeSingleFrameAuto();
-                device.SingleFrameAuto();
+                imageProvider.OneShot(); 
+                //imageProvider.ContinuousShot();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                log.Error(device.GetLastErrorMessage());
+                LogError(e, imageProvider.GetLastErrorMessage());
             }
-            
-            waitHandle.WaitOne(timeout, false);
-            
-            device.GrabbingStartedEvent -= ImageProvider_GrabbingStartedEvent;
-            device.GrabErrorEvent -= ImageProvider_GrabErrorEvent;
-            device.ImageReadyEvent -= ImageProvider_ImageReadyEvent;
-            
-            device.AfterSingleFrameAuto();
-            device.Close();
+
+            waitHandle.WaitOne(timeoutGrabbing, false);
+
+            imageProvider.GrabErrorEvent -= imageProvider_GrabErrorEvent;
+            imageProvider.DeviceRemovedEvent -= imageProvider_DeviceRemovedEvent;
+            imageProvider.ImageReadyEvent -= imageProvider_ImageReadyEvent;
+
+            Stop();
+            Close();
 
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
@@ -119,59 +117,85 @@ namespace Kinovea.Camera.Basler
 
         public void Cancel()
         {
-            if (!device.IsOpen)
+            if (!imageProvider.IsOpen)
                 return;
 
             cancelled = true;
             waitHandle.Set();
         }
 
-        private void ImageProvider_GrabbingStartedEvent()
+        private void Stop()
         {
-            device.Trigger();
+            try
+            {
+                imageProvider.Stop();
+            }
+            catch (Exception e)
+            {
+                LogError(e, imageProvider.GetLastErrorMessage());
+            }
         }
 
-        private void ImageProvider_ImageReadyEvent()
+        private void Close()
         {
-            ImageProvider.Image pylonImage = device.GetLatestImage();
+            try
+            {
+                imageProvider.Close();
+            }
+            catch (Exception e)
+            {
+                LogError(e, imageProvider.GetLastErrorMessage());
+            }
+        }
+
+        private void LogError(Exception e, string additionalErrorMessage)
+        {
+            log.ErrorFormat("Error received trying to get a thumbnail for {0}", summary.Alias);
+            log.Error(e.ToString());
+            log.Error(additionalErrorMessage);
+        }
+
+        #region Camera events
+        private void imageProvider_GrabErrorEvent(Exception grabException, string additionalErrorMessage)
+        {
+            LogError(grabException, additionalErrorMessage);
             
-            if(pylonImage == null)
+            hadError = true;
+            waitHandle.Set();
+        }
+
+        private void imageProvider_DeviceRemovedEvent()
+        {            
+            hadError = true;
+            waitHandle.Set();
+        }
+
+        private void imageProvider_ImageReadyEvent()
+        {
+            ImageProvider.Image pylonImage = imageProvider.GetLatestImage();
+
+            if (pylonImage == null)
             {
                 waitHandle.Set();
                 return;
             }
-            
-            image = CreateBitmap(pylonImage);
-            waitHandle.Set();
-        }
 
-        private void ImageProvider_GrabErrorEvent(Exception grabException, string additionalErrorMessage)
-        {
-            log.ErrorFormat("Error received trying to get a thumbnail for {0}", summary.Alias);
-            log.Error(grabException.ToString());
-            log.Error(additionalErrorMessage);
+            image = null;
+            BitmapFactory.CreateBitmap(out image, pylonImage.Width, pylonImage.Height, pylonImage.Color);
+            BitmapFactory.UpdateBitmap(image, pylonImage.Buffer, pylonImage.Width, pylonImage.Height, pylonImage.Color);
+            imageProvider.ReleaseImage();
 
-            hadError = true;
-            waitHandle.Set();
-        }
-        
-        private Bitmap CreateBitmap(ImageProvider.Image pylonImage)
-        {
-            if (pylonImage == null)
-                return null;
-            
-            Bitmap bitmap = null;
-            BitmapFactory.CreateBitmap(out bitmap, pylonImage.Width, pylonImage.Height, pylonImage.Color);
-            BitmapFactory.UpdateBitmap(bitmap, pylonImage.Buffer, pylonImage.Width, pylonImage.Height, pylonImage.Color);
-            device.ReleaseImage();
-
-            if (bitmap != null)
+            if (image != null)
             {
-                int bufferSize = ImageFormatHelper.ComputeBufferSize(bitmap.Width, bitmap.Height, Video.ImageFormat.RGB24);
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, bitmap.Width, bitmap.Height, true, bufferSize); 
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
             }
 
-            return bitmap;
+            waitHandle.Set();
         }
+        #endregion
+
+
     }
 }
+

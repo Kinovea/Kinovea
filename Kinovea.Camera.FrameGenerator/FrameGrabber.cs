@@ -39,15 +39,9 @@ namespace Kinovea.Camera.FrameGenerator
         {
             get { return grabbing; }
         }
-
-        public Size Size
-        {
-            get { return Size.Empty; }
-        }
-
         public float Framerate
         {
-            get { return 30; }
+            get { return 0; }
         }
         public double LiveDataRate
         {
@@ -130,6 +124,10 @@ namespace Kinovea.Camera.FrameGenerator
             grabbing = false;
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
+        }
+
+        public void Close()
+        {
         }
         #endregion
 
