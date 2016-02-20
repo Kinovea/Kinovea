@@ -479,6 +479,20 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            // At this point we have a proper image descriptor, but it is possible that we are on a Thumbnailer thread.
+
+            if (dummy.InvokeRequired)
+                dummy.BeginInvoke((Action)delegate { Connect2(); });
+            else
+                Connect2();
+        }
+
+        private void Connect2()
+        {
+            // Second part of Connect function. 
+            // The function is split because the first part might need to be run repeatedly and from non UI thread, 
+            // while this part must run on the UI thread.
+
             metadata.ImageSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
             metadata.PostSetupCapture();
 
@@ -497,7 +511,7 @@ namespace Kinovea.ScreenManager
 
             // Initialize pipeline.
             pipelineManager.Connect(imageDescriptor, (IFrameProducer)cameraGrabber, consumerDisplay, consumerRecord);
-            
+
             nonGrabbingInteractionTimer.Enabled = false;
 
             if (!PreferencesManager.CapturePreferences.UseCameraSignalSynchronization)
@@ -512,7 +526,7 @@ namespace Kinovea.ScreenManager
 
             cameraGrabber.GrabbingStatusChanged += Grabber_GrabbingStatusChanged;
             cameraGrabber.Start();
-            
+
             UpdateTitle();
             cameraConnected = true;
         }
