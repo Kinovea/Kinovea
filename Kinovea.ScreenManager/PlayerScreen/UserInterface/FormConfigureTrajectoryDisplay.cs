@@ -106,9 +106,9 @@ namespace Kinovea.ScreenManager
         #region Init
         private void InitViewCombo()
         {
-            cmbView.Items.Add("Complete");
-            cmbView.Items.Add("One second");
-            cmbView.Items.Add("Label only");
+            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityComplete);
+            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityOneSecond);
+            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityLabelOnly);
         }
         private void InitExtraDataCombo()
         {
@@ -129,9 +129,9 @@ namespace Kinovea.ScreenManager
         }
         private void InitMarkerCombo()
         {
-            cmbMarker.Items.Add("Cross");
-            cmbMarker.Items.Add("Circle");
-            cmbMarker.Items.Add("Target");
+            cmbMarker.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_MarkerCross);
+            cmbMarker.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_MarkerCircle);
+            cmbMarker.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_MarkerTarget);
         }
         private void InitTrackParameters()
         {
@@ -193,23 +193,23 @@ namespace Kinovea.ScreenManager
         }
         private void InitCulture()
         {
-            //this.Text = "   " + ScreenManagerLang.dlgConfigureTrajectory_Title;
-            this.Text = "   Configure trajectory tool";
+            this.Text = "   " + ScreenManagerLang.dlgConfigureTrajectory_Title;
 
-            grpIdentification.Text = "Identification";
+            grpIdentification.Text = ScreenManagerLang.dlgConfigureTrajectory_grpIdentification;
             lblLabel.Text = ScreenManagerLang.dlgConfigureChrono_Label;
 
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblView.Text = "Visibility:";
-            lblMarker.Text = "Marker:";
+            lblView.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelVisibility;
+
+            lblMarker.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelMarker;
             lblExtra.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelExtraData;
-            chkBestFitCircle.Text = "Display rotation circle";
+            chkBestFitCircle.Text = ScreenManagerLang.dlgConfigureTrajectory_CheckDisplayRotationCircle;
             
             grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
 
-            grpTracking.Text = "Tracking";
-            lblObjectWindow.Text = "Object window:";
-            lblSearchWindow.Text = "Search window:";
+            grpTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
+            lblObjectWindow.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking_ObjectWindow;
+            lblSearchWindow.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking_SearchWindow;
 
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;

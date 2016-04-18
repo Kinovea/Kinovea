@@ -102,6 +102,7 @@
    <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve"><value>X axis</value></data>
    <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>Y axis :</value></data>
    <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve"><value>Y axis</value></data>
+   <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve"><value>Time (ms)</value></data>
    <data name="DataAnalysis_ScatterPlot" xml:space="preserve"><value>Scatter plot</value></data>
    <data name="DataAnalysis_CalibrationPlane" xml:space="preserve"><value>Calibration plane</value></data>
    <data name="DataAnalysis_ExportGraph" xml:space="preserve"><value>Export graph</value></data>
@@ -137,20 +138,36 @@
    <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Video framerate:</value></data>
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>This option defines the reference framerate used by Kinovea to play the video. Use it when the video contains a wrong framerate or Kinovea cannot read it. </value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Reset</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Show the Target Marker</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Show Key Images Titles</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Show Path</value></data>
+   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configure trajectory tool</value></data>
+   <data name="dlgConfigureTrajectory_grpIdentification" xml:space="preserve"><value>Identification</value></data>
+   <data name="dlgConfigureTrajectory_LabelVisibility" xml:space="preserve"><value>Visibility:</value></data>
+   <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>Complete</value></data>
+   <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve"><value>One second</value></data>
+   <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve"><value>Label only</value></data>
+   <data name="dlgConfigureTrajectory_LabelMarker" xml:space="preserve"><value>Marker:</value></data>
+   <data name="dlgConfigureTrajectory_MarkerCross" xml:space="preserve"><value>Cross</value></data>
+   <data name="dlgConfigureTrajectory_MarkerCircle" xml:space="preserve"><value>Circle</value></data>
+   <data name="dlgConfigureTrajectory_MarkerTarget" xml:space="preserve"><value>Target</value></data>
+   <data name="dlgConfigureTrajectory_CheckDisplayRotationCircle" xml:space="preserve"><value>Display rotation circle</value></data>
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Measurement:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>None</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distance</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_Position" xml:space="preserve"><value>Position</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve"><value>Vertical position</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve"><value>Horizontal position</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Total distance</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Speed</value></data>
-   <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mode :</value></data>
-   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Path</value></data>
-   <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Style :</value></data>
-   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configure Path</value></data>
-   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Complete Path</value></data>
-   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Path section around current image</value></data>
-   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label following the Path</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve"><value>Vertical velocity</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve"><value>Horizontal velocity</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_Acceleration" xml:space="preserve"><value>Acceleration</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_VerticalAcceleration" xml:space="preserve"><value>Vertical acceleration</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_HorizontalAcceleration" xml:space="preserve"><value>Horizontal acceleration</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_AngularDisplacement" xml:space="preserve"><value>Angular displacement</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve"><value>Angular velocity</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve"><value>Angular acceleration</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve"><value>Centripetal acceleration</value></data>
+   <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>Tracking</value></data>
+   <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>Object window:</value></data>
+   <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Search window:</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Real size of the segment :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Line calibration</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Plane calibration</value></data>

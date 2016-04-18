@@ -111,10 +111,27 @@
    
    
    
+   
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Profil koloru,,,</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Domyślny profil kolorów</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Wczytaj profil koloru</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Zapisz profil koloru</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

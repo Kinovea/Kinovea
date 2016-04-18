@@ -731,18 +731,18 @@ namespace Kinovea.ScreenManager
             switch (data)
             {
                 case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
-                case TrackExtraData.Position: return "Position";
-                case TrackExtraData.TotalDistance: return "Total distance";
+                case TrackExtraData.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
+                case TrackExtraData.TotalDistance: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance;
                 case TrackExtraData.Speed: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed;
-                case TrackExtraData.VerticalVelocity: return "Vertical velocity";
-                case TrackExtraData.HorizontalVelocity: return "Horizontal velocity";
-                case TrackExtraData.Acceleration: return "Acceleration";
-                case TrackExtraData.VerticalAcceleration: return "Vertical acceleration";
-                case TrackExtraData.HorizontalAcceleration: return "Horizontal acceleration";
-                case TrackExtraData.AngularDisplacement: return "Angular displacement";
-                case TrackExtraData.AngularVelocity: return "Angular velocity";
-                case TrackExtraData.AngularAcceleration: return "Angular acceleration";
-                case TrackExtraData.CentripetalAcceleration: return "Centripetal acceleration";
+                case TrackExtraData.VerticalVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalVelocity;
+                case TrackExtraData.HorizontalVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity;
+                case TrackExtraData.Acceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Acceleration;
+                case TrackExtraData.VerticalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalAcceleration;
+                case TrackExtraData.HorizontalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalAcceleration;
+                case TrackExtraData.AngularDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularDisplacement;
+                case TrackExtraData.AngularVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularVelocity;
+                case TrackExtraData.AngularAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularAcceleration;
+                case TrackExtraData.CentripetalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_CentripetalAcceleration;
             }
 
             return "";

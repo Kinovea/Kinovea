@@ -110,6 +110,7 @@
    
    
    
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Barvy…</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Barevný profil…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Nastavit na předvolený barevný profil</value></data>
@@ -137,20 +138,36 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Reset</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Zobrazit cílovou značku</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Ukázat titulky klíčových pozic</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Ukázat trasu</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Měření:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Žádný</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Vzdálenost</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Rychlost</value></data>
-   <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mód</value></data>
-   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Cesta</value></data>
-   <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Styl:</value></data>
-   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Konfigurovat cestu</value></data>
-   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Ukončit cestu</value></data>
-   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Část trasy okolo stávajícího obrazu</value></data>
-   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Označit následující trasu</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Skutečná velikost segmentu:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrace měření</value></data>
    

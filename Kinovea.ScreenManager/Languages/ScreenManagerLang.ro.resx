@@ -110,6 +110,7 @@
    
    
    
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Culori</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Profil culori...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Restaurează Profilul de culori iniţial</value></data>
@@ -137,20 +138,36 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Reseteză</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Arată markerul ţintă</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Arată numele cadrelor cheie </value></data>
-   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Arată traiectoria </value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Măsurare:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Nedisponibilă</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distanţă</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Viteză </value></data>
-   <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mod :</value></data>
-   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Traiectorie</value></data>
-   <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stil :</value></data>
-   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurează afişarea traiectoriei</value></data>
-   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Traiectorie completa</value></data>
-   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Sectiune de traiectorie in jurul cadrului curent</value></data>
-   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Eticheta de-a lungul traiectoriei</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Marimea reala a segmentului :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Calibrare</value></data>
    

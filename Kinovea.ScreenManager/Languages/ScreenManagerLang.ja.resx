@@ -110,6 +110,7 @@
    
    
    
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>色</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>カラープロファイル…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>デフォルトのカラープロファイルへ戻す</value></data>
@@ -137,20 +138,36 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>リセット</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>ターゲットマーカーを表示</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>キーイメージタイトルを表示</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>軌道を表示</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>計測:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>なし</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>距離</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>スピード</value></data>
-   <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>モード:</value></data>
-   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>軌道</value></data>
-   <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>スタイル:</value></data>
-   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>軌道の設定</value></data>
-   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>完全な軌道</value></data>
-   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>現在のイメージ周囲の軌道</value></data>
-   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>ラベル付き軌道</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>セグメントの実際のサイズ:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>ライン較正</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>平面較正</value></data>

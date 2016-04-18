@@ -110,6 +110,7 @@
    
    
    
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Боје</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Профил боја...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Врати на подразумеване боје профила</value></data>
@@ -137,20 +138,36 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Поништити</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Прикажи жељени означивач</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Прикажи наслове кључних слика</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Прикажи путању</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Мерење:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Ниједан</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Удаљеност</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Брзина</value></data>
-   <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Режим:</value></data>
-   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Путања</value></data>
-   <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Стил:</value></data>
-   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Подеси путању</value></data>
-   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Заврши путању</value></data>
-   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Део пута око тренутне слике</value></data>
-   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Ознака која прати пут</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Реална величина сегмента:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Линија калибрације</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Равна калабрација</value></data>

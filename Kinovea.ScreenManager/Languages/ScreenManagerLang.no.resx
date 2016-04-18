@@ -111,6 +111,7 @@
    
    
    
+   
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Fargeprofil...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Standard fargeprofil</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Last inn fargeprofil</value></data>
@@ -137,20 +138,36 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Tilbakestill</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Vis markør</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Vis nøkkelbilde titler</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Vis bane</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Måling:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Ingen måling</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distanse</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Fart</value></data>
-   <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Modus:</value></data>
-   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Bane</value></data>
-   <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stil: </value></data>
-   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Konfigurer bane</value></data>
-   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Fullstendig bane</value></data>
-   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Deler av bane rundt aktuelt bilde</value></data>
-   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Beskrivelse følger banen</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Reell størrelse på segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrere måling</value></data>
    

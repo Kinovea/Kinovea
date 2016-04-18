@@ -79,7 +79,7 @@
    <data name="Capture_NextImage" xml:space="preserve"><value>الصورة التالية :</value></data>
    <data name="Capture_NextVideo" xml:space="preserve"><value>الفيديو التالي :</value></data>
    <data name="Capture_CameraNotFound" xml:space="preserve"><value>لم يتم العثور علي الكاميرا</value></data>
-   <data name="Capture_NetworkCamera" xml:space="preserve"><value>كاميرا الشبكة</value></data>
+   <data name="Capture_NetworkCamera" xml:space="preserve"><value>كاميرا متصلة بالشبكة</value></data>
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>إضافة شاشة للالتقاط</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>إضافة ساعة توقيت</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>إضافة رسم</value></data>
@@ -95,13 +95,14 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>تبديل موضع الفيديو</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>إظهار / إخفاء عناصر التحكم العامة</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>تحليل البيانات</value></data>
-   <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>نقاط</value></data>
+   <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>رسم بياني</value></data>
    <data name="DataAnalysis_Labels" xml:space="preserve"><value>المسميات</value></data>
    <data name="DataAnalysis_Title" xml:space="preserve"><value>عنوان:</value></data>
    <data name="DataAnalysis_XaxisLabel" xml:space="preserve"><value>المحور X :</value></data>
    <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve"><value>محور X</value></data>
    <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>محور Y :</value></data>
    <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve"><value>محور Y</value></data>
+   
    <data name="DataAnalysis_ScatterPlot" xml:space="preserve"><value>نقاط منتشرة</value></data>
    <data name="DataAnalysis_CalibrationPlane" xml:space="preserve"><value>خطة المعايرة</value></data>
    <data name="DataAnalysis_ExportGraph" xml:space="preserve"><value>تصدير الرسم البياني</value></data>
@@ -132,25 +133,41 @@
    <data name="dlgTimebase_Title" xml:space="preserve"><value>اعدادات توقيت الفيديو</value></data>
    <data name="dlgTimebase_GroupCapture" xml:space="preserve"><value>كاميرا عالية السرعة</value></data>
    <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>معدل كادرات الالتقاط:</value></data>
-   <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>هذا الخيار يوضح الفرق بين سرعة الفيديو و الوقت الفعلي. وينعكي علي المسميات التي تحتوي على الزمن والقياسات الكينماتيكه . يتم استخدامة عندما يتم تصوير الفيديو بسرعة عالية.</value></data>
+   <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>هذا الخيار يوضح الفرق بين تردد الفيديو المعروض والتردد الفعلي. حيث ينعكس ذلك على قياس الزمن والقياسات الكينماتيكه . يتم استخدامة عندما يتم تصوير الفيديو بسرعة عالية.</value></data>
    <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>معدل الكادرات في الملف: {0: 0 ##} كادر في الثانية</value></data>
    <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>معدل كادرات الفيديو:</value></data>
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>هذا الخيار يوضح معدل الكادرات المرجعية المستخدمة بواسطة كينوفيا لتشغيل الفيديو. يتم استخدامة عندما يحتوي الفيديو علي معدل كادرات غير صحيح أولا يمكن قراءتها بواسطة كينوفيا.</value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>إعادة ضبط </value></data>
-   <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>اظهار حدود العلامة </value></data>
-   <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>اظهار عناوين الصور الرئيسية</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>اظهار المسار</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>القياس:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>لايوجد</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>مسافه</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>سرعة</value></data>
-   <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>الوضع:</value></data>
-   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>مسار</value></data>
-   <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>نمط:</value></data>
-   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>اعدادت المسار</value></data>
-   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>مسار الكامل</value></data>
-   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>مقطع المسار حول الصورة الحالية</value></data>
-   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>المسمي المرافق للمسار</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>الحجم الحقيقي للمقطع:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>معايرة الخط</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>خطة المعايرة</value></data>
@@ -211,17 +228,17 @@
    <data name="DrawingName_Archery" xml:space="preserve"><value>وضع الرماية </value></data>
    <data name="DrawingName_AngleToVertical" xml:space="preserve"><value>الزاوية الي الاتجاه العمودي</value></data>
    <data name="DrawingName_AngleToHorizontal" xml:space="preserve"><value>زاوية إلى الاتجاه أفقي</value></data>
-   <data name="DrawingName_DistanceHorizontal" xml:space="preserve"><value>المسافة (افقية)</value></data>
+   <data name="DrawingName_DistanceHorizontal" xml:space="preserve"><value>المسافة الافقية</value></data>
    <data name="DrawingName_HumanModel" xml:space="preserve"><value>نموذج الإنسان</value></data>
-   <data name="DrawingName_HumanModel2" xml:space="preserve"><value>نموذج الإنسان (2)</value></data>
-   <data name="DrawingName_TestGrid" xml:space="preserve"><value>اختبار الشبكة للكاميرا</value></data>
+   <data name="DrawingName_HumanModel2" xml:space="preserve"><value>نموذج الإنسان 2 </value></data>
+   <data name="DrawingName_TestGrid" xml:space="preserve"><value>شبكة اختبار الكاميرا</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>لا يمكن الاتصال إلى جهاز الفيديو</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>لا يمكن العثور على أي جهاز للاتصال. \n الرجاء التأكد من توصيل الجهاز بشكل صحيح إلى الكمبيوتر.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>الكتابة علي ملف</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>الملف {0} موجود بالفعل. \n هل تريد استبداله؟</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>اسم الملف غير صالح</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>اسم الملف يحتوي على أحرف غير صالحة \ n لا يمكن أن يحتوي اسم الملف على أي من الأحرف التالية: \n \ /: *؟ "&lt;&gt;</value></data>
-   <data name="Error_SaveDiaporama" xml:space="preserve"><value>.غير قادر علي إنشاء عرض للشرائح - Kinovea</value></data>
+   <data name="Error_SaveDiaporama" xml:space="preserve"><value>كينوفيا - غير قادر علي إنشاء عرض للشرائح. </value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>عرض الشرائح هو سلسلة من الصور الرئيسية محفوظة في شكل شريط فيديو. \ n الرجاء إضافة بعض الصور الرئيسية قبل إنشاء عرض الشرائح.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>كينوفيا - غير قادر علي إنشاء فيديو مؤقت. </value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>تحتاج إلى إضافة بعض الصور الرئيسية قبل استخدام هذه الخاصية.</value></data>
@@ -248,7 +265,7 @@
    <data name="Generic_GridDivisionsPicker" xml:space="preserve"><value>أقسام:</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>حجم الخط:</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>العرض:</value></data>
-   <data name="Generic_Opacity" xml:space="preserve"><value>غموض</value></data>
+   <data name="Generic_Opacity" xml:space="preserve"><value>الغموض</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>حجم:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>حفظ</value></data>
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>شكل الخط:</value></data>
@@ -266,7 +283,7 @@
    <data name="FileProperty_CreationTime" xml:space="preserve"><value>زمن الانشاء</value></data>
    <data name="FileProperty_HasKva" xml:space="preserve"><value>ملف Kva</value></data>
    <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
-   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG صور (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap صور (*.bmp)|*.bmp</value></data>
+   <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG صور (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG صور (*.png)|*.png|Bitmap صور (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>الملفات المدعومة (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
@@ -274,7 +291,7 @@
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>تم تعديل الصور الرئيسية. \ n هل تريد حفظ بيانات الصور الرئيسية قبل الاغلاق؟</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>لم يتم حفظ بيانات الصور الرئيسية</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>تأخير العرض بـ: {0: 0} ثانية</value></data>
-   <data name="lblInfo_Text" xml:space="preserve"><value>التحكمات الشائعة:</value></data>
+   <data name="lblInfo_Text" xml:space="preserve"><value>التحكم العام :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>المدة</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>بداية</value></data>
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>سرعة :</value></data>
@@ -322,9 +339,9 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>شاشة للالتقاط وشاشة للعرض</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>شاشتين للعرض</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>حواف فقط...</value></data>
-   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
-   <data name="mnuExportODF" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
-   <data name="mnuExportMSXML" xml:space="preserve"><value>XHTML</value></data>
+   
+   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
+   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>مسارات إلى نص بسيط</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>تنسيق الصورة</value></data>
@@ -358,13 +375,13 @@
    <data name="mnuShowMeasure" xml:space="preserve"><value>عرض القياس</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>ثبات</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>انهاء تحرير المسار</value></data>
-   <data name="mnuSVGTools" xml:space="preserve"><value>مرجع الملاحظة</value></data>
+   <data name="mnuSVGTools" xml:space="preserve"><value>ملاحظات مرجعية</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>تبديل مواضع الفيديو</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>حذف ملف</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>إعادة تسمية ملف</value></data>
    <data name="mnuThumbnailLocate" xml:space="preserve"><value>العثور علي ملف في متصفح الويندوز</value></data>
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>شغل الفيديو</value></data>
-   <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>إظهار / إخفاء تحكم شائعة</value></data>
+   <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>إظهار / إخفاء التحكم العام</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>تتبع المسار</value></data>
    <data name="mnuCoordinateSystem" xml:space="preserve"><value>نظام الإحداثيات</value></data>
    <data name="mnuCoordinateSystemShowAxis" xml:space="preserve"><value>محاور</value></data>
@@ -424,7 +441,7 @@
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>تعيين الكادر الأخير من منطقة العامل إلى الكادر الحالي</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>اظهار التعليقات</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>تغير سرعة العرض</value></data>
-   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>حفظ كل الصور إلى صورة مركبة</value></data>
+   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>حفظ كل الصور في صورة مركبة</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>حفظ كلا الفيديوهين في فيديو مركب</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>اعداد منطقة العمل</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>حواف فقط ...</value></data>

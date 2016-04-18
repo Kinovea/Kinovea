@@ -376,6 +376,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time (ms).
+        /// </summary>
+        internal static string DataAnalysis_TimeAxisMilliseconds {
+            get {
+                return ResourceManager.GetString("DataAnalysis_TimeAxisMilliseconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Title:.
         /// </summary>
         internal static string DataAnalysis_Title {
@@ -682,29 +691,83 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show the Target Marker.
+        ///   Looks up a localized string similar to Display rotation circle.
         /// </summary>
-        internal static string dlgConfigureTrajectory_chkShowTarget {
+        internal static string dlgConfigureTrajectory_CheckDisplayRotationCircle {
             get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_chkShowTarget", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureTrajectory_CheckDisplayRotationCircle", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Key Images Titles.
+        ///   Looks up a localized string similar to Acceleration.
         /// </summary>
-        internal static string dlgConfigureTrajectory_chkShowTitles {
+        internal static string dlgConfigureTrajectory_ExtraData_Acceleration {
             get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_chkShowTitles", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_Acceleration", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Path.
+        ///   Looks up a localized string similar to Angular acceleration.
         /// </summary>
-        internal static string dlgConfigureTrajectory_chkShowTrajectory {
+        internal static string dlgConfigureTrajectory_ExtraData_AngularAcceleration {
             get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_chkShowTrajectory", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_AngularAcceleration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Angular displacement.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_AngularDisplacement {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_AngularDisplacement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Angular velocity.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_AngularVelocity {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_AngularVelocity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Centripetal acceleration.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_CentripetalAcceleration {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_CentripetalAcceleration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizontal acceleration.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_HorizontalAcceleration {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_HorizontalAcceleration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizontal position.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_HorizontalPosition {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_HorizontalPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizontal velocity.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_HorizontalVelocity {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_HorizontalVelocity", resourceCulture);
             }
         }
         
@@ -718,6 +781,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Position.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_Position {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_Position", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Speed.
         /// </summary>
         internal static string dlgConfigureTrajectory_ExtraData_Speed {
@@ -727,11 +799,47 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Distance.
+        ///   Looks up a localized string similar to Total distance.
         /// </summary>
         internal static string dlgConfigureTrajectory_ExtraData_TotalDistance {
             get {
                 return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_TotalDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical acceleration.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_VerticalAcceleration {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_VerticalAcceleration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical position.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_VerticalPosition {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_VerticalPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical velocity.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_VerticalVelocity {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_VerticalVelocity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identification.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_grpIdentification {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_grpIdentification", resourceCulture);
             }
         }
         
@@ -745,65 +853,110 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mode :.
+        ///   Looks up a localized string similar to Marker:.
         /// </summary>
-        internal static string dlgConfigureTrajectory_lblMode {
+        internal static string dlgConfigureTrajectory_LabelMarker {
             get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_lblMode", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureTrajectory_LabelMarker", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path.
+        ///   Looks up a localized string similar to Visibility:.
         /// </summary>
-        internal static string dlgConfigureTrajectory_ModeTrajectory {
+        internal static string dlgConfigureTrajectory_LabelVisibility {
             get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_ModeTrajectory", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureTrajectory_LabelVisibility", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Complete Path.
+        ///   Looks up a localized string similar to Circle.
         /// </summary>
-        internal static string dlgConfigureTrajectory_RadioComplete {
+        internal static string dlgConfigureTrajectory_MarkerCircle {
             get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_RadioComplete", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureTrajectory_MarkerCircle", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path section around current image.
+        ///   Looks up a localized string similar to Cross.
         /// </summary>
-        internal static string dlgConfigureTrajectory_RadioFocus {
+        internal static string dlgConfigureTrajectory_MarkerCross {
             get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_RadioFocus", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureTrajectory_MarkerCross", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Label following the Path.
+        ///   Looks up a localized string similar to Target.
         /// </summary>
-        internal static string dlgConfigureTrajectory_RadioLabel {
+        internal static string dlgConfigureTrajectory_MarkerTarget {
             get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_RadioLabel", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureTrajectory_MarkerTarget", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Style :.
-        /// </summary>
-        internal static string dlgConfigureTrajectory_Style {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_Style", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure Path.
+        ///   Looks up a localized string similar to Configure trajectory tool.
         /// </summary>
         internal static string dlgConfigureTrajectory_Title {
             get {
                 return ResourceManager.GetString("dlgConfigureTrajectory_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tracking.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_Tracking {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_Tracking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object window:.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_Tracking_ObjectWindow {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_Tracking_ObjectWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search window:.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_Tracking_SearchWindow {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_Tracking_SearchWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Complete.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_VisibilityComplete {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_VisibilityComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Label only.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_VisibilityLabelOnly {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_VisibilityLabelOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One second.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_VisibilityOneSecond {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_VisibilityOneSecond", resourceCulture);
             }
         }
         
