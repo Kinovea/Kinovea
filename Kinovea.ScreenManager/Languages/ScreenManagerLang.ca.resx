@@ -94,23 +94,23 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Mostrar les pantalles</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Intercanviar les pantalles</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Mostra/Amaga els controls comuns</value></data>
+   <data name="DataAnalysis" xml:space="preserve"><value>Anàlisi de ddades</value></data>
+   <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>Gràfica</value></data>
+   <data name="DataAnalysis_Labels" xml:space="preserve"><value>Etiquetas</value></data>
+   <data name="DataAnalysis_Title" xml:space="preserve"><value>Títol:</value></data>
+   <data name="DataAnalysis_XaxisLabel" xml:space="preserve"><value>Eix X:</value></data>
+   <data name="DataAnalysis_XaxisDefaultPoints" xml:space="preserve"><value>Eix X</value></data>
+   <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>Eix Y:</value></data>
+   <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve"><value>Eix Y</value></data>
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="DataAnalysis_ScatterPlot" xml:space="preserve"><value>Diagrama de dispersió</value></data>
+   <data name="DataAnalysis_CalibrationPlane" xml:space="preserve"><value>Pla de calibració</value></data>
+   <data name="DataAnalysis_ExportGraph" xml:space="preserve"><value>Exportar la gràfica</value></data>
+   <data name="DataAnalysis_Pixels" xml:space="preserve"><value>píxels</value></data>
+   <data name="DataAnalysis_SaveToFile" xml:space="preserve"><value>Desar en un arxiu</value></data>
+   <data name="DataAnalysis_ExportData" xml:space="preserve"><value>Exportar les dades</value></data>
+   <data name="DataAnalysis_DataSource" xml:space="preserve"><value>Orígen de les dades</value></data>
+   <data name="DataAnalysis_DataLabel" xml:space="preserve"><value>Dades:</value></data>
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Colors</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Perfil de colors</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Restablir el perfil de colors per defecte</value></data>
@@ -120,7 +120,7 @@
    <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Etiqueta:</value></data>
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configurar el Cronòmetre</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurar el dibuix</value></data>
-   
+   <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Nom</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Sempre visible</value></data>
    <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Utilitzar el valor per defecte</value></data>
    <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Activar la persistència</value></data>
@@ -130,13 +130,13 @@
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configurar la graella</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configurar l'opacitat</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacitat : {0:0}%</value></data>
-   
-   
-   
-   
-   
-   
-   
+   <data name="dlgTimebase_Title" xml:space="preserve"><value>Configurar la velocitat del vídeo</value></data>
+   <data name="dlgTimebase_GroupCapture" xml:space="preserve"><value>Càmera d'alta velocitat</value></data>
+   <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Freqüència de captura</value></data>
+   <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Aquesta opció estableix la diferència entre la velocitat del vídeo i el temps real. Afecta a els etiquetes que contenen temps i a les mesures cinemàtiques. Useu-la quan el vídeo ha estat filmat a alta velocitat.</value></data>
+   <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>Fotogrames per segon llegits del vídeo</value></data>
+   <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Freqüència del vídeo</value></data>
+   <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Aquesta opció estableix els fotogrames per segon usats pel Kinovea per reproduir el vídeo. Useu-la quan el vídeo contingui el paràmetre de fotogrames per segon erroni o quan el Kinovea no pugui llegir-lo.</value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Restablir</value></data>
    
    
@@ -189,10 +189,10 @@
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Carregar dades de imatges clau</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Exportar només les imatges clau.</value></data>
    <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Total : {0:0} imatges</value></data>
-   
-   
-   
-   
+   <data name="dlgRafaleExport_ExportAll" xml:space="preserve"><value>Exportar totes les imatges</value></data>
+   <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve"><value>Exportar una de cada {0} imatges</value></data>
+   <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve"><value>Exportar una imatge cada {0:0.00}s.</value></data>
+   <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve"><value>Exportar una imatge cada {0:0}ms.</value></data>
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Desar una seqüència d'imatges</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Tenir en compte l'Slow Motion (Actual =</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opcions</value></data>
@@ -205,33 +205,33 @@
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Desar les dades de les imatges clau</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Desar la seqüència d'imatges</value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Desar el vídeo</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Calibratge de la càmera</value></data>
+   <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Coeficients de distorsió</value></data>
+   <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve"><value>Paràmetres intrínsecs</value></data>
+   <data name="dlgCameraCalibration_CalibrateCamera" xml:space="preserve"><value>Calibrar la càmera</value></data>
+   <data name="dlgCameraCalibration_Distortion" xml:space="preserve"><value>Distorsió</value></data>
+   <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve"><value>Carregar un perfil de calibratge</value></data>
+   <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Desar el perfil de calibratge</value></data>
+   <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Fletxa – Puntejada</value></data>
+   <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Fletxa – Ziga-zaga</value></data>
+   <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Fletxa – Corba</value></data>
+   <data name="DrawingName_ArrowPolyline" xml:space="preserve"><value>Fletxa – Polilínea</value></data>
+   <data name="DrawingName_ArrowPolylineDash" xml:space="preserve"><value>Fletxa – Polilínia puntejada</value></data>
+   <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve"><value>Fletxa – Polilínia ziga-zaga</value></data>
+   <data name="DrawingName_Polyline" xml:space="preserve"><value>Polilínia</value></data>
+   <data name="DrawingName_DistortionGrid" xml:space="preserve"><value>Graella de distorsió</value></data>
+   <data name="DrawingName_Goniometer" xml:space="preserve"><value>Goniòmetre</value></data>
+   <data name="DrawingName_Posture" xml:space="preserve"><value>Postura</value></data>
+   <data name="DrawingName_Bikefit" xml:space="preserve"><value>Postura de bicicleta</value></data>
+   <data name="DrawingName_Profile" xml:space="preserve"><value>Perfil</value></data>
+   <data name="DrawingName_Genu" xml:space="preserve"><value>Tren inferior</value></data>
+   <data name="DrawingName_Archery" xml:space="preserve"><value>Tir amb arc</value></data>
+   <data name="DrawingName_AngleToVertical" xml:space="preserve"><value>Angle a la vertical</value></data>
+   <data name="DrawingName_AngleToHorizontal" xml:space="preserve"><value>Angle a l'horitzontal</value></data>
+   <data name="DrawingName_DistanceHorizontal" xml:space="preserve"><value>Distància horitzontal</value></data>
+   <data name="DrawingName_HumanModel" xml:space="preserve"><value>Model humà</value></data>
+   <data name="DrawingName_HumanModel2" xml:space="preserve"><value>Model humà (2)</value></data>
+   <data name="DrawingName_TestGrid" xml:space="preserve"><value>Graella de test de càmera</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>No s'ha pogut connectar al dispositiu de vídeo</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>No s'ha trobat cap dispositiu al qual connectar. Si us plau, asseguri's de que el dispositiu està degudament endollat. </value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobreescriure l'arixiu</value></data>
@@ -255,7 +255,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Aparença</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Aplicar</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Fletxes :</value></data>
-   
+   <data name="Generic_Curved" xml:space="preserve"><value>Corba:</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Tancar</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color :</value></data>
@@ -272,16 +272,16 @@
    <data name="Generic_Image" xml:space="preserve"><value>Imatge</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Vídeo</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Desar l'imatge</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="Generic_File" xml:space="preserve"><value>Fitxer</value></data>
+   <data name="Generic_Open" xml:space="preserve"><value>Obrir</value></data>
+   <data name="Generic_Import" xml:space="preserve"><value>Importar</value></data>
+   <data name="Generic_Restore" xml:space="preserve"><value>Restaurar paràmetres per defecte</value></data>
+   <data name="Generic_Quit" xml:space="preserve"><value>Sortir</value></data>
+   <data name="FileProperty_Size" xml:space="preserve"><value>Mesura</value></data>
+   <data name="FileProperty_Framerate" xml:space="preserve"><value>Freqüència d'imatges</value></data>
+   <data name="FileProperty_Duration" xml:space="preserve"><value>Duració</value></data>
+   <data name="FileProperty_CreationTime" xml:space="preserve"><value>Data de creació</value></data>
+   <data name="FileProperty_HasKva" xml:space="preserve"><value>Arxiu Kva</value></data>
    <data name="FileFilter_XML" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>Imatges JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Imatges PNG (*.png)|*.png|Imatges Bitmap (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>Tots els formats suportats(*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
@@ -326,9 +326,9 @@
    <data name="mnuChronoStart" xml:space="preserve"><value>Inicia el Cronòmetre</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Atura el Cronòmetre</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Tanca aquesta finestra</value></data>
-   
-   
-   
+   <data name="mnuCopyToClipboard" xml:space="preserve"><value>Copiar al porta-retalls</value></data>
+   <data name="mnuCopyImageToClipboard" xml:space="preserve"><value>Copiar l'imatge al porta-retalls</value></data>
+   <data name="mnuDataAnalysis" xml:space="preserve"><value>Anàlisi de dades...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistència...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configurar la visualització de la trajectòria</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Des-entrellaçar</value></data>
@@ -369,7 +369,7 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar la mesura...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar...</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Enviar l'imatge a l'altre vídeo</value></data>
-   
+   <data name="mnuTimebase" xml:space="preserve"><value>Configurar la velocitat del video</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Ressalta els contorns</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Mostrar coordenades</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar mesura</value></data>
@@ -379,7 +379,7 @@
    <data name="mnuSwapScreens" xml:space="preserve"><value>Inverteix la posició dels vídeos</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Suprimeix l'arxiu</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Reanomena l'arxiu</value></data>
-   
+   <data name="mnuThumbnailLocate" xml:space="preserve"><value>Buscar l'arxiu en l'explorador de Windows</value></data>
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Reprodueix el vídeo</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Mostrar/Amagar els Controls Comuns</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Segueix la trajectòria</value></data>
@@ -388,9 +388,9 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Graella</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Graduacions</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Amagar</value></data>
-   
-   
-   
+   <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Finalitzar la polilínia aquí</value></data>
+   <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Finalitzar la polilínia al punt anterior</value></data>
+   <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Tancar aquest menú</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Colors emprats recentment:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Buit</value></data>
    <data name="statusBufferFill" xml:space="preserve"><value>Memòria Cau : {0}%</value></data>
