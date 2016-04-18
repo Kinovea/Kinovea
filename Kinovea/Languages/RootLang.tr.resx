@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Dili Değiştir</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Dosya Yöneticisini Göster/Gizle</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea Gnu Genel Kamu Lisansı sürüm 2 maddelerine tabidir.</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea aşağıda belirtilen yazılım bileşenleriyle beraber çalışır:</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Kinovea'nın çeviri, test, hatalardan arındırma, geliştirme süreçlerine yardımınızdan ya da desteğinizden memnuniyet duyarız.</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Yerelleştirmeler:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tüm Dosyalar (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Video Dosyasını Aç</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Capture</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin on bindesi</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Zaman Etiketleri</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasik + Kare sayıları</value></data>
-   
-   
-   
    
    
    

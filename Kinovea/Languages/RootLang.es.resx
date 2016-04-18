@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Cambiar Idioma</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Mostrar/Ocultar Explorador de Archivos</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea está sujeto a los términos de la licencia GNU General Public License versión 2.</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea trabaja en cooperación con los siguientes componentes:</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Usted es bienvenido a ayudar a traducir, probar, depurar, mejorar o cualquier otro tipo de soporte para Kinovea.</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Traducciones:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos los archivos (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Abrir un Video</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Captura</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Diez milésimas de una hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clásico + Número de imágenes</value></data>
-   
-   
-   
    
    
    

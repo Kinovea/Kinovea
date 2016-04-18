@@ -79,42 +79,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kinovea is subject to the terms of the Gnu General Public License version 2..
-        /// </summary>
-        internal static string dlgAbout_Info1 {
-            get {
-                return ResourceManager.GetString("dlgAbout_Info1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kinovea uses the following software components:.
-        /// </summary>
-        internal static string dlgAbout_Info2 {
-            get {
-                return ResourceManager.GetString("dlgAbout_Info2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You are welcome to help translate, test, debug, improve or otherwise support Kinovea..
-        /// </summary>
-        internal static string dlgAbout_Info3 {
-            get {
-                return ResourceManager.GetString("dlgAbout_Info3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Translations:.
-        /// </summary>
-        internal static string dlgAbout_Info4 {
-            get {
-                return ResourceManager.GetString("dlgAbout_Info4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to All files (*.*)|*.*.
         /// </summary>
         internal static string dlgOpenFile_Filter {

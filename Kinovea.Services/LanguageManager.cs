@@ -137,6 +137,10 @@ namespace Kinovea.Services
         {
             get { return languages["mk"]; }
         }
+        public static string Arabic
+        {
+            get { return Languages["ar"]; }
+        }
         #endregion
         
         private static Dictionary<string, string> languages = null;
@@ -145,6 +149,7 @@ namespace Kinovea.Services
         {
             // Alphabetical order by native name. (Check Wikipedia order if in doubt).
             languages = new Dictionary<string, string>();
+            languages.Add("ar", "العَرَبِية");
             languages.Add("ca", "Català");
             languages.Add("cs", "Čeština");
             languages.Add("da", "Dansk");

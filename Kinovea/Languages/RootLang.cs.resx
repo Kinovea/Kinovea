@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Změň jazyk</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Zobrazit/Skrýt File Explorer</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea odpovídá podmínkám General Public License verze 2. </value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea používá následující softwarové produkty:</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Vaše pomoc při překladu, testování, ladění, zlepšování programu Kinovea je vítána.</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Překlady:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Všechny soubory (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Otevřít video soubor</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Záznam</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Desetitisícina hodiny</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Časová razítka</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasické zobarzení + číslo snímku</value></data>
-   
-   
-   
    
    
    

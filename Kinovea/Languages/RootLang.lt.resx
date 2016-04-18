@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Pakeisti kalba</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Rodyti/slėpti dokumentų naršyklę</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea programai taikoma GNU General Public License 2 versijos sąlygos.</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea naudoja šias programinės įrangos komponentus:</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Kviečiame prisidėti išbandant, tobulinant programą Kinovea.</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Vertimai:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Visi dokumentai (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Atidaryti vaizdo dokumentą</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Įrašymas</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dešimt tūkstantoji valandos</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Laiko žyma</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Standartinis + Kadro numeriai</value></data>
-   
-   
-   
    
    
    
