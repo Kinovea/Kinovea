@@ -110,6 +110,7 @@
    
    
    
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Cores</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Perfil de Cores...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Voltar ao Perfil de Cores padrão.</value></data>
@@ -137,20 +138,36 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Resetar</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Mostrar Marcador Alvo</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Mostrar Título dos Quadros de Imagens</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Mostrar Caminho</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Medida:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Nenhum(a)</value></data>
-   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distância</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Velocidade</value></data>
-   <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Modo:</value></data>
-   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Caminho</value></data>
-   <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Estilo:</value></data>
-   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurar Trajetória</value></data>
-   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Trajetória Completa</value></data>
-   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Seleção da trajetória ao redor da imagem atual</value></data>
-   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Informação seguindo a Trajetória</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Tamanho real do segmento:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Calibrar medida</value></data>
    

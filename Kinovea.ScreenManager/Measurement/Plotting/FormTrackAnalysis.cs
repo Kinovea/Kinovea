@@ -176,24 +176,24 @@ namespace Kinovea.ScreenManager
             string da = metadata.CalibrationHelper.GetAngleAbbreviation();
             string va = metadata.CalibrationHelper.GetAngularVelocityAbbreviation();
 
-            AddPlot(kinematics.Xs, "Horizontal position", d, false);
-            AddPlot(kinematics.Ys, "Vertical position", d, false);
-            AddPlot(kinematics.TotalDistance, "Total distance", d, false);
-            AddPlot(kinematics.Speed, "Speed", v, true);
-            AddPlot(kinematics.HorizontalVelocity, "Horizontal velocity", v, false);
-            AddPlot(kinematics.VerticalVelocity, "Vertical velocity", v, false);
-            AddPlot(kinematics.Acceleration, "Acceleration", a, false);
-            AddPlot(kinematics.HorizontalAcceleration, "Horizontal acceleration", a, false);
-            AddPlot(kinematics.VerticalAcceleration, "Vertical acceleration", a, false);
-            AddPlot(kinematics.DisplacementAngle, "Angular displacement", da, false);
-            AddPlot(kinematics.AngularVelocity, "Angular velocity", va, false);
-            //AddPlot(kinematics.AngularAcceleration, "Angular acceleration", false);
-            //AddPlot(kinematics.CentripetalAcceleration, "Centripetal acceleration", false);
+            AddPlot(kinematics.Xs, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalPosition, d, false);
+            AddPlot(kinematics.Ys, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalPosition, d, false);
+            AddPlot(kinematics.TotalDistance, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance, d, false);
+            AddPlot(kinematics.Speed, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed, v, true);
+            AddPlot(kinematics.HorizontalVelocity, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity, v, false);
+            AddPlot(kinematics.VerticalVelocity, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalPosition, v, false);
+            AddPlot(kinematics.Acceleration, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Acceleration, a, false);
+            AddPlot(kinematics.HorizontalAcceleration, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalAcceleration, a, false);
+            AddPlot(kinematics.VerticalAcceleration, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalAcceleration, a, false);
+            AddPlot(kinematics.DisplacementAngle, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularDisplacement, da, false);
+            AddPlot(kinematics.AngularVelocity, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularVelocity, va, false);
+            //AddPlot(kinematics.AngularAcceleration, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularAcceleration, false);
+            //AddPlot(kinematics.CentripetalAcceleration, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_CentripetalAcceleration, false);
         }
 
         private void AddPlot(double[] data, string title, string abbreviation, bool selected)
         {
-            string t = "Time (ms)";
+            string t = ScreenManagerLang.DataAnalysis_TimeAxisMilliseconds;
             PlotModel model = CreatePlot(data, title, abbreviation, t);
 
             cmbDataSource.Items.Add(new PlotObject(title, model, data, abbreviation));
