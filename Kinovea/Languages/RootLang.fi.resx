@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Vaihda kieli</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Näytä/piilota Explorer</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea on Gnu General Public License versio 2:n alainen</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea on yhteensopiva seuraavien ohjelmistojen kanssa:</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Tervetuloa osallistumaan Kinovean kehittämiseen kielikäännösten, testaamisen, virheraportoinnin ja muun tuen kautta</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Käännökset:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Kaikki tiedostot (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Avaa videotiedosto</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Videotallennus</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tunnin kymmenestuhannesosa</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Aikaleimat</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassinen + kuvanumeroinnit</value></data>
-   
-   
-   
    
    
    

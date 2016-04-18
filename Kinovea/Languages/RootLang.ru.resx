@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Выберите язык</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Показать/Скрыть директории</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea - приложение, разработанное в соответствии с Gnu General Public License version 2.</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea использует следующие программные компоненты</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Вы можете помочь перевести, протестировать, улучшить или расширить возможности программы</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Перевод:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Все файлы (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Открыть видео файл</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Съемка</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десятитысячные часа</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Классический формат +номера кадров</value></data>
-   
-   
-   
    
    
    

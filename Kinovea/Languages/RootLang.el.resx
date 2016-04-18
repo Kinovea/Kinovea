@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Αλλαγή Γλώσσας</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Εμφάνιση/Απόκρυψη Εξερεύνησης Αρχείων</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Το Kinovea υπόκειται στους όρους της άδειας του Gnu General Public έκδοση 2.</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>Το Kinovea συνεργάζεται με τα ακόλουθα στοιχεία άλλων λογισμικών::</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Είστε ευπρόσδεκτοι να βοηθήσετε στην μετάφραση, δοκιμή, εκσφαλμάτωση (debug), βελτίωση ή άλλη υποστήριξη για το Kinovea.</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Μεταφράσεις:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Όλα τα αρχεία (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Άνοιγμα Αρχείου Video</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Αποτύπωση</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Δεκάδες Χιλιοστά της ώρας</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Χρονικά Σημάδια</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Κλασσικό + Αριθμητικά πλαίσια</value></data>
-   
-   
-   
    
    
    

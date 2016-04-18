@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Välj Språk</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Dölj/Visa Fil Utforskare</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea omfattas av vilkoren för Gnu General  Public License version 2.</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea använder följande mjukvaru  komponenter:</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Du är välkommen att hjälpa till att översätta,  testa, felsöka, förbättra eller stöda Kinovea</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Översättningar:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alla filer (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Öppna Video Fil</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Inspelning</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>tiotusendels timme</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tidsstämpel</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassiskt + Bildnummer</value></data>
-   
-   
-   
    
    
    

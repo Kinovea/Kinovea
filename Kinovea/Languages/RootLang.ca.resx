@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Canviar l'idioma</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Mostrar/amagar l'explorador d'arxius</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>El Kinovea està subjecte als termes de la llicència GNU General Public License versió 2</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>El Kinovea utilitza els següents component de programari</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Us convidem a contribuir en la traducció, testeig, millores o a donar suport al Kinovea</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Traduccioions:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tots els fitxers (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Obrir un arxiu de video</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Capturar</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deumilèssimes d'hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Marques de temps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classic + Número de fotogrames</value></data>
-   
-   
-   
    
    
    

@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Modifică limba</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Arată/Ascunde Exploratorul de fişiere</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea se supune termenilor Licenţei Publice Gnu versiunea 2.</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea funcţionează în cooperare cu urmatoarele componente software:</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Sunteţi invitaţii noştri dacă doriţi sa traduceţi, testaţi, corectaţi sau să îmbunătăţiţi în vreun fel Kinovea.</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Localizări:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Toate fişierele (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Deschide fişier video</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Captură</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zece miimi de oră</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Markeri timp</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clasic+Numarul cadrelor</value></data>
-   
-   
-   
    
    
    

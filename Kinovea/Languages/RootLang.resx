@@ -72,10 +72,6 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Change Language</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Show/Hide File Explorer</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea is subject to the terms of the Gnu General Public License version 2.</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea uses the following software components:</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>You are welcome to help translate, test, debug, improve or otherwise support Kinovea.</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Translations:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>All files (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Open Video File</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Capture</value></data>
@@ -184,9 +180,6 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Ten thousandth of an hour</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classic + Frame numbers</value></data>
-   
-   
-   
    
    
    
