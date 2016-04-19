@@ -78,13 +78,13 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Dibuixos</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>General</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Reproducció</value></data>
-   
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Esquerra</value></data>
+   <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Dreta</value></data>
+   <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Arrel:</value></data>
+   <data name="dlgPreferences_Capture_Subdir" xml:space="preserve"><value>Subdirectori:</value></data>
+   <data name="dlgPreferences_Capture_File" xml:space="preserve"><value>Arxiu:</value></data>
+   <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve"><value>Noms de les imatges</value></data>
+   <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Noms dels vídeos</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Format d'imatge</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Format de video</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Any</value></data>
