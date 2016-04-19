@@ -288,7 +288,7 @@
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="FileFilter_KVA" xml:space="preserve"><value>Киновеа видео анализа (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Клучните слики се модифицирани. Дали сакате да се зачуваат податоците од клучните слики пред затворање?</value></data>
+   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Клучните слики се модифицирани.\nДали сакате да се зачуваат податоците од клучните слики пред затворање?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Податотоците од клучните слики не се зачувани</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Одложен екран {0:0} с</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Заеднички контроли:</value></data>
