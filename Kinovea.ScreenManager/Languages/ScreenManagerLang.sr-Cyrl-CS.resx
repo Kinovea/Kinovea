@@ -233,18 +233,18 @@
    
    
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Није могуц́е повезивање са видео уређајем</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Ни један уређај за прикључивање није пронађен.\нМолимо уверите се да је уређај исправно прикључен за рачунар.</value></data>
+   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Ни један уређај за прикључивање није пронађен.\nМолимо уверите се да је уређај исправно прикључен за рачунар.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Замена датотека</value></data>
-   <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Датотека {0} већ постоји.\нДа ли желите да је замените?</value></data>
+   <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Датотека {0} већ постоји.\nДа ли желите да је замените?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Име датотеке није одговарајуће</value></data>
-   <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Име датотеке садржи неодговарајуће знакове.\нИме датотеке не може да садржи било који од следец́их знакова :\н \ / : * ? " &lt; &gt;</value></data>
+   <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Име датотеке садржи неодговарајуће знакове.\nИме датотеке не може да садржи било који од следец́их знакова :\n \ / : * ? " &lt; &gt;</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Није могуће направити пројекцију слајдова.</value></data>
-   <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Пројекција слајдова је низ кључних слика сачуваних у видео формату.\н Молимо додајте неке кључне слике пре генерисања пројекције слајдова .</value></data>
+   <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Пројекција слајдова је низ кључних слика сачуваних у видео формату.\nМолимо додајте неке кључне слике пре генерисања пројекције слајдова.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Није могуће зауставити видео</value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Потребно је да додате неке кључне слике пре коришћења ове функције.</value></data>
-   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Није могуц́е записати датотеку.\нБудите сигурни да имате права да пишете у жељеној фасцикли и да се та датотека тренутно не користи. </value></data>
+   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Није могуц́е записати датотеку.\nБудите сигурни да имате права да пишете у жељеној фасцикли и да се та датотека тренутно не користи. </value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Киновеа - Није могyће сачувати видео.</value></data>
-   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Није могуће сачувати видео.\нПокушајте поново са другим форматом.</value></data>
+   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Није могуће сачувати видео.\nПокушајте поново са другим форматом.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Напредовање :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Чување видео записа...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Извезене слике:</value></data>
@@ -288,7 +288,7 @@
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea video analiza (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Кључни слике су модификоване.\нДа ли желите да сачувате податке кључних слика пре затварања?</value></data>
+   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Кључни слике су модификоване.\nДа ли желите да сачувате податке кључних слика пре затварања?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Подаци кључних слика нису сачувани</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Кашњење приказа по: {0:0} s</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Заједничке контроле:</value></data>

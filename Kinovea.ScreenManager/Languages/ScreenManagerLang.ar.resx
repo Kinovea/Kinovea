@@ -237,12 +237,12 @@
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>الكتابة علي ملف</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>الملف {0} موجود بالفعل. \n هل تريد استبداله؟</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>اسم الملف غير صالح</value></data>
-   <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>اسم الملف يحتوي على أحرف غير صالحة \ n لا يمكن أن يحتوي اسم الملف على أي من الأحرف التالية: \n \ /: *؟ "&lt;&gt;</value></data>
+   <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>اسم الملف يحتوي على أحرف غير صالحة \n لا يمكن أن يحتوي اسم الملف على أي من الأحرف التالية: \n \ /: *؟ "&lt;&gt;</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>كينوفيا - غير قادر علي إنشاء عرض للشرائح. </value></data>
-   <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>عرض الشرائح هو سلسلة من الصور الرئيسية محفوظة في شكل شريط فيديو. \ n الرجاء إضافة بعض الصور الرئيسية قبل إنشاء عرض الشرائح.</value></data>
+   <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>عرض الشرائح هو سلسلة من الصور الرئيسية محفوظة في شكل شريط فيديو. \n الرجاء إضافة بعض الصور الرئيسية قبل إنشاء عرض الشرائح.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>كينوفيا - غير قادر علي إنشاء فيديو مؤقت. </value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>تحتاج إلى إضافة بعض الصور الرئيسية قبل استخدام هذه الخاصية.</value></data>
-   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>غير قادر على الكتابة علي الملف. \ n تأكد ان لديك الحق في الكتابة في المجلد المحدد، وأنه لم يتم استخدام الملف حاليا.</value></data>
+   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>غير قادر على الكتابة علي الملف. \n تأكد ان لديك الحق في الكتابة في المجلد المحدد، وأنه لم يتم استخدام الملف حاليا.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>كينوفيا - غير قادر على حفظ الفيديو. </value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>غير قادر على حفظ الفيديو. \n حاول مرة أخرى بصيغة مختلفة.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>تقدم :</value></data>
@@ -288,7 +288,7 @@
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
-   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>تم تعديل الصور الرئيسية. \ n هل تريد حفظ بيانات الصور الرئيسية قبل الاغلاق؟</value></data>
+   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>تم تعديل الصور الرئيسية.\nهل تريد حفظ بيانات الصور الرئيسية قبل الاغلاق؟</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>لم يتم حفظ بيانات الصور الرئيسية</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>تأخير العرض بـ: {0: 0} ثانية</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>التحكم العام :</value></data>
