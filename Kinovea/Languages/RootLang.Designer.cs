@@ -160,7 +160,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File :.
+        ///   Looks up a localized string similar to File:.
         /// </summary>
         internal static string dlgPreferences_Capture_File {
             get {
@@ -178,7 +178,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Framerate (fps) :.
+        ///   Looks up a localized string similar to Framerate (fps):.
         /// </summary>
         internal static string dlgPreferences_Capture_lblForcedFramerate {
             get {
@@ -340,7 +340,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Root :.
+        ///   Looks up a localized string similar to Root:.
         /// </summary>
         internal static string dlgPreferences_Capture_Root {
             get {
@@ -349,7 +349,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sub directory :.
+        ///   Looks up a localized string similar to Sub directory:.
         /// </summary>
         internal static string dlgPreferences_Capture_Subdir {
             get {
@@ -687,6 +687,15 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Player_UnitsAngularVelocity {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsAngularVelocity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom length unit :.
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitsCustom {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitsCustom", resourceCulture);
             }
         }
         

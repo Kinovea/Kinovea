@@ -303,6 +303,7 @@
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Palce</value></data>
    <data name="LengthUnit_Feet" xml:space="preserve"><value>Stopy</value></data>
    <data name="LengthUnit_Yards" xml:space="preserve"><value>Yardy</value></data>
+   
    <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: nepodporovaný záznam videa</value></data>
    <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: problém s dekodérem</value></data>
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: typ souboru není podporován.</value></data>

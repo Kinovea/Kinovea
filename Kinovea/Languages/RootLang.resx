@@ -86,12 +86,12 @@
    <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Display synchronization</value></data>
    <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Camera frame</value></data>
    <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Forced framerate</value></data>
-   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Framerate (fps) :</value></data>
+   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Framerate (fps):</value></data>
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Left</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Right</value></data>
-   <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Root :</value></data>
-   <data name="dlgPreferences_Capture_Subdir" xml:space="preserve"><value>Sub directory :</value></data>
-   <data name="dlgPreferences_Capture_File" xml:space="preserve"><value>File :</value></data>
+   <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Root:</value></data>
+   <data name="dlgPreferences_Capture_Subdir" xml:space="preserve"><value>Sub directory:</value></data>
+   <data name="dlgPreferences_Capture_File" xml:space="preserve"><value>File:</value></data>
    <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve"><value>Image naming</value></data>
    <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Video naming</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Image format:</value></data>
@@ -151,6 +151,7 @@
    <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve"><value>Revolutions per minute ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve"><value>Degrees per second squared ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve"><value>Radians per second squared ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve"><value>Custom length unit :</value></data>
    <data name="dlgPreferences_Player_Tracking" xml:space="preserve"><value>Tracking</value></data>
    <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve"><value>Default tracking parameters</value></data>
    <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve"><value>Object window:</value></data>

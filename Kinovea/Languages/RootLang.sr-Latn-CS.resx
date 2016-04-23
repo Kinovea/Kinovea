@@ -163,6 +163,7 @@
    
    
    
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Učitavanje korisničkog interfejsa...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Otkaži</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Odustani</value></data>

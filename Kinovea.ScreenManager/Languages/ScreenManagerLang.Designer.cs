@@ -2149,6 +2149,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Percentage.
+        /// </summary>
+        internal static string LengthUnit_Percentage {
+            get {
+                return ResourceManager.GetString("LengthUnit_Percentage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yards.
         /// </summary>
         internal static string LengthUnit_Yards {

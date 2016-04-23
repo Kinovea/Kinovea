@@ -26,6 +26,7 @@ using System.Threading;
 using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -62,7 +63,16 @@ namespace Kinovea.ScreenManager
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Inches + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Inches) + ")");
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Feet + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Feet) + ")");
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Yards + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Yards) + ")");
-            cbUnit.Items.Add("Percentage" + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Percentage) + ")");
+
+            string customLengthUnit = PreferencesManager.PlayerPreferences.CustomLengthUnit;
+            string customLengthAbbreviation = PreferencesManager.PlayerPreferences.CustomLengthAbbreviation;
+            if (string.IsNullOrEmpty(customLengthUnit))
+            {
+                customLengthUnit = ScreenManagerLang.LengthUnit_Percentage;
+                customLengthAbbreviation = "%";
+            }
+
+            cbUnit.Items.Add(customLengthUnit + " (" + customLengthAbbreviation + ")");
         }
         private void InitializeValues()
         {

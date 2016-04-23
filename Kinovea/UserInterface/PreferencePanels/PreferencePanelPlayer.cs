@@ -65,6 +65,8 @@ namespace Kinovea.Root
         private AngleUnit angleUnit;
         private AngularVelocityUnit angularVelocityUnit;
         private AngularAccelerationUnit angularAccelerationUnit;
+        private string customLengthUnit;
+        private string customLengthAbbreviation;
         private bool syncLockSpeeds;
         private int workingZoneSeconds;
         private int workingZoneMemory;
@@ -101,6 +103,8 @@ namespace Kinovea.Root
             angleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
             angularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit;
             angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
+            customLengthUnit = PreferencesManager.PlayerPreferences.CustomLengthUnit;
+            customLengthAbbreviation = PreferencesManager.PlayerPreferences.CustomLengthAbbreviation;
             
             syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
             
@@ -109,18 +113,27 @@ namespace Kinovea.Root
         }
         private void InitPage()
         {
-            // General tab
+            InitTabGeneral();
+            InitTabUnits();
+            InitTabMemory();
+        }
+
+        private void InitTabGeneral()
+        {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDeinterlace.Text = RootLang.dlgPreferences_Player_DeinterlaceByDefault;
             chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
-            chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds; 
-                
+            chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
+
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
             lblImageFormat.Text = RootLang.dlgPreferences_Player_lblImageFormat;
             cmbImageFormats.Items.Add(RootLang.dlgPreferences_Player_FormatAuto);
             cmbImageFormats.Items.Add(RootLang.dlgPreferences_Player_Format43);
             cmbImageFormats.Items.Add(RootLang.dlgPreferences_Player_Format169);
-            
+        }
+
+        private void InitTabUnits()
+        {
             // Units tab
             tabUnits.Text = RootLang.dlgPreferences_Player_tabUnits;
             lblTimeMarkersFormat.Text = RootLang.dlgPreferences_Player_UnitTime;
@@ -132,7 +145,7 @@ namespace Kinovea.Root
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
             //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps); // Debug purposes.
-            
+
             // Combo Speed units (MUST be filled in the order of the enum)
             lblSpeedUnit.Text = RootLang.dlgPreferences_Player_UnitsSpeed;
             cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.MetersPerSecond)));
@@ -157,23 +170,29 @@ namespace Kinovea.Root
             cmbAngularAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsDegreesPerSecondSquared, UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.DegreesPerSecondSquared)));
             cmbAngularAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRadiansPerSecondSquared, UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.RadiansPerSecondSquared)));
 
+            lblCustomLength.Text = RootLang.dlgPreferences_Player_UnitsCustom;
+        }
+
+        private void InitTabMemory()
+        {
             // Memory tab
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
             grpSwitchToAnalysis.Text = RootLang.dlgPreferences_Player_GroupAnalysisMode;
             lblWorkingZoneLogic.Text = RootLang.dlgPreferences_Player_lblLogicAnd;
-            
+
             // Fill in initial values.            
             chkDeinterlace.Checked = deinterlaceByDefault;
             chkLockSpeeds.Checked = syncLockSpeeds;
             chkInteractiveTracker.Checked = interactiveFrameTracker;
             SelectCurrentUnits();
             SelectCurrentImageFormat();
-            
+
             trkWorkingZoneSeconds.Value = workingZoneSeconds;
             lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
             trkWorkingZoneMemory.Value = workingZoneMemory;
             lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneMemory, trkWorkingZoneMemory.Value);
         }
+
         private void SelectCurrentUnits()
         {
             int time = (int)timecodeFormat;
@@ -193,6 +212,18 @@ namespace Kinovea.Root
 
             int angularAcceleration = (int)angularAccelerationUnit;
             cmbAngularAccelerationUnit.SelectedIndex = angularAcceleration < cmbAngularAccelerationUnit.Items.Count ? angularAcceleration : 0;
+
+            if (string.IsNullOrEmpty(customLengthUnit))
+            {
+                tbCustomLengthUnit.Text = RootLang.dlgPreferences_Player_TrackingPercentage;
+                tbCustomLengthAb.Text = "%";
+            }
+            else
+            {
+                tbCustomLengthUnit.Text = customLengthUnit;
+                tbCustomLengthAb.Text = customLengthAbbreviation;
+            }
+
         }
         
         private void SelectCurrentImageFormat()
@@ -253,7 +284,14 @@ namespace Kinovea.Root
             lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneMemory, trkWorkingZoneMemory.Value);
             workingZoneMemory = trkWorkingZoneMemory.Value;
         }
-        
+        private void tbCustomLengthUnit_TextChanged(object sender, EventArgs e)
+        {
+            customLengthUnit = tbCustomLengthUnit.Text;
+        }
+        private void tbCustomLengthAb_TextChanged(object sender, EventArgs e)
+        {
+            customLengthAbbreviation = tbCustomLengthAb.Text;
+        }
         #endregion
         
         public void CommitChanges()
@@ -267,9 +305,21 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.AccelerationUnit = accelerationUnit;
             PreferencesManager.PlayerPreferences.AngleUnit = angleUnit;
             PreferencesManager.PlayerPreferences.AngularVelocityUnit = angularVelocityUnit;
-            PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;          
+            PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;
             PreferencesManager.PlayerPreferences.WorkingZoneSeconds = workingZoneSeconds;
             PreferencesManager.PlayerPreferences.WorkingZoneMemory = workingZoneMemory;
+
+            // Special case for the custom unit length.
+            if (customLengthUnit == RootLang.dlgPreferences_Player_TrackingPercentage)
+            {
+                PreferencesManager.PlayerPreferences.CustomLengthUnit = "";
+                PreferencesManager.PlayerPreferences.CustomLengthAbbreviation = "";
+            }
+            else
+            {
+                PreferencesManager.PlayerPreferences.CustomLengthUnit = customLengthUnit;
+                PreferencesManager.PlayerPreferences.CustomLengthAbbreviation = customLengthAbbreviation;
+            }
         }
     }
 }

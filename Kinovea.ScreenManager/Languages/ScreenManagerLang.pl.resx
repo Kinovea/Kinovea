@@ -303,6 +303,7 @@
    
    
    
+   
    <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Błąd przy próbie otwarcia pliku : nieobsługiwany strumień wideo.</value></data>
    <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Błąd przy próbie otwarcia pliku : problem podczas inicjalizacji dekodera.</value></data>
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Błąd przy próbie otwarcia pliku : typ pliku nie jest obsługiwany.</value></data>

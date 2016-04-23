@@ -64,6 +64,16 @@ namespace Kinovea.Services
             get { return angularAccelerationUnit; }
             set { angularAccelerationUnit = value; }
         }
+        public string CustomLengthUnit
+        {
+            get { return customLengthUnit; }
+            set { customLengthUnit = value; }
+        }
+        public string CustomLengthAbbreviation
+        {
+            get { return customLengthAbbreviation; }
+            set { customLengthAbbreviation = value; }
+        }
         public ImageAspectRatio AspectRatio
         {
             get { return aspectRatio; }
@@ -136,6 +146,8 @@ namespace Kinovea.Services
         private AngleUnit angleUnit = AngleUnit.Degree;
         private AngularVelocityUnit angularVelocityUnit = AngularVelocityUnit.DegreesPerSecond;
         private AngularAccelerationUnit angularAccelerationUnit = AngularAccelerationUnit.DegreesPerSecondSquared;
+        private string customLengthUnit = "";
+        private string customLengthAbbreviation = "";
         private ImageAspectRatio aspectRatio = ImageAspectRatio.Auto;
         private bool deinterlaceByDefault;
         private bool interactiveFrameTracker = true;
@@ -164,6 +176,8 @@ namespace Kinovea.Services
             writer.WriteElementString("AngleUnit", angleUnit.ToString());
             writer.WriteElementString("AngularVelocityUnit", angularVelocityUnit.ToString());
             writer.WriteElementString("AngularAccelerationUnit", angularAccelerationUnit.ToString());
+            writer.WriteElementString("CustomLengthUnit", customLengthUnit);
+            writer.WriteElementString("CustomLengthAbbreviation", customLengthAbbreviation); 
             writer.WriteElementString("AspectRatio", aspectRatio.ToString());
             writer.WriteElementString("DeinterlaceByDefault", deinterlaceByDefault ? "true" : "false");
             writer.WriteElementString("InteractiveFrameTracker", interactiveFrameTracker ? "true" : "false");
@@ -226,6 +240,12 @@ namespace Kinovea.Services
                         break;
                     case "AngularAccelerationUnit":
                         angularAccelerationUnit = (AngularAccelerationUnit)Enum.Parse(typeof(AngularAccelerationUnit), reader.ReadElementContentAsString());
+                        break;
+                    case "CustomLengthUnit":
+                        customLengthUnit = reader.ReadElementContentAsString();
+                        break;
+                    case "CustomLengthAbbreviation":
+                        customLengthAbbreviation = reader.ReadElementContentAsString();
                         break;
                     case "AspectRatio":
                         aspectRatio = (ImageAspectRatio) Enum.Parse(typeof(ImageAspectRatio), reader.ReadElementContentAsString());

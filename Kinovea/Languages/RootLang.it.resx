@@ -163,6 +163,7 @@
    
    
    
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Caricamento Interfaccia Utente... </value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annulla</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Esci</value></data>

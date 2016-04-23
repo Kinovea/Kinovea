@@ -151,6 +151,7 @@
    <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve"><value>Révolutions par minute ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve"><value>Degrés / seconde carrée ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve"><value>Radians / seconde carrée ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve"><value>Unité de distance personalisée :</value></data>
    <data name="dlgPreferences_Player_Tracking" xml:space="preserve"><value>Suivi</value></data>
    <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve"><value>Paramètres de suivi par défaut</value></data>
    <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve"><value>Fenêtre de l'objet :</value></data>
