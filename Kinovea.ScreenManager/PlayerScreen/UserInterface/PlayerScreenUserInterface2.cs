@@ -38,6 +38,7 @@ using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
 using Kinovea.Video;
+using System.Globalization;
 
 #endregion
 
@@ -1908,11 +1909,14 @@ namespace Kinovea.ScreenManager
         private void UpdateSpeedLabel()
         {
             double multiplier = timeMapper.GetRealtimeMultiplier(sldrSpeed.Value);
+            string speedValue = "";
 
             if (multiplier < 1.0)
-                lblSpeedTuner.Text = string.Format("{0} {1:0.##}%", ScreenManagerLang.lblSpeedTuner_Text, multiplier * 100);
+                speedValue = string.Format("{0:0.##}%", multiplier * 100);
             else
-                lblSpeedTuner.Text = string.Format("{0} {1:0.##}x", ScreenManagerLang.lblSpeedTuner_Text, multiplier);
+                speedValue = string.Format("{0:0.##}x", multiplier);
+
+            lblSpeedTuner.Text = string.Format(ScreenManagerLang.lblSpeedTuner_Text, speedValue);
         }
         private void RepositionSpeedControl()
         {

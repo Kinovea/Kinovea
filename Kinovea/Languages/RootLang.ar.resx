@@ -77,7 +77,7 @@
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>التقاط</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>الرسومات</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>عام</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>العرض</value></data>
+   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>اعادة العرض</value></data>
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>شمال</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>يمين</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>الاساسي :</value></data>
@@ -112,7 +112,7 @@
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>اكتشاف تلقائي</value></data>
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>التبديل الي وضع التحليل</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>الاستمرار</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>عدد الملفات في سجل التصفح: </value></data>
+   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>عدد الملفات في سجل التصفح:</value></data>
    <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>تهيئة الصورة الافتراضية:</value></data>
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>اللغة:</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>و</value></data>
@@ -156,7 +156,7 @@
    <data name="mnuEdit" xml:space="preserve"><value>تحرير</value></data>
    <data name="mnuFile" xml:space="preserve"><value>ملف</value></data>
    <data name="mnuFullScreen" xml:space="preserve"><value>شاشة كاملة</value></data>
-   <data name="mnuHelp" xml:space="preserve"><value>مساعدة </value></data>
+   <data name="mnuHelp" xml:space="preserve"><value>مساعدة</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>مساعدة كينوفيا…</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>الاخيرة</value></data>
    <data name="mnuHistoryReset" xml:space="preserve"><value>إعادة ضبط سجل التصفح</value></data>
@@ -178,7 +178,7 @@
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>مجموع ميكروثانية</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>مائة في الدقيقة</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>عشرة آلاف في الساعة</value></data>
-   <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>الطوابع الزمنية </value></data>
+   <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>الطوابع الزمنية</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>كلاسيكي + عدد الكادرات</value></data>
    
    

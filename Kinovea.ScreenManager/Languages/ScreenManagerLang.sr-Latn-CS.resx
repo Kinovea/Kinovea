@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>Zajedničke kontrole:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Trajanje</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Početak</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Brzina :</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Brzina : {0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Pozicija</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Radna zona:</value></data>
    <data name="LengthUnit_Millimeters" xml:space="preserve"><value>Milimetri</value></data>

@@ -78,7 +78,7 @@
    <data name="mnuVideoPlay" xml:space="preserve"><value>تشغيل فيديو</value></data>
    <data name="mnuVideoLocate" xml:space="preserve"><value>العثور علي ملف في متصفح الويندوز</value></data>
    <data name="mnuVideoDelete" xml:space="preserve"><value>حذف ملف</value></data>
-   <data name="tabExplorer" xml:space="preserve"><value>المتصفح </value></data>
+   <data name="tabExplorer" xml:space="preserve"><value>المتصفح</value></data>
    <data name="tabShortcuts" xml:space="preserve"><value>الاختصارات</value></data>
    
    

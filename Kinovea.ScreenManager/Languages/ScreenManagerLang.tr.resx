@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>Ortak Kontroller :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Süre</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Başlat</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Hız :</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Hız : {0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Konum</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Çalışma Alanı:</value></data>
    

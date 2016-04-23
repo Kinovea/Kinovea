@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>Controale comune :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Durata </value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Viteză :</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Viteză : {0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Poziţie</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Zonă de lucru:</value></data>
    
