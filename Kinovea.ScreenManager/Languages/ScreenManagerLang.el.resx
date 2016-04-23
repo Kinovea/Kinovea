@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>Κοινές Λειτουργίες :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Διάρκεια</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Αρχή</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Ταχύτητα :</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Ταχύτητα : {0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Θέση</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Ζώνη Εργασίας:</value></data>
    

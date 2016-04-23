@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>Standardkontroller:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Varighed</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Hastighed</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Hastighed : {0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Position</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Arbejdsområde:</value></data>
    

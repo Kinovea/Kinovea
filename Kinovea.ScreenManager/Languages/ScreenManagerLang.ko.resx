@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>공통 조절:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>기간</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>시작</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>속력:</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>속력: {0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>위치</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>작업영역:</value></data>
    

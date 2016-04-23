@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>Заеднички контроли:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Времетраење</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Старт</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Брзина:</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Брзина: {0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Позиција</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Работна Зона:</value></data>
    <data name="LengthUnit_Millimeters" xml:space="preserve"><value>Милиметри</value></data>

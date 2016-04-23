@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>常用控制 :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>时间</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>开始</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>速度</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>速度 :{0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>位置</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>工作区</value></data>
    

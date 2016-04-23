@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>共通コントロール:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>時間</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>スタート</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>スピード:</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>スピード: {0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>ポジション</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>作業範囲:</value></data>
    <data name="LengthUnit_Millimeters" xml:space="preserve"><value>ミリメートル</value></data>

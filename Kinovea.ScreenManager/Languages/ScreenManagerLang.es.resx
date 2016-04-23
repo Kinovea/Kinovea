@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>Controles Comunes :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duraciòn</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Principio</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Velocidad :</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Velocidad : {0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Posiciòn</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Espacio de Trabajo:</value></data>
    

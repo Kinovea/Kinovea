@@ -2077,7 +2077,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Speed :.
+        ///   Looks up a localized string similar to Speed : {0}.
         /// </summary>
         internal static string lblSpeedTuner_Text {
             get {

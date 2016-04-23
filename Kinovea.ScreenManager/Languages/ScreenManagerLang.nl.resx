@@ -294,7 +294,7 @@
    <data name="lblInfo_Text" xml:space="preserve"><value>Standaard bediening:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duur</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
-   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Snelheid :</value></data>
+   <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Snelheid : {0}</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Positie</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Werkgebied :</value></data>
    <data name="LengthUnit_Millimeters" xml:space="preserve"><value>Millimeters</value></data>
