@@ -71,20 +71,20 @@
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Wijzig de taal</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Toon/Verberg bestand verkenner</value></data>
+   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Toon/Verberg bestandsverkenner</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle bestanden (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Open een video bestand</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Opnemen</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Tekeningen</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Algemeen</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Afspelen</value></data>
-   
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Links</value></data>
+   <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Rechts</value></data>
+   <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Root :</value></data>
+   <data name="dlgPreferences_Capture_Subdir" xml:space="preserve"><value>Map :</value></data>
+   <data name="dlgPreferences_Capture_File" xml:space="preserve"><value>Bestand :</value></data>
+   <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve"><value>Afbeelding naamgeving</value></data>
+   <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Video naamgeving</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Afbeeldingstype :</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videotype :</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Jaar</value></data>
@@ -93,24 +93,24 @@
    <data name="dlgPreferences_Capture_PatternHour" xml:space="preserve"><value>Uur</value></data>
    <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Minuut</value></data>
    <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Seconde</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve"><value>Camera alias</value></data>
+   <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>Ingestelde framerate</value></data>
+   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>Ontvangen framerate</value></data>
+   <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>Contect variabelen</value></data>
+   <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>Context</value></data>
+   <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Macro</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Geheugen</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Toegewezen geheugen voor buffering van opname: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Altijd zichtbaar</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Toon tekening als de video speelt</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Sta Persistentie toe</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Altijd de-interlace toepassen bij het openen van nieuwe video</value></data>
-   
+   <data name="dlgPreferences_InteractiveFrameTracker" xml:space="preserve"><value>Aanpassen van afbeelding gedurende het bewegen van de cursor</value></data>
    <data name="dlgPreferences_SyncLockSpeeds" xml:space="preserve"><value>Verbind de snelheid-regelaars tijdens het vergelijken van de videos.</value></data>
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Forceer 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forceer 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Automatische Detectie</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Schakel naar Analyse functie</value></data>
+   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Schakel naar Analyse-modus</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistentie</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Aantal bestanden in historie:</value></data>
    <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Standaard beeldformaat:</value></data>
@@ -127,26 +127,26 @@
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mijl per uur ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knopen ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Voorkeuren…</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve"><value>Snelheid : </value></data>
+   <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve"><value>Versnelling :</value></data>
+   <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve"><value>Hoek :</value></data>
+   <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve"><value>Hoeksnelheid :</value></data>
+   <data name="dlgPreferences_Player_UnitsAngularAcceleration" xml:space="preserve"><value>Hoekversnelling :</value></data>
+   <data name="dlgPreferences_Player_UnitsMetersPerSecondSquared" xml:space="preserve"><value>Meters per seconde kwadraat ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsFeetPerSecondSquared" xml:space="preserve"><value>Voet per seconde kwadraat ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsDegrees" xml:space="preserve"><value>Graden ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsRadians" xml:space="preserve"><value>Radialen ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsDegreesPerSecond" xml:space="preserve"><value>Graden per seconde ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsRadiansPerSecond" xml:space="preserve"><value>Radialen per seconde ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve"><value>Omwentelingen per minuut ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve"><value>Graden per seconde kwadraat ({0})</value></data>
+   <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve"><value>Radialen per seconde kwadraat ({0})</value></data>
+   <data name="dlgPreferences_Player_Tracking" xml:space="preserve"><value>Volgen</value></data>
+   <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve"><value>Standaard traceer parameters</value></data>
+   <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve"><value>Voorwerpvenster :</value></data>
+   <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve"><value>Zoekvenster :</value></data>
+   <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve"><value>Percentage</value></data>
+   <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve"><value>Pixels</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laden Gebruikers Interface...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuleer</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Stop</value></data>
@@ -163,7 +163,7 @@
    <data name="mnuImage" xml:space="preserve"><value>Afbeelding</value></data>
    <data name="mnuLanguages" xml:space="preserve"><value>Taal</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
-   
+   <data name="mnuTools" xml:space="preserve"><value>Gereedschappen</value></data>
    <data name="mnuOpenFile" xml:space="preserve"><value>Open een video bestand...</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Opties</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Voorkeuren…</value></data>
@@ -175,10 +175,10 @@
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassiek (h:mm:ss:hondersten)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frame nummers</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Totaal millisecondes</value></data>
-   
+   <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Totaal microsecondes</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hondersten van een minuut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een uur</value></data>
-   <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
+   <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tijdsstempel</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassiek + Beeldnummers</value></data>
    
    
