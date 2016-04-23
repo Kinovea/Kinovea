@@ -72,12 +72,21 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>언어 변경</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>파일 탐색기 보이기/감추기</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>모든 파일들 (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>비디오 파일 열기</value></data>
-   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>캡처</value></data>
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>그림들</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>일반</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>재생</value></data>
+   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>캡처</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>그림들</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>일반</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>재생</value></data>
+   
+   
+   
+   
+   
    
    
    
@@ -101,32 +110,39 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>메모리</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>캡처 버퍼에 메모리 할당됨:{0}</value></data>
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>항상 보임</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>비디오 재생시 그림 보이기</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>지속 가능하게 함</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>새 비디오를 열때 항상 디인터레이싱을 가능하게 함.</value></data>
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>항상 보임</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>비디오 재생시 그림 보이기</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>지속 가능하게 함</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>새 비디오를 열때 항상 디인터레이싱을 가능하게 함.</value></data>
    
    
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>16:9로 만듬</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>4:3으로 만듬</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>자동 탐지</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>분석 모드로 전환</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>지속</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>히스토리 파일 수:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>기본 이미지 형식:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>언어:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>그리고</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>시간 표식 형식</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>작업 영역은 {0}MB보다 작은 메모리를 차지함.</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>작업 영역은 {0}초 보다 짧음.</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>그림들은 '키 이미지' 주변의 {0}이미지에 걸처 남아있는 것이 기본.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>속력 단위:</value></data>
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>16:9로 만듬</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>4:3으로 만듬</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>자동 탐지</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>분석 모드로 전환</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>지속</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>히스토리 파일 수:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>기본 이미지 형식:</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>언어:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>그리고</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>작업 영역은 {0}MB보다 작은 메모리를 차지함.</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>작업 영역은 {0}초 보다 짧음.</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>그림들은 '키 이미지' 주변의 {0}이미지에 걸처 남아있는 것이 기본.</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>초당 미터({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>시간당 킬로미터({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>초당 피트({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>시간당 마일({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>노트({0})</value></data>
-   <data name="dlgPreferences_Title" xml:space="preserve"><value>선호 사항들…</value></data>
+   <data name="dlgPreferences_Title" xml:space="preserve"><value>선호 사항들</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

@@ -66,7 +66,7 @@ namespace Kinovea.Root
             InitializeComponent();
             this.BackColor = Color.White;
             
-            description = RootLang.dlgPreferences_btnDrawings;
+            description = RootLang.dlgPreferences_tabDrawings;
             icon = Resources.drawings;
             
             ImportPreferences();
@@ -91,12 +91,12 @@ namespace Kinovea.Root
         }
         private void InitPage()
         {
-            tabGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
-            chkDrawOnPlay.Text = RootLang.dlgPreferences_chkDrawOnPlay;
+            tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
+            chkDrawOnPlay.Text = RootLang.dlgPreferences_Drawings_chkDrawOnPlay;
             
-            tabPersistence.Text = RootLang.dlgPreferences_grpPersistence;
-            chkEnablePersistence.Text = RootLang.dlgPreferences_chkEnablePersistence;
-            chkAlwaysVisible.Text = RootLang.dlgPreferences_chkAlwaysVisible;
+            tabPersistence.Text = RootLang.dlgPreferences_Drawings_tabPersistence;
+            chkEnablePersistence.Text = RootLang.dlgPreferences_Drawings_chkEnablePersistence;
+            chkAlwaysVisible.Text = RootLang.dlgPreferences_Drawings_chkAlwaysVisible;
             
             chkDrawOnPlay.Checked = drawOnPlay;
             chkEnablePersistence.Checked = defaultFading.Enabled;
@@ -104,7 +104,7 @@ namespace Kinovea.Root
             trkFading.Value = Math.Min(defaultFading.FadingFrames, trkFading.Maximum);
             chkAlwaysVisible.Checked = defaultFading.AlwaysVisible;
             EnableDisableFadingOptions();
-            lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);
+            lblFading.Text = String.Format(RootLang.dlgPreferences_Drawings_lblFading, trkFading.Value);
 
             tabTracking.Text = RootLang.dlgPreferences_Player_Tracking;
             lblDescription.Text = RootLang.dlgPreferences_Player_TrackingDescription;
@@ -145,7 +145,7 @@ namespace Kinovea.Root
         }
         private void trkFading_ValueChanged(object sender, EventArgs e)
         {
-            lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);
+            lblFading.Text = String.Format(RootLang.dlgPreferences_Drawings_lblFading, trkFading.Value);
             defaultFading.FadingFrames = trkFading.Value;
             chkAlwaysVisible.Checked = false;
         }

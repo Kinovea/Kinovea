@@ -68,7 +68,7 @@ namespace Kinovea.Root
             InitializeComponent();
             this.BackColor = Color.White;
             
-            description = RootLang.dlgPreferences_ButtonGeneral;
+            description = RootLang.dlgPreferences_tabGeneral;
             icon = Resources.pref_general;
             
             ImportPreferences();
@@ -86,14 +86,14 @@ namespace Kinovea.Root
         {
             // Localize and fill possible values
             
-            lblLanguage.Text = RootLang.dlgPreferences_LabelLanguages;
+            lblLanguage.Text = RootLang.dlgPreferences_Player_lblLanguages;
             cmbLanguage.Items.Clear();
             foreach(KeyValuePair<string, string> lang in LanguageManager.Languages)
             {
                 cmbLanguage.Items.Add(new LanguageIdentifier(lang.Key, lang.Value));
             }
             
-            lblHistoryCount.Text = RootLang.dlgPreferences_LabelHistoryCount;
+            lblHistoryCount.Text = RootLang.dlgPreferences_General_lblHistoryCount;
 
             SelectCurrentLanguage();
             cmbHistoryCount.SelectedIndex = maxRecentFiles;

@@ -31,7 +31,7 @@
             this.lbCategories = new System.Windows.Forms.ListBox();
             this.btnApply = new System.Windows.Forms.Button();
             this.lblHotkey = new System.Windows.Forms.Label();
-            this.btnRemove = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
             this.lblCategories = new System.Windows.Forms.Label();
             this.lblCommands = new System.Windows.Forms.Label();
             this.lvCommands = new System.Windows.Forms.ListView();
@@ -69,15 +69,15 @@
             this.lblHotkey.TabIndex = 7;
             this.lblHotkey.Text = "Hotkey";
             // 
-            // btnRemove
+            // btnClear
             // 
-            this.btnRemove.Location = new System.Drawing.Point(274, 198);
-            this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnRemove.TabIndex = 8;
-            this.btnRemove.Text = "Clear";
-            this.btnRemove.UseVisualStyleBackColor = true;
-            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            this.btnClear.Location = new System.Drawing.Point(274, 198);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 8;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnRemove_Click);
             // 
             // lblCategories
             // 
@@ -151,7 +151,7 @@
             this.Controls.Add(this.lvCommands);
             this.Controls.Add(this.lblCommands);
             this.Controls.Add(this.lblCategories);
-            this.Controls.Add(this.btnRemove);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.lblHotkey);
             this.Controls.Add(this.btnApply);
             this.Controls.Add(this.lbCategories);
@@ -167,7 +167,7 @@
         private System.Windows.Forms.ListBox lbCategories;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.Label lblHotkey;
-        private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Label lblCategories;
         private System.Windows.Forms.Label lblCommands;
         private System.Windows.Forms.ListView lvCommands;

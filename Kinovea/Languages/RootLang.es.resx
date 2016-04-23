@@ -72,12 +72,21 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Cambiar Idioma</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Mostrar/Ocultar Explorador de Archivos</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos los archivos (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Abrir un Video</value></data>
-   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Captura</value></data>
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Dibujos</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>General</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Lectura</value></data>
+   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Captura</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Dibujos</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>General</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Lectura</value></data>
+   
+   
+   
+   
+   
    
    
    
@@ -101,32 +110,39 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memoria</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memoria asignada al buffer : {0} MB.</value></data>
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Siempre Visible</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostrar los dibujos durante la reproducción del vídeo</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activar persistencia</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Siempre desentrelazar al abrir un vídeo nuevo</value></data>
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Siempre Visible</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Mostrar los dibujos durante la reproducción del vídeo</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Activar persistencia</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Siempre desentrelazar al abrir un vídeo nuevo</value></data>
    
    
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>Forzar 16:9</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forzar 4:3</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Detección automática</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Cambiar A Modo Análisis</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistencia</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Número de archivos en historial:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Formato de imagen por defecto</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Idioma:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Y</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Formato de marcas de tiempo</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La Zona De Trabajo tomará menos de {0} MB de Memoria.</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La Zona de Trabajo es menor a {0} segundos.</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Por defecto, los dibujos permanecerán visibles durante {0} imágenes alrededor la imagen clave</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Unidad de velocidad :</value></data>
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Forzar 16:9</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Forzar 4:3</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Detección automática</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Cambiar A Modo Análisis</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Persistencia</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Número de archivos en historial:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Formato de imagen por defecto</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Idioma:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Y</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>La Zona De Trabajo tomará menos de {0} MB de Memoria.</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>La Zona de Trabajo es menor a {0} segundos.</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Por defecto, los dibujos permanecerán visibles durante {0} imágenes alrededor la imagen clave</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metros por segundo ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilómetros por hora ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Pies por segundo ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Millas por hora ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Nudos ({0})</value></data>
-   <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferencias…</value></data>
+   <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferencias</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

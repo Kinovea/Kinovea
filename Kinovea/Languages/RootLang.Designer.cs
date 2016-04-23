@@ -79,6 +79,42 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Building blocks.
+        /// </summary>
+        internal static string dlgAbout_BuildingBlocks {
+            get {
+                return ResourceManager.GetString("dlgAbout_BuildingBlocks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Citation.
+        /// </summary>
+        internal static string dlgAbout_Citation {
+            get {
+                return ResourceManager.GetString("dlgAbout_Citation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License.
+        /// </summary>
+        internal static string dlgAbout_License {
+            get {
+                return ResourceManager.GetString("dlgAbout_License", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translation.
+        /// </summary>
+        internal static string dlgAbout_Translation {
+            get {
+                return ResourceManager.GetString("dlgAbout_Translation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All files (*.*)|*.*.
         /// </summary>
         internal static string dlgOpenFile_Filter {
@@ -93,42 +129,6 @@ namespace Kinovea.Root.Languages {
         internal static string dlgOpenFile_Title {
             get {
                 return ResourceManager.GetString("dlgOpenFile_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Capture.
-        /// </summary>
-        internal static string dlgPreferences_btnCapture {
-            get {
-                return ResourceManager.GetString("dlgPreferences_btnCapture", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Drawings.
-        /// </summary>
-        internal static string dlgPreferences_btnDrawings {
-            get {
-                return ResourceManager.GetString("dlgPreferences_btnDrawings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to General.
-        /// </summary>
-        internal static string dlgPreferences_ButtonGeneral {
-            get {
-                return ResourceManager.GetString("dlgPreferences_ButtonGeneral", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Playback.
-        /// </summary>
-        internal static string dlgPreferences_ButtonPlayAnalyze {
-            get {
-                return ResourceManager.GetString("dlgPreferences_ButtonPlayAnalyze", resourceCulture);
             }
         }
         
@@ -151,6 +151,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Display synchronization.
+        /// </summary>
+        internal static string dlgPreferences_Capture_DisplaySynchronization {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_DisplaySynchronization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File :.
         /// </summary>
         internal static string dlgPreferences_Capture_File {
@@ -165,6 +174,15 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Capture_ImageNaming {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_ImageNaming", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Framerate (fps) :.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblForcedFramerate {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblForcedFramerate", resourceCulture);
             }
         }
         
@@ -295,6 +313,24 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera frame.
+        /// </summary>
+        internal static string dlgPreferences_Capture_radioCameraFrameSignal {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_radioCameraFrameSignal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forced framerate.
+        /// </summary>
+        internal static string dlgPreferences_Capture_radioForcedFramerate {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_radioForcedFramerate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Right.
         /// </summary>
         internal static string dlgPreferences_Capture_Right {
@@ -342,171 +378,225 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Always Visible.
         /// </summary>
-        internal static string dlgPreferences_chkAlwaysVisible {
+        internal static string dlgPreferences_Drawings_chkAlwaysVisible {
             get {
-                return ResourceManager.GetString("dlgPreferences_chkAlwaysVisible", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Drawings_chkAlwaysVisible", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Show drawings when video is playing.
         /// </summary>
-        internal static string dlgPreferences_chkDrawOnPlay {
+        internal static string dlgPreferences_Drawings_chkDrawOnPlay {
             get {
-                return ResourceManager.GetString("dlgPreferences_chkDrawOnPlay", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Drawings_chkDrawOnPlay", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Enable persistence.
         /// </summary>
-        internal static string dlgPreferences_chkEnablePersistence {
+        internal static string dlgPreferences_Drawings_chkEnablePersistence {
             get {
-                return ResourceManager.GetString("dlgPreferences_chkEnablePersistence", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Always deinterlace when opening a new video..
-        /// </summary>
-        internal static string dlgPreferences_DeinterlaceByDefault {
-            get {
-                return ResourceManager.GetString("dlgPreferences_DeinterlaceByDefault", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Force 16:9.
-        /// </summary>
-        internal static string dlgPreferences_Format169 {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Format169", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Force 4:3.
-        /// </summary>
-        internal static string dlgPreferences_Format43 {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Format43", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Auto Detection.
-        /// </summary>
-        internal static string dlgPreferences_FormatAuto {
-            get {
-                return ResourceManager.GetString("dlgPreferences_FormatAuto", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Switch To Analysis Mode.
-        /// </summary>
-        internal static string dlgPreferences_GroupAnalysisMode {
-            get {
-                return ResourceManager.GetString("dlgPreferences_GroupAnalysisMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Persistence.
-        /// </summary>
-        internal static string dlgPreferences_grpPersistence {
-            get {
-                return ResourceManager.GetString("dlgPreferences_grpPersistence", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update image during time cursor movement.
-        /// </summary>
-        internal static string dlgPreferences_InteractiveFrameTracker {
-            get {
-                return ResourceManager.GetString("dlgPreferences_InteractiveFrameTracker", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Number of files in history:.
-        /// </summary>
-        internal static string dlgPreferences_LabelHistoryCount {
-            get {
-                return ResourceManager.GetString("dlgPreferences_LabelHistoryCount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Default image format:.
-        /// </summary>
-        internal static string dlgPreferences_LabelImageFormat {
-            get {
-                return ResourceManager.GetString("dlgPreferences_LabelImageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Language:.
-        /// </summary>
-        internal static string dlgPreferences_LabelLanguages {
-            get {
-                return ResourceManager.GetString("dlgPreferences_LabelLanguages", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to And.
-        /// </summary>
-        internal static string dlgPreferences_LabelLogic {
-            get {
-                return ResourceManager.GetString("dlgPreferences_LabelLogic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Speed unit:.
-        /// </summary>
-        internal static string dlgPreferences_LabelSpeedUnit {
-            get {
-                return ResourceManager.GetString("dlgPreferences_LabelSpeedUnit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Time markers format.
-        /// </summary>
-        internal static string dlgPreferences_LabelTimeFormat {
-            get {
-                return ResourceManager.GetString("dlgPreferences_LabelTimeFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Working Zone will take less than {0} MB of Memory..
-        /// </summary>
-        internal static string dlgPreferences_LabelWorkingZoneMemory {
-            get {
-                return ResourceManager.GetString("dlgPreferences_LabelWorkingZoneMemory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Working Zone is less than {0} seconds..
-        /// </summary>
-        internal static string dlgPreferences_LabelWorkingZoneSeconds {
-            get {
-                return ResourceManager.GetString("dlgPreferences_LabelWorkingZoneSeconds", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Drawings_chkEnablePersistence", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to By default, drawings will stay visible for {0} images around the Key Image..
         /// </summary>
-        internal static string dlgPreferences_lblFading {
+        internal static string dlgPreferences_Drawings_lblFading {
             get {
-                return ResourceManager.GetString("dlgPreferences_lblFading", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Drawings_lblFading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Persistence.
+        /// </summary>
+        internal static string dlgPreferences_Drawings_tabPersistence {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawings_tabPersistence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of files in history:.
+        /// </summary>
+        internal static string dlgPreferences_General_lblHistoryCount {
+            get {
+                return ResourceManager.GetString("dlgPreferences_General_lblHistoryCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        internal static string dlgPreferences_Keyboard_btnApply {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Keyboard_btnApply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        internal static string dlgPreferences_Keyboard_btnClear {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Keyboard_btnClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        internal static string dlgPreferences_Keyboard_btnDefault {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Keyboard_btnDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Categories.
+        /// </summary>
+        internal static string dlgPreferences_Keyboard_lblCategories {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Keyboard_lblCategories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commands.
+        /// </summary>
+        internal static string dlgPreferences_Keyboard_lblCommands {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Keyboard_lblCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hotkey for {0}.{1}.
+        /// </summary>
+        internal static string dlgPreferences_Keyboard_lblHotkey {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Keyboard_lblHotkey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Always deinterlace when opening a new video..
+        /// </summary>
+        internal static string dlgPreferences_Player_DeinterlaceByDefault {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_DeinterlaceByDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force 16:9.
+        /// </summary>
+        internal static string dlgPreferences_Player_Format169 {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_Format169", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force 4:3.
+        /// </summary>
+        internal static string dlgPreferences_Player_Format43 {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_Format43", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto Detection.
+        /// </summary>
+        internal static string dlgPreferences_Player_FormatAuto {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_FormatAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch To Analysis Mode.
+        /// </summary>
+        internal static string dlgPreferences_Player_GroupAnalysisMode {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_GroupAnalysisMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update image during time cursor movement.
+        /// </summary>
+        internal static string dlgPreferences_Player_InteractiveFrameTracker {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_InteractiveFrameTracker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default image format:.
+        /// </summary>
+        internal static string dlgPreferences_Player_lblImageFormat {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_lblImageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language:.
+        /// </summary>
+        internal static string dlgPreferences_Player_lblLanguages {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_lblLanguages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to And.
+        /// </summary>
+        internal static string dlgPreferences_Player_lblLogicAnd {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_lblLogicAnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Working Zone will take less than {0} MB of Memory..
+        /// </summary>
+        internal static string dlgPreferences_Player_lblWorkingZoneMemory {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_lblWorkingZoneMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Working Zone is less than {0} seconds..
+        /// </summary>
+        internal static string dlgPreferences_Player_lblWorkingZoneSeconds {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_lblWorkingZoneSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Link speed sliders when comparing videos..
+        /// </summary>
+        internal static string dlgPreferences_Player_SyncLockSpeeds {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_SyncLockSpeeds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Units.
+        /// </summary>
+        internal static string dlgPreferences_Player_tabUnits {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_tabUnits", resourceCulture);
             }
         }
         
@@ -691,6 +781,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time:.
+        /// </summary>
+        internal static string dlgPreferences_Player_UnitTime {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Player_UnitTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Feet per second ({0}).
         /// </summary>
         internal static string dlgPreferences_Speed_FeetPerSecond {
@@ -736,16 +835,52 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Link speed sliders when comparing videos..
+        ///   Looks up a localized string similar to Capture.
         /// </summary>
-        internal static string dlgPreferences_SyncLockSpeeds {
+        internal static string dlgPreferences_tabCapture {
             get {
-                return ResourceManager.GetString("dlgPreferences_SyncLockSpeeds", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_tabCapture", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preferences….
+        ///   Looks up a localized string similar to Drawings.
+        /// </summary>
+        internal static string dlgPreferences_tabDrawings {
+            get {
+                return ResourceManager.GetString("dlgPreferences_tabDrawings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        internal static string dlgPreferences_tabGeneral {
+            get {
+                return ResourceManager.GetString("dlgPreferences_tabGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyboard.
+        /// </summary>
+        internal static string dlgPreferences_tabKeyboard {
+            get {
+                return ResourceManager.GetString("dlgPreferences_tabKeyboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playback.
+        /// </summary>
+        internal static string dlgPreferences_tabPlayback {
+            get {
+                return ResourceManager.GetString("dlgPreferences_tabPlayback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferences.
         /// </summary>
         internal static string dlgPreferences_Title {
             get {
@@ -930,6 +1065,15 @@ namespace Kinovea.Root.Languages {
         internal static string mnuScreens {
             get {
                 return ResourceManager.GetString("mnuScreens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        internal static string mnuTimeFormat {
+            get {
+                return ResourceManager.GetString("mnuTimeFormat", resourceCulture);
             }
         }
         

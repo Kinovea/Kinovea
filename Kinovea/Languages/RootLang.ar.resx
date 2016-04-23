@@ -72,12 +72,21 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>تغيير اللغة</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>اظهار/اخفاء متصفح الملفات</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>جميع الملفات (*. *)| *. *</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>فتح ملف الفيديو</value></data>
-   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>التقاط</value></data>
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>الرسومات</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>عام</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>اعادة العرض</value></data>
+   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>التقاط</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>الرسومات</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>عام</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>اعادة العرض</value></data>
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>شمال</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>يمين</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>الاساسي :</value></data>
@@ -101,32 +110,33 @@
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>ماكرو</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>الذاكرة</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>الذاكرة المخصصة للالتقاط المؤقت: {0} ميغابايت</value></data>
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>مرئي دائما</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>اظهار الرسومات عند تشغيل الفيديو</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>تفعيل الاستمرار</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>فك التشابك دائما عند فتح فيديو جديد.</value></data>
-   <data name="dlgPreferences_InteractiveFrameTracker" xml:space="preserve"><value>تحديث الصورة عند حركة المؤشر</value></data>
-   <data name="dlgPreferences_SyncLockSpeeds" xml:space="preserve"><value>ربط شرائط تمرير السرعة عند مقارنة الفيديوهات</value></data>
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>مصدر 16:9</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>مصدر 4:3</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>اكتشاف تلقائي</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>التبديل الي وضع التحليل</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>الاستمرار</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>عدد الملفات في سجل التصفح:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>تهيئة الصورة الافتراضية:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>اللغة:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>و</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>تهيئة علامات الوقت</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>منطقة العمل تستغرق أقل من {0} ميغابايت من الذاكرة.</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>منطقة العمل هي أقل من {0} ثواني.</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>افتراضيا، سوف تبقي الرسومات مستمرة لـ {0} صورة حول الصورة الرئيسية.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>وحدة قياس السرعة:</value></data>
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>مرئي دائما</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>اظهار الرسومات عند تشغيل الفيديو</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>تفعيل الاستمرار</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>فك التشابك دائما عند فتح فيديو جديد.</value></data>
+   <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>تحديث الصورة عند حركة المؤشر</value></data>
+   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ربط شرائط تمرير السرعة عند مقارنة الفيديوهات</value></data>
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>مصدر 16:9</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>مصدر 4:3</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>اكتشاف تلقائي</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>التبديل الي وضع التحليل</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>الاستمرار</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>عدد الملفات في سجل التصفح:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>تهيئة الصورة الافتراضية:</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>اللغة:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>و</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>منطقة العمل تستغرق أقل من {0} ميغابايت من الذاكرة.</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>منطقة العمل هي أقل من {0} ثواني.</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>افتراضيا، سوف تبقي الرسومات مستمرة لـ {0} صورة حول الصورة الرئيسية.</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>متر في الثانية ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>كيلومتر في الساعة ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>قدم في الثانية ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>ميل في الساعة ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>عقدة ({0})</value></data>
-   <data name="dlgPreferences_Title" xml:space="preserve"><value>التفضيلات ...</value></data>
+   <data name="dlgPreferences_Title" xml:space="preserve"><value>التفضيلات</value></data>
+   
+   
    <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve"><value>السرعة:</value></data>
    <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve"><value>التسارع:</value></data>
    <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve"><value>الزاوية:</value></data>
@@ -147,6 +157,12 @@
    <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve"><value>اطار البحث:</value></data>
    <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve"><value>النسبة المئوية</value></data>
    <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve"><value>بكسل</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>تحميل واجهة المستخدم ...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>الغاء</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>خروج</value></data>

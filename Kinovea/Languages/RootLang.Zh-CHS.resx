@@ -72,12 +72,16 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>改变语言</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>显示/隐藏 文件浏览器</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>所有文件 (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>打开视频文件</value></data>
    
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>绘制</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>常规</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>播放</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>绘制</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>常规</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>播放</value></data>
    
    
    
@@ -101,32 +105,44 @@
    
    
    
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>一直可见</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>当播放视频的时候显示绘制信息</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>允许持久性</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>当打开一个新视频的时候使用反交错.</value></data>
    
    
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>强制 16:9</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>强制 4:3</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>自动识别</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>当以下情况切换至分析模式</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>持久性</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>历史文件显示个数:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>默认图像显示格式:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>语言:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>和</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>时间标记格式</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>工作区文件占用内存少于 {0} MB.</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>工作区视频文件小于 {0} 秒.</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>默认情况下，从关键图像开始绘制信息将被保持 {0} 次.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>速度单位:</value></data>
+   
+   
+   
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>一直可见</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>当播放视频的时候显示绘制信息</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>允许持久性</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>当打开一个新视频的时候使用反交错.</value></data>
+   
+   
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>强制 16:9</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>强制 4:3</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>自动识别</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>当以下情况切换至分析模式</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>持久性</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>历史文件显示个数:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>默认图像显示格式:</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>语言:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>和</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>工作区文件占用内存少于 {0} MB.</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>工作区视频文件小于 {0} 秒.</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>默认情况下，从关键图像开始绘制信息将被保持 {0} 次.</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>米/秒 ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>千米/小时 ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>英尺/秒 ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>英里/小时 ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>结 ({0})</value></data>
-   <data name="dlgPreferences_Title" xml:space="preserve"><value>首选项...</value></data>
+   <data name="dlgPreferences_Title" xml:space="preserve"><value>首选项</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

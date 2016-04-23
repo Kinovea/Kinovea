@@ -72,12 +72,21 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Välj Språk</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Dölj/Visa Fil Utforskare</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alla filer (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Öppna Video Fil</value></data>
-   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Inspelning</value></data>
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Ritningar</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Allmänt</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Uppspelning</value></data>
+   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Inspelning</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Ritningar</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Allmänt</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Uppspelning</value></data>
+   
+   
+   
+   
+   
    
    
    
@@ -101,32 +110,39 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Minne</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Minne som tilldelats upptagen buffer: {0} MB.</value></data>
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Visa ritningar när video spelas</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Aktivera synlighet</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Utför alltid uppflätning när ny video hämtas.</value></data>
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Visa ritningar när video spelas</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Aktivera synlighet</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Utför alltid uppflätning när ny video hämtas.</value></data>
    
    
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>Bildförhållande 16:9</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>Bildförhållande 4:3</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Automatisk igenkänning</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Byt till analysverktyg</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Synlighet</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Antal filer i historik:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Original bildformat:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Språk:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Och</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Format för tidsmarkering</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Arbetszonen upptar mindre än {0} av minnet</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Arbetszonen är mindre än {0} sekunder</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Som standard, ritningar kommer att vara  synliga i {0} bilder runt nyckelbild.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Hastighet enhet:</value></data>
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Bildförhållande 16:9</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Bildförhållande 4:3</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatisk igenkänning</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Byt till analysverktyg</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Synlighet</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Antal filer i historik:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Original bildformat:</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Språk:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Och</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Arbetszonen upptar mindre än {0} av minnet</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Arbetszonen är mindre än {0} sekunder</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Som standard, ritningar kommer att vara  synliga i {0} bilder runt nyckelbild.</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter/sekund ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometer/timme ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Fot/timme ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Eng.mil/timme ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knop ({0})</value></data>
-   <data name="dlgPreferences_Title" xml:space="preserve"><value>Inställningar...</value></data>
+   <data name="dlgPreferences_Title" xml:space="preserve"><value>Inställningar</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

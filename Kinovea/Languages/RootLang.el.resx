@@ -72,12 +72,21 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Αλλαγή Γλώσσας</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Εμφάνιση/Απόκρυψη Εξερεύνησης Αρχείων</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Όλα τα αρχεία (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Άνοιγμα Αρχείου Video</value></data>
-   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Αποτύπωση</value></data>
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Σχέδια</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Γενικά</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Αναπαραγωγή</value></data>
+   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Αποτύπωση</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Σχέδια</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Γενικά</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Αναπαραγωγή</value></data>
+   
+   
+   
+   
+   
    
    
    
@@ -101,32 +110,39 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Μνήμη</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Προσδιορισμένη ενδιάμεση μνήμη αποτύπωσης: {0} MB.</value></data>
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Ορατό Πάντα</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Απεικόνηση σχεδίων κατά την αναπαραγωγή</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Ενεργοποίηση Επιμονής</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Απόπλεξη πάντα όταν ανοίγει ένα νέο video</value></data>
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Ορατό Πάντα</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Απεικόνηση σχεδίων κατά την αναπαραγωγή</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Ενεργοποίηση Επιμονής</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Απόπλεξη πάντα όταν ανοίγει ένα νέο video</value></data>
    
    
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>Εφαρμογή 16:9</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>Εφαρμογή 4:3</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Αυτόματη Ανίχνευση</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Αλλαγή σε Τρόπο Ανάλυσης</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Επιμονή</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Αριθμός αρχείων στο Ιστορικό:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Προκαθορισμένη μορφή εικόνας:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Γλώσσα:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Και</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Μορφή Σελιδοδεικτών Χρόνου</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Το Πεδίο Εργασίας θα χρησιμοποιήσει λιγότερα από {0} MB Μνήμης.</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Το Πεδίο Εργασίας είναι λιγότερο από {0} δευτερόλεπτα.</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Προκαθορισμένα, τα σχέδια παραμένουν ορατά για {0} εικόνες γύρω από την Βασική εικόνα.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Μονάδα ταχύτητας:</value></data>
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Εφαρμογή 16:9</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Εφαρμογή 4:3</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Αυτόματη Ανίχνευση</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Αλλαγή σε Τρόπο Ανάλυσης</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Επιμονή</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Αριθμός αρχείων στο Ιστορικό:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Προκαθορισμένη μορφή εικόνας:</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Γλώσσα:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Και</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Το Πεδίο Εργασίας θα χρησιμοποιήσει λιγότερα από {0} MB Μνήμης.</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Το Πεδίο Εργασίας είναι λιγότερο από {0} δευτερόλεπτα.</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Προκαθορισμένα, τα σχέδια παραμένουν ορατά για {0} εικόνες γύρω από την Βασική εικόνα.</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Μέτρα ανά δευτερόλεπτο ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Χιλιόμετρα ανά ώρα ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Πόδια ανά δευτερόλεπτο ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Μίλια ανά δευτερόλεπτο ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Κόμβοι ({0})</value></data>
-   <data name="dlgPreferences_Title" xml:space="preserve"><value>Προτιμήσεις…</value></data>
+   <data name="dlgPreferences_Title" xml:space="preserve"><value>Προτιμήσεις</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

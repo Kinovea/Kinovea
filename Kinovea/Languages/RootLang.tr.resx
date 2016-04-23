@@ -72,12 +72,21 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Dili Değiştir</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Dosya Yöneticisini Göster/Gizle</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tüm Dosyalar (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Video Dosyasını Aç</value></data>
-   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Capture</value></data>
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Çizimler</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Genel</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>İzle</value></data>
+   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Capture</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Çizimler</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Genel</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>İzle</value></data>
+   
+   
+   
+   
+   
    
    
    
@@ -101,32 +110,39 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Bellek</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Capture tamponu için ayrılmış bellek: {0} MB.</value></data>
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Her zaman Görünür</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Video oynatılırken çizimleri göster</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Kalıcılığı aktive et</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Yeni bir video açarken her zaman deinterlace et</value></data>
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Her zaman Görünür</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Video oynatılırken çizimleri göster</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Kalıcılığı aktive et</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Yeni bir video açarken her zaman deinterlace et</value></data>
    
    
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>16:9'u Zorla</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>4:3'ü Zorla</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Otomatik Bulma</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Analiz Moduna Geç</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Kalıcılık</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Geçmişteki dosya sayısı:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Öntanımlı imaj formatı:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Dil:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Ve</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Zaman işaretleyicisi formatı</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Çalışma Alanı Hafızanın {0} MB'ından daha azını kullanacaktır.</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Çalışma Alanı {0} saniyeden daha az.</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Öntanımlı değer olarak, çizimler Anahtar İmajın etrafındaki {0} imaj boyunca görülebilir kalacaktır.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Hız birimi:</value></data>
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>16:9'u Zorla</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>4:3'ü Zorla</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Otomatik Bulma</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Analiz Moduna Geç</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Kalıcılık</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Geçmişteki dosya sayısı:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Öntanımlı imaj formatı:</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Dil:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Ve</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Çalışma Alanı Hafızanın {0} MB'ından daha azını kullanacaktır.</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Çalışma Alanı {0} saniyeden daha az.</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Öntanımlı değer olarak, çizimler Anahtar İmajın etrafındaki {0} imaj boyunca görülebilir kalacaktır.</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metre bölü saniye ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometre bölü saat ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Ayak bölü saniye({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mil bölü saat ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Deniz mili ({0})</value></data>
-   <data name="dlgPreferences_Title" xml:space="preserve"><value>Tercihler...</value></data>
+   <data name="dlgPreferences_Title" xml:space="preserve"><value>Tercihler</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

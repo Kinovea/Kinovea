@@ -76,7 +76,7 @@ namespace Kinovea.Root
             InitializeComponent();
             this.BackColor = Color.White;
             
-            description = RootLang.dlgPreferences_ButtonPlayAnalyze;
+            description = RootLang.dlgPreferences_tabPlayback;
             icon = Resources.video;
             
             ImportPreferences();
@@ -110,19 +110,20 @@ namespace Kinovea.Root
         private void InitPage()
         {
             // General tab
-            tabGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
-            chkDeinterlace.Text = RootLang.dlgPreferences_DeinterlaceByDefault;
-            chkInteractiveTracker.Text = RootLang.dlgPreferences_InteractiveFrameTracker;
-            chkLockSpeeds.Text = RootLang.dlgPreferences_SyncLockSpeeds; 
+            tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
+            chkDeinterlace.Text = RootLang.dlgPreferences_Player_DeinterlaceByDefault;
+            chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
+            chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds; 
                 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
-            lblImageFormat.Text = RootLang.dlgPreferences_LabelImageFormat;
-            cmbImageFormats.Items.Add(RootLang.dlgPreferences_FormatAuto);
-            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Format43);
-            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Format169);
+            lblImageFormat.Text = RootLang.dlgPreferences_Player_lblImageFormat;
+            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Player_FormatAuto);
+            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Player_Format43);
+            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Player_Format169);
             
             // Units tab
-            lblTimeMarkersFormat.Text = RootLang.dlgPreferences_LabelTimeFormat + " :";
+            tabUnits.Text = RootLang.dlgPreferences_Player_tabUnits;
+            lblTimeMarkersFormat.Text = RootLang.dlgPreferences_Player_UnitTime;
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Milliseconds);
@@ -158,8 +159,8 @@ namespace Kinovea.Root
 
             // Memory tab
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
-            grpSwitchToAnalysis.Text = RootLang.dlgPreferences_GroupAnalysisMode;
-            lblWorkingZoneLogic.Text = RootLang.dlgPreferences_LabelLogic;
+            grpSwitchToAnalysis.Text = RootLang.dlgPreferences_Player_GroupAnalysisMode;
+            lblWorkingZoneLogic.Text = RootLang.dlgPreferences_Player_lblLogicAnd;
             
             // Fill in initial values.            
             chkDeinterlace.Checked = deinterlaceByDefault;
@@ -169,9 +170,9 @@ namespace Kinovea.Root
             SelectCurrentImageFormat();
             
             trkWorkingZoneSeconds.Value = workingZoneSeconds;
-            lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
+            lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
             trkWorkingZoneMemory.Value = workingZoneMemory;
-            lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneMemory, trkWorkingZoneMemory.Value);
+            lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneMemory, trkWorkingZoneMemory.Value);
         }
         private void SelectCurrentUnits()
         {
@@ -244,12 +245,12 @@ namespace Kinovea.Root
         }
         private void trkWorkingZoneSeconds_ValueChanged(object sender, EventArgs e)
         {
-            lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
+            lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
             workingZoneSeconds = trkWorkingZoneSeconds.Value;
         }
         private void trkWorkingZoneMemory_ValueChanged(object sender, EventArgs e)
         {
-            lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneMemory, trkWorkingZoneMemory.Value);
+            lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneMemory, trkWorkingZoneMemory.Value);
             workingZoneMemory = trkWorkingZoneMemory.Value;
         }
         

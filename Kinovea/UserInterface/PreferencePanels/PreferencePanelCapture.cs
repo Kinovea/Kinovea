@@ -69,7 +69,7 @@ namespace Kinovea.Root
             InitializeComponent();
             this.BackColor = Color.White;
             
-            description = RootLang.dlgPreferences_btnCapture;
+            description = RootLang.dlgPreferences_tabCapture;
             icon = Resources.pref_capture;
             
             ImportPreferences();
@@ -103,7 +103,7 @@ namespace Kinovea.Root
 
         private void InitPageGeneral()
         {
-            tabGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
+            tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
 
             lblImageFormat.Text = RootLang.dlgPreferences_Capture_lblImageFormat;
             cmbImageFormat.Items.Add("JPG");
@@ -119,10 +119,10 @@ namespace Kinovea.Root
             int videoFormat = (int)capturePathConfiguration.VideoFormat;
             cmbVideoFormat.SelectedIndex = ((int)videoFormat < cmbVideoFormat.Items.Count) ? (int)videoFormat : 0;
 
-            // grpDSS.Text = 
-            // rbCameraFrameSignal
-            // rbForcedFramerate
-            // lblFramerate
+            grpDSS.Text = RootLang.dlgPreferences_Capture_DisplaySynchronization;
+            rbCameraFrameSignal.Text = RootLang.dlgPreferences_Capture_radioCameraFrameSignal;
+            rbForcedFramerate.Text = RootLang.dlgPreferences_Capture_radioForcedFramerate;
+            lblFramerate.Text = RootLang.dlgPreferences_Capture_lblForcedFramerate;
             rbCameraFrameSignal.Checked = useCameraSignalSynchronization;
             rbForcedFramerate.Checked = !useCameraSignalSynchronization;
             tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
