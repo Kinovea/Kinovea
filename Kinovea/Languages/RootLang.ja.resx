@@ -72,12 +72,21 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>言語の変更</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>エクスプローラーの表示/非表示</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>すべてのファイル (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>ビデオファイルを開く</value></data>
-   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>キャプチャ</value></data>
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>ドローイング</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>一般</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>プレイバック</value></data>
+   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>キャプチャ</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>ドローイング</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>一般</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>プレイバック</value></data>
+   
+   
+   
+   
+   
    
    
    
@@ -101,32 +110,39 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>メモリー</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>キャプチャバッファー用メモリー: {0} MB.</value></data>
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>常に表示</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>ビデオ再生中にドローイングを表示する</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>継続時間の有効化</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>新しいビデオを開くときはインターレースを解除する</value></data>
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>常に表示</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>ビデオ再生中にドローイングを表示する</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>継続時間の有効化</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>新しいビデオを開くときはインターレースを解除する</value></data>
    
-   <data name="dlgPreferences_SyncLockSpeeds" xml:space="preserve"><value>ビデオを比較する際、スピードスライダーを連動させる</value></data>
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>16:9に変換</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>4:3に変換</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>自動検出</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>分析モードに変更</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>継続時間</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>履歴上のファイル数:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>デフォルト画像フォーマット:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>言語:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>&amp;</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>タイムマーカーフォーマット</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>作業範囲はメモリ中 {0} MB以下</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>作業範囲は {0} 秒以下</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>デフォルトでは、ドローイングはキーイメージの周囲で {0} イメージが表示される</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>スピードの単位:</value></data>
+   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ビデオを比較する際、スピードスライダーを連動させる</value></data>
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>16:9に変換</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>4:3に変換</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>自動検出</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>分析モードに変更</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>継続時間</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>履歴上のファイル数:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>デフォルト画像フォーマット:</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>言語:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>&amp;</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>作業範囲はメモリ中 {0} MB以下</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>作業範囲は {0} 秒以下</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>デフォルトでは、ドローイングはキーイメージの周囲で {0} イメージが表示される</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>秒速/m ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>時速/km ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>秒速/ft ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>時速/miles ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>ノット ({0})</value></data>
-   <data name="dlgPreferences_Title" xml:space="preserve"><value>設定…</value></data>
+   <data name="dlgPreferences_Title" xml:space="preserve"><value>設定</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

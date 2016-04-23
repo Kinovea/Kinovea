@@ -72,12 +72,21 @@
    </resheader>
    
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Прикажи/сакриј истраживач датотеке</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Све датотеке (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Отвори видео датотеку</value></data>
-   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Ухвати</value></data>
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Цртежи</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Опште</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Репродуковање</value></data>
+   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Ухвати</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Цртежи</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Опште</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Репродуковање</value></data>
+   
+   
+   
+   
+   
    
    
    
@@ -101,32 +110,39 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Меморија</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Меморија резервисана за хватање бафера: {0} MB.</value></data>
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Увек видљиво</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Прикажи цртеже док видео репродукује</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Омогућ́и постојаност</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Увек расплети када отвараш нови видео.</value></data>
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Увек видљиво</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Прикажи цртеже док видео репродукује</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Омогућ́и постојаност</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Увек расплети када отвараш нови видео.</value></data>
    
-   <data name="dlgPreferences_SyncLockSpeeds" xml:space="preserve"><value>Повежи брзе клизаче када упоређујеш видео записе.</value></data>
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>Сила 16:9</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>Сила 14:3</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Аутоматско откривање</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Пребаци на режим за анализу</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Постојаност</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Број датотека у историји:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Подразумевани формат слика:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Језик:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>И</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Оквир за временске означиваче</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Радна меморија ће заузети мање од {0} MB меморије.</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Радна зона је мање од {0} секунди.</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Подразумевано, цртежи ће остати видљиви за {0} слика око кључне слике.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Јединица брзине:</value></data>
+   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Повежи брзе клизаче када упоређујеш видео записе.</value></data>
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Сила 16:9</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Сила 14:3</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Аутоматско откривање</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Пребаци на режим за анализу</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Постојаност</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Број датотека у историји:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Подразумевани формат слика:</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Језик:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>И</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Радна меморија ће заузети мање од {0} MB меморије.</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Радна зона је мање од {0} секунди.</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Подразумевано, цртежи ће остати видљиви за {0} слика око кључне слике.</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Метара у секунди ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Километра на сат ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Стопа у секунди ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Миља на сат ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Чворова ({0})</value></data>
-   <data name="dlgPreferences_Title" xml:space="preserve"><value>Жељене опције...</value></data>
+   <data name="dlgPreferences_Title" xml:space="preserve"><value>Жељене опције</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

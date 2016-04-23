@@ -72,12 +72,21 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Выберите язык</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Показать/Скрыть директории</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Все файлы (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Открыть видео файл</value></data>
-   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Съемка</value></data>
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Нарисовать</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Общие</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Воспроизвести</value></data>
+   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Съемка</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Нарисовать</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Общие</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Воспроизвести</value></data>
+   
+   
+   
+   
+   
    
    
    
@@ -101,32 +110,39 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Память</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Выделенная память для съемки в буфер : {0} MB.</value></data>
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Всегда видеть</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Показывать рисунки когда играет видео</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Включить сохранение</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Выполнять деинтерлейсинг при открытии нового видео</value></data>
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Всегда видеть</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Показывать рисунки когда играет видео</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Включить сохранение</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Выполнять деинтерлейсинг при открытии нового видео</value></data>
    
-   <data name="dlgPreferences_SyncLockSpeeds" xml:space="preserve"><value>Выровнять скорость при сравнении видео </value></data>
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>Соотношение 16:9</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>Соотношение 4:3</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Автоматическое определение</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Перейти в режим анализа</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Продолжительность</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Число файлов в истории</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Формат изображения по умолчанию</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Язык</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>И</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Формат маркеров времени</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Обрабатываемый фрагмент будет менее {0} MB памяти</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Обрабатываемый фрагмент менее {0} секунд</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>По умолчанию обрабатываемые рисунки будут оставаться видимыми {0} кадров</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Скорость</value></data>
+   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Выровнять скорость при сравнении видео </value></data>
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Соотношение 16:9</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Соотношение 4:3</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Автоматическое определение</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Перейти в режим анализа</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Продолжительность</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Число файлов в истории</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Формат изображения по умолчанию</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Язык</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>И</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Обрабатываемый фрагмент будет менее {0} MB памяти</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Обрабатываемый фрагмент менее {0} секунд</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>По умолчанию обрабатываемые рисунки будут оставаться видимыми {0} кадров</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Метров в секунду ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Километров в час ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Футов в секунду ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Миль в час ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Узлы ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Предпочтение</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

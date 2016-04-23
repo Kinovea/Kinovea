@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Kinovea.Root.Properties;
 using Kinovea.Services;
+using Kinovea.Root.Languages;
 
 namespace Kinovea.Root
 {
@@ -42,7 +43,7 @@ namespace Kinovea.Root
             InitializeComponent();
             this.BackColor = Color.White;
 
-            description = "Keyboard";
+            description = RootLang.dlgPreferences_tabKeyboard;
             icon = Resources.keyboard;
 
             ImportPreferences();
@@ -59,6 +60,12 @@ namespace Kinovea.Root
         }
         private void InitPage()
         {
+            lblCategories.Text = RootLang.dlgPreferences_Keyboard_lblCategories;
+            lblCommands.Text = RootLang.dlgPreferences_Keyboard_lblCommands;
+            btnApply.Text = RootLang.dlgPreferences_Keyboard_btnApply;
+            btnClear.Text = RootLang.dlgPreferences_Keyboard_btnClear;
+            btnDefault.Text = RootLang.dlgPreferences_Keyboard_btnDefault;
+
             lbCategories.Items.Clear();
 
             foreach (string category in hotkeys.Keys)
@@ -125,10 +132,9 @@ namespace Kinovea.Root
 
             selectedCommand = command;
 
-            lblHotkey.Text = string.Format("Hotkey for {0}.{1}", selectedCategory, selectedCommand.Name);
+            lblHotkey.Text = string.Format(RootLang.dlgPreferences_Keyboard_lblHotkey, selectedCategory, selectedCommand.Name);
             tbHotkey.SetKeydata(selectedCategory, selectedCommand);
 
-            
             // save
             // revert/cancel.
         }

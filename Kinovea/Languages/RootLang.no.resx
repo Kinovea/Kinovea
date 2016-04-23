@@ -72,12 +72,16 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Endre språk</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Vis/Skjul</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle filer (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Åpne videofil</value></data>
    
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Tegninger</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Generelt</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Spill av</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Tegninger</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Generelt</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Spill av</value></data>
    
    
    
@@ -101,32 +105,44 @@
    
    
    
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Vis tegninger samtidig meg videoavspilling</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Start likevekt</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Alltid deinterlace ved åpning av ny video</value></data>
    
    
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>Bruk 16:9</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>Bruk 4:3</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Automatisk valg</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Bytt til Analyse modus</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Likevekt</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Antall filer i historielisten:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Standard bildeformat:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Språk:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Og</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Tidsmarkør format</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Arbeidsfelt vil benytte seg av mindre enn {0} MB minne.</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Arbeidsfelt er mindre enn {0} sekunder.</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Tegninger vil være synlige I {0} enkeltbilder rundt nøkkelbildet.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Hastighet:</value></data>
+   
+   
+   
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Vis tegninger samtidig meg videoavspilling</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Start likevekt</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Alltid deinterlace ved åpning av ny video</value></data>
+   
+   
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Bruk 16:9</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Bruk 4:3</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatisk valg</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Bytt til Analyse modus</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Likevekt</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Antall filer i historielisten:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard bildeformat:</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Språk:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Og</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Arbeidsfelt vil benytte seg av mindre enn {0} MB minne.</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Arbeidsfelt er mindre enn {0} sekunder.</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Tegninger vil være synlige I {0} enkeltbilder rundt nøkkelbildet.</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter per sekund ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometer per sekund ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Fot per sekund ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Miles per sekund ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knop ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Instillinger</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

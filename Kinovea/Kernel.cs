@@ -410,7 +410,7 @@ namespace Kinovea.Root
             mnuOptions.Text = RootLang.mnuOptions;
             mnuLanguages.Text = RootLang.mnuLanguages;
             mnuPreferences.Text = RootLang.mnuPreferences;
-            mnuTimecode.Text = RootLang.dlgPreferences_LabelTimeFormat;
+            mnuTimecode.Text = RootLang.mnuTimeFormat;
             mnuTimecodeClassic.Text = RootLang.TimeCodeFormat_Classic;
             mnuTimecodeFrames.Text = RootLang.TimeCodeFormat_Frames;
             mnuTimecodeMilliseconds.Text = RootLang.TimeCodeFormat_Milliseconds;

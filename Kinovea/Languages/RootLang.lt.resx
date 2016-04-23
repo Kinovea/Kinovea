@@ -72,12 +72,21 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Pakeisti kalba</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Rodyti/slėpti dokumentų naršyklę</value></data>
+   
+   
+   
+   
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Visi dokumentai (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Atidaryti vaizdo dokumentą</value></data>
-   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Įrašymas</value></data>
-   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Piešimas</value></data>
-   <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Pagrindinis</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Groti</value></data>
+   <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Įrašymas</value></data>
+   <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Piešimas</value></data>
+   <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Pagrindinis</value></data>
+   <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Groti</value></data>
+   
+   
+   
+   
+   
    
    
    
@@ -101,32 +110,39 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Atmintis</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Užimta atminties įrašymo buferiui: {0} MB.</value></data>
-   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Visą laiką rodyti</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Rodyti piešinius rodant vaizdą</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Įjungti išlaikymą</value></data>
-   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Deinterlace filtro naudojimas.</value></data>
+   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Visą laiką rodyti</value></data>
+   <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Rodyti piešinius rodant vaizdą</value></data>
+   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Įjungti išlaikymą</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Deinterlace filtro naudojimas.</value></data>
    
    
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>Formatas 16:9</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>Formatas 4:3</value></data>
-   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Automatinis aptikimas</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Pereitį į analizavimo rėžimą</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Išlaikymas</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Dokumentų kiekis atmintyje:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Numatytasis paveikslėlio formatas:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Kalba:</value></data>
-   <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Ir</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Laiko žymų formatai</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Darbo zona užims mažiau nei {0} Mb atminties.</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Darbo zona yra mažiau nei {0} sekundės.</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Pagal nutylėjimą, brėžiniai liks matomi {0} kadruose.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Greičio matas:</value></data>
+   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Formatas 16:9</value></data>
+   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Formatas 4:3</value></data>
+   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatinis aptikimas</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Pereitį į analizavimo rėžimą</value></data>
+   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Išlaikymas</value></data>
+   <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Dokumentų kiekis atmintyje:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Numatytasis paveikslėlio formatas:</value></data>
+   <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Kalba:</value></data>
+   <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Ir</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Darbo zona užims mažiau nei {0} Mb atminties.</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Darbo zona yra mažiau nei {0} sekundės.</value></data>
+   <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Pagal nutylėjimą, brėžiniai liks matomi {0} kadruose.</value></data>
+   
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metrai per sekunde ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometrai per valandą ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Pedų per sekundę ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Milių per valandą ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Mazgų ({0})</value></data>
-   <data name="dlgPreferences_Title" xml:space="preserve"><value>Parinktys...</value></data>
+   <data name="dlgPreferences_Title" xml:space="preserve"><value>Parinktys</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

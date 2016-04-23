@@ -61,7 +61,7 @@ namespace Kinovea.Root
             this.cmbImageFormats = new System.Windows.Forms.ComboBox();
             this.lblImageFormat = new System.Windows.Forms.Label();
             this.chkLockSpeeds = new System.Windows.Forms.CheckBox();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabUnits = new System.Windows.Forms.TabPage();
             this.cmbAngularAccelerationUnit = new System.Windows.Forms.ComboBox();
             this.lblAngularAcceleration = new System.Windows.Forms.Label();
             this.cmbAngularVelocityUnit = new System.Windows.Forms.ComboBox();
@@ -80,7 +80,7 @@ namespace Kinovea.Root
             ((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneMemory)).BeginInit();
             this.tabSubPages.SuspendLayout();
             this.tabGeneral.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.tabUnits.SuspendLayout();
             this.tabMemory.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -164,7 +164,7 @@ namespace Kinovea.Root
             // tabSubPages
             // 
             this.tabSubPages.Controls.Add(this.tabGeneral);
-            this.tabSubPages.Controls.Add(this.tabPage1);
+            this.tabSubPages.Controls.Add(this.tabUnits);
             this.tabSubPages.Controls.Add(this.tabMemory);
             this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPages.Location = new System.Drawing.Point(0, 0);
@@ -226,27 +226,27 @@ namespace Kinovea.Root
             this.chkLockSpeeds.UseVisualStyleBackColor = true;
             this.chkLockSpeeds.CheckedChanged += new System.EventHandler(this.ChkLockSpeedsCheckedChanged);
             // 
-            // tabPage1
+            // tabUnits
             // 
-            this.tabPage1.Controls.Add(this.cmbAngularAccelerationUnit);
-            this.tabPage1.Controls.Add(this.lblAngularAcceleration);
-            this.tabPage1.Controls.Add(this.cmbAngularVelocityUnit);
-            this.tabPage1.Controls.Add(this.lblAngularVelocityUnit);
-            this.tabPage1.Controls.Add(this.cmbAngleUnit);
-            this.tabPage1.Controls.Add(this.lblAngleUnit);
-            this.tabPage1.Controls.Add(this.cmbAccelerationUnit);
-            this.tabPage1.Controls.Add(this.lblAccelerationUnit);
-            this.tabPage1.Controls.Add(this.cmbSpeedUnit);
-            this.tabPage1.Controls.Add(this.lblSpeedUnit);
-            this.tabPage1.Controls.Add(this.cmbTimeCodeFormat);
-            this.tabPage1.Controls.Add(this.lblTimeMarkersFormat);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(424, 210);
-            this.tabPage1.TabIndex = 2;
-            this.tabPage1.Text = "Units";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabUnits.Controls.Add(this.cmbAngularAccelerationUnit);
+            this.tabUnits.Controls.Add(this.lblAngularAcceleration);
+            this.tabUnits.Controls.Add(this.cmbAngularVelocityUnit);
+            this.tabUnits.Controls.Add(this.lblAngularVelocityUnit);
+            this.tabUnits.Controls.Add(this.cmbAngleUnit);
+            this.tabUnits.Controls.Add(this.lblAngleUnit);
+            this.tabUnits.Controls.Add(this.cmbAccelerationUnit);
+            this.tabUnits.Controls.Add(this.lblAccelerationUnit);
+            this.tabUnits.Controls.Add(this.cmbSpeedUnit);
+            this.tabUnits.Controls.Add(this.lblSpeedUnit);
+            this.tabUnits.Controls.Add(this.cmbTimeCodeFormat);
+            this.tabUnits.Controls.Add(this.lblTimeMarkersFormat);
+            this.tabUnits.Location = new System.Drawing.Point(4, 22);
+            this.tabUnits.Name = "tabUnits";
+            this.tabUnits.Padding = new System.Windows.Forms.Padding(3);
+            this.tabUnits.Size = new System.Drawing.Size(424, 210);
+            this.tabUnits.TabIndex = 2;
+            this.tabUnits.Text = "Units";
+            this.tabUnits.UseVisualStyleBackColor = true;
             // 
             // cmbAngularAccelerationUnit
             // 
@@ -382,8 +382,8 @@ namespace Kinovea.Root
             this.tabSubPages.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.tabGeneral.PerformLayout();
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
+            this.tabUnits.ResumeLayout(false);
+            this.tabUnits.PerformLayout();
             this.tabMemory.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -401,7 +401,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.TrackBar trkWorkingZoneMemory;
         private System.Windows.Forms.GroupBox grpSwitchToAnalysis;
         private System.Windows.Forms.CheckBox chkDeinterlace;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabUnits;
         private System.Windows.Forms.ComboBox cmbAngleUnit;
         private System.Windows.Forms.Label lblAngleUnit;
         private System.Windows.Forms.ComboBox cmbAccelerationUnit;
