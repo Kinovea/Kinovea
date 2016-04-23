@@ -151,6 +151,7 @@
    <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve"><value>دورة في الدقيقة ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve"><value>درجة في الثانية المربعة ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve"><value>راديان في الثانية المربعة ({0})</value></data>
+   
    <data name="dlgPreferences_Player_Tracking" xml:space="preserve"><value>تتبع</value></data>
    <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve"><value>بارامترات التتبع الافتراضية</value></data>
    <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve"><value>اطار الهدف:</value></data>

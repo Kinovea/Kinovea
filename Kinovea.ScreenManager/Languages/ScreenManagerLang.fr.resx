@@ -303,6 +303,7 @@
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Pouces</value></data>
    <data name="LengthUnit_Feet" xml:space="preserve"><value>Pieds</value></data>
    <data name="LengthUnit_Yards" xml:space="preserve"><value>Yards</value></data>
+   <data name="LengthUnit_Percentage" xml:space="preserve"><value>Pourcentage</value></data>
    <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Chargement du fichier impossible : ce type de flux vidéo n'est pas supporté.</value></data>
    <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Chargement du fichier impossible : problème lors l'initialisation du décodeur.</value></data>
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Chargement du fichier impossible : ce type du fichier n'est pas supporté.</value></data>

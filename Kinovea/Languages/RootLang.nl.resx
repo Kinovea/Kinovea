@@ -151,6 +151,7 @@
    <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve"><value>Omwentelingen per minuut ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve"><value>Graden per seconde kwadraat ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve"><value>Radialen per seconde kwadraat ({0})</value></data>
+   
    <data name="dlgPreferences_Player_Tracking" xml:space="preserve"><value>Volgen</value></data>
    <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve"><value>Standaard traceer parameters</value></data>
    <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve"><value>Voorwerpvenster :</value></data>

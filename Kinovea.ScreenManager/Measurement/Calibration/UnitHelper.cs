@@ -65,7 +65,12 @@ namespace Kinovea.ScreenManager
                     result = "yd";
                     break;
                 case LengthUnit.Percentage:
-                    result = "%";
+                    
+                    if (string.IsNullOrEmpty(PreferencesManager.PlayerPreferences.CustomLengthAbbreviation))
+                        result = "%";
+                    else
+                        result = PreferencesManager.PlayerPreferences.CustomLengthAbbreviation;
+                    
                     break;
                 case LengthUnit.Pixels:
                 default:

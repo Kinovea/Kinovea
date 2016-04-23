@@ -303,6 +303,7 @@
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Дюймы</value></data>
    <data name="LengthUnit_Feet" xml:space="preserve"><value>Футы</value></data>
    <data name="LengthUnit_Yards" xml:space="preserve"><value>Ярды</value></data>
+   
    <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Ошибка: Невозможно открыть файл : потоковое видео не поддерживается.</value></data>
    <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Ошибка: Невозможно открыть файл : проблема при инициализации декодера.</value></data>
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Ошибка: Невозможно открыть файл: тип файла не поддерживается</value></data>

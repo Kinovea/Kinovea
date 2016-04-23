@@ -303,6 +303,7 @@
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Polegadas</value></data>
    <data name="LengthUnit_Feet" xml:space="preserve"><value>Pés</value></data>
    <data name="LengthUnit_Yards" xml:space="preserve"><value>Jardas</value></data>
+   
    <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: formato de vídeo não suportado.</value></data>
    <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: problema durante a inicialização do decodificador.</value></data>
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: tipo de arquivo não suportado.</value></data>

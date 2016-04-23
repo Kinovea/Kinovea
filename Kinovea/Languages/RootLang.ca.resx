@@ -151,6 +151,7 @@
    <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve"><value>Revolucions per minut ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve"><value>Graus per segon al quadrat ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve"><value>Radians per segon al quadrat ({0})</value></data>
+   
    <data name="dlgPreferences_Player_Tracking" xml:space="preserve"><value>Seguiment</value></data>
    <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve"><value>Paràmetres del seguiment per defecte</value></data>
    <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve"><value>Finestra de l'objecte:</value></data>

@@ -303,6 +303,7 @@
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Tuumaa</value></data>
    <data name="LengthUnit_Feet" xml:space="preserve"><value>Jalkaa</value></data>
    <data name="LengthUnit_Yards" xml:space="preserve"><value>Jaardia</value></data>
+   
    <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Tiedoston avaus epäonnistui: ei-tuettu videon stream-muoto.</value></data>
    <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Tiedoston avaus epäonnistui: ongelma dekooderin käynnistyksessä.</value></data>
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Tiedoston avaus epäonnistui: ei-tuettu tiedostomuoto.</value></data>
