@@ -663,6 +663,10 @@ namespace Kinovea.ScreenManager
             
             AfterDrawingCreation(track);
 
+            // The following is necessary for the "undo of deletion" case.
+            track.UpdateKinematics();
+            track.IntegrateKeyframes();
+            
             if (DrawingAdded != null)
                 DrawingAdded(this, new DrawingEventArgs(track, trackManager.Id));
         }
