@@ -34,11 +34,13 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pnlControls = new System.Windows.Forms.Panel();
             this.sldrDelay = new Kinovea.ScreenManager.SliderLogScale();
             this.fnbVideo = new Kinovea.ScreenManager.FilenameBox();
             this.fnbImage = new Kinovea.ScreenManager.FilenameBox();
             this.pnlCaptureDock = new System.Windows.Forms.Panel();
+            this.btnConfigureComposite = new System.Windows.Forms.Button();
             this.btnGrab = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
             this.btnRecord = new System.Windows.Forms.Button();
@@ -53,7 +55,7 @@ namespace Kinovea.ScreenManager
             this.pnlViewport = new System.Windows.Forms.Panel();
             this.pnlDrawingToolsBar = new System.Windows.Forms.Panel();
             this.btnFoldCapturedVideosPanel = new System.Windows.Forms.Button();
-            this.btnConfigureComposite = new System.Windows.Forms.Button();
+            this.toolTips = new System.Windows.Forms.ToolTip(this.components);
             this.pnlControls.SuspendLayout();
             this.pnlCaptureDock.SuspendLayout();
             this.pnlTitle.SuspendLayout();
@@ -63,7 +65,6 @@ namespace Kinovea.ScreenManager
             // pnlControls
             // 
             this.pnlControls.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.pnlControls.Controls.Add(this.btnConfigureComposite);
             this.pnlControls.Controls.Add(this.sldrDelay);
             this.pnlControls.Controls.Add(this.fnbVideo);
             this.pnlControls.Controls.Add(this.fnbImage);
@@ -118,16 +119,35 @@ namespace Kinovea.ScreenManager
             // 
             // pnlCaptureDock
             // 
-            this.pnlCaptureDock.BackgroundImage = global::Kinovea.ScreenManager.Properties.Capture.controlsDock;
+            this.pnlCaptureDock.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.capturedock5;
             this.pnlCaptureDock.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.pnlCaptureDock.Controls.Add(this.btnConfigureComposite);
             this.pnlCaptureDock.Controls.Add(this.btnGrab);
             this.pnlCaptureDock.Controls.Add(this.btnSettings);
             this.pnlCaptureDock.Controls.Add(this.btnRecord);
             this.pnlCaptureDock.Controls.Add(this.btnSnapshot);
-            this.pnlCaptureDock.Location = new System.Drawing.Point(0, 1);
+            this.pnlCaptureDock.Location = new System.Drawing.Point(0, 6);
             this.pnlCaptureDock.Name = "pnlCaptureDock";
-            this.pnlCaptureDock.Size = new System.Drawing.Size(170, 42);
+            this.pnlCaptureDock.Size = new System.Drawing.Size(209, 42);
             this.pnlCaptureDock.TabIndex = 40;
+            // 
+            // btnConfigureComposite
+            // 
+            this.btnConfigureComposite.BackColor = System.Drawing.Color.Transparent;
+            this.btnConfigureComposite.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnConfigureComposite.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnConfigureComposite.FlatAppearance.BorderSize = 0;
+            this.btnConfigureComposite.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnConfigureComposite.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnConfigureComposite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnConfigureComposite.Image = global::Kinovea.ScreenManager.Properties.Resources.mosaic;
+            this.btnConfigureComposite.Location = new System.Drawing.Point(35, 6);
+            this.btnConfigureComposite.MinimumSize = new System.Drawing.Size(30, 25);
+            this.btnConfigureComposite.Name = "btnConfigureComposite";
+            this.btnConfigureComposite.Size = new System.Drawing.Size(30, 25);
+            this.btnConfigureComposite.TabIndex = 44;
+            this.btnConfigureComposite.UseVisualStyleBackColor = false;
+            this.btnConfigureComposite.Click += new System.EventHandler(this.btnConfigureComposite_Click);
             // 
             // btnGrab
             // 
@@ -139,10 +159,10 @@ namespace Kinovea.ScreenManager
             this.btnGrab.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnGrab.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGrab.Image = global::Kinovea.ScreenManager.Properties.Capture.grab_pause;
-            this.btnGrab.Location = new System.Drawing.Point(42, 6);
+            this.btnGrab.Location = new System.Drawing.Point(65, 6);
             this.btnGrab.MinimumSize = new System.Drawing.Size(30, 25);
             this.btnGrab.Name = "btnGrab";
-            this.btnGrab.Size = new System.Drawing.Size(35, 25);
+            this.btnGrab.Size = new System.Drawing.Size(30, 25);
             this.btnGrab.TabIndex = 0;
             this.btnGrab.UseVisualStyleBackColor = false;
             this.btnGrab.Click += new System.EventHandler(this.BtnGrabClick);
@@ -160,7 +180,7 @@ namespace Kinovea.ScreenManager
             this.btnSettings.Location = new System.Drawing.Point(5, 6);
             this.btnSettings.MinimumSize = new System.Drawing.Size(30, 25);
             this.btnSettings.Name = "btnSettings";
-            this.btnSettings.Size = new System.Drawing.Size(35, 25);
+            this.btnSettings.Size = new System.Drawing.Size(30, 25);
             this.btnSettings.TabIndex = 39;
             this.btnSettings.UseVisualStyleBackColor = false;
             this.btnSettings.Click += new System.EventHandler(this.BtnSettingsClick);
@@ -175,10 +195,10 @@ namespace Kinovea.ScreenManager
             this.btnRecord.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRecord.Image = global::Kinovea.ScreenManager.Properties.Capture.record_start;
-            this.btnRecord.Location = new System.Drawing.Point(128, 6);
+            this.btnRecord.Location = new System.Drawing.Point(155, 6);
             this.btnRecord.MinimumSize = new System.Drawing.Size(20, 25);
             this.btnRecord.Name = "btnRecord";
-            this.btnRecord.Size = new System.Drawing.Size(25, 25);
+            this.btnRecord.Size = new System.Drawing.Size(30, 25);
             this.btnRecord.TabIndex = 24;
             this.btnRecord.UseVisualStyleBackColor = false;
             this.btnRecord.Click += new System.EventHandler(this.BtnRecordClick);
@@ -193,7 +213,7 @@ namespace Kinovea.ScreenManager
             this.btnSnapshot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnSnapshot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSnapshot.Image = global::Kinovea.ScreenManager.Properties.Resources.camerasingle;
-            this.btnSnapshot.Location = new System.Drawing.Point(94, 6);
+            this.btnSnapshot.Location = new System.Drawing.Point(125, 6);
             this.btnSnapshot.MinimumSize = new System.Drawing.Size(25, 25);
             this.btnSnapshot.Name = "btnSnapshot";
             this.btnSnapshot.Size = new System.Drawing.Size(30, 25);
@@ -336,24 +356,6 @@ namespace Kinovea.ScreenManager
             this.btnFoldCapturedVideosPanel.UseVisualStyleBackColor = false;
             this.btnFoldCapturedVideosPanel.Click += new System.EventHandler(this.BtnCapturedVideosFold_Click);
             // 
-            // btnConfigureComposite
-            // 
-            this.btnConfigureComposite.BackColor = System.Drawing.Color.Transparent;
-            this.btnConfigureComposite.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnConfigureComposite.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnConfigureComposite.FlatAppearance.BorderSize = 0;
-            this.btnConfigureComposite.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.btnConfigureComposite.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.btnConfigureComposite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnConfigureComposite.Image = global::Kinovea.ScreenManager.Properties.Resources.mosaic;
-            this.btnConfigureComposite.Location = new System.Drawing.Point(176, 10);
-            this.btnConfigureComposite.MinimumSize = new System.Drawing.Size(30, 25);
-            this.btnConfigureComposite.Name = "btnConfigureComposite";
-            this.btnConfigureComposite.Size = new System.Drawing.Size(35, 25);
-            this.btnConfigureComposite.TabIndex = 44;
-            this.btnConfigureComposite.UseVisualStyleBackColor = false;
-            this.btnConfigureComposite.Click += new System.EventHandler(this.btnConfigureComposite_Click);
-            // 
             // CaptureScreenView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -395,5 +397,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Panel pnlCaptureDock;
         private System.Windows.Forms.Button btnIcon;
         private System.Windows.Forms.Button btnConfigureComposite;
+        private System.Windows.Forms.ToolTip toolTips;
     }
 }

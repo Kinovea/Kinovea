@@ -134,6 +134,7 @@ namespace Kinovea.Camera.HTTP
         {
             bool needsReconnection = false;
             FormConfiguration form = new FormConfiguration(summary);
+            FormsHelper.Locate(form);
             if(form.ShowDialog() == DialogResult.OK)
             {
                 if(form.AliasChanged)

@@ -51,7 +51,7 @@ namespace Kinovea.Camera.DirectShow
             this.btnDeviceProperties = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.lblColorSpace = new System.Windows.Forms.Label();
+            this.lblStreamFormat = new System.Windows.Forms.Label();
             this.cmbFormat = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lblAuto = new System.Windows.Forms.Label();
@@ -100,17 +100,17 @@ namespace Kinovea.Camera.DirectShow
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // lblColorSpace
+            // lblStreamFormat
             // 
-            this.lblColorSpace.BackColor = System.Drawing.Color.Transparent;
-            this.lblColorSpace.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblColorSpace.ForeColor = System.Drawing.Color.Black;
-            this.lblColorSpace.Location = new System.Drawing.Point(21, 26);
-            this.lblColorSpace.Name = "lblColorSpace";
-            this.lblColorSpace.Size = new System.Drawing.Size(187, 23);
-            this.lblColorSpace.TabIndex = 80;
-            this.lblColorSpace.Text = "Stream format:";
-            this.lblColorSpace.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblStreamFormat.BackColor = System.Drawing.Color.Transparent;
+            this.lblStreamFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStreamFormat.ForeColor = System.Drawing.Color.Black;
+            this.lblStreamFormat.Location = new System.Drawing.Point(21, 26);
+            this.lblStreamFormat.Name = "lblStreamFormat";
+            this.lblStreamFormat.Size = new System.Drawing.Size(187, 23);
+            this.lblStreamFormat.TabIndex = 80;
+            this.lblStreamFormat.Text = "Stream format:";
+            this.lblStreamFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // cmbFormat
             // 
@@ -136,7 +136,7 @@ namespace Kinovea.Camera.DirectShow
             this.groupBox1.Controls.Add(this.cmbFramerate);
             this.groupBox1.Controls.Add(this.lblFramerate);
             this.groupBox1.Controls.Add(this.cmbFormat);
-            this.groupBox1.Controls.Add(this.lblColorSpace);
+            this.groupBox1.Controls.Add(this.lblStreamFormat);
             this.groupBox1.Location = new System.Drawing.Point(12, 94);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(441, 308);
@@ -278,7 +278,7 @@ namespace Kinovea.Camera.DirectShow
         }
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox cmbFormat;
-        private System.Windows.Forms.Label lblColorSpace;
+        private System.Windows.Forms.Label lblStreamFormat;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.Button btnDeviceProperties;

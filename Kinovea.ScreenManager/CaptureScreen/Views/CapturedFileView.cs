@@ -168,7 +168,7 @@ namespace Kinovea.ScreenManager
         {
             // Reload the text for each menu.
             // this is done at construction time and at RefreshUICulture time.
-            mnuLoadVideo.Text = ScreenManagerLang.mnuThumbnailPlay;
+            mnuLoadVideo.Text = ScreenManagerLang.Generic_Open;
             mnuLocate.Text = ScreenManagerLang.mnuThumbnailLocate;
             mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
             mnuHide.Text = ScreenManagerLang.mnuGridsHide;

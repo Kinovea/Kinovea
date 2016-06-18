@@ -72,14 +72,23 @@
    </resheader>
    <data name="lblFolders" xml:space="preserve"><value>Папки:</value></data>
    <data name="lblVideoFiles" xml:space="preserve"><value>Видео датотеки:</value></data>
+   
    <data name="mnuAddShortcut" xml:space="preserve"><value>Додади скратен пат</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Додати во скратените патишта</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Избриши го скратениот пат</value></data>
    
    
    
+   <data name="Generic_Cancel" xml:space="preserve"><value>Откажи</value></data>
+   
    <data name="tabExplorer" xml:space="preserve"><value>Истражувач</value></data>
    <data name="tabShortcuts" xml:space="preserve"><value>Скратени патишта</value></data>
+   
+   
+   
+   
+   
+   
    
    
 </root>

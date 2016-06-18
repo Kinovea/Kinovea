@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>ファイルを上書きできません。\nターゲットフォルダに書き込む権利を有し、別の場所でファイルが使われていないことを確認して下さい。</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - ビデオを保存できませんでした</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>ビデオを保存できませんでした。\n別のフォーマットでもう一度試してみてください。</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>進行中…</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>ビデオ保存中…</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>イメージエクスポート:</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>キーイメージが変更されました。\n終了する前にキーイメージを保存しますか？</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>キーイメージは保存されませんでした。</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>ディスプレイを: {0:0} 秒遅らせて表示</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>共通コントロール:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>時間</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>スタート</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>鮮明化…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>座標を表示</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>計測値を表示</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>安定化</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>軌道の最終地点を確定</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>実測用画像</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>ビデオポジションの反転</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>ファイルの削除</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>ファイルのリネーム</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>ビデオの再生</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>共通コントロールの表示/非表示</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>軌道追跡</value></data>
    <data name="mnuCoordinateSystem" xml:space="preserve"><value>座標</value></data>
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>リピートモードの変更 (シングル | ループ ) - 現在のモード : ループ</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>リピートモードの変更 (シングル | ループ ) - 現在のモード : シングル</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>イメージシーケンスを保存</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>ビデオの録画を開始</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>ビデオの録画を停止</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>ビデオの録画を開始</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>ビデオの録画を停止</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>作業範囲をビデオ全体にリセット</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>太字</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>イタリック</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>概要…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>逆再生…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>オートコントラスト…</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

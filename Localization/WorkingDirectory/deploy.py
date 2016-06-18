@@ -66,8 +66,9 @@ def call_resgen(module, target):
     module_lang = module + "Lang"
 
     os.chdir("..\\..\\" + target + "\\Languages")
-    os.system(resgen + " " + module_lang + ".resx /str:cs,Kinovea." + module + ".Languages," + module_lang + "," + module_lang + ".Designer.cs")
+    os.system(resgen + " " + module_lang + ".resx /str:cs,Kinovea." + module + ".Languages," + module_lang + "," + module_lang + ".Designer.cs /publicClass")
 
+#-------------------------------------------------------------------------------
 # Program Entry point.
 saxon = '"C:\\Program Files\\Saxonica\\SaxonHE9.6N\\bin\\Transform.exe"'
 resgen = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\resgen.exe"'
@@ -95,12 +96,14 @@ move_to_destination("Root", "Kinovea")
 move_to_destination("Updater", "Kinovea.Updater")
 move_to_destination("FileBrowser", "Kinovea.FileBrowser")
 move_to_destination("ScreenManager", "Kinovea.ScreenManager")
+move_to_destination("Camera", "Kinovea.Camera")
 
 print("\nRegenerating the strongly typed resource accessors.")
 call_resgen("Root", "Kinovea")
 call_resgen("Updater", "Kinovea.Updater")
 call_resgen("FileBrowser", "Kinovea.FileBrowser")
 call_resgen("ScreenManager", "Kinovea.ScreenManager")
+call_resgen("Camera", "Kinovea.Camera")
 
 print("Done.")
 

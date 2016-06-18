@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Unable to write file.\nMake sure you have the rights to write in the target folder and that the file is not currently used.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Unable to Save Video. </value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Unable to save video.\nTry again with a different format.</value></data>
+   <data name="FormCameraAlias_Title" xml:space="preserve"><value>Rename camera</value></data>
+   <data name="FormCameraAlias_Alias" xml:space="preserve"><value>Alias:</value></data>
+   <data name="FormCameraAlias_Icon" xml:space="preserve"><value>Icon:</value></data>
+   <data name="FormIconPicker_Title" xml:space="preserve"><value>Icons</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progress :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Saving Video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exported Images :</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Key images have been modified.\nDo you want to save key images data before closing ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Key images data not saved</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Delay display by: {0:0} s</value></data>
+   <data name="lblDelay_Text" xml:space="preserve"><value>Delay: {0}s ({1})</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Common Controls :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duration</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Sharpen...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Display coordinates</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Display Measure</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabilize</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>End Path Edition </value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Observational reference</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Invert Videos Positions</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Delete file</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Rename file</value></data>
+   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Delete</value></data>
+   <data name="mnuThumbnailForget" xml:space="preserve"><value>Forget custom settings</value></data>
+   <data name="mnuThumbnailRename" xml:space="preserve"><value>Rename</value></data>
    <data name="mnuThumbnailLocate" xml:space="preserve"><value>Locate file in Windows Explorer</value></data>
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Play video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Show/Hide Common Controls</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Track Path</value></data>
    <data name="mnuCoordinateSystem" xml:space="preserve"><value>Coordinate System</value></data>
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Change Repeat Mode ( Once | Loop ) - Current Mode : Loop</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Change Repeat Mode ( Once | Loop ) - Current Mode : Once</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Save a Sequence of Images</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Start recording video</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Stop recording video</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Start recording video</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Stop recording video</value></data>
+   <data name="ToolTip_PauseCamera" xml:space="preserve"><value>Pause camera</value></data>
+   <data name="ToolTip_StartCamera" xml:space="preserve"><value>Start camera</value></data>
+   <data name="ToolTip_ConfigureCaptureMosaic" xml:space="preserve"><value>Configure mosaic</value></data>
+   <data name="ToolTip_ConfigureCamera" xml:space="preserve"><value>Configure camera</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reset the Working Zone to Full Video</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Bold</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Italic</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overview...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reverse...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto Contrast...</value></data>
+   <data name="FormCrashRecovery_Title" xml:space="preserve"><value>Crash recovery</value></data>
+   <data name="FormCrashRecovery_Recover" xml:space="preserve"><value>Recover</value></data>
+   <data name="FormCrashRecovery_File" xml:space="preserve"><value>File</value></data>
+   <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Date</value></data>
+   <data name="FormCrashRecovery_Info" xml:space="preserve"><value>The following projects were not saved properly but can be recovered:</value></data>
+   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Configure mosaic</value></data>
+   <data name="FormConfigureComposite_Type" xml:space="preserve"><value>Type:</value></data>
+   <data name="FormConfigureComposite_TypeBasic" xml:space="preserve"><value>Single view</value></data>
+   <data name="FormConfigureComposite_TypeMultipleReviews" xml:space="preserve"><value>Multiple views</value></data>
+   <data name="FormConfigureComposite_TypeSlowMotion" xml:space="preserve"><value>Slow motion</value></data>
+   <data name="FormConfigureComposite_TypeFrozenMosaic" xml:space="preserve"><value>Time freeze</value></data>
+   <data name="FormConfigureComposite_TypeMixed" xml:space="preserve"><value>Mixed</value></data>
+   <data name="FormConfigureComposite_ImageCount" xml:space="preserve"><value>Number of images:</value></data>
+   <data name="FormConfigureComposite_Interval" xml:space="preserve"><value>Interval:</value></data>
+   <data name="FormConfigureComposite_RefreshRate" xml:space="preserve"><value>Refresh rate:</value></data>
+   <data name="FormConfigureComposite_Start" xml:space="preserve"><value>Start:</value></data>
+   <data name="FormConfigureComposite_SlowMotionFactor" xml:space="preserve"><value>Slow motion factor:</value></data>
+   <data name="sentinel" xml:space="preserve"><value>The following projects were not saved properly but can be recovered:</value></data>
    
    
    

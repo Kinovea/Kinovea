@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -37,14 +38,14 @@ namespace Kinovea.ScreenManager
         private IEnumerable<Bitmap> icons;
         private int columns;
         
-        public FormIconPicker(IEnumerable<Bitmap> icons, int columns, string title)
+        public FormIconPicker(IEnumerable<Bitmap> icons, int columns)
         {
             this.icons = icons;
             this.columns = columns;
-            this.Text = title;
             
             InitializeComponent();
             InitializeButtons();
+            this.Text = ScreenManagerLang.FormIconPicker_Title;
         }
         
         private void InitializeButtons()

@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Kan ikke skrive til fil.\nPass på at du har rettighetene til å skrive til aktuell mappe og at filen ikke er I bruk. </value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – kan ikke lagre video</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan ikke lagre video. \n Prøv igjen med et annet format.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Framdrift:</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Lagrer video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Eksporterte bilder:</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Skarp opp</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabiliser</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>End bane Editor</value></data>
    
    <data name="mnuSwapScreens" xml:space="preserve"><value>Inverter videoposisjoner</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Slett fil</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Endre filnavn</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Spill av video</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Vis/Skjul Standardverktøy</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Følg banen</value></data>
    
@@ -428,6 +431,10 @@
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Lagre bildesekvens</value></data>
    
    
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Tilbakestill arbeidssonen til hele videoen</value></data>
    
    
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

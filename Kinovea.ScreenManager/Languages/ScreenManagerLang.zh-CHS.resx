@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>写入文件出错.\n请确认目标目录有足够的权限及文件是否被打开.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>保存视频文件出错. </value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>保存视频文件出错.\n请尝试不同保存格式.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>进度:</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>正在保存视频…</value></data>
    
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>锐化...</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>显示测量</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>固定</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>结束路径 </value></data>
    
    <data name="mnuSwapScreens" xml:space="preserve"><value>反转视频位置</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>删除文件</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>更名文件</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>播放视频</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>显示/隐藏 常见控制</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>跟踪路径</value></data>
    
@@ -428,6 +431,10 @@
    <data name="ToolTip_Rafale" xml:space="preserve"><value>保存图像序列</value></data>
    
    
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>重置工作区的全部视频</value></data>
    
    
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>马赛克...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>反向...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>自动对比度...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

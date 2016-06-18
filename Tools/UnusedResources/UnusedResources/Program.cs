@@ -13,8 +13,8 @@ namespace UnusedResources
     {
         static void Main(string[] args)
         {
-            string sourceDirectory = @"C:\Users\Joan\Dev  Prog\Videa\Bitbucket\_MASTER3";
-            string resultDirectory = @"C:\Users\Joan\Dev  Prog\Videa\Bitbucket\_MASTER3\Tools\UnusedResources\UnusedResources\Results";
+            string sourceDirectory = @"D:\dev\Joan\Multimedia\Video\Kinovea\Bitbucket\_MASTER3";
+            string resultDirectory = @"D:\dev\Joan\Multimedia\Video\Kinovea\Bitbucket\_MASTER3\Tools\UnusedResources\UnusedResources\Results";
             
             UnusedResourcesFinder finder = new UnusedResourcesFinder(sourceDirectory, resultDirectory);
             finder.ProcessAssembly("Kinovea", "Languages\\RootLang.resx");

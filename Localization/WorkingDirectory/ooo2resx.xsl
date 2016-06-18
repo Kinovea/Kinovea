@@ -24,6 +24,7 @@
 	<xsl:apply-templates select="//table:table[3]"/>
 	<xsl:apply-templates select="//table:table[4]"/>
 	<xsl:apply-templates select="//table:table[5]"/>
+	<xsl:apply-templates select="//table:table[6]"/>
 
 </xsl:template>
 

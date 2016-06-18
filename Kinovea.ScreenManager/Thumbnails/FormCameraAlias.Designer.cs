@@ -48,8 +48,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblAlias = new System.Windows.Forms.Label();
+            this.lblIcon = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.tbAlias = new System.Windows.Forms.TextBox();
@@ -59,23 +59,23 @@ namespace Kinovea.ScreenManager
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
+            // lblAlias
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(18, 23);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Alias :";
+            this.lblAlias.AutoSize = true;
+            this.lblAlias.Location = new System.Drawing.Point(18, 23);
+            this.lblAlias.Name = "lblAlias";
+            this.lblAlias.Size = new System.Drawing.Size(35, 13);
+            this.lblAlias.TabIndex = 0;
+            this.lblAlias.Text = "Alias :";
             // 
-            // label2
+            // lblIcon
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 57);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(34, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Icon :";
+            this.lblIcon.AutoSize = true;
+            this.lblIcon.Location = new System.Drawing.Point(18, 57);
+            this.lblIcon.Name = "lblIcon";
+            this.lblIcon.Size = new System.Drawing.Size(34, 13);
+            this.lblIcon.TabIndex = 1;
+            this.lblIcon.Text = "Icon :";
             // 
             // btnOK
             // 
@@ -123,14 +123,14 @@ namespace Kinovea.ScreenManager
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.btnReset);
             this.groupBox1.Controls.Add(this.tbAlias);
             this.groupBox1.Controls.Add(this.btnIcon);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.lblAlias);
+            this.groupBox1.Controls.Add(this.lblIcon);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(325, 89);
@@ -167,6 +167,7 @@ namespace Kinovea.ScreenManager
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+
         }
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -174,7 +175,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.TextBox tbAlias;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblIcon;
+        private System.Windows.Forms.Label lblAlias;
     }
 }

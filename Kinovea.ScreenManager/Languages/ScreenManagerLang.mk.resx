@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Не може да се впише датотека. \nОсигурајте се дека имате дозвола да пишувате во оваа папка и дека датотеката моментално не се користи.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Киновеа – не може да го зачува видеото.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Не може да се зачува видеото.\nОбидете се со друг формат.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Прогрес:</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Зачувување на видеото...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Експортирани слики:</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Клучните слики се модифицирани.\nДали сакате да се зачуваат податоците од клучните слики пред затворање?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Податотоците од клучните слики не се зачувани</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Одложен екран {0:0} с</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Заеднички контроли:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Времетраење</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Старт</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Изострување...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Прикажи координати</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Прикажи мерка</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Стабилизирај</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Зврши со уредување на патеката</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Точка на набљудување</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Инверзна видео позиција</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Избриши ја датотеката</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Преименувај ја датотеката</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Пушти го видеото</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Прикажи/Сокриј заеднички контроли</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Следи го патот</value></data>
    <data name="mnuCoordinateSystem" xml:space="preserve"><value>Координатен систем</value></data>
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Промени го режимот за повторување ( Еднаш | Јамка ) Моментален режим : Јамка</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Промени го режимот за повторување ( Еднаш | Јамка ) Моментален режим : Еднаш</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Зачувај секвенца од сликите</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Старувај го снимањето на видеото</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Стопирај го снимањето на видеото</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Старувај го снимањето на видеото</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Стопирај го снимањето на видеото</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Ресетирај ја работната зона на цело видео</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Задебелено</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Закосено</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Преглед...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Обратно...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Автоматско прилагодување на контрастот...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

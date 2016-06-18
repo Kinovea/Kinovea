@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>No s'ha pogut desar l'arxiu.\nAssegureu-vos de que teniu permisos d'escriptura en la destinació i que l'arxiu no està actualment en us.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Impossible desar el vídeo.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>No s'ha pogut desar el vídeo.\nProveu-ho en un format diferent.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progrés :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Desant el vídeo...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Imatges exportades :</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Els fotogrames clau han estat modificats:\nVoleu desar-los abans de tancar?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Els fotogrames clau no s'han desat</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Enderrerir la visualització: {0:0} s</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Controls comuns :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duració</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Inici</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Ressalta els contorns</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Mostrar coordenades</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar mesura</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Estabilitzar</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Finalitzar l'edició de la trajectòria</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Referència d'observació</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Inverteix la posició dels vídeos</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Suprimeix l'arxiu</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Reanomena l'arxiu</value></data>
+   
+   
+   
    <data name="mnuThumbnailLocate" xml:space="preserve"><value>Buscar l'arxiu en l'explorador de Windows</value></data>
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Reprodueix el vídeo</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Mostrar/Amagar els Controls Comuns</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Segueix la trajectòria</value></data>
    <data name="mnuCoordinateSystem" xml:space="preserve"><value>Sistema de coordinades</value></data>
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Canviar el mode de repetició (Una vegada/Cíclic) – Mode actual: Cíclic</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Canviar el mode de repetició (Una vegada/Cíclic) – Mode actual: Una vegada</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Desar una seqüència d'imatges</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Començar la gravació de vídeo</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Finalitzar la gravació de vídeo</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Començar la gravació de vídeo</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Finalitzar la gravació de vídeo</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Restablir la zona de treball a tot el vídeo</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Negreta</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Cursiva</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resum...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverteix</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast Automàtic</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Kinovea.Camera.Languages;
 
 namespace Kinovea.Camera
 {
@@ -37,13 +38,14 @@ namespace Kinovea.Camera
         private IEnumerable<Bitmap> icons;
         private int columns;
         
-        public FormIconPicker(IEnumerable<Bitmap> icons, int columns, string title)
+        public FormIconPicker(IEnumerable<Bitmap> icons, int columns)
         {
             this.icons = icons;
             this.columns = columns;
-            this.Text = title;
             
             InitializeComponent();
+            this.Text = CameraLang.FormIconPicker_Title;
+            
             InitializeButtons();
         }
         

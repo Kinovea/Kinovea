@@ -49,174 +49,118 @@ namespace Kinovea.Camera.HTTP
         private void InitializeComponent()
         {
             this.tbURL = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.gpURL = new System.Windows.Forms.GroupBox();
+            this.lblUser = new System.Windows.Forms.Label();
             this.tbUser = new System.Windows.Forms.TextBox();
             this.tbPassword = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.lblPassword = new System.Windows.Forms.Label();
+            this.gpAuthentication = new System.Windows.Forms.GroupBox();
+            this.gpNetwork = new System.Windows.Forms.GroupBox();
             this.cbFormat = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
+            this.lblFormat = new System.Windows.Forms.Label();
             this.tbPort = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.lblHost = new System.Windows.Forms.Label();
+            this.lblPort = new System.Windows.Forms.Label();
             this.tbHost = new System.Windows.Forms.TextBox();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+            this.gpURL.SuspendLayout();
+            this.gpAuthentication.SuspendLayout();
+            this.gpNetwork.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbURL
             // 
-            this.tbURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.tbURL.Location = new System.Drawing.Point(6, 20);
             this.tbURL.Name = "tbURL";
             this.tbURL.Size = new System.Drawing.Size(353, 20);
             this.tbURL.TabIndex = 0;
             this.tbURL.TextChanged += new System.EventHandler(this.TbURLTextChanged);
             // 
-            // groupBox1
+            // gpURL
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.tbURL);
-            this.groupBox1.Location = new System.Drawing.Point(14, 267);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(377, 53);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Final URL";
+            this.gpURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.gpURL.Controls.Add(this.tbURL);
+            this.gpURL.Location = new System.Drawing.Point(14, 227);
+            this.gpURL.Name = "gpURL";
+            this.gpURL.Size = new System.Drawing.Size(377, 53);
+            this.gpURL.TabIndex = 3;
+            this.gpURL.TabStop = false;
+            this.gpURL.Text = "Final URL";
             // 
-            // label1
+            // lblUser
             // 
-            this.label1.Location = new System.Drawing.Point(12, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(51, 20);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "User";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblUser.Location = new System.Drawing.Point(12, 25);
+            this.lblUser.Name = "lblUser";
+            this.lblUser.Size = new System.Drawing.Size(145, 20);
+            this.lblUser.TabIndex = 3;
+            this.lblUser.Text = "User";
+            this.lblUser.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tbUser
             // 
-            this.tbUser.Location = new System.Drawing.Point(69, 25);
+            this.tbUser.Location = new System.Drawing.Point(182, 25);
             this.tbUser.Name = "tbUser";
-            this.tbUser.Size = new System.Drawing.Size(103, 20);
+            this.tbUser.Size = new System.Drawing.Size(177, 20);
             this.tbUser.TabIndex = 0;
             this.tbUser.TextChanged += new System.EventHandler(this.TbUserTextChanged);
             // 
             // tbPassword
             // 
-            this.tbPassword.Location = new System.Drawing.Point(254, 26);
+            this.tbPassword.Location = new System.Drawing.Point(182, 62);
             this.tbPassword.Name = "tbPassword";
-            this.tbPassword.Size = new System.Drawing.Size(105, 20);
+            this.tbPassword.Size = new System.Drawing.Size(177, 20);
             this.tbPassword.TabIndex = 1;
             this.tbPassword.TextChanged += new System.EventHandler(this.TbPasswordTextChanged);
             // 
-            // label2
+            // lblPassword
             // 
-            this.label2.Location = new System.Drawing.Point(190, 25);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 20);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Password";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblPassword.Location = new System.Drawing.Point(12, 62);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(145, 20);
+            this.lblPassword.TabIndex = 5;
+            this.lblPassword.Text = "Password";
+            this.lblPassword.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // groupBox2
+            // gpAuthentication
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.tbPassword);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.tbUser);
-            this.groupBox2.Location = new System.Drawing.Point(14, 193);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(377, 63);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Authentication";
+            this.gpAuthentication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.gpAuthentication.Controls.Add(this.tbPassword);
+            this.gpAuthentication.Controls.Add(this.lblUser);
+            this.gpAuthentication.Controls.Add(this.lblPassword);
+            this.gpAuthentication.Controls.Add(this.tbUser);
+            this.gpAuthentication.Location = new System.Drawing.Point(14, 121);
+            this.gpAuthentication.Name = "gpAuthentication";
+            this.gpAuthentication.Size = new System.Drawing.Size(377, 100);
+            this.gpAuthentication.TabIndex = 2;
+            this.gpAuthentication.TabStop = false;
+            this.gpAuthentication.Text = "Authentication";
             // 
-            // label3
+            // gpNetwork
             // 
-            this.label3.Location = new System.Drawing.Point(12, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 20);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Brand";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label4
-            // 
-            this.label4.Location = new System.Drawing.Point(190, 21);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(46, 20);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "Model";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.comboBox2);
-            this.groupBox3.Controls.Add(this.comboBox1);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Enabled = false;
-            this.groupBox3.Location = new System.Drawing.Point(14, 12);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(377, 63);
-            this.groupBox3.TabIndex = 0;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "From known model";
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(242, 21);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(117, 21);
-            this.comboBox2.TabIndex = 1;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(69, 23);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(103, 21);
-            this.comboBox1.TabIndex = 0;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox4.Controls.Add(this.cbFormat);
-            this.groupBox4.Controls.Add(this.label7);
-            this.groupBox4.Controls.Add(this.tbPort);
-            this.groupBox4.Controls.Add(this.label5);
-            this.groupBox4.Controls.Add(this.label6);
-            this.groupBox4.Controls.Add(this.tbHost);
-            this.groupBox4.Location = new System.Drawing.Point(14, 84);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(377, 100);
-            this.groupBox4.TabIndex = 1;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Network";
+            this.gpNetwork.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.gpNetwork.Controls.Add(this.cbFormat);
+            this.gpNetwork.Controls.Add(this.lblFormat);
+            this.gpNetwork.Controls.Add(this.tbPort);
+            this.gpNetwork.Controls.Add(this.lblHost);
+            this.gpNetwork.Controls.Add(this.lblPort);
+            this.gpNetwork.Controls.Add(this.tbHost);
+            this.gpNetwork.Location = new System.Drawing.Point(14, 15);
+            this.gpNetwork.Name = "gpNetwork";
+            this.gpNetwork.Size = new System.Drawing.Size(377, 100);
+            this.gpNetwork.TabIndex = 1;
+            this.gpNetwork.TabStop = false;
+            this.gpNetwork.Text = "Network";
             // 
             // cbFormat
             // 
             this.cbFormat.FormattingEnabled = true;
             this.cbFormat.Items.AddRange(new object[] {
-                                    "MJPEG",
-                                    "JPEG"});
+            "MJPEG",
+            "JPEG"});
             this.cbFormat.Location = new System.Drawing.Point(124, 64);
             this.cbFormat.Name = "cbFormat";
             this.cbFormat.Size = new System.Drawing.Size(72, 21);
@@ -224,14 +168,14 @@ namespace Kinovea.Camera.HTTP
             this.cbFormat.Text = "MJPEG";
             this.cbFormat.SelectedIndexChanged += new System.EventHandler(this.CbFormatSelectedIndexChanged);
             // 
-            // label7
+            // lblFormat
             // 
-            this.label7.Location = new System.Drawing.Point(12, 63);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(51, 20);
-            this.label7.TabIndex = 10;
-            this.label7.Text = "Format";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblFormat.Location = new System.Drawing.Point(12, 63);
+            this.lblFormat.Name = "lblFormat";
+            this.lblFormat.Size = new System.Drawing.Size(51, 20);
+            this.lblFormat.TabIndex = 10;
+            this.lblFormat.Text = "Format";
+            this.lblFormat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tbPort
             // 
@@ -241,23 +185,23 @@ namespace Kinovea.Camera.HTTP
             this.tbPort.TabIndex = 1;
             this.tbPort.TextChanged += new System.EventHandler(this.TbPortTextChanged);
             // 
-            // label5
+            // lblHost
             // 
-            this.label5.Location = new System.Drawing.Point(12, 23);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(91, 20);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "Host (IP address)";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblHost.Location = new System.Drawing.Point(12, 23);
+            this.lblHost.Name = "lblHost";
+            this.lblHost.Size = new System.Drawing.Size(91, 20);
+            this.lblHost.TabIndex = 3;
+            this.lblHost.Text = "Host (IP address)";
+            this.lblHost.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // label6
+            // lblPort
             // 
-            this.label6.Location = new System.Drawing.Point(271, 23);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(40, 20);
-            this.label6.TabIndex = 5;
-            this.label6.Text = "Port";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblPort.Location = new System.Drawing.Point(271, 23);
+            this.lblPort.Name = "lblPort";
+            this.lblPort.Size = new System.Drawing.Size(40, 20);
+            this.lblPort.TabIndex = 5;
+            this.lblPort.Text = "Port";
+            this.lblPort.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tbHost
             // 
@@ -272,39 +216,33 @@ namespace Kinovea.Camera.HTTP
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.gpNetwork);
+            this.Controls.Add(this.gpAuthentication);
+            this.Controls.Add(this.gpURL);
             this.Name = "ConnectionWizard";
             this.Size = new System.Drawing.Size(404, 332);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
+            this.gpURL.ResumeLayout(false);
+            this.gpURL.PerformLayout();
+            this.gpAuthentication.ResumeLayout(false);
+            this.gpAuthentication.PerformLayout();
+            this.gpNetwork.ResumeLayout(false);
+            this.gpNetwork.PerformLayout();
             this.ResumeLayout(false);
+
         }
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblFormat;
         private System.Windows.Forms.ComboBox cbFormat;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label lblPort;
+        private System.Windows.Forms.Label lblHost;
+        private System.Windows.Forms.GroupBox gpNetwork;
         private System.Windows.Forms.TextBox tbHost;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox tbPort;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox gpAuthentication;
+        private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TextBox tbPassword;
         private System.Windows.Forms.TextBox tbUser;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label lblUser;
+        private System.Windows.Forms.GroupBox gpURL;
         private System.Windows.Forms.TextBox tbURL;
     }
 }

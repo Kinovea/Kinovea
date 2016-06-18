@@ -91,10 +91,10 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             lblAlias.Text = Summary.Alias;
-            mnuLaunch.Text = "Open"; //ScreenManagerLang.mnuThumbnailPlay;
-            mnuRename.Text = "Rename"; //ScreenManagerLang.mnuThumbnailRename;
-            mnuForget.Text = "Forget custom settings";
-            mnuDelete.Text = "Delete"; //ScreenManagerLang.mnuThumbnailDelete;
+            mnuLaunch.Text = ScreenManagerLang.Generic_Open;
+            mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
+            mnuForget.Text = ScreenManagerLang.mnuThumbnailForget;
+            mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
 
         }
         public void SetUnselected()
@@ -303,7 +303,7 @@ namespace Kinovea.ScreenManager
         
         private void BtnIconClick(object sender, EventArgs e)
         {
-            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5, "Icons");
+            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5);
             FormsHelper.Locate(fip);
             if(fip.ShowDialog() == DialogResult.OK)
             {

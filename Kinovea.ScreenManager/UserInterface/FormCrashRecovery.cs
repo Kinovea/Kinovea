@@ -26,6 +26,7 @@ using System.IO;
 using System.Windows.Forms;
 
 using Kinovea.Services;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -52,12 +53,12 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeUI()
         {
-            this.Text = "Crash Recovery";
-            lblInfo.Text = string.Format("Some projects were not saved properly the last time {0} was run. The following projects can be recovered:", Software.ApplicationName);
-            btnOk.Text = "Recover";
-            btnCancel.Text = "Cancel";
-            lvRecoverables.Columns[0].Text = "File";
-            lvRecoverables.Columns[1].Text = "Date";
+            this.Text = ScreenManagerLang.FormCrashRecovery_Title;
+            lblInfo.Text = ScreenManagerLang.FormCrashRecovery_Info;
+            btnOk.Text = ScreenManagerLang.FormCrashRecovery_Recover;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            lvRecoverables.Columns[0].Text = ScreenManagerLang.FormCrashRecovery_File;
+            lvRecoverables.Columns[1].Text = ScreenManagerLang.FormCrashRecovery_Date;
         }
         
         private void BtnOKClick(object sender, EventArgs e)

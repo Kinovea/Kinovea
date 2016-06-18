@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Kan inte skriva fil.\nHar du rättighet att skriva i målmapp eller används filen av någon?</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Kan inte spara video.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan inte spara video.\nProva något annat format.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Arbetsskede :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Spara Video</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exporterade Bilder :</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Nyckelbilder har modifierats.\nVill du spara nyckelbildsinformation innan stängning ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Nyckelbilds data ej sparad</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Fördröj visning med: {0:0} s</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Gemensamma kontroller :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Längd på Klipp</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Skärp...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Visa Koordinater</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Visa längd</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabilisera</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Avsluta banans editering</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Observationsreferens</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Byt videonas platser</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Radera fil</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Byt filnamn</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Starta video</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Visa/Dölj gemensamma kontroller</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Spåra banan</value></data>
    
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Växla uppspelningsalternativ ( Engång | Slinga ) - Nuvarande Alternativ : Slinga</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Växla uppspelningsalternativ ( Engång | Slinga ) - Nuvarande Alternativ : Engång</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Spara en Bildsekvens</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Starta inspelning av video</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Stoppa inspelning av video</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Starta inspelning av video</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Stoppa inspelning av video</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Återställ arbetszonen till hel video</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Fet</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Kursiv</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Översikt...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertera...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisk kontrast...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

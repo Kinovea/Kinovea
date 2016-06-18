@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Kinovea.Services;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -17,6 +18,7 @@ namespace Kinovea.ScreenManager
         public DelayCompositeMultiReviewControl(DelayCompositeConfiguration current)
         {
             InitializeComponent();
+            lblImageCount.Text = ScreenManagerLang.FormConfigureComposite_ImageCount;
 
             Configuration = new DelayCompositeConfiguration();
             Configuration.CompositeType = DelayCompositeType.MultiReview;

@@ -245,6 +245,10 @@
    
    
    
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Postęp :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Zapisywanie pliku wideo...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Wyskeportowane obrazy :</value></data>
@@ -374,7 +378,6 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Wyostrz...</value></data>
    
    
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabilizuj</value></data>
    
    
    <data name="mnuSwapScreens" xml:space="preserve"><value>Odwróć pozycję wideo</value></data>
@@ -428,6 +431,10 @@
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Zapisz sekwencję obrazów</value></data>
    
    
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Zresetuj Obszar Roboczy</value></data>
    
    
@@ -451,6 +458,24 @@
    
    
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Kontrast...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

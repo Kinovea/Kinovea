@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Globalization;
+using Kinovea.Camera.Languages;
 
 namespace Kinovea.Camera
 {
     public partial class CameraPropertyLinearView : AbstractCameraPropertyView
     {
-        private string localizationToken;
         private bool updatingValue;
         private Func<int, string> valueMapper;
-        
-        public CameraPropertyLinearView(CameraProperty property, string localizationToken, Func<int, string> valueMapper)
+
+        public CameraPropertyLinearView(CameraProperty property, string text, Func<int, string> valueMapper)
         {
             this.property = property;
-            this.localizationToken = localizationToken;
             this.valueMapper = valueMapper;
 
             InitializeComponent();
 
             // TODO: retrieve localized name from the localization token.
-            lblName.Text = localizationToken;
+            lblName.Text = text;
 
             this.Enabled = property.Supported;
 

@@ -328,8 +328,8 @@ namespace Kinovea.ScreenManager
         {
             lblFileName.Text = Path.GetFileNameWithoutExtension(m_FileName);
             TruncateFilename();
-            
-            mnuLaunch.Text = ScreenManagerLang.mnuThumbnailPlay;
+
+            mnuLaunch.Text = ScreenManagerLang.Generic_Open;
             mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
             mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
             mnuOpenInExplorer.Text = ScreenManagerLang.mnuThumbnailLocate;

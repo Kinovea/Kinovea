@@ -72,14 +72,23 @@
    </resheader>
    <data name="lblFolders" xml:space="preserve"><value>Klasörler:</value></data>
    <data name="lblVideoFiles" xml:space="preserve"><value>Video Dosyaları:</value></data>
+   
    <data name="mnuAddShortcut" xml:space="preserve"><value>Kısayol ekle</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Kısayollara ekle</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Kısayol sil</value></data>
    
    
    
+   <data name="Generic_Cancel" xml:space="preserve"><value>İptal Et</value></data>
+   
    <data name="tabExplorer" xml:space="preserve"><value>Gezgin</value></data>
    <data name="tabShortcuts" xml:space="preserve"><value>Kısayollar</value></data>
+   
+   
+   
+   
+   
+   
    
    
 </root>

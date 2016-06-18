@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Kinovea.Camera;
 using Kinovea.Services;
+using Kinovea.Camera.Languages;
 
 namespace Kinovea.Camera.FrameGenerator
 {
@@ -82,7 +83,7 @@ namespace Kinovea.Camera.FrameGenerator
             this.summary = summary;
             
             InitializeComponent();
-
+            Initialize();
             InitializeParameters();
             
             tbAlias.Text = summary.Alias;
@@ -91,6 +92,15 @@ namespace Kinovea.Camera.FrameGenerator
 
             PopulateCapabilities();
             loaded = true;
+        }
+
+        private void Initialize()
+        {
+            this.Text = CameraLang.FormConfiguration_Title;
+            lblImageSize.Text = CameraLang.FormConfiguration_Properties_ImageSize;
+            lblFramerate.Text = CameraLang.FormConfiguration_Properties_Framerate;
+            btnApply.Text = CameraLang.Generic_Apply;
+            btnCancel.Text = CameraLang.Generic_Cancel;
         }
 
         private void InitializeParameters()
@@ -122,7 +132,7 @@ namespace Kinovea.Camera.FrameGenerator
         
         void BtnIconClick(object sender, EventArgs e)
         {
-            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5, "Icons");
+            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5);
             FormsHelper.Locate(fip);
             if(fip.ShowDialog() == DialogResult.OK)
             {

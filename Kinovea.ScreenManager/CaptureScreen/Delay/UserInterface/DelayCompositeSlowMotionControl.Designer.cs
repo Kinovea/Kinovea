@@ -30,7 +30,7 @@
         {
             this.cbImageCount = new System.Windows.Forms.ComboBox();
             this.lblImageCount = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblSlowMotionFactor = new System.Windows.Forms.Label();
             this.tbRefreshRate = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
@@ -52,14 +52,14 @@
             this.lblImageCount.TabIndex = 20;
             this.lblImageCount.Text = "Number of images :";
             // 
-            // label1
+            // lblSlowMotionFactor
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 32);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 22;
-            this.label1.Text = "Slow motion factor :";
+            this.lblSlowMotionFactor.AutoSize = true;
+            this.lblSlowMotionFactor.Location = new System.Drawing.Point(11, 32);
+            this.lblSlowMotionFactor.Name = "lblSlowMotionFactor";
+            this.lblSlowMotionFactor.Size = new System.Drawing.Size(100, 13);
+            this.lblSlowMotionFactor.TabIndex = 22;
+            this.lblSlowMotionFactor.Text = "Slow motion factor :";
             // 
             // tbRefreshRate
             // 
@@ -75,7 +75,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.tbRefreshRate);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblSlowMotionFactor);
             this.Controls.Add(this.cbImageCount);
             this.Controls.Add(this.lblImageCount);
             this.Name = "DelayCompositeSlowMotionControl";
@@ -89,7 +89,7 @@
 
         private System.Windows.Forms.ComboBox cbImageCount;
         private System.Windows.Forms.Label lblImageCount;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblSlowMotionFactor;
         private System.Windows.Forms.TextBox tbRefreshRate;
     }
 }

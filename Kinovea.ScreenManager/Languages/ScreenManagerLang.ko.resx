@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>파일을 기록할 수 없음.\n타깃 폴더에 쓰기 권한이 있는지, 이 파일이 현재 사용되고 있지 않은지를  확인해야 함.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - 비디오 저장 불가</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>비디오 저장 불가.\n다른 형식으로 다시 시도해 보십시오.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>진행:</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>비디오 저장…</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>반출된 이미지:</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>날카롭게..</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>좌표 표시</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>자 표시</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>안정화</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>경로 편집 끝</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>관측 가능한 참조</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>비디오의 위치를 도치</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>파일 지우기</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>파일 이름 바꾸기</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>비디오 재생</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>공통 조절을 보임/감춤</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>경로를 추적</value></data>
    
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>반복모드 변경 (한번 | 루프 ) - 현재 모드 : 루프(Loop)</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>반복모드 변경 (한번 | 루프 ) - 현재 모드 : 한번(Once)</value></data>
    
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>비디오 기록을 시작</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>비디오 기록을 정지</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>비디오 기록을 시작</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>비디오 기록을 정지</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>작업영역을 전체로 초기화</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>굵게</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>이태릭체로</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>개관(overview)…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>반대(reverse)…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

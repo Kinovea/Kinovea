@@ -27,6 +27,7 @@ using System.Linq;
 using AForge.Video.DirectShow;
 using Kinovea.Camera;
 using Kinovea.Services;
+using Kinovea.Camera.Languages;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -111,11 +112,24 @@ namespace Kinovea.Camera.DirectShow
 
             cameraProperties = CameraPropertyManager.Read(device);
             PopulateCameraControl();
+            Localize();
+        }
+
+        private void Localize()
+        {
+            this.Text = CameraLang.FormConfiguration_Title;
+            lblStreamFormat.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
+            lblImageSize.Text = CameraLang.FormConfiguration_Properties_ImageSize;
+            lblFramerate.Text = CameraLang.FormConfiguration_Properties_Framerate;
+            btnDeviceProperties.Text = CameraLang.FormConfiguration_DevicePropertyPages;
+            lblAuto.Text = CameraLang.FormConfiguration_Auto;
+            btnApply.Text = CameraLang.Generic_Apply;
+            btnCancel.Text = CameraLang.Generic_Cancel;
         }
 
         private void btnIcon_Click(object sender, EventArgs e)
         {
-            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5, "Icons");
+            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5);
             FormsHelper.Locate(fip);
             if (fip.ShowDialog() == DialogResult.OK)
             {
@@ -134,7 +148,7 @@ namespace Kinovea.Camera.DirectShow
             }
             catch (Exception)
             {
-                log.ErrorFormat("Error happened while trying to display the device property page for {0}.", summary.Alias);
+                log.ErrorFormat(CameraLang.FormConfiguration_DevicePropertyPages_Error, summary.Alias);
             }
         }
 
@@ -177,7 +191,7 @@ namespace Kinovea.Camera.DirectShow
 
         private void DisableStreamConfig()
         {
-            lblColorSpace.Enabled = false;
+            lblStreamFormat.Enabled = false;
             lblImageSize.Enabled = false;
             lblFramerate.Enabled = false;
             cmbFormat.Enabled = false;
@@ -293,15 +307,15 @@ namespace Kinovea.Camera.DirectShow
             int top = lblAuto.Bottom;
 
             if (cameraProperties.ContainsKey("exposure_logitech"))
-                AddCameraProperty("exposure_logitech", "Exposure:", VendorHelper.GetValueMapper(identifier, "exposure_logitech"), top);
+                AddCameraProperty("exposure_logitech", CameraLang.FormConfiguration_Properties_Exposure, VendorHelper.GetValueMapper(identifier, "exposure_logitech"), top);
             else if (cameraProperties.ContainsKey("exposure"))
-                AddCameraProperty("exposure", "Exposure:", VendorHelper.GetValueMapper(identifier, "exposure"), top);
+                AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_Exposure, VendorHelper.GetValueMapper(identifier, "exposure"), top);
 
-            AddCameraProperty("gain", "Gain:", VendorHelper.GetValueMapper(identifier, "gain"), top + 30);
-            AddCameraProperty("focus", "Focus:", VendorHelper.GetValueMapper(identifier, "focus"), top + 60);
+            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, VendorHelper.GetValueMapper(identifier, "gain"), top + 30);
+            AddCameraProperty("focus", CameraLang.FormConfiguration_Properties_Focus, VendorHelper.GetValueMapper(identifier, "focus"), top + 60);
         }
 
-        private void AddCameraProperty(string key, string localizationToken, Func<int, string> valueMapper, int top)
+        private void AddCameraProperty(string key, string text, Func<int, string> valueMapper, int top)
         {
             if (!cameraProperties.ContainsKey(key))
                 return;
@@ -313,10 +327,10 @@ namespace Kinovea.Camera.DirectShow
             switch (property.Representation)
             {
                 case CameraPropertyRepresentation.LinearSlider:
-                    control = new CameraPropertyLinearView(property, localizationToken, valueMapper);
+                    control = new CameraPropertyLinearView(property, text, valueMapper);
                     break;
                 case CameraPropertyRepresentation.LogarithmicSlider:
-                    control = new CameraPropertyLogarithmicView(property, localizationToken, valueMapper);
+                    control = new CameraPropertyLogarithmicView(property, text, valueMapper);
                     break;
 
                 default:

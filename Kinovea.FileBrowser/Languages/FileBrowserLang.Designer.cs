@@ -22,7 +22,7 @@ namespace Kinovea.FileBrowser.Languages {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class FileBrowserLang {
+    public class FileBrowserLang {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Kinovea.FileBrowser.Languages {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kinovea.FileBrowser.Languages.FileBrowserLang", typeof(FileBrowserLang).Assembly);
@@ -51,7 +51,7 @@ namespace Kinovea.FileBrowser.Languages {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,18 +61,90 @@ namespace Kinovea.FileBrowser.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera type.
+        /// </summary>
+        public static string FormCameraWizard_CameraType {
+            get {
+                return ResourceManager.GetString("FormCameraWizard_CameraType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create camera.
+        /// </summary>
+        public static string FormCameraWizard_Create {
+            get {
+                return ResourceManager.GetString("FormCameraWizard_Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameters.
+        /// </summary>
+        public static string FormCameraWizard_Parameters {
+            get {
+                return ResourceManager.GetString("FormCameraWizard_Parameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test.
+        /// </summary>
+        public static string FormCameraWizard_Test {
+            get {
+                return ResourceManager.GetString("FormCameraWizard_Test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manual connection.
+        /// </summary>
+        public static string FormCameraWizard_Title {
+            get {
+                return ResourceManager.GetString("FormCameraWizard_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Generic_Cancel {
+            get {
+                return ResourceManager.GetString("Generic_Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string Generic_Open {
+            get {
+                return ResourceManager.GetString("Generic_Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Capture history:.
+        /// </summary>
+        public static string lblCaptureHistory {
+            get {
+                return ResourceManager.GetString("lblCaptureHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Folders:.
         /// </summary>
-        internal static string lblFolders {
+        public static string lblFolders {
             get {
                 return ResourceManager.GetString("lblFolders", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Video Files:.
+        ///   Looks up a localized string similar to Video files:.
         /// </summary>
-        internal static string lblVideoFiles {
+        public static string lblVideoFiles {
             get {
                 return ResourceManager.GetString("lblVideoFiles", resourceCulture);
             }
@@ -81,7 +153,7 @@ namespace Kinovea.FileBrowser.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Add shortcut.
         /// </summary>
-        internal static string mnuAddShortcut {
+        public static string mnuAddShortcut {
             get {
                 return ResourceManager.GetString("mnuAddShortcut", resourceCulture);
             }
@@ -90,7 +162,7 @@ namespace Kinovea.FileBrowser.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Add to shortcuts.
         /// </summary>
-        internal static string mnuAddToShortcuts {
+        public static string mnuAddToShortcuts {
             get {
                 return ResourceManager.GetString("mnuAddToShortcuts", resourceCulture);
             }
@@ -99,7 +171,7 @@ namespace Kinovea.FileBrowser.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Delete shortcut.
         /// </summary>
-        internal static string mnuDeleteShortcut {
+        public static string mnuDeleteShortcut {
             get {
                 return ResourceManager.GetString("mnuDeleteShortcut", resourceCulture);
             }
@@ -108,7 +180,7 @@ namespace Kinovea.FileBrowser.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Delete file.
         /// </summary>
-        internal static string mnuVideoDelete {
+        public static string mnuVideoDelete {
             get {
                 return ResourceManager.GetString("mnuVideoDelete", resourceCulture);
             }
@@ -117,25 +189,16 @@ namespace Kinovea.FileBrowser.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Locate file in Windows Explorer .
         /// </summary>
-        internal static string mnuVideoLocate {
+        public static string mnuVideoLocate {
             get {
                 return ResourceManager.GetString("mnuVideoLocate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Play video.
-        /// </summary>
-        internal static string mnuVideoPlay {
-            get {
-                return ResourceManager.GetString("mnuVideoPlay", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Explorer.
         /// </summary>
-        internal static string tabExplorer {
+        public static string tabExplorer {
             get {
                 return ResourceManager.GetString("tabExplorer", resourceCulture);
             }
@@ -144,9 +207,18 @@ namespace Kinovea.FileBrowser.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Shortcuts.
         /// </summary>
-        internal static string tabShortcuts {
+        public static string tabShortcuts {
             get {
                 return ResourceManager.GetString("tabShortcuts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import files into the capture history.
+        /// </summary>
+        public static string Tooltip_ImportToCaptureHistory {
+            get {
+                return ResourceManager.GetString("Tooltip_ImportToCaptureHistory", resourceCulture);
             }
         }
     }

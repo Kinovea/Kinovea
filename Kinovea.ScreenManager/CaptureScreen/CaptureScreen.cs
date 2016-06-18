@@ -602,6 +602,8 @@ namespace Kinovea.ScreenManager
                 return;
 
             FormConfigureComposite form = new FormConfigureComposite(delayCompositeConfiguration);
+            FormsHelper.Locate(form);
+
             if (form.ShowDialog() == DialogResult.OK)
             {
                 delayCompositeConfiguration = form.Configuration;

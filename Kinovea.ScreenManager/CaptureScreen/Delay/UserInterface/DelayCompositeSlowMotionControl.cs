@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Kinovea.Services;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -17,6 +18,9 @@ namespace Kinovea.ScreenManager
         public DelayCompositeSlowMotionControl(DelayCompositeConfiguration current)
         {
             InitializeComponent();
+
+            lblImageCount.Text = ScreenManagerLang.FormConfigureComposite_ImageCount;
+            lblSlowMotionFactor.Text = ScreenManagerLang.FormConfigureComposite_SlowMotionFactor;
 
             Configuration = new DelayCompositeConfiguration();
             Configuration.CompositeType = DelayCompositeType.SlowMotion;

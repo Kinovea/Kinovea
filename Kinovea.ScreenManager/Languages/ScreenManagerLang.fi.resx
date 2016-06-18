@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Tiedoston kirjoittaminen ei onnistu.\nVarmista käyttöoikeutesi tähän kohdehakemistoon ja että kyseinen tiedosto ei ole käytössä.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Videon tallennus ei onnistu.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Videon tallennus ei onnistu.\nKokeile uudestaan toisella formaatilla.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Edistyminen:</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Video tallennetaan...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Kirkkaus:</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Avainkuvia on muokattu.\nHaluatko tallentaa avainkuvien tiedot ennen sulkemista?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Avainkuvien tietoja ei tallennettu</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Viivytä näyttöä: {0:0} sekunnilla</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Yleiset toiminnot:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Kesto</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Aloitus</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Tarkenna...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Näytä koordinaatit</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Näytä mitta</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabiloi</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Lopeta liikeradan editointi</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Havaintoreferenssi</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Vaihda videoiden järjestys</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Poista tiedosto</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Uudelleennimeä tiedosto</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Näytä video</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Näytä/Piilota yleiset toiminnot</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Seuraa liikerataa</value></data>
    
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Muuta toistoa ( Kerta | Jatkuva ) - Nykyinen: Jatkuva</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Muuta toistoa ( Kerta | Jatkuva ) - Nykyinen: Kerta</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Tallenna kuvasarja</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Käynnistä videon nauhoitus</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Lopeta videon nauhoitus</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Käynnistä videon nauhoitus</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Lopeta videon nauhoitus</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Palauta työstöjakso koko videon mittaiseksi</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Lihavoitu</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Kursivoitu</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Katsaus...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Käänteinen...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automaattinen tarkennus...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

@@ -50,12 +50,12 @@ namespace Kinovea.Camera.FrameGenerator
         {
             this.btnApply = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.lblConfig = new System.Windows.Forms.Label();
+            this.lblImageSize = new System.Windows.Forms.Label();
             this.cmbFrameSize = new System.Windows.Forms.ComboBox();
             this.btnIcon = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cmbFramerate = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblFramerate = new System.Windows.Forms.Label();
             this.tbAlias = new System.Windows.Forms.TextBox();
             this.lblSystemName = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
@@ -83,19 +83,19 @@ namespace Kinovea.Camera.FrameGenerator
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // lblConfig
+            // lblImageSize
             // 
-            this.lblConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.lblImageSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblConfig.BackColor = System.Drawing.Color.Transparent;
-            this.lblConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblConfig.ForeColor = System.Drawing.Color.Black;
-            this.lblConfig.Location = new System.Drawing.Point(24, 73);
-            this.lblConfig.Name = "lblConfig";
-            this.lblConfig.Size = new System.Drawing.Size(93, 23);
-            this.lblConfig.TabIndex = 80;
-            this.lblConfig.Text = "Frame size :";
-            this.lblConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblImageSize.BackColor = System.Drawing.Color.Transparent;
+            this.lblImageSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblImageSize.ForeColor = System.Drawing.Color.Black;
+            this.lblImageSize.Location = new System.Drawing.Point(24, 73);
+            this.lblImageSize.Name = "lblImageSize";
+            this.lblImageSize.Size = new System.Drawing.Size(93, 23);
+            this.lblImageSize.TabIndex = 80;
+            this.lblImageSize.Text = "Frame size :";
+            this.lblImageSize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // cmbFrameSize
             // 
@@ -129,12 +129,12 @@ namespace Kinovea.Camera.FrameGenerator
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.cmbFramerate);
-            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.lblFramerate);
             this.groupBox1.Controls.Add(this.tbAlias);
             this.groupBox1.Controls.Add(this.lblSystemName);
             this.groupBox1.Controls.Add(this.btnIcon);
             this.groupBox1.Controls.Add(this.cmbFrameSize);
-            this.groupBox1.Controls.Add(this.lblConfig);
+            this.groupBox1.Controls.Add(this.lblImageSize);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(311, 150);
@@ -153,19 +153,19 @@ namespace Kinovea.Camera.FrameGenerator
             this.cmbFramerate.TabIndex = 88;
             this.cmbFramerate.SelectedIndexChanged += new System.EventHandler(this.SpecificInfo_Changed);
             // 
-            // label1
+            // lblFramerate
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.lblFramerate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Black;
-            this.label1.Location = new System.Drawing.Point(24, 107);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(93, 23);
-            this.label1.TabIndex = 87;
-            this.label1.Text = "Frame rate :";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblFramerate.BackColor = System.Drawing.Color.Transparent;
+            this.lblFramerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFramerate.ForeColor = System.Drawing.Color.Black;
+            this.lblFramerate.Location = new System.Drawing.Point(24, 107);
+            this.lblFramerate.Name = "lblFramerate";
+            this.lblFramerate.Size = new System.Drawing.Size(93, 23);
+            this.lblFramerate.TabIndex = 87;
+            this.lblFramerate.Text = "Frame rate :";
+            this.lblFramerate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tbAlias
             // 
@@ -216,10 +216,10 @@ namespace Kinovea.Camera.FrameGenerator
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnIcon;
         private System.Windows.Forms.ComboBox cmbFrameSize;
-        private System.Windows.Forms.Label lblConfig;
+        private System.Windows.Forms.Label lblImageSize;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.ComboBox cmbFramerate;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblFramerate;
     }
 }

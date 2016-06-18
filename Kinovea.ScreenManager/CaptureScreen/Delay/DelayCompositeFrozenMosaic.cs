@@ -28,9 +28,9 @@ namespace Kinovea.ScreenManager
         private int lastRefreshPosition;
         private bool needsRefresh;
         private int imageCount;
-        private int start; // age of the first image.
-        private int interval; // age difference between images.
-        private int period; // amount of time between refreshes. (all images are refreshed at once).
+        private int start; // age of the first image, in frames.
+        private int interval; // age difference between images, in frames.
+        private int period; // amount of time between refreshes, in frames. (all images are refreshed at once).
 
         public DelayCompositeFrozenMosaic(DelayCompositeConfiguration configuration)
         {

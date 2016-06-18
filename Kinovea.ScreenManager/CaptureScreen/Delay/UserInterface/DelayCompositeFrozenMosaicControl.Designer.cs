@@ -58,6 +58,7 @@
             // 
             // tbRefreshRate
             // 
+            this.tbRefreshRate.Enabled = false;
             this.tbRefreshRate.Location = new System.Drawing.Point(147, 31);
             this.tbRefreshRate.Name = "tbRefreshRate";
             this.tbRefreshRate.Size = new System.Drawing.Size(87, 20);
@@ -67,6 +68,7 @@
             // lblRefreshRate
             // 
             this.lblRefreshRate.AutoSize = true;
+            this.lblRefreshRate.Enabled = false;
             this.lblRefreshRate.Location = new System.Drawing.Point(15, 33);
             this.lblRefreshRate.Name = "lblRefreshRate";
             this.lblRefreshRate.Size = new System.Drawing.Size(71, 13);
