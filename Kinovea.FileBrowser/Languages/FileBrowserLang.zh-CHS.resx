@@ -72,14 +72,23 @@
    </resheader>
    <data name="lblFolders" xml:space="preserve"><value>文件夹:</value></data>
    <data name="lblVideoFiles" xml:space="preserve"><value>视频文件:</value></data>
+   
    <data name="mnuAddShortcut" xml:space="preserve"><value>新增快捷项</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>添加至快捷项</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>删除快捷项</value></data>
    
    
    
+   <data name="Generic_Cancel" xml:space="preserve"><value>取消</value></data>
+   
    <data name="tabExplorer" xml:space="preserve"><value>浏览器</value></data>
    <data name="tabShortcuts" xml:space="preserve"><value>快捷项</value></data>
+   
+   
+   
+   
+   
+   
    
    
 </root>

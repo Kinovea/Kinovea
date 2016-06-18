@@ -22,6 +22,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using Kinovea.Camera.Languages;
 
 namespace Kinovea.Camera
 {
@@ -30,7 +31,9 @@ namespace Kinovea.Camera
         public FormHandshakeResult(Bitmap bitmap)
         {
             InitializeComponent();
-            
+
+            this.Text = CameraLang.FormHandshakeResult_Title;
+
             float ratioHeight = (float)bitmap.Height / pbImage.Height;
             float ratioWidth = (float)bitmap.Width / pbImage.Width;
             float ratio = Math.Max(ratioHeight, ratioWidth);

@@ -26,6 +26,7 @@ using System.IO;
 using System.Windows.Forms;
 
 using Kinovea.Services;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -48,13 +49,15 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeUI()
         {
-            this.Text = "Configure delay composite";
+            this.Text = ScreenManagerLang.FormConfigureComposite_Title;
+            lblCompositeType.Text = ScreenManagerLang.FormConfigureComposite_Type;
+            gbConfiguration.Text = ScreenManagerLang.Generic_Configuration;
 
-            cbType.Items.Add("Basic");
-            cbType.Items.Add("Multiple reviews");
-            cbType.Items.Add("Slow motion");
-            cbType.Items.Add("Frozen mosaic");
-            cbType.Items.Add("Mixed");
+            cbType.Items.Add(ScreenManagerLang.FormConfigureComposite_TypeBasic);
+            cbType.Items.Add(ScreenManagerLang.FormConfigureComposite_TypeMultipleReviews);
+            cbType.Items.Add(ScreenManagerLang.FormConfigureComposite_TypeSlowMotion);
+            cbType.Items.Add(ScreenManagerLang.FormConfigureComposite_TypeFrozenMosaic);
+            cbType.Items.Add(ScreenManagerLang.FormConfigureComposite_TypeMixed);
             
             // Each panel has its own configuration instance, initialized with default values.
             // The panel of the current configuration is populated with the current data.

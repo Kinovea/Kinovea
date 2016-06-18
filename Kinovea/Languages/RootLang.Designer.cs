@@ -22,7 +22,7 @@ namespace Kinovea.Root.Languages {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class RootLang {
+    public class RootLang {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Kinovea.Root.Languages {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kinovea.Root.Languages.RootLang", typeof(RootLang).Assembly);
@@ -51,7 +51,7 @@ namespace Kinovea.Root.Languages {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Change Language.
         /// </summary>
-        internal static string CommandSwitchUICulture_FriendlyName {
+        public static string CommandSwitchUICulture_FriendlyName {
             get {
                 return ResourceManager.GetString("CommandSwitchUICulture_FriendlyName", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Show/Hide File Explorer.
         /// </summary>
-        internal static string CommandToggleFileExplorer_FriendlyName {
+        public static string CommandToggleFileExplorer_FriendlyName {
             get {
                 return ResourceManager.GetString("CommandToggleFileExplorer_FriendlyName", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Building blocks.
         /// </summary>
-        internal static string dlgAbout_BuildingBlocks {
+        public static string dlgAbout_BuildingBlocks {
             get {
                 return ResourceManager.GetString("dlgAbout_BuildingBlocks", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Citation.
         /// </summary>
-        internal static string dlgAbout_Citation {
+        public static string dlgAbout_Citation {
             get {
                 return ResourceManager.GetString("dlgAbout_Citation", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to License.
         /// </summary>
-        internal static string dlgAbout_License {
+        public static string dlgAbout_License {
             get {
                 return ResourceManager.GetString("dlgAbout_License", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Translation.
         /// </summary>
-        internal static string dlgAbout_Translation {
+        public static string dlgAbout_Translation {
             get {
                 return ResourceManager.GetString("dlgAbout_Translation", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to All files (*.*)|*.*.
         /// </summary>
-        internal static string dlgOpenFile_Filter {
+        public static string dlgOpenFile_Filter {
             get {
                 return ResourceManager.GetString("dlgOpenFile_Filter", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Open Video File.
         /// </summary>
-        internal static string dlgOpenFile_Title {
+        public static string dlgOpenFile_Title {
             get {
                 return ResourceManager.GetString("dlgOpenFile_Title", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Context.
         /// </summary>
-        internal static string dlgPreferences_Capture_Context {
+        public static string dlgPreferences_Capture_Context {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_Context", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Context variables.
         /// </summary>
-        internal static string dlgPreferences_Capture_ContextVariables {
+        public static string dlgPreferences_Capture_ContextVariables {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_ContextVariables", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Display synchronization.
         /// </summary>
-        internal static string dlgPreferences_Capture_DisplaySynchronization {
+        public static string dlgPreferences_Capture_DisplaySynchronization {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_DisplaySynchronization", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to File:.
         /// </summary>
-        internal static string dlgPreferences_Capture_File {
+        public static string dlgPreferences_Capture_File {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_File", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Image naming.
         /// </summary>
-        internal static string dlgPreferences_Capture_ImageNaming {
+        public static string dlgPreferences_Capture_ImageNaming {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_ImageNaming", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Framerate (fps):.
         /// </summary>
-        internal static string dlgPreferences_Capture_lblForcedFramerate {
+        public static string dlgPreferences_Capture_lblForcedFramerate {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_lblForcedFramerate", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Image format:.
         /// </summary>
-        internal static string dlgPreferences_Capture_lblImageFormat {
+        public static string dlgPreferences_Capture_lblImageFormat {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_lblImageFormat", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Memory allocated for capture buffers: {0} MB..
         /// </summary>
-        internal static string dlgPreferences_Capture_lblMemoryBuffer {
+        public static string dlgPreferences_Capture_lblMemoryBuffer {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_lblMemoryBuffer", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Video format:.
         /// </summary>
-        internal static string dlgPreferences_Capture_lblVideoFormat {
+        public static string dlgPreferences_Capture_lblVideoFormat {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_lblVideoFormat", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Left.
         /// </summary>
-        internal static string dlgPreferences_Capture_Left {
+        public static string dlgPreferences_Capture_Left {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_Left", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Macro.
         /// </summary>
-        internal static string dlgPreferences_Capture_Macro {
+        public static string dlgPreferences_Capture_Macro {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_Macro", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Camera alias.
         /// </summary>
-        internal static string dlgPreferences_Capture_PatternCameraAlias {
+        public static string dlgPreferences_Capture_PatternCameraAlias {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_PatternCameraAlias", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Configured framerate.
         /// </summary>
-        internal static string dlgPreferences_Capture_PatternConfiguredFramerate {
+        public static string dlgPreferences_Capture_PatternConfiguredFramerate {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_PatternConfiguredFramerate", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Day.
         /// </summary>
-        internal static string dlgPreferences_Capture_PatternDay {
+        public static string dlgPreferences_Capture_PatternDay {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_PatternDay", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Hour.
         /// </summary>
-        internal static string dlgPreferences_Capture_PatternHour {
+        public static string dlgPreferences_Capture_PatternHour {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_PatternHour", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Minute.
         /// </summary>
-        internal static string dlgPreferences_Capture_PatternMinute {
+        public static string dlgPreferences_Capture_PatternMinute {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_PatternMinute", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Month.
         /// </summary>
-        internal static string dlgPreferences_Capture_PatternMonth {
+        public static string dlgPreferences_Capture_PatternMonth {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_PatternMonth", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Received framerate.
         /// </summary>
-        internal static string dlgPreferences_Capture_PatternReceivedFramerate {
+        public static string dlgPreferences_Capture_PatternReceivedFramerate {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_PatternReceivedFramerate", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Second.
         /// </summary>
-        internal static string dlgPreferences_Capture_PatternSecond {
+        public static string dlgPreferences_Capture_PatternSecond {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_PatternSecond", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Year.
         /// </summary>
-        internal static string dlgPreferences_Capture_PatternYear {
+        public static string dlgPreferences_Capture_PatternYear {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_PatternYear", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Camera frame.
         /// </summary>
-        internal static string dlgPreferences_Capture_radioCameraFrameSignal {
+        public static string dlgPreferences_Capture_radioCameraFrameSignal {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_radioCameraFrameSignal", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Forced framerate.
         /// </summary>
-        internal static string dlgPreferences_Capture_radioForcedFramerate {
+        public static string dlgPreferences_Capture_radioForcedFramerate {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_radioForcedFramerate", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Right.
         /// </summary>
-        internal static string dlgPreferences_Capture_Right {
+        public static string dlgPreferences_Capture_Right {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_Right", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Root:.
         /// </summary>
-        internal static string dlgPreferences_Capture_Root {
+        public static string dlgPreferences_Capture_Root {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_Root", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Sub directory:.
         /// </summary>
-        internal static string dlgPreferences_Capture_Subdir {
+        public static string dlgPreferences_Capture_Subdir {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_Subdir", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Memory.
         /// </summary>
-        internal static string dlgPreferences_Capture_tabMemory {
+        public static string dlgPreferences_Capture_tabMemory {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_tabMemory", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Video naming.
         /// </summary>
-        internal static string dlgPreferences_Capture_VideoNaming {
+        public static string dlgPreferences_Capture_VideoNaming {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_VideoNaming", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Always Visible.
         /// </summary>
-        internal static string dlgPreferences_Drawings_chkAlwaysVisible {
+        public static string dlgPreferences_Drawings_chkAlwaysVisible {
             get {
                 return ResourceManager.GetString("dlgPreferences_Drawings_chkAlwaysVisible", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Show drawings when video is playing.
         /// </summary>
-        internal static string dlgPreferences_Drawings_chkDrawOnPlay {
+        public static string dlgPreferences_Drawings_chkDrawOnPlay {
             get {
                 return ResourceManager.GetString("dlgPreferences_Drawings_chkDrawOnPlay", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Enable persistence.
         /// </summary>
-        internal static string dlgPreferences_Drawings_chkEnablePersistence {
+        public static string dlgPreferences_Drawings_chkEnablePersistence {
             get {
                 return ResourceManager.GetString("dlgPreferences_Drawings_chkEnablePersistence", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to By default, drawings will stay visible for {0} images around the Key Image..
         /// </summary>
-        internal static string dlgPreferences_Drawings_lblFading {
+        public static string dlgPreferences_Drawings_lblFading {
             get {
                 return ResourceManager.GetString("dlgPreferences_Drawings_lblFading", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Persistence.
         /// </summary>
-        internal static string dlgPreferences_Drawings_tabPersistence {
+        public static string dlgPreferences_Drawings_tabPersistence {
             get {
                 return ResourceManager.GetString("dlgPreferences_Drawings_tabPersistence", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Number of files in history:.
         /// </summary>
-        internal static string dlgPreferences_General_lblHistoryCount {
+        public static string dlgPreferences_General_lblHistoryCount {
             get {
                 return ResourceManager.GetString("dlgPreferences_General_lblHistoryCount", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
-        internal static string dlgPreferences_Keyboard_btnApply {
+        public static string dlgPreferences_Keyboard_btnApply {
             get {
                 return ResourceManager.GetString("dlgPreferences_Keyboard_btnApply", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Clear.
         /// </summary>
-        internal static string dlgPreferences_Keyboard_btnClear {
+        public static string dlgPreferences_Keyboard_btnClear {
             get {
                 return ResourceManager.GetString("dlgPreferences_Keyboard_btnClear", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Default.
         /// </summary>
-        internal static string dlgPreferences_Keyboard_btnDefault {
+        public static string dlgPreferences_Keyboard_btnDefault {
             get {
                 return ResourceManager.GetString("dlgPreferences_Keyboard_btnDefault", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Categories.
         /// </summary>
-        internal static string dlgPreferences_Keyboard_lblCategories {
+        public static string dlgPreferences_Keyboard_lblCategories {
             get {
                 return ResourceManager.GetString("dlgPreferences_Keyboard_lblCategories", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Commands.
         /// </summary>
-        internal static string dlgPreferences_Keyboard_lblCommands {
+        public static string dlgPreferences_Keyboard_lblCommands {
             get {
                 return ResourceManager.GetString("dlgPreferences_Keyboard_lblCommands", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Hotkey for {0}.{1}.
         /// </summary>
-        internal static string dlgPreferences_Keyboard_lblHotkey {
+        public static string dlgPreferences_Keyboard_lblHotkey {
             get {
                 return ResourceManager.GetString("dlgPreferences_Keyboard_lblHotkey", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Always deinterlace when opening a new video..
         /// </summary>
-        internal static string dlgPreferences_Player_DeinterlaceByDefault {
+        public static string dlgPreferences_Player_DeinterlaceByDefault {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_DeinterlaceByDefault", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Force 16:9.
         /// </summary>
-        internal static string dlgPreferences_Player_Format169 {
+        public static string dlgPreferences_Player_Format169 {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_Format169", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Force 4:3.
         /// </summary>
-        internal static string dlgPreferences_Player_Format43 {
+        public static string dlgPreferences_Player_Format43 {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_Format43", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Auto Detection.
         /// </summary>
-        internal static string dlgPreferences_Player_FormatAuto {
+        public static string dlgPreferences_Player_FormatAuto {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_FormatAuto", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Switch To Analysis Mode.
         /// </summary>
-        internal static string dlgPreferences_Player_GroupAnalysisMode {
+        public static string dlgPreferences_Player_GroupAnalysisMode {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_GroupAnalysisMode", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Update image during time cursor movement.
         /// </summary>
-        internal static string dlgPreferences_Player_InteractiveFrameTracker {
+        public static string dlgPreferences_Player_InteractiveFrameTracker {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_InteractiveFrameTracker", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Default image format:.
         /// </summary>
-        internal static string dlgPreferences_Player_lblImageFormat {
+        public static string dlgPreferences_Player_lblImageFormat {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_lblImageFormat", resourceCulture);
             }
@@ -549,7 +549,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Language:.
         /// </summary>
-        internal static string dlgPreferences_Player_lblLanguages {
+        public static string dlgPreferences_Player_lblLanguages {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_lblLanguages", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to And.
         /// </summary>
-        internal static string dlgPreferences_Player_lblLogicAnd {
+        public static string dlgPreferences_Player_lblLogicAnd {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_lblLogicAnd", resourceCulture);
             }
@@ -567,7 +567,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Working Zone will take less than {0} MB of Memory..
         /// </summary>
-        internal static string dlgPreferences_Player_lblWorkingZoneMemory {
+        public static string dlgPreferences_Player_lblWorkingZoneMemory {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_lblWorkingZoneMemory", resourceCulture);
             }
@@ -576,7 +576,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Working Zone is less than {0} seconds..
         /// </summary>
-        internal static string dlgPreferences_Player_lblWorkingZoneSeconds {
+        public static string dlgPreferences_Player_lblWorkingZoneSeconds {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_lblWorkingZoneSeconds", resourceCulture);
             }
@@ -585,7 +585,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Link speed sliders when comparing videos..
         /// </summary>
-        internal static string dlgPreferences_Player_SyncLockSpeeds {
+        public static string dlgPreferences_Player_SyncLockSpeeds {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_SyncLockSpeeds", resourceCulture);
             }
@@ -594,7 +594,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Units.
         /// </summary>
-        internal static string dlgPreferences_Player_tabUnits {
+        public static string dlgPreferences_Player_tabUnits {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_tabUnits", resourceCulture);
             }
@@ -603,7 +603,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Tracking.
         /// </summary>
-        internal static string dlgPreferences_Player_Tracking {
+        public static string dlgPreferences_Player_Tracking {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_Tracking", resourceCulture);
             }
@@ -612,7 +612,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Default tracking parameters.
         /// </summary>
-        internal static string dlgPreferences_Player_TrackingDescription {
+        public static string dlgPreferences_Player_TrackingDescription {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_TrackingDescription", resourceCulture);
             }
@@ -621,7 +621,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Object window:.
         /// </summary>
-        internal static string dlgPreferences_Player_TrackingObjectWindow {
+        public static string dlgPreferences_Player_TrackingObjectWindow {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_TrackingObjectWindow", resourceCulture);
             }
@@ -630,7 +630,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Percentage.
         /// </summary>
-        internal static string dlgPreferences_Player_TrackingPercentage {
+        public static string dlgPreferences_Player_TrackingPercentage {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_TrackingPercentage", resourceCulture);
             }
@@ -639,7 +639,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Pixels.
         /// </summary>
-        internal static string dlgPreferences_Player_TrackingPixels {
+        public static string dlgPreferences_Player_TrackingPixels {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_TrackingPixels", resourceCulture);
             }
@@ -648,7 +648,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Search window:.
         /// </summary>
-        internal static string dlgPreferences_Player_TrackingSearchWindow {
+        public static string dlgPreferences_Player_TrackingSearchWindow {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_TrackingSearchWindow", resourceCulture);
             }
@@ -657,7 +657,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Acceleration:.
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsAcceleration {
+        public static string dlgPreferences_Player_UnitsAcceleration {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsAcceleration", resourceCulture);
             }
@@ -666,7 +666,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Angle:.
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsAngle {
+        public static string dlgPreferences_Player_UnitsAngle {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsAngle", resourceCulture);
             }
@@ -675,7 +675,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Angular acceleration:.
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsAngularAcceleration {
+        public static string dlgPreferences_Player_UnitsAngularAcceleration {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsAngularAcceleration", resourceCulture);
             }
@@ -684,7 +684,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Angular velocity:.
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsAngularVelocity {
+        public static string dlgPreferences_Player_UnitsAngularVelocity {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsAngularVelocity", resourceCulture);
             }
@@ -693,7 +693,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Custom length unit :.
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsCustom {
+        public static string dlgPreferences_Player_UnitsCustom {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsCustom", resourceCulture);
             }
@@ -702,7 +702,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Degrees ({0}).
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsDegrees {
+        public static string dlgPreferences_Player_UnitsDegrees {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsDegrees", resourceCulture);
             }
@@ -711,7 +711,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Degrees per second ({0}).
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsDegreesPerSecond {
+        public static string dlgPreferences_Player_UnitsDegreesPerSecond {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsDegreesPerSecond", resourceCulture);
             }
@@ -720,7 +720,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Degrees per second squared ({0}).
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsDegreesPerSecondSquared {
+        public static string dlgPreferences_Player_UnitsDegreesPerSecondSquared {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsDegreesPerSecondSquared", resourceCulture);
             }
@@ -729,7 +729,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Feet per second squared ({0}).
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsFeetPerSecondSquared {
+        public static string dlgPreferences_Player_UnitsFeetPerSecondSquared {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsFeetPerSecondSquared", resourceCulture);
             }
@@ -738,7 +738,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Meters per second squared ({0}).
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsMetersPerSecondSquared {
+        public static string dlgPreferences_Player_UnitsMetersPerSecondSquared {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsMetersPerSecondSquared", resourceCulture);
             }
@@ -747,7 +747,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Radians ({0}).
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsRadians {
+        public static string dlgPreferences_Player_UnitsRadians {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsRadians", resourceCulture);
             }
@@ -756,7 +756,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Radians per second ({0}).
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsRadiansPerSecond {
+        public static string dlgPreferences_Player_UnitsRadiansPerSecond {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsRadiansPerSecond", resourceCulture);
             }
@@ -765,7 +765,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Radians per second squared ({0}).
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsRadiansPerSecondSquared {
+        public static string dlgPreferences_Player_UnitsRadiansPerSecondSquared {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsRadiansPerSecondSquared", resourceCulture);
             }
@@ -774,7 +774,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Revolutions per minute ({0}).
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsRevolutionsPerMinute {
+        public static string dlgPreferences_Player_UnitsRevolutionsPerMinute {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsRevolutionsPerMinute", resourceCulture);
             }
@@ -783,7 +783,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Speed:.
         /// </summary>
-        internal static string dlgPreferences_Player_UnitsSpeed {
+        public static string dlgPreferences_Player_UnitsSpeed {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitsSpeed", resourceCulture);
             }
@@ -792,7 +792,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Time:.
         /// </summary>
-        internal static string dlgPreferences_Player_UnitTime {
+        public static string dlgPreferences_Player_UnitTime {
             get {
                 return ResourceManager.GetString("dlgPreferences_Player_UnitTime", resourceCulture);
             }
@@ -801,7 +801,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Feet per second ({0}).
         /// </summary>
-        internal static string dlgPreferences_Speed_FeetPerSecond {
+        public static string dlgPreferences_Speed_FeetPerSecond {
             get {
                 return ResourceManager.GetString("dlgPreferences_Speed_FeetPerSecond", resourceCulture);
             }
@@ -810,7 +810,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Kilometers per hour ({0}).
         /// </summary>
-        internal static string dlgPreferences_Speed_KilometersPerHour {
+        public static string dlgPreferences_Speed_KilometersPerHour {
             get {
                 return ResourceManager.GetString("dlgPreferences_Speed_KilometersPerHour", resourceCulture);
             }
@@ -819,7 +819,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Knots ({0}).
         /// </summary>
-        internal static string dlgPreferences_Speed_Knots {
+        public static string dlgPreferences_Speed_Knots {
             get {
                 return ResourceManager.GetString("dlgPreferences_Speed_Knots", resourceCulture);
             }
@@ -828,7 +828,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Meters per second ({0}).
         /// </summary>
-        internal static string dlgPreferences_Speed_MetersPerSecond {
+        public static string dlgPreferences_Speed_MetersPerSecond {
             get {
                 return ResourceManager.GetString("dlgPreferences_Speed_MetersPerSecond", resourceCulture);
             }
@@ -837,7 +837,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Miles per hour ({0}).
         /// </summary>
-        internal static string dlgPreferences_Speed_MilesPerHour {
+        public static string dlgPreferences_Speed_MilesPerHour {
             get {
                 return ResourceManager.GetString("dlgPreferences_Speed_MilesPerHour", resourceCulture);
             }
@@ -846,7 +846,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Capture.
         /// </summary>
-        internal static string dlgPreferences_tabCapture {
+        public static string dlgPreferences_tabCapture {
             get {
                 return ResourceManager.GetString("dlgPreferences_tabCapture", resourceCulture);
             }
@@ -855,7 +855,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Drawings.
         /// </summary>
-        internal static string dlgPreferences_tabDrawings {
+        public static string dlgPreferences_tabDrawings {
             get {
                 return ResourceManager.GetString("dlgPreferences_tabDrawings", resourceCulture);
             }
@@ -864,7 +864,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
-        internal static string dlgPreferences_tabGeneral {
+        public static string dlgPreferences_tabGeneral {
             get {
                 return ResourceManager.GetString("dlgPreferences_tabGeneral", resourceCulture);
             }
@@ -873,7 +873,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Keyboard.
         /// </summary>
-        internal static string dlgPreferences_tabKeyboard {
+        public static string dlgPreferences_tabKeyboard {
             get {
                 return ResourceManager.GetString("dlgPreferences_tabKeyboard", resourceCulture);
             }
@@ -882,7 +882,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Playback.
         /// </summary>
-        internal static string dlgPreferences_tabPlayback {
+        public static string dlgPreferences_tabPlayback {
             get {
                 return ResourceManager.GetString("dlgPreferences_tabPlayback", resourceCulture);
             }
@@ -891,7 +891,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Preferences.
         /// </summary>
-        internal static string dlgPreferences_Title {
+        public static string dlgPreferences_Title {
             get {
                 return ResourceManager.GetString("dlgPreferences_Title", resourceCulture);
             }
@@ -900,7 +900,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Loading User Interface….
         /// </summary>
-        internal static string dlgSplash_LoadInfos {
+        public static string dlgSplash_LoadInfos {
             get {
                 return ResourceManager.GetString("dlgSplash_LoadInfos", resourceCulture);
             }
@@ -909,7 +909,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        internal static string Generic_Cancel {
+        public static string Generic_Cancel {
             get {
                 return ResourceManager.GetString("Generic_Cancel", resourceCulture);
             }
@@ -918,7 +918,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Quit.
         /// </summary>
-        internal static string Generic_Quit {
+        public static string Generic_Quit {
             get {
                 return ResourceManager.GetString("Generic_Quit", resourceCulture);
             }
@@ -927,7 +927,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
-        internal static string Generic_Save {
+        public static string Generic_Save {
             get {
                 return ResourceManager.GetString("Generic_Save", resourceCulture);
             }
@@ -936,7 +936,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to About Kinovea….
         /// </summary>
-        internal static string mnuAbout {
+        public static string mnuAbout {
             get {
                 return ResourceManager.GetString("mnuAbout", resourceCulture);
             }
@@ -945,7 +945,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Open log folder….
         /// </summary>
-        internal static string mnuApplicationFolder {
+        public static string mnuApplicationFolder {
             get {
                 return ResourceManager.GetString("mnuApplicationFolder", resourceCulture);
             }
@@ -954,7 +954,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
-        internal static string mnuEdit {
+        public static string mnuEdit {
             get {
                 return ResourceManager.GetString("mnuEdit", resourceCulture);
             }
@@ -963,7 +963,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
-        internal static string mnuFile {
+        public static string mnuFile {
             get {
                 return ResourceManager.GetString("mnuFile", resourceCulture);
             }
@@ -972,7 +972,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Full screen.
         /// </summary>
-        internal static string mnuFullScreen {
+        public static string mnuFullScreen {
             get {
                 return ResourceManager.GetString("mnuFullScreen", resourceCulture);
             }
@@ -981,7 +981,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
-        internal static string mnuHelp {
+        public static string mnuHelp {
             get {
                 return ResourceManager.GetString("mnuHelp", resourceCulture);
             }
@@ -990,7 +990,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Kinovea Help....
         /// </summary>
-        internal static string mnuHelpContents {
+        public static string mnuHelpContents {
             get {
                 return ResourceManager.GetString("mnuHelpContents", resourceCulture);
             }
@@ -999,7 +999,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Recent.
         /// </summary>
-        internal static string mnuHistory {
+        public static string mnuHistory {
             get {
                 return ResourceManager.GetString("mnuHistory", resourceCulture);
             }
@@ -1008,7 +1008,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Reset History.
         /// </summary>
-        internal static string mnuHistoryReset {
+        public static string mnuHistoryReset {
             get {
                 return ResourceManager.GetString("mnuHistoryReset", resourceCulture);
             }
@@ -1017,7 +1017,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Image.
         /// </summary>
-        internal static string mnuImage {
+        public static string mnuImage {
             get {
                 return ResourceManager.GetString("mnuImage", resourceCulture);
             }
@@ -1026,7 +1026,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
-        internal static string mnuLanguages {
+        public static string mnuLanguages {
             get {
                 return ResourceManager.GetString("mnuLanguages", resourceCulture);
             }
@@ -1035,7 +1035,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Open Video File….
         /// </summary>
-        internal static string mnuOpenFile {
+        public static string mnuOpenFile {
             get {
                 return ResourceManager.GetString("mnuOpenFile", resourceCulture);
             }
@@ -1044,7 +1044,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Options.
         /// </summary>
-        internal static string mnuOptions {
+        public static string mnuOptions {
             get {
                 return ResourceManager.GetString("mnuOptions", resourceCulture);
             }
@@ -1053,7 +1053,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Preferences….
         /// </summary>
-        internal static string mnuPreferences {
+        public static string mnuPreferences {
             get {
                 return ResourceManager.GetString("mnuPreferences", resourceCulture);
             }
@@ -1062,7 +1062,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Redo.
         /// </summary>
-        internal static string mnuRedo {
+        public static string mnuRedo {
             get {
                 return ResourceManager.GetString("mnuRedo", resourceCulture);
             }
@@ -1071,7 +1071,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to View.
         /// </summary>
-        internal static string mnuScreens {
+        public static string mnuScreens {
             get {
                 return ResourceManager.GetString("mnuScreens", resourceCulture);
             }
@@ -1080,7 +1080,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Time.
         /// </summary>
-        internal static string mnuTimeFormat {
+        public static string mnuTimeFormat {
             get {
                 return ResourceManager.GetString("mnuTimeFormat", resourceCulture);
             }
@@ -1089,7 +1089,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to File Explorer.
         /// </summary>
-        internal static string mnuToggleFileExplorer {
+        public static string mnuToggleFileExplorer {
             get {
                 return ResourceManager.GetString("mnuToggleFileExplorer", resourceCulture);
             }
@@ -1098,7 +1098,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Tools.
         /// </summary>
-        internal static string mnuTools {
+        public static string mnuTools {
             get {
                 return ResourceManager.GetString("mnuTools", resourceCulture);
             }
@@ -1107,7 +1107,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Video Tutorials….
         /// </summary>
-        internal static string mnuTutorialVideos {
+        public static string mnuTutorialVideos {
             get {
                 return ResourceManager.GetString("mnuTutorialVideos", resourceCulture);
             }
@@ -1116,7 +1116,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Undo.
         /// </summary>
-        internal static string mnuUndo {
+        public static string mnuUndo {
             get {
                 return ResourceManager.GetString("mnuUndo", resourceCulture);
             }
@@ -1125,7 +1125,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Video.
         /// </summary>
-        internal static string mnuVideo {
+        public static string mnuVideo {
             get {
                 return ResourceManager.GetString("mnuVideo", resourceCulture);
             }
@@ -1134,7 +1134,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Classic (h:mm:ss:hundredth).
         /// </summary>
-        internal static string TimeCodeFormat_Classic {
+        public static string TimeCodeFormat_Classic {
             get {
                 return ResourceManager.GetString("TimeCodeFormat_Classic", resourceCulture);
             }
@@ -1143,7 +1143,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Frames numbers.
         /// </summary>
-        internal static string TimeCodeFormat_Frames {
+        public static string TimeCodeFormat_Frames {
             get {
                 return ResourceManager.GetString("TimeCodeFormat_Frames", resourceCulture);
             }
@@ -1152,7 +1152,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Hundredth of a minute.
         /// </summary>
-        internal static string TimeCodeFormat_HundredthOfMinutes {
+        public static string TimeCodeFormat_HundredthOfMinutes {
             get {
                 return ResourceManager.GetString("TimeCodeFormat_HundredthOfMinutes", resourceCulture);
             }
@@ -1161,7 +1161,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Total microseconds.
         /// </summary>
-        internal static string TimeCodeFormat_Microseconds {
+        public static string TimeCodeFormat_Microseconds {
             get {
                 return ResourceManager.GetString("TimeCodeFormat_Microseconds", resourceCulture);
             }
@@ -1170,7 +1170,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Total milliseconds.
         /// </summary>
-        internal static string TimeCodeFormat_Milliseconds {
+        public static string TimeCodeFormat_Milliseconds {
             get {
                 return ResourceManager.GetString("TimeCodeFormat_Milliseconds", resourceCulture);
             }
@@ -1179,7 +1179,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Ten thousandth of an hour.
         /// </summary>
-        internal static string TimeCodeFormat_TenThousandthOfHours {
+        public static string TimeCodeFormat_TenThousandthOfHours {
             get {
                 return ResourceManager.GetString("TimeCodeFormat_TenThousandthOfHours", resourceCulture);
             }
@@ -1188,7 +1188,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Classic + Frame numbers.
         /// </summary>
-        internal static string TimeCodeFormat_TimeAndFrames {
+        public static string TimeCodeFormat_TimeAndFrames {
             get {
                 return ResourceManager.GetString("TimeCodeFormat_TimeAndFrames", resourceCulture);
             }
@@ -1197,7 +1197,7 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Time Stamps.
         /// </summary>
-        internal static string TimeCodeFormat_Timestamps {
+        public static string TimeCodeFormat_Timestamps {
             get {
                 return ResourceManager.GetString("TimeCodeFormat_Timestamps", resourceCulture);
             }

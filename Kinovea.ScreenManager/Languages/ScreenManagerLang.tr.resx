@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Dosyayı yazamıyor.\n Hedef klasöre yazmak için gerekli izinlere sahip olduğunuzdan ve dosyanın şu anda kullanımda olmadığından emin olun.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Videoyu Kaydedemiyor.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Videoyu Kaydedemiyor.\n Başka bir format ile tekrar deneyin.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>İlerleme :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Videoyu Kaydediyor...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Export edilen İmajlar :</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Anahtar İmajlar değiştirildi.\n Kapatmadan önce anahtar imaj verisini kaydetmek istiyor musunuz?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Anahtar imaj verisi kaydedilmedi</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Görünümü bu kadar geciktir: {0:0} sn</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Ortak Kontroller :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Süre</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Başlat</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Keskinleştir...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Koordinatları göster</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Ölçümü Göster</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabilize Et</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Yol Düzenlemesini Sonlandır</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Gözlemsel referans</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Video Konumlarını Tersine Çevir</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Dosyayı sil</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Dosya ismini değiştir</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Videoyu oynat</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Ortak Kontrolleri Göster/Gizle</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>İzlenen Yol</value></data>
    
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Tekrarlama Modunu Değiştir ( Tek Sefer | Döngü ) - Geçerli Mod : Döngü</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Tekrarlama Modunu Değiştir ( Tek Sefer | Döngü ) - Geçerli Mod : Tek Sefer</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Bir İmaj Sekansı Kaydet</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Video kaydetmeye başla</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Video kaydetmeyi bitir</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Video kaydetmeye başla</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Video kaydetmeyi bitir</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Çalışma Alanını Tam Videoya Geri Ayarla</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Koyu</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>İtalik</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Göz Atma...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Geri...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Oto Kontrast...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

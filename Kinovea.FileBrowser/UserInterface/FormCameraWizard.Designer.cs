@@ -48,7 +48,7 @@ namespace Kinovea.FileBrowser
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblCameraType = new System.Windows.Forms.Label();
             this.cbCameraType = new System.Windows.Forms.ComboBox();
             this.gpParameters = new System.Windows.Forms.GroupBox();
             this.btnApply = new System.Windows.Forms.Button();
@@ -56,14 +56,14 @@ namespace Kinovea.FileBrowser
             this.btnTest = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // label1
+            // lblCameraType
             // 
-            this.label1.Location = new System.Drawing.Point(21, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(118, 23);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Type of camera :";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblCameraType.Location = new System.Drawing.Point(21, 19);
+            this.lblCameraType.Name = "lblCameraType";
+            this.lblCameraType.Size = new System.Drawing.Size(118, 23);
+            this.lblCameraType.TabIndex = 0;
+            this.lblCameraType.Text = "Type of camera :";
+            this.lblCameraType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // cbCameraType
             // 
@@ -76,9 +76,9 @@ namespace Kinovea.FileBrowser
             // 
             // gpParameters
             // 
-            this.gpParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.gpParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.gpParameters.Location = new System.Drawing.Point(12, 62);
             this.gpParameters.Name = "gpParameters";
             this.gpParameters.Size = new System.Drawing.Size(419, 357);
@@ -130,7 +130,7 @@ namespace Kinovea.FileBrowser
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.gpParameters);
             this.Controls.Add(this.cbCameraType);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblCameraType);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -138,12 +138,13 @@ namespace Kinovea.FileBrowser
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Manual connection wizard";
             this.ResumeLayout(false);
+
         }
         private System.Windows.Forms.Button btnTest;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.GroupBox gpParameters;
         private System.Windows.Forms.ComboBox cbCameraType;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblCameraType;
     }
 }

@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>El fichero no ha podido escribirse.\nAsegurese de tener derechos de escritura en la carpeta y que el fichero no está siendo utilizado.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Fué imposible guardar el vídeo </value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>El vídeo no ha podido guardarse.\nInténtelo de nuevo usando otro formato</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progresiòn :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Guardar el Video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Imagenes Exportadas :</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Imágenes clave han sido modificados.\n ¿Desea guardar los datos antes de cerrar ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Imágenes clave no guardadas</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Retraso mostrando imágenes: {0:0} s</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Controles Comunes :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duraciòn</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Principio</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Fortalecimiento de contornos…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Mostrar las coordenadas</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostar la medida</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabilizar</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Terminar la ediciòn de la Trayectoria</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Referencia de observación</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Invertir los vídeos</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Borrar el fichero</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Renombrar el fichero</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Reproducir el vídeo</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Mostrar / Ocultar controles comunes</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Seguir la Trayectoria</value></data>
    
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Cambiar el Modo Repeticiòn ( Una vez | En Bucle ) - Moda Actual : En Bucle</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Cambiar el Modo Repeticiòn ( Una vez | En Bucle ) - Moda Actual : Una vez</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Guardar una secuencia de imagen </value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Iniciar grabación</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Detener grabación</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Iniciar grabación</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Detener grabación</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reinicializar la zona de trabajo</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Negrita</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Cursiva</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resumen</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertido...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

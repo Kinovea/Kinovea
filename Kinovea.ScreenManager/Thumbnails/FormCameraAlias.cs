@@ -24,6 +24,7 @@ using System.Windows.Forms;
 
 using Kinovea.Camera;
 using Kinovea.Services;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -54,9 +55,13 @@ namespace Kinovea.ScreenManager
         
         private void Initialize()
         {
-            this.Text = "Rename camera";
+            this.Text = ScreenManagerLang.FormCameraAlias_Title;
+            lblAlias.Text = ScreenManagerLang.FormCameraAlias_Alias;
+            lblIcon.Text = ScreenManagerLang.FormCameraAlias_Icon;
             tbAlias.Text = summary.Alias;
             btnIcon.BackgroundImage = summary.Icon;
+            btnOK.Text = ScreenManagerLang.Generic_Apply;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
         
         private void BtnReset_Click(object sender, EventArgs e)
@@ -66,7 +71,7 @@ namespace Kinovea.ScreenManager
         
         private void BtnIconClick(object sender, EventArgs e)
         {
-            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5, "Icons");
+            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5);
             FormsHelper.Locate(fip);
             if(fip.ShowDialog() == DialogResult.OK)
                 btnIcon.BackgroundImage = fip.PickedIcon;

@@ -137,6 +137,11 @@
     <Compile Include="ImageAspectRatio.cs" />
     <Compile Include="Interfaces\IConnectionWizard.cs" />
     <Compile Include="Interfaces\ICaptureSource.cs" />
+    <Compile Include="Languages\CameraLang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CameraLang.resx</DependentUpon>
+    </Compile>
     <Compile Include="LogarithmicMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Icons.Designer.cs">
@@ -158,6 +163,35 @@
     <EmbeddedResource Include="FormIconPicker.resx">
       <DependentUpon>FormIconPicker.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\CameraLang.ar.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.ca.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.cs.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.da.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.de.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.el.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.es.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.fi.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.fr.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.it.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.ja.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.ko.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.lt.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.mk.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.nl.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.no.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.pl.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.pt.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CameraLang.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\CameraLang.ro.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.ru.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.sr-Cyrl-CS.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.sr-Latn-CS.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.sv.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.tr.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.Zh-CHS.resx" />
     <EmbeddedResource Include="Properties\Icons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Icons.Designer.cs</LastGenOutput>
@@ -194,5 +228,6 @@
   <ItemGroup>
     <None Include="Resources\basler2.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

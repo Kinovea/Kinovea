@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Невозможно записать файл. \n Убедитесь, что вы имеете право записи в данной папке, а файла не используется другими приложениями</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - невозможно сохранить видео</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Невозможно сохранить видео. \n Попытайтесь сохранить вновь в другом формате.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Прогресс :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Сохранение видео …</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Экспортированные изображения :</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Ключевые кадры изменены.\n Вы хотите сохранить данные по ключевым кадрам перед закрытием?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Данные по ключевым кадрам не сохранены</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Задержка дисплея на: {0:0} с </value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Общие элементы управления :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Продолжительность</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Старт</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Резкость…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Координаты дисплея</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Отображение размерностей</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Стабилизация</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Закончить редактирование пути</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Визуальные ориентиры</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Обратить видео</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Удалить файл</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Переименовать файл</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Воспроизвести файл</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Показать/скрыть общие настройки</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Прорисовка пути</value></data>
    <data name="mnuCoordinateSystem" xml:space="preserve"><value>Координатная система</value></data>
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Изменить режим повтора (однократно | зациклить) - текущий режим : зациклить</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Изменить режим повтора (однократно | зациклить) - текущий режим : однократно</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Сохранить последовательность изображений</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Старт записи видео</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Остановка записи видео</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Старт записи видео</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Остановка записи видео</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Сброс исследуемого интервала</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Жирный</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Курсив</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Раскадровка…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Реверс…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Авто контраст…</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

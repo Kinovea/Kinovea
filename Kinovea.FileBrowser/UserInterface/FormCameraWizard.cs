@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.Linq;
 
 using Kinovea.Camera;
+using Kinovea.FileBrowser.Languages;
 
 namespace Kinovea.FileBrowser
 {
@@ -50,9 +51,20 @@ namespace Kinovea.FileBrowser
             cameraManagers = CameraTypeManager.CameraManagers.Where(m => m.HasConnectionWizard).ToList();
             cameraManagers.Sort((a, b) => a.CameraType.CompareTo(b.CameraType));
 
+            Initialize();
             Populate();
         }
         
+        private void Initialize()
+        {
+            this.Text = FileBrowserLang.FormCameraWizard_Title;
+            lblCameraType.Text = FileBrowserLang.FormCameraWizard_CameraType;
+            gpParameters.Text = FileBrowserLang.FormCameraWizard_Parameters;
+            btnTest.Text = FileBrowserLang.FormCameraWizard_Test;
+            btnApply.Text = FileBrowserLang.FormCameraWizard_Create;
+            btnCancel.Text = FileBrowserLang.Generic_Cancel;
+        }
+
         private void Populate()
         {
             // Fill main combo

@@ -65,10 +65,11 @@ namespace Kinovea.ScreenManager
 
             Size size = new Size(imageDescriptor.Width / sidecount, imageDescriptor.Height / sidecount);
 
-            // We can only consume that many contiguous frames from the buffer.
+            // Each substream can only consume that many contiguous frames from the buffer.
+            refreshRate = Math.Min(refreshRate, 1.0f);
             int cycleDuration = (int)Math.Round(totalFrames * refreshRate);
             
-            // Each subframe will start staggered by this amount.
+            // Each substream will start staggered by this amount.
             // If shift is less than cycle duration, we are going to miss some frames.
             int shift = (int)Math.Round((float)(totalFrames - cycleDuration) / (count - 1));
 

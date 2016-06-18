@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Onmogelijk bestand te maken. \nZorg ervoor dat u de rechten heeft om bestanden op te slaan in doelmap en dat het bestand nu niet in gebruik is.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Kan bestand niet opslaan.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan video niet opslaan.\nProbeer nogmaals met een ander format.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Voortgang :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Bewaar video…</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Geëxporteerde afbeeldingen:</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Kernbeelden zijn veranderd. \nWilt u de veranderde kernbeelden opslaan voor afsluiten ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Kernbeelden niet opgeslagen</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Vertraag weergave met: {0:0} s</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Standaard bediening:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duur</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Verscherp…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Toon coördinaten</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Toon afmeting</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabiliseer…</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Beëindig Trajectory bewerking</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Observatie Referentie</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Draai Video posities om</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Verwijder bestand</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Hernoem bestand</value></data>
+   
+   
+   
    <data name="mnuThumbnailLocate" xml:space="preserve"><value>Zoek bestand in Windows verkenner</value></data>
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Speel video af</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Toon/Verberg standaard bediening</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Baan Trajectpad</value></data>
    <data name="mnuCoordinateSystem" xml:space="preserve"><value>Coördinaten systeem</value></data>
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Verander herhalingsweergave ( Eenmaal | Herhaal ) - Huidige weergave : Herhaal</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Verander herhalingsweergave ( Enkel | Herhaal ) - Huidige weergave : Eenmaal</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Bewaar beeldmateriaal</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Start video opname</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Stop video opname</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Start video opname</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Stop video opname</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Herstel het werkgebied naar volledige video</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Vet</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Cursief</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overzicht…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Keer om….</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisch contrast…</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

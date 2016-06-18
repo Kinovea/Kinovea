@@ -61,8 +61,8 @@ namespace Kinovea.Camera.HTTP
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.tbAlias);
             this.groupBox1.Controls.Add(this.lblSystemName);
             this.groupBox1.Controls.Add(this.btnIcon);
@@ -139,7 +139,6 @@ namespace Kinovea.Camera.HTTP
             this.gpParameters.Size = new System.Drawing.Size(419, 357);
             this.gpParameters.TabIndex = 88;
             this.gpParameters.TabStop = false;
-            this.gpParameters.Text = "Parameters";
             // 
             // btnTest
             // 
@@ -171,6 +170,7 @@ namespace Kinovea.Camera.HTTP
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+
         }
         private System.Windows.Forms.Button btnTest;
         private System.Windows.Forms.GroupBox gpParameters;

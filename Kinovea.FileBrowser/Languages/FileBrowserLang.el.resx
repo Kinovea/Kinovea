@@ -72,14 +72,23 @@
    </resheader>
    <data name="lblFolders" xml:space="preserve"><value>Φάκελοι:</value></data>
    <data name="lblVideoFiles" xml:space="preserve"><value>Αρχεία Video:</value></data>
+   
    <data name="mnuAddShortcut" xml:space="preserve"><value>Προσθήκη συντόμευσης</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Προσθήκη στις συντομεύσεις</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Διαγραφή συντόμευσης</value></data>
    
    
    
+   <data name="Generic_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
+   
    <data name="tabExplorer" xml:space="preserve"><value>Εξερευνητής</value></data>
    <data name="tabShortcuts" xml:space="preserve"><value>Συντομεύσεις</value></data>
+   
+   
+   
+   
+   
+   
    
    
 </root>

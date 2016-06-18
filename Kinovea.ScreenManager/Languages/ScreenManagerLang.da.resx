@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Kan ikke gemme filen.\nsørg for at have skriverettigheder til kataloget, samt at filen ikke er i brug.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Kan ikke gemme video.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan ikke gemme video.\nPrøv igen med et andet format.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Arbejder:</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Gemmer video…</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Eksporterede billeder:</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Nøglebilleder er blevet modificeret.\nØnsker du at gemme nøglebillederne inden der lukkes?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Nøglebilleders data er ikke gemt</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Forsink visning med: {0:0} sek.</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Standardkontroller:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Varighed</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Gør skarp…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Vis koordinater</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabiliser</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Afslut editering af spor</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Observationsreference</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Byt om på vinduer</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Slet fil</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Omdøb fil</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Afspil video</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Vis/skjul almindlig styring</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Følg spor</value></data>
    
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Ændre gentagelses måde (En gang | Loop) - Nuværende måde: Loop</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Ændre gentagelses måde (En gang | Loop) - Nuværende måde: En gang</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Gem en billedserie</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Start videooptagelse</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Stop videooptagelse</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Start videooptagelse</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Stop videooptagelse</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Nulstil arbejdsområde til hele videoen</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Frenhævet</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Kursiv</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overblik…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Omvendt rækkefølge…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast…</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

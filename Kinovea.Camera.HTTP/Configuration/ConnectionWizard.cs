@@ -27,6 +27,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
 using Kinovea.Pipeline;
+using Kinovea.Camera.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.HTTP
 {
@@ -48,11 +50,27 @@ namespace Kinovea.Camera.HTTP
         {
             this.manager = manager;
             InitializeComponent();
+            Initialize();
+
             BackColor = Color.White;
             host = "192.168.0.10";
             path = "/mjpg/video.mjpg";
             tbHost.Text = host;
             format = "MJPEG";
+        }
+
+        private void Initialize()
+        {
+            gpNetwork.Text = CameraLang.FormConnectionWizard_Network;
+            lblHost.Text = CameraLang.FormConnectionWizard_Host;
+            lblPort.Text = CameraLang.FormConnectionWizard_Port;
+            lblFormat.Text = CameraLang.FormConnectionWizard_Format;
+
+            gpAuthentication.Text = CameraLang.FormConnectionWizard_Authentication;
+            lblUser.Text = CameraLang.FormConnectionWizard_User;
+            lblPassword.Text = CameraLang.FormConnectionWizard_Password;
+
+            gpURL.Text = CameraLang.FormConnectionWizard_URL;
         }
         
         public CameraSummary GetResult()
@@ -237,8 +255,8 @@ namespace Kinovea.Camera.HTTP
 
             if (e.HadError || e.ImageDescriptor == ImageDescriptor.Invalid || e.Thumbnail == null)
             {
-                string title = "Camera connection test failure";
-                string message = "An error occurred during connection test:\n";
+                string title = CameraLang.FormHandshakeResult_Failure_Title;
+                string message = CameraLang.FormHandshakeResult_Failure_Message;
                 MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else

@@ -72,14 +72,23 @@
    </resheader>
    <data name="lblFolders" xml:space="preserve"><value>Ordner: </value></data>
    <data name="lblVideoFiles" xml:space="preserve"><value>Video-Dateien: </value></data>
+   
    <data name="mnuAddShortcut" xml:space="preserve"><value>Favoriten hinzufügen</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>zu Favoriten hinzufügen</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Favoriten löschen</value></data>
    
    
    
+   <data name="Generic_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+   
    <data name="tabExplorer" xml:space="preserve"><value>Explorer</value></data>
    <data name="tabShortcuts" xml:space="preserve"><value>Favoriten</value></data>
+   
+   
+   
+   
+   
+   
    
    
 </root>

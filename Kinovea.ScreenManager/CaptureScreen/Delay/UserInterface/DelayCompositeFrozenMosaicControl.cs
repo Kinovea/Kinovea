@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Kinovea.Services;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -17,6 +18,11 @@ namespace Kinovea.ScreenManager
         public DelayCompositeFrozenMosaicControl(DelayCompositeConfiguration current)
         {
             InitializeComponent();
+
+            lblImageCount.Text = ScreenManagerLang.FormConfigureComposite_ImageCount;
+            lblInterval.Text = ScreenManagerLang.FormConfigureComposite_Interval;
+            lblRefreshRate.Text = ScreenManagerLang.FormConfigureComposite_RefreshRate;
+            lblStart.Text = ScreenManagerLang.FormConfigureComposite_Start;
 
             Configuration = new DelayCompositeConfiguration();
             Configuration.CompositeType = DelayCompositeType.FrozenMosaic;

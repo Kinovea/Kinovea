@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
             this.lblInfo.Name = "lblInfo";
             this.lblInfo.Size = new System.Drawing.Size(95, 12);
             this.lblInfo.TabIndex = 10;
-            this.lblInfo.Text = "Contrôles Communs :";
+            this.lblInfo.Text = "Common controls :";
             // 
             // trkFrame
             // 

@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Nije moguće zapisati datoteku.\nBudite sigurni da imate prava da pišete u željenoj fascikli i da se ta datoteka trenutno ne koristi. </value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Nije moguće sačuvati video.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Nije moguće sačuvati video.\nPokušajte ponovo sa drugim formatom.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Napredovanje :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Čuvanje video zapisa...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Izvezene slike:</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Ključni slike su modifikovane.\nDa li želite da sačuvate podatke ključnih slika pre zatvaranja?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Podaci ključnih slika nisu sačuvani</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Kašnjenje prikaza po: {0:0} s</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Zajedničke kontrole:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Trajanje</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Početak</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Izoštravanje...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Prikaži koordinate</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Prikaži meru</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabilizuj</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Završi putanju izdanja</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Tačka posmatranja</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Obrni video pozicije</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Izbriši datoteku</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Preimenuj datoteku</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Reprodukuj video</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Prikaži/sakrij zajedničke kontrole </value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Prati putanju</value></data>
    <data name="mnuCoordinateSystem" xml:space="preserve"><value>Koordinatni sistem</value></data>
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Promenite režim ponavljanja ( jednom | petlja ) - Trenutni režim : petlja</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Promenite režim ponavljanja ( jednom | petlja ) - Trenutni režim : jednom</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Sačuvaj redosled slika</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Počni snimanje video zapisa</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Prekini snimanje video zapisa</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Počni snimanje video zapisa</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Prekini snimanje video zapisa</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Vrati Radnu zonu na videozapis u celosti</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Podebljano</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Kurziv</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Pregled...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverzija...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatsko podešavanje kontrasta...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

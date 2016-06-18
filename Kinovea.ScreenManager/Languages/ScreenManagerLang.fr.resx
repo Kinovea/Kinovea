@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Le fichier n'a pu être écrit.\nAssurez vous d'avoir les droits suffisants pour écrire dans le dossier et que le fichier n'est pas en cours d'utilisation.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Sauvegarde de la vidéo Impossible.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>La vidéo n'a pu être enregistrée.\nRéessayez en utilisant un format différent. </value></data>
+   <data name="FormCameraAlias_Title" xml:space="preserve"><value>Renommage de la camera</value></data>
+   <data name="FormCameraAlias_Alias" xml:space="preserve"><value>Alias :</value></data>
+   <data name="FormCameraAlias_Icon" xml:space="preserve"><value>Icône :</value></data>
+   <data name="FormIconPicker_Title" xml:space="preserve"><value>Icônes</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progression :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Enregistrement de la Vidéo...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Images Exportées :</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Les images clés ont été modifiées.\nVoulez-vous sauvegarder les données des images clés avant de fermer ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Images clés non sauvées</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Retarder l'affichage de : {0:0} s</value></data>
+   <data name="lblDelay_Text" xml:space="preserve"><value>Délai : {0}s ({1})</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Contrôles Communs :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Durée</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Début</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Renforcement des Contours...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Afficher les coordonnées</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afficher la mesure</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabiliser</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Terminer l'édition de la Trajectoire</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Référence d'observation</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Inverser les Emplacements des Vidéos</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Supprimer le fichier</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Renommer le fichier</value></data>
+   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Supprimer</value></data>
+   <data name="mnuThumbnailForget" xml:space="preserve"><value>Oublier les paramètres personalisés</value></data>
+   <data name="mnuThumbnailRename" xml:space="preserve"><value>Renommer</value></data>
    <data name="mnuThumbnailLocate" xml:space="preserve"><value>Trouver le fichier dans l'Explorateur Windows</value></data>
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Lancer la vidéo</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Montrer/Cacher les Contrôles Communs</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Suivre la Trajectoire</value></data>
    <data name="mnuCoordinateSystem" xml:space="preserve"><value>Repère de coordonnées</value></data>
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Changer le Mode de répétition ( Une fois | En Boucle ) - Mode Actuel : En Boucle</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Changer le Mode Répétition ( Une fois | En Boucle ) - Mode Actuel : Une Fois</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Enregistrer une Séquence d'Images</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Démarrer l'enregistrement vidéo</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Arrêter l'enregistrement vidéo</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Démarrer l'enregistrement vidéo</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Arrêter l'enregistrement vidéo</value></data>
+   <data name="ToolTip_PauseCamera" xml:space="preserve"><value>Pauser la caméra</value></data>
+   <data name="ToolTip_StartCamera" xml:space="preserve"><value>Démarrer la caméra</value></data>
+   <data name="ToolTip_ConfigureCaptureMosaic" xml:space="preserve"><value>Configurer la mosaïque</value></data>
+   <data name="ToolTip_ConfigureCamera" xml:space="preserve"><value>Configurer la camera</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Remise à zéro de la Zone de Travail</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Gras</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Italique</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Vue d'ensemble...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverse...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste Automatique...</value></data>
+   <data name="FormCrashRecovery_Title" xml:space="preserve"><value>Récupération automatique</value></data>
+   <data name="FormCrashRecovery_Recover" xml:space="preserve"><value>Récupérer</value></data>
+   <data name="FormCrashRecovery_File" xml:space="preserve"><value>Fichier</value></data>
+   <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Date</value></data>
+   <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Les projets suivants n'ont pas été enregistré correctement mais peuvent être récupérés :</value></data>
+   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Configurer la mosaïque</value></data>
+   <data name="FormConfigureComposite_Type" xml:space="preserve"><value>Type :</value></data>
+   <data name="FormConfigureComposite_TypeBasic" xml:space="preserve"><value>Vue unique</value></data>
+   <data name="FormConfigureComposite_TypeMultipleReviews" xml:space="preserve"><value>Vues multiples</value></data>
+   <data name="FormConfigureComposite_TypeSlowMotion" xml:space="preserve"><value>Ralenti</value></data>
+   <data name="FormConfigureComposite_TypeFrozenMosaic" xml:space="preserve"><value>Temps stoppé</value></data>
+   <data name="FormConfigureComposite_TypeMixed" xml:space="preserve"><value>Mixe</value></data>
+   <data name="FormConfigureComposite_ImageCount" xml:space="preserve"><value>Nombre d'images :</value></data>
+   <data name="FormConfigureComposite_Interval" xml:space="preserve"><value>Intervalle :</value></data>
+   <data name="FormConfigureComposite_RefreshRate" xml:space="preserve"><value>Rafraichissement :</value></data>
+   <data name="FormConfigureComposite_Start" xml:space="preserve"><value>Démarrage :</value></data>
+   <data name="FormConfigureComposite_SlowMotionFactor" xml:space="preserve"><value>Facteur de ralenti :</value></data>
+   <data name="sentinel" xml:space="preserve"><value>Les projets suivants n'ont pas été enregistré correctement mais peuvent être récupérés :</value></data>
    
    
    

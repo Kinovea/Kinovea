@@ -297,11 +297,13 @@ namespace Kinovea.FileBrowser
             etShortcuts.RootDisplayName = FileBrowserLang.tabShortcuts;
             
             tabPageCameras.Text = "";
-            
+            btnManual.Text = FileBrowserLang.FormCameraWizard_Title;
+            lblCaptureHistory.Text = FileBrowserLang.lblCaptureHistory;
+
             // Menus
             mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
             mnuDeleteShortcut.Text = FileBrowserLang.mnuDeleteShortcut;
-            mnuLaunch.Text = FileBrowserLang.mnuVideoPlay;
+            mnuLaunch.Text = FileBrowserLang.Generic_Open;
             mnuLocate.Text = FileBrowserLang.mnuVideoLocate;
             mnuDelete.Text = FileBrowserLang.mnuVideoDelete;
 
@@ -309,7 +311,7 @@ namespace Kinovea.FileBrowser
             ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
             ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
             ttTabs.SetToolTip(btnDeleteShortcut, FileBrowserLang.mnuDeleteShortcut);
-            ttTabs.SetToolTip(btnImportHistory, "Import files from a directory into the capture history");
+            ttTabs.SetToolTip(btnImportHistory, FileBrowserLang.Tooltip_ImportToCaptureHistory);
         }
         public void ReloadShortcuts()
         {

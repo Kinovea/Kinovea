@@ -54,6 +54,8 @@ namespace Kinovea.ScreenManager
         #region Members
         private CaptureScreen presenter;
         private CapturedFilesView capturedFilesView;
+        private bool recording;
+        private bool grabbing;
         #endregion
         
         public CaptureScreenView(CaptureScreen presenter)
@@ -83,6 +85,8 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             capturedFilesView.RefreshUICulture();
+            UpdateDelayLabel(0, 0);
+            ReloadTooltipsCulture();
         }
         
         public void AddImageDrawing(string filename, bool svg)
@@ -130,22 +134,32 @@ namespace Kinovea.ScreenManager
         
         public void UpdateGrabbingStatus(bool grabbing)
         {
-            if(grabbing)
+            this.grabbing = grabbing;
+
+            if (grabbing)
+            {
                 btnGrab.Image = Properties.Capture.grab_pause;
+                toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_PauseCamera);
+            }
             else
+            {
                 btnGrab.Image = Properties.Capture.grab_start;
+                toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
+            }
         }
         public void UpdateRecordingStatus(bool recording)
         {
+            this.recording = recording;
+
             if(recording)
             {
                 btnRecord.Image = Properties.Capture.record_stop;
-                //toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStop);
+                toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_StopRecording);
             }
             else
             {
                 btnRecord.Image = Properties.Capture.record_start;
-                //toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStart);
+                toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_StartRecording);
             }
             
             btnSettings.Enabled = !recording;
@@ -155,13 +169,14 @@ namespace Kinovea.ScreenManager
         public void UpdateDelayLabel(double delaySeconds, int delayFrames)
         {
             double round = Math.Round(delaySeconds);
-            
-            if(round < 10)
-                lblDelay.Text = string.Format("Delay: {0:0.00}s ({1})", delaySeconds, delayFrames);
+
+            string formattedDelay = "";
+            if (round < 10)
+                formattedDelay = string.Format("{0:0.00}", delaySeconds);
             else
-                lblDelay.Text = string.Format("Delay: {0}s ({1})", round, delayFrames);
-            
-            //lblDelay.Text = String.Format(ScreenManagerLang.lblDelay_Text, delay);
+                formattedDelay = string.Format("{0}", round);
+
+            lblDelay.Text = string.Format(ScreenManagerLang.lblDelay_Text, formattedDelay, delayFrames);
         }
         public void UpdateDelayMaxAge(double delay)
         {
@@ -283,6 +298,22 @@ namespace Kinovea.ScreenManager
                 pnlDrawingToolsBar.Top = pnlControls.Top - pnlDrawingToolsBar.Height;
                 pnlViewport.Height = pnlControls.Top - pnlViewport.Top;
             }
+        }
+        private void ReloadTooltipsCulture()
+        {
+            toolTips.SetToolTip(btnSettings, ScreenManagerLang.ToolTip_ConfigureCamera);
+            toolTips.SetToolTip(btnConfigureComposite, ScreenManagerLang.ToolTip_ConfigureCaptureMosaic);
+            toolTips.SetToolTip(btnSnapshot, ScreenManagerLang.Generic_SaveImage);
+
+            if (recording)
+                toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_StopRecording);
+            else
+                toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_StartRecording);
+
+            if (grabbing)
+                toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_PauseCamera);
+            else
+                toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
         }
         #endregion
 

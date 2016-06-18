@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using Kinovea.Camera;
 using PylonC.NET;
 using Kinovea.Services;
+using Kinovea.Camera.Languages;
 
 namespace Kinovea.Camera.Basler
 {
@@ -108,7 +109,7 @@ namespace Kinovea.Camera.Basler
         
         private void BtnIconClick(object sender, EventArgs e)
         {
-            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5, "Icons");
+            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5);
             FormsHelper.Locate(fip);
             if(fip.ShowDialog() == DialogResult.OK)
             {
@@ -153,14 +154,14 @@ namespace Kinovea.Camera.Basler
             int top = lblAuto.Bottom;
             Func<int, string> defaultValueMapper = (value) => value.ToString();
 
-            AddCameraProperty("width", "Width (px):", defaultValueMapper, top);
-            AddCameraProperty("height", "Height (px):", defaultValueMapper, top + 30);
-            AddCameraProperty("framerate", "Framerate (Hz):", defaultValueMapper, top + 60);
-            AddCameraProperty("exposure", "Exposure (µs):", defaultValueMapper, top + 90);
-            AddCameraProperty("gain", "Gain:", defaultValueMapper, top + 120);
+            AddCameraProperty("width", CameraLang.FormConfiguration_Properties_ImageWidth, defaultValueMapper, top);
+            AddCameraProperty("height", CameraLang.FormConfiguration_Properties_ImageHeight, defaultValueMapper, top + 30);
+            AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, defaultValueMapper, top + 60);
+            AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro, defaultValueMapper, top + 90);
+            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, defaultValueMapper, top + 120);
         }
 
-        private void AddCameraProperty(string key, string localizationToken, Func<int, string> valueMapper, int top)
+        private void AddCameraProperty(string key, string text, Func<int, string> valueMapper, int top)
         {
             if (!cameraProperties.ContainsKey(key))
                 return;
@@ -172,10 +173,10 @@ namespace Kinovea.Camera.Basler
             switch (property.Representation)
             {
                 case CameraPropertyRepresentation.LinearSlider:
-                    control = new CameraPropertyLinearView(property, localizationToken, valueMapper);
+                    control = new CameraPropertyLinearView(property, text, valueMapper);
                     break;
                 case CameraPropertyRepresentation.LogarithmicSlider:
-                    control = new CameraPropertyLogarithmicView(property, localizationToken, valueMapper);
+                    control = new CameraPropertyLogarithmicView(property, text, valueMapper);
                     break;
 
                 default:

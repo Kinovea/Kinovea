@@ -301,7 +301,7 @@ namespace Kinovea.FileBrowser
             this.lblFavFiles.Name = "lblFavFiles";
             this.lblFavFiles.Size = new System.Drawing.Size(305, 20);
             this.lblFavFiles.TabIndex = 3;
-            this.lblFavFiles.Text = "Fichiers Vidéo :   ";
+            this.lblFavFiles.Text = "Video files :   ";
             this.lblFavFiles.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lvShortcuts
@@ -389,7 +389,7 @@ namespace Kinovea.FileBrowser
             // 
             // btnManual
             // 
-            this.btnManual.Location = new System.Drawing.Point(6, 235);
+            this.btnManual.Location = new System.Drawing.Point(1, 235);
             this.btnManual.Name = "btnManual";
             this.btnManual.Size = new System.Drawing.Size(132, 23);
             this.btnManual.TabIndex = 4;

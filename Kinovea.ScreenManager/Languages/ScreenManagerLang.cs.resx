@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Do souboru nelze zapisovat.\nUbezpečte se, že máte oprávnění zapisovat do cílové složky a že soubor není právě používán.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - nemůže uložit video.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Video nelze uložit.\nZkuste znovu s jiným formátem.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Zpracování:</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Ukládání videa….</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exportované obrazy:</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Klíčové pozice byly změněny.\n¨Chcete uložit klíčové pozice před uzavřením?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Data klíčových pozic neuložena</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Zpozdit zobrazení o: {0:0} s</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Ovládací prvky:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Délka</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Zaostřit…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Zobrazit souřadnice</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Zobrazit měření</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabilizovat</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Konec trasování</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Srovnávací reference</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Otočit pozice videí</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Vymazat soubor</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Přejmenovat soubor</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Přehrát video</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Zobrazit/Skrýt ovládací prvky</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Trasování</value></data>
    
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Změňte režim opakování ( Jednou | Smyčka ) - Stávající režim: Smyčka</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Změňte režim opakování ( Jednou | Smyčka ) - Stávající režim: Jednou</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Uložit sekvenci obrazů</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Zahájit nahrávání videa</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Ukončit nahrávání videa</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Zahájit nahrávání videa</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Ukončit nahrávání videa</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Přenastavit procovní oblast na celý rozsah videa</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Tučně</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Kurzíva</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Celkový přehled</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Zpětné přehrávání…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast….</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

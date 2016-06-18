@@ -245,6 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Datei kann nicht gespeichert werden.\n Überprüfen Sie, ob Sie ausreichend Schreibrechte im Zielverzeichnis besitzen und die Datei nicht gerade verwendet wird.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Video kann nicht gespeichert werden.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Video kann nicht gespeichert werden.\n Versuchen Sie es mit einem anderen Format.</value></data>
+   
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Fortschritt :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Speichere Video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exportierte Bilder :</value></data>
@@ -290,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Schlüsselbilder wurden geändert.\nWollen Sie die Änderungen speichern?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Schlüsselbilddaten wurden nicht gespeichert</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Verzögerung: {0:0} s</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Standardauswahl:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Dauer</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
@@ -374,14 +378,13 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Scharfzeichnen...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Koordinaten anzeigen</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Messwert anzeigen</value></data>
-   <data name="mnuStabilize" xml:space="preserve"><value>Stabilisieren</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Beende Trajektorienbearbeitung</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Referenzobjekt</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Invertiere Video Positionen</value></data>
-   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Datei löschen</value></data>
-   <data name="mnuThumbnailRename" xml:space="preserve"><value>Datei umbenennen</value></data>
    
-   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Video abspielen</value></data>
+   
+   
+   
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Zeige/Verstecke Standardauswahlwerkzeuge</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Verfolge Trajektorien</value></data>
    
@@ -426,8 +429,12 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Abspielmodus ändern (Einmal | Schleife) – Aktueller Modus : Schleife</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Abspielmodus ändern (Einmal | Schleife) – Aktueller Modus : Einmal</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Bildsequenz speichern</value></data>
-   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Aufnahme starten</value></data>
-   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Aufnahme stoppen</value></data>
+   <data name="ToolTip_StartRecording" xml:space="preserve"><value>Aufnahme starten</value></data>
+   <data name="ToolTip_StopRecording" xml:space="preserve"><value>Aufnahme stoppen</value></data>
+   
+   
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Arbeitsbereich zurücksetzen</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Fett</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Kursiv</value></data>
@@ -451,6 +458,24 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Übersicht</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invers</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Autokontrast...</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    
