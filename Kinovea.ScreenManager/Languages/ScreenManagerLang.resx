@@ -475,7 +475,6 @@
    <data name="FormConfigureComposite_RefreshRate" xml:space="preserve"><value>Refresh rate:</value></data>
    <data name="FormConfigureComposite_Start" xml:space="preserve"><value>Start:</value></data>
    <data name="FormConfigureComposite_SlowMotionFactor" xml:space="preserve"><value>Slow motion factor:</value></data>
-   <data name="sentinel" xml:space="preserve"><value>The following projects were not saved properly but can be recovered:</value></data>
    
    
    

@@ -3148,15 +3148,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The following projects were not saved properly but can be recovered:.
-        /// </summary>
-        public static string sentinel {
-            get {
-                return ResourceManager.GetString("sentinel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Buffer: {0}%.
         /// </summary>
         public static string statusBufferFill {

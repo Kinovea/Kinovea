@@ -475,7 +475,6 @@
    <data name="FormConfigureComposite_RefreshRate" xml:space="preserve"><value>Rafraichissement :</value></data>
    <data name="FormConfigureComposite_Start" xml:space="preserve"><value>Démarrage :</value></data>
    <data name="FormConfigureComposite_SlowMotionFactor" xml:space="preserve"><value>Facteur de ralenti :</value></data>
-   <data name="sentinel" xml:space="preserve"><value>Les projets suivants n'ont pas été enregistré correctement mais peuvent être récupérés :</value></data>
    
    
    
