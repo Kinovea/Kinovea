@@ -49,6 +49,9 @@ namespace Kinovea.ScreenManager
 
         private void SetConfiguration(ImageDescriptor imageDescriptor, int totalFrames, int count)
         {
+            if (imageDescriptor == null || imageDescriptor == ImageDescriptor.Invalid)
+                return;
+
             int interval = 0;
             if (count != 1)
                 interval = (int)Math.Floor(totalFrames / (count - 1.0f));

@@ -346,6 +346,9 @@ namespace Kinovea.ScreenManager
         }
         public void View_ConfigureComposite()
         {
+            if (!cameraLoaded || !cameraConnected)
+                return;
+            
             ConfigureComposite();
         }
         public void View_ToggleGrabbing()
