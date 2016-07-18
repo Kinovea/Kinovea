@@ -72,32 +72,32 @@
    </resheader>
    <data name="Generic_Apply" xml:space="preserve"><value>تطبيق</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+   <data name="FormHandshakeResult_Title" xml:space="preserve"><value>اختبار لااتصال</value></data>
+   <data name="FormHandshakeResult_Failure_Title" xml:space="preserve"><value>فشل اختبار الاتصال</value></data>
+   <data name="FormHandshakeResult_Failure_Message" xml:space="preserve"><value>حدث خطأ أثناء اختبار الاتصال.</value></data>
+   <data name="FormIconPicker_Title" xml:space="preserve"><value>الرموز</value></data>
+   <data name="FormConfiguration_Title" xml:space="preserve"><value>التكوين الكاميرا</value></data>
+   <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve"><value>تنسيق التدفق:</value></data>
+   <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve"><value>حجم الصورة:</value></data>
+   <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve"><value>عرض:</value></data>
+   <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve"><value>ارتفاع:</value></data>
+   <data name="FormConfiguration_Properties_Framerate" xml:space="preserve"><value>معدل الاطار:</value></data>
+   <data name="FormConfiguration_Properties_Exposure" xml:space="preserve"><value>التعرض:</value></data>
+   <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve"><value>التعرض (ميكرو ثانية):</value></data>
+   <data name="FormConfiguration_Properties_Gain" xml:space="preserve"><value>الوضوح:</value></data>
+   <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>التركيز:</value></data>
+   <data name="FormConfiguration_Auto" xml:space="preserve"><value>تلقائي</value></data>
+   <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve"><value>صفحات الخصائص جهاز</value></data>
+   <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve"><value>حدث خطأ أثناء محاولة لعرض صفحة خصائص الجهاز ل{0}.</value></data>
+   <data name="FormConfiguration_Test" xml:space="preserve"><value>اختبار</value></data>
+   <data name="FormConnectionWizard_Network" xml:space="preserve"><value>شبكة</value></data>
+   <data name="FormConnectionWizard_Host" xml:space="preserve"><value>المضيف (عنوان IP)</value></data>
    
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="FormConnectionWizard_Authentication" xml:space="preserve"><value>المصادقة</value></data>
+   <data name="FormConnectionWizard_User" xml:space="preserve"><value>مستخدم</value></data>
+   <data name="FormConnectionWizard_Password" xml:space="preserve"><value>كلمه السر</value></data>
+   <data name="FormConnectionWizard_URL" xml:space="preserve"><value>URL النهائي</value></data>
    
    
    

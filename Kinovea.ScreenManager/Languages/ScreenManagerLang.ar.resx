@@ -245,10 +245,10 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>غير قادر على الكتابة علي الملف. \n تأكد ان لديك الحق في الكتابة في المجلد المحدد، وأنه لم يتم استخدام الملف حاليا.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>كينوفيا - غير قادر على حفظ الفيديو.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>غير قادر على حفظ الفيديو. \n حاول مرة أخرى بصيغة مختلفة.</value></data>
-   
-   
-   
-   
+   <data name="FormCameraAlias_Title" xml:space="preserve"><value>إعادة تسمية الكاميرا</value></data>
+   <data name="FormCameraAlias_Alias" xml:space="preserve"><value>الاسم المستعار:</value></data>
+   <data name="FormCameraAlias_Icon" xml:space="preserve"><value>أيقونة:</value></data>
+   <data name="FormIconPicker_Title" xml:space="preserve"><value>الرموز</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>تقدم :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>حفط الفيديو...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>الصور المصدرة :</value></data>
@@ -294,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>تم تعديل الصور الرئيسية. \n هل تريد حفظ بيانات الصور الرئيسية قبل الاغلاق؟</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>لم يتم حفظ بيانات الصور الرئيسية</value></data>
-   
+   <data name="lblDelay_Text" xml:space="preserve"><value>({1}) {0}s : التأخير</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>التحكم العام :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>المدة</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>بداية</value></data>
@@ -307,7 +307,7 @@
    <data name="LengthUnit_Inches" xml:space="preserve"><value>بوصة</value></data>
    <data name="LengthUnit_Feet" xml:space="preserve"><value>قدم</value></data>
    <data name="LengthUnit_Yards" xml:space="preserve"><value>ياردة</value></data>
-   
+   <data name="LengthUnit_Percentage" xml:space="preserve"><value>نسبة مئوية</value></data>
    <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: لايدعم البث للفيديو .</value></data>
    <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: مشكلة أثناء اعداد فك التشفير.</value></data>
    <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: نوع ملف غير مدعوم.</value></data>
@@ -381,9 +381,9 @@
    <data name="mnuStopTracking" xml:space="preserve"><value>انهاء تحرير المسار</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>ملاحظات مرجعية</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>تبديل مواضع الفيديو</value></data>
-   
-   
-   
+   <data name="mnuThumbnailDelete" xml:space="preserve"><value>حذف</value></data>
+   <data name="mnuThumbnailForget" xml:space="preserve"><value>تجاهل تخصيص الاعدادت</value></data>
+   <data name="mnuThumbnailRename" xml:space="preserve"><value>اعادة تسمية</value></data>
    <data name="mnuThumbnailLocate" xml:space="preserve"><value>العثور علي ملف في متصفح الويندوز</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>إظهار / إخفاء التحكم العام</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>تتبع المسار</value></data>
@@ -431,10 +431,10 @@
    <data name="ToolTip_Rafale" xml:space="preserve"><value>حفظ تسلسل الصور</value></data>
    <data name="ToolTip_StartRecording" xml:space="preserve"><value>بدء تسجيل الفيديو</value></data>
    <data name="ToolTip_StopRecording" xml:space="preserve"><value>إيقاف تسجيل الفيديو</value></data>
-   
-   
-   
-   
+   <data name="ToolTip_PauseCamera" xml:space="preserve"><value>ايقاف الكاميرا</value></data>
+   <data name="ToolTip_StartCamera" xml:space="preserve"><value>بداية الكاميرا</value></data>
+   <data name="ToolTip_ConfigureCaptureMosaic" xml:space="preserve"><value>اعدادات التداخلات</value></data>
+   <data name="ToolTip_ConfigureCamera" xml:space="preserve"><value>اعدادات الكاميرا</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>إعادة ضبط منطقة العمل لكامل الفيديو</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>غليظ</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>مائل</value></data>
@@ -458,23 +458,23 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>نظرة عامة...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>عكسي...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>تباين تلقائي...</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="FormCrashRecovery_Title" xml:space="preserve"><value>استرداد التعطل الكلي</value></data>
+   <data name="FormCrashRecovery_Recover" xml:space="preserve"><value>استعادة</value></data>
+   <data name="FormCrashRecovery_File" xml:space="preserve"><value>ملف</value></data>
+   <data name="FormCrashRecovery_Date" xml:space="preserve"><value>تاريخ</value></data>
+   <data name="FormCrashRecovery_Info" xml:space="preserve"><value>لم يتم حفظ المشاريع التالية بشكل صحيح ولكن يمكن استردادها:</value></data>
+   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>اعدادات التداخلات</value></data>
+   <data name="FormConfigureComposite_Type" xml:space="preserve"><value>نوع:</value></data>
+   <data name="FormConfigureComposite_TypeBasic" xml:space="preserve"><value>عرض واحد</value></data>
+   <data name="FormConfigureComposite_TypeMultipleReviews" xml:space="preserve"><value>رؤية متعدده</value></data>
+   <data name="FormConfigureComposite_TypeSlowMotion" xml:space="preserve"><value>العرض البطيء</value></data>
+   <data name="FormConfigureComposite_TypeFrozenMosaic" xml:space="preserve"><value>تجميد الوقت</value></data>
+   <data name="FormConfigureComposite_TypeMixed" xml:space="preserve"><value>مختلط</value></data>
+   <data name="FormConfigureComposite_ImageCount" xml:space="preserve"><value>عدد الصور:</value></data>
+   <data name="FormConfigureComposite_Interval" xml:space="preserve"><value>فترة:</value></data>
+   <data name="FormConfigureComposite_RefreshRate" xml:space="preserve"><value>معدل التحديث:</value></data>
+   <data name="FormConfigureComposite_Start" xml:space="preserve"><value>بداية:</value></data>
+   <data name="FormConfigureComposite_SlowMotionFactor" xml:space="preserve"><value>عامل العرض البطيء:</value></data>
    
    
    
