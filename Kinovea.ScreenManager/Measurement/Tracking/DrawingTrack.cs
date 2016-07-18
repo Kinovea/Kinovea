@@ -325,7 +325,7 @@ namespace Kinovea.ScreenManager
             if(positions.Count > 1)
             {
                 // Key Images titles.
-                if (trackStatus == TrackStatus.Interactive && trackView != TrackView.Label)
+                if (trackStatus == TrackStatus.Interactive && trackView != TrackView.Label && trackExtraData != TrackExtraData.None)
                     DrawKeyframesTitles(canvas, opacityFactor, transformer);
                 
                 // Track.
