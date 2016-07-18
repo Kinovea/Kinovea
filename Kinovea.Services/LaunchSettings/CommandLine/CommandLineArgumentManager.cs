@@ -122,7 +122,7 @@ namespace Kinovea.Services
             // Doesn't work ?
             Console.WriteLine();
             Console.WriteLine("USAGE:");
-            Console.WriteLine("trushot.exe");
+            Console.WriteLine("kinovea.exe");
             Console.WriteLine("    [-file <path>] [-speed <0-200>] [-noexp] [-stretch]");
             Console.WriteLine();
             Console.WriteLine("OPTIONS:");
@@ -132,9 +132,9 @@ namespace Kinovea.Services
             Console.WriteLine("  -noexp: The file explorer will not be visible; default: false.");
             Console.WriteLine();
             Console.WriteLine("EXAMPLES:");
-            Console.WriteLine("1. > trushot.exe -file test.mkv -speed 50");
+            Console.WriteLine("1. > kinovea.exe -file test.mkv -speed 50");
             Console.WriteLine();
-            Console.WriteLine("2. > trushot.exe -file test.mkv -stretch -noexp");
+            Console.WriteLine("2. > kinovea.exe -file test.mkv -stretch -noexp");
         }
     }
 }
