@@ -57,28 +57,51 @@ def validate_resx(filename):
     f.close()
 
 
+# Function that compile the text based resources into a binary version.
+def compile_resources(filename):
+    print("Compiling " + filename)
+    os.system(resgen + " " + filename)
+
+
+def create_satellite_assemblies(filename):
+    # al /target:lib /embed:strings.de.resources /culture:de /out:Example.resources.dll /template:Example.dll
+    chunks = filename.split('.')
+    culture = chunks[-2]
+
+    # TODO:
+    # RootLang.fr.resources -> Kinovea.resources.dll
+    # CameraLang.fr.resources -> Kinovea.Camera.resources.dll
+    # os.system(al + " /target:lib /embed:" + filename + " /culture:" + culture + " /out:" + + " /template:" + )
+    pass
+
+
 # Function that call the resgen executable to create a strongly typed resource accessor
-def call_resgen(module, target):
+def generate_resource_accessor(module, target):
     print("Generating " + module + " resources accessor.")
     # Example:
     # "ScreenManagerLang.resx" /str:cs,Kinovea.ScreenManager.Languages,ScreenManagerLang,ScreenManagerLang.Designer.cs
+    # Doc: https://msdn.microsoft.com/en-us/library/ccec7sz1(v=vs.110).aspx#Strong
 
     module_lang = module + "Lang"
 
     os.chdir("..\\..\\" + target + "\\Languages")
     os.system(resgen + " " + module_lang + ".resx /str:cs,Kinovea." + module + ".Languages," + module_lang + "," + module_lang + ".Designer.cs /publicClass")
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Program Entry point.
 saxon = '"C:\\Program Files\\Saxonica\\SaxonHE9.6N\\bin\\Transform.exe"'
 resgen = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\resgen.exe"'
+al = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\al.exe"'
+
 
 print("Cleanup")
 if os.path.isfile('content.xml'):
     os.remove("content.xml")
 
-for file in glob.glob("*.resx"):
-    os.remove(file)
+patterns = ("*.resx", "*.resources", "*.dll")
+for pattern in patterns:
+    for file in glob.glob(pattern):
+        os.remove(file)
 
 # 0. Extract content.xml from the OpenOffice document.
 z = zipfile.ZipFile("Kinovea-l14n-rev0018.ods", "r")
@@ -91,6 +114,14 @@ print("\nGenerate all Resx, second pass.")
 for file in glob.glob("*.resx"):
     validate_resx(file)
 
+# create binary .resources files.
+# for file in glob.glob("*.resx"):
+#    compile_resources(file)
+
+# create satellite assemblies.
+# for file in glob.glob("*.resources"):
+#    create_satellite_assemblies(file)
+
 print("\nMoving resources to their final destination")
 move_to_destination("Root", "Kinovea")
 move_to_destination("Updater", "Kinovea.Updater")
@@ -99,11 +130,11 @@ move_to_destination("ScreenManager", "Kinovea.ScreenManager")
 move_to_destination("Camera", "Kinovea.Camera")
 
 print("\nRegenerating the strongly typed resource accessors.")
-call_resgen("Root", "Kinovea")
-call_resgen("Updater", "Kinovea.Updater")
-call_resgen("FileBrowser", "Kinovea.FileBrowser")
-call_resgen("ScreenManager", "Kinovea.ScreenManager")
-call_resgen("Camera", "Kinovea.Camera")
+generate_resource_accessor("Root", "Kinovea")
+generate_resource_accessor("Updater", "Kinovea.Updater")
+generate_resource_accessor("FileBrowser", "Kinovea.FileBrowser")
+generate_resource_accessor("ScreenManager", "Kinovea.ScreenManager")
+generate_resource_accessor("Camera", "Kinovea.Camera")
 
 print("Done.")
 
