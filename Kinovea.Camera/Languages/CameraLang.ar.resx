@@ -92,8 +92,8 @@
    <data name="FormConfiguration_Test" xml:space="preserve"><value>اختبار</value></data>
    <data name="FormConnectionWizard_Network" xml:space="preserve"><value>شبكة</value></data>
    <data name="FormConnectionWizard_Host" xml:space="preserve"><value>المضيف (عنوان IP)</value></data>
-   
-   
+   <data name="FormConnectionWizard_Port" xml:space="preserve"><value>المنفذ</value></data>
+   <data name="FormConnectionWizard_Format" xml:space="preserve"><value>صيغة</value></data>
    <data name="FormConnectionWizard_Authentication" xml:space="preserve"><value>المصادقة</value></data>
    <data name="FormConnectionWizard_User" xml:space="preserve"><value>مستخدم</value></data>
    <data name="FormConnectionWizard_Password" xml:space="preserve"><value>كلمه السر</value></data>
