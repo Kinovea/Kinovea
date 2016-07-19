@@ -72,21 +72,21 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Wijzig de taal</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Toon/Verberg bestandsverkenner</value></data>
-   
-   
-   
-   
+   <data name="dlgAbout_Translation" xml:space="preserve"><value>Vertaling</value></data>
+   <data name="dlgAbout_License" xml:space="preserve"><value>Licentie</value></data>
+   <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Bouwstenen</value></data>
+   <data name="dlgAbout_Citation" xml:space="preserve"><value>Citaat</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle bestanden (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Open een video bestand</value></data>
    <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Opnemen</value></data>
    <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Tekeningen</value></data>
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Algemeen</value></data>
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Afspelen</value></data>
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Toetsenbord</value></data>
+   <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Synchronisatie van de weergave</value></data>
+   <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Camera beeld</value></data>
+   <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Geforceerde framerate</value></data>
+   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Framerate (fps)</value></data>
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Links</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Rechts</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Root :</value></data>
@@ -128,16 +128,16 @@
    <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Werkgebied zal minder dan {0} MB van het geheugen innemen.</value></data>
    <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Werkgebied is minder dan {0} seconden.</value></data>
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Standaard zullen tekeningen zichtbaar zijn gedurende {0} beelden vanaf het Kernbeeld.</value></data>
-   
+   <data name="dlgPreferences_Player_tabUnits" xml:space="preserve"><value>Eenheden</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter per seconde ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometer per uur ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Voet per seconde ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mijl per uur ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knopen ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Voorkeuren</value></data>
-   
-   
-   <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve"><value>Snelheid : </value></data>
+   <data name="mnuTimeFormat" xml:space="preserve"><value>Tijd</value></data>
+   <data name="dlgPreferences_Player_UnitTime" xml:space="preserve"><value>Tijd:</value></data>
+   <data name="dlgPreferences_Player_UnitsSpeed" xml:space="preserve"><value>Snelheid :</value></data>
    <data name="dlgPreferences_Player_UnitsAcceleration" xml:space="preserve"><value>Versnelling :</value></data>
    <data name="dlgPreferences_Player_UnitsAngle" xml:space="preserve"><value>Hoek :</value></data>
    <data name="dlgPreferences_Player_UnitsAngularVelocity" xml:space="preserve"><value>Hoeksnelheid :</value></data>
@@ -151,19 +151,19 @@
    <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve"><value>Omwentelingen per minuut ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve"><value>Graden per seconde kwadraat ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve"><value>Radialen per seconde kwadraat ({0})</value></data>
-   
+   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve"><value>Aangepaste lengte eenheid :</value></data>
    <data name="dlgPreferences_Player_Tracking" xml:space="preserve"><value>Volgen</value></data>
    <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve"><value>Standaard traceer parameters</value></data>
    <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve"><value>Voorwerpvenster :</value></data>
    <data name="dlgPreferences_Player_TrackingSearchWindow" xml:space="preserve"><value>Zoekvenster :</value></data>
    <data name="dlgPreferences_Player_TrackingPercentage" xml:space="preserve"><value>Percentage</value></data>
    <data name="dlgPreferences_Player_TrackingPixels" xml:space="preserve"><value>Pixels</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Keyboard_lblCategories" xml:space="preserve"><value>Categoriën</value></data>
+   <data name="dlgPreferences_Keyboard_lblCommands" xml:space="preserve"><value>Besturing</value></data>
+   <data name="dlgPreferences_Keyboard_lblHotkey" xml:space="preserve"><value>Sneltoets voor {0}.{1}</value></data>
+   <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve"><value>Toepassen</value></data>
+   <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve"><value>Verwijder</value></data>
+   <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve"><value>Standaard</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laden Gebruikers Interface...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuleer</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Stop</value></data>
