@@ -123,11 +123,11 @@ namespace Kinovea.Services
         }
         public static string Serbian
         {
-            get { return languages["sr-Latn-CS"]; }
+            get { return languages["sr-Latn-RS"]; }
         }
         public static string SerbianCyrl
         {
-            get { return languages["sr-Cyrl-CS"]; }
+            get { return languages["sr-Cyrl-RS"]; }
         }
         public static string Japanese
         {
@@ -169,8 +169,8 @@ namespace Kinovea.Services
             languages.Add("pt", "Português");
             languages.Add("ro", "Română");
             languages.Add("ru", "Русский");
-            languages.Add("sr-Cyrl-CS", "Српски");
-            languages.Add("sr-Latn-CS", "Srpski");
+            languages.Add("sr-Cyrl-RS", "Српски");
+            languages.Add("sr-Latn-RS", "Srpski");
             languages.Add("fi", "Suomi");
             languages.Add("sv", "Svenska");
             languages.Add("tr", "Türkçe");

@@ -70,11 +70,11 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnSync_ToolTip" xml:space="preserve"><value>Синхронизуј видео на тренутном оквиру</value></data>
+   <data name="btnSync_ToolTip" xml:space="preserve"><value>Синхронизуј видео на тренутној слици</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Назад на почетак за оба видео записа</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Пребаци се на крај за оба виде записа</value></data>
-   <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Иди на следећи оквир за оба видео записа</value></data>
-   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Иди на претходни оквир за оба видео записа</value></data>
+   <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Иди на следећу слику за оба видео записа</value></data>
+   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Иди на претходну слику за оба видео записа</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Репродукуј | заустави оба видео записа</value></data>
    <data name="Capture_NextImage" xml:space="preserve"><value>Следећа слика:</value></data>
    <data name="Capture_NextVideo" xml:space="preserve"><value>Следећи видео запис: </value></data>
@@ -132,11 +132,11 @@
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Непрозирност: {0:0}%</value></data>
    <data name="dlgTimebase_Title" xml:space="preserve"><value>Подеси време видео записа</value></data>
    <data name="dlgTimebase_GroupCapture" xml:space="preserve"><value>Камера велике брзине</value></data>
-   <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Број оквира приликом снимања:</value></data>
+   <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Број слика у секунди приликом снимања:</value></data>
    <data name="dlgTimebase_InfoCapture" xml:space="preserve"><value>Ова опција дефинише разлику између брзине видео снимка и реалног времена. Користити када је снимак направљен камером велике брзине</value></data>
-   <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>Очитавање броја оквира у датотеци: {0:0.##} fps</value></data>
-   <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Број оквира видео записа</value></data>
-   <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Ова опција дефинише референтну вредност броја оквира коју користи Киновеа да репродукује видео. Користити када видео садржи нетачан број оквира или ако Киновеа неможе да га прочита.</value></data>
+   <data name="dlgTimebase_lblFileFPS" xml:space="preserve"><value>Очитавање броја слика у секунди у датотеци: {0:0.##} fps</value></data>
+   <data name="dlgTimebase_lblUserFPS" xml:space="preserve"><value>Број слику у секунди видео записа</value></data>
+   <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Ова опција дефинише референтну вредност броја слика у секунди коју користи Киновеа да репродукује видео. Користити када видео садржи нетачан број оквира или ако Киновеа неможе да га прочита.</value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Поништити</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Подеси алат трајекторије</value></data>
    <data name="dlgConfigureTrajectory_grpIdentification" xml:space="preserve"><value>Идентификација</value></data>
@@ -245,15 +245,15 @@
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Није могуц́е записати датотеку.\nБудите сигурни да имате права да пишете у жељеној фасцикли и да се та датотека тренутно не користи. </value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Киновеа - Није могyће сачувати видео.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Није могуће сачувати видео.\nПокушајте поново са другим форматом.</value></data>
-   
-   
-   
-   
+   <data name="FormCameraAlias_Title" xml:space="preserve"><value>Измени име камере</value></data>
+   <data name="FormCameraAlias_Alias" xml:space="preserve"><value>Alias:</value></data>
+   <data name="FormCameraAlias_Icon" xml:space="preserve"><value>Икона:</value></data>
+   <data name="FormIconPicker_Title" xml:space="preserve"><value>Иконе</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Напредовање :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Чување видео записа...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Извезене слике:</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Извоз слика ...</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Декомпресиовани оквири :</value></data>
+   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Декомпресиоване слике :</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Напредовање</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Увоз рамова ...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Изглед</value></data>
@@ -282,7 +282,7 @@
    <data name="Generic_Restore" xml:space="preserve"><value>Поништи подразумевано</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Напусти</value></data>
    <data name="FileProperty_Size" xml:space="preserve"><value>Величина</value></data>
-   <data name="FileProperty_Framerate" xml:space="preserve"><value>Број оквира</value></data>
+   <data name="FileProperty_Framerate" xml:space="preserve"><value>Број слика у секунди</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>Трајање</value></data>
    <data name="FileProperty_CreationTime" xml:space="preserve"><value>Време израде</value></data>
    <data name="FileProperty_HasKva" xml:space="preserve"><value>Kva датотека</value></data>
@@ -294,7 +294,7 @@
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Кључни слике су модификоване.\nДа ли желите да сачувате податке кључних слика пре затварања?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Подаци кључних слика нису сачувани</value></data>
-   
+   <data name="lblDelay_Text" xml:space="preserve"><value>Кашњење: {0}s ({1})</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Заједничке контроле:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Трајање</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Почетак</value></data>
@@ -318,7 +318,7 @@
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Грешка : Није могуће отворити датотеку : непозната грешка .</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Грешк : Није могуће отворити датотеку : ток видео записа није пронађен. </value></data>
    <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Отказивање...</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Декодирани оквири :</value></data>
+   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Декодирани слике :</value></data>
    <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Ток учитавања фасцикле</value></data>
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Укупан износ непознат</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Закључајте границе радне зоне</value></data>
@@ -357,7 +357,7 @@
    <data name="mnuGrid" xml:space="preserve"><value>Координантна мрежа</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Сакриј</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Истраживач датотеке</value></data>
-   <data name="mnuImportImage" xml:space="preserve"><value>Увежи слику...</value></data>
+   <data name="mnuImportImage" xml:space="preserve"><value>Увези слику...</value></data>
    <data name="mnuInvertAngle" xml:space="preserve"><value>Обрни угао</value></data>
    <data name="mnuFlipHorizontally" xml:space="preserve"><value>Окрени хоризонтално</value></data>
    <data name="mnuFlipVertically" xml:space="preserve"><value>Окрени вертикално</value></data>
@@ -381,9 +381,9 @@
    <data name="mnuStopTracking" xml:space="preserve"><value>Заврши путању издања</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Тачка посматрања</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Обрни видео позиције</value></data>
-   
-   
-   
+   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Избриши</value></data>
+   <data name="mnuThumbnailForget" xml:space="preserve"><value>Заборави подршавања корисника</value></data>
+   <data name="mnuThumbnailRename" xml:space="preserve"><value>Преименуј</value></data>
    <data name="mnuThumbnailLocate" xml:space="preserve"><value>Лоцирај датотеку у Windows Explorer</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Прикажи/сакриј заједничке контроле </value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Прати путању</value></data>
@@ -405,7 +405,7 @@
    <data name="Toast_StopRecord" xml:space="preserve"><value>Снимање аудио записа је заустављено</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Слика је сачувана</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Додај кључну слику</value></data>
-   <data name="ToolTip_Back" xml:space="preserve"><value>Иди на претходни оквир </value></data>
+   <data name="ToolTip_Back" xml:space="preserve"><value>Иди на претходну слику</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Боја профила</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Онемогући суперпозицију слика</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Омогући суперпозицију слика</value></data>
@@ -424,17 +424,17 @@
    <data name="ToolTip_First" xml:space="preserve"><value>Врати се на почетак</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Пређи на Крај</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Лупа</value></data>
-   <data name="ToolTip_Next" xml:space="preserve"><value>Иди на следећи оквир </value></data>
+   <data name="ToolTip_Next" xml:space="preserve"><value>Иди на следећу слику </value></data>
    <data name="ToolTip_Play" xml:space="preserve"><value>Репродукуј | Паузирај</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Промените режим понављања ( једном | петља ) - Тренутни режим : петља</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Промените режим понављања ( једном | петља ) - Тренутни режим : једном</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Сачувај редослед слика</value></data>
    <data name="ToolTip_StartRecording" xml:space="preserve"><value>Почни снимање видео записа</value></data>
    <data name="ToolTip_StopRecording" xml:space="preserve"><value>Прекини снимање видео записа</value></data>
-   
-   
-   
-   
+   <data name="ToolTip_PauseCamera" xml:space="preserve"><value>Паузирај камеру</value></data>
+   <data name="ToolTip_StartCamera" xml:space="preserve"><value>Покрени камеру</value></data>
+   <data name="ToolTip_ConfigureCaptureMosaic" xml:space="preserve"><value>Подеси мозаик</value></data>
+   <data name="ToolTip_ConfigureCamera" xml:space="preserve"><value>Подеси камеру</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Врати Радну зону на видеозапис у целости</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Подебљано</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Курзив</value></data>
@@ -458,23 +458,23 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Преглед...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Инверзија...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Аутоматско подешавање контраста...</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="FormCrashRecovery_Title" xml:space="preserve"><value>Опоравак од квара</value></data>
+   <data name="FormCrashRecovery_Recover" xml:space="preserve"><value>Опоравити</value></data>
+   <data name="FormCrashRecovery_File" xml:space="preserve"><value>Датотека</value></data>
+   <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Датум</value></data>
+   <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Пројекат није сачуван исправно али се може опоравити:</value></data>
+   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Подеси мозаик</value></data>
+   <data name="FormConfigureComposite_Type" xml:space="preserve"><value>Тип:</value></data>
+   <data name="FormConfigureComposite_TypeBasic" xml:space="preserve"><value>Појединачни поглед</value></data>
+   <data name="FormConfigureComposite_TypeMultipleReviews" xml:space="preserve"><value>Вишеструки поглед</value></data>
+   <data name="FormConfigureComposite_TypeSlowMotion" xml:space="preserve"><value>Успорен снимак</value></data>
+   <data name="FormConfigureComposite_TypeFrozenMosaic" xml:space="preserve"><value>Замрзни време</value></data>
+   <data name="FormConfigureComposite_TypeMixed" xml:space="preserve"><value>Мешовито</value></data>
+   <data name="FormConfigureComposite_ImageCount" xml:space="preserve"><value>Број слика:</value></data>
+   <data name="FormConfigureComposite_Interval" xml:space="preserve"><value>Интервал:</value></data>
+   <data name="FormConfigureComposite_RefreshRate" xml:space="preserve"><value>Учесталост освежавања:</value></data>
+   <data name="FormConfigureComposite_Start" xml:space="preserve"><value>Старт:</value></data>
+   <data name="FormConfigureComposite_SlowMotionFactor" xml:space="preserve"><value>Фактор успореног снимка:</value></data>
    
    
    

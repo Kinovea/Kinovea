@@ -187,8 +187,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\CameraLang.ro.resx" />
     <EmbeddedResource Include="Languages\CameraLang.ru.resx" />
-    <EmbeddedResource Include="Languages\CameraLang.sr-Cyrl-CS.resx" />
-    <EmbeddedResource Include="Languages\CameraLang.sr-Latn-CS.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.sr-Cyrl-RS.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Languages\CameraLang.sv.resx" />
     <EmbeddedResource Include="Languages\CameraLang.tr.resx" />
     <EmbeddedResource Include="Languages\CameraLang.Zh-CHS.resx" />
