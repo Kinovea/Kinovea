@@ -866,8 +866,8 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.mk.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.no.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ru.resx" />
-    <EmbeddedResource Include="Languages\ScreenManagerLang.sr-Cyrl-CS.resx" />
-    <EmbeddedResource Include="Languages\ScreenManagerLang.sr-Latn-CS.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.sr-Cyrl-RS.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />

@@ -84,9 +84,9 @@
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Репродуковање</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Тастатура</value></data>
    <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Синхронизација приказа</value></data>
-   <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Број оквира камере</value></data>
-   <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Форсиран број оквира</value></data>
-   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Број оквира (fps):</value></data>
+   <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Број слика у секунди камере</value></data>
+   <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Форсиран број слика у секунди</value></data>
+   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Број слика у секунди (fps):</value></data>
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Лево</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Десно</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Root:</value></data>
@@ -103,8 +103,8 @@
    <data name="dlgPreferences_Capture_PatternMinute" xml:space="preserve"><value>Минут</value></data>
    <data name="dlgPreferences_Capture_PatternSecond" xml:space="preserve"><value>Секунд</value></data>
    <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve"><value>Camera alias</value></data>
-   <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>Подешен број оквира</value></data>
-   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>Примљен број оквира</value></data>
+   <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>Подешен број слика у секунди</value></data>
+   <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>Примљен број слика у секунди</value></data>
    <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>Контекст промељиве</value></data>
    <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>Контекст</value></data>
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Macro</value></data>
@@ -172,7 +172,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Отвори фасциклу евиденција...</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Измени</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Датотека</value></data>
-   <data name="mnuFullScreen" xml:space="preserve"><value>Пун екран</value></data>
+   <data name="mnuFullScreen" xml:space="preserve"><value>Цео екран</value></data>
    <data name="mnuHelp" xml:space="preserve"><value>Помоћ</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea помоћ...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Недавно</value></data>
@@ -190,13 +190,13 @@
    <data name="mnuTutorialVideos" xml:space="preserve"><value>Видео упутства...</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Опозвати радњу</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Стандардно (h:mm:ss:stotinka) </value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Бројеви оквира </value></data>
+   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Број слика у секунди</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Укупно милисекунди</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Укупно микросекунди</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Стоти део минуте</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет стотинки сата</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Временске ознаке </value></data>
-   <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Класични + бројеви оквира </value></data>
+   <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Класични + број слика секунди</value></data>
    
    
    

@@ -287,8 +287,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\RootLang.ru.resx" />
-    <EmbeddedResource Include="Languages\RootLang.sr-Cyrl-CS.resx" />
-    <EmbeddedResource Include="Languages\RootLang.sr-Latn-CS.resx" />
+    <EmbeddedResource Include="Languages\RootLang.sr-Cyrl-RS.resx" />
+    <EmbeddedResource Include="Languages\RootLang.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Languages\RootLang.sv.resx" />
     <EmbeddedResource Include="Languages\RootLang.tr.resx" />
     <EmbeddedResource Include="Languages\RootLang.Zh-CHS.resx" />
@@ -427,6 +427,16 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <PublishFile Include="fr\Kinovea.Camera.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
     <PublishFile Include="fr\Kinovea.FileBrowser.resources">
       <Visible>False</Visible>
       <Group>
@@ -458,16 +468,6 @@
       <FileType>Satellite</FileType>
     </PublishFile>
     <PublishFile Include="fr\Kinovea.Updater.resources">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-     <PublishFile Include="fr\Kinovea.Camera.resources">
       <Visible>False</Visible>
       <Group>
       </Group>
