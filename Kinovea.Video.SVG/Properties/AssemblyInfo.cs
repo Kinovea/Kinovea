@@ -9,7 +9,7 @@ using System;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Kinovea")]
 [assembly: AssemblyProduct("Kinovea")]
-[assembly: AssemblyCopyright("Copyright © 2012 - Joan Charmant and contributors.")]
+[assembly: AssemblyCopyright("Copyright © 2006-2016 - Joan Charmant and contributors.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("1.0.0")]
