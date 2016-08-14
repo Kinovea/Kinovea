@@ -56,25 +56,6 @@ def validate_resx(filename):
     f.write(resx.encode('utf-8'))
     f.close()
 
-
-# Function that compile the text based resources into a binary version.
-def compile_resources(filename):
-    print("Compiling " + filename)
-    os.system(resgen + " " + filename)
-
-
-def create_satellite_assemblies(filename):
-    # al /target:lib /embed:strings.de.resources /culture:de /out:Example.resources.dll /template:Example.dll
-    chunks = filename.split('.')
-    culture = chunks[-2]
-
-    # TODO:
-    # RootLang.fr.resources -> Kinovea.resources.dll
-    # CameraLang.fr.resources -> Kinovea.Camera.resources.dll
-    # os.system(al + " /target:lib /embed:" + filename + " /culture:" + culture + " /out:" + + " /template:" + )
-    pass
-
-
 # Function that call the resgen executable to create a strongly typed resource accessor
 def generate_resource_accessor(module, target):
     print("Generating " + module + " resources accessor.")
@@ -90,7 +71,8 @@ def generate_resource_accessor(module, target):
 # -------------------------------------------------------------------------------
 # Program Entry point.
 saxon = '"C:\\Program Files\\Saxonica\\SaxonHE9.6N\\bin\\Transform.exe"'
-resgen = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\resgen.exe"'
+#resgen = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\resgen.exe"'
+resgen = '.\\resgen.exe'
 al = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\al.exe"'
 
 
@@ -114,14 +96,6 @@ print("\nGenerate all Resx, second pass.")
 for file in glob.glob("*.resx"):
     validate_resx(file)
 
-# create binary .resources files.
-# for file in glob.glob("*.resx"):
-#    compile_resources(file)
-
-# create satellite assemblies.
-# for file in glob.glob("*.resources"):
-#    create_satellite_assemblies(file)
-
 print("\nMoving resources to their final destination")
 move_to_destination("Root", "Kinovea")
 move_to_destination("Updater", "Kinovea.Updater")
@@ -135,6 +109,52 @@ generate_resource_accessor("Updater", "Kinovea.Updater")
 generate_resource_accessor("FileBrowser", "Kinovea.FileBrowser")
 generate_resource_accessor("ScreenManager", "Kinovea.ScreenManager")
 generate_resource_accessor("Camera", "Kinovea.Camera")
+
+# Extra work to handle Serbian culture name change in Windows 10.
+# We compile two extra satellite assembly per module.
+# When Kinovea runs on Windows < 10 it will use these cultures.
+
+
+modules = {
+    "RootLang": "Kinovea.Root",
+    "UpdaterLang": "Kinovea.Updater",
+    "FileBrowserLang": "Kinovea.FileBrowser",
+    "ScreenManagerLang": "Kinovea.ScreenManager",
+    "CameraLang": "Kinovea.Camera"
+}
+
+satellites = {
+    "RootLang": "Kinovea",
+    "UpdaterLang": "Kinovea.Updater",
+    "FileBrowserLang": "Kinovea.FileBrowser",
+    "ScreenManagerLang": "Kinovea.ScreenManager",
+    "CameraLang": "Kinovea.Camera"
+}
+
+extra_cultures = {
+    "sr-Cyrl-RS": "sr-Cyrl-CS",
+    "sr-Latn-RS": "sr-Latn-CS"
+}
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
+for new_culture, old_culture in extra_cultures.items():
+    # create subdirectories.
+    if not os.path.exists(old_culture):
+        os.makedirs(old_culture)
+
+    for k, v in modules.items():
+        input_filename = k + "." + new_culture + ".resx"
+        output_filename = v + ".Languages." + k + "." + old_culture + ".resources"
+
+        # create binary .resources files.
+        print(input_filename + " -> " + output_filename)
+        os.system("resgen " + input_filename + " " + output_filename)
+
+        # embed in satellite assembly.
+        template_assembly = "..\\..\\Kinovea\\bin\\x64\\Release\\Kinovea.exe"
+        satellite_assembly = satellites[k] + ".resources.dll"
+        os.system("al /target:lib /embed:" + output_filename + " /culture:" + old_culture + " /template:" + template_assembly + " /out:" + os.path.join(old_culture, satellite_assembly))
 
 print("Done.")
 
