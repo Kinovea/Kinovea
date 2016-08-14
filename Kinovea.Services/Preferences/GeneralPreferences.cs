@@ -66,10 +66,14 @@ namespace Kinovea.Services
             uiCultureName = cultureName;
         }
         
+        /// <summary>
+        /// Returns a CultureInfo object corresponding to the culture selected by the user.
+        /// The object is safe to be assigned CurrentThread.CurrentUICulture for this specific platform (codename may differ from the saved one).
+        /// </summary>
+        /// <returns></returns>
         public CultureInfo GetSupportedCulture()
         {
-            // Returns the actual culture used in the UI.
-            CultureInfo ci = new CultureInfo(uiCultureName);
+            CultureInfo ci = new CultureInfo(LanguageManager.FixCultureName(uiCultureName));
             if(LanguageManager.IsSupportedCulture(ci))
                 return ci;
             else

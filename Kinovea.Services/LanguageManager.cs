@@ -31,9 +31,6 @@ namespace Kinovea.Services
         {
             get 
             { 
-                if(object.ReferenceEquals(languages, null))
-                    Initialize();
-                
                 return languages;
             }
         }
@@ -142,10 +139,14 @@ namespace Kinovea.Services
             get { return Languages["ar"]; }
         }
         #endregion
-        
+
+        private static bool initialized = false;
         private static Dictionary<string, string> languages = null;
+        private static List<string> legacyLanguages = null;
+        private static bool useOldSerbianCodes = false;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        private static void Initialize()
+        static LanguageManager()
         {
             // Alphabetical order by native name. (Check Wikipedia order if in doubt).
             languages = new Dictionary<string, string>();
@@ -175,23 +176,81 @@ namespace Kinovea.Services
             languages.Add("sv", "Svenska");
             languages.Add("tr", "Türkçe");
             languages.Add("zh-CHS", "简体中文");
-        }
-        public static bool IsSupportedCulture(CultureInfo ci)
-        {
-            return Languages.ContainsKey(ci.Name) || (!ci.IsNeutralCulture && Languages.ContainsKey(ci.Parent.Name));
+
+            legacyLanguages = new List<string>();
+            legacyLanguages.Add("sr-Cyrl-CS");
+            legacyLanguages.Add("sr-Latn-CS");
+
+            // Culture name for Serbian were changed in Windows 10. 
+            // We try to instanciate the culture with the new name to see were we stand, and remap the names around otherwise.
+            // This requires that we compile each serbian satellite assembly twice.
+            // The new satellites are compiled automatically (Building under Windows 10), the old ones have to be built manually, outside Visual Studio.
+            try
+            {
+                CultureInfo testSerbian = new CultureInfo("sr-Cyrl-RS");
+                useOldSerbianCodes = false;
+
+                // This uses the variable to make sure the instanciation attempt doesn't get optimized away.
+                log.DebugFormat("Using new Serbian culture codes. (i.e: {0}).", testSerbian.Name); 
+            }
+            catch (ArgumentException)
+            {
+                useOldSerbianCodes = true;
+                log.DebugFormat("Failed to instanciate Serbian locale, switch to old codename.");
+            }
         }
 
+        /// <summary>
+        /// Returns true if there is a translation for the passed in culture or a direct parent for a subculture.
+        /// </summary>
+        /// <param name="ci"></param>
+        /// <returns></returns>
+        public static bool IsSupportedCulture(CultureInfo ci)
+        {
+            return languages.ContainsKey(ci.Name) || legacyLanguages.Contains(ci.Name) || (!ci.IsNeutralCulture && languages.ContainsKey(ci.Parent.Name));
+        }
+
+        /// <summary>
+        /// This method should only be used for UI purposes, to check a menu or select an entry in a combo box.
+        /// It doesn't necessarily return the actual exact culture name, as some of them get mapped around.
+        /// </summary>
         public static string GetCurrentCultureName()
         {
             string uiCultureName = Thread.CurrentThread.CurrentUICulture.Name;
             CultureInfo ci = new CultureInfo(uiCultureName);
 
-            if (Languages.ContainsKey(uiCultureName))
+            if (useOldSerbianCodes)
+            {
+                // Remap the old codes to the new ones so that the UI looks correct.
+                if (ci.Name == "sr-Cyrl-CS")
+                    return "sr-Cyrl-RS";
+                else if (ci.Name == "sr-Latn-CS")
+                    return "sr-Latn-RS";
+            }
+
+            if (languages.ContainsKey(uiCultureName))
                 return uiCultureName;
-            else if (!ci.IsNeutralCulture && Languages.ContainsKey(ci.Parent.Name))
+            else if (!ci.IsNeutralCulture && languages.ContainsKey(ci.Parent.Name))
                 return ci.Parent.Name;
             else
                 return "en";
+        }
+
+        /// <summary>
+        /// Get a culture name supported on this specific platform.
+        /// This may return a different culture name than the one passed in for a few languages.
+        /// </summary>
+        public static string FixCultureName(string name)
+        {
+            if (useOldSerbianCodes)
+            {
+                if (name == "sr-Cyrl-RS")
+                    return "sr-Cyrl-CS";
+                else if (name == "sr-Latn-RS")
+                    return "sr-Latn-CS";
+            }
+
+            return name;
         }
     }
 }

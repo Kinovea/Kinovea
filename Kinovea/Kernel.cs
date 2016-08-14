@@ -476,16 +476,23 @@ namespace Kinovea.Root
         }
         private void SwitchCulture(string name)
         {
-            CultureInfo oldCulture = Thread.CurrentThread.CurrentUICulture;
-            CultureInfo newCulture = new CultureInfo(name);
+            try
+            {
+                CultureInfo oldCulture = Thread.CurrentThread.CurrentUICulture;
+                CultureInfo newCulture = new CultureInfo(LanguageManager.FixCultureName(name));
 
-            log.Debug(String.Format("Changing culture from [{0}] to [{1}].", oldCulture.Name, newCulture.Name));
-            
-            PreferencesManager.GeneralPreferences.SetCulture(newCulture.Name);
-            Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-            PreferencesManager.Save();
+                log.Debug(String.Format("Changing culture from [{0}] to [{1}].", oldCulture.Name, newCulture.Name));
 
-            RefreshUICulture();
+                PreferencesManager.GeneralPreferences.SetCulture(newCulture.Name);
+                Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
+                PreferencesManager.Save();
+
+                RefreshUICulture();
+            }
+            catch (ArgumentException)
+            {
+                log.ErrorFormat("Could not switch from culture {0} to {1}.", Thread.CurrentThread.CurrentUICulture.Name, name);
+            }
         }
         private void CheckLanguageMenu()
         {
