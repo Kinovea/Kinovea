@@ -17,6 +17,11 @@ namespace Kinovea.ScreenManager
         public int Length { get; private set; }
 
         /// <summary>
+        /// Whether the trajectory can be filtered, depends on the number of samples.
+        /// </summary>
+        public bool CanFilter { get; private set; }
+
+        /// <summary>
         /// Time coordinates.
         /// </summary>
         public long[] Times { get; private set; }
@@ -113,6 +118,7 @@ namespace Kinovea.ScreenManager
             YCutoffIndex = -1;
 
             Length = samples;
+            CanFilter = Length > 10;
 
             Times = new long[samples];
             RawXs = new double[samples];

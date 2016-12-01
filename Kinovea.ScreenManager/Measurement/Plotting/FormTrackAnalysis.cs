@@ -65,14 +65,14 @@ namespace Kinovea.ScreenManager
 
             lblCutoffFrequencies.Text = "Selected cutoff frequencies:";
 
-            if (kinematics.Length < 10)
-            {
-                tabControl.TabPages.Remove(pageAbout);
-            }
-            else
+            if (kinematics.CanFilter)
             {
                 LocalizeInfo();
                 CreateDurbinWatsonPlot();
+            }
+            else
+            {
+                tabControl.TabPages.Remove(pageAbout);
             }
         }
 

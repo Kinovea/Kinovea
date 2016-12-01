@@ -45,16 +45,16 @@ namespace Kinovea.ScreenManager
             ComputeRawVelocities(kinematics, calibrationHelper);
             ComputeRawAccelerations(kinematics, calibrationHelper);
 
-            if (kinematics.Length <= 10)
-            {
-                kinematics.ForceRawSeries();
-            }
-            else
+            if (kinematics.CanFilter)
             {
                 ComputeFilteredCoordinates(kinematics, calibrationHelper);
                 ComputeTotalDistance(kinematics, calibrationHelper);
                 ComputeVelocities(kinematics, calibrationHelper);
                 ComputeAccelerations(kinematics, calibrationHelper);
+            }
+            else
+            {
+                kinematics.ForceRawSeries();
             }
 
             try
