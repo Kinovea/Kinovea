@@ -141,7 +141,7 @@ namespace Kinovea.Camera.HTTP
                 
                 host = uri.Host;
                 port = uri.Port == 80 ? "" : uri.Port.ToString();
-                path = uri.LocalPath;
+                path = uri.PathAndQuery;
                 
                 // Try to guess format
                 string extension = Path.GetExtension(path).ToLower();
