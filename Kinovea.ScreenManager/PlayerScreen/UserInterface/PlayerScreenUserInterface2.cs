@@ -1874,7 +1874,7 @@ namespace Kinovea.ScreenManager
         #region Speed Slider
         private void sldrSpeed_ValueChanged(object sender, EventArgs e)
         {
-            double slowMotion = timeMapper.GetSlowMotion(sldrSpeed.Value);
+            slowMotion = timeMapper.GetSlowMotion(sldrSpeed.Value);
             
             if (m_FrameServer.Loaded)
             {

@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
             
             groupOptions.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupOptions;
             checkSlowMotion.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_CheckSlow;
-            checkSlowMotion.Text = checkSlowMotion.Text + m_fSlowmotionPercentage.ToString() + "%).";
+            checkSlowMotion.Text = checkSlowMotion.Text + string.Format("{0:0.00} %).", m_fSlowmotionPercentage);
 
             btnOK.Text = ScreenManagerLang.Generic_Save;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
