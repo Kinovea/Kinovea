@@ -95,9 +95,9 @@ namespace Kinovea.ScreenManager
             get { return imageSize; }
             set { imageSize = value; }
         }
-        public CoordinateSystem CoordinateSystem
+        public ImageTransform ImageTransform
         {
-            get { return coordinateSystem; }
+            get { return imageTransform; }
         }
         public string FullPath
         {
@@ -312,7 +312,7 @@ namespace Kinovea.ScreenManager
         private double userInterval = 40;
         private int referenceHash;
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
-        private CoordinateSystem coordinateSystem = new CoordinateSystem();
+        private ImageTransform imageTransform = new ImageTransform();
         private TrackabilityManager trackabilityManager = new TrackabilityManager();
         private Temporizer calibrationChangedTemporizer;
         
@@ -1034,7 +1034,7 @@ namespace Kinovea.ScreenManager
 
             foreach (DrawingChrono chrono in chronoManager.Drawings)
             {
-                int hit = chrono.HitTest(point, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
+                int hit = chrono.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
                 if (hit < 0)
                     continue;
 
@@ -1048,7 +1048,7 @@ namespace Kinovea.ScreenManager
 
             foreach (DrawingTrack track in trackManager.Drawings)
             {
-                int hit = track.HitTest(point, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
+                int hit = track.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
                 if (hit < 0)
                     continue;
 
@@ -1063,7 +1063,7 @@ namespace Kinovea.ScreenManager
             for(int i = extraDrawings.Count - 1; i >= 0; i--)
             {
                 AbstractDrawing candidate = extraDrawings[i];
-                int hitRes = candidate.HitTest(point, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
+                int hitRes = candidate.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
                 if (hitRes < 0)
                     continue;
                 
@@ -1149,7 +1149,7 @@ namespace Kinovea.ScreenManager
             chronoManager.Clear();
             extraDrawings.RemoveRange(totalStaticExtraDrawings, extraDrawings.Count - totalStaticExtraDrawings);
             magnifier.ResetData();
-            coordinateSystem.Reset();
+            imageTransform.Reset();
             drawingCoordinateSystem.Visible = false;
             drawingTestGrid.Visible = false;
             calibrationHelper.Reset();
@@ -1181,7 +1181,7 @@ namespace Kinovea.ScreenManager
             while (hitResult < 0 && currentDrawing < keyframe.Drawings.Count)
             {
                 AbstractDrawing drawing = keyframe.Drawings[currentDrawing];
-                hitResult = drawing.HitTest(mouseLocation, timestamp, calibrationHelper.DistortionHelper, coordinateSystem, coordinateSystem.Zooming);
+                hitResult = drawing.HitTest(mouseLocation, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
                 
                 if (hitResult < 0)
                 {

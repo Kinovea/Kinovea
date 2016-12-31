@@ -55,9 +55,9 @@ namespace Kinovea.ScreenManager
             get { return metadata; }
             set { metadata = value; }
         }
-        public CoordinateSystem CoordinateSystem
+        public ImageTransform ImageTransform
         {
-            get { return metadata.CoordinateSystem; }
+            get { return metadata.ImageTransform; }
         }
         public bool Loaded
         {
@@ -118,6 +118,7 @@ namespace Kinovea.ScreenManager
                 return OpenVideoResult.NotSupported;
             }
         }
+
         public void Unload()
         {
             // Prepare the FrameServer for a new video by resetting everything.
@@ -127,6 +128,7 @@ namespace Kinovea.ScreenManager
             if(metadata != null)
                 metadata.Reset();
         }
+
         public void SetupMetadata(bool init)
         {
             // Setup Metadata global infos in case we want to flush it to a file (or mux).
@@ -148,11 +150,16 @@ namespace Kinovea.ScreenManager
             
             log.Debug("Setup metadata.");
         }
+
         public override void Draw(Graphics canvas)
         {
             // Draw the current image on canvas according to conf.
             // This is called back from screen paint method.
         }
+
+        /// <summary>
+        /// Main video saving pipeline. Saves either a video or the analysis data.
+        /// </summary>
         public void Save(double playbackFrameInterval, double slowmotionPercentage, ImageRetriever imageRetriever)
         {
             // Let the user select what he wants to save exactly.
@@ -191,6 +198,7 @@ namespace Kinovea.ScreenManager
 
             fve.Dispose();
         }
+
         public void SaveDiaporama(ImageRetriever imageRetriever, bool diapo)
         {
             // Let the user configure the diaporama export.
@@ -207,6 +215,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+
         public void AfterSave()
         {
             if(savingMetada)
@@ -217,6 +226,7 @@ namespace Kinovea.ScreenManager
 
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
+        
         public string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool isSynched)
         {
             // Input    : TimeStamp (might be a duration. If starting ts isn't 0, it should already be shifted.)
@@ -376,7 +386,7 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputFrameInterval, settings.Duplication, settings.KeyframeDuplication);
                 
                 videoReader.BeforeFrameEnumeration();
-                IEnumerable<Bitmap> images = FrameEnumerator(settings);
+                IEnumerable<Bitmap> images = EnumerateImages(settings);
 
                 VideoFileWriter w = new VideoFileWriter();
                 string formatString = FilenameHelper.GetFormatString(settings.File);
@@ -398,36 +408,41 @@ namespace Kinovea.ScreenManager
         /// Return fully painted bitmaps ready for saving in the output.
         /// In case of early cancellation or error, the caller must dispose the bitmap to avoid a leak.
         /// </summary>
-        private IEnumerable<Bitmap> FrameEnumerator(SavingSettings settings)
+        private IEnumerable<Bitmap> EnumerateImages(SavingSettings settings)
         {
-            // When we move to a full hierarchy of exporters classes,
-            // each one will implement its own logic to transform the frames from
-            // the working zone (or just the kf) to the final list of bitmaps to save.
-            
-            foreach(VideoFrame vf in videoReader.FrameEnumerator())
+            Bitmap output = null;
+
+            // Enumerates the raw frames from the video (at original video size).
+            foreach (VideoFrame vf in videoReader.FrameEnumerator())
             {
-                if(vf == null)
+                if (vf == null)
                 {
                     log.Error("Working zone enumerator yield null.");
+                    
+                    if (output != null)
+                        output.Dispose();
+
                     yield break;
                 }
-                
-                Bitmap bmp = vf.Image.CloneDeep();
-                long ts = vf.Timestamp;
-                
-                Graphics g = Graphics.FromImage(bmp);
-                long keyframeDistance = settings.ImageRetriever(g, bmp, ts, settings.FlushDrawings, settings.KeyframesOnly);
 
-                if(!settings.KeyframesOnly || keyframeDistance == 0)
-                {
-                    int duplication = settings.PausedVideo && keyframeDistance == 0 ? settings.KeyframeDuplication : settings.Duplication;
-                    for(int i=0;i<duplication;i++)
-                        yield return bmp;
-                }
+                if (output == null)
+                    output = new Bitmap(vf.Image.Width, vf.Image.Height, vf.Image.PixelFormat);
                 
-                bmp.Dispose();
+                bool onKeyframe = settings.ImageRetriever(vf, output);
+                bool savable = onKeyframe || !settings.KeyframesOnly;
+
+                if (savable)
+                {
+                    int duplication = settings.PausedVideo && onKeyframe ? settings.KeyframeDuplication : settings.Duplication;
+                    for (int i = 0; i < duplication; i++)
+                        yield return output;
+                }
             }
+
+            if (output != null)
+                output.Dispose();
         }
+
         private void bgWorkerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             // This method should be called back from the writer when a frame has been processed.
@@ -437,6 +452,7 @@ namespace Kinovea.ScreenManager
             int iValue = (int)Math.Min((long)e.ProgressPercentage, iMaximum);
             formProgressBar.Update(iValue, iMaximum, true);
         }
+
         private void bgWorkerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             formProgressBar.Close();

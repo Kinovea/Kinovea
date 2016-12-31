@@ -35,15 +35,18 @@ namespace Kinovea.ScreenManager
     /// - rotating. (todo).
     /// - mirroring. (todo, currently handled elsewhere).
     /// 
-    /// The class will keep track of the current changes in the coordinate system relatively to the 
+    /// TODO: replace all these special cases with matrix maths.
+    /// TODO: merge with ImageToViewportTransformer.
+    /// 
+    /// The class will keep track of the current changes relatively to the 
     /// original image size and provide conversion routines.
     /// 
     /// All drawings coordinates are kept in the system of the original image.
     /// For actually drawing them on screen we ask the transformation. 
     /// 
-    /// The image ratio is never altered. Skew is not supported.
+    /// The image aspect ratio is never altered. Skew is not supported.
     /// </summary>
-    public class CoordinateSystem : IImageToViewportTransformer
+    public class ImageTransform : IImageToViewportTransformer
     {
         #region Properties
         /// <summary>
@@ -93,29 +96,31 @@ namespace Kinovea.ScreenManager
             get { return freeMove; }
             set { freeMove = value; }
         }
-        public CoordinateSystem Identity
+        public ImageTransform Identity
         {
             // Return a barebone system with no stretch and no zoom, based on current image size. Used for saving. 
-            get { return new CoordinateSystem(originalSize); }
+            get { return new ImageTransform(originalSize); }
         }
         #endregion
         
         #region Members
         private Size originalSize;			// Decoding size of the image
-        private double stretch = 1.0f;		// factor to go from decoding size to display size.
-        private double zoom = 1.0f;		
+        private double stretch = 1.0;		// factor to go from decoding size to viewport size.
+        private double zoom = 1.0;
         private Rectangle directZoomWindow;
-        private bool freeMove;				// If we allow the image to be moved out of bounds.
         private Rectangle renderingZoomWindow;
-        private double renderingZoomFactor;
+        private double renderingZoomFactor = 1.0;
+        private bool freeMove;				// Whether we allow the image to be moved out of screen bounds.
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public CoordinateSystem() : this(new Size(1,1)){}
-        public CoordinateSystem(Size _size)
+        public ImageTransform() : this(new Size(1,1)){}
+        public ImageTransform(Size _size)
         {
-            SetOriginalSize(_size);
+            originalSize = _size;
+            directZoomWindow = new Rectangle(0, 0, originalSize.Width, originalSize.Height);
+            renderingZoomWindow = directZoomWindow;
         }
         #endregion
 
@@ -128,7 +133,7 @@ namespace Kinovea.ScreenManager
         {
             stretch = 1.0f;
             zoom = 1.0f;
-            directZoomWindow = Rectangle.Empty;
+            directZoomWindow = new Rectangle(0, 0, originalSize.Width, originalSize.Height);
         }
         public void ReinitZoom()
         {

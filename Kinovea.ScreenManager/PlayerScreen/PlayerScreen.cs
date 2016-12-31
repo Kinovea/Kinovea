@@ -589,10 +589,6 @@ namespace Kinovea.ScreenManager
             view.UpdateTimeLabels();
             view.RefreshImage();
         }
-        public long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
-        {
-            return view.GetOutputBitmap(_canvas, _sourceImage, _iTimestamp, _bFlushDrawings, _bKeyframesOnly);
-        }
         public Bitmap GetFlushedImage()
         {
             return view.GetFlushedImage();

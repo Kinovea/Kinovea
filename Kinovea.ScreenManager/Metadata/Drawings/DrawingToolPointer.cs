@@ -201,7 +201,7 @@ namespace Kinovea.ScreenManager
                             case SelectedObjectType.ExtraDrawing:
                             case SelectedObjectType.Drawing:
                                 if (metadata.HitDrawing != null)
-                                    metadata.HitDrawing.MoveDrawing(deltaX, deltaY, modifiers, metadata.CoordinateSystem.Zooming);
+                                    metadata.HitDrawing.MoveDrawing(deltaX, deltaY, modifiers, metadata.ImageTransform.Zooming);
                                 break;
                             default:
                                 isMovingAnObject = false;
@@ -274,19 +274,19 @@ namespace Kinovea.ScreenManager
 
                 for (int i = 0; i < zOrder.Length; i++)
                 {
-                    bIsOnDrawing = DrawingHitTest(metadata, zOrder[i], mouseCoordinates, currentTimeStamp, distorter, metadata.CoordinateSystem);
+                    bIsOnDrawing = DrawingHitTest(metadata, zOrder[i], mouseCoordinates, currentTimeStamp, distorter, metadata.ImageTransform);
                     if (bIsOnDrawing)
                         break;
                 }
             }
             else if (activeKeyFrameIndex >= 0)
             {
-                bIsOnDrawing = DrawingHitTest(metadata, activeKeyFrameIndex, mouseCoordinates, metadata[activeKeyFrameIndex].Position, distorter, metadata.CoordinateSystem);
+                bIsOnDrawing = DrawingHitTest(metadata, activeKeyFrameIndex, mouseCoordinates, metadata[activeKeyFrameIndex].Position, distorter, metadata.ImageTransform);
             }
 
             return bIsOnDrawing;
         }
-        private bool DrawingHitTest(Metadata metadata, int keyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, DistortionHelper distorter, CoordinateSystem transformer)
+        private bool DrawingHitTest(Metadata metadata, int keyFrameIndex, PointF mouseCoordinates, long currentTimeStamp, DistortionHelper distorter, ImageTransform transformer)
         {
             bool isOnDrawing = false;
             int hitResult = -1;
@@ -331,7 +331,7 @@ namespace Kinovea.ScreenManager
             
             while (hitResult < 0 && currentDrawing < metadata.ExtraDrawings.Count)
             {
-                hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
+                hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform, metadata.ImageTransform.Zooming);
 
                 if (hitResult < 0)
                 {
@@ -361,7 +361,7 @@ namespace Kinovea.ScreenManager
             bool isOnDrawing = false;
             foreach (AbstractDrawing drawing in metadata.ChronoManager.Drawings)
             {
-                int hitResult = drawing.HitTest(point, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
+                int hitResult = drawing.HitTest(point, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform, metadata.ImageTransform.Zooming);
                 if (hitResult < 0)
                     continue;
 
@@ -394,7 +394,7 @@ namespace Kinovea.ScreenManager
                 if (track == null)
                     continue;
 
-                int hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CalibrationHelper.DistortionHelper, metadata.CoordinateSystem, metadata.CoordinateSystem.Zooming);
+                int hitResult = drawing.HitTest(mouseCoordinates, currentTimeStamp, metadata.CalibrationHelper.DistortionHelper, metadata.ImageTransform, metadata.ImageTransform.Zooming);
                 if (hitResult < 0)
                     continue;
 

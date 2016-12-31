@@ -28,6 +28,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Converts image coordinates to viewport coordinates and back.
     /// Helpers methods to directly transform points, rectangles, length, etc.
+    /// TODO: merge with ImageTransform.
     /// </summary>
     public class ImageToViewportTransformer : IImageToViewportTransformer
     {

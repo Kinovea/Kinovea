@@ -19,8 +19,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Drawing;
 
 namespace Kinovea.Video
 {
-    public delegate void VideoFrameDisposer(VideoFrame _frame);
+    public delegate void VideoFrameDisposer(VideoFrame frame);
+    public delegate bool ImageRetriever(VideoFrame frame, Bitmap output);
 }
