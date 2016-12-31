@@ -77,18 +77,18 @@ namespace Kinovea.ScreenManager
         #endregion
        
         #region Public interface
-        public void Draw(Bitmap bitmap, Graphics canvas, CoordinateSystem transformer, bool mirrored, Size originalSize)
+        public void Draw(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size originalSize)
         {
             if(mode == MagnifierMode.None)
                 return;
             
-            source.Draw(canvas, transformer.Transform(source.Rectangle), Pens.White, (SolidBrush)Brushes.White, 4);
-            DrawInsert(bitmap, canvas, transformer, mirrored, originalSize);
+            source.Draw(canvas, imageTransform.Transform(source.Rectangle), Pens.White, (SolidBrush)Brushes.White, 4);
+            DrawInsert(bitmap, canvas, imageTransform, mirrored, originalSize);
         }
-        private void DrawInsert(Bitmap bitmap, Graphics canvas, CoordinateSystem transformer, bool mirrored, Size originalSize)
+        private void DrawInsert(Bitmap bitmap, Graphics canvas, ImageTransform imageTransform, bool mirrored, Size originalSize)
         {
             // The bitmap passed in is the image decoded, so it might be at a different size than the original image size.
-            // We also need to take mirroring into account (until it's included in the CoordinateSystem).
+            // We also need to take mirroring into account (until it's included in the ImageTransform).
             
             double scaleX = (double)bitmap.Size.Width / originalSize.Width;
             double scaleY = (double)bitmap.Size.Height / originalSize.Height;
@@ -100,8 +100,8 @@ namespace Kinovea.ScreenManager
             else
                 src = scaledSource;
             
-            canvas.DrawImage(bitmap, transformer.Transform(insert), src, GraphicsUnit.Pixel);
-            canvas.DrawRectangle(Pens.White, transformer.Transform(insert));
+            canvas.DrawImage(bitmap, imageTransform.Transform(insert), src, GraphicsUnit.Pixel);
+            canvas.DrawRectangle(Pens.White, imageTransform.Transform(insert));
         }
         public void InitializeCommit(PointF location)
         {
@@ -135,7 +135,7 @@ namespace Kinovea.ScreenManager
 
             return false;
         }
-        public bool OnMouseDown(PointF location, CoordinateSystem transformer)
+        public bool OnMouseDown(PointF location, ImageTransform transformer)
         {
             if(mode != MagnifierMode.Indirect)
                 return false;
@@ -149,11 +149,11 @@ namespace Kinovea.ScreenManager
 
             return hitHandle >= 0;
         }
-        public bool IsOnObject(PointF location, CoordinateSystem transformer)
+        public bool IsOnObject(PointF location, ImageTransform transformer)
         {
             return HitTest(location, transformer) >= 0;
         }
-        public int HitTest(PointF point, CoordinateSystem transformer)
+        public int HitTest(PointF point, ImageTransform transformer)
         {
             int result = -1;
             if(insert.Contains(point))

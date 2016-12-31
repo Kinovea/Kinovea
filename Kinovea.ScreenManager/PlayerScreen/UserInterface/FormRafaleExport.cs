@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
 
             int frames = (int)Math.Round((float)totalFrames / decimationFrames);
             long interval = info.AverageTimeStampsPerFrame * decimationFrames;
-            formFramesExport ffe = new formFramesExport(playerScreenUserInterface, saveFileDialog.FileName, interval, true, chkKeyframesOnly.Checked, frames);
+            FormFramesExport ffe = new FormFramesExport(playerScreenUserInterface, saveFileDialog.FileName, interval, chkKeyframesOnly.Checked, frames);
             ffe.ShowDialog();
             ffe.Dispose();
 

@@ -29,24 +29,22 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-    public partial class formFramesExport : Form
+    public partial class FormFramesExport : Form
     {
         private PlayerScreenUserInterface m_psui;
         private string m_FilePath;
         private long m_iIntervalTimeStamps;
-        private bool m_bBlendDrawings;
         private bool m_bKeyframesOnly;
         private bool m_IsIdle = true;
         private int m_iEstimatedTotal;
 
-        public formFramesExport(PlayerScreenUserInterface _psui, string _FilePath, long _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int _iEstimatedTotal)
+        public FormFramesExport(PlayerScreenUserInterface _psui, string _FilePath, long _iIntervalTimeStamps, bool _bKeyframesOnly, int _iEstimatedTotal)
         {
             InitializeComponent();
 
             m_psui = _psui;
             m_FilePath = _FilePath;
             m_iIntervalTimeStamps = _iIntervalTimeStamps;
-            m_bBlendDrawings = _bBlendDrawings;
             m_bKeyframesOnly = _bKeyframesOnly;
             m_iEstimatedTotal = _iEstimatedTotal;
     
@@ -87,7 +85,7 @@ namespace Kinovea.ScreenManager
             // Les appels ici sont synchrones mais on peut remonter de 
             // l'information par bgWorker_ProgressChanged().
             //-------------------------------------------------------------
-            m_psui.SaveImageSequence(bgWorker, m_FilePath, m_iIntervalTimeStamps, m_bBlendDrawings, m_bKeyframesOnly, m_iEstimatedTotal);
+            m_psui.SaveImageSequence(bgWorker, m_FilePath, m_iIntervalTimeStamps, m_bKeyframesOnly, m_iEstimatedTotal);
 
             e.Result = 0;
         }

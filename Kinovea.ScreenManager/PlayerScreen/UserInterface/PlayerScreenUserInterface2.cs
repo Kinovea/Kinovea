@@ -210,7 +210,7 @@ namespace Kinovea.ScreenManager
             {
                 m_bSyncMerge = value;
                 
-                m_FrameServer.CoordinateSystem.FreeMove = m_bSyncMerge;
+                m_FrameServer.ImageTransform.FreeMove = m_bSyncMerge;
                 
                 if(!m_bSyncMerge && m_SyncMergeImage != null)
                 {
@@ -527,8 +527,8 @@ namespace Kinovea.ScreenManager
             m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
 
             // Screen position and size.
-            m_FrameServer.CoordinateSystem.SetOriginalSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
-            m_FrameServer.CoordinateSystem.ReinitZoom();
+            m_FrameServer.ImageTransform.SetOriginalSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
+            m_FrameServer.ImageTransform.ReinitZoom();
             SetUpForNewMovie();
             m_KeyframeCommentsHub.UserActivated = false;
 
@@ -820,8 +820,8 @@ namespace Kinovea.ScreenManager
         {
             m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Info.AspectRatioSize;
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
-            m_FrameServer.CoordinateSystem.SetOriginalSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
-            m_FrameServer.CoordinateSystem.ReinitZoom();
+            m_FrameServer.ImageTransform.SetOriginalSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
+            m_FrameServer.ImageTransform.ReinitZoom();
             
             ResizeUpdate(true);
         }
@@ -909,7 +909,7 @@ namespace Kinovea.ScreenManager
             m_bIsCurrentlyPlaying = false;
             m_ePlayingMode = PlayingMode.Loop;
             m_fill = false;
-            m_FrameServer.CoordinateSystem.Reset();
+            m_FrameServer.ImageTransform.Reset();
             
             // Sync
             m_bSynched = false;
@@ -1981,7 +1981,7 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            double targetStretch = m_FrameServer.CoordinateSystem.Stretch;
+            double targetStretch = m_FrameServer.ImageTransform.Stretch;
             
             // If we have been forced to a different stretch (due to application resizing or minimizing), 
             // make sure we aim for the user's last requested value.
@@ -1991,10 +1991,10 @@ namespace Kinovea.ScreenManager
             // Stretch factor, zoom, or container size have been updated, update the rendering and decoding sizes.
             // During the process, stretch and fill may be forced to different values.
             bool scalable = m_FrameServer.VideoReader.CanScaleIndefinitely;
-            m_viewportManipulator.Manipulate(panelCenter.Size, targetStretch, m_fill, m_FrameServer.CoordinateSystem.Zoom, m_bEnableCustomDecodingSize, scalable);
+            m_viewportManipulator.Manipulate(panelCenter.Size, targetStretch, m_fill, m_FrameServer.ImageTransform.Zoom, m_bEnableCustomDecodingSize, scalable);
             pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
             pbSurfaceScreen.Location = m_viewportManipulator.RenderingLocation;
-            m_FrameServer.CoordinateSystem.Stretch = m_viewportManipulator.Stretch;
+            m_FrameServer.ImageTransform.Stretch = m_viewportManipulator.Stretch;
             
             ReplaceResizers();
         }
@@ -2021,9 +2021,9 @@ namespace Kinovea.ScreenManager
             else
             {
                 // If the image doesn't fit in the container, we stay in fill mode.
-                if (m_FrameServer.CoordinateSystem.Stretch >= 1)
+                if (m_FrameServer.ImageTransform.Stretch >= 1)
                 {
-                    m_FrameServer.CoordinateSystem.Stretch = 1;
+                    m_FrameServer.ImageTransform.Stretch = 1;
                     m_fill = false;
                 }
             }
@@ -2090,9 +2090,9 @@ namespace Kinovea.ScreenManager
             double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.VideoReader.Info.AspectRatioSize.Height);
             double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.VideoReader.Info.AspectRatioSize.Width);
 
-            m_FrameServer.CoordinateSystem.Stretch = (fWidthFactor + fHeightFactor) / 2;
+            m_FrameServer.ImageTransform.Stretch = (fWidthFactor + fHeightFactor) / 2;
             m_fill = false;
-            m_lastUserStretch = m_FrameServer.CoordinateSystem.Stretch;
+            m_lastUserStretch = m_FrameServer.ImageTransform.Stretch;
 
             ResizeUpdate(false);
         }
@@ -2117,7 +2117,7 @@ namespace Kinovea.ScreenManager
                 if(m_FrameServer.VideoReader.CanChangeDecodingSize)
                 {
                     m_FrameServer.VideoReader.ChangeDecodingSize(m_viewportManipulator.DecodingSize);
-                    m_FrameServer.CoordinateSystem.SetRenderingZoomFactor(m_viewportManipulator.RenderingZoomFactor);
+                    m_FrameServer.ImageTransform.SetRenderingZoomFactor(m_viewportManipulator.RenderingZoomFactor);
                 }
                 m_FrameServer.Metadata.ResizeFinished();
                 RefreshImage();
@@ -2552,7 +2552,7 @@ namespace Kinovea.ScreenManager
                 return;
                 
             m_DeselectionTimer.Stop();
-            m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+            m_DescaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
             
             if (e.Button == MouseButtons.Left)
                 SurfaceScreen_LeftDown();
@@ -2565,7 +2565,7 @@ namespace Kinovea.ScreenManager
         {
             bool hitMagnifier = false;
             if(m_ActiveTool == m_PointerTool)
-                hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse, m_FrameServer.Metadata.CoordinateSystem);
+                hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse, m_FrameServer.Metadata.ImageTransform);
                 
             if(hitMagnifier || InteractiveFiltering)
                 return;
@@ -2612,8 +2612,8 @@ namespace Kinovea.ScreenManager
         {
             m_FrameServer.Metadata.UnselectAll();
 
-            IImageToViewportTransformer transformer = m_FrameServer.Metadata.CoordinateSystem;
-            bool zooming = m_FrameServer.Metadata.CoordinateSystem.Zooming;
+            IImageToViewportTransformer transformer = m_FrameServer.Metadata.ImageTransform;
+            bool zooming = m_FrameServer.Metadata.ImageTransform.Zooming;
             DistortionHelper distorter = m_FrameServer.Metadata.CalibrationHelper.DistortionHelper;
 
             bool editingLabel = false;
@@ -2625,7 +2625,7 @@ namespace Kinovea.ScreenManager
                     if (hit < 0)
                         continue;
                     
-                    label.SetEditMode(true, m_FrameServer.CoordinateSystem);
+                    label.SetEditMode(true, m_FrameServer.ImageTransform);
                     editingLabel = true;
                     break;
                 }
@@ -2633,13 +2633,13 @@ namespace Kinovea.ScreenManager
            
             if (!editingLabel)
             {
-                AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.CoordinateSystem);
+                AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.ImageTransform);
 
                 if (drawing is DrawingText)
                 {
                     // Labels need to be switched immediately into edit mode.
                     ImportEditbox(drawing as DrawingText);
-                    ((DrawingText)drawing).SetEditMode(true, m_FrameServer.CoordinateSystem);
+                    ((DrawingText)drawing).SetEditMode(true, m_FrameServer.ImageTransform);
                 }
 
                 if (DrawingAdding != null)
@@ -2793,7 +2793,7 @@ namespace Kinovea.ScreenManager
                 }
             }
             else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && 
-                     m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse, m_FrameServer.Metadata.CoordinateSystem))
+                     m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse, m_FrameServer.Metadata.ImageTransform))
             {
                 mnuMagnifierTrack.Checked = ToggleTrackingCommand.CurrentState(m_FrameServer.Metadata.Magnifier);
                 panelCenter.ContextMenuStrip = popMenuMagnifier;
@@ -2907,7 +2907,7 @@ namespace Kinovea.ScreenManager
             if(!m_FrameServer.Loaded)
                 return;
 
-            m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+            m_DescaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
                         
             if (e.Button == MouseButtons.None && m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
             {
@@ -2957,7 +2957,7 @@ namespace Kinovea.ScreenManager
                         {
                             // Magnifier is not being moved or is invisible, try drawings through pointer tool.
                             // (including chronos, tracks and grids)
-                            bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
+                            bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.Location, ModifierKeys);
 
                             if (!bMovingObject)
                             {
@@ -2973,7 +2973,7 @@ namespace Kinovea.ScreenManager
                                     fDeltaX = -fDeltaX;
                                 }
 
-                                m_FrameServer.CoordinateSystem.MoveZoomWindow(fDeltaX, fDeltaY);
+                                m_FrameServer.ImageTransform.MoveZoomWindow(fDeltaX, fDeltaY);
                             }
                         }
                     }
@@ -2993,7 +2993,7 @@ namespace Kinovea.ScreenManager
             if(!m_FrameServer.Loaded || e.Button != MouseButtons.Left)
                 return;
             
-            m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+            m_DescaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
             
             if (m_ActiveTool == m_PointerTool)
             {
@@ -3034,7 +3034,7 @@ namespace Kinovea.ScreenManager
                 
             OnPoke();
             
-            m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+            m_DescaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
             m_FrameServer.Metadata.AllDrawingTextToNormalMode();
             m_FrameServer.Metadata.UnselectAll();
             
@@ -3056,7 +3056,7 @@ namespace Kinovea.ScreenManager
                 AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
                 if (drawing is DrawingText)
                 {
-                    ((DrawingText)drawing).SetEditMode(true, m_FrameServer.CoordinateSystem);
+                    ((DrawingText)drawing).SetEditMode(true, m_FrameServer.ImageTransform);
                     m_ActiveTool = ToolManager.Tools["Label"];
                     m_bTextEdit = true;
                 }
@@ -3113,8 +3113,8 @@ namespace Kinovea.ScreenManager
                             iKeyFrameIndex = m_iActiveKeyFrameIndex;
                         }
                     }
-                    
-                    FlushOnGraphics(m_FrameServer.CurrentImage, e.Graphics, m_viewportManipulator.RenderingSize, iKeyFrameIndex, m_iCurrentPosition);
+
+                    FlushOnGraphics(m_FrameServer.CurrentImage, e.Graphics, m_viewportManipulator.RenderingSize, iKeyFrameIndex, m_iCurrentPosition, m_FrameServer.ImageTransform);
                     
                     if(m_MessageToaster.Enabled)
                         m_MessageToaster.Draw(e.Graphics);
@@ -3155,7 +3155,7 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Metadata.TextEditingInProgress)
                 pbSurfaceScreen.Focus();
         }
-        private void FlushOnGraphics(Bitmap _sourceImage, Graphics g, Size _renderingSize, int _iKeyFrameIndex, long _iPosition)
+        private void FlushOnGraphics(Bitmap _sourceImage, Graphics g, Size _renderingSize, int _iKeyFrameIndex, long _iPosition, ImageTransform _transform)
         {
             // This function is used both by the main rendering loop and by image export functions.
             // Video export get its image from the VideoReader or the cache.
@@ -3182,17 +3182,17 @@ namespace Kinovea.ScreenManager
             if(m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
             {
                 // Source image should be at the right size, unless it has been temporarily disabled.
-                if(m_FrameServer.CoordinateSystem.RenderingZoomWindow.Size.CloseTo(_renderingSize) && !m_FrameServer.Metadata.Mirrored)
+                if (_transform.RenderingZoomWindow.Size.CloseTo(_renderingSize) && !m_FrameServer.Metadata.Mirrored)
                 {
-                    if(!m_FrameServer.CoordinateSystem.Zooming)
+                    if (!_transform.Zooming)
                     {
                         g.DrawImageUnscaled(_sourceImage, 0, 0);
                         //log.DebugFormat("draw unscaled.");
                     }
                     else
                     {
-                        int left = - m_FrameServer.CoordinateSystem.RenderingZoomWindow.Left;
-                        int top = - m_FrameServer.CoordinateSystem.RenderingZoomWindow.Top;
+                        int left = -_transform.RenderingZoomWindow.Left;
+                        int top = -_transform.RenderingZoomWindow.Top;
                         g.DrawImageUnscaled(_sourceImage, left, top);
                         //log.DebugFormat("draw unscaled with zoom.");
                     }
@@ -3206,15 +3206,15 @@ namespace Kinovea.ScreenManager
                     else
                         rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
                     
-                    // TODO: integrate the mirror flag into the CoordinateSystem.
-                    
-                    g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.RenderingZoomWindow, GraphicsUnit.Pixel);
+                    // TODO: integrate the mirror flag into the ImageTransform.
+
+                    g.DrawImage(_sourceImage, rDst, _transform.RenderingZoomWindow, GraphicsUnit.Pixel);
                     //log.DebugFormat("draw scaled at custom decoding size.");
                 }
             }
             else
             {
-                if(!m_FrameServer.CoordinateSystem.Zooming && !m_FrameServer.Metadata.Mirrored && m_FrameServer.CoordinateSystem.Stretch == 1.0f)
+                if (!_transform.Zooming && !m_FrameServer.Metadata.Mirrored && _transform.Stretch == 1.0f)
                 {
                     // This allow to draw unscaled while tracking or caching for example, provided we are rendering at original size.
                     g.DrawImageUnscaled(_sourceImage, 0, 0);
@@ -3224,11 +3224,11 @@ namespace Kinovea.ScreenManager
                 {
                     Rectangle rDst;
                     if(m_FrameServer.Metadata.Mirrored)
-                    rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
+                        rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
                     else
-                    rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
-                    
-                    g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+                        rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
+
+                    g.DrawImage(_sourceImage, rDst, _transform.ZoomWindow, GraphicsUnit.Pixel);
                     //log.DebugFormat("drawing scaled.");
                 }
             }
@@ -3247,11 +3247,11 @@ namespace Kinovea.ScreenManager
             
             if ((m_bIsCurrentlyPlaying && PreferencesManager.PlayerPreferences.DrawOnPlay) || !m_bIsCurrentlyPlaying)
             {
-                FlushDrawingsOnGraphics(g, m_FrameServer.CoordinateSystem, _iKeyFrameIndex, _iPosition);
-                FlushMagnifierOnGraphics(_sourceImage, g, m_FrameServer.CoordinateSystem);
+                FlushDrawingsOnGraphics(g, _transform, _iKeyFrameIndex, _iPosition);
+                FlushMagnifierOnGraphics(_sourceImage, g, _transform);
             }
         }
-        private void FlushDrawingsOnGraphics(Graphics canvas, CoordinateSystem transformer, int keyFrameIndex, long time)
+        private void FlushDrawingsOnGraphics(Graphics canvas, ImageTransform transformer, int keyFrameIndex, long timestamp)
         {
             DistortionHelper distorter = m_FrameServer.Metadata.CalibrationHelper.DistortionHelper;
 
@@ -3262,19 +3262,19 @@ namespace Kinovea.ScreenManager
             foreach (DrawingChrono chrono in m_FrameServer.Metadata.ChronoManager.Drawings)
             {
                 bool selected = m_FrameServer.Metadata.HitDrawing == chrono;
-                chrono.Draw(canvas, distorter, transformer, selected, time);
+                chrono.Draw(canvas, distorter, transformer, selected, timestamp);
             }
 
             foreach (DrawingTrack track in m_FrameServer.Metadata.TrackManager.Drawings)
             {
                 bool selected = m_FrameServer.Metadata.HitDrawing == track;
-                track.Draw(canvas, distorter, transformer, selected, time);
+                track.Draw(canvas, distorter, transformer, selected, timestamp);
             }
 
             foreach (AbstractDrawing drawing in m_FrameServer.Metadata.ExtraDrawings)
             {
                 bool selected = m_FrameServer.Metadata.HitDrawing == drawing;
-                drawing.Draw(canvas, distorter, transformer, selected, time);
+                drawing.Draw(canvas, distorter, transformer, selected, timestamp);
             }
             
             if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled)
@@ -3282,7 +3282,7 @@ namespace Kinovea.ScreenManager
                 // If fading is on, we ask all drawings to draw themselves with their respective
                 // fading factor for this position.
 
-                int[] zOrder = m_FrameServer.Metadata.GetKeyframesZOrder(time);
+                int[] zOrder = m_FrameServer.Metadata.GetKeyframesZOrder(timestamp);
 
                 // Draw in reverse keyframes z order so the closest next keyframe gets drawn on top (last).
                 for (int kfIndex = zOrder.Length - 1; kfIndex >= 0; kfIndex--)
@@ -3291,7 +3291,7 @@ namespace Kinovea.ScreenManager
                     for (int drawingIndex = keyframe.Drawings.Count - 1; drawingIndex >= 0; drawingIndex--)
                     {
                         bool selected = keyframe.Drawings[drawingIndex] == m_FrameServer.Metadata.HitDrawing;
-                        keyframe.Drawings[drawingIndex].Draw(canvas, distorter, transformer, selected, time);
+                        keyframe.Drawings[drawingIndex].Draw(canvas, distorter, transformer, selected, timestamp);
                     }
                 }
             }
@@ -3303,7 +3303,7 @@ namespace Kinovea.ScreenManager
                 for (int drawingIndex = keyframe.Drawings.Count - 1; drawingIndex >= 0; drawingIndex--)
                 {
                     bool selected = keyframe.Drawings[drawingIndex] == m_FrameServer.Metadata.HitDrawing;
-                    keyframe.Drawings[drawingIndex].Draw(canvas, distorter, transformer, selected, time);
+                    keyframe.Drawings[drawingIndex].Draw(canvas, distorter, transformer, selected, timestamp);
                 }
             }
             else
@@ -3312,12 +3312,12 @@ namespace Kinovea.ScreenManager
                 // Hence, there is no drawings to draw here.
             }
         }
-        private void FlushMagnifierOnGraphics(Bitmap _sourceImage, Graphics g, CoordinateSystem _transformer)
+        private void FlushMagnifierOnGraphics(Bitmap currentImage, Graphics canvas, ImageTransform transform)
         {
             // Note: the Graphics object must not be the one extracted from the image itself.
             // If needed, clone the image.
-            if (_sourceImage != null && m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None)
-                m_FrameServer.Metadata.Magnifier.Draw(_sourceImage, g, _transformer, m_FrameServer.Metadata.Mirrored, m_FrameServer.VideoReader.Info.AspectRatioSize);
+            if (currentImage != null && m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None)
+                m_FrameServer.Metadata.Magnifier.Draw(currentImage, canvas, transform, m_FrameServer.Metadata.Mirrored, m_FrameServer.VideoReader.Info.AspectRatioSize);
         }
         public void DoInvalidate()
         {
@@ -3822,7 +3822,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                SetCursor(m_ActiveTool.GetCursor(m_FrameServer.CoordinateSystem.Stretch));
+                SetCursor(m_ActiveTool.GetCursor(m_FrameServer.ImageTransform.Stretch));
             }
         }
         private void SetCursor(Cursor _cur)
@@ -4196,8 +4196,8 @@ namespace Kinovea.ScreenManager
         {
             // Use position and magnification to Direct Zoom.
             // Go to direct zoom, at magnifier zoom factor, centered on same point as magnifier.
-            m_FrameServer.CoordinateSystem.Zoom = m_FrameServer.Metadata.Magnifier.MagnificationFactor;
-            m_FrameServer.CoordinateSystem.RelocateZoomWindow(m_FrameServer.Metadata.Magnifier.Center);
+            m_FrameServer.ImageTransform.Zoom = m_FrameServer.Metadata.Magnifier.MagnificationFactor;
+            m_FrameServer.ImageTransform.RelocateZoomWindow(m_FrameServer.Metadata.Magnifier.Center);
             DisableMagnifier();
             ToastZoom();
             
@@ -4240,9 +4240,9 @@ namespace Kinovea.ScreenManager
         #region DirectZoom
         private void UnzoomDirectZoom(bool _toast)
         {
-            m_FrameServer.CoordinateSystem.ReinitZoom();
+            m_FrameServer.ImageTransform.ReinitZoom();
             
-            m_PointerTool.SetZoomLocation(m_FrameServer.CoordinateSystem.Location);
+            m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.Location);
             if(_toast)
                 ToastZoom();
             ReportForSyncMerge();
@@ -4253,21 +4253,21 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None)
                 DisableMagnifier();
 
-            m_FrameServer.CoordinateSystem.Zoom = Math.Min(m_FrameServer.CoordinateSystem.Zoom + 0.10f, m_MaxZoomFactor);
+            m_FrameServer.ImageTransform.Zoom = Math.Min(m_FrameServer.ImageTransform.Zoom + 0.10f, m_MaxZoomFactor);
             AfterZoomChange();
         }
         private void DecreaseDirectZoom()
         {
-            if (!m_FrameServer.CoordinateSystem.Zooming)
+            if (!m_FrameServer.ImageTransform.Zooming)
                 return;
 
-            m_FrameServer.CoordinateSystem.Zoom = Math.Max(m_FrameServer.CoordinateSystem.Zoom - 0.10f, 1.0f);
+            m_FrameServer.ImageTransform.Zoom = Math.Max(m_FrameServer.ImageTransform.Zoom - 0.10f, 1.0f);
             AfterZoomChange();
         }
         private void AfterZoomChange()
         {
-            m_FrameServer.CoordinateSystem.RelocateZoomWindow();
-            m_PointerTool.SetZoomLocation(m_FrameServer.CoordinateSystem.Location);
+            m_FrameServer.ImageTransform.RelocateZoomWindow();
+            m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.Location);
             ToastZoom();
             ReportForSyncMerge();
             
@@ -4279,7 +4279,7 @@ namespace Kinovea.ScreenManager
         private void ToastZoom()
         {
             m_MessageToaster.SetDuration(750);
-            int percentage = (int)(m_FrameServer.CoordinateSystem.Zoom * 100);
+            int percentage = (int)(m_FrameServer.ImageTransform.Zoom * 100);
             m_MessageToaster.Show(String.Format(ScreenManagerLang.Toast_Zoom, percentage.ToString()));
         }
         private void ToastPause()
@@ -4349,9 +4349,9 @@ namespace Kinovea.ScreenManager
                 rDst = new Rectangle(0, 0, copySize.Width, copySize.Height);
             
             if(m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
-                g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.CoordinateSystem.RenderingZoomWindow, GraphicsUnit.Pixel);
+                g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.ImageTransform.RenderingZoomWindow, GraphicsUnit.Pixel);
             else
-                g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+                g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.ImageTransform.ZoomWindow, GraphicsUnit.Pixel);
                 
             return copy;
         }
@@ -4424,6 +4424,7 @@ namespace Kinovea.ScreenManager
             Clipboard.SetImage(outputImage);
             outputImage.Dispose();
         }
+
         private void btnSnapShot_Click(object sender, EventArgs e)
         {
             // Export the current frame.
@@ -4463,13 +4464,15 @@ namespace Kinovea.ScreenManager
                 log.Error(exp.StackTrace);
             }
         }
+
+
         private void btnRafale_Click(object sender, EventArgs e)
         {
             //---------------------------------------------------------------------------------
             // Workflow:
-            // 1. formRafaleExport  : configure the export, calls:
+            // 1. FormRafaleExport  : configure the export, calls:
             // 2. FileSaveDialog    : choose the file name, then:
-            // 3. formFrameExport   : Progress bar holder and updater, calls:
+            // 3. FormFrameExport   : Progress bar holder and updater, calls:
             // 4. SaveImageSequence (below) to perform the real work. (saving the pics)
             //---------------------------------------------------------------------------------
 
@@ -4493,59 +4496,74 @@ namespace Kinovea.ScreenManager
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
         }
-        public void SaveImageSequence(BackgroundWorker _bgWorker, string _filepath, long _interval, bool _bBlendDrawings, bool _bKeyframesOnly, int _total)
+
+        public void SaveImageSequence(BackgroundWorker bgWorker, string filepath, long interval, bool keyframesOnly, int total)
         {
-            int total = _bKeyframesOnly ? m_FrameServer.Metadata.Keyframes.Count : _total;
+            // This function works similarly as the video export in FrameServerPlayer.EnumerateImages.
+            // The images are saved at original video size.
+            int frameCount = keyframesOnly ? m_FrameServer.Metadata.Keyframes.Count : total;
             int iCurrent = 0;
             
-            // Use an abstracted enumerator on the frames we are interested in.
-            // Either the keyframes or arbitrary frames at regular interval.
             m_FrameServer.VideoReader.BeforeFrameEnumeration();
-            IEnumerable<VideoFrame> frames = _bKeyframesOnly ? m_FrameServer.Metadata.EnabledKeyframes() : m_FrameServer.VideoReader.FrameEnumerator(_interval);
-            
-            foreach(VideoFrame vf in frames)
+
+            // We do not use the cached Bitmap in keyframe.FullImage because it is saved at the display size of the time of the creation of the keyframe.
+            IEnumerable<VideoFrame> frames = keyframesOnly ? m_FrameServer.VideoReader.FrameEnumerator() : m_FrameServer.VideoReader.FrameEnumerator(interval);
+
+            foreach (VideoFrame vf in frames)
             {
-                int iKeyFrameIndex = -1;
-                if(!PreferencesManager.PlayerPreferences.DefaultFading.Enabled)
-                    iKeyFrameIndex = GetKeyframeIndex(vf.Timestamp);
+                Bitmap output = null;
 
-                string filename = string.Format("{0}\\{1}{2}",
-                    Path.GetDirectoryName(_filepath), 
-                    BuildFilename(_filepath, vf.Timestamp, PreferencesManager.PlayerPreferences.TimecodeFormat), 
-                    Path.GetExtension(_filepath));
-
-                
-                TrackDrawingsCommand.Execute(null);
-
-                Size s = m_viewportManipulator.RenderingSize;
-                    
-                using(Bitmap result = new Bitmap(s.Width, s.Height, PixelFormat.Format24bppRgb))
+                try
                 {
-                    result.SetResolution(vf.Image.HorizontalResolution, vf.Image.VerticalResolution);
-                    Graphics g = Graphics.FromImage(result);
-                    FlushOnGraphics(vf.Image, g, s, iKeyFrameIndex, vf.Timestamp);
-                    ImageHelper.Save(filename, result);
+                    if (vf == null)
+                    {
+                        log.Error("Frame enumerator yield null.");
+                        break;
+                    }
+
+                    output = new Bitmap(vf.Image.Width, vf.Image.Height, vf.Image.PixelFormat);
+
+                    bool onKeyframe = GetFlushedImage(vf, output);
+                    bool savable = onKeyframe || !keyframesOnly;
+
+                    if (savable)
+                    {
+                        string filename = string.Format("{0}\\{1}{2}",
+                            Path.GetDirectoryName(filepath),
+                            BuildFilename(filepath, vf.Timestamp, PreferencesManager.PlayerPreferences.TimecodeFormat),
+                            Path.GetExtension(filepath));
+
+                        ImageHelper.Save(filename, output);
+                    }
+
+                    bgWorker.ReportProgress(iCurrent++, frameCount);
+                }
+                catch (Exception)
+                {
+
+                }
+                finally
+                {
+                    if (output != null)
+                        output.Dispose();
                 }
 
-                _bgWorker.ReportProgress(iCurrent++, total);
             }
-            
+
             m_FrameServer.VideoReader.AfterFrameEnumeration();
         }
-        private int GetKeyframeIndex(long _timestamp)
+
+        private int GetKeyframeIndex(long timestamp)
         {
-            // Get the index of the kf we are on, if any.
-            int index = -1;
-            for(int i = 0;i<m_FrameServer.Metadata.Count;i++)
+            for (int i = 0; i < m_FrameServer.Metadata.Count; i++)
             {
-                if (m_FrameServer.Metadata[i].Position == _timestamp)
-                {
-                    index = i;
-                    break;
-                }
+                if (m_FrameServer.Metadata[i].Position == timestamp)
+                    return i;
             }
-            return index;
+
+            return -1;
         }
+        
         private void btnVideo_Click(object sender, EventArgs e)
         {
             if(!m_FrameServer.Loaded)
@@ -4581,119 +4599,81 @@ namespace Kinovea.ScreenManager
             }
             
             saveInProgress = true;
-            m_FrameServer.SaveDiaporama(GetOutputBitmap, diaporama);
+            m_FrameServer.SaveDiaporama(GetFlushedImage, diaporama);
             saveInProgress = false;
             
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
         }
+        
+        /// <summary>
+        /// Triggers the main video saving pipeline. 
+        /// </summary>
         public void Save()
         {
             saveInProgress = true;
-            m_FrameServer.Save(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetOutputBitmap);
+            m_FrameServer.Save(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
             saveInProgress = false;
         }
-        public long GetOutputBitmap(Graphics _canvas, Bitmap _source, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
-        {
-            // Used by various methods to paint the drawings on an already retrieved raw image.
-            // The source image is already drawn on _canvas.
-            // Here we we flush the drawings on it if needed.
-            // We return the distance to the closest key image.
-
-            // Look for the closest key image.
-            long iClosestKeyImageDistance = long.MaxValue;	
-            int iKeyFrameIndex = -1;
-            for(int i=0; i<m_FrameServer.Metadata.Keyframes.Count;i++)
-            {
-                long iDistance = Math.Abs(_iTimestamp - m_FrameServer.Metadata.Keyframes[i].Position);
-                if(iDistance < iClosestKeyImageDistance)
-                {
-                    iClosestKeyImageDistance = iDistance;
-                    iKeyFrameIndex = i;
-                }
-            }
-
-            // Invalidate the distance if we wanted only key images, and we are not on one.
-            if (_bKeyframesOnly && iClosestKeyImageDistance != 0 || iClosestKeyImageDistance == long.MaxValue)
-                iClosestKeyImageDistance = -1;
-            
-            if(!_bFlushDrawings)
-                return iClosestKeyImageDistance;
-            
-            // For magnifier we must clone the image since the graphics object has been
-            // extracted from the image itself (painting fails if we reuse the uncloned image).
-            // And we must clone it before the drawings are flushed on it.
-            bool magnifier = m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None;
-            Bitmap rawImage = null;
-            if(magnifier)
-                rawImage = _source.CloneDeep();
-
-            CoordinateSystem identityCoordinateSystem = m_FrameServer.CoordinateSystem.Identity;
-
-            // Make sure the trackable drawings are on the right context.
-            TrackDrawingsCommand.Execute(new VideoFrame(_iTimestamp, _source));
-            
-            if (_bKeyframesOnly)
-            {
-                if(iClosestKeyImageDistance == 0)
-                {
-                    FlushDrawingsOnGraphics(_canvas, identityCoordinateSystem, iKeyFrameIndex, _iTimestamp);
-                    if(magnifier)
-                        FlushMagnifierOnGraphics(rawImage, _canvas, identityCoordinateSystem);
-                }
-            }
-            else
-            {
-                if(iClosestKeyImageDistance == 0)
-                    FlushDrawingsOnGraphics(_canvas, identityCoordinateSystem, iKeyFrameIndex, _iTimestamp);
-                else
-                    FlushDrawingsOnGraphics(_canvas, identityCoordinateSystem, -1, _iTimestamp);
-                
-                if(magnifier)
-                    FlushMagnifierOnGraphics(rawImage, _canvas, identityCoordinateSystem);
-            }	
-
-            if(magnifier)
-                rawImage.Dispose();
-            
-            return iClosestKeyImageDistance;
-        }
+        
+        /// <summary>
+        /// Returns the image currently on screen with all drawings flushed, including grids, chronos, magnifier, etc.
+        /// The resulting Bitmap will be at the same size as the image currently on screen.
+        /// This is used to export individual images or get the image for dual video export.
+        /// </summary>
         public Bitmap GetFlushedImage()
         {
-            // Returns an image with all drawings flushed, including
-            // grids, chronos, magnifier, etc.
-            // image should be at same strech factor than the one visible on screen.
-            //Size iNewSize = new Size((int)((double)m_FrameServer.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
             Size renderingSize = m_viewportManipulator.RenderingSize;
-            
             Bitmap output = new Bitmap(renderingSize.Width, renderingSize.Height, PixelFormat.Format24bppRgb);
             output.SetResolution(m_FrameServer.CurrentImage.HorizontalResolution, m_FrameServer.CurrentImage.VerticalResolution);
-            
+
             if(InteractiveFiltering)
             {
-                m_InteractiveEffect.Draw(Graphics.FromImage(output), m_FrameServer.VideoReader.WorkingZoneFrames);
+                using (Graphics canvas = Graphics.FromImage(output))
+                    m_InteractiveEffect.Draw(canvas, m_FrameServer.VideoReader.WorkingZoneFrames);
             }
             else
             {
-                int iKeyFrameIndex = -1;
-                if (m_iActiveKeyFrameIndex >= 0 && m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
-                {
-                    iKeyFrameIndex = m_iActiveKeyFrameIndex;
-                }				
-                
-                FlushOnGraphics(m_FrameServer.CurrentImage, Graphics.FromImage(output), renderingSize, iKeyFrameIndex, m_iCurrentPosition);
+                int keyframeIndex = GetKeyframeIndex(m_iCurrentPosition);
+                using (Graphics canvas = Graphics.FromImage(output))
+                    FlushOnGraphics(m_FrameServer.CurrentImage, canvas, output.Size, keyframeIndex, m_iCurrentPosition, m_FrameServer.ImageTransform);
             }
-            
+
             return output;
         }
+
+        /// <summary>
+        /// Paint the passed bitmap with the content of video frame passed in, plus the complete compositing pipeline.
+        /// The painting is done without zoom. 
+        /// The passed bitmap should have the same size as the video frame.
+        /// This is used to export videos or sequence of images.
+        /// Returns true if the passed frame is a keyframe.
+        /// </summary>
+        public bool GetFlushedImage(VideoFrame vf, Bitmap output)
+        {
+            if (vf.Image.Size != output.Size)
+            {
+                log.ErrorFormat("Exporting unscaled images: passed bitmap has the wrong size.");
+                return false;
+            }
+
+            int keyframeIndex = GetKeyframeIndex(vf.Timestamp);
+            
+            // Make sure the trackable drawings are on the right context.
+            TrackDrawingsCommand.Execute(vf);
+
+            using (Graphics canvas = Graphics.FromImage(output))
+                FlushOnGraphics(vf.Image, canvas, output.Size, keyframeIndex, vf.Timestamp, m_FrameServer.ImageTransform.Identity);
+
+            return keyframeIndex != -1;
+        }
+
+        /// <summary>
+        /// Builds a file name with the current timecode and the extension.
+        /// </summary>
         private string BuildFilename(string _FilePath, long _position, TimecodeFormat _timeCodeFormat)
         {
-            //-------------------------------------------------------
-            // Build a file name, including extension
-            // inserting the current timecode in the given file name.
-            //-------------------------------------------------------
-
             TimecodeFormat tcf;
             if(_timeCodeFormat == TimecodeFormat.TimeAndFrames)
                 tcf = TimecodeFormat.ClassicTime;
