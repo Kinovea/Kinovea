@@ -4411,7 +4411,11 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region Export video and frames
+        #region Export images and videos
+
+        /// <summary>
+        /// Export the current frame with drawings to the clipboard.
+        /// </summary>
         private void CopyImageToClipboard()
         {
             if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
@@ -4425,9 +4429,11 @@ namespace Kinovea.ScreenManager
             outputImage.Dispose();
         }
 
+        /// <summary>
+        /// Export the current frame with drawings to a file.
+        /// </summary>
         private void btnSnapShot_Click(object sender, EventArgs e)
         {
-            // Export the current frame.
             if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
                 return;
             
@@ -4465,23 +4471,44 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Local wrapper for Save, which triggers the main saving pipeline.
+        /// </summary>
+        private void btnVideo_Click(object sender, EventArgs e)
+        {
+            if(!m_FrameServer.Loaded)
+                return;
+            
+            StopPlaying();
+            OnPauseAsked();
 
+            Save();
+            
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
+            ActivateKeyframe(m_iCurrentPosition, true);
+        }
+
+        /// <summary>
+        /// Triggers the rafale export pipeline.
+        /// Ultimately this enumerates frames and comes back to GetFlushedImage(VideoFrame, Bitmap).
+        /// </summary>
         private void btnRafale_Click(object sender, EventArgs e)
         {
             //---------------------------------------------------------------------------------
             // Workflow:
             // 1. FormRafaleExport  : configure the export, calls:
             // 2. FileSaveDialog    : choose the file name, then:
-            // 3. FormFrameExport   : Progress bar holder and updater, calls:
-            // 4. SaveImageSequence (below) to perform the real work. (saving the pics)
+            // 3. FormFramesExport   : Progress bar holder and updater, calls:
+            // 4. SaveImageSequence (below): Perform the real work.
             //---------------------------------------------------------------------------------
 
             if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
                 return;
-            
+
             StopPlaying();
             OnPauseAsked();
-            
+
             FormRafaleExport fre = new FormRafaleExport(
                 this,
                 m_FrameServer.Metadata,
@@ -4491,19 +4518,67 @@ namespace Kinovea.ScreenManager
             fre.ShowDialog();
             fre.Dispose();
             m_FrameServer.AfterSave();
+
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
+            ActivateKeyframe(m_iCurrentPosition, true);
+        }
+
+        /// <summary>
+        /// Triggers the special video export pipeline.
+        /// Ultimately this enumerates frames and comes back to GetFlushedImage(VideoFrame, Bitmap).
+        /// </summary>
+        private void btnDiaporama_Click(object sender, EventArgs e)
+        {
+            if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
+                return;
+                
+            bool diaporama = sender == btnDiaporama;
+            
+            StopPlaying();
+            OnPauseAsked();
+            
+            if(m_FrameServer.Metadata.Keyframes.Count < 1)
+            {
+                string error = diaporama ? ScreenManagerLang.Error_SavePausedVideo : ScreenManagerLang.Error_SavePausedVideo;
+                MessageBox.Show(ScreenManagerLang.Error_SaveDiaporama_NoKeyframes.Replace("\\n", "\n"),
+                                error,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation);
+                return;
+            }
+            
+            saveInProgress = true;
+            m_FrameServer.SaveDiaporama(GetFlushedImage, diaporama);
+            saveInProgress = false;
             
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
         }
 
+        /// <summary>
+        /// Triggers the main video saving pipeline. 
+        /// Ultimately this enumerates frames and comes back to GetFlushedImage(VideoFrame, Bitmap).
+        /// </summary>
+        public void Save()
+        {
+            // This function is public because it is also accessed from the top-level menu.
+            saveInProgress = true;
+            m_FrameServer.Save(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
+            saveInProgress = false;
+        }
+
+        /// <summary>
+        /// Save several images at once. Called back for rafale export.
+        /// </summary>
         public void SaveImageSequence(BackgroundWorker bgWorker, string filepath, long interval, bool keyframesOnly, int total)
         {
-            // This function works similarly as the video export in FrameServerPlayer.EnumerateImages.
+            // This function works similarly to the video export in FrameServerPlayer.EnumerateImages.
             // The images are saved at original video size.
             int frameCount = keyframesOnly ? m_FrameServer.Metadata.Keyframes.Count : total;
             int iCurrent = 0;
-            
+
             m_FrameServer.VideoReader.BeforeFrameEnumeration();
 
             // We do not use the cached Bitmap in keyframe.FullImage because it is saved at the display size of the time of the creation of the keyframe.
@@ -4552,73 +4627,9 @@ namespace Kinovea.ScreenManager
 
             m_FrameServer.VideoReader.AfterFrameEnumeration();
         }
-
-        private int GetKeyframeIndex(long timestamp)
-        {
-            for (int i = 0; i < m_FrameServer.Metadata.Count; i++)
-            {
-                if (m_FrameServer.Metadata[i].Position == timestamp)
-                    return i;
-            }
-
-            return -1;
-        }
-        
-        private void btnVideo_Click(object sender, EventArgs e)
-        {
-            if(!m_FrameServer.Loaded)
-                return;
-            
-            StopPlaying();
-            OnPauseAsked();
-            
-            Save();
-            
-            m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
-            ActivateKeyframe(m_iCurrentPosition, true);
-        }
-        private void btnDiaporama_Click(object sender, EventArgs e)
-        {
-            if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
-                return;
-                
-            bool diaporama = sender == btnDiaporama;
-            
-            StopPlaying();
-            OnPauseAsked();
-            
-            if(m_FrameServer.Metadata.Keyframes.Count < 1)
-            {
-                string error = diaporama ? ScreenManagerLang.Error_SavePausedVideo : ScreenManagerLang.Error_SavePausedVideo;
-                MessageBox.Show(ScreenManagerLang.Error_SaveDiaporama_NoKeyframes.Replace("\\n", "\n"),
-                                error,
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation);
-                return;
-            }
-            
-            saveInProgress = true;
-            m_FrameServer.SaveDiaporama(GetFlushedImage, diaporama);
-            saveInProgress = false;
-            
-            m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
-            ActivateKeyframe(m_iCurrentPosition, true);
-        }
         
         /// <summary>
-        /// Triggers the main video saving pipeline. 
-        /// </summary>
-        public void Save()
-        {
-            saveInProgress = true;
-            m_FrameServer.Save(timeMapper.GetInterval(sldrSpeed.Value), slowMotion * 100, GetFlushedImage);
-            saveInProgress = false;
-        }
-        
-        /// <summary>
-        /// Returns the image currently on screen with all drawings flushed, including grids, chronos, magnifier, etc.
+        /// Returns the image currently on screen with all drawings flushed, including grids, magnifier, mirroring, etc.
         /// The resulting Bitmap will be at the same size as the image currently on screen.
         /// This is used to export individual images or get the image for dual video export.
         /// </summary>
@@ -4635,7 +4646,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                int keyframeIndex = GetKeyframeIndex(m_iCurrentPosition);
+                int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(m_iCurrentPosition);
                 using (Graphics canvas = Graphics.FromImage(output))
                     FlushOnGraphics(m_FrameServer.CurrentImage, canvas, output.Size, keyframeIndex, m_iCurrentPosition, m_FrameServer.ImageTransform);
             }
@@ -4658,7 +4669,7 @@ namespace Kinovea.ScreenManager
                 return false;
             }
 
-            int keyframeIndex = GetKeyframeIndex(vf.Timestamp);
+            int keyframeIndex = m_FrameServer.Metadata.GetKeyframeIndex(vf.Timestamp);
             
             // Make sure the trackable drawings are on the right context.
             TrackDrawingsCommand.Execute(vf);
