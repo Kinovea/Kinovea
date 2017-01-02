@@ -234,7 +234,7 @@ namespace Kinovea.ScreenManager
             bool hitExisting = false;
             foreach(DrawingText label in metadata.Labels())
             {
-                int hit = label.HitTest(imagePoint, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, transformer, metadata.CoordinateSystem.Zooming);
+                int hit = label.HitTest(imagePoint, currentTimestamp, metadata.CalibrationHelper.DistortionHelper, transformer, metadata.ImageTransform.Zooming);
                 if(hit >= 0)
                 {
                     hitExisting = true;
