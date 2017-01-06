@@ -357,10 +357,10 @@
             Node map handle 
             </param>
             <param name="name">
-            Node name to find
+            Node name to find 
             </param>
             <returns>
-            Handle of the node identified by the name
+            Handle of the node identified by the name 
             </returns>
             
             Use this function to search a node map for a node with a given name. An invalid handle is returned if not found. 
@@ -370,10 +370,10 @@
             Get the number of nodes contained in a node map. 
             </summary>
             <param name="hMap">
-            Node map handle
+            Node map handle 
             </param>
             <returns>
-            The number of nodes in the node map
+            The number of nodes in the node map 
             </returns>
             
             Return the number of nodes contained in a node map. This value can be used to traverse a node map, visiting every node using GenApi.NodeMapGetNodeByIndex(). 
@@ -386,10 +386,10 @@
             Node map handle 
             </param>
             <param name="index">
-            Index of node to get
+            Index of node to get 
             </param>
             <returns>
-            Handle of the node identified by the index
+            Handle of the node identified by the index 
             </returns>
             
             Translate a numerical index to a node handle. By using GenApi.NodeMapGetNumNodes() to get the number of nodes in a node map, this function can be used to get a handle for every node contained, without having to know its name. 
@@ -412,10 +412,10 @@
             Query node for allowed access modes. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The Access modes of the node
+            The Access modes of the node 
             </returns>
             
             The value returned indicates what kinds of access are allowed for the node referred to by hNode. 
@@ -425,10 +425,10 @@
             Return a node's name space. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The name space of the node
+            The name space of the node 
             </returns>
             
             Query the node represented by hNode for the name space (custom or standard) it belongs to. 
@@ -438,10 +438,10 @@
             Return a node's visibility. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The visibility of the node
+            The visibility of the node 
             </returns>
             
             Query the node represented by hNode for its level of visibility (Beginner, Expert, Guru, or Invisible). 
@@ -461,10 +461,10 @@
             Query node for its caching mode. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The caching mode of the node
+            The caching mode of the node 
             </returns>
             
             Caching may be implemented differently for nodes with different characteristics. There is an enumerated type EGenApiCachingMode that is used to encode the caching strategy for a particular node. Use this function to get a node's caching mode. 
@@ -474,10 +474,10 @@
             Get node type. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The type of the node
+            The type of the node 
             </returns>
             
             Query the node represented by hNode for its type. 
@@ -487,10 +487,10 @@
             Query a node for its recommended polling interval. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The recommended polling interval of the node
+            The recommended polling interval of the node 
             </returns>
             
             Nodes that are subject to asynchronous state changes must be periodically queried (polled) in order to detect state changes. Such nodes have an associated attribute specifying a recommended polling interval in milliseconds. Use this function to get that value. 
@@ -519,7 +519,7 @@
             Desired new visibility 
             </param>
             
-            A particuler node is only visible if the current user level is set at least as high as the node's visibility. This function can be used to further limit a node's visibility. The function cannot be used to increase a node's visibility (so that it would become visible at a lower user level). Any attempt to do so will have no effect. 
+            A particular node is only visible if the current user level is set at least as high as the node's visibility. This function can be used to further limit a node's visibility. The function cannot be used to increase a node's visibility (so that it would become visible at a lower user level). Any attempt to do so will have no effect. 
         </member>
         <member name="M:PylonC.NET.GenApi.NodeFromStringEx(PylonC.NET.NODE_HANDLE,System.Boolean,System.String)">
             <summary>
@@ -529,36 +529,36 @@
             Node to operate on 
             </param>
             <param name="verify">
-            Boolean switch to enable validation
+            Boolean switch to enable validation 
             </param>
             <param name="aString">
-            Value to set as text string
+            Value to set as text string 
             </param>
             
-            This function takes a text string in aString and tries to convert it to a value to set the node to. This may fail for a number of reasons, e.g. due to the node not being writable or not having a value that could be set. If verify equals true, the function will also fail if the value to be set conflicts with any relevant constraints. 
+            This function takes a text string in aString and tries to convert it to a value to set the node to. This may fail for a number of reasons, e.g. due to the node not being writeable or not having a value that could be set. If verify equals true, the function will also fail if the value to be set conflicts with any relevant constraints. 
         </member>
         <member name="M:PylonC.NET.GenApi.NodeFromString(PylonC.NET.NODE_HANDLE,System.String)">
             <summary>
             Set a node's value from a text string with mandatory validation. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <param name="aString">
-            Value to set as text string
+            Value to set as text string 
             </param>
             
-            This function takes a text string in aString and tries to convert it to a value to set the node to. This may fail for a number of reasons, e.g. due to the node not being writable or not having a value that could be set. The function will also fail if the value to be set conflicts with any relevant constraints. 
+            This function takes a text string in aString and tries to convert it to a value to set the node to. This may fail for a number of reasons, e.g. due to the node not being writeable or not having a value that could be set. The function will also fail if the value to be set conflicts with any relevant constraints. 
         </member>
         <member name="M:PylonC.NET.GenApi.NodeGetAlias(PylonC.NET.NODE_HANDLE)">
             <summary>
             Get a node's alias. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            Handle of the alias node
+            Handle of the alias node 
             </returns>
             
             This function returns a node's alias if available. An invalid handle is returned if no alias exists. 
@@ -597,10 +597,10 @@
             Get a node's integer value without validation. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The integer value of the node
+            The integer value of the node 
             </returns>
             
             Return the integer value of a node. No validation is performed on the value returned. 
@@ -613,10 +613,10 @@
             Node to operate on 
             </param>
             <param name="verify">
-            Boolean switch to enable validation
+            Boolean switch to enable validation 
             </param>
             <returns>
-            The integer value of the node
+            The integer value of the node 
             </returns>
             
             Return the integer value of a node. If verify equals true, the result value is checked to ensure that it does not violate any of the node's constraints. 
@@ -626,10 +626,10 @@
             Get the minimum value from an integer node. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The minimum integer value of the node
+            The minimum integer value of the node 
             </returns>
             
             Return the minimum integer value of a node. 
@@ -639,10 +639,10 @@
             Get the maximum value from an integer node. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The maximum integer value of the node
+            The maximum integer value of the node 
             </returns>
             
             Return the maximum integer value of a node. 
@@ -652,10 +652,10 @@
             Get the value increment from an integer node. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The node's minimum integer value increment
+            The node's minimum integer value increment 
             </returns>
             
             Return the integer value increment of a node. 
@@ -665,10 +665,10 @@
             Get a node's preferred representation. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The node's preferred representation
+            The node's preferred representation 
             </returns>
             
             Return the preferred representation for the node's value. This value is a hint telling how the value should best be represented in a graphical user interface. 
@@ -691,10 +691,10 @@
             Return a node's boolean value. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The boolean value of the node
+            The boolean value of the node 
             </returns>
             
             Get the boolean value of a node. The function will fail if the node is of a type that has no such value. 
@@ -733,10 +733,10 @@
             Get a node's floating-point value without validation. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The node's floating-point value
+            The node's floating-point value 
             </returns>
             
             Return the floating-point value of a node. No validation is performed on the value returned. 
@@ -749,10 +749,10 @@
             Node to operate on 
             </param>
             <param name="verify">
-            Boolean switch to enable validation
+            Boolean switch to enable validation 
             </param>
             <returns>
-            The node's floating-point value
+            The node's floating-point value 
             </returns>
             
             Return the floating-point value of a node. If verify equals true, the result value is checked to ensure that it does not violate any of the node's constraints. 
@@ -762,10 +762,10 @@
             Get a node's minimum floating-point value. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The node's minimum floating-point value
+            The node's minimum floating-point value 
             </returns>
             
             Return the minimum floating-point value of a node. 
@@ -775,10 +775,10 @@
             Get a node's maximum floating-point value. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The node's maximum floating-point value
+            The node's maximum floating-point value 
             </returns>
             
             Return the maximum floating-point value of a node. 
@@ -788,10 +788,10 @@
             Get a node's preferred representation. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The node's preferred representation
+            The node's preferred representation 
             </returns>
             
             Return the preferred representation for the node's value. This value is a hint telling how the value should best be represented in a graphical user interface. 
@@ -811,10 +811,10 @@
             Check whether command has finished. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            True if the command is finished
+            True if the command is finished 
             </returns>
             
             After initiating a command using GenApi.CommandExecute(), use this function to check whether the command has run to completion. 
@@ -824,10 +824,10 @@
             Get the number of entries in an enumeration. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The number of entries in the enumeration
+            The number of entries in the enumeration 
             </returns>
             
             Get the number of entries for an enumeration node. 
@@ -840,10 +840,10 @@
             Node to operate on 
             </param>
             <param name="index">
-            Index of entry to get
+            Index of entry to get 
             </param>
             <returns>
-            Handle of the node in the enumeration identified by the index
+            Handle of the node in the enumeration identified by the index 
             </returns>
             
             Return a handle for an enumeration entry node identified by a numerical index. Using the number of entries returned by GenApi.EnumerationGetNumEntries(), this can be used to iterate over every enumeration entry contained in an enumeration. 
@@ -856,10 +856,10 @@
             Node to operate on 
             </param>
             <param name="name">
-            Name of entry to get
+            Name of entry to get 
             </param>
             <returns>
-            Handle of the node in the enumeration identified by the name. An invalid handle is returned if entry is not found.
+            Handle of the node in the enumeration identified by the name. An invalid handle is returned if entry is not found. 
             </returns>
             
             Return a handle for an enumeration entry node identified by its name. 
@@ -869,10 +869,10 @@
             Returns the numerical index of an enumeration entry. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The numerical index of the enumeration entry
+            The numerical index of the enumeration entry 
             </returns>
             
             Return the numerical index of an 'enumeration entry' node. 
@@ -882,10 +882,10 @@
             Check whether a feature is implemented. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            True if node exists
+            True if node exists 
             </returns>
             
             Check whether the feature represented by hNode is actually implemented (GenApi.NodeGetAccessMode() returns not NI). 
@@ -895,10 +895,10 @@
             Check whether a feature's value is readable. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            True if node can be read
+            True if node can be read 
             </returns>
             
             Check whether the value of the feature represented by hNode can be read (GenApi.NodeGetAccessMode() returns RO or RW). 
@@ -908,10 +908,10 @@
             Check whether a feature's value is writable. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            True if node is writable
+            True if node is writable 
             </returns>
             
             Check whether the value of the feature represented by hNode can be written (GenApi.NodeGetAccessMode() returns WO or RW). 
@@ -921,10 +921,10 @@
             Check whether a feature's value is available. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            True if node is accessible
+            True if node is accessible 
             </returns>
             
             Check whether the value of the feature represented by hNode is currently accessible (GenApi.NodeGetAccessMode() returns neither NA nor NI). 
@@ -934,7 +934,7 @@
             Returns the number of features in a category. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
             The number of feature nodes
@@ -950,10 +950,10 @@
             Category node handle 
             </param>
             <param name="index">
-            Index in category
+            Index in category 
             </param>
             <returns>
-            Handle of the node in the category
+            Handle of the node in the category 
             </returns>
             
             Returns a NODE_HANDLE for a feature node identified by its index. Using the value returned by GenApi.CategoryGetNumFeatures(), this can be used to implement a loop to iterate over all feature nodes in a given category. 
@@ -1037,10 +1037,10 @@
             Node to operate on 
             </param>
             <param name="index">
-            Index in selectors
+            Index in selectors 
             </param>
             <returns>
-            Handle of the selecting feature
+            Handle of the selecting feature 
             </returns>
             
             A feature node may be selected by one or more other features. This function returns a NODE_HANDLE for a selector node identified by its index. Using the value returned by GenApi.NodeGetNumSelectingFeatures(), this can be used to implement a loop to iterate over all selectors of a given node. 
@@ -1066,10 +1066,10 @@
             Node to operate on 
             </param>
             <param name="index">
-            Index in selected nodes
+            Index in selected nodes 
             </param>
             <returns>
-            Handle of the selected node
+            Handle of the selected node 
             </returns>
             
             A feature node may select one or more other features. This function returns a NODE_HANDLE for a selected node identified by its index. Using the value returned by GenApi.NodeGetNumSelectedFeatures(), this can be used to implement a loop to iterate over all selected nodes of a given node. 
@@ -1079,7 +1079,7 @@
             Return a brief textual description of the latest error. 
             </summary>
             <returns>
-            The brief textual description of the latest error
+            The brief textual description of the latest error 
             </returns>
             
             Whenever a function reports an error, it also sets up a string description for it. This function can be used to retrieve that description. 
@@ -1089,7 +1089,7 @@
             Return a detailed textual description of the latest error. 
             </summary>
             <returns>
-            The detailed textual description of the latest error
+            The detailed textual description of the latest error 
             </returns>
             
             Whenever a function reports an error, it also sets up a string that describes the error in more detail than the brief error message returned by GenApi.GetLastErrorMessage(). This function can be used to retrieve that description. 
@@ -1099,10 +1099,10 @@
             Return a node's name. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The name of the node
+            The name of the node 
             </returns>
             
             Query the node represented by hNode for its name. 
@@ -1112,10 +1112,10 @@
             Return a node's tool tip text. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The tool tip text for node
+            The tool tip text for node 
             </returns>
             
             Query the node represented by hNode for its associated 'tool tip' text. This is a text string briefly describing the node and its purpose, suitable for being displayed as a pop-up by interactive programs that offer access to the node. 
@@ -1125,10 +1125,10 @@
             Return a node's description text. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The descrpitive text of the node
+            The descrpitive text of the node 
             </returns>
             
             Query the node represented by hNode for its associated 'description' text. This is a text string describing the node and its purpose in some more detail than GenApi.NodeGetToolTip(), suitable for being displayed as an on-line help by interactive programs that offer access to the node. 
@@ -1138,10 +1138,10 @@
             Return a node's user-friendly name. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The user-friendly name of the node
+            The user-friendly name of the node 
             </returns>
             
             Query the node represented by hNode for its associated 'user-friendly' name. While the node name returned by GenApi.NodeGetName() is meant to be a unique identification tag, this is a more descriptive name meant to be used to identify a node in a dialog. 
@@ -1151,10 +1151,10 @@
             Return a textual representation of a node's value. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The textual representation of a node's value
+            The textual representation of a node's value 
             </returns>
             
             Convert a node's value to a human-readable text string. 
@@ -1164,10 +1164,10 @@
             Return a floating-point node's unit. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The unit of the floating-point value
+            The unit of the floating-point value 
             </returns>
             
             Query the node represented by hNode for the unit that applies to its value. 
@@ -1177,10 +1177,10 @@
             Return the symbolic name of an enumeration entry node. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <returns>
-            The symbolic name of the enumeration entry
+            The symbolic name of the enumeration entry 
             </returns>
             
             Return the symbolic name of an 'enumeration entry' node. 
@@ -1193,10 +1193,10 @@
             Node to operate on 
             </param>
             <param name="verify">
-            Boolean switch to enable validation
+            Boolean switch to enable validation 
             </param>
             <returns>
-            The textual representation of a node's value
+            The textual representation of a node's value 
             </returns>
             
             Convert a node's value to a human-readable text string, with optional validation. If verify equals true, the node's value is first checked against any relevant constraints, and an error is returned if the value is invalid. This check is not done if verify equals false, in this case, the function behaves identical to GenApi.NodeToString(). 
@@ -1209,7 +1209,7 @@
             The file handle. 
             </param>
             <param name="buffer">
-            The data buffer.
+            The data buffer. 
             </param>
             
             The end of file is reached if zero bytes are returned and the return error code is GENAPI_E_OK. 
@@ -1286,10 +1286,10 @@
             Install a node callback function. 
             </summary>
             <param name="hNode">
-            Node to operate on
+            Node to operate on 
             </param>
             <param name="cbFunction">
-            Callback handler
+            Callback handler 
             </param>
             <returns>
             Callback handle 
@@ -1640,12 +1640,12 @@
         </member>
         <member name="F:PylonC.NET.EPylonWaitExResult.waitex_abandoned">
             <summary>
-            Windows only (see MSDN for more information). 
+            Windows only (see MSDN for more information) 
             </summary>
         </member>
         <member name="F:PylonC.NET.EPylonWaitExResult.waitex_alerted">
             <summary>
-            The wait was interrupted (Windows: queued APC or I/O completion routine; UNIX: signal). 
+            The wait was interrupted (Windows: queued APC or I/O completion routine; UNIX: signal) 
             </summary>
         </member>
         <member name="T:PylonC.NET.EPylonGrabStatus">
@@ -1946,6 +1946,26 @@
         <member name="F:PylonC.NET.EPylonPixelType.PixelType_BayerBG12Packed">
             <summary>
             Indicates the Bayer BG 12 Packed pixel format. The memory layout of PixelType_BayerBG12Packed and PixelType_BayerBG12p is different. 
+            </summary>
+        </member>
+        <member name="F:PylonC.NET.EPylonPixelType.PixelType_BayerGR10p">
+            <summary>
+            Indicates the BayerGR10p pixel format. 
+            </summary>
+        </member>
+        <member name="F:PylonC.NET.EPylonPixelType.PixelType_BayerRG10p">
+            <summary>
+            Indicates the BayerRG10p pixel format. 
+            </summary>
+        </member>
+        <member name="F:PylonC.NET.EPylonPixelType.PixelType_BayerGB10p">
+            <summary>
+            Indicates the BayerGB10p pixel format. 
+            </summary>
+        </member>
+        <member name="F:PylonC.NET.EPylonPixelType.PixelType_BayerBG10p">
+            <summary>
+            Indicates the BayerBG10p pixel format. 
             </summary>
         </member>
         <member name="F:PylonC.NET.EPylonPixelType.PixelType_BayerGR12p">
@@ -2308,7 +2328,7 @@
             Enumerate all camera devices. 
             </summary>
             <returns>
-            Count of camera devices
+            Count of camera devices 
             </returns>
             
             This function returns the total count of all camera devices detected by the pylon.NET system regardless of the cameras' interfaces (GigE, IEEE 1394, Camera Link,...). 
@@ -2318,10 +2338,10 @@
             Enumerate all GigE camera devices in all subnets. 
             </summary>
             <returns>
-            Count of GigE camera devices
+            Count of GigE camera devices 
             </returns>
             
-            This function returns the total count of all GigE camera devices detected by the pylon.NET system. In contrast to the Pylon.EnumerateDevices method, devices will be listed that have a subnet configured that is different from the subnet of the application. 
+            This function returns the total count of all GigE camera devices detected by the pylon.NET system. In contrast to the Pylon.EnumerateDevices() method, devices will be listed that have a subnet configured that is different from the subnet of the application. 
         </member>
         <member name="M:PylonC.NET.Pylon.GigEForceIp(System.String,System.String,System.String,System.String)">
             <summary>
@@ -2402,10 +2422,10 @@
             Stop using remote device. 
             </summary>
             <param name="ipAddress">
-            Address of device in "dot notation"
+            Address of device in "dot notation" 
             </param>
             <returns>
-            True if device was found.
+            True if device was found. 
             </returns>
             
             Stop using remote device. 
@@ -2446,10 +2466,10 @@
             Return a handle for a camera device info object. 
             </summary>
             <param name="index">
-            Device index
+            Device index 
             </param>
             <returns>
-            Handle of a device info object
+            Handle of a device info object 
             </returns>
             
             This function returns a handle for a device info object for the device identified by index index. The index parameter must be lower than the numDevices parameter returned from Pylon.EnumerateDevices(). 
@@ -2459,10 +2479,10 @@
             Return the number of properties stored in a device info object. 
             </summary>
             <param name="hDi">
-            Device info handle
+            Device info handle 
             </param>
             <returns>
-            The number of properties
+            The number of properties 
             </returns>
             
             This function returns the total number of properties of the device info object represented by hDi has. 
@@ -2472,10 +2492,10 @@
             Create a device object. 
             </summary>
             <param name="index">
-            Index of device info object
+            Index of device info object 
             </param>
             <returns>
-            Handle of the device identified by the index
+            Handle of the device identified by the index 
             </returns>
             
             This function creates a device object from a device info object identified by its index index. 
@@ -2485,10 +2505,10 @@
             Creates a device from a device ID returned from the pylon DirectShow source filter. 
             </summary>
             <param name="id">
-            The device returned from IBaslerGenICamConfig interface
+            The device returned from IBaslerGenICamConfig interface 
             </param>
             <returns>
-            Handle of the device identified by the index
+            Handle of the device identified by the index 
             </returns>
             
             This function creates a device object from an ID returned by the IBaslerGenICamConfig::GetActiveDevice() function. 
@@ -2538,10 +2558,10 @@
             Return device open status. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <returns>
-            True if open
+            True if open 
             </returns>
             
             Call this function to find out whether a device is currently open. 
@@ -2551,10 +2571,10 @@
             Return access mode flags for a device. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <returns>
-            Result Current access mode of device
+            Result Current access mode of device 
             </returns>
             
             Given a device handle, this function returns the access mode specified when the device was created. 
@@ -2564,10 +2584,10 @@
             Return the handle to the device info object from which a device was created. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <returns>
-            Handle of device info
+            Handle of device info 
             </returns>
             
             Given a device handle, this function returns a handle for the device object from which the device has originally been created. 
@@ -2577,10 +2597,10 @@
             Return the number of stream grabber channels for a device. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <returns>
-            Number of stream grabber channels
+            Number of stream grabber channels 
             </returns>
             
             This function returns the number of stream grabber channels supported by the device. Some devices may return 0 as they do not support stream grabbers at all. 
@@ -2593,10 +2613,10 @@
             Device handle 
             </param>
             <param name="index">
-            Stream grabber index. This value must be in the range of 0..(Pylon.DeviceGetNumStreamGrabberChannels()-1)
+            Stream grabber index. This value must be in the range of 0..(Pylon.DeviceGetNumStreamGrabberChannels()-1) 
             </param>
             <returns>
-            Handle of stream grabber identified by the index
+            Handle of stream grabber identified by the index 
             </returns>
             
             This function returns a handle for one of the stream grabbers supported by the device. 
@@ -2606,10 +2626,10 @@
             Obtain an event grabber handle from a device. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <returns>
-            Result Handle of the event grabber
+            Result Handle of the event grabber 
             </returns>
             
             This function returns a handle for an event grabber of a device. 
@@ -2619,10 +2639,10 @@
             Return the parameter node map for a device. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <returns>
-            Handle of the node map
+            Handle of the node map 
             </returns>
             
             This function returns a handle for the node map of a device. If the device does not support a node map an invalid handle is returned. 
@@ -2632,10 +2652,10 @@
             Obtain a transport layer parameter node map from a device. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <returns>
-            Handle of the transport layer node map
+            Handle of the transport layer node map 
             </returns>
             
             This function returns a handle for the transport layer node map of a device. If the device does not support a transport layer node map an invalid handle is returned. You must use the GenApi functions to access nodes in the node map. 
@@ -2645,10 +2665,10 @@
             Create a chunk parser for a device. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <returns>
-            Handle of the created chunk parser
+            Handle of the created chunk parser 
             </returns>
             
             This function creates a chunk parser for a device and returns a handle for it. If the device does not support a chunk parser an invalid handle is returned. 
@@ -2671,10 +2691,10 @@
             Create an event adapter for a device. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <returns>
-            Handle of the created event adapter
+            Handle of the created event adapter 
             </returns>
             
             This function creates an event adapter for a device and returns a handle for it. If the device does not support an event adapter an invalid handle is returned. 
@@ -2697,10 +2717,10 @@
             Set an integer feature's value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <param name="value">
             Value to set. Make sure the value is valid for the node (see remarks) 
@@ -2713,13 +2733,13 @@
             Return an integer feature's value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            Feature integer value
+            Feature integer value 
             </returns>
             
             Look up a feature node with a given name and and return its value. 
@@ -2729,13 +2749,13 @@
             Return an integer feature's minimum value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            Feature integer value minimum
+            Feature integer value minimum 
             </returns>
             
             Look up a feature node with a given name and and return its minimum value. 
@@ -2745,13 +2765,13 @@
             Return an integer feature's maximum value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            Feature integer value maximum
+            Feature integer value maximum 
             </returns>
             
             Look up a feature node with a given name and and return its maximum value. 
@@ -2761,13 +2781,13 @@
             Return an integer feature's increment value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            Feature integer value minimum increment
+            Feature integer value minimum increment 
             </returns>
             
             Look up a feature node with a given name and and return its increment value. 
@@ -2777,13 +2797,13 @@
             Set a float feature's value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <param name="value">
-            Value to set. Make sure the value is in the range of Pylon.DeviceGetFloatFeatureMin()..Pylon.DeviceGetFloatFeatureMax() 
+            Value to set. Make sure the value is in the range of Pylon.DeviceGetFloatFeatureMin().. Pylon.DeviceGetFloatFeatureMax() 
             </param>
             
             Look up a feature node with a given name and and set its value from argument value. 
@@ -2793,13 +2813,13 @@
             Return a float feature's value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            Feature float value
+            Feature float value 
             </returns>
             
             Look up a feature node with a given name and and return its value. 
@@ -2809,13 +2829,13 @@
             Return a float feature's minimum value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            Feature float value minimum
+            Feature float value minimum 
             </returns>
             
             Look up a feature node with a given name and and return its minimum value. 
@@ -2825,13 +2845,13 @@
             Return a float feature's maximum value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            Feature float value maximum
+            Feature float value maximum 
             </returns>
             
             Look up a feature node with a given name and and return its maximum value. 
@@ -2841,10 +2861,10 @@
             Set a boolean feature's value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <param name="value">
             Value to set 
@@ -2857,13 +2877,13 @@
             Return a boolean feature's value. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            Feature boolean value
+            Feature boolean value 
             </returns>
             
             Look up a feature node with a given name and and return its boolean value. 
@@ -2873,10 +2893,10 @@
             Execute a command. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             
             Look up a command feature node with a given name and try to execute its command. 
@@ -2886,13 +2906,13 @@
             Return true if command execution has finished. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            True if done
+            True if done 
             </returns>
             
             Look up a command feature node with a given name and return true if the node is not currently busy executing its command, false otherwise. 
@@ -2902,13 +2922,13 @@
             Set a feature's value from a string. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <param name="value">
-            Value to set as string
+            Value to set as string 
             </param>
             
             Look up a feature node with a given name and and set its value from the argument string. 
@@ -2918,13 +2938,13 @@
             Return a feature's access permissions. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            The access mode
+            The access mode 
             </returns>
             
             Look up a feature node with a given name and and return its access mode. 
@@ -2954,10 +2974,10 @@
             Return the boolean 'open' status of a stream grabber. 
             </summary>
             <param name="hStg">
-            Stream grabber handle
+            Stream grabber handle 
             </param>
             <returns>
-            True if open
+            True if open 
             </returns>
             
             This function checks whether a stream grabber is currently open. 
@@ -2967,10 +2987,10 @@
             Return a stream grabber's wait object. 
             </summary>
             <param name="hStg">
-            Stream grabber handle
+            Stream grabber handle 
             </param>
             <returns>
-            Handle of stream grabber wait object
+            Handle of stream grabber wait object 
             </returns>
             
             This function returns a wait object handle of the stream grabber. You can use this handle to wait for a buffer using Pylon.WaitObjectWait() or pass it to wait object set using Pylon.WaitObjectsAdd(). 
@@ -3019,10 +3039,10 @@
             Return the maximum data buffer size for a stream grabber. 
             </summary>
             <param name="hStg">
-            Stream grabber handle
+            Stream grabber handle 
             </param>
             <returns>
-            Maximum buffer size
+            Maximum buffer size 
             </returns>
             
             This function returns the maximum data buffer size that a stream grabber is currently set to. 
@@ -3075,10 +3095,10 @@
             Return the node map for a stream grabber. 
             </summary>
             <param name="hStg">
-            Stream grabber handle
+            Stream grabber handle 
             </param>
             <returns>
-            Handle of the stream grabber's node map
+            Handle of the stream grabber's node map 
             </returns>
             
             Return the handle for the stream grabber's node map. If the stream grabber does not support a node map an invalid handle is returned. 
@@ -3088,10 +3108,10 @@
             Return the boolean 'valid' status of a stream grabber. 
             </summary>
             <param name="hWobj">
-            Wait object handle
+            Wait object handle 
             </param>
             <returns>
-            True if wait object is fully initialized and ready to be used
+            True if wait object is fully initialized and ready to be used 
             </returns>
             
             Check, whether a wait object is fully initialized and ready to be used. 
@@ -3104,10 +3124,10 @@
             Wait object handle 
             </param>
             <param name="timeout">
-            Max. time to wait in ms
+            Max. time to wait in ms 
             </param>
             <returns>
-            True if signaled else timeout
+            True if signaled else timeout 
             </returns>
             
             Wait until either the wait object becomes signaled or the timeout expires. 
@@ -3123,10 +3143,10 @@
             Max. time to wait in ms 
             </param>
             <param name="alertable">
-            Boolean flag selecting alertable or non-alertable wait
+            Boolean flag selecting alertable or non-alertable wait 
             </param>
             <returns>
-            Wait result
+            Wait result 
             </returns>
             
             Wait, until either the wait object becomes signaled or the timeout expires. The boolean return value indicates which on is the case: True - signaled, false - timeout. The alertable argument, if set to one, allows the wait to be interrupted. This is an extended version of Pylon.WaitObjectWait(). 
@@ -3136,7 +3156,7 @@
             Create a user-controllable wait object. 
             </summary>
             <returns>
-            Created wait object handle
+            Created wait object handle 
             </returns>
             
             This function returns a handle for a newly-created empty wait object. 
@@ -3149,7 +3169,7 @@
             Wait object handle 
             </param>
             
-            This function deletes a wait object. Only wait objects creted via Pylon.WaitObjectCreate() can be deleted by this function. 
+            This function deletes a wait object. Only wait objects created via Pylon.WaitObjectCreate() can be deleted by this function. 
         </member>
         <member name="M:PylonC.NET.Pylon.WaitObjectSignal(PylonC.NET.PYLON_WAITOBJECT_HANDLE)">
             <summary>
@@ -3176,7 +3196,7 @@
             Create a wait object set. 
             </summary>
             <returns>
-            Created wait object set handle
+            Created wait object set handle 
             </returns>
             
             This function returns a handle for a newly-created empty wait object set. 
@@ -3199,10 +3219,10 @@
             Wait object set 
             </param>
             <param name="hWobj">
-            Wait object to add
+            Wait object to add 
             </param>
             <returns>
-            Index of the wait object added
+            Index of the wait object added 
             </returns>
             
             Attach a single wait object to a wait object set. 
@@ -3225,10 +3245,10 @@
             Wait object set handle 
             </param>
             <param name="timeout">
-            Max. time to wait in ms
+            Max. time to wait in ms 
             </param>
             <returns>
-            True if signaled else timeout
+            True if signaled else timeout 
             </returns>
             
             Wait until either all wait objects in the set become signaled or the timeout expires. 
@@ -3241,13 +3261,13 @@
             Wait object set handle 
             </param>
             <param name="timeout">
-            Max. time to wait in ms
+            Max. time to wait in ms 
             </param>
             <param name="index">
-            Index of the wait object signaled
+            Index of the wait object signaled 
             </param>
             <returns>
-            True if signaled else timeout
+            True if signaled else timeout 
             </returns>
             
             Wait until either any one of the wait objects in the set becomes signaled or the timeout expires. The variable pIndex is set to the index of the wait object that has been signaled. 
@@ -3263,10 +3283,10 @@
             Max. time to wait in ms 
             </param>
             <param name="alertable">
-            Boolean flag selecting alertable or non-alertable wait
+            Boolean flag selecting alertable or non-alertable wait 
             </param>
             <returns>
-            Wait result
+            Wait result 
             </returns>
             
             Wait until either all wait objects in the set become signaled or the timeout expires. The alertable argument, if set to one, allows the wait to be interrupted. 
@@ -3279,16 +3299,16 @@
             Wait object set handle 
             </param>
             <param name="timeout">
-            Max. time to wait in ms
+            Max. time to wait in ms 
             </param>
             <param name="index">
-            Index of the wait object signaled
+            Index of the wait object signaled 
             </param>
             <param name="alertable">
-            Bool: wait can be interrupted
+            Bool: wait can be interrupted 
             </param>
             <returns>
-            True if signaled else timeout
+            True if signaled else timeout 
             </returns>
             
             Wait until either any one of the wait objects in the set becomes signaled or the timeout expires. The return value indicates the reason why the function returned. The variable pIndex is set to the index of the wait object that has been signaled. The alertable argument, if set to one, allows the wait to be interrupted. 
@@ -3318,10 +3338,10 @@
             Return an event grabber's boolean 'open' status. 
             </summary>
             <param name="hEvg">
-            Event grabber to check
+            Event grabber to check 
             </param>
             <returns>
-            True if open
+            True if open 
             </returns>
             
             Check, whether an event grabber is currently open. 
@@ -3331,10 +3351,10 @@
             Return an event grabber's wait object. 
             </summary>
             <param name="hEvg">
-            Event grabber handle
+            Event grabber handle 
             </param>
             <returns>
-            Handle of event grabber wait object
+            Handle of event grabber wait object 
             </returns>
             
             This function returns a wait object handle for an event grabber. 
@@ -3344,10 +3364,10 @@
             Return an event grabber's parameter node map. 
             </summary>
             <param name="hEvg">
-            Event grabber handle
+            Event grabber handle 
             </param>
             <returns>
-            Handle of event grabber node map
+            Handle of event grabber node map 
             </returns>
             
             Return a handle for the event grabber's parameter node map. If the event grabber does not support a node map an invalid handle is returned. 
@@ -3357,10 +3377,10 @@
             Return the number of event buffers used by an event grabber. 
             </summary>
             <param name="hEvg">
-            Event grabber handle
+            Event grabber handle 
             </param>
             <returns>
-            The number of event buffers
+            The number of event buffers 
             </returns>
             
             Returns the number of event buffers for an event grabber. 
@@ -3393,10 +3413,10 @@
             Return true if CRC checksum chunk data is present. 
             </summary>
             <param name="hChp">
-            Chunk parser handle
+            Chunk parser handle 
             </param>
             <returns>
-            True if data buffer has an attached checksum
+            True if data buffer has an attached checksum 
             </returns>
             
             Check, whether the chunk data buffer has an attached CRC checksum. 
@@ -3406,10 +3426,10 @@
             Return true if CRC checksum chunk data is valid. 
             </summary>
             <param name="hChp">
-            Chunk parser handle
+            Chunk parser handle 
             </param>
             <returns>
-            True if the checksum matches the data
+            True if the checksum matches the data 
             </returns>
             
             Check, whether the chunk data buffer contains valid data using its CRC checksum. 
@@ -3422,10 +3442,10 @@
             Device handle 
             </param>
             <param name="outAlign">
-            Output buffer line alignment
+            Output buffer line alignment 
             </param>
             <returns>
-            Handle of created format converter
+            Handle of created format converter 
             </returns>
             
             Create a pixel format converter. The selection of the output format is based on the camera's native pixel format. All color formats are converted to RGBA (8888) with the 'A' component set to zero. All monochrome formats are converted to Mono8. The outAlign parameter can be used to enforce a particular address alignment of every line in the output buffer. The start address of every output buffer line will be an integer multiple of the outAlign argument. 
@@ -3435,10 +3455,10 @@
             Deprecated: Compute required output buffer size for pixel format converter. 
             </summary>
             <param name="hConv">
-            Format converter handle
+            Format converter handle 
             </param>
             <returns>
-            Result
+            Result 
             </returns>
             
             Return the required result buffer size (in bytes) for a color converter. 
@@ -3458,10 +3478,10 @@
             Return the number of bits per pixel for a pixel type. 
             </summary>
             <param name="pixelType">
-            Pixel type
+            Pixel type 
             </param>
             <returns>
-            The number of bits per pixel
+            The number of bits per pixel 
             </returns>
             
             Returns the number of bits required to store a single pixel for the given format. 
@@ -3471,10 +3491,10 @@
             Return true if pixel format is monochrome. 
             </summary>
             <param name="pixelType">
-            Pixel type
+            Pixel type 
             </param>
             <returns>
-            True if monochrome
+            True if monochrome 
             </returns>
             
             Returns a boolean result: True - pixel format is monochrome, false otherwise. 
@@ -3484,10 +3504,10 @@
             Return true if the pixel format is a Bayer format. 
             </summary>
             <param name="pixelType">
-            Pixel type
+            Pixel type 
             </param>
             <returns>
-            True if Bayer format
+            True if Bayer format 
             </returns>
             
             Returns a boolean result: True - the pixel format is a Bayer format, false otherwise. 
@@ -3497,26 +3517,26 @@
             Translate a pixel type name to an enumeration value. 
             </summary>
             <param name="aString">
-            String to be converted
+            String to be converted 
             </param>
             <returns>
-            Pixel format type enumeration value
+            Pixel format type enumeration value 
             </returns>
             
-            Converts a text string to a pixel format code that is returned . If the string cannot be converted, the result is set to PixelType_Undefined. 
+            Converts a text string to a pixel format code that is returned. If the string cannot be converted, the result is set to PixelType_Undefined. 
         </member>
         <member name="M:PylonC.NET.Pylon.WaitObjectFromW32(Microsoft.Win32.SafeHandles.SafeWaitHandle,System.Boolean)">
             <summary>
-            Create a wait object for an existing SafeWaitHandle object. SafeWaitHandle. 
+            Create a wait object for an existing SafeWaitHandle object. 
             </summary>
             <param name="hW32">
-            SafeWaitHandle object for a synchronization object
+            SafeWaitHandle object for a synchronization object 
             </param>
             <param name="duplicate">
-            Bool: clone handle or not
+            Bool: clone handle or not 
             </param>
             <returns>
-            Handle of the wait object created from a SafeWaitHandle object
+            Handle of the wait object created from a SafeWaitHandle object 
             </returns>
             
             This function creates a wait object from a SafeWaitHandle object that represents a synchronization object (event, thread, etc.). If duplicate equals true, the handle is cloned and ownership of hW32 remains with the caller, otherwise, the wait object takes ownership of hW32. 
@@ -3718,7 +3738,7 @@
         </member>
         <member name="M:PylonC.NET.Pylon.AviWriterCanAddWithoutConversion(PylonC.NET.PYLON_AVI_WRITER_HANDLE,PylonC.NET.EPylonPixelType,System.UInt32,System.UInt32,System.UInt32,PylonC.NET.EPylonImageOrientation)">
             <summary>
-            Adds an image to the AVI file. 
+            Can be used to check whether the given image is added to the AVI file without prior conversion when Pylon.AviWriterAdd() is called. 
             </summary>
             <param name="hWriter">
             Handle for the AVI writer. 
@@ -3742,7 +3762,7 @@
             True if the image can be added to the AVI stream without prior conversion. False if the image cannot be added at all. 
             </returns>
             
-            Adds an image to the AVI file. 
+            Can be used to check whether the given image is added to the AVI file without prior conversion when Pylon.AviWriterAdd() is called. 
         </member>
         <member name="M:PylonC.NET.Pylon.AviWriterGetImageDataBytesWritten(PylonC.NET.PYLON_AVI_WRITER_HANDLE)">
             <summary>
@@ -3778,7 +3798,7 @@
             The window used for displaying the image. Valid window indices range from 0 to 31. 
             </param>
             <param name="x">
-            The x-coordinate of the upper-left corner of the window in screen coordinates. You can pass the
+            The x-coordinate of the upper-left corner of the window in screen coordinates. You can pass the cPylonImageWindowUseDefault value to create the window at the same position as the previous one before it was closed. The other position parameters will be ignored. If the window is shown the very first time the system selects a default position and size for the window. 
             </param>
             <param name="y">
             The y-coordinate of the upper-left corner of the window in screen-coordinates. 
@@ -3790,7 +3810,7 @@
             The height of the window in screen coordinates. 
             </param>
             
-            cPylonImageWindowUseDefault
+            Creates a window for index passed in winIndex. Valid window indices range from 0 to 31. 
         </member>
         <member name="M:PylonC.NET.Pylon.ImageWindowHide(System.UInt32)">
             <summary>
@@ -3820,10 +3840,10 @@
             Device info handle 
             </param>
             <param name="name">
-            Property name
+            Property name 
             </param>
             <returns>
-            The value of a device property identified by its name
+            The value of a device property identified by its name 
             </returns>
             
             This function returns the value of the device property identified by its name. 
@@ -3836,7 +3856,7 @@
             Device info handle 
             </param>
             <param name="index">
-            Property index
+            Property index 
             </param>
             <returns>
             The value of a device property identified by index
@@ -3852,7 +3872,7 @@
             Device info handle 
             </param>
             <param name="index">
-            Property index. This value must be in the range 0..(Pylon.DeviceInfoGetNumProperties()-1)
+            Property index. This value must be in the range 0..(Pylon.DeviceInfoGetNumProperties()-1) 
             </param>
             <returns>
             The name of the device property identified by index
@@ -3868,10 +3888,10 @@
             Device handle 
             </param>
             <param name="name">
-            Feature pName
+            Feature pName 
             </param>
             <returns>
-            Feature value as string
+            Feature value as string 
             </returns>
             
             Look up a feature node with a given name and return its value as string. 
@@ -3884,10 +3904,10 @@
             Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            True if implemented
+            True if implemented 
             </returns>
             
             Look up a feature node with a given name and and return its 'implemented' status. 
@@ -3900,10 +3920,10 @@
             Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            True if available
+            True if available 
             </returns>
             
             Look up a feature node with a given name and and return its 'available' status. 
@@ -3916,10 +3936,10 @@
             Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            True if readable
+            True if readable 
             </returns>
             
             Look up a feature node with a given name and return its 'readable' status. 
@@ -3932,10 +3952,10 @@
             Device handle 
             </param>
             <param name="name">
-            Feature name
+            Feature name 
             </param>
             <returns>
-            True if writable
+            True if writable 
             </returns>
             
             Look up a feature node with a given name and and return its 'writable' status. 
@@ -3997,16 +4017,16 @@
             Stream grabber channel to use 
             </param>
             <param name="buffer">
-            Buffer receiving image data
+            Buffer receiving image data 
             </param>
             <param name="grabResult">
-            Struct receiving the grab result
+            Struct receiving the grab result 
             </param>
             <param name="timeout">
-            Grab timeout in ms
+            Grab timeout in ms 
             </param>
             <returns>
-            True if buffer ready
+            True if buffer ready 
             </returns>
             
             Grab a single image into the data buffer passed in buffer. Wait at most timeout milliseconds for the camera to produce an image. In case an uninitialized buffer is passed, new buffer memory is allocated in the required size. 
@@ -4038,26 +4058,26 @@
             Data buffer handle 
             </param>
             <param name="context">
-            Application context 
+            Application context
             </param>
             
-            Append the data buffer represented by hBuf to the stream grabber's queue. Continously processing the queue, the stream grabber will fill the buffer with data as soon as all preceeding buffers have been processed. context can be used to attach application-specific data to a buffer. This argument will be returned unmodified along with the buffer when grabbing is done. 
+            Append the data buffer represented by hBuf to the stream grabber's queue. Continuously processing the queue, the stream grabber will fill the buffer with data as soon as all proceeding buffers have been processed. contextcan be used to attach application-specific data to a buffer. This argument will be returned unmodified along with the buffer when grabbing is done. 
         </member>
         <member name="M:PylonC.NET.Pylon.StreamGrabberRetrieveResult(PylonC.NET.PYLON_STREAMGRABBER_HANDLE,PylonC.NET.PylonGrabResult_t@)">
             <summary>
             Retrieve buffer after processing by stream grabber. 
             </summary>
             <param name="hStg">
-            Stream grabber handle
+            Stream grabber handle 
             </param>
             <param name="grabResult">
-            Grab result data
+            Grab result data 
             </param>
             <returns>
-            True if buffer ready
+            True if buffer ready 
             </returns>
             
-            Calling this function returns a boolean status , indicating whether at least one data buffer has been filled with data. If so, information about the first of such buffers is returned in the result struct. 
+            Calling this function returns a boolean status, indicating whether at least one data buffer has been filled with data. If so, information about the first of such buffers is returned in the result struct. 
         </member>
         <member name="M:PylonC.NET.Pylon.PixelFormatConverterConvert``2(PylonC.NET.PYLON_FORMAT_CONVERTER_HANDLE,PylonC.NET.PylonBuffer{``0}@,PylonC.NET.PylonBuffer{``1})">
             <summary>
@@ -4080,7 +4100,7 @@
             Converts an image. 
             </summary>
             <param name="hConv">
-            Handle for image format converter.
+            Handle for image format converter. 
             </param>
             <param name="targetBuffer">
             Buffer for converted image data. If null, a buffer is created. 
@@ -4111,16 +4131,16 @@
             Retrieve an event from an event grabber. 
             </summary>
             <param name="hEvg">
-            Event grabber handle
+            Event grabber handle 
             </param>
             <param name="eventResult">
-            Event result data struct
+            Event result data struct 
             </param>
             <returns>
-            True if at least one event is available
+            True if at least one event is available 
             </returns>
             
-            Calling this function returns a boolean status , indicating whether at least one event is available. If so, the event is returned in the result struct . 
+            Calling this function returns a boolean status, indicating whether at least one event is available. If so, the event is returned in the result struct. 
         </member>
         <member name="M:PylonC.NET.Pylon.EventAdapterDeliverMessage(PylonC.NET.PYLON_EVENTADAPTER_HANDLE,PylonC.NET.PylonEventResult_t)">
             <summary>
@@ -4179,13 +4199,13 @@
             Register device removal callback. 
             </summary>
             <param name="hDev">
-            Device handle
+            Device handle 
             </param>
             <param name="cbFunction">
-            Callback handler
+            Callback handler 
             </param>
             <returns>
-            Callback handle
+            Callback handle 
             </returns>
             
             Register a device removal callback on the device. The callback function will be called when the device is removed (unplugged). When the callback is fired all subsequent calls to functions which need to communicate with the device will fail.
@@ -4205,10 +4225,10 @@
             Return a SafeWaitHandle object for a wait object. 
             </summary>
             <param name="hWobj">
-            Wait object handle
+            Wait object handle 
             </param>
             <returns>
-            SafeWaitHandle object
+            SafeWaitHandle object 
             </returns>
             
             This function returns a SafeWaitHandle object containing a Win32 Handle owned by the wait object. The handle returned is still owned by the wait object, so do not close it. 
@@ -4265,7 +4285,7 @@
             Name and path of the image. 
             </param>
             <param name="buffer">
-            Buffer which contains the image data.
+            Buffer which contains the image data. 
             </param>
             <param name="pixelType">
             The pixel type of the image to save. 
@@ -4280,7 +4300,7 @@
             The number of extra data bytes at the end of each row. 
             </param>
             <param name="orientation">
-            The vertical orientation of the image in the image buffer.
+            The vertical orientation of the image in the image buffer. 
             </param>
             If required, the image is automatically converted to a new image and then saved. See CanSaveWithoutConversion() for more information. An image with a bit depth higher than 8 bit is stored with 16 bit bit depth if supported by the image file format. In this case the pixel data is MSB aligned.
         </member>
@@ -4295,7 +4315,7 @@
             Name and path of the image. 
             </param>
             <param name="buffer">
-            Buffer which contains the image data.
+            Buffer which contains the image data. 
             </param>
             <param name="pixelType">
             The pixel type of the image to save. 
@@ -4310,7 +4330,7 @@
             The number of extra data bytes at the end of each row. 
             </param>
             <param name="orientation">
-            The vertical orientation of the image in the image buffer.
+            The vertical orientation of the image in the image buffer. 
             </param>
             If required, the image is automatically converted to a new image and then saved. See CanSaveWithoutConversion() for more information. An image with a bit depth higher than 8 bit is stored with 16 bit bit depth if supported by the image file format. In this case the pixel data is MSB aligned.
         </member>
@@ -4319,13 +4339,13 @@
             Loads an image from disk. 
             </summary>
             <param name="filename">
-            Name and path of the image.
+            Name and path of the image. 
             </param>
             <param name="buffer">
             Buffer to be used. If null, a buffer is created. 
             </param>
             <param name="bufferSize">
-            Returns the required buffer size.
+            Returns the required buffer size. 
             </param>
             <param name="pixelType">
             Pixel type of the loaded image or PixelType_Undefined if the image is invalid. 
@@ -4350,7 +4370,7 @@
             Adds an image to the AVI file. 
             </summary>
             <param name="hWriter">
-            Handle for the AVI writer.
+            Handle for the AVI writer. 
             </param>
             <param name="buffer">
             The pointer to the buffer of the image. 
@@ -4438,7 +4458,7 @@
             Sets the image of a window. The image is given by a buffer. 
             </summary>
             <param name="winIndex">
-            The window used for displaying the image. Valid window indices range from 0 to 31.
+            The window used for displaying the image. Valid window indices range from 0 to 31. 
             </param>
             <param name="buffer">
             Data buffer pointer 
@@ -4502,7 +4522,7 @@
             Displays the image of a window. The raw data of the image is given by a buffer. 
             </summary>
             <param name="winIndex">
-            The window used for displaying the image. Valid window indices range from 0 to 31.
+            The window used for displaying the image. Valid window indices range from 0 to 31. 
             </param>
             <param name="buffer">
             Data buffer pointer 
@@ -4590,8 +4610,8 @@
              <param name="results">
              Returns the action command result status.
              </param>
-             
-             The action command feature lets you trigger actions in multiple devices (e.g. cameras) at roughly the same time or at a defined point in time (scheduled action command) by using a single broadcast protocol message (without extra cabling). Action commands are used in cameras in the same way as for example the digital input lines.
+             If a Microsoft Windows operating system is used, sending a broadcast out on multiple network interfaces is executed for each interface sequentially. That's why additional latency is added to the execution time of a command, when sending a broadcast message over a wider broadcast address range than required, e.g. when using the broadcast address 255.255.255.255.IP4 addresses must be used. groupMask must not be 0. numResult 0 if a timeoutMs value other than 0 is passed. 
+             The method is thread-safe. 
              <returns>
              Returns true if numResults have been received and the \c Status of all results is \c PylonGigEActionCommandStatus_Ok.
              </returns>
@@ -4656,8 +4676,8 @@
              <param name="results">
              Returns the action command result status.
              </param>
-             
-             The action command feature lets you trigger actions in multiple devices (e.g. cameras) at roughly the same time or at a defined point in time (scheduled action command) by using a single broadcast protocol message (without extra cabling). Action commands are used in cameras in the same way as for example the digital input lines.
+             If a Microsoft Windows operating system is used, sending a broadcast out on multiple network interfaces is executed for each interface sequentially. That's why additional latency is added to the execution time of a command, when sending a broadcast message over a wider broadcast address range than required, e.g. when using the broadcast address 255.255.255.255.IP4 addresses must be used. groupMask must not be 0. numResult 0 if a timeoutMs value other than 0 is passed. actionTimeNs must be smaller than or equal INT64_MAX. 
+             The method is thread-safe. 
              <returns>
              Returns true if numResults have been received and the \c Status of all results is \c PylonGigEActionCommandStatus_Ok.
              </returns>

@@ -236,7 +236,7 @@ namespace Kinovea.Camera.Basler
                     return;
 
                 specific.Handle = deviceHandle;
-                StreamFormat currentStreamFormat = PylonHelper.GetCurrentStreamFormat(deviceHandle);
+                GenApiEnum currentStreamFormat = PylonHelper.ReadEnumCurrentValue(deviceHandle, "PixelFormat");
 
                 // Some properties can only be changed when the camera is opened but not streaming.
                 // We store them in the summary when coming back from FormConfiguration, and we write them to the camera here.
@@ -244,11 +244,11 @@ namespace Kinovea.Camera.Basler
                 if (!firstOpen)
                 {
                     if (specific.StreamFormat != currentStreamFormat.Symbol)
-                        PylonHelper.WriteStreamFormat(deviceHandle, specific.StreamFormat);
+                        PylonHelper.WriteEnum(deviceHandle, "PixelFormat", specific.StreamFormat);
 
                     if (specific.CameraProperties != null && specific.CameraProperties.ContainsKey("framerate"))
                     {
-                        if (specific.CameraProperties.ContainsKey("enableFramerate"))
+                        if (specific.CameraProperties.ContainsKey("enableFramerate") && specific.CameraProperties["enableFramerate"].Supported)
                         {
                             bool enabled = bool.Parse(specific.CameraProperties["enableFramerate"].CurrentValue);
                             if (!enabled && !specific.CameraProperties["enableFramerate"].ReadOnly)
