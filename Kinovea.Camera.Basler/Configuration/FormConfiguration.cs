@@ -51,7 +51,7 @@ namespace Kinovea.Camera.Basler
             get { return specificChanged; }
         }
 
-        public StreamFormat SelectedStreamFormat
+        public GenApiEnum SelectedStreamFormat
         {
             get { return selectedStreamFormat; }
         }
@@ -65,7 +65,7 @@ namespace Kinovea.Camera.Basler
         private PYLON_DEVICE_HANDLE deviceHandle;
         private bool iconChanged;
         private bool specificChanged;
-        private StreamFormat selectedStreamFormat;
+        private GenApiEnum selectedStreamFormat;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -131,14 +131,14 @@ namespace Kinovea.Camera.Basler
 
             string currentValue = Pylon.DeviceFeatureToString(deviceHandle, "PixelFormat");
 
-            List<StreamFormat> streamFormats = PylonHelper.GetSupportedStreamFormats(deviceHandle);
+            List<GenApiEnum> streamFormats = PylonHelper.ReadEnum(deviceHandle, "PixelFormat");
             if (streamFormats == null)
             {
                 cmbFormat.Enabled = false;
                 return;
             }
 
-            foreach (StreamFormat streamFormat in streamFormats)
+            foreach (GenApiEnum streamFormat in streamFormats)
             {
                 cmbFormat.Items.Add(streamFormat);
                 if (currentValue == streamFormat.Symbol)
@@ -297,37 +297,9 @@ namespace Kinovea.Camera.Basler
         
          */
 
-        private void BtnCancelClick(object sender, EventArgs e)
-        {
-            // Restore memo.
-            /*if (gainRaw != memoGain)
-            {
-                gainRaw = memoGain;
-                UpdateGain();
-            }
-            
-            if (exposureTimeAbs != memoExposureTimeAbs)
-            {
-                exposureTimeAbs = memoExposureTimeAbs;
-                UpdateExposureTimeAbs();
-            }
-
-            if (useTrigger != memoUseTrigger)
-            {
-                useTrigger = memoUseTrigger;
-                UpdateUseTrigger();
-            }
-            
-            if (triggerSource != memoTriggerSource)
-            {
-                triggerSource = memoTriggerSource;
-                UpdateTriggerSource();
-            }*/
-        }
-
         private void cmbFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            StreamFormat selected = cmbFormat.SelectedItem as StreamFormat;
+            GenApiEnum selected = cmbFormat.SelectedItem as GenApiEnum;
             if (selected == null || selectedStreamFormat.Symbol == selected.Symbol)
                 return;
 

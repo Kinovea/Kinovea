@@ -52,13 +52,11 @@ namespace Kinovea.Camera.Basler
             return lastErrorText;
         }
 
-        public static List<StreamFormat> GetSupportedStreamFormats(PYLON_DEVICE_HANDLE deviceHandle)
+        public static List<GenApiEnum> ReadEnum(PYLON_DEVICE_HANDLE deviceHandle, string enumerationName)
         {
             // We get a list of all possible values from GenICam API.
             // We cannot use the Pylon .NET enum names because of casing mismatches.
             // Then for each possible value, we poll for availability through Pylon API.
-
-            string enumerationName = "PixelFormat";
 
             NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
             NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, enumerationName);
@@ -69,7 +67,7 @@ namespace Kinovea.Camera.Basler
             if (nodeType != EGenApiNodeType.EnumerationNode)
                 return null;
 
-            List<StreamFormat> supportedList = new List<StreamFormat>();
+            List<GenApiEnum> supportedList = new List<GenApiEnum>();
             uint total = GenApi.EnumerationGetNumEntries(nodeHandle);
 
             for (uint i = 0; i < total; i++)
@@ -86,18 +84,16 @@ namespace Kinovea.Camera.Basler
                 if (supported)
                 {
                     string displayName = GenApi.NodeGetDisplayName(enumEntryHandle);
-                    supportedList.Add(new StreamFormat(symbol, displayName));
+                    supportedList.Add(new GenApiEnum(symbol, displayName));
                 }
             }
 
             return supportedList;
         }
     
-        public static StreamFormat GetCurrentStreamFormat(PYLON_DEVICE_HANDLE deviceHandle)
+        public static GenApiEnum ReadEnumCurrentValue(PYLON_DEVICE_HANDLE deviceHandle, string enumerationName)
         {
-            StreamFormat sf = null;
-
-            string enumerationName = "PixelFormat";
+            GenApiEnum sf = null;
 
             NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
             NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, enumerationName);
@@ -118,17 +114,15 @@ namespace Kinovea.Camera.Basler
                     continue;
 
                 string displayName = GenApi.NodeGetDisplayName(entryHandle);
-                sf = new StreamFormat(symbol, displayName);
+                sf = new GenApiEnum(symbol, displayName);
                 break;
             }
 
             return sf;
         }
 
-        public static void WriteStreamFormat(PYLON_DEVICE_HANDLE deviceHandle, string selectedFormatSymbol)
+        public static void WriteEnum(PYLON_DEVICE_HANDLE deviceHandle, string enumerationName, string enumerationValue)
         {
-            string enumerationName = "PixelFormat";
-
             NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
             NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, enumerationName);
             if (!nodeHandle.IsValid)
@@ -149,7 +143,7 @@ namespace Kinovea.Camera.Basler
                         continue;
 
                     string value = GenApi.EnumerationEntryGetSymbolic(entryHandle);
-                    if (value != selectedFormatSymbol)
+                    if (value != enumerationValue)
                         continue;
 
                     if (GenApi.NodeToString(nodeHandle) == value)

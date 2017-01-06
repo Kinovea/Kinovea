@@ -43,24 +43,17 @@ namespace Kinovea.Camera.Basler
             {
                 log.ErrorFormat("Could not read Basler device class. Assuming BaslerGigE.");
             }
-            
+
             properties.Add("width", ReadIntegerProperty(deviceHandle, "Width"));
             properties.Add("height", ReadIntegerProperty(deviceHandle, "Height"));
-            properties.Add("enableFramerate", ReadBooleanProperty(deviceHandle, "AcquisitionFrameRateEnable"));
 
-            if (deviceClass == "BaslerUsb")
-            {
-                properties.Add("framerate", ReadFloatProperty(deviceHandle, "AcquisitionFrameRate"));
-                properties.Add("exposure", ReadFloatProperty(deviceHandle, "ExposureTime"));
-                properties.Add("gain", ReadFloatProperty(deviceHandle, "Gain"));
-            }
-            else
-            {
-                properties.Add("framerate", ReadFloatProperty(deviceHandle, "AcquisitionFrameRateAbs"));
-                properties.Add("exposure", ReadFloatProperty(deviceHandle, "ExposureTimeAbs"));
-                properties.Add("gain", ReadIntegerProperty(deviceHandle, "GainRaw"));
-            }
-
+            // Camera properties in Kinovea combine the value and the "auto" flag.
+            // We potentially need to read several Basler camera properties to create one Kinovea camera property.
+            // Furthermore, some properties name or type depends on whether the camera is USB or GigE.
+            ReadFramerate(deviceHandle, deviceClass, properties);
+            ReadExposure(deviceHandle, deviceClass, properties);
+            ReadGain(deviceHandle, deviceClass, properties);
+            
             return properties;
         }
 
@@ -78,33 +71,97 @@ namespace Kinovea.Camera.Basler
             if (accessMode != EGenApiAccessMode.RW)
                 return;
 
-            switch (property.Type)
+            try
             {
-                case CameraPropertyType.Integer:
-                    {
-                        long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-                        long step = long.Parse(property.Step, CultureInfo.InvariantCulture);
-                        long remainder = value % step;
-                        if (remainder > 0)
-                            value = value - remainder;
+                switch (property.Type)
+                {
+                    case CameraPropertyType.Integer:
+                        {
+                            long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+                            long step = long.Parse(property.Step, CultureInfo.InvariantCulture);
+                            long remainder = value % step;
+                            if (remainder > 0)
+                                value = value - remainder;
 
-                        GenApi.IntegerSetValue(nodeHandle, value);
+                            GenApi.IntegerSetValue(nodeHandle, value);
+                            break;
+                        }
+                    case CameraPropertyType.Float:
+                        {
+                            double max = GenApi.FloatGetMax(nodeHandle);
+                            double min = GenApi.FloatGetMin(nodeHandle);
+
+                            double value = double.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+                            value = Math.Min(Math.Max(value, min), max);
+
+                            GenApi.FloatSetValue(nodeHandle, value);
+                            break;
+                        }
+                    case CameraPropertyType.Boolean:
+                        {
+                            bool value = bool.Parse(property.CurrentValue);
+                            GenApi.BooleanSetValue(nodeHandle, value);
+                            break;
+                        }
+                    default:
                         break;
-                    }
-                case CameraPropertyType.Float:
-                    {
-                        double value = double.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-                        GenApi.FloatSetValue(nodeHandle, value);
-                        break;
-                    }
-                case CameraPropertyType.Boolean:
-                    {
-                        bool value = bool.Parse(property.CurrentValue);
-                        GenApi.BooleanSetValue(nodeHandle, value);
-                        break;
-                    }
-                default:
-                    break;
+                }
+            }
+            catch
+            {
+                log.ErrorFormat("Error while writing Basler Pylon GenICam property {0}", property.Identifier);
+                log.ErrorFormat("");
+            }
+
+            // Handle the separate property for auto flag.
+            if (string.IsNullOrEmpty(property.AutomaticIdentifier))
+                return;
+
+            string enumValue = property.Automatic ? "Continuous" : "Off";
+            PylonHelper.WriteEnum(deviceHandle, property.AutomaticIdentifier, enumValue);
+        }
+
+        private static void ReadFramerate(PYLON_DEVICE_HANDLE deviceHandle, string deviceClass, Dictionary<string, CameraProperty> properties)
+        {
+            properties.Add("enableFramerate", ReadBooleanProperty(deviceHandle, "AcquisitionFrameRateEnable"));
+
+            if (deviceClass == "BaslerUsb")
+                properties.Add("framerate", ReadFloatProperty(deviceHandle, "AcquisitionFrameRate"));
+            else
+                properties.Add("framerate", ReadFloatProperty(deviceHandle, "AcquisitionFrameRateAbs"));
+        }
+
+        private static void ReadExposure(PYLON_DEVICE_HANDLE deviceHandle, string deviceClass, Dictionary<string, CameraProperty> properties)
+        {
+            if (deviceClass == "BaslerUsb")
+            {
+                CameraProperty prop = ReadFloatProperty(deviceHandle, "ExposureTime");
+                prop.CanBeAutomatic = true;
+                prop.AutomaticIdentifier = "ExposureAuto";
+                GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, prop.AutomaticIdentifier);
+                prop.Automatic = auto.Symbol == "Continuous";
+                properties.Add("exposure", prop);
+            }
+            else
+            {
+                properties.Add("exposure", ReadFloatProperty(deviceHandle, "ExposureTimeAbs"));
+            }
+        }
+
+        private static void ReadGain(PYLON_DEVICE_HANDLE deviceHandle, string deviceClass, Dictionary<string, CameraProperty> properties)
+        {
+            if (deviceClass == "BaslerUsb")
+            {
+                CameraProperty prop = ReadFloatProperty(deviceHandle, "Gain");
+                prop.CanBeAutomatic = true;
+                prop.AutomaticIdentifier = "GainAuto";
+                GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, prop.AutomaticIdentifier);
+                prop.Automatic = auto.Symbol == "Continuous";
+                properties.Add("gain", prop);
+            }
+            else
+            {
+                properties.Add("gain", ReadIntegerProperty(deviceHandle, "GainRaw"));
             }
         }
 

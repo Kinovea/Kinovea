@@ -48,8 +48,6 @@ namespace Kinovea.Camera.Basler
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnApply = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
             this.gbProperties = new System.Windows.Forms.GroupBox();
             this.lblAuto = new System.Windows.Forms.Label();
             this.cmbFormat = new System.Windows.Forms.ComboBox();
@@ -58,32 +56,10 @@ namespace Kinovea.Camera.Basler
             this.tbAlias = new System.Windows.Forms.TextBox();
             this.lblSystemName = new System.Windows.Forms.Label();
             this.btnIcon = new System.Windows.Forms.Button();
+            this.btnApply = new System.Windows.Forms.Button();
             this.gbProperties.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnApply
-            // 
-            this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnApply.Location = new System.Drawing.Point(242, 378);
-            this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(99, 24);
-            this.btnApply.TabIndex = 78;
-            this.btnApply.Text = "Apply";
-            this.btnApply.UseVisualStyleBackColor = true;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(346, 378);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(99, 24);
-            this.btnCancel.TabIndex = 79;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.BtnCancelClick);
             // 
             // gbProperties
             // 
@@ -95,7 +71,7 @@ namespace Kinovea.Camera.Basler
             this.gbProperties.Controls.Add(this.lblColorSpace);
             this.gbProperties.Location = new System.Drawing.Point(12, 94);
             this.gbProperties.Name = "gbProperties";
-            this.gbProperties.Size = new System.Drawing.Size(434, 269);
+            this.gbProperties.Size = new System.Drawing.Size(434, 276);
             this.gbProperties.TabIndex = 84;
             this.gbProperties.TabStop = false;
             // 
@@ -186,16 +162,26 @@ namespace Kinovea.Camera.Basler
             this.btnIcon.UseVisualStyleBackColor = false;
             this.btnIcon.Click += new System.EventHandler(this.BtnIconClick);
             // 
+            // btnApply
+            // 
+            this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnApply.Location = new System.Drawing.Point(349, 376);
+            this.btnApply.Name = "btnApply";
+            this.btnApply.Size = new System.Drawing.Size(99, 24);
+            this.btnApply.TabIndex = 89;
+            this.btnApply.Text = "Apply";
+            this.btnApply.UseVisualStyleBackColor = true;
+            // 
             // FormConfiguration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(458, 414);
+            this.ClientSize = new System.Drawing.Size(458, 412);
+            this.Controls.Add(this.btnApply);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.gbProperties);
-            this.Controls.Add(this.btnApply);
-            this.Controls.Add(this.btnCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -213,10 +199,9 @@ namespace Kinovea.Camera.Basler
         private System.Windows.Forms.TextBox tbAlias;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox gbProperties;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.ComboBox cmbFormat;
         private System.Windows.Forms.Label lblColorSpace;
         private System.Windows.Forms.Label lblAuto;
+        private System.Windows.Forms.Button btnApply;
     }
 }

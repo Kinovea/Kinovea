@@ -670,7 +670,10 @@ namespace Kinovea.ScreenManager
         
         private void Grabber_GrabbingStatusChanged(object sender, EventArgs e)
         {
-            view.UpdateGrabbingStatus(cameraGrabber.Grabbing);
+            if (dummy.InvokeRequired)
+                dummy.BeginInvoke((Action)delegate { view.UpdateGrabbingStatus(cameraGrabber.Grabbing); });
+            else
+                view.UpdateGrabbingStatus(cameraGrabber.Grabbing);
         }
         
         private void UpdateTitle()

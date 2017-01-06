@@ -51,6 +51,11 @@ namespace Kinovea.Camera
         public bool Automatic { get; set; }
 
         /// <summary>
+        /// The name of the property for the Auto flag in the underlying API if the flag is handled by a separate property.
+        /// </summary>
+        public string AutomaticIdentifier { get; set; }
+
+        /// <summary>
         /// An opaque metadata that may be used by camera plugins.
         /// </summary>
         public string Specific { get; set; }
@@ -71,6 +76,7 @@ namespace Kinovea.Camera
             
             CurrentValue = "";
             Automatic = false;
+            AutomaticIdentifier = "";
             Specific = "";
         }
     }

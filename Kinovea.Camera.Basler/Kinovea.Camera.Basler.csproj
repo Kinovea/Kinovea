@@ -82,9 +82,8 @@
     <Reference Include="log4net">
       <HintPath>..\Refs\Log4Net\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="PylonC.NET">
-      <HintPath>..\Refs\Basler\PylonC.NET.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="PylonC.NET, Version=4.1.0.0, Culture=neutral, PublicKeyToken=a77e8471c5919d5a, processorArchitecture=MSIL">
+      <HintPath>..\Refs\Basler\Pylon5\PylonC.Net\PylonC.NET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -100,7 +99,7 @@
     <Compile Include="Configuration\FormConfiguration.designer.cs">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\StreamFormat.cs" />
+    <Compile Include="Configuration\GenApiEnum.cs" />
     <Compile Include="FrameGrabber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Pylon.NETSupportLibrary\BitmapFactory.cs" />

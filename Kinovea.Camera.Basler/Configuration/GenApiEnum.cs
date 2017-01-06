@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Kinovea.Camera.Basler
 {
-    public class StreamFormat
+    public class GenApiEnum
     {
         public string Symbol { get; private set; }
         public string DisplayName { get; private set; }
 
-        public StreamFormat(string symbol, string displayName)
+        public GenApiEnum(string symbol, string displayName)
         {
             this.Symbol = symbol;
             this.DisplayName = displayName;
