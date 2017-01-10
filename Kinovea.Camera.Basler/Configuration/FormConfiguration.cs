@@ -209,94 +209,6 @@ namespace Kinovea.Camera.Basler
             specificChanged = true;
         }
         
-        /*
-        
-        
-        #region Use trigger
-        private void PopulateUseTrigger()
-        {
-            if (Pylon.DeviceFeatureIsAvailable(deviceHandle, "EnumEntry_TriggerSelector_FrameStart"))
-            {
-                Pylon.DeviceFeatureFromString(deviceHandle, "TriggerSelector", "FrameStart");
-                string value = PylonHelper.DeviceGetStringFeature(deviceHandle, "TriggerMode");
-                useTrigger = (value == "On");
-                memoUseTrigger = useTrigger;
-            }
-
-            chkTriggerMode.Checked = useTrigger;
-        }
-        private void ChkTriggerModeCheckedChanged(object sender, EventArgs e)
-        {
-            useTrigger = chkTriggerMode.Checked;
-            gpTriggerOptions.Enabled = useTrigger;
-
-            UpdateUseTrigger();
-
-            lblAcquisitionFramerate.Enabled = !useTrigger;
-            tbFramerate.Enabled = !useTrigger;
-            lblResultingFrameRate.Enabled = !useTrigger;
-        }
-        private void UpdateUseTrigger()
-        {
-            if (Pylon.DeviceFeatureIsAvailable(deviceHandle, "EnumEntry_TriggerSelector_FrameStart"))
-            {
-                Pylon.DeviceFeatureFromString(deviceHandle, "TriggerSelector", "FrameStart");
-                Pylon.DeviceFeatureFromString(deviceHandle, "TriggerMode", useTrigger ? "On" : "Off");
-            }
-
-            Pylon.DeviceFeatureFromString(deviceHandle, "AcquisitionFrameRateEnable", useTrigger ? "false" : "true");
-        }
-        #endregion
-
-        #region Trigger source
-        private void PopulateTriggerSource()
-        {
-            string source = PylonHelper.DeviceGetStringFeature(deviceHandle, "TriggerSource");
-            memoTriggerSource = source;
-            
-            manualComboBox = true;
-            if(source == "Software")
-            {
-                cbTriggerSource.SelectedIndex = 0;
-                btnSoftwareTrigger.Enabled = true;
-            }
-            else if(source == "Line1")
-            {
-                cbTriggerSource.SelectedIndex = 1;
-                btnSoftwareTrigger.Enabled = false;
-            }
-            
-            manualComboBox = false;
-        }
-        
-        private void CbTriggerSourceSelectedIndexChanged(object sender, EventArgs e)
-        {
-            if(manualComboBox)
-                return;
-                
-            Pylon.DeviceFeatureFromString(deviceHandle, "TriggerSelector", "FrameStart");
-                
-            if(cbTriggerSource.SelectedIndex == 0)
-            {
-                triggerSource = "Software";
-                btnSoftwareTrigger.Enabled = true;
-            }
-            else if(cbTriggerSource.SelectedIndex == 1)
-            {
-                triggerSource = "Line1";
-                btnSoftwareTrigger.Enabled = false;
-            }
-            
-            UpdateTriggerSource();
-        }
-        private void UpdateTriggerSource()
-        {
-            Pylon.DeviceFeatureFromString(deviceHandle, "TriggerSource", triggerSource);
-        }
-        #endregion
-        
-         */
-
         private void cmbFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
             GenApiEnum selected = cmbFormat.SelectedItem as GenApiEnum;
@@ -306,10 +218,5 @@ namespace Kinovea.Camera.Basler
             selectedStreamFormat = selected;
             specificChanged = true;
         }
-        
-        /*private void BtnSoftwareTrigger_Click(object sender, EventArgs e)
-        {
-            Pylon.DeviceExecuteCommandFeature(deviceHandle, "TriggerSoftware");
-        }*/
     }
 }
