@@ -688,12 +688,12 @@ namespace Kinovea.ScreenManager
 
             if (prepareFailed && imageDescriptor != null)
             {
-                view.UpdateInfo(string.Format("Signal: {0}×{1} @ {2:0.00} fps. Data: {3:0.00} MB/s. Drops: {4}.",
+                view.UpdateInfo(string.Format("Signal: {0}×{1} @ {2:0.00} fps. Bandwidth: {3:0.00} MB/s. Drops: {4}.",
                     imageDescriptor.Width, imageDescriptor.Height, pipelineManager.Frequency, cameraGrabber.LiveDataRate, pipelineManager.Drops));
             }
             else
             {
-                view.UpdateInfo(string.Format("Signal: {0:0.00} fps. Data: {1:0.00} MB/s. Drops: {2}.",
+                view.UpdateInfo(string.Format("Signal: {0:0.00} fps. Bandwidth: {1:0.00} MB/s. Drops: {2}.",
                     pipelineManager.Frequency, cameraGrabber.LiveDataRate, pipelineManager.Drops));
             }
 
