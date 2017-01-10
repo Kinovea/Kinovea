@@ -69,8 +69,20 @@ namespace Kinovea.Camera.IDS
         
         public override bool SanityCheck()
         {
-            // TODO: test what happens on systems without IDS drivers.
-            return true;
+            bool result = false;
+            try
+            {
+                Version version;
+                uEye.Info.System.GetApiVersion(out version);
+                log.DebugFormat("IDS uEye Camera subsystem: {0}", version.ToString());
+                result = true;
+            }
+            catch (Exception e)
+            {
+                log.DebugFormat("IDS uEye Camera subsystem not available. {0}", e.ToString());
+            }
+
+            return result;
         }
         
         public override List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs)
