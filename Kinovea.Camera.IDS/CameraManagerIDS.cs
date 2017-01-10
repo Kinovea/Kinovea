@@ -1,8 +1,8 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
-joan.charmant@gmail.com 
- 
+Copyright © Joan Charmant 2017.
+joan.charmant@gmail.com
+
 This file is part of Kinovea.
 
 Kinovea is free software: you can redistribute it and/or modify
@@ -26,17 +26,14 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-
-using AForge.Video.DirectShow;
 using Kinovea.Services;
-using System.Text.RegularExpressions;
 
-namespace Kinovea.Camera.DirectShow
+namespace Kinovea.Camera.IDS
 {
     /// <summary>
-    /// Class to discover and manage cameras connected through DirectShow.
+    /// Class to discover and manage IDS cameras (uEye API).
     /// </summary>
-    public class CameraManagerDirectShow : CameraManager
+    public class CameraManagerIDS : CameraManager
     {
         #region Properties
         public override bool Enabled
@@ -45,11 +42,11 @@ namespace Kinovea.Camera.DirectShow
         }
         public override string CameraType 
         { 
-            get { return "4602B70E-8FDD-47FF-B012-7C38BB2A16B9";}
+            get { return "E43F59FE-E02D-4E73-8B6B-ACDBAE102044";}
         }
         public override string CameraTypeFriendlyName 
         { 
-            get { return "DirectShow"; }
+            get { return "IDS uEye"; }
         }
         public override bool HasConnectionWizard
         {
@@ -61,43 +58,48 @@ namespace Kinovea.Camera.DirectShow
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private List<string> snapshotting = new List<string>();
-        private HashSet<string> blacklist = new HashSet<string>();
-        private Regex idsPattern = new Regex(@"^UI\d{3,4}");
+        private Bitmap defaultIcon;
+        private Dictionary<string, long> deviceIds = new Dictionary<string, long>();
         #endregion
         
-        public CameraManagerDirectShow()
-        {   
-            blacklist.Add("Basler GenICam Source");
+        public CameraManagerIDS()
+        {
+            defaultIcon = IconLibrary.GetIcon("ids");
         }
-
+        
         public override bool SanityCheck()
         {
+            // TODO: test what happens on systems without IDS drivers.
             return true;
         }
         
         public override List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs)
         {
-            // DirectShow has active discovery. We just ask for the list of cameras connected to the PC.
             List<CameraSummary> summaries = new List<CameraSummary>();
-            List<CameraSummary> found = new List<CameraSummary>();
-            
-            FilterInfoCollection cameras = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            
-            foreach(FilterInfo camera in cameras)
-            {
-                if (IsBlackListed(camera.Name))
-                    continue;
 
-                // For now consider that the moniker string is like a serial number.
-                // Cameras that don't have a serial number will appear to be new when changing USB port.
-                string identifier = camera.MonikerString;
+            List<CameraSummary> found = new List<CameraSummary>();
+            uEye.Types.CameraInformation[] devices;
+            uEye.Info.Camera.GetCameraList(out devices);
+
+            foreach (uEye.Types.CameraInformation device in devices)
+            {
+                string identifier = device.SerialNumber;
                 bool cached = cache.ContainsKey(identifier);
+
+                if(cached)
+                {
+                    deviceIds[identifier] = device.DeviceID;
+                    summaries.Add(cache[identifier]);
+                    found.Add(cache[identifier]);
+                    continue;
+                }
                 
-                string alias = camera.Name;
+                string alias = device.Model;
                 Bitmap icon = null;
-                SpecificInfo specific = null;
+                SpecificInfo specific = new SpecificInfo();
                 Rectangle displayRectangle = Rectangle.Empty;
                 CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
+                deviceIds[identifier] = device.DeviceID;
                 
                 if(blurbs != null)
                 {
@@ -107,35 +109,26 @@ namespace Kinovea.Camera.DirectShow
                             continue;
                             
                         alias = blurb.Alias;
-                        icon = blurb.Icon ?? SelectDefaultIcon(identifier);
+                        icon = blurb.Icon ?? defaultIcon;
                         displayRectangle = blurb.DisplayRectangle;
                         if(!string.IsNullOrEmpty(blurb.AspectRatio))
                             aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
                         
                         specific = SpecificInfoDeserialize(blurb.Specific);
-                        VendorHelper.IdentifyModel(identifier);
                         break;
                     }
                 }
-                
-                if(icon == null)
-                    icon = SelectDefaultIcon(identifier);
-                
-                CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, icon, displayRectangle, aspectRatio, specific, this);
-                summaries.Add(summary);
-                
-                if(cached)
-                    found.Add(cache[identifier]);
-                    
-                if(!cached)
-                {
-                    cache.Add(identifier, summary);
-                    found.Add(summary);
-                    log.DebugFormat("DirectShow device enumeration: {0} (moniker:{1}).", summary.Alias, identifier);
-                }
-            }
+
+                icon = icon ?? defaultIcon;
             
-            // TODO: do we need to do all this. Just replace the cache with the current list.
+                CameraSummary summary = new CameraSummary(alias, device.Model, identifier, icon, displayRectangle, aspectRatio, specific, this);
+
+                summaries.Add(summary);
+                found.Add(summary);
+                cache.Add(identifier, summary);
+
+                //log.DebugFormat("IDS uEye device enumeration: {0} (id:{1}).", summary.Alias, identifier);
+            }
             
             List<CameraSummary> lost = new List<CameraSummary>();
             foreach(CameraSummary summary in cache.Values)
@@ -146,26 +139,23 @@ namespace Kinovea.Camera.DirectShow
             
             foreach(CameraSummary summary in lost)
                 cache.Remove(summary.Identifier);
-
+            
             return summaries;
         }
 
         public override void ForgetCamera(CameraSummary summary)
         {
-            if (cache.ContainsKey(summary.Identifier))
+            if(cache.ContainsKey(summary.Identifier))
                 cache.Remove(summary.Identifier);
         }
-        
+
         public override void GetSingleImage(CameraSummary summary)
         {
             if(snapshotting.IndexOf(summary.Identifier) >= 0)
                 return;
             
-            // TODO: Retrieve moniker from identifier.
-            string moniker = summary.Identifier;
-            
             // Spawn a thread to get a snapshot.
-            SnapshotRetriever retriever = new SnapshotRetriever(summary, moniker);
+            SnapshotRetriever retriever = new SnapshotRetriever(summary, deviceIds[summary.Identifier]);
             retriever.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
             snapshotting.Add(summary.Identifier);
             ThreadPool.QueueUserWorkItem(retriever.Run);
@@ -180,16 +170,18 @@ namespace Kinovea.Camera.DirectShow
         
         public override ICaptureSource CreateCaptureSource(CameraSummary summary)
         {
-            string moniker = summary.Identifier;
-            FrameGrabber grabber = new FrameGrabber(summary, moniker);
+            FrameGrabber grabber = new FrameGrabber(summary, deviceIds[summary.Identifier]);
             return grabber;
         }
         
         public override bool Configure(CameraSummary summary)
         {
             bool needsReconnection = false;
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if (info == null)
+                return false;
+
             FormConfiguration form = new FormConfiguration(summary);
-            FormsHelper.Locate(form);
             if(form.ShowDialog() == DialogResult.OK)
             {
                 if(form.AliasChanged)
@@ -197,15 +189,11 @@ namespace Kinovea.Camera.DirectShow
                 
                 if(form.SpecificChanged)
                 {
-                    SpecificInfo info = new SpecificInfo();
-                    info.MediaTypeIndex = form.SelectedMediaTypeIndex;
-                    info.SelectedFramerate = form.SelectedFramerate;
+                    info.StreamFormat = form.SelectedStreamFormat.Value;
                     info.CameraProperties = form.CameraProperties;
 
-                    summary.UpdateSpecific(info);
-
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
-                    needsReconnection = form.NeedsReconnection;
+                    needsReconnection = true;
                 }
                 
                 CameraTypeManager.UpdatedCameraSummary(summary);
@@ -221,23 +209,29 @@ namespace Kinovea.Camera.DirectShow
             string alias = summary.Alias;
             
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info != null && info.MediaTypeIndex >= 0)
+
+            try
             {
-                VideoCaptureDevice device = new VideoCaptureDevice(summary.Identifier);
-                Dictionary<int, MediaType> mediaTypes = MediaTypeImporter.Import(device);
-                if (mediaTypes.ContainsKey(info.MediaTypeIndex))
+                if (info != null &&
+                    info.CameraProperties.ContainsKey("width") &&
+                    info.CameraProperties.ContainsKey("height") &&
+                    info.CameraProperties.ContainsKey("framerate"))
                 {
-                    Size size = mediaTypes[info.MediaTypeIndex].FrameSize;
-                    float fps = (float)info.SelectedFramerate;
-                    string compression = mediaTypes[info.MediaTypeIndex].Compression;
-                    result = string.Format("{0} - {1}×{2} @ {3:0.##} fps ({4}).", alias, size.Width, size.Height, fps, compression);
+                    int format = info.StreamFormat;
+                    int width = int.Parse(info.CameraProperties["width"].CurrentValue, CultureInfo.InvariantCulture);
+                    int height = int.Parse(info.CameraProperties["height"].CurrentValue, CultureInfo.InvariantCulture);
+                    double framerate = double.Parse(info.CameraProperties["framerate"].CurrentValue, CultureInfo.InvariantCulture);
+
+                    uEye.Defines.ColorMode colorMode = (uEye.Defines.ColorMode)format;
+                    
+                    result = string.Format("{0} - {1}×{2} @ {3:0.##} fps ({4}).", alias, width, height, framerate, colorMode.ToString());
                 }
                 else
                 {
                     result = string.Format("{0}", alias);
                 }
             }
-            else
+            catch
             {
                 result = string.Format("{0}", alias);
             }
@@ -253,43 +247,13 @@ namespace Kinovea.Camera.DirectShow
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
-            if (retriever != null)
+            if(retriever != null)
             {
                 retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
                 snapshotting.Remove(retriever.Identifier);
             }
-
+            
             OnCameraThumbnailProduced(e);
-        }
-
-        private Bitmap SelectDefaultIcon(string identifier)
-        {
-            if (identifier.Contains("usb#vid_046d"))
-                return IconLibrary.GetIcon("logitech");
-            else if (identifier.Contains("usb#vid_045e"))
-                return IconLibrary.GetIcon("microsoft");
-            else if (identifier.Contains("PS3Eye Camera"))
-                return IconLibrary.GetIcon("playstation");
-            else
-                return IconLibrary.GetIcon("webcam");
-        }
-
-        private bool IsBlackListed(string name)
-        {
-            // This blacklist is used to bypass DirectShow handling of cameras for which we have a dedicated module.
-            if (blacklist.Contains(name))
-                return true;
-
-            // IDS uEye.
-            Match match = idsPattern.Match(name);
-            if (match.Success)
-            {
-                // Add the camera to the blacklist to avoid running the regex on every device enumeration.
-                blacklist.Add(name);
-                return true;
-            }
-
-            return false;
         }
         
         private SpecificInfo SpecificInfoDeserialize(string xml)
@@ -306,20 +270,15 @@ namespace Kinovea.Camera.DirectShow
 
                 info = new SpecificInfo();
 
-                float selectedFramerate = -1;
-                int index = -1;
+                /*string streamFormat = "";
 
-                XmlNode xmlSelectedFrameRate = doc.SelectSingleNode("/DirectShow/SelectedFramerate");
-                if (xmlSelectedFrameRate != null)
-                    selectedFramerate = float.Parse(xmlSelectedFrameRate.InnerText, CultureInfo.InvariantCulture);
-
-                XmlNode xmlIndex = doc.SelectSingleNode("/DirectShow/MediaTypeIndex");
-                if (xmlIndex != null)
-                    index = int.Parse(xmlIndex.InnerText, CultureInfo.InvariantCulture);
+                XmlNode xmlStreamFormat = doc.SelectSingleNode("/IDS/StreamFormat");
+                if (xmlStreamFormat != null)
+                    streamFormat = xmlStreamFormat.InnerText;
 
                 Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
 
-                XmlNodeList props = doc.SelectNodes("/DirectShow/CameraProperties/CameraProperty2");
+                XmlNodeList props = doc.SelectNodes("/IDS/CameraProperties/CameraProperty");
                 foreach (XmlNode node in props)
                 {
                     XmlAttribute keyAttribute = node.Attributes["key"];
@@ -329,7 +288,7 @@ namespace Kinovea.Camera.DirectShow
                     string key = keyAttribute.Value;
                     CameraProperty property = new CameraProperty();
 
-                    string xpath = string.Format("/DirectShow/CameraProperties/CameraProperty2[@key='{0}']", key);
+                    string xpath = string.Format("/IDS/CameraProperties/CameraProperty[@key='{0}']", key);
                     XmlNode xmlPropertyValue = doc.SelectSingleNode(xpath + "/Value");
                     if (xmlPropertyValue != null)
                         property.CurrentValue = xmlPropertyValue.InnerText;
@@ -345,9 +304,8 @@ namespace Kinovea.Camera.DirectShow
                     cameraProperties.Add(key, property);
                 }
 
-                info.MediaTypeIndex = index;
-                info.SelectedFramerate = selectedFramerate;
-                info.CameraProperties = cameraProperties;
+                info.StreamFormat = streamFormat;
+                info.CameraProperties = cameraProperties;*/
             }
             catch(Exception e)
             {
@@ -364,44 +322,33 @@ namespace Kinovea.Camera.DirectShow
                 return null;
                 
             XmlDocument doc = new XmlDocument();
-            XmlElement xmlRoot = doc.CreateElement("DirectShow");
+            XmlElement xmlRoot = doc.CreateElement("IDS");
 
-            if (info.MediaTypeIndex < 0)
-            {
-                doc.AppendChild(xmlRoot);
-                return doc.OuterXml;
-            }
-
-            XmlElement xmlIndex = doc.CreateElement("MediaTypeIndex");
-            xmlIndex.InnerText = string.Format("{0}", info.MediaTypeIndex);
-            xmlRoot.AppendChild(xmlIndex);
-
-            XmlElement xmlFramerate = doc.CreateElement("SelectedFramerate");
-            string fps = info.SelectedFramerate.ToString("0.000", CultureInfo.InvariantCulture);
-            xmlFramerate.InnerText = fps;
-            xmlRoot.AppendChild(xmlFramerate);
+            /*XmlElement xmlStreamFormat = doc.CreateElement("StreamFormat");
+            xmlStreamFormat.InnerText = info.StreamFormat;
+            xmlRoot.AppendChild(xmlStreamFormat);
 
             XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
 
             foreach (KeyValuePair<string, CameraProperty> pair in info.CameraProperties)
             {
-                XmlElement xmlCameraProperty2 = doc.CreateElement("CameraProperty2");
+                XmlElement xmlCameraProperty = doc.CreateElement("CameraProperty");
                 XmlAttribute attr = doc.CreateAttribute("key");
                 attr.Value = pair.Key;
-                xmlCameraProperty2.Attributes.Append(attr);
+                xmlCameraProperty.Attributes.Append(attr);
 
-                XmlElement xmlCameraProperty2Value = doc.CreateElement("Value");
-                xmlCameraProperty2Value.InnerText = pair.Value.CurrentValue;
-                xmlCameraProperty2.AppendChild(xmlCameraProperty2Value);
+                XmlElement xmlCameraPropertyValue = doc.CreateElement("Value");
+                xmlCameraPropertyValue.InnerText = pair.Value.CurrentValue;
+                xmlCameraProperty.AppendChild(xmlCameraPropertyValue);
 
-                XmlElement xmlCameraProperty2Auto = doc.CreateElement("Auto");
-                xmlCameraProperty2Auto.InnerText = pair.Value.Automatic.ToString().ToLower();
-                xmlCameraProperty2.AppendChild(xmlCameraProperty2Auto);
+                XmlElement xmlCameraPropertyAuto = doc.CreateElement("Auto");
+                xmlCameraPropertyAuto.InnerText = pair.Value.Automatic.ToString().ToLower();
+                xmlCameraProperty.AppendChild(xmlCameraPropertyAuto);
 
-                xmlCameraProperties.AppendChild(xmlCameraProperty2);
+                xmlCameraProperties.AppendChild(xmlCameraProperty);
             }
 
-            xmlRoot.AppendChild(xmlCameraProperties);
+            xmlRoot.AppendChild(xmlCameraProperties);*/
 
             doc.AppendChild(xmlRoot);
             
