@@ -229,48 +229,50 @@ namespace Kinovea.Camera.Basler
                 return;
             }
 
-            if (deviceHandle.IsValid)
+            if (!deviceHandle.IsValid)
+                return;
+            
+            SpecificInfo specific = summary.Specific as SpecificInfo;
+            if (specific == null)
+                return;
+
+            // Store the handle into the specific info so that we can retrieve device informations from the configuration dialog.
+            specific.Handle = deviceHandle;
+
+            GenApiEnum currentStreamFormat = PylonHelper.ReadEnumCurrentValue(deviceHandle, "PixelFormat");
+
+            // Some properties can only be changed when the camera is opened but not streaming.
+            // We store them in the summary when coming back from FormConfiguration, and we write them to the camera here.
+            // Only do this if it's not the first time we open the camera, to respect any change that could have been done outside Kinovea.
+            if (!firstOpen)
             {
-                SpecificInfo specific = summary.Specific as SpecificInfo;
-                if (specific == null)
-                    return;
+                if (specific.StreamFormat != currentStreamFormat.Symbol)
+                    PylonHelper.WriteEnum(deviceHandle, "PixelFormat", specific.StreamFormat);
 
-                specific.Handle = deviceHandle;
-                GenApiEnum currentStreamFormat = PylonHelper.ReadEnumCurrentValue(deviceHandle, "PixelFormat");
-
-                // Some properties can only be changed when the camera is opened but not streaming.
-                // We store them in the summary when coming back from FormConfiguration, and we write them to the camera here.
-                // Only do this if it's not the first time we open the camera, to respect any change that could have been done outside Kinovea.
-                if (!firstOpen)
+                if (specific.CameraProperties != null && specific.CameraProperties.ContainsKey("framerate"))
                 {
-                    if (specific.StreamFormat != currentStreamFormat.Symbol)
-                        PylonHelper.WriteEnum(deviceHandle, "PixelFormat", specific.StreamFormat);
-
-                    if (specific.CameraProperties != null && specific.CameraProperties.ContainsKey("framerate"))
+                    if (specific.CameraProperties.ContainsKey("enableFramerate") && specific.CameraProperties["enableFramerate"].Supported)
                     {
-                        if (specific.CameraProperties.ContainsKey("enableFramerate") && specific.CameraProperties["enableFramerate"].Supported)
+                        bool enabled = bool.Parse(specific.CameraProperties["enableFramerate"].CurrentValue);
+                        if (!enabled && !specific.CameraProperties["enableFramerate"].ReadOnly)
                         {
-                            bool enabled = bool.Parse(specific.CameraProperties["enableFramerate"].CurrentValue);
-                            if (!enabled && !specific.CameraProperties["enableFramerate"].ReadOnly)
-                            {
-                                specific.CameraProperties["enableFramerate"].CurrentValue = "true";
-                                CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["enableFramerate"]);
-                            }
+                            specific.CameraProperties["enableFramerate"].CurrentValue = "true";
+                            CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["enableFramerate"]);
                         }
-
-                        CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["framerate"]);
                     }
 
-                    if (specific.CameraProperties != null && specific.CameraProperties.ContainsKey("width") && specific.CameraProperties.ContainsKey("height"))
-                    {
-                        CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["width"]);
-                        CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["height"]);
-                    }
+                    CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["framerate"]);
                 }
-                else
+
+                if (specific.CameraProperties != null && specific.CameraProperties.ContainsKey("width") && specific.CameraProperties.ContainsKey("height"))
                 {
-                    specific.StreamFormat = currentStreamFormat.Symbol;
+                    CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["width"]);
+                    CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["height"]);
                 }
+            }
+            else
+            {
+                specific.StreamFormat = currentStreamFormat.Symbol;
             }
         }
 

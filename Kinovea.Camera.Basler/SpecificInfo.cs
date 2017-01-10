@@ -31,7 +31,10 @@ namespace Kinovea.Camera.Basler
     /// </summary>
     public class SpecificInfo
     {
+        // The handle is kept here for convenience. It is used to find back the camera from the configuration dialog which is spawned by generic code.
+        // This handle is not serialized into the specific info XML.
         public PYLON_DEVICE_HANDLE Handle { get; set; }
+
         public Dictionary<string, CameraProperty> CameraProperties { get; set; }
         public string StreamFormat { get; set; } 
 
