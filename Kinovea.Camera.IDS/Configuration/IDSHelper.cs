@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.IDS
 {
@@ -55,6 +56,39 @@ namespace Kinovea.Camera.IDS
         public static void WriteStreamFormat(uEye.Camera camera, int format)
         {
             camera.PixelFormat.Set((uEye.Defines.ColorMode)format);
+        }
+
+        public static ImageFormat GetImageFormat(uEye.Camera camera)
+        {
+            uEye.Defines.ColorMode colorMode;
+            camera.PixelFormat.Get(out colorMode);
+
+            return GetImageFormat(colorMode);
+        }
+
+        private static ImageFormat GetImageFormat(uEye.Defines.ColorMode colorMode)
+        {
+            ImageFormat format = ImageFormat.None;
+
+            switch (colorMode)
+            {
+                case uEye.Defines.ColorMode.BGR8Packed:
+                    format = ImageFormat.RGB24;
+                    break;
+                case uEye.Defines.ColorMode.BGRA8Packed:
+                    format = ImageFormat.RGB32;
+                    break;
+                case uEye.Defines.ColorMode.Mono8:
+                    format = ImageFormat.Y800;
+                    break;
+                case uEye.Defines.ColorMode.RGB8Packed:
+                case uEye.Defines.ColorMode.RGBA8Packed:
+                default:
+                    format = ImageFormat.None;
+                    break;
+            }
+
+            return format;
         }
     }
 }

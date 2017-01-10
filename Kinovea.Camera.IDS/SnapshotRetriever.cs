@@ -72,6 +72,11 @@ namespace Kinovea.Camera.IDS
                     return;
                 }
 
+                // We do not load the camera-specific profile for the thumbnail at the moment.
+                // For some reason the .ToBitmap method doesn't work well on the RGB32 format, so in order to at least have something we 
+                // load the camera on the default profile for the thumbnail.
+                //ProfileHelper.Load(camera, ProfileHelper.GetProfileFilename(summary.Identifier));
+
                 status = camera.Memory.Allocate();
                 if (status != uEye.Defines.Status.SUCCESS)
                 {
@@ -191,17 +196,23 @@ namespace Kinovea.Camera.IDS
             Bitmap bitmap;
             camera.Memory.ToBitmap(s32MemID, out bitmap);
 
-            if (bitmap != null && bitmap.PixelFormat != System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
+            if (bitmap != null)
             {
                 if (image != null)
                     image.Dispose();
 
+                // Force output into an RGB24 bitmap.
                 image = new Bitmap(bitmap.Width, bitmap.Height, PixelFormat.Format24bppRgb);
                 Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
-                
-                BitmapHelper.Copy(bitmap, image, rect);
-                
-                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24));
+
+                using (Graphics g = Graphics.FromImage(image))
+                {
+                    g.DrawImage(bitmap, Point.Empty);
+                }
+
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(image.Width, image.Height, Video.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+
                 bitmap.Dispose();
             }
             

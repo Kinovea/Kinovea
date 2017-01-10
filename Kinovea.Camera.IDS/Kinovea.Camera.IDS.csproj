@@ -96,6 +96,7 @@
   <ItemGroup>
     <Compile Include="CameraManagerIDS.cs" />
     <Compile Include="Configuration\CameraPropertyManager.cs" />
+    <Compile Include="Configuration\ProfileHelper.cs" />
     <Compile Include="Configuration\FormConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
