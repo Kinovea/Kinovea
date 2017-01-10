@@ -68,7 +68,7 @@ namespace Kinovea.Camera.IDS
         private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
         private int bufferSize = 0;
-        private byte[] buffer; 
+        private byte[] buffer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
@@ -93,9 +93,7 @@ namespace Kinovea.Camera.IDS
 
             firstOpen = false;
 
-            uEye.Defines.ColorMode colorMode;
-            camera.PixelFormat.Get(out colorMode);
-            ImageFormat format = GetImageFormat(colorMode);
+            ImageFormat format = IDSHelper.GetImageFormat(camera);
 
             // FIXME: Force a supported format if the current one is unsuitable.
             if (format == ImageFormat.None)
@@ -209,6 +207,9 @@ namespace Kinovea.Camera.IDS
                     log.ErrorFormat("Error trying to open IDS uEye camera for snapshot.");
                     return;
                 }
+
+                // Load parameter set.
+                ProfileHelper.Load(camera, ProfileHelper.GetProfileFilename(summary.Identifier));
             }
             catch (Exception e)
             {
@@ -238,6 +239,9 @@ namespace Kinovea.Camera.IDS
                     IDSHelper.WriteStreamFormat(camera, specific.StreamFormat);
 
                 CameraPropertyManager.WriteCriticalProperties(camera, specific.CameraProperties);
+
+                // Save parameter set.
+                ProfileHelper.Save(camera, ProfileHelper.GetProfileFilename(summary.Identifier));
             }
             
             // Reallocate IDS internal buffers after changing the format.
@@ -261,31 +265,6 @@ namespace Kinovea.Camera.IDS
             dataRateAverager.Post(rate);
             swDataRate.Reset();
             swDataRate.Start();
-        }
-
-        private ImageFormat GetImageFormat(uEye.Defines.ColorMode colorMode)
-        {
-            ImageFormat format = ImageFormat.None;
-
-            switch (colorMode)
-            {
-                case uEye.Defines.ColorMode.BGR8Packed:
-                    format = ImageFormat.RGB24;
-                    break;
-                case uEye.Defines.ColorMode.BGRA8Packed:
-                    format = ImageFormat.RGB32;
-                    break;
-                case uEye.Defines.ColorMode.Mono8:
-                    format = ImageFormat.Y800;
-                    break;
-                case uEye.Defines.ColorMode.RGB8Packed:
-                case uEye.Defines.ColorMode.RGBA8Packed:
-                default:
-                    format = ImageFormat.None;
-                    break;
-            }
-
-            return format;
         }
 
         #endregion
