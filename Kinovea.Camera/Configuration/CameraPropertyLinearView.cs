@@ -37,7 +37,7 @@ namespace Kinovea.Camera
             int value = (int)double.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             
             updatingValue = true;
-            tbValue.Value = value;
+            tbValue.Value = Math.Min(Math.Max(value, tbValue.Minimum), tbValue.Maximum);
             cbAuto.Checked = property.Automatic;
             updatingValue = false;
 
