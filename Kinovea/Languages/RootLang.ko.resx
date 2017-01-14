@@ -96,6 +96,10 @@
    
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>이미지 포맷:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>비디오 포맷:</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>연도</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>월</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>일</value></data>

@@ -110,6 +110,10 @@
    
    
    
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>一直可见</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>当播放视频的时候显示绘制信息</value></data>
    <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>允许持久性</value></data>

@@ -51,6 +51,12 @@ namespace Kinovea.Services
             get { return displaySynchronizationFramerate; }
             set { displaySynchronizationFramerate = value; }
         }
+
+        public CaptureRecordingMode RecordingMode
+        {
+            get { return recordingMode; }
+            set { recordingMode = value; }
+        }
         
         public int CaptureMemoryBuffer
         {
@@ -72,6 +78,7 @@ namespace Kinovea.Services
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private bool useCameraSignalSynchronization = false;
         private double displaySynchronizationFramerate = 25.0;
+        private CaptureRecordingMode recordingMode = CaptureRecordingMode.Camera;
         
         private int memoryBuffer = 768;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
@@ -102,6 +109,7 @@ namespace Kinovea.Services
             writer.WriteElementString("UseCameraSignalSynchronization", useCameraSignalSynchronization ? "true" : "false");
             string dsf = displaySynchronizationFramerate.ToString("0.000", CultureInfo.InvariantCulture);
             writer.WriteElementString("DisplaySynchronizationFramerate", dsf);
+            writer.WriteElementString("CaptureRecordingMode", recordingMode.ToString());
             
             writer.WriteElementString("MemoryBuffer", memoryBuffer.ToString());
             
@@ -141,6 +149,9 @@ namespace Kinovea.Services
                     case "DisplaySynchronizationFramerate":
                         string str = reader.ReadElementContentAsString();
                         displaySynchronizationFramerate = double.Parse(str, CultureInfo.InvariantCulture);
+                        break;
+                    case "CaptureRecordingMode":
+                        recordingMode = (CaptureRecordingMode)Enum.Parse(typeof(CaptureRecordingMode), reader.ReadElementContentAsString());
                         break;
                     case "MemoryBuffer":
                         memoryBuffer = reader.ReadElementContentAsInt();

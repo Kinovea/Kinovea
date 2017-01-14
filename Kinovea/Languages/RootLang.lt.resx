@@ -96,6 +96,10 @@
    
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Paveikslėlio formatas:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Vaizdo formatas:</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Metai</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mėnuo</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Diena</value></data>

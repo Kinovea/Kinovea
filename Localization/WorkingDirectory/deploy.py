@@ -71,8 +71,8 @@ def generate_resource_accessor(module, target):
 # -------------------------------------------------------------------------------
 # Program Entry point.
 saxon = '"C:\\Program Files\\Saxonica\\SaxonHE9.6N\\bin\\Transform.exe"'
-#resgen = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\resgen.exe"'
-resgen = '.\\resgen.exe'
+resgen = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\resgen.exe"'
+#resgen = '.\\resgen.exe'
 al = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\al.exe"'
 
 

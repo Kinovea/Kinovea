@@ -35,6 +35,7 @@ using Kinovea.Pipeline;
 using Kinovea.Pipeline.Consumers;
 using System.Threading;
 using System.Diagnostics;
+using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {
@@ -136,6 +137,8 @@ namespace Kinovea.ScreenManager
         private Thread recorderThread;
         private Bitmap recordingThumbnail;
         private DateTime recordingStart;
+        private CaptureRecordingMode recordingMode;
+        private VideoFileWriter videoFileWriter = new VideoFileWriter();
 
         private OIPRollingShutterCalibration imageProcessor = new OIPRollingShutterCalibration();
 
@@ -194,6 +197,8 @@ namespace Kinovea.ScreenManager
             delayCompositeConfiguration = PreferencesManager.CapturePreferences.DelayCompositeConfiguration;
             delayComposite = GetComposite(delayCompositeConfiguration);
             delayCompositer.SetComposite(delayComposite);
+
+            recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             
             view.SetToolbarView(drawingToolbarPresenter.View);
             
@@ -255,6 +260,7 @@ namespace Kinovea.ScreenManager
         {
             AllocateDelayer();
             InitializeCaptureFilenames();
+            recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
         }
         public override void BeforeClose()
         {
@@ -779,6 +785,9 @@ namespace Kinovea.ScreenManager
             // Get the image to display.
             Bitmap delayed = delayCompositer.Get(delay);
             viewportController.Bitmap = delayed;
+
+            if (recording && recordingMode == CaptureRecordingMode.Display)
+                videoFileWriter.SaveFrame(delayed);
         }
 
         private void ViewportController_DisplayRectangleUpdated(object sender, EventArgs e)
@@ -846,13 +855,13 @@ namespace Kinovea.ScreenManager
 
         private void ToggleImageProcessing()
         {
-            Bitmap delayed = delayer.Get(delay);
+            /*Bitmap delayed = delayer.Get(delay);
 
             // Test
             if (metadata.TestGridVisible)
                 imageProcessor.Start(delayed.Width, delayed.Height, delayed.PixelFormat);
             else
-                imageProcessor.Stop();
+                imageProcessor.Stop();*/
         }
         
         #region Recording/Snapshoting
@@ -1042,7 +1051,24 @@ namespace Kinovea.ScreenManager
             }
             
             double interval = cameraGrabber.Framerate > 0 ? 1000.0 / cameraGrabber.Framerate : 40;
-            SaveResult result = pipelineManager.StartRecord(path, interval);
+            
+            SaveResult result;
+            if (recordingMode == CaptureRecordingMode.Camera)
+            {
+                result = pipelineManager.StartRecord(path, interval);
+            }
+            else
+            {
+                // In RecordingMode.Display we use a simple VideoFileWriter that will push the displayed bitmap to a file.
+                VideoInfo info = new VideoInfo();
+                info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
+                string formatString = FilenameHelper.GetFormatStringCapture();
+
+                // We have 3 possible framerates: the configured camera framerate, the measured camera framerate and the display framerate.
+                double measuredInterval = 1000 / pipelineManager.Frequency;
+                result = videoFileWriter.OpenSavingContext(path, info, formatString, measuredInterval);
+            }
+
             recording = result == SaveResult.Success;
             
             if(recording)
@@ -1060,44 +1086,58 @@ namespace Kinovea.ScreenManager
 
         private void StopRecording()
         {
-            if(!cameraLoaded || !recording || !consumerRecord.Active)
+            if(!cameraLoaded || !recording)
                return;
-             
-            recording = false;
-            consumerRecord.Deactivate();
-            view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
 
+            if (recordingMode == CaptureRecordingMode.Camera && !consumerRecord.Active)
+                return;
+
+            string finalFilename = null;
+            if (recordingMode == CaptureRecordingMode.Camera)
+            {
+                consumerRecord.Deactivate();
+                finalFilename = consumerRecord.Filename;
+            }
+            else
+            {
+                videoFileWriter.CloseSavingContext(true);
+                finalFilename = videoFileWriter.Filename;
+            }
+            
+            recording = false;
+
+            view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
              
             if(recordingThumbnail != null)
             {
-                AddCapturedFile(consumerRecord.Filename, recordingThumbnail, true);
+                AddCapturedFile(finalFilename, recordingThumbnail, true);
                 recordingThumbnail.Dispose();
                 recordingThumbnail = null;
             }
 
-            CaptureHistoryEntry entry = CreateHistoryEntry();
+            CaptureHistoryEntry entry = CreateHistoryEntry(finalFilename);
             CaptureHistory.AddEntry(entry);
 
             // We need to use the original filename with patterns still in it.
-            string filenameWithoutExtension = view.CurrentVideoFilename;
+            string filenamePattern = view.CurrentVideoFilename;
 
             if (index == 0)
-                PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoFile = filenameWithoutExtension;
+                PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftVideoFile = filenamePattern;
             else
-                PreferencesManager.CapturePreferences.CapturePathConfiguration.RightVideoFile = filenameWithoutExtension;
+                PreferencesManager.CapturePreferences.CapturePathConfiguration.RightVideoFile = filenamePattern;
 
             PreferencesManager.Save();
 
-            string next = Filenamer.ComputeNextFilename(filenameWithoutExtension);
+            string next = Filenamer.ComputeNextFilename(filenamePattern);
             view.UpdateNextVideoFilename(next);
 
             view.UpdateRecordingStatus(recording);
         }
 
-        private CaptureHistoryEntry CreateHistoryEntry()
+        private CaptureHistoryEntry CreateHistoryEntry(string filename)
         {
-            string captureFile = consumerRecord.Filename;
+            string captureFile = filename;
             DateTime start = recordingStart;
             DateTime end = DateTime.Now;
             string cameraAlias = cameraSummary.Alias;

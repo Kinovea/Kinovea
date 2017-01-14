@@ -22,9 +22,10 @@ namespace Kinovea.Services
         Drawings_Tracking,
 
         Capture_General,
+        Capture_Memory,
+        Capture_Recording,
         Capture_ImageNaming,
         Capture_VideoNaming,
-        Capture_Memory,
 
         Keyboard_General
     }

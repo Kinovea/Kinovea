@@ -96,6 +96,10 @@
    <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Давање имена видеа</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Графички формат:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Видео формат:</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Година</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Месец</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Дан</value></data>

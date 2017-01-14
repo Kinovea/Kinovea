@@ -129,7 +129,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
         delete m_SavingContext;
     
     m_SavingContext = gcnew SavingContext();
-
+    m_Filename = _FilePath;
     m_SavingContext->pFilePath = static_cast<char*>(Marshal::StringToHGlobalAnsi(_FilePath).ToPointer());
     
     // Apparently not all output size are ok, some crash sws_scale.
