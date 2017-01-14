@@ -110,6 +110,10 @@
    
    
    
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Vis tegninger samtidig meg videoavspilling</value></data>
    <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Start likevekt</value></data>

@@ -64,6 +64,14 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     protected:
         !VideoFileWriter();
 
+    // Public properties
+    public: 
+        property String^ Filename {
+            String^ get() { 
+                return	m_Filename; 
+            }
+        }
+
     // Public Methods
     public:
         SaveResult Save(SavingSettings _settings,  VideoInfo _info, String^ _formatString, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker);
@@ -87,5 +95,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     private :
         static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
         SavingContext^ m_SavingContext;
+        String^ m_Filename;
     };
 }}}

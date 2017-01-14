@@ -200,6 +200,7 @@
     <Compile Include="Preferences\AngularAccelerationUnit.cs" />
     <Compile Include="Preferences\AngularVelocityUnit.cs" />
     <Compile Include="Preferences\CapturePathConfiguration.cs" />
+    <Compile Include="Preferences\CaptureRecordingMode.cs" />
     <Compile Include="Preferences\DelayCompositeConfiguration.cs" />
     <Compile Include="Preferences\DelayCompositeType.cs" />
     <Compile Include="Preferences\FileProperty.cs" />

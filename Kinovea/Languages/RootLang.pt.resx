@@ -96,6 +96,10 @@
    
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Formato da Imagem:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Formato do Video:</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Ano</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mês</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dia</value></data>

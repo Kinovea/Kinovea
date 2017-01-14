@@ -96,6 +96,10 @@
    <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Video naamgeving</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Afbeeldingstype :</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videotype :</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Jaar</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Maand</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dag</value></data>

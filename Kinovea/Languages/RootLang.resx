@@ -96,6 +96,10 @@
    <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Video naming</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Image format:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Video format:</value></data>
+   <data name="dlgPreferences_Capture_Recording" xml:space="preserve"><value>Recording</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Recording mode</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Camera</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Display</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Year</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Month</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Day</value></data>

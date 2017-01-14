@@ -53,11 +53,12 @@ namespace Kinovea.Root
         #region Members
         private string description;
         private Bitmap icon;
-        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Capture_General, PreferenceTab.Capture_ImageNaming, PreferenceTab.Capture_VideoNaming, PreferenceTab.Capture_Memory};
+        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Capture_General, PreferenceTab.Capture_Memory, PreferenceTab.Capture_Recording, PreferenceTab.Capture_ImageNaming, PreferenceTab.Capture_VideoNaming};
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
         private bool useCameraSignalSynchronization;
         private double displaySynchronizationFramerate;
+        private CaptureRecordingMode recordingMode;
         private int memoryBuffer;
         private FilenameHelper filenameHelper = new FilenameHelper();
         private FormPatterns formPatterns;
@@ -91,15 +92,17 @@ namespace Kinovea.Root
             capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
             useCameraSignalSynchronization = PreferencesManager.CapturePreferences.UseCameraSignalSynchronization;
             displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
+            recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
         }
         private void InitPage()
         {
             InitPageGeneral();
+            InitPageMemory();
+            InitPageRecording();
             InitPageImageNaming();
             InitPageVideoNaming();
             InitNamingTextBoxes();
-            InitPageMemory();
         }
 
         private void InitPageGeneral()
@@ -127,6 +130,38 @@ namespace Kinovea.Root
             rbCameraFrameSignal.Checked = useCameraSignalSynchronization;
             rbForcedFramerate.Checked = !useCameraSignalSynchronization;
             tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
+        }
+
+        private void InitPageMemory()
+        {
+            tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
+
+            // Max allocation of memory based on bitness and physical memory.
+            ComputerInfo ci = new ComputerInfo();
+            ulong megabytes = 1024 * 1024;
+            int maxMemory = (int)(ci.TotalPhysicalMemory / megabytes);
+            int thresholdLargeMemory = 3072;
+            int reserve = 2048;
+
+            if (Software.Is32bit || maxMemory < thresholdLargeMemory)
+                trkMemoryBuffer.Maximum = 1024;
+            else
+                trkMemoryBuffer.Maximum = maxMemory - reserve;
+
+            memoryBuffer = Math.Min(memoryBuffer, trkMemoryBuffer.Maximum);
+            trkMemoryBuffer.Value = memoryBuffer;
+            UpdateMemoryLabel();
+        }
+
+        private void InitPageRecording()
+        {
+            tabRecording.Text = RootLang.dlgPreferences_Capture_Recording;
+
+            grpRecordingMode.Text = RootLang.dlgPreferences_Capture_RecordingMode;
+            rbRecordingCamera.Text = RootLang.dlgPreferences_Capture_RecordingMode_Camera;
+            rbRecordingDisplay.Text = RootLang.dlgPreferences_Capture_RecordingMode_Display;
+            rbRecordingCamera.Checked = recordingMode == CaptureRecordingMode.Camera;
+            rbRecordingDisplay.Checked = recordingMode != CaptureRecordingMode.Camera;
         }
 
         private void InitPageImageNaming()
@@ -171,27 +206,6 @@ namespace Kinovea.Root
             tbRightVideoRoot.Text = capturePathConfiguration.RightVideoRoot;
             tbRightVideoSubdir.Text = capturePathConfiguration.RightVideoSubdir;
             tbRightVideoFile.Text = capturePathConfiguration.RightVideoFile;
-        }
-
-        private void InitPageMemory()
-        {
-            tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
-
-            // Max allocation of memory based on bitness and physical memory.
-            ComputerInfo ci = new ComputerInfo();
-            ulong megabytes = 1024 * 1024;
-            int maxMemory = (int)(ci.TotalPhysicalMemory / megabytes);
-            int thresholdLargeMemory = 3072;
-            int reserve = 2048;
-
-            if (Software.Is32bit || maxMemory < thresholdLargeMemory)
-                trkMemoryBuffer.Maximum = 1024;
-            else
-                trkMemoryBuffer.Maximum = maxMemory - reserve;
-
-            memoryBuffer = Math.Min(memoryBuffer, trkMemoryBuffer.Maximum);
-            trkMemoryBuffer.Value = memoryBuffer;
-            UpdateMemoryLabel();
         }
 
         private void InitNamingTextBoxes()
@@ -338,15 +352,22 @@ namespace Kinovea.Root
             lblMemoryBuffer.Text = String.Format(RootLang.dlgPreferences_Capture_lblMemoryBuffer, trkMemoryBuffer.Value);
         }
         #endregion
-        
+
+        #region Tab Recording
+        private void radioRecordingMode_CheckedChanged(object sender, EventArgs e)
+        {
+            recordingMode = rbRecordingCamera.Checked ? CaptureRecordingMode.Camera : CaptureRecordingMode.Display;
+        }
         #endregion
-        
+        #endregion
+
         public void CommitChanges()
         {
             PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
             PreferencesManager.CapturePreferences.UseCameraSignalSynchronization = useCameraSignalSynchronization;
             PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate = displaySynchronizationFramerate;
             PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
+            PreferencesManager.CapturePreferences.RecordingMode = recordingMode;
         }
 
         private void btnMacroReference_Click(object sender, EventArgs e)

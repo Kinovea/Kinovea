@@ -59,6 +59,13 @@ namespace Kinovea.Root
             this.rbCameraFrameSignal = new System.Windows.Forms.RadioButton();
             this.cmbImageFormat = new System.Windows.Forms.ComboBox();
             this.lblImageFormat = new System.Windows.Forms.Label();
+            this.tabMemory = new System.Windows.Forms.TabPage();
+            this.lblMemoryBuffer = new System.Windows.Forms.Label();
+            this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
+            this.tabRecording = new System.Windows.Forms.TabPage();
+            this.grpRecordingMode = new System.Windows.Forms.GroupBox();
+            this.rbRecordingDisplay = new System.Windows.Forms.RadioButton();
+            this.rbRecordingCamera = new System.Windows.Forms.RadioButton();
             this.tabImageNaming = new System.Windows.Forms.TabPage();
             this.grpRightImage = new System.Windows.Forms.GroupBox();
             this.btnRightImageFile = new System.Windows.Forms.Button();
@@ -101,28 +108,28 @@ namespace Kinovea.Root
             this.tbLeftVideoSubdir = new System.Windows.Forms.TextBox();
             this.lblLeftVideoRoot = new System.Windows.Forms.Label();
             this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
-            this.tabMemory = new System.Windows.Forms.TabPage();
-            this.lblMemoryBuffer = new System.Windows.Forms.Label();
-            this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
             this.tabSubPages.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.grpDSS.SuspendLayout();
+            this.tabMemory.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
+            this.tabRecording.SuspendLayout();
+            this.grpRecordingMode.SuspendLayout();
             this.tabImageNaming.SuspendLayout();
             this.grpRightImage.SuspendLayout();
             this.grpLeftImage.SuspendLayout();
             this.tabVideoNaming.SuspendLayout();
             this.grpRightVideo.SuspendLayout();
             this.grpLeftVideo.SuspendLayout();
-            this.tabMemory.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
             this.SuspendLayout();
             // 
             // tabSubPages
             // 
             this.tabSubPages.Controls.Add(this.tabGeneral);
+            this.tabSubPages.Controls.Add(this.tabMemory);
+            this.tabSubPages.Controls.Add(this.tabRecording);
             this.tabSubPages.Controls.Add(this.tabImageNaming);
             this.tabSubPages.Controls.Add(this.tabVideoNaming);
-            this.tabSubPages.Controls.Add(this.tabMemory);
             this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPages.Location = new System.Drawing.Point(0, 0);
             this.tabSubPages.Name = "tabSubPages";
@@ -234,6 +241,85 @@ namespace Kinovea.Root
             this.lblImageFormat.Size = new System.Drawing.Size(149, 18);
             this.lblImageFormat.TabIndex = 2;
             this.lblImageFormat.Text = "Image format :";
+            // 
+            // tabMemory
+            // 
+            this.tabMemory.Controls.Add(this.lblMemoryBuffer);
+            this.tabMemory.Controls.Add(this.trkMemoryBuffer);
+            this.tabMemory.Location = new System.Drawing.Point(4, 22);
+            this.tabMemory.Name = "tabMemory";
+            this.tabMemory.Size = new System.Drawing.Size(424, 210);
+            this.tabMemory.TabIndex = 2;
+            this.tabMemory.Text = "Memory";
+            this.tabMemory.UseVisualStyleBackColor = true;
+            // 
+            // lblMemoryBuffer
+            // 
+            this.lblMemoryBuffer.AutoSize = true;
+            this.lblMemoryBuffer.Location = new System.Drawing.Point(15, 30);
+            this.lblMemoryBuffer.Name = "lblMemoryBuffer";
+            this.lblMemoryBuffer.Size = new System.Drawing.Size(221, 13);
+            this.lblMemoryBuffer.TabIndex = 36;
+            this.lblMemoryBuffer.Text = "Memory allocated for capture buffers : {0} MB";
+            // 
+            // trkMemoryBuffer
+            // 
+            this.trkMemoryBuffer.BackColor = System.Drawing.Color.White;
+            this.trkMemoryBuffer.Location = new System.Drawing.Point(15, 55);
+            this.trkMemoryBuffer.Maximum = 1024;
+            this.trkMemoryBuffer.Minimum = 16;
+            this.trkMemoryBuffer.Name = "trkMemoryBuffer";
+            this.trkMemoryBuffer.Size = new System.Drawing.Size(386, 45);
+            this.trkMemoryBuffer.TabIndex = 38;
+            this.trkMemoryBuffer.TickFrequency = 50;
+            this.trkMemoryBuffer.Value = 16;
+            this.trkMemoryBuffer.ValueChanged += new System.EventHandler(this.trkMemoryBuffer_ValueChanged);
+            // 
+            // tabRecording
+            // 
+            this.tabRecording.Controls.Add(this.grpRecordingMode);
+            this.tabRecording.Location = new System.Drawing.Point(4, 22);
+            this.tabRecording.Name = "tabRecording";
+            this.tabRecording.Padding = new System.Windows.Forms.Padding(3);
+            this.tabRecording.Size = new System.Drawing.Size(424, 210);
+            this.tabRecording.TabIndex = 4;
+            this.tabRecording.Text = "Recording";
+            this.tabRecording.UseVisualStyleBackColor = true;
+            // 
+            // grpRecordingMode
+            // 
+            this.grpRecordingMode.Controls.Add(this.rbRecordingDisplay);
+            this.grpRecordingMode.Controls.Add(this.rbRecordingCamera);
+            this.grpRecordingMode.Location = new System.Drawing.Point(15, 19);
+            this.grpRecordingMode.Name = "grpRecordingMode";
+            this.grpRecordingMode.Size = new System.Drawing.Size(386, 81);
+            this.grpRecordingMode.TabIndex = 40;
+            this.grpRecordingMode.TabStop = false;
+            this.grpRecordingMode.Text = "Recording mode";
+            // 
+            // rbRecordingDisplay
+            // 
+            this.rbRecordingDisplay.AutoSize = true;
+            this.rbRecordingDisplay.Location = new System.Drawing.Point(16, 47);
+            this.rbRecordingDisplay.Name = "rbRecordingDisplay";
+            this.rbRecordingDisplay.Size = new System.Drawing.Size(229, 17);
+            this.rbRecordingDisplay.TabIndex = 39;
+            this.rbRecordingDisplay.TabStop = true;
+            this.rbRecordingDisplay.Text = "Screen: records what is currently displayed.";
+            this.rbRecordingDisplay.UseVisualStyleBackColor = true;
+            this.rbRecordingDisplay.CheckedChanged += new System.EventHandler(this.radioRecordingMode_CheckedChanged);
+            // 
+            // rbRecordingCamera
+            // 
+            this.rbRecordingCamera.AutoSize = true;
+            this.rbRecordingCamera.Location = new System.Drawing.Point(16, 24);
+            this.rbRecordingCamera.Name = "rbRecordingCamera";
+            this.rbRecordingCamera.Size = new System.Drawing.Size(229, 17);
+            this.rbRecordingCamera.TabIndex = 38;
+            this.rbRecordingCamera.TabStop = true;
+            this.rbRecordingCamera.Text = "Camera: records the camera stream to disk.";
+            this.rbRecordingCamera.UseVisualStyleBackColor = true;
+            this.rbRecordingCamera.CheckedChanged += new System.EventHandler(this.radioRecordingMode_CheckedChanged);
             // 
             // tabImageNaming
             // 
@@ -715,39 +801,6 @@ namespace Kinovea.Root
             this.tbLeftVideoRoot.Size = new System.Drawing.Size(230, 20);
             this.tbLeftVideoRoot.TabIndex = 40;
             // 
-            // tabMemory
-            // 
-            this.tabMemory.Controls.Add(this.lblMemoryBuffer);
-            this.tabMemory.Controls.Add(this.trkMemoryBuffer);
-            this.tabMemory.Location = new System.Drawing.Point(4, 22);
-            this.tabMemory.Name = "tabMemory";
-            this.tabMemory.Size = new System.Drawing.Size(424, 210);
-            this.tabMemory.TabIndex = 2;
-            this.tabMemory.Text = "Memory";
-            this.tabMemory.UseVisualStyleBackColor = true;
-            // 
-            // lblMemoryBuffer
-            // 
-            this.lblMemoryBuffer.AutoSize = true;
-            this.lblMemoryBuffer.Location = new System.Drawing.Point(15, 30);
-            this.lblMemoryBuffer.Name = "lblMemoryBuffer";
-            this.lblMemoryBuffer.Size = new System.Drawing.Size(221, 13);
-            this.lblMemoryBuffer.TabIndex = 36;
-            this.lblMemoryBuffer.Text = "Memory allocated for capture buffers : {0} MB";
-            // 
-            // trkMemoryBuffer
-            // 
-            this.trkMemoryBuffer.BackColor = System.Drawing.Color.White;
-            this.trkMemoryBuffer.Location = new System.Drawing.Point(15, 55);
-            this.trkMemoryBuffer.Maximum = 1024;
-            this.trkMemoryBuffer.Minimum = 16;
-            this.trkMemoryBuffer.Name = "trkMemoryBuffer";
-            this.trkMemoryBuffer.Size = new System.Drawing.Size(386, 45);
-            this.trkMemoryBuffer.TabIndex = 38;
-            this.trkMemoryBuffer.TickFrequency = 50;
-            this.trkMemoryBuffer.Value = 16;
-            this.trkMemoryBuffer.ValueChanged += new System.EventHandler(this.trkMemoryBuffer_ValueChanged);
-            // 
             // PreferencePanelCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -759,6 +812,12 @@ namespace Kinovea.Root
             this.tabGeneral.ResumeLayout(false);
             this.grpDSS.ResumeLayout(false);
             this.grpDSS.PerformLayout();
+            this.tabMemory.ResumeLayout(false);
+            this.tabMemory.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).EndInit();
+            this.tabRecording.ResumeLayout(false);
+            this.grpRecordingMode.ResumeLayout(false);
+            this.grpRecordingMode.PerformLayout();
             this.tabImageNaming.ResumeLayout(false);
             this.grpRightImage.ResumeLayout(false);
             this.grpRightImage.PerformLayout();
@@ -769,9 +828,6 @@ namespace Kinovea.Root
             this.grpRightVideo.PerformLayout();
             this.grpLeftVideo.ResumeLayout(false);
             this.grpLeftVideo.PerformLayout();
-            this.tabMemory.ResumeLayout(false);
-            this.tabMemory.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -831,5 +887,9 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblLeftVideoRoot;
         private System.Windows.Forms.TextBox tbLeftVideoRoot;
         private System.Windows.Forms.Button btnLeftVideoRoot;
+        private System.Windows.Forms.TabPage tabRecording;
+        private System.Windows.Forms.GroupBox grpRecordingMode;
+        private System.Windows.Forms.RadioButton rbRecordingDisplay;
+        private System.Windows.Forms.RadioButton rbRecordingCamera;
 	}
 }
