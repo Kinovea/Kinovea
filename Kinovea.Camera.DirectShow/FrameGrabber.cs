@@ -99,9 +99,16 @@ namespace Kinovea.Camera.DirectShow
                 // This device was never connected to in Kinovea, use the first media type.
                 AForge.Video.DirectShow.VideoCapabilities[] caps = device.VideoCapabilities;
                 if (caps.Length == 0)
+                {
+                    log.ErrorFormat("Cannot get any media type for the device.");
                     return ImageDescriptor.Invalid;
+                }
 
                 cap = caps[0];
+
+                device.SetMediaTypeAndFramerate(cap.Index, (float)cap.AverageFrameRate);
+                log.DebugFormat("Device set to default configuration: Index:{0}. ({1}×{2} @ {3:0.###} fps ({4})).",
+                    cap.Index, cap.FrameSize.Width, cap.FrameSize.Height, cap.AverageFrameRate, cap.Compression);
             }
             else
             {
@@ -110,7 +117,7 @@ namespace Kinovea.Camera.DirectShow
 
             int width = cap.FrameSize.Width;
             int height = cap.FrameSize.Height;
-            
+
             ImageFormat format = ImageFormat.RGB24;
 
             switch (cap.Compression)
@@ -185,7 +192,7 @@ namespace Kinovea.Camera.DirectShow
             SpecificInfo info = summary.Specific as SpecificInfo;
             if (info == null || info.MediaTypeIndex < 0)
             {
-                log.DebugFormat("The device has never been configured in Kinovea.");
+                log.DebugFormat("No configuration saved in preferences for this device.");
                 return;
             }
 
