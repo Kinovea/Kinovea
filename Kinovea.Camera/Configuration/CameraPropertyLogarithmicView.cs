@@ -49,8 +49,6 @@ namespace Kinovea.Camera
             cbAuto.Checked = property.Automatic;
             updatingValue = false;
 
-            tbValue.Enabled = !property.ReadOnly;
-
             lblValue.Text = valueMapper((int)value);
         }
 

@@ -41,10 +41,6 @@ namespace Kinovea.Camera
             cbAuto.Checked = property.Automatic;
             updatingValue = false;
 
-            // We allow the change of the properties even if they are readonly.
-            // Sometimes the properties are readonly because we are currently streaming, but we'll have a chance to write them during the disconnection/reconnection.
-            //tbValue.Enabled = !property.ReadOnly;
-
             lblValue.Text = valueMapper(value);
         }
 
