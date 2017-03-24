@@ -62,6 +62,14 @@ namespace Kinovea.Camera.Basler
             if (!property.Supported || string.IsNullOrEmpty(property.Identifier))
                 return;
 
+            // If "auto" flag is OFF we should write it first. On some cameras the value is not writable until the corresponding auto flag is off.
+            // If it's ON (continuous), it doesn't matter as our value will be overwritten soon anyway.
+            if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
+            {
+                string enumValue = property.Automatic ? "Continuous" : "Off";
+                PylonHelper.WriteEnum(deviceHandle, property.AutomaticIdentifier, enumValue);
+            }
+
             NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
             NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, property.Identifier);
             if (!nodeHandle.IsValid)
@@ -69,7 +77,15 @@ namespace Kinovea.Camera.Basler
 
             EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
             if (accessMode != EGenApiAccessMode.RW)
+            {
+                if (!string.IsNullOrEmpty(property.AutomaticIdentifier) && !property.Automatic)
+                {
+                    log.ErrorFormat("Error while writing Basler Pylon GenICam property {0}", property.Identifier);
+                    log.ErrorFormat("The property is not writable.");
+                }
+
                 return;
+            }
 
             try
             {
@@ -110,15 +126,7 @@ namespace Kinovea.Camera.Basler
             catch
             {
                 log.ErrorFormat("Error while writing Basler Pylon GenICam property {0}", property.Identifier);
-                log.ErrorFormat("");
             }
-
-            // Handle the separate property for auto flag.
-            if (string.IsNullOrEmpty(property.AutomaticIdentifier))
-                return;
-
-            string enumValue = property.Automatic ? "Continuous" : "Off";
-            PylonHelper.WriteEnum(deviceHandle, property.AutomaticIdentifier, enumValue);
         }
 
         private static void ReadFramerate(PYLON_DEVICE_HANDLE deviceHandle, string deviceClass, Dictionary<string, CameraProperty> properties)
@@ -133,36 +141,32 @@ namespace Kinovea.Camera.Basler
 
         private static void ReadExposure(PYLON_DEVICE_HANDLE deviceHandle, string deviceClass, Dictionary<string, CameraProperty> properties)
         {
+            CameraProperty prop = null;
             if (deviceClass == "BaslerUsb")
-            {
-                CameraProperty prop = ReadFloatProperty(deviceHandle, "ExposureTime");
-                prop.CanBeAutomatic = true;
-                prop.AutomaticIdentifier = "ExposureAuto";
-                GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, prop.AutomaticIdentifier);
-                prop.Automatic = auto.Symbol == "Continuous";
-                properties.Add("exposure", prop);
-            }
+                prop = ReadFloatProperty(deviceHandle, "ExposureTime");
             else
-            {
-                properties.Add("exposure", ReadFloatProperty(deviceHandle, "ExposureTimeAbs"));
-            }
+                prop = ReadFloatProperty(deviceHandle, "ExposureTimeAbs");
+
+            prop.CanBeAutomatic = true;
+            prop.AutomaticIdentifier = "ExposureAuto";
+            GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, prop.AutomaticIdentifier);
+            prop.Automatic = auto.Symbol == "Continuous";
+            properties.Add("exposure", prop);
         }
 
         private static void ReadGain(PYLON_DEVICE_HANDLE deviceHandle, string deviceClass, Dictionary<string, CameraProperty> properties)
         {
+            CameraProperty prop = null;
             if (deviceClass == "BaslerUsb")
-            {
-                CameraProperty prop = ReadFloatProperty(deviceHandle, "Gain");
-                prop.CanBeAutomatic = true;
-                prop.AutomaticIdentifier = "GainAuto";
-                GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, prop.AutomaticIdentifier);
-                prop.Automatic = auto.Symbol == "Continuous";
-                properties.Add("gain", prop);
-            }
+                prop = ReadFloatProperty(deviceHandle, "Gain");
             else
-            {
-                properties.Add("gain", ReadIntegerProperty(deviceHandle, "GainRaw"));
-            }
+                prop = ReadIntegerProperty(deviceHandle, "GainRaw");
+
+            prop.CanBeAutomatic = true;
+            prop.AutomaticIdentifier = "GainAuto";
+            GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, prop.AutomaticIdentifier);
+            prop.Automatic = auto.Symbol == "Continuous";
+            properties.Add("gain", prop);
         }
 
         private static CameraProperty ReadIntegerProperty(PYLON_DEVICE_HANDLE deviceHandle, string symbol)
