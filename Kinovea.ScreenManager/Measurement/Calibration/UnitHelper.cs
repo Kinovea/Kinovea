@@ -194,6 +194,7 @@ namespace Kinovea.ScreenManager
             {
                 case SpeedUnit.FeetPerSecond:
                 case SpeedUnit.MetersPerSecond:
+                case SpeedUnit.PixelsPerSecond:
                     result = perSecond;
                     break;
                 case SpeedUnit.KilometersPerHour:
