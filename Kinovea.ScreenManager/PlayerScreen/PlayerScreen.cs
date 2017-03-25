@@ -508,55 +508,68 @@ namespace Kinovea.ScreenManager
             if (!IsPlaying)
                 view.OnButtonPlay();
         }
+        
         public void StopPlaying()
         {
             view.StopPlaying();
         }
+        
         public void GotoNextFrame(bool allowUIUpdate)
         {
             view.ForceCurrentFrame(-1, allowUIUpdate);
         }
+        
         public void GotoTime(long microseconds, bool allowUIUpdate)
         {
             long timestamp = RealtimeToTimestamp(microseconds);
             view.ForcePosition(timestamp, allowUIUpdate);
         }
+        
         public void GotoPrevKeyframe()
         {
             view.GotoPreviousKeyframe();
         }
+        
         public void GotoNextKeyframe()
         {
             view.GotoNextKeyframe();
         }
+        
         public void AddKeyframe()
         {
             view.AddKeyframe();
         }
+        
         public void ResetSelectionImages(MemoPlayerScreen _memo)
         {
             view.ResetSelectionImages(_memo);
         }
+        
         public MemoPlayerScreen GetMemo()
         {
             return view.GetMemo();
         }
+        
         public void SetInteractiveEffect(InteractiveEffect _effect)
         {
             view.SetInteractiveEffect(_effect);
         }
+        
         public void DeactivateInteractiveEffect()
         {
             view.DeactivateInteractiveEffect();
         }
+        
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
         {
             view.SetSyncMergeImage(_SyncMergeImage, _bUpdateUI);
         }
+        
         public void Save()
         {
             view.Save();
         }
+        
         public void ConfigureTimebase()
         {
             if (!frameServer.Loaded)
@@ -589,15 +602,18 @@ namespace Kinovea.ScreenManager
             view.UpdateTimeLabels();
             view.RefreshImage();
         }
+        
         public Bitmap GetFlushedImage()
         {
             return view.GetFlushedImage();
         }
+        
         public void ShowCoordinateSystem()
         {
             frameServer.Metadata.ShowCoordinateSystem();
             view.RefreshImage();
         }
+
         public void ShowCameraCalibration()
         {
             List<List<PointF>> points = frameServer.Metadata.GetCameraCalibrationPoints();
@@ -609,6 +625,39 @@ namespace Kinovea.ScreenManager
 
             view.RefreshImage();
         }
+
+        public void ShowTrajectoryAnalysis()
+        {
+            FormMultiTrajectoryAnalysis f = new FormMultiTrajectoryAnalysis(frameServer.Metadata);
+            FormsHelper.Locate(f);
+            f.ShowDialog();
+            f.Dispose();
+        }
+
+        public void ShowPointAnalysis()
+        {
+            FormPointsAnalysis fpa = new FormPointsAnalysis(frameServer.Metadata);
+            FormsHelper.Locate(fpa);
+            fpa.ShowDialog();
+            fpa.Dispose();
+        }
+
+        public void ShowAngularAnalysis()
+        {
+            /*FormAngularAnalysis f = new FormAngularAnalysis(frameServer.Metadata);
+            FormsHelper.Locate(f);
+            f.ShowDialog();
+            f.Dispose();*/
+        }
+
+        public void ShowAngleAngleAnalysis()
+        {
+            /*FormAngleAngleAnalysis f = new FormAngleAngleAnalysis(frameServer.Metadata);
+            FormsHelper.Locate(f);
+            f.ShowDialog();
+            f.Dispose();*/
+        }
+
         public void ShowDataAnalysis(AbstractDrawing drawing)
         {
             if (drawing is DrawingCrossMark)
