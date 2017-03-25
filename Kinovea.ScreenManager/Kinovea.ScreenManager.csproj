@@ -249,6 +249,13 @@
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\FilePatternContexts.cs" />
     <Compile Include="FilePatterns\FilePatternSymbols.cs" />
+    <Compile Include="Measurement\Plotting\FormMultiTrajectoryAnalysis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Measurement\Plotting\FormMultiTrajectoryAnalysis.Designer.cs">
+      <DependentUpon>FormMultiTrajectoryAnalysis.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Measurement\Plotting\TimeModel.cs" />
     <Compile Include="Metadata\Drawings\DrawingTestGrid.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolTestGrid.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementCurved.cs" />
@@ -871,6 +878,9 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
+    <EmbeddedResource Include="Measurement\Plotting\FormMultiTrajectoryAnalysis.resx">
+      <DependentUpon>FormMultiTrajectoryAnalysis.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibrateDistortion.resx">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </EmbeddedResource>

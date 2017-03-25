@@ -11,6 +11,17 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrajectoryKinematics
     {
+        public double[] this[string component]
+        {
+            get
+            {
+                if (!components.ContainsKey(component))
+                    throw new InvalidOperationException();
+
+                return components[component];
+            }
+        }
+
         /// <summary>
         /// Number of samples.
         /// </summary>
@@ -82,20 +93,19 @@ namespace Kinovea.ScreenManager
         // Linear kinematics. All values are in calibrated coordinates/units.
         // There is always as many data points as there are point coordinates, the uncomputables values are set to NaN.
         public double[] RawTotalDistance { get; private set; }
-        public double[] TotalDistance { get; set; }
-
         public double[] RawSpeed { get; private set; }
-        public double[] Speed { get; set; }
         public double[] RawVerticalVelocity { get; private set; }
-        public double[] VerticalVelocity { get; set; }
         public double[] RawHorizontalVelocity { get; private set; }
-        public double[] HorizontalVelocity { get; set; }
-
         public double[] RawAcceleration { get; private set; }
-        public double[] Acceleration { get; set; }
         public double[] RawVerticalAcceleration { get; private set; }
-        public double[] VerticalAcceleration { get; set; }
         public double[] RawHorizontalAcceleration { get; private set; }
+
+        public double[] TotalDistance { get; private set; }
+        public double[] Speed { get; set; }
+        public double[] VerticalVelocity { get; set; }
+        public double[] HorizontalVelocity { get; set; }
+        public double[] Acceleration { get; set; }
+        public double[] VerticalAcceleration { get; set; }
         public double[] HorizontalAcceleration { get; set; }
 
         //-----------------------------------
@@ -112,6 +122,8 @@ namespace Kinovea.ScreenManager
         public double[] CentripetalAcceleration { get; private set; }
         public double[] AngularAcceleration { get; private set; }
 
+        private Dictionary<string, double[]> components = new Dictionary<string, double[]>();
+
         public void Initialize(int samples)
         {
             XCutoffIndex = -1;
@@ -125,20 +137,19 @@ namespace Kinovea.ScreenManager
             RawYs = new double[samples];
 
             RawTotalDistance = new double[samples];
-            TotalDistance = new double[samples];
-
             RawSpeed = new double[samples];
-            Speed = new double[samples];
             RawVerticalVelocity = new double[samples];
-            VerticalVelocity = new double[samples];
             RawHorizontalVelocity = new double[samples];
-            HorizontalVelocity = new double[samples];
-
             RawAcceleration = new double[samples];
-            Acceleration = new double[samples];
             RawVerticalAcceleration = new double[samples];
-            VerticalAcceleration = new double[samples];
             RawHorizontalAcceleration = new double[samples];
+            
+            TotalDistance = new double[samples];
+            Speed = new double[samples];
+            VerticalVelocity = new double[samples];
+            HorizontalVelocity = new double[samples];
+            Acceleration = new double[samples];
+            VerticalAcceleration = new double[samples];
             HorizontalAcceleration = new double[samples];
             
             AbsoluteAngle = new double[samples];
@@ -148,6 +159,35 @@ namespace Kinovea.ScreenManager
             TangentialVelocity = new double[samples];
             CentripetalAcceleration = new double[samples];
             AngularAcceleration = new double[samples];
+
+            components.Add("xRaw", RawXs);
+            components.Add("x", Xs);
+            components.Add("yRaw", RawYs);
+            components.Add("y", Ys);
+            components.Add("totalDistanceRaw", RawTotalDistance);
+            components.Add("totalDistance", TotalDistance);
+
+            components.Add("speedRaw", RawSpeed);
+            components.Add("speed", Speed);
+            components.Add("verticalVelocityRaw", RawVerticalVelocity);
+            components.Add("verticalVelocity", VerticalVelocity);
+            components.Add("horizontalVelocityRaw", RawHorizontalVelocity);
+            components.Add("horizontalVelocity", HorizontalVelocity);
+
+            components.Add("accelerationRaw", RawAcceleration);
+            components.Add("acceleration", Acceleration);
+            components.Add("verticalAccelerationRaw", RawVerticalAcceleration);
+            components.Add("verticalAcceleration", VerticalAcceleration);
+            components.Add("horizontalAccelerationRaw", RawHorizontalAcceleration);
+            components.Add("horizontalAcceleration", HorizontalAcceleration);
+            
+            components.Add("absoluteAngle", AbsoluteAngle);
+            components.Add("displacementAngle", DisplacementAngle);
+            components.Add("totalDisplacementAngle", TotalDisplacementAngle);
+            components.Add("angularVelocity", AngularVelocity);
+            components.Add("tangentialVelocity", TangentialVelocity);
+            components.Add("centripetalAcceleration", CentripetalAcceleration);
+            components.Add("angularAcceleration", AngularAcceleration);
         }
 
         public PointF RawCoordinates(int index)
