@@ -124,9 +124,7 @@ namespace Kinovea.ScreenManager
             foreach(KeyValuePair<string, TrackablePoint> pair in trackablePoints)
             {
                 pair.Value.Track(context);
-                
-                if(isTracking)
-                    drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue);
+                drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue);
             }
         }
         

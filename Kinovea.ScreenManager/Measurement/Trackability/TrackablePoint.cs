@@ -98,29 +98,35 @@ namespace Kinovea.ScreenManager
         
         /// <summary>
         /// Track the point in the current image, or use the existing data if already known.
+        /// We do this even if the drawing is currently not tracking, to push the existing tracked data in the object.
         /// </summary>
         /// <param name="context"></param>
         public void Track(TrackingContext context)
         {
             this.context = context;
            
-            if(!isTracking)
-                return;
-            
             TrackFrame closestFrame = trackTimeline.ClosestFrom(context.Time);
 
             if (closestFrame == null)
             {
                 currentValue = nonTrackingValue;
-                trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.Manual));
+
+                if (isTracking)
+                    trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.Manual));
+                
                 return;
             }
 
             if (closestFrame.Template == null)
             {
-                // We may not have the template if the timeline was imported from KVA.
-                trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, closestFrame.PositionningSource));
                 currentValue = closestFrame.Location;
+
+                if (isTracking)
+                {
+                    // We may not have the template if the timeline was imported from KVA.
+                    trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, closestFrame.PositionningSource));
+                }
+                
                 return;
             }
 
@@ -129,7 +135,13 @@ namespace Kinovea.ScreenManager
                 currentValue = closestFrame.Location;
                 return;
             }
-            
+
+            if (!isTracking)
+            {
+                currentValue = closestFrame.Location;
+                return;
+            }
+
             TrackResult result = Tracker.Track(trackerParameters.SearchWindow, closestFrame, context.Image);
 
             if(result.Similarity >= trackerParameters.SimilarityThreshold)
