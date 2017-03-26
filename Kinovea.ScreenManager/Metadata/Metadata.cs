@@ -518,14 +518,16 @@ namespace Kinovea.ScreenManager
                 if (drawing is DrawingSVG)
                     yield return (DrawingSVG)drawing;
         }
+
+        /// <summary>
+        /// Returns trackable drawings, does not include Tracks themselves.
+        /// </summary>
         public IEnumerable<ITrackable> TrackableDrawings()
         {
             foreach (AbstractDrawing drawing in extraDrawings)
             {
                 if (drawing is ITrackable)
                     yield return (ITrackable)drawing;
-
-                // TODO: multi drawings.
             }
 
             foreach (AbstractDrawing drawing in AttachedDrawings())

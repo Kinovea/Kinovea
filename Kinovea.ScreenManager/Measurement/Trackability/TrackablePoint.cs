@@ -57,6 +57,11 @@ namespace Kinovea.ScreenManager
         {
             get { return trackTimeline.Count == 0; }
         }
+
+        public Timeline<TrackFrame> Timeline
+        {
+            get { return trackTimeline; }
+        }
         #endregion
         
         private bool isTracking;

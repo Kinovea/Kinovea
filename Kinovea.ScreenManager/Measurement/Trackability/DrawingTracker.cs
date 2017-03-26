@@ -73,6 +73,14 @@ namespace Kinovea.ScreenManager
                 return true;
             }
         }
+
+        public Dictionary<string, TrackablePoint> TrackablePoints
+        {
+            get
+            {
+                return trackablePoints;
+            }
+        }
         #endregion
         
         private ITrackable drawing;

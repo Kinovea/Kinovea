@@ -45,11 +45,37 @@ namespace Kinovea.ScreenManager
 
         private void ImportData(Metadata metadata)
         {
-            // TODO: import all singular points from trackable drawings.
+            // Tracks
             foreach (DrawingTrack track in metadata.Tracks())
             {
                 TrajectoryData data = new TrajectoryData(track.Label, track.MainColor, track.TrajectoryKinematics);
                 trajectories.Add(data);
+            }
+
+            // Trackable drawing's individual points.
+            foreach (ITrackable trackable in metadata.TrackableDrawings())
+            {
+                Dictionary<string, TrackablePoint> trackablePoints = metadata.TrackabilityManager.GetTrackablePoints(trackable);
+
+                if (trackablePoints == null)
+                    continue;
+
+                foreach (var pair in trackablePoints)
+                {
+                    TrackablePoint tp = pair.Value;
+                    Timeline<TrackFrame> timeline = pair.Value.Timeline;
+                    if (timeline.Count == 0)
+                        continue;
+
+                    List<TimedPoint> samples = timeline.Enumerate().Select(p => new TimedPoint(p.Location.X, p.Location.Y, p.Time)).ToList();
+
+                    KinematicsHelper helper = new KinematicsHelper();
+                    TrajectoryKinematics trajectoryKinematics = helper.AnalyzeTrajectory(samples, metadata.CalibrationHelper);
+
+                    string name = string.Format("{0}.{1}", trackable.Name, pair.Key);
+                    TrajectoryData data = new TrajectoryData(name, trackable.Color, trajectoryKinematics);
+                    trajectories.Add(data);
+                }
             }
         }
 
