@@ -252,9 +252,6 @@ namespace Kinovea.ScreenManager
                     enabledTrajectories.Add(clbSources.Items[i] as TrajectoryData);
             }
 
-            if (enabledTrajectories.Count == 0)
-                return;
-
             PlotSpecification spec = cmbDataSource.SelectedItem as PlotSpecification;
             if (spec == null)
                 return;
