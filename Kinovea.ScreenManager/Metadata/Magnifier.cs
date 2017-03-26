@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Kinovea.Services;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -180,6 +181,14 @@ namespace Kinovea.ScreenManager
         public Guid Id
         {
             get { return id; }
+        }
+        public string Name
+        {
+            get { return ScreenManagerLang.ToolTip_Magnifier; }
+        }
+        public Color Color
+        {
+            get { return Color.Black; }
         }
         public TrackingProfile CustomTrackingProfile
         {

@@ -412,6 +412,10 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ITrackable implementation and support.
+        public Color Color
+        {
+            get { return styleHelper.Bicolor.Background; }
+        }
         public TrackingProfile CustomTrackingProfile
         {
             get { return genericPosture.CustomTrackingProfile; }

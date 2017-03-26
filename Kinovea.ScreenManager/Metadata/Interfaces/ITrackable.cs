@@ -28,6 +28,9 @@ namespace Kinovea.ScreenManager
     public interface ITrackable
     {
         Guid Id { get; }
+        string Name { get; }
+        Color Color { get; }
+
         TrackingProfile CustomTrackingProfile { get; }
         
         Dictionary<string, PointF> GetTrackablePoints();
