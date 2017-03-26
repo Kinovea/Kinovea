@@ -309,8 +309,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuConfigureFading = new ToolStripMenuItem();
         private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGotoKeyframe = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuTrackDrawing = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDataAnalysis = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDrawingTracking = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDrawingTrackingConfigure = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDrawingTrackingStart = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDrawingTrackingStop = new ToolStripMenuItem();
         private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
         private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
         private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
@@ -1025,10 +1027,16 @@ namespace Kinovea.ScreenManager
             mnuConfigureOpacity.Image = Properties.Drawings.persistence;
             mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
             mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
-            mnuTrackDrawing.Click += mnuTrackDrawing_Click;
-            mnuTrackDrawing.Image = Properties.Drawings.track;
-            mnuDataAnalysis.Click += mnuDataAnalysis_Click;
-            mnuDataAnalysis.Image = Properties.Resources.function;
+
+            mnuDrawingTrackingConfigure.Click += mnuDrawingTrackingConfigure_Click;
+            mnuDrawingTrackingConfigure.Image = Properties.Drawings.configure;
+            mnuDrawingTrackingStart.Click += mnuDrawingTrackingToggle_Click;
+            mnuDrawingTrackingStart.Image = Properties.Drawings.trackingplay;
+            mnuDrawingTrackingStop.Click += mnuDrawingTrackingToggle_Click;
+            mnuDrawingTrackingStop.Image = Properties.Drawings.trackstop;
+            mnuDrawingTracking.Image = Properties.Drawings.track;
+            //mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] { mnuDrawingTrackingConfigure, new ToolStripSeparator(), mnuDrawingTrackingStart, mnuDrawingTrackingStop, new ToolStripSeparator(), mnuDrawingTrackingShowNotTracked });
+            mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] { mnuDrawingTrackingStart, mnuDrawingTrackingStop });
             mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
             mnuDeleteDrawing.Image = Properties.Drawings.delete;
             
@@ -1042,7 +1050,6 @@ namespace Kinovea.ScreenManager
             mnuDeleteTrajectory.Click += new EventHandler(mnuDeleteTrajectory_Click);
             mnuDeleteTrajectory.Image = Properties.Drawings.delete;
             mnuDeleteEndOfTrajectory.Click += new EventHandler(mnuDeleteEndOfTrajectory_Click);
-            //mnuDeleteEndOfTrajectory.Image = Properties.Resources.track_trim2;
             mnuConfigureTrajectory.Click += new EventHandler(mnuConfigureTrajectory_Click);
             mnuConfigureTrajectory.Image = Properties.Drawings.configure;
             
@@ -2440,10 +2447,12 @@ namespace Kinovea.ScreenManager
             mnuConfigureFading.Text = ScreenManagerLang.mnuConfigureFading;
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
-            mnuTrackDrawing.Text = ScreenManagerLang.mnuTrackTrajectory;
-            mnuDataAnalysis.Text = ScreenManagerLang.mnuDataAnalysis;
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
-            
+            mnuDrawingTracking.Text = "Tracking";
+            mnuDrawingTrackingConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+            mnuDrawingTrackingStart.Text = "Start tracking";
+            mnuDrawingTrackingStop.Text = "Stop tracking";
+
             // 3. Tracking pop menu (Restart, Stop tracking)
             mnuStopTracking.Text = ScreenManagerLang.mnuStopTracking;
             mnuRestartTracking.Text = ScreenManagerLang.mnuRestartTracking;
@@ -2758,9 +2767,6 @@ namespace Kinovea.ScreenManager
                     popMenuTrack.Items.Clear();
                     popMenuTrack.Items.Add(mnuConfigureTrajectory);
                     
-                    if (track.Status == TrackStatus.Interactive)
-                        popMenuTrack.Items.Add(mnuDataAnalysis);
-                    
                     bool customMenus = AddDrawingCustomMenus(hitDrawing, popMenuTrack.Items);
                     if (customMenus)
                         popMenuTrack.Items.Add(new ToolStripSeparator());
@@ -2863,13 +2869,10 @@ namespace Kinovea.ScreenManager
             
             if((drawing.Caps & DrawingCapabilities.Track) == DrawingCapabilities.Track)
             {
-                mnuTrackDrawing.Checked = ToggleTrackingCommand.CurrentState(drawing);
-                popMenu.Items.Add(mnuTrackDrawing);
-            }
-
-            if ((drawing.Caps & DrawingCapabilities.DataAnalysis) == DrawingCapabilities.DataAnalysis)
-            {
-                popMenu.Items.Add(mnuDataAnalysis);
+                bool tracked = ToggleTrackingCommand.CurrentState(drawing);
+                mnuDrawingTrackingStart.Visible = !tracked;
+                mnuDrawingTrackingStop.Visible = tracked;
+                popMenu.Items.Add(mnuDrawingTracking);
             }
         }
         private bool AddDrawingCustomMenus(AbstractDrawing drawing, ToolStripItemCollection menuItems)
@@ -3927,7 +3930,7 @@ namespace Kinovea.ScreenManager
             UpdatePositionUI();
             ActivateKeyframe(m_iCurrentPosition);
         }
-        private void mnuTrackDrawing_Click(object sender, EventArgs e)
+        private void mnuDrawingTrackingToggle_Click(object sender, EventArgs e)
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
 
@@ -3937,6 +3940,12 @@ namespace Kinovea.ScreenManager
             ToggleTrackingCommand.Execute(drawing);
             RefreshImage();
         }
+
+        private void mnuDrawingTrackingConfigure_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void mnuDataAnalysis_Click(object sender, EventArgs e)
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;

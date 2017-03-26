@@ -146,7 +146,7 @@ namespace Kinovea.ScreenManager
         
         public bool IsTracking(ITrackable drawing)
         {
-            if(!SanityCheck(drawing.Id))
+            if (!SanityCheck(drawing.Id))
                 return false;
             
             return trackers[drawing.Id].IsTracking;
