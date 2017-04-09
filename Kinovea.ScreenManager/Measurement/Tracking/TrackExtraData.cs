@@ -9,19 +9,17 @@ namespace Kinovea.ScreenManager
     {
         None,
         Position,
+        
         TotalDistance,
-
+        TotalHorizontalDisplacement,
+        TotalVerticalDisplacement,
+        
         Speed,
-        VerticalVelocity,
         HorizontalVelocity,
+        VerticalVelocity,
 
         Acceleration,
-        VerticalAcceleration,
         HorizontalAcceleration,
-
-        AngularDisplacement,
-        AngularVelocity,
-        AngularAcceleration,
-        CentripetalAcceleration
+        VerticalAcceleration,
     }
 }

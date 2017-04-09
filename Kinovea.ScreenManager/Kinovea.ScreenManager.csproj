@@ -249,6 +249,11 @@
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\FilePatternContexts.cs" />
     <Compile Include="FilePatterns\FilePatternSymbols.cs" />
+    <Compile Include="Measurement\Geometry\Circle.cs" />
+    <Compile Include="Measurement\Kinematics\CircleFitter.cs" />
+    <Compile Include="Measurement\Kinematics\FilteredTrajectory.cs" />
+    <Compile Include="Measurement\Kinematics\Kinematics.cs" />
+    <Compile Include="Measurement\Kinematics\TimeSeriesCollection.cs" />
     <Compile Include="Measurement\Plotting\FormMultiTrajectoryAnalysis.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -364,7 +369,7 @@
     <Compile Include="PlayerScreen\TimeType.cs" />
     <Compile Include="Measurement\Kinematics\Butterworth.cs" />
     <Compile Include="Measurement\Kinematics\FilteringResult.cs" />
-    <Compile Include="Measurement\Kinematics\KinematicsHelper.cs" />
+    <Compile Include="Measurement\Kinematics\LinearKinematics.cs" />
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
     <Compile Include="Measurement\Kinematics\TimedPoint.cs" />
     <Compile Include="Measurement\Tracking\TrackColorCycler.cs" />
@@ -391,12 +396,6 @@
     </Compile>
     <Compile Include="Measurement\Plotting\FormPointsAnalysis.Designer.cs">
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Measurement\Plotting\FormTrackAnalysis.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Measurement\Plotting\FormTrackAnalysis.Designer.cs">
-      <DependentUpon>FormTrackAnalysis.cs</DependentUpon>
     </Compile>
     <Compile Include="Measurement\Plotting\PlotHelper.cs" />
     <Compile Include="Properties\Player.Designer.cs">
@@ -873,7 +872,9 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.mk.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.no.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ru.resx" />
-    <EmbeddedResource Include="Languages\ScreenManagerLang.sr-Cyrl-RS.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.sr-Cyrl-RS.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.sr-Latn-RS.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
@@ -889,9 +890,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Measurement\Plotting\FormPointsAnalysis.resx">
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Measurement\Plotting\FormTrackAnalysis.resx">
-      <DependentUpon>FormTrackAnalysis.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Player.resx">
       <Generator>ResXFileCodeGenerator</Generator>

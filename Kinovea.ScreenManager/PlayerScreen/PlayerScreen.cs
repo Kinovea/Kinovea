@@ -660,7 +660,7 @@ namespace Kinovea.ScreenManager
 
         public void ShowDataAnalysis(AbstractDrawing drawing)
         {
-            if (drawing is DrawingCrossMark)
+            /*if (drawing is DrawingCrossMark)
             {
                 FormPointsAnalysis fpa = new FormPointsAnalysis(frameServer.Metadata);
                 FormsHelper.Locate(fpa);
@@ -673,7 +673,7 @@ namespace Kinovea.ScreenManager
                 FormsHelper.Locate(fta);
                 fta.ShowDialog();
                 fta.Dispose();
-            }
+            }*/
         }
         #endregion
 
