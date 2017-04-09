@@ -440,8 +440,11 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Takes a circle in real world coordinates and returns a cooresponding ellipse in image coordinates.
         /// </summary>
-        public Ellipse GetEllipseFromCircle(PointF center, float radius)
+        public Ellipse GetEllipseFromCircle(Circle circle)
         {
+            PointF center = circle.Center;
+            float radius = circle.Radius;
+            
             if(calibratorType == CalibratorType.Line)
                 return new Ellipse(GetImagePoint(center), GetImageScalar(radius), GetImageScalar(radius), 0);
             

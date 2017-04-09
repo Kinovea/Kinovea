@@ -48,9 +48,11 @@ namespace Kinovea.ScreenManager
             // Tracks
             foreach (DrawingTrack track in metadata.Tracks())
             {
-                TrajectoryData data = new TrajectoryData(track.Label, track.MainColor, track.TrajectoryKinematics);
+                TrajectoryData data = new TrajectoryData(track.Label, track.MainColor, track.TimeSeriesCollection);
                 trajectories.Add(data);
             }
+
+            LinearKinematics linearKinematics = new LinearKinematics();
 
             // Trackable drawing's individual points.
             foreach (ITrackable trackable in metadata.TrackableDrawings())
@@ -68,12 +70,13 @@ namespace Kinovea.ScreenManager
                         continue;
 
                     List<TimedPoint> samples = timeline.Enumerate().Select(p => new TimedPoint(p.Location.X, p.Location.Y, p.Time)).ToList();
+                    FilteredTrajectory traj = new FilteredTrajectory();
+                    traj.Initialize(samples, metadata.CalibrationHelper);
 
-                    KinematicsHelper helper = new KinematicsHelper();
-                    TrajectoryKinematics trajectoryKinematics = helper.AnalyzeTrajectory(samples, metadata.CalibrationHelper);
+                    TimeSeriesCollection tsc = linearKinematics.BuildKinematics(traj, metadata.CalibrationHelper);
 
                     string name = string.Format("{0}.{1}", trackable.Name, pair.Key);
-                    TrajectoryData data = new TrajectoryData(name, trackable.Color, trajectoryKinematics);
+                    TrajectoryData data = new TrajectoryData(name, trackable.Color, tsc);
                     trajectories.Add(data);
                 }
             }
@@ -222,22 +225,23 @@ namespace Kinovea.ScreenManager
             string d = metadata.CalibrationHelper.GetLengthAbbreviation();
             string v = metadata.CalibrationHelper.GetSpeedAbbreviation();
             string a = metadata.CalibrationHelper.GetAccelerationAbbreviation();
-            string da = metadata.CalibrationHelper.GetAngleAbbreviation();
-            string va = metadata.CalibrationHelper.GetAngularVelocityAbbreviation();
+            
+            AddPlotSpecification(Kinematics.X, d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalPosition);
+            AddPlotSpecification(Kinematics.Y, d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalPosition);
+            
+            AddPlotSpecification(Kinematics.LinearDistance, d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
+            AddPlotSpecification(Kinematics.LinearHorizontalDisplacement, d, "Total horizontal displacement");
+            AddPlotSpecification(Kinematics.LinearVerticalDisplacement, d, "Total vertical displacement");
 
-            AddPlotSpecification("x", d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalPosition);
-            AddPlotSpecification("y", d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalPosition);
-            AddPlotSpecification("totalDistance", d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
-            AddPlotSpecification("speed", v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed);
-            AddPlotSpecification("horizontalVelocity", v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity);
-            AddPlotSpecification("verticalVelocity", v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalVelocity);
-            AddPlotSpecification("acceleration", a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Acceleration);
-            AddPlotSpecification("horizontalAcceleration", a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalAcceleration);
-            AddPlotSpecification("verticalAcceleration", a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalAcceleration);
-            AddPlotSpecification("displacementAngle", da, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularDisplacement);
-            AddPlotSpecification("angularVelocity", va, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularVelocity);
+            AddPlotSpecification(Kinematics.LinearSpeed, v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed);
+            AddPlotSpecification(Kinematics.LinearHorizontalVelocity, v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity);
+            AddPlotSpecification(Kinematics.LinearVerticalVelocity, v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalVelocity);
 
-            cmbDataSource.SelectedIndex = 3;
+            AddPlotSpecification(Kinematics.LinearAcceleration, a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Acceleration);
+            AddPlotSpecification(Kinematics.LinearHorizontalAcceleration, a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalAcceleration);
+            AddPlotSpecification(Kinematics.LinearVerticalAcceleration, a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalAcceleration);
+            
+            cmbDataSource.SelectedIndex = 5;
         }
 
         private void PopulateTimeModels()
@@ -248,7 +252,7 @@ namespace Kinovea.ScreenManager
             cmbTimeModel.SelectedIndex = 0;
         }
 
-        private void AddPlotSpecification(string component, string abbreviation, string label)
+        private void AddPlotSpecification(Kinematics component, string abbreviation, string label)
         {
             cmbDataSource.Items.Add(new PlotSpecification(label, component, abbreviation));
         }
@@ -295,7 +299,7 @@ namespace Kinovea.ScreenManager
             tbYAxis.Text = model.Axes[1].Title;
         }
 
-        private PlotModel CreatePlot(IEnumerable<TrajectoryData> trajectories, string component, string abbreviation, string title, TimeModel timeModel)
+        private PlotModel CreatePlot(IEnumerable<TrajectoryData> trajectories, Kinematics component, string abbreviation, string title, TimeModel timeModel)
         {
             if (trajectories == null)
                 return null;
@@ -335,8 +339,8 @@ namespace Kinovea.ScreenManager
                 series.MarkerType = MarkerType.None;
                 series.Smooth = true;
 
-                double[] points = trajectory.Kinematics[component];
-                long[] times = trajectory.Kinematics.Times;
+                double[] points = trajectory.TimeSeriesCollection[component];
+                long[] times = trajectory.TimeSeriesCollection.Times;
  
                 double firstTime = TimestampToMilliseconds(times[0]);
                 double timeSpan = TimestampToMilliseconds(times[times.Length-1]) - firstTime;
@@ -518,9 +522,9 @@ namespace Kinovea.ScreenManager
         private class PlotSpecification
         {
             public string Label { get; private set; }
-            public string Component { get; private set; }
+            public Kinematics Component { get; private set; }
             public string Abbreviation { get; private set; }
-            public PlotSpecification(string label, string component, string abbreviation)
+            public PlotSpecification(string label, Kinematics component, string abbreviation)
             {
                 this.Label = label;
                 this.Component = component;
@@ -541,14 +545,14 @@ namespace Kinovea.ScreenManager
         {
             public string Label { get; private set; }
             public Color Color { get; private set; }
-            public TrajectoryKinematics Kinematics { get; private set; }
+            public TimeSeriesCollection TimeSeriesCollection { get; private set; }
             public bool Enabled { get; set;}
 
-            public TrajectoryData(string label, Color color, TrajectoryKinematics kinematics)
+            public TrajectoryData(string label, Color color, TimeSeriesCollection timeSeriesCollection)
             {
                 this.Label = label;
                 this.Color = color;
-                this.Kinematics = kinematics;
+                this.TimeSeriesCollection = timeSeriesCollection;
                 this.Enabled = true;
             }
 
