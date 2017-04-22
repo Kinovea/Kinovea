@@ -562,10 +562,6 @@ namespace Kinovea.ScreenManager
         {
             UpdateAngles(transformer);
             
-            List<Rectangle> boxes = new List<Rectangle>();
-            foreach(AngleHelper angle in angles)
-                boxes.Add(transformer.Transform(angle.BoundingBox));
-            
             penEdge.Width = 2;
             penEdge.DashStyle = DashStyle.Solid;
             
@@ -574,23 +570,25 @@ namespace Kinovea.ScreenManager
                 if(!HasActiveOption(genericPosture.Angles[i].OptionGroup))
                     continue;
                 
-                AngleHelper angle = angles[i];
-                Rectangle box = boxes[i];
-                
+                AngleHelper angleHelper = angles[i];
+                Rectangle box = transformer.Transform(angleHelper.SweepAngle.BoundingBox);
+                Color color = angleHelper.Color;
+
                 try
                 {
-                    brushFill.Color = angle.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, angle.Color);
-                    canvas.FillPie(brushFill, box, angles[i].Angle.Start, angles[i].Angle.Sweep);
-                
-                    penEdge.Color = angle.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, angle.Color);
-                    canvas.DrawArc(penEdge, box, angles[i].Angle.Start, angles[i].Angle.Sweep);
+                    penEdge.Color = color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, color);
+                    brushFill.Color = color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, color);
+                    
+                    canvas.FillPie(brushFill, box, angleHelper.SweepAngle.Start, angleHelper.SweepAngle.Sweep);
+                    canvas.DrawArc(penEdge, box, angleHelper.SweepAngle.Start, angleHelper.SweepAngle.Sweep);
                 }
                 catch(Exception e)
                 {
                     log.DebugFormat(e.ToString());
                 }
-                
-                DrawAngleText(canvas, opacity, transformer, angles[i], brushFill);
+
+                Point origin = transformer.Transform(angleHelper.SweepAngle.Origin);
+                angleHelper.DrawText(canvas, opacity, brushFill, origin, transformer, CalibrationHelper, styleHelper);
             }
             
             brushFill.Color = baseBrushFillColor;
@@ -640,43 +638,6 @@ namespace Kinovea.ScreenManager
             }
             
             brushFill.Color = baseBrushFillColor;
-        }
-        private void DrawAngleText(Graphics canvas, double opacity, IImageToViewportTransformer transformer, AngleHelper angle, SolidBrush brushFill)
-        {
-            //-------------------------------------------------
-            // FIXME: function duplicated. Move to AngleHelper.
-            // This version is already more generic.
-            //-------------------------------------------------
-            double value = CalibrationHelper.ConvertAngleFromDegrees(angle.CalibratedAngle.Sweep);
-            if(value < 0)
-                value = -value;
-            
-            string label = "";
-            if(angle.Tenth)
-                label = String.Format("{0:0.0} {1}", value, CalibrationHelper.GetAngleAbbreviation());
-            else
-                label = String.Format("{0} {1}", (int)Math.Round(value), CalibrationHelper.GetAngleAbbreviation());
-            
-            if(!string.IsNullOrEmpty(angle.Symbol))
-                label = string.Format("{0} = {1}", angle.Symbol, label);
-            
-            SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacity * 255));
-            Font tempFont = styleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
-            SizeF labelSize = canvas.MeasureString(label, tempFont);
-                
-            // Background
-            float shiftx = (float)(transformer.Scale * angle.TextPosition.X);
-            float shifty = (float)(transformer.Scale * angle.TextPosition.Y);
-            Point origin = transformer.Transform(angle.Origin);
-            PointF textOrigin = new PointF(shiftx + origin.X - labelSize.Width / 2, shifty + origin.Y - labelSize.Height / 2);
-            RectangleF backRectangle = new RectangleF(textOrigin, labelSize);
-            RoundedRectangle.Draw(canvas, backRectangle, brushFill, tempFont.Height/4, false, false, null);
-    
-            // Text
-            canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
-                
-            tempFont.Dispose();
-            fontBrush.Dispose();
         }
         private void DrawDistanceText(PointF a, PointF b, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brushFill)
         {
@@ -751,7 +712,7 @@ namespace Kinovea.ScreenManager
         private void InitAngles()
         {
             for(int i=0;i<genericPosture.Angles.Count;i++)
-                angles.Add(new AngleHelper(genericPosture.Angles[i].Relative, 40, genericPosture.Angles[i].Tenth, genericPosture.Angles[i].Symbol));
+                angles.Add(new AngleHelper(40, genericPosture.Angles[i].Tenth, genericPosture.Angles[i].Symbol));
         }
         private void UpdateAngles(IImageToViewportTransformer transformer)
         {
@@ -762,7 +723,11 @@ namespace Kinovea.ScreenManager
                 PointF leg2 = genericPosture.Points[genericPosture.Angles[i].Leg2];
                 int radius = genericPosture.Angles[i].Radius;
                 Color color = genericPosture.Angles[i].Color;
-                angles[i].Update(origin, leg1, leg2, radius, color, CalibrationHelper, transformer);
+                bool signed = genericPosture.Angles[i].Relative;
+                bool ccw = true;
+                bool complement = false;
+                AngleOptions options = new AngleOptions(signed, ccw, complement);
+                angles[i].Update(origin, leg1, leg2, radius, options, color, CalibrationHelper, transformer);
             }
         }
         private DashStyle Convert(SegmentLineStyle style)
@@ -813,7 +778,7 @@ namespace Kinovea.ScreenManager
             bool hit = false;
             foreach(AngleHelper angle in angles)
             {
-                hit = angle.Hit(point);
+                hit = angle.SweepAngle.Hit(point);
                 if(hit)
                     break;
             }

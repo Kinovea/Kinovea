@@ -79,11 +79,12 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                // Rebuild the menu to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                
-                mnuInvertAngle.Text = ScreenManagerLang.mnuInvertAngle;
-                contextMenu.Add(mnuInvertAngle);
+
+                mnuSignedAngle.Text = "Signed angle";
+                mnuCounterClockwise.Text = "Counter clockwise";
+                mnuComplementAngle.Text = "Complement angle";
+                contextMenu.AddRange(new ToolStripItem[] { mnuSignedAngle, mnuCounterClockwise, mnuComplementAngle});
                 
                 return contextMenu; 
             }
@@ -91,6 +92,10 @@ namespace Kinovea.ScreenManager
         public bool Initializing
         {
             get { return initializing; }
+        }
+        public AngleOptions AngleOptions
+        {
+            get { return new AngleOptions(signedAngle, counterClockwise, complementAngle); }
         }
         public CalibrationHelper CalibrationHelper { get; set; }
         public bool ShowMeasurableInfo { get; set; }
@@ -101,13 +106,18 @@ namespace Kinovea.ScreenManager
         private bool tracking;
         private bool initializing = true;
         
-        private AngleHelper angleHelper = new AngleHelper(false, 40, false, "");
+        private AngleHelper angleHelper = new AngleHelper(40, false, "");
         private DrawingStyle style;
         private StyleHelper styleHelper = new StyleHelper();
         private InfosFading infosFading;
+        private bool signedAngle = true;
+        private bool counterClockwise = true;
+        private bool complementAngle = false;
         
-        private ToolStripMenuItem mnuInvertAngle = new ToolStripMenuItem();
-        
+        private ToolStripMenuItem mnuSignedAngle = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCounterClockwise = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuComplementAngle = new ToolStripMenuItem();
+
         private const int defaultBackgroundAlpha = 92;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -120,8 +130,8 @@ namespace Kinovea.ScreenManager
                 length = transformer.Untransform(50);
 
             points.Add("o", origin);
-            points.Add("a", origin.Translate(0, -length));
-            points.Add("b", origin.Translate(length, 0));
+            points.Add("a", origin.Translate(length, 0));
+            points.Add("b", origin.Translate(0, -length));
 
             styleHelper.Bicolor = new Bicolor(Color.Empty);
             styleHelper.Font = new Font("Arial", 12, FontStyle.Bold);
@@ -135,8 +145,12 @@ namespace Kinovea.ScreenManager
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
 
-            mnuInvertAngle.Click += mnuInvertAngle_Click;
-            mnuInvertAngle.Image = Properties.Drawings.angleinvert;
+            mnuSignedAngle.Click += mnuSignedAngle_Click;
+            mnuSignedAngle.Checked = signedAngle;
+            mnuCounterClockwise.Click += mnuCounterClockwise_Click;
+            mnuCounterClockwise.Checked = counterClockwise;
+            mnuComplementAngle.Click += mnuComplementAngle_Click;
+            mnuComplementAngle.Checked = complementAngle;
         }
         public DrawingAngle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)
@@ -161,7 +175,7 @@ namespace Kinovea.ScreenManager
             Point pointO = transformer.Transform(points["o"]);
             Point pointA = transformer.Transform(points["a"]);
             Point pointB = transformer.Transform(points["b"]);
-            Rectangle boundingBox = transformer.Transform(angleHelper.BoundingBox);
+            Rectangle boundingBox = transformer.Transform(angleHelper.SweepAngle.BoundingBox);
 
             if (boundingBox.Size == Size.Empty)
                 return;
@@ -171,8 +185,8 @@ namespace Kinovea.ScreenManager
             using(SolidBrush brushFill = styleHelper.GetBackgroundBrush((int)(opacityFactor*defaultBackgroundAlpha)))
             {
                 // Disk section
-                canvas.FillPie(brushFill, boundingBox, (float)angleHelper.Angle.Start, (float)angleHelper.Angle.Sweep);
-                canvas.DrawPie(penEdges, boundingBox, (float)angleHelper.Angle.Start, (float)angleHelper.Angle.Sweep);
+                canvas.FillPie(brushFill, boundingBox, angleHelper.SweepAngle.Start, angleHelper.SweepAngle.Sweep);
+                canvas.DrawArc(penEdges, boundingBox, angleHelper.SweepAngle.Start, angleHelper.SweepAngle.Sweep);
     
                 // Edges
                 canvas.DrawLine(penEdges, pointO, pointA);
@@ -182,30 +196,8 @@ namespace Kinovea.ScreenManager
                 canvas.DrawEllipse(penEdges, pointO.Box(3));
                 canvas.FillEllipse(brushEdges, pointA.Box(3));
                 canvas.FillEllipse(brushEdges, pointB.Box(3));
-                
-                SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacityFactor * 255));
-                float angle = CalibrationHelper.ConvertAngleFromDegrees(angleHelper.CalibratedAngle.Sweep);
-                string label = "";
-                if (CalibrationHelper.AngleUnit == AngleUnit.Degree)
-                    label = string.Format("{0}{1}", (int)Math.Round(angle), CalibrationHelper.GetAngleAbbreviation());
-                else
-                    label = string.Format("{0:0.00} {1}", angle, CalibrationHelper.GetAngleAbbreviation());
 
-                Font tempFont = styleHelper.GetFont((float)transformer.Scale);
-                SizeF labelSize = canvas.MeasureString(label, tempFont);
-                
-                // Background
-                float shiftx = (float)(transformer.Scale * angleHelper.TextPosition.X);
-                float shifty = (float)(transformer.Scale * angleHelper.TextPosition.Y);
-                PointF textOrigin = new PointF(shiftx + pointO.X - labelSize.Width / 2, shifty + pointO.Y - labelSize.Height / 2);
-                RectangleF backRectangle = new RectangleF(textOrigin, labelSize);
-                RoundedRectangle.Draw(canvas, backRectangle, brushFill, tempFont.Height/4, false, false, null);
-        
-                // Text
-                canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
-                
-                tempFont.Dispose();
-                fontBrush.Dispose();
+                angleHelper.DrawText(canvas, opacityFactor, brushFill, pointO, transformer, CalibrationHelper, styleHelper);
             }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
@@ -341,7 +333,7 @@ namespace Kinovea.ScreenManager
             {
                 // Spreadsheet support.
                 w.WriteStartElement("Measure");
-                int angle = (int)Math.Floor(angleHelper.CalibratedAngle.Sweep);
+                float angle = CalibrationHelper.ConvertAngle(angleHelper.CalibratedAngle);
                 w.WriteAttributeString("UserAngle", angle.ToString());
                 w.WriteEndElement();
             }
@@ -406,14 +398,34 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Specific context menu
-        private void mnuInvertAngle_Click(object sender, EventArgs e)
+        
+        private void mnuSignedAngle_Click(object sender, EventArgs e)
         {
-            PointF temp = points["a"];
-            points["a"] = points["b"];
-            points["b"] = temp;
+            mnuSignedAngle.Checked = !mnuSignedAngle.Checked;
+
+            signedAngle = mnuSignedAngle.Checked;
             SignalAllTrackablePointsMoved();
             CallInvalidateFromMenu(sender);
         }
+
+        private void mnuCounterClockwise_Click(object sender, EventArgs e)
+        {
+            mnuCounterClockwise.Checked = !mnuCounterClockwise.Checked;
+
+            counterClockwise = mnuCounterClockwise.Checked;
+            SignalAllTrackablePointsMoved();
+            CallInvalidateFromMenu(sender);
+        }
+
+        private void mnuComplementAngle_Click(object sender, EventArgs e)
+        {
+            mnuComplementAngle.Checked = !mnuComplementAngle.Checked;
+
+            complementAngle = mnuComplementAngle.Checked;
+            SignalAllTrackablePointsMoved();
+            CallInvalidateFromMenu(sender);
+        }
+
         #endregion
         
         #region Lower level helpers
@@ -424,7 +436,7 @@ namespace Kinovea.ScreenManager
         private void ComputeValues(IImageToViewportTransformer transformer)
         {
             FixIfNull(transformer);
-            angleHelper.Update(points["o"], points["a"], points["b"], 0, Color.Transparent, CalibrationHelper, transformer);
+            angleHelper.Update(points["o"], points["a"], points["b"], 0, AngleOptions, Color.Transparent, CalibrationHelper, transformer);
         }
         private void FixIfNull(IImageToViewportTransformer transformer)
         {
@@ -438,7 +450,7 @@ namespace Kinovea.ScreenManager
         }
         private bool IsPointInObject(PointF point)
         {
-            return angleHelper.Hit(point);
+            return angleHelper.SweepAngle.Hit(point);
         }
         #endregion
     } 
