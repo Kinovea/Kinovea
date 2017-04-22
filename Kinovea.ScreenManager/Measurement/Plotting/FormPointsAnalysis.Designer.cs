@@ -68,7 +68,7 @@ namespace Kinovea.ScreenManager
             this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(513, 547);
+            this.tabControl.Size = new System.Drawing.Size(642, 657);
             this.tabControl.TabIndex = 1;
             // 
             // pagePlot
@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
             this.pagePlot.Location = new System.Drawing.Point(4, 22);
             this.pagePlot.Name = "pagePlot";
             this.pagePlot.Padding = new System.Windows.Forms.Padding(3);
-            this.pagePlot.Size = new System.Drawing.Size(505, 521);
+            this.pagePlot.Size = new System.Drawing.Size(634, 631);
             this.pagePlot.TabIndex = 0;
             this.pagePlot.Text = "Plot";
             this.pagePlot.UseVisualStyleBackColor = true;
@@ -91,7 +91,7 @@ namespace Kinovea.ScreenManager
             this.plotScatter.Location = new System.Drawing.Point(16, 15);
             this.plotScatter.Name = "plotScatter";
             this.plotScatter.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotScatter.Size = new System.Drawing.Size(474, 485);
+            this.plotScatter.Size = new System.Drawing.Size(603, 595);
             this.plotScatter.TabIndex = 0;
             this.plotScatter.Text = "plotView1";
             this.plotScatter.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -107,7 +107,7 @@ namespace Kinovea.ScreenManager
             this.gbExportGraph.Controls.Add(this.label1);
             this.gbExportGraph.Controls.Add(this.nudHeight);
             this.gbExportGraph.Controls.Add(this.nudWidth);
-            this.gbExportGraph.Location = new System.Drawing.Point(531, 252);
+            this.gbExportGraph.Location = new System.Drawing.Point(660, 362);
             this.gbExportGraph.Name = "gbExportGraph";
             this.gbExportGraph.Size = new System.Drawing.Size(212, 155);
             this.gbExportGraph.TabIndex = 2;
@@ -201,7 +201,7 @@ namespace Kinovea.ScreenManager
             this.gbExportData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.gbExportData.Controls.Add(this.btnDataCopy);
             this.gbExportData.Controls.Add(this.btnExportData);
-            this.gbExportData.Location = new System.Drawing.Point(531, 437);
+            this.gbExportData.Location = new System.Drawing.Point(660, 547);
             this.gbExportData.Name = "gbExportData";
             this.gbExportData.Size = new System.Drawing.Size(212, 118);
             this.gbExportData.TabIndex = 3;
@@ -238,7 +238,7 @@ namespace Kinovea.ScreenManager
             this.gbLabels.Controls.Add(this.lblYAxis);
             this.gbLabels.Controls.Add(this.lblXAxis);
             this.gbLabels.Controls.Add(this.tbTitle);
-            this.gbLabels.Location = new System.Drawing.Point(531, 34);
+            this.gbLabels.Location = new System.Drawing.Point(660, 34);
             this.gbLabels.Name = "gbLabels";
             this.gbLabels.Size = new System.Drawing.Size(212, 170);
             this.gbLabels.TabIndex = 4;
@@ -318,12 +318,12 @@ namespace Kinovea.ScreenManager
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(755, 571);
+            this.ClientSize = new System.Drawing.Size(884, 681);
             this.Controls.Add(this.gbLabels);
             this.Controls.Add(this.gbExportData);
             this.Controls.Add(this.gbExportGraph);
             this.Controls.Add(this.tabControl);
-            this.MinimumSize = new System.Drawing.Size(720, 536);
+            this.MinimumSize = new System.Drawing.Size(720, 720);
             this.Name = "FormPointsAnalysis";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

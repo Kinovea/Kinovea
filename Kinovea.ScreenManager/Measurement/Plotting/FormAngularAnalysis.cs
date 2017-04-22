@@ -18,22 +18,22 @@ namespace Kinovea.ScreenManager
 {
 
     /// <summary>
-    /// Plot page for combining multiple trajectories on a single plot.
+    /// Plot page for multiple-source angular kinematics.
     /// </summary>
-    public partial class FormMultiTrajectoryAnalysis : Form
+    public partial class FormAngularAnalysis : Form
     {
         private Metadata metadata;
         private List<TimeSeriesPlotData> timeSeriesData = new List<TimeSeriesPlotData>();
         private PlotHelper plotHelper;
         private bool manualUpdate;
 
-        public FormMultiTrajectoryAnalysis(Metadata metadata)
+        public FormAngularAnalysis(Metadata metadata)
         {
             this.metadata = metadata;
             ImportData(metadata);
 
             InitializeComponent();
-            
+
             plotHelper = new PlotHelper(plotView);
             Localize();
             PopulateDataSources();
@@ -45,40 +45,38 @@ namespace Kinovea.ScreenManager
 
         private void ImportData(Metadata metadata)
         {
-            // Tracks
-            foreach (DrawingTrack track in metadata.Tracks())
+            AngularKinematics angularKinematics = new AngularKinematics();
+            
+            // Angle drawings
+            foreach (DrawingAngle drawingAngle in metadata.Angles())
             {
-                TimeSeriesPlotData data = new TimeSeriesPlotData(track.Label, track.MainColor, track.TimeSeriesCollection);
-                timeSeriesData.Add(data);
-            }
+                Dictionary<string, TrackablePoint> trackablePoints = metadata.TrackabilityManager.GetTrackablePoints(drawingAngle);
+                Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>();
+                
+                bool tracked = true;
 
-            LinearKinematics linearKinematics = new LinearKinematics();
-
-            // Trackable drawing's individual points.
-            foreach (ITrackable trackable in metadata.TrackableDrawings())
-            {
-                Dictionary<string, TrackablePoint> trackablePoints = metadata.TrackabilityManager.GetTrackablePoints(trackable);
-
-                if (trackablePoints == null)
-                    continue;
-
-                foreach (var pair in trackablePoints)
+                foreach (string key in trackablePoints.Keys)
                 {
-                    TrackablePoint tp = pair.Value;
-                    Timeline<TrackFrame> timeline = pair.Value.Timeline;
+                    Timeline<TrackFrame> timeline = trackablePoints[key].Timeline;
                     if (timeline.Count == 0)
-                        continue;
+                    {
+                        tracked = false;
+                        break;
+                    }
 
                     List<TimedPoint> samples = timeline.Enumerate().Select(p => new TimedPoint(p.Location.X, p.Location.Y, p.Time)).ToList();
                     FilteredTrajectory traj = new FilteredTrajectory();
                     traj.Initialize(samples, metadata.CalibrationHelper);
 
-                    TimeSeriesCollection tsc = linearKinematics.BuildKinematics(traj, metadata.CalibrationHelper);
-
-                    string name = string.Format("{0}.{1}", trackable.Name, pair.Key);
-                    TimeSeriesPlotData data = new TimeSeriesPlotData(name, trackable.Color, tsc);
-                    timeSeriesData.Add(data);
+                    trajs.Add(key, traj);
                 }
+
+                if (!tracked)
+                    continue;
+
+                TimeSeriesCollection tsc = angularKinematics.BuildKinematics(trajs, metadata.CalibrationHelper);
+                TimeSeriesPlotData data = new TimeSeriesPlotData(drawingAngle.Name, drawingAngle.Color, tsc);
+                timeSeriesData.Add(data);
             }
         }
 
@@ -134,7 +132,7 @@ namespace Kinovea.ScreenManager
             b.AppendLine("The digitized coordinates are passed through a low pass filter to remove noise. The filter does two passes of a second-order Butterworth filter. The two passes (one forward, one backward) are used to reset the phase shift (Winter, 2009).");
             b.AppendLine("To initialize the filter the trajectory is extrapolated for 10 data points each side using reflected values around the end points. The extrapolated points are then removed from the filtered results (Smith, 1989).");
             rtbInfo1.AppendText(b.ToString());
-    
+
             rtbInfo1.SelectionFont = fontHeader;
             rtbInfo1.AppendText("\nCutoff frequency\n");
 
@@ -222,26 +220,23 @@ namespace Kinovea.ScreenManager
 
         private void PopulatePlotSpecifications()
         {
-            string d = metadata.CalibrationHelper.GetLengthAbbreviation();
             string v = metadata.CalibrationHelper.GetSpeedAbbreviation();
             string a = metadata.CalibrationHelper.GetAccelerationAbbreviation();
+            string theta = metadata.CalibrationHelper.GetAngleAbbreviation();
+            string omega = metadata.CalibrationHelper.GetAngularVelocityAbbreviation();
+            string alpha = metadata.CalibrationHelper.GetAngularAccelerationAbbreviation();
             
-            AddPlotSpecification(Kinematics.X, d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalPosition);
-            AddPlotSpecification(Kinematics.Y, d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalPosition);
-            
-            AddPlotSpecification(Kinematics.LinearDistance, d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
-            AddPlotSpecification(Kinematics.LinearHorizontalDisplacement, d, "Total horizontal displacement");
-            AddPlotSpecification(Kinematics.LinearVerticalDisplacement, d, "Total vertical displacement");
+            // We don't show the relative displacement from frame to frame as it is dependent on framerate and thus doesn't make a lot of sense here.
+            AddPlotSpecification(Kinematics.AngularPosition, theta, "Angle");
+            AddPlotSpecification(Kinematics.TotalAngularDisplacement, theta, "Total displacement");
+            AddPlotSpecification(Kinematics.AngularVelocity, omega, "Angular velocity");
+            AddPlotSpecification(Kinematics.TangentialVelocity, v, "Tangential velocity");
+            AddPlotSpecification(Kinematics.AngularAcceleration, alpha, "Angular acceleration");
+            AddPlotSpecification(Kinematics.TangentialAcceleration, a, "Tangential acceleration");
+            AddPlotSpecification(Kinematics.CentripetalAcceleration, a, "Centripetal acceleration");
+            AddPlotSpecification(Kinematics.ResultantLinearAcceleration, a, "Resultant acceleration");
 
-            AddPlotSpecification(Kinematics.LinearSpeed, v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed);
-            AddPlotSpecification(Kinematics.LinearHorizontalVelocity, v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity);
-            AddPlotSpecification(Kinematics.LinearVerticalVelocity, v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalVelocity);
-
-            AddPlotSpecification(Kinematics.LinearAcceleration, a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Acceleration);
-            AddPlotSpecification(Kinematics.LinearHorizontalAcceleration, a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalAcceleration);
-            AddPlotSpecification(Kinematics.LinearVerticalAcceleration, a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalAcceleration);
-            
-            cmbDataSource.SelectedIndex = 5;
+            cmbDataSource.SelectedIndex = 0;
         }
 
         private void PopulateTimeModels()
@@ -275,11 +270,11 @@ namespace Kinovea.ScreenManager
         {
             // Create plot values from selected options.
 
-            List<TimeSeriesPlotData> enabledTimeSeries = new List<TimeSeriesPlotData>();
+            List<TimeSeriesPlotData> enabledSeries = new List<TimeSeriesPlotData>();
             for (int i = 0; i < clbSources.Items.Count; i++)
             {
                 if (clbSources.GetItemChecked(i))
-                    enabledTimeSeries.Add(clbSources.Items[i] as TimeSeriesPlotData);
+                    enabledSeries.Add(clbSources.Items[i] as TimeSeriesPlotData);
             }
 
             TimeSeriesPlotSpecification spec = cmbDataSource.SelectedItem as TimeSeriesPlotSpecification;
@@ -291,7 +286,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             TimeModel timeModel = (TimeModel)selectedTimeModel;
-            PlotModel model = CreatePlot(enabledTimeSeries, spec.Component, spec.Abbreviation, spec.Label, timeModel);
+            PlotModel model = CreatePlot(enabledSeries, spec.Component, spec.Abbreviation, spec.Label, timeModel);
 
             plotView.Model = model;
             tbTitle.Text = model.Title;
@@ -341,9 +336,9 @@ namespace Kinovea.ScreenManager
 
                 double[] points = tspd.TimeSeriesCollection[component];
                 long[] times = tspd.TimeSeriesCollection.Times;
- 
+
                 double firstTime = TimestampToMilliseconds(times[0]);
-                double timeSpan = TimestampToMilliseconds(times[times.Length-1]) - firstTime;
+                double timeSpan = TimestampToMilliseconds(times[times.Length - 1]) - firstTime;
 
                 for (int i = 0; i < points.Length; i++)
                 {
@@ -457,7 +452,7 @@ namespace Kinovea.ScreenManager
             // Header.
             List<string> headers = new List<string>();
             headers.Add(plotView.Model.Axes[0].Title);
-            
+
             foreach (var serie in plotView.Model.Series)
             {
                 LineSeries s = serie as LineSeries;
@@ -495,13 +490,13 @@ namespace Kinovea.ScreenManager
                     {
                         points[time] = new List<double>();
                         points[time].Add(time);
-                        
+
                         // Each line must have slots for all series, even if there is nothing recorded.
                         for (int j = 0; j < totalSeries; j++)
                             points[time].Add(double.NaN);
                     }
 
-                    points[time][i+1] = p.Y;
+                    points[time][i + 1] = p.Y;
                 }
             }
 

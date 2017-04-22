@@ -250,10 +250,24 @@
     <Compile Include="FilePatterns\FilePatternContexts.cs" />
     <Compile Include="FilePatterns\FilePatternSymbols.cs" />
     <Compile Include="Measurement\Geometry\Circle.cs" />
+    <Compile Include="Measurement\Kinematics\AngularKinematics.cs" />
     <Compile Include="Measurement\Kinematics\CircleFitter.cs" />
     <Compile Include="Measurement\Kinematics\FilteredTrajectory.cs" />
     <Compile Include="Measurement\Kinematics\Kinematics.cs" />
     <Compile Include="Measurement\Kinematics\TimeSeriesCollection.cs" />
+    <Compile Include="Measurement\Kinematics\TimeSeriesPadder.cs" />
+    <Compile Include="Measurement\Plotting\FormAngleAngleAnalysis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Measurement\Plotting\FormAngleAngleAnalysis.Designer.cs">
+      <DependentUpon>FormAngleAngleAnalysis.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Measurement\Plotting\FormAngularAnalysis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Measurement\Plotting\FormAngularAnalysis.Designer.cs">
+      <DependentUpon>FormAngularAnalysis.cs</DependentUpon>
+    </Compile>
     <Compile Include="Measurement\Plotting\FormMultiTrajectoryAnalysis.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -261,6 +275,8 @@
       <DependentUpon>FormMultiTrajectoryAnalysis.cs</DependentUpon>
     </Compile>
     <Compile Include="Measurement\Plotting\TimeModel.cs" />
+    <Compile Include="Measurement\Plotting\TimeSeriesPlotData.cs" />
+    <Compile Include="Measurement\Plotting\TimeSeriesPlotDescription.cs" />
     <Compile Include="Metadata\Drawings\DrawingTestGrid.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolTestGrid.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementCurved.cs" />
@@ -377,7 +393,6 @@
     <Compile Include="Measurement\Tracking\TrackMarker.cs" />
     <Compile Include="Measurement\Tracking\TrackStatus.cs" />
     <Compile Include="Measurement\Tracking\TrackView.cs" />
-    <Compile Include="Measurement\Kinematics\TrajectoryKinematics.cs" />
     <Compile Include="Metadata\DrawingManager\TrackManager.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormCalibrateDistortion.cs">
       <SubType>Form</SubType>
@@ -879,6 +894,12 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
+    <EmbeddedResource Include="Measurement\Plotting\FormAngleAngleAnalysis.resx">
+      <DependentUpon>FormAngleAngleAnalysis.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Measurement\Plotting\FormAngularAnalysis.resx">
+      <DependentUpon>FormAngularAnalysis.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Measurement\Plotting\FormMultiTrajectoryAnalysis.resx">
       <DependentUpon>FormMultiTrajectoryAnalysis.cs</DependentUpon>
     </EmbeddedResource>
