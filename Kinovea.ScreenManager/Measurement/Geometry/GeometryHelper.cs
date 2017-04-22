@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Returns the signed angle (in radians) between vectors ab and ac.
+        /// Returns the between vectors ab and ac in the range [-π..+π], positive CCW.
         /// </summary>
         public static float GetAngle(PointF a, PointF b, PointF c)
         {
@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns the signed angle (in radians) between vectors ab and cd.
+        /// Returns the between vectors ab and cd in the range [-π..+π], positive CCW.
         /// </summary>
         public static float GetAngle(PointF a, PointF b, PointF c, PointF d)
         {

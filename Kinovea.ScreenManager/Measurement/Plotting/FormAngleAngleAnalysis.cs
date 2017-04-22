@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
                 if (!tracked)
                     continue;
 
-                TimeSeriesCollection tsc = angularKinematics.BuildKinematics(trajs, metadata.CalibrationHelper);
+                TimeSeriesCollection tsc = angularKinematics.BuildKinematics(trajs, drawingAngle.AngleOptions, metadata.CalibrationHelper);
                 TimeSeriesPlotData data = new TimeSeriesPlotData(drawingAngle.Name, drawingAngle.Color, tsc);
                 timeSeriesData.Add(data);
             }

@@ -50,6 +50,9 @@ namespace Kinovea.ScreenManager
             // Angle drawings
             foreach (DrawingAngle drawingAngle in metadata.Angles())
             {
+                
+
+
                 Dictionary<string, TrackablePoint> trackablePoints = metadata.TrackabilityManager.GetTrackablePoints(drawingAngle);
                 Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>();
                 
@@ -74,7 +77,7 @@ namespace Kinovea.ScreenManager
                 if (!tracked)
                     continue;
 
-                TimeSeriesCollection tsc = angularKinematics.BuildKinematics(trajs, metadata.CalibrationHelper);
+                TimeSeriesCollection tsc = angularKinematics.BuildKinematics(trajs, drawingAngle.AngleOptions, metadata.CalibrationHelper);
                 TimeSeriesPlotData data = new TimeSeriesPlotData(drawingAngle.Name, drawingAngle.Color, tsc);
                 timeSeriesData.Add(data);
             }

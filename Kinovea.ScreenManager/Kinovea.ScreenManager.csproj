@@ -249,6 +249,7 @@
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\FilePatternContexts.cs" />
     <Compile Include="FilePatterns\FilePatternSymbols.cs" />
+    <Compile Include="Measurement\Geometry\AngleOptions.cs" />
     <Compile Include="Measurement\Geometry\Circle.cs" />
     <Compile Include="Measurement\Kinematics\AngularKinematics.cs" />
     <Compile Include="Measurement\Kinematics\CircleFitter.cs" />
@@ -553,7 +554,7 @@
     <Compile Include="Metadata\Drawings\DrawingToolCrossMark.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolPencil.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolPointer.cs" />
-    <Compile Include="Measurement\Geometry\Angle.cs" />
+    <Compile Include="Measurement\Geometry\SweepAngle.cs" />
     <Compile Include="Measurement\Geometry\AngleHelper.cs" />
     <Compile Include="Measurement\Geometry\Ellipse.cs" />
     <Compile Include="Measurement\Geometry\GeometryHelper.cs" />

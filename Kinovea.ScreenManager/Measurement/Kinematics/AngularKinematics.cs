@@ -27,19 +27,20 @@ using System.Drawing;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Build time series data for various angular kinematics values.
-    /// Input: two or three filtered trajectories.
+    /// Build time series data for various angular kinematics values pertaining to one angle object.
+    /// Input: two or three filtered trajectories of calibrated and undistorted values.
     /// </summary>
     public class AngularKinematics
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static float[] radii;
-        private static float[] positions;
-        private static float[] velocities;
-        private static float[] accelerations;
+        private float[] radii;
+        private float[] positions;
+        private float[] velocities;
+        private float[] accelerations;
+        private const double TAU = Math.PI * 2;
 
-        public TimeSeriesCollection BuildKinematics(Dictionary<string, FilteredTrajectory> trajs, CalibrationHelper calibrationHelper)
+        public TimeSeriesCollection BuildKinematics(Dictionary<string, FilteredTrajectory> trajs, AngleOptions angleOptions, CalibrationHelper calibrationHelper)
         {
             if (trajs == null || trajs.Count != 3)
                 throw new InvalidProgramException();
@@ -67,14 +68,14 @@ namespace Kinovea.ScreenManager
             velocities = new float[tsc.Length];
             accelerations = new float[tsc.Length];
 
-            ComputeAngles(tsc, calibrationHelper, trajs);
+            ComputeAngles(tsc, calibrationHelper, trajs, angleOptions);
             ComputeVelocity(tsc, calibrationHelper);
             ComputeAcceleration(tsc, calibrationHelper);
 
             return tsc;
         }
 
-        private void ComputeAngles(TimeSeriesCollection tsc, CalibrationHelper calibrationHelper, Dictionary<string, FilteredTrajectory> trajs)
+        private void ComputeAngles(TimeSeriesCollection tsc, CalibrationHelper calibrationHelper, Dictionary<string, FilteredTrajectory> trajs, AngleOptions angleOptions)
         {
             // TODO: Handle absolute vs relative.
             // TODO: Handle complement angle.
@@ -87,7 +88,6 @@ namespace Kinovea.ScreenManager
                 PointF o = PointF.Empty;
                 PointF a = PointF.Empty;
                 PointF b = PointF.Empty;
-                float angle = 0;
 
                 if (trajs["o"].CanFilter)
                 {
@@ -102,7 +102,24 @@ namespace Kinovea.ScreenManager
                     b = trajs["b"].RawCoordinates(i);
                 }
 
-                angle = GeometryHelper.GetAngle(o, a, b);
+                // Compute the actual angle value. The logic here should match the one in AngleHelper.Update(). 
+                // They work on different type of inputs so it's difficult to factorize the functions.
+                if (angleOptions.Complement)
+                {
+                    PointF c = new PointF(2 * o.X - a.X, 2 * o.Y - a.Y);
+                    a = b;
+                    b = c;
+                }
+
+                float angle = 0;
+                if (angleOptions.CCW)
+                    angle = GeometryHelper.GetAngle(o, a, b);
+                else
+                    angle = GeometryHelper.GetAngle(o, b, a);
+
+                if (!angleOptions.Signed && angle < 0)
+                    angle = (float)(TAU + angle);
+
                 positions[i] = angle;
                 radii[i] = GeometryHelper.GetDistance(o, b);
                 
