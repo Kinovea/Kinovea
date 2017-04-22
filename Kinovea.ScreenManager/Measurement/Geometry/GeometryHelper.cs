@@ -90,12 +90,20 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static float GetAngle(PointF a, PointF b, PointF c)
         {
-            Vector ab = new Vector(a,b);
-            Vector ac = new Vector(a,c);
-            float  perpDot = ab.X*ac.Y - ab.Y*ac.X;
-            return (float)Math.Atan2(perpDot, ab.Dot(ac));
+            return GetAngle(a, b, a, c);
         }
-        
+
+        /// <summary>
+        /// Returns the signed angle (in radians) between vectors ab and cd.
+        /// </summary>
+        public static float GetAngle(PointF a, PointF b, PointF c, PointF d)
+        {
+            Vector ab = new Vector(a, b);
+            Vector cd = new Vector(c, d);
+            float perpDot = ab.X * cd.Y - ab.Y * cd.X;
+            return (float)Math.Atan2(perpDot, ab.Dot(cd));
+        }
+
         /// <summary>
         /// Rotates point b around point a by given rotation factor (in radians).
         /// </summary>

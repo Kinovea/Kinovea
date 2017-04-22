@@ -504,7 +504,12 @@ namespace Kinovea.ScreenManager
                 if (drawing is DrawingText)
                     yield return (DrawingText)drawing;
         }
-        
+        public IEnumerable<DrawingAngle> Angles()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingAngle)
+                    yield return (DrawingAngle)drawing;
+        }
         public IEnumerable<DrawingPlane> Planes()
         {
             foreach (AbstractDrawing drawing in AttachedDrawings())

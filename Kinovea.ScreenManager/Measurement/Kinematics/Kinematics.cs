@@ -13,8 +13,8 @@ namespace Kinovea.ScreenManager
         YRaw,
 
         LinearDistance,                 // Total distance covered since starting point of trajectory.
-        LinearHorizontalDisplacement,   // Displacement with regards to starting point of trajectory.
-        LinearVerticalDisplacement,     // Displacement with regards to starting point of trajectory.
+        LinearHorizontalDisplacement,   // Total displacement with regards to starting point of trajectory.
+        LinearVerticalDisplacement,     // Total displacement with regards to starting point of trajectory.
         LinearSpeed,
         LinearHorizontalVelocity,
         LinearVerticalVelocity,
@@ -22,12 +22,14 @@ namespace Kinovea.ScreenManager
         LinearHorizontalAcceleration,
         LinearVerticalAcceleration,
 
-        AngularPosition,
-        AngularDistance,
-        AngularDisplacement,
-        AngularVelocity,
-        AngularAcceleration,
+        AngularPosition,                // Absolute or relative value of the angle at this time.
+        AngularDisplacement,            // Displacement with regards to previous point of measure.
+        TotalAngularDisplacement,       // Total displacement with regards to first point of measure.
+        
+        AngularVelocity,                
         TangentialVelocity,
+
+        AngularAcceleration,
         TangentialAcceleration,
         CentripetalAcceleration,
         ResultantLinearAcceleration

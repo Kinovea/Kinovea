@@ -311,13 +311,16 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Takes a speed in calibration units/seconds and returns it in the current speed unit.
+        /// Takes a speed in length units/second and returns it in the current speed unit.
         /// </summary>
         public float ConvertSpeed(float v)
         {
             return UnitHelper.ConvertVelocity(v, lengthUnit, speedUnit);
         }
 
+        /// <summary>
+        /// Takes an acceleration in length units/second squared and return it in the acceleration unit.
+        /// </summary>
         public float ConvertAcceleration(float a)
         {
             return UnitHelper.ConvertAcceleration(a, lengthUnit, accelerationUnit);

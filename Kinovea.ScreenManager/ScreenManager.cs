@@ -438,10 +438,10 @@ namespace Kinovea.ScreenManager
                 mnuCoordinateAxis, 
                 mnuCameraCalibration, 
                 new ToolStripSeparator(),
-                mnuTrajectoryAnalysis,
                 mnuPointAnalysis,
-                //mnuAngularAnalysis,
-                //mnuAngleAngleAnalysis
+                mnuTrajectoryAnalysis,
+                mnuAngularAnalysis,
+                mnuAngleAngleAnalysis
             });
 
             #endregion
@@ -1235,10 +1235,10 @@ namespace Kinovea.ScreenManager
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
             mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
             mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "…";
-            mnuTrajectoryAnalysis.Text = "Trajectory analysis…";
-            mnuPointAnalysis.Text = "Point analysis…";
-            mnuAngularAnalysis.Text = "Angular analysis…";
-            mnuAngleAngleAnalysis.Text = "Angle-angle analysis…";
+            mnuTrajectoryAnalysis.Text = "Linear kinematics…";
+            mnuPointAnalysis.Text = "Scatter analysis…";
+            mnuAngularAnalysis.Text = "Angular kinematics…";
+            mnuAngleAngleAnalysis.Text = "Angle-angle diagrams…";
         }
             
         private void RefreshCultureMenuFilters()

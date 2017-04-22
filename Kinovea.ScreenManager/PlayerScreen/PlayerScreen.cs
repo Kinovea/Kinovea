@@ -644,18 +644,18 @@ namespace Kinovea.ScreenManager
 
         public void ShowAngularAnalysis()
         {
-            /*FormAngularAnalysis f = new FormAngularAnalysis(frameServer.Metadata);
+            FormAngularAnalysis f = new FormAngularAnalysis(frameServer.Metadata);
             FormsHelper.Locate(f);
             f.ShowDialog();
-            f.Dispose();*/
+            f.Dispose();
         }
 
         public void ShowAngleAngleAnalysis()
         {
-            /*FormAngleAngleAnalysis f = new FormAngleAngleAnalysis(frameServer.Metadata);
+            FormAngleAngleAnalysis f = new FormAngleAngleAnalysis(frameServer.Metadata);
             FormsHelper.Locate(f);
             f.ShowDialog();
-            f.Dispose();*/
+            f.Dispose();
         }
 
         public void ShowDataAnalysis(AbstractDrawing drawing)

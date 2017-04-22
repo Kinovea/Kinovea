@@ -1,6 +1,6 @@
 ﻿namespace Kinovea.ScreenManager
 {
-    partial class FormMultiTrajectoryAnalysis
+    partial class FormAngularAnalysis
     {
         /// <summary>
         /// Required designer variable.
@@ -82,7 +82,7 @@
             this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(766, 657);
+            this.tabControl.Size = new System.Drawing.Size(742, 657);
             this.tabControl.TabIndex = 2;
             // 
             // pagePlot
@@ -91,7 +91,7 @@
             this.pagePlot.Location = new System.Drawing.Point(4, 22);
             this.pagePlot.Name = "pagePlot";
             this.pagePlot.Padding = new System.Windows.Forms.Padding(3);
-            this.pagePlot.Size = new System.Drawing.Size(758, 631);
+            this.pagePlot.Size = new System.Drawing.Size(734, 631);
             this.pagePlot.TabIndex = 0;
             this.pagePlot.Text = "Plot";
             this.pagePlot.UseVisualStyleBackColor = true;
@@ -105,7 +105,7 @@
             this.plotView.Location = new System.Drawing.Point(16, 15);
             this.plotView.Name = "plotView";
             this.plotView.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotView.Size = new System.Drawing.Size(727, 604);
+            this.plotView.Size = new System.Drawing.Size(703, 604);
             this.plotView.TabIndex = 0;
             this.plotView.Text = "plotView1";
             this.plotView.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -123,7 +123,7 @@
             this.pageAbout.Location = new System.Drawing.Point(4, 22);
             this.pageAbout.Name = "pageAbout";
             this.pageAbout.Padding = new System.Windows.Forms.Padding(3);
-            this.pageAbout.Size = new System.Drawing.Size(934, 677);
+            this.pageAbout.Size = new System.Drawing.Size(910, 677);
             this.pageAbout.TabIndex = 1;
             this.pageAbout.Text = "About";
             this.pageAbout.UseVisualStyleBackColor = true;
@@ -206,9 +206,9 @@
             this.gbLabels.Controls.Add(this.lblYAxis);
             this.gbLabels.Controls.Add(this.lblXAxis);
             this.gbLabels.Controls.Add(this.tbTitle);
-            this.gbLabels.Location = new System.Drawing.Point(784, 240);
+            this.gbLabels.Location = new System.Drawing.Point(760, 235);
             this.gbLabels.Name = "gbLabels";
-            this.gbLabels.Size = new System.Drawing.Size(212, 138);
+            this.gbLabels.Size = new System.Drawing.Size(236, 138);
             this.gbLabels.TabIndex = 7;
             this.gbLabels.TabStop = false;
             this.gbLabels.Text = "Labels";
@@ -226,7 +226,7 @@
             // 
             this.tbYAxis.Location = new System.Drawing.Point(63, 102);
             this.tbYAxis.Name = "tbYAxis";
-            this.tbYAxis.Size = new System.Drawing.Size(130, 20);
+            this.tbYAxis.Size = new System.Drawing.Size(154, 20);
             this.tbYAxis.TabIndex = 4;
             this.tbYAxis.Text = "Y axis";
             this.tbYAxis.TextChanged += new System.EventHandler(this.LabelsChanged);
@@ -235,7 +235,7 @@
             // 
             this.tbXAxis.Location = new System.Drawing.Point(63, 70);
             this.tbXAxis.Name = "tbXAxis";
-            this.tbXAxis.Size = new System.Drawing.Size(130, 20);
+            this.tbXAxis.Size = new System.Drawing.Size(154, 20);
             this.tbXAxis.TabIndex = 3;
             this.tbXAxis.Text = "X axis";
             this.tbXAxis.TextChanged += new System.EventHandler(this.LabelsChanged);
@@ -263,7 +263,7 @@
             this.tbTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbTitle.Location = new System.Drawing.Point(63, 30);
             this.tbTitle.Name = "tbTitle";
-            this.tbTitle.Size = new System.Drawing.Size(130, 20);
+            this.tbTitle.Size = new System.Drawing.Size(154, 20);
             this.tbTitle.TabIndex = 0;
             this.tbTitle.Text = "Plot title";
             this.tbTitle.TextChanged += new System.EventHandler(this.LabelsChanged);
@@ -273,9 +273,9 @@
             this.gbExportData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.gbExportData.Controls.Add(this.btnDataCopy);
             this.gbExportData.Controls.Add(this.btnExportData);
-            this.gbExportData.Location = new System.Drawing.Point(784, 547);
+            this.gbExportData.Location = new System.Drawing.Point(760, 547);
             this.gbExportData.Name = "gbExportData";
-            this.gbExportData.Size = new System.Drawing.Size(212, 118);
+            this.gbExportData.Size = new System.Drawing.Size(236, 118);
             this.gbExportData.TabIndex = 6;
             this.gbExportData.TabStop = false;
             this.gbExportData.Text = "Export data";
@@ -284,7 +284,7 @@
             // 
             this.btnDataCopy.Location = new System.Drawing.Point(18, 34);
             this.btnDataCopy.Name = "btnDataCopy";
-            this.btnDataCopy.Size = new System.Drawing.Size(175, 23);
+            this.btnDataCopy.Size = new System.Drawing.Size(199, 23);
             this.btnDataCopy.TabIndex = 6;
             this.btnDataCopy.Text = "Copy to Clipboard";
             this.btnDataCopy.UseVisualStyleBackColor = true;
@@ -294,7 +294,7 @@
             // 
             this.btnExportData.Location = new System.Drawing.Point(18, 74);
             this.btnExportData.Name = "btnExportData";
-            this.btnExportData.Size = new System.Drawing.Size(175, 23);
+            this.btnExportData.Size = new System.Drawing.Size(199, 23);
             this.btnExportData.TabIndex = 5;
             this.btnExportData.Text = "Save to file";
             this.btnExportData.UseVisualStyleBackColor = true;
@@ -309,9 +309,9 @@
             this.gbExportGraph.Controls.Add(this.label1);
             this.gbExportGraph.Controls.Add(this.nudHeight);
             this.gbExportGraph.Controls.Add(this.nudWidth);
-            this.gbExportGraph.Location = new System.Drawing.Point(784, 386);
+            this.gbExportGraph.Location = new System.Drawing.Point(760, 386);
             this.gbExportGraph.Name = "gbExportGraph";
-            this.gbExportGraph.Size = new System.Drawing.Size(212, 155);
+            this.gbExportGraph.Size = new System.Drawing.Size(236, 155);
             this.gbExportGraph.TabIndex = 5;
             this.gbExportGraph.TabStop = false;
             this.gbExportGraph.Text = "Export graph";
@@ -320,7 +320,7 @@
             // 
             this.btnImageCopy.Location = new System.Drawing.Point(18, 73);
             this.btnImageCopy.Name = "btnImageCopy";
-            this.btnImageCopy.Size = new System.Drawing.Size(175, 23);
+            this.btnImageCopy.Size = new System.Drawing.Size(199, 23);
             this.btnImageCopy.TabIndex = 7;
             this.btnImageCopy.Text = "Copy to Clipboard";
             this.btnImageCopy.UseVisualStyleBackColor = true;
@@ -330,7 +330,7 @@
             // 
             this.btnExportGraph.Location = new System.Drawing.Point(18, 115);
             this.btnExportGraph.Name = "btnExportGraph";
-            this.btnExportGraph.Size = new System.Drawing.Size(175, 23);
+            this.btnExportGraph.Size = new System.Drawing.Size(199, 23);
             this.btnExportGraph.TabIndex = 4;
             this.btnExportGraph.Text = "Save to file";
             this.btnExportGraph.UseVisualStyleBackColor = true;
@@ -339,7 +339,7 @@
             // lblPixels
             // 
             this.lblPixels.AutoSize = true;
-            this.lblPixels.Location = new System.Drawing.Point(153, 33);
+            this.lblPixels.Location = new System.Drawing.Point(169, 34);
             this.lblPixels.Name = "lblPixels";
             this.lblPixels.Size = new System.Drawing.Size(33, 13);
             this.lblPixels.TabIndex = 3;
@@ -348,7 +348,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(75, 33);
+            this.label1.Location = new System.Drawing.Point(91, 34);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(13, 13);
             this.label1.TabIndex = 2;
@@ -356,7 +356,7 @@
             // 
             // nudHeight
             // 
-            this.nudHeight.Location = new System.Drawing.Point(94, 29);
+            this.nudHeight.Location = new System.Drawing.Point(110, 30);
             this.nudHeight.Maximum = new decimal(new int[] {
             4096,
             0,
@@ -378,7 +378,7 @@
             // 
             // nudWidth
             // 
-            this.nudWidth.Location = new System.Drawing.Point(18, 29);
+            this.nudWidth.Location = new System.Drawing.Point(34, 30);
             this.nudWidth.Maximum = new decimal(new int[] {
             4096,
             0,
@@ -406,9 +406,9 @@
             this.gbSource.Controls.Add(this.clbSources);
             this.gbSource.Controls.Add(this.cmbDataSource);
             this.gbSource.Controls.Add(this.lblData);
-            this.gbSource.Location = new System.Drawing.Point(784, 34);
+            this.gbSource.Location = new System.Drawing.Point(760, 34);
             this.gbSource.Name = "gbSource";
-            this.gbSource.Size = new System.Drawing.Size(212, 200);
+            this.gbSource.Size = new System.Drawing.Size(236, 195);
             this.gbSource.TabIndex = 8;
             this.gbSource.TabStop = false;
             this.gbSource.Text = "Source";
@@ -418,9 +418,9 @@
             this.cmbTimeModel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbTimeModel.FormattingEnabled = true;
-            this.cmbTimeModel.Location = new System.Drawing.Point(63, 168);
+            this.cmbTimeModel.Location = new System.Drawing.Point(63, 163);
             this.cmbTimeModel.Name = "cmbTimeModel";
-            this.cmbTimeModel.Size = new System.Drawing.Size(130, 21);
+            this.cmbTimeModel.Size = new System.Drawing.Size(154, 21);
             this.cmbTimeModel.TabIndex = 9;
             this.cmbTimeModel.SelectedIndexChanged += new System.EventHandler(this.PlotOption_Changed);
             // 
@@ -429,7 +429,7 @@
             this.lblTimeModel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTimeModel.AutoSize = true;
-            this.lblTimeModel.Location = new System.Drawing.Point(15, 171);
+            this.lblTimeModel.Location = new System.Drawing.Point(15, 166);
             this.lblTimeModel.Name = "lblTimeModel";
             this.lblTimeModel.Size = new System.Drawing.Size(36, 13);
             this.lblTimeModel.TabIndex = 8;
@@ -444,7 +444,7 @@
             this.clbSources.FormattingEnabled = true;
             this.clbSources.Location = new System.Drawing.Point(18, 19);
             this.clbSources.Name = "clbSources";
-            this.clbSources.Size = new System.Drawing.Size(175, 94);
+            this.clbSources.Size = new System.Drawing.Size(199, 94);
             this.clbSources.TabIndex = 7;
             this.clbSources.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbSources_ItemCheck);
             this.clbSources.Click += new System.EventHandler(this.PlotOption_Changed);
@@ -456,9 +456,9 @@
             this.cmbDataSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbDataSource.FormattingEnabled = true;
-            this.cmbDataSource.Location = new System.Drawing.Point(63, 137);
+            this.cmbDataSource.Location = new System.Drawing.Point(63, 132);
             this.cmbDataSource.Name = "cmbDataSource";
-            this.cmbDataSource.Size = new System.Drawing.Size(130, 21);
+            this.cmbDataSource.Size = new System.Drawing.Size(154, 21);
             this.cmbDataSource.TabIndex = 6;
             this.cmbDataSource.SelectedIndexChanged += new System.EventHandler(this.PlotOption_Changed);
             // 
@@ -467,13 +467,13 @@
             this.lblData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lblData.AutoSize = true;
-            this.lblData.Location = new System.Drawing.Point(15, 140);
+            this.lblData.Location = new System.Drawing.Point(15, 135);
             this.lblData.Name = "lblData";
             this.lblData.Size = new System.Drawing.Size(36, 13);
             this.lblData.TabIndex = 5;
             this.lblData.Text = "Data :";
             // 
-            // FormMultiTrajectoryAnalysis
+            // FormAngularAnalysis
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -485,10 +485,10 @@
             this.Controls.Add(this.gbExportGraph);
             this.Controls.Add(this.tabControl);
             this.MinimumSize = new System.Drawing.Size(720, 720);
-            this.Name = "FormMultiTrajectoryAnalysis";
+            this.Name = "FormAngularAnalysis";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "Trajectory analysis";
+            this.Text = "Angular kinematics";
             this.tabControl.ResumeLayout(false);
             this.pagePlot.ResumeLayout(false);
             this.pageAbout.ResumeLayout(false);

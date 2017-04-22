@@ -41,9 +41,9 @@ namespace Kinovea.ScreenManager
             if (traj.Length == 0)
                 return tsc;
 
+            tsc.AddTimes(traj.Times);
             tsc.AddComponent(Kinematics.XRaw, traj.RawXs);
             tsc.AddComponent(Kinematics.YRaw, traj.RawYs);
-            tsc.AddTimes(traj.Times);
             tsc.AddComponent(Kinematics.X, traj.Xs);
             tsc.AddComponent(Kinematics.Y, traj.Ys);
 
@@ -219,41 +219,20 @@ namespace Kinovea.ScreenManager
 
         private void PadVelocities(TimeSeriesCollection tsc)
         {
-            PadUncomputables(tsc[Kinematics.LinearSpeed], 1);
-            PadUncomputables(tsc[Kinematics.LinearHorizontalVelocity], 1);
-            PadUncomputables(tsc[Kinematics.LinearVerticalVelocity], 1);
+            TimeSeriesPadder.Pad(tsc[Kinematics.LinearSpeed], 1);
+            TimeSeriesPadder.Pad(tsc[Kinematics.LinearHorizontalVelocity], 1);
+            TimeSeriesPadder.Pad(tsc[Kinematics.LinearVerticalVelocity], 1);
             return;
         }
 
         private void PadAccelerations(TimeSeriesCollection tsc)
         {
-            PadUncomputables(tsc[Kinematics.LinearAcceleration], 2);
-            PadUncomputables(tsc[Kinematics.LinearHorizontalAcceleration], 2);
-            PadUncomputables(tsc[Kinematics.LinearVerticalAcceleration], 2);
+            TimeSeriesPadder.Pad(tsc[Kinematics.LinearAcceleration], 2);
+            TimeSeriesPadder.Pad(tsc[Kinematics.LinearHorizontalAcceleration], 2);
+            TimeSeriesPadder.Pad(tsc[Kinematics.LinearVerticalAcceleration], 2);
             return;
         }
 
-        /// <summary>
-        /// Set uncomputable end points to NaN.
-        /// "padding" number of values will be NaN'ed on each side of the series.
-        /// </summary>
-        private void PadUncomputables(double[] values, int padding)
-        {
-            // At that point the values should all already be set except for the uncomputables.
-            if (values.Length <= padding * 2)
-            {
-                for (int i = 0; i < values.Length; i++)
-                    values[i] = double.NaN;
-            }
-            else
-            {
-                for (int i = 0; i < padding; i++)
-                {
-                    values[i] = double.NaN;
-                    values[values.Length - 1 - i] = double.NaN;
-                }
-            }
-        }
         #endregion
     }
 }
