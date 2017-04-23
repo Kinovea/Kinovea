@@ -257,6 +257,7 @@
     <Compile Include="Measurement\Kinematics\Kinematics.cs" />
     <Compile Include="Measurement\Kinematics\TimeSeriesCollection.cs" />
     <Compile Include="Measurement\Kinematics\TimeSeriesPadder.cs" />
+    <Compile Include="Measurement\Plotting\AngularPlotHelper.cs" />
     <Compile Include="Measurement\Plotting\FormAngleAngleAnalysis.cs">
       <SubType>Form</SubType>
     </Compile>
