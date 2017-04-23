@@ -83,8 +83,8 @@ namespace Kinovea.ScreenManager
 
                 mnuSignedAngle.Text = "Signed angle";
                 mnuCounterClockwise.Text = "Counter clockwise";
-                mnuComplementAngle.Text = "Complement angle";
-                contextMenu.AddRange(new ToolStripItem[] { mnuSignedAngle, mnuCounterClockwise, mnuComplementAngle});
+                mnuSupplementaryAngle.Text = "Supplementary angle";
+                contextMenu.AddRange(new ToolStripItem[] { mnuSignedAngle, mnuCounterClockwise, mnuSupplementaryAngle});
                 
                 return contextMenu; 
             }
@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
         }
         public AngleOptions AngleOptions
         {
-            get { return new AngleOptions(signedAngle, counterClockwise, complementAngle); }
+            get { return new AngleOptions(signedAngle, counterClockwise, supplementaryAngle); }
         }
         public CalibrationHelper CalibrationHelper { get; set; }
         public bool ShowMeasurableInfo { get; set; }
@@ -106,17 +106,17 @@ namespace Kinovea.ScreenManager
         private bool tracking;
         private bool initializing = true;
         
-        private AngleHelper angleHelper = new AngleHelper(40, false, "");
+        private AngleHelper angleHelper = new AngleHelper();
         private DrawingStyle style;
         private StyleHelper styleHelper = new StyleHelper();
         private InfosFading infosFading;
         private bool signedAngle = true;
         private bool counterClockwise = true;
-        private bool complementAngle = false;
+        private bool supplementaryAngle = false;
         
         private ToolStripMenuItem mnuSignedAngle = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCounterClockwise = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuComplementAngle = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSupplementaryAngle = new ToolStripMenuItem();
 
         private const int defaultBackgroundAlpha = 92;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -149,8 +149,8 @@ namespace Kinovea.ScreenManager
             mnuSignedAngle.Checked = signedAngle;
             mnuCounterClockwise.Click += mnuCounterClockwise_Click;
             mnuCounterClockwise.Checked = counterClockwise;
-            mnuComplementAngle.Click += mnuComplementAngle_Click;
-            mnuComplementAngle.Checked = complementAngle;
+            mnuSupplementaryAngle.Click += mnuSupplementaryAngle_Click;
+            mnuSupplementaryAngle.Checked = supplementaryAngle;
         }
         public DrawingAngle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)
@@ -417,11 +417,11 @@ namespace Kinovea.ScreenManager
             CallInvalidateFromMenu(sender);
         }
 
-        private void mnuComplementAngle_Click(object sender, EventArgs e)
+        private void mnuSupplementaryAngle_Click(object sender, EventArgs e)
         {
-            mnuComplementAngle.Checked = !mnuComplementAngle.Checked;
+            mnuSupplementaryAngle.Checked = !mnuSupplementaryAngle.Checked;
 
-            complementAngle = mnuComplementAngle.Checked;
+            supplementaryAngle = mnuSupplementaryAngle.Checked;
             SignalAllTrackablePointsMoved();
             CallInvalidateFromMenu(sender);
         }
@@ -436,7 +436,7 @@ namespace Kinovea.ScreenManager
         private void ComputeValues(IImageToViewportTransformer transformer)
         {
             FixIfNull(transformer);
-            angleHelper.Update(points["o"], points["a"], points["b"], 0, AngleOptions, Color.Transparent, CalibrationHelper, transformer);
+            angleHelper.Update(points["o"], points["a"], points["b"], signedAngle, counterClockwise, supplementaryAngle, CalibrationHelper);
         }
         private void FixIfNull(IImageToViewportTransformer transformer)
         {

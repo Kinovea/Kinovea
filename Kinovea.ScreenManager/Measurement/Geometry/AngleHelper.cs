@@ -39,27 +39,25 @@ namespace Kinovea.ScreenManager
         /// The actual angular value in radians in the range [-π..+π].
         /// </summary>
         public float CalibratedAngle { get; private set; }
-        
-        public PointF TextPosition { get; private set;}
-        public bool Tenth { get; private set;}
-
-        /// <summary>
-        /// A symbol used to identify this specific angle in a drawing containing several.
-        /// </summary>
-        public string Symbol { get; private set;}
-
-        public Color Color { get; private set;}
 
         private const double TAU = Math.PI * 2;
         private int textDistance;
-        
+        private int radius;
+        private bool tenth;
+        private string symbol;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public AngleHelper(int textDistance, bool tenth, string symbol)
+        public AngleHelper() :
+            this(40, 0, false, "")
+        {
+        }
+
+        public AngleHelper(int textDistance, int radius, bool tenth, string symbol)
         {
             this.textDistance = textDistance;
-            this.Tenth = tenth;
-            this.Symbol = symbol;
+            this.radius = radius;
+            this.tenth = tenth;
+            this.symbol = symbol;
 
             SweepAngle = new SweepAngle();
         }
@@ -67,16 +65,14 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Takes point in image space and compute various values necessary to measure and draw the angle.
         /// </summary>
-        public void Update(PointF o, PointF a, PointF b, int radius, AngleOptions angleOptions, Color color, CalibrationHelper calibration, IImageToViewportTransformer transformer)
+        public void Update(PointF o, PointF a, PointF b, bool signed, bool ccw, bool supplementary, CalibrationHelper calibration)
         {
             if(o == a || o == b)
                 return;
 
-            Color = color;
-
-            if (angleOptions.Complement)
+            if (supplementary)
             {
-                // Complement to 180°.
+                // Supplementary angle to 180°.
                 // Point symmetry around o to find the actual second leg.
                 PointF c = new PointF(2 * o.X - a.X, 2 * o.Y - a.Y);
 
@@ -85,9 +81,8 @@ namespace Kinovea.ScreenManager
                 b = c;
             }
 
-            SweepAngle.Update(o, a, b, (float)radius, angleOptions.Signed, angleOptions.CCW);
-            CalibratedAngle = ComputeCalibratedAngle(o, a, b, angleOptions.Signed, angleOptions.CCW, calibration);
-            UpdateTextPosition(transformer);
+            SweepAngle.Update(o, a, b, (float)radius, signed, ccw);
+            CalibratedAngle = ComputeCalibratedAngle(o, a, b, signed, ccw, calibration);
         }
 
         public void DrawText(Graphics canvas, double opacity, SolidBrush brushFill, PointF o, IImageToViewportTransformer transformer, CalibrationHelper calibrationHelper, StyleHelper styleHelper)
@@ -95,30 +90,35 @@ namespace Kinovea.ScreenManager
             float value = calibrationHelper.ConvertAngle(CalibratedAngle);
 
             string label = "";
-            if (Tenth || calibrationHelper.AngleUnit == AngleUnit.Radian)
+            if (tenth || calibrationHelper.AngleUnit == AngleUnit.Radian)
                 label = string.Format("{0:0.0} {1}", value, calibrationHelper.GetAngleAbbreviation());
             else
                 label = string.Format("{0} {1}", (int)Math.Round(value), calibrationHelper.GetAngleAbbreviation());
 
-            if (!string.IsNullOrEmpty(Symbol))
-                label = string.Format("{0} = {1}", Symbol, label);
+            if (!string.IsNullOrEmpty(symbol))
+                label = string.Format("{0} = {1}", symbol, label);
 
             SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacity * 255));
-            Font tempFont = styleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
+            
+            Font tempFont = styleHelper.GetFont(1.0F);
             SizeF labelSize = canvas.MeasureString(label, tempFont);
 
+            Font tempFontTransformed = styleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
+            SizeF labelSizeTransformed = canvas.MeasureString(label, tempFontTransformed);
+
             // Background
-            float shiftx = (float)(transformer.Scale * TextPosition.X);
-            float shifty = (float)(transformer.Scale * TextPosition.Y);
-            
-            PointF textOrigin = new PointF(o.X + shiftx - (labelSize.Width / 2), o.Y + shifty - (labelSize.Height / 2));
-            RectangleF backRectangle = new RectangleF(textOrigin, labelSize);
-            RoundedRectangle.Draw(canvas, backRectangle, brushFill, tempFont.Height / 4, false, false, null);
+            PointF textPosition = GetTextPosition(SweepAngle.Start, SweepAngle.Sweep, textDistance, labelSize);
+            textPosition = textPosition.Scale((float)transformer.Scale);
+
+            PointF backgroundOrigin = o.Translate(textPosition.X, textPosition.Y);
+            RectangleF backRectangle = new RectangleF(backgroundOrigin, labelSizeTransformed);
+            RoundedRectangle.Draw(canvas, backRectangle, brushFill, tempFontTransformed.Height / 4, false, false, null);
 
             // Text
-            canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
+            canvas.DrawString(label, tempFontTransformed, fontBrush, backgroundOrigin);
 
             tempFont.Dispose();
+            tempFontTransformed.Dispose();
             fontBrush.Dispose();
         }
 
@@ -143,17 +143,22 @@ namespace Kinovea.ScreenManager
             return value;
         }
 
-        private void UpdateTextPosition(IImageToViewportTransformer transformer)
+        /// <summary>
+        /// Get the position of the text in image space.
+        /// The center of the text is placed at a fixed distance on the bissector of the angle.
+        /// </summary>
+        private PointF GetTextPosition(float start, float sweep, int textDistance, SizeF labelSize)
         {
-            int imageTextDistance = transformer.Untransform(textDistance);
-            
             // The sweep is going clockwise in drawpie conventions so the y-axis is downwards, 
-            // which is also the direction of the y-axis of the image so y doesn't need to be inverted here.
+            // which is also the direction of the y-axis of the image so the y variable doesn't need to be inverted here.
             double angle = (SweepAngle.Start + SweepAngle.Sweep / 2) * MathHelper.DegreesToRadians;
-            double x = Math.Cos(angle) * imageTextDistance;
-            double y = Math.Sin(angle) * imageTextDistance;
+            double x = Math.Cos(angle) * textDistance;
+            double y = Math.Sin(angle) * textDistance;
             
-            TextPosition = new PointF((float)x, (float)y);
+            x -= (labelSize.Width/2);
+            y -= (labelSize.Height/2);
+
+            return new PointF((float)x, (float)y);
         }
     }
 }
