@@ -560,7 +560,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawAngles(Pen penEdge, Color basePenEdgeColor, SolidBrush brushFill, Color baseBrushFillColor, int alpha, int alphaBackground, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
-            UpdateAngles(transformer);
+            UpdateAngles();
             
             penEdge.Width = 2;
             penEdge.DashStyle = DashStyle.Solid;
@@ -572,7 +572,7 @@ namespace Kinovea.ScreenManager
                 
                 AngleHelper angleHelper = angles[i];
                 Rectangle box = transformer.Transform(angleHelper.SweepAngle.BoundingBox);
-                Color color = angleHelper.Color;
+                Color color = genericPosture.Angles[i].Color;
 
                 try
                 {
@@ -711,23 +711,24 @@ namespace Kinovea.ScreenManager
         }
         private void InitAngles()
         {
-            for(int i=0;i<genericPosture.Angles.Count;i++)
-                angles.Add(new AngleHelper(40, genericPosture.Angles[i].Tenth, genericPosture.Angles[i].Symbol));
+            int textDistance = 40;
+
+            for (int i = 0; i < genericPosture.Angles.Count; i++)
+                angles.Add(new AngleHelper(textDistance, genericPosture.Angles[i].Radius, genericPosture.Angles[i].Tenth, genericPosture.Angles[i].Symbol));
         }
-        private void UpdateAngles(IImageToViewportTransformer transformer)
+        private void UpdateAngles()
         {
             for(int i = 0; i<angles.Count;i++)
             {
                 PointF origin = genericPosture.Points[genericPosture.Angles[i].Origin];
                 PointF leg1 = genericPosture.Points[genericPosture.Angles[i].Leg1];
                 PointF leg2 = genericPosture.Points[genericPosture.Angles[i].Leg2];
-                int radius = genericPosture.Angles[i].Radius;
-                Color color = genericPosture.Angles[i].Color;
-                bool signed = genericPosture.Angles[i].Relative;
+
+                bool signed = genericPosture.Angles[i].Signed;
                 bool ccw = true;
-                bool complement = false;
-                AngleOptions options = new AngleOptions(signed, ccw, complement);
-                angles[i].Update(origin, leg1, leg2, radius, options, color, CalibrationHelper, transformer);
+                bool supplementary = false;
+                
+                angles[i].Update(origin, leg1, leg2, signed, ccw, supplementary, CalibrationHelper);
             }
         }
         private DashStyle Convert(SegmentLineStyle style)

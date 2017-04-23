@@ -77,12 +77,6 @@ namespace Kinovea.ScreenManager
 
         private void ComputeAngles(TimeSeriesCollection tsc, CalibrationHelper calibrationHelper, Dictionary<string, FilteredTrajectory> trajs, AngleOptions angleOptions)
         {
-            // TODO: Handle absolute vs relative.
-            // TODO: Handle complement angle.
-            // TODO: handle range 0..360 and range -180..+180.
-
-            // Get the signed angle in the range [-π..+π], between vectors oa and ob.
-            // This assumes less than half turn at each frame, allow for negative angular position. 
             for (int i = 0; i < tsc.Length; i++)
             {
                 PointF o = PointF.Empty;
@@ -104,8 +98,9 @@ namespace Kinovea.ScreenManager
 
                 // Compute the actual angle value. The logic here should match the one in AngleHelper.Update(). 
                 // They work on different type of inputs so it's difficult to factorize the functions.
-                if (angleOptions.Complement)
+                if (angleOptions.Supplementary)
                 {
+                    // Create a new point by point reflection of a around o.
                     PointF c = new PointF(2 * o.X - a.X, 2 * o.Y - a.Y);
                     a = b;
                     b = c;
