@@ -510,6 +510,12 @@ namespace Kinovea.ScreenManager
                 if (drawing is DrawingAngle)
                     yield return (DrawingAngle)drawing;
         }
+        public IEnumerable<DrawingGenericPosture> GenericPostures()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingGenericPosture)
+                    yield return (DrawingGenericPosture)drawing;
+        }
         public IEnumerable<DrawingPlane> Planes()
         {
             foreach (AbstractDrawing drawing in AttachedDrawings())

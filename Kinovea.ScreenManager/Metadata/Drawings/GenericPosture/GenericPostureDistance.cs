@@ -28,6 +28,7 @@ namespace Kinovea.ScreenManager
 {
     public class GenericPostureDistance
     {
+        public string Name { get; private set; }
         public int Point1 { get; private set;}
         public int Point2 { get; private set;}
         public string Symbol { get; private set;}
@@ -37,11 +38,15 @@ namespace Kinovea.ScreenManager
         public GenericPostureDistance(XmlReader r)
         {
             //<Distance point1="2" point2="4" />
+            Name = "";
             Color = Color.Transparent;
             OptionGroup = "";
             
             bool isEmpty = r.IsEmptyElement;
-            
+
+            if (r.MoveToAttribute("name"))
+                Name = r.ReadContentAsString();
+
             if(r.MoveToAttribute("point1"))
                 Point1 = XmlHelper.ParsePointReference(r.ReadContentAsString());
             

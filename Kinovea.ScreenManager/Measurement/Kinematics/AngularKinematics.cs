@@ -32,13 +32,12 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class AngularKinematics
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         private float[] radii;
         private float[] positions;
         private float[] velocities;
         private float[] accelerations;
         private const double TAU = Math.PI * 2;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public TimeSeriesCollection BuildKinematics(Dictionary<string, FilteredTrajectory> trajs, AngleOptions angleOptions, CalibrationHelper calibrationHelper)
         {

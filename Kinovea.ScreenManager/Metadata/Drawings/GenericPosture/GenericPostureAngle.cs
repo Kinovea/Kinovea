@@ -30,6 +30,9 @@ namespace Kinovea.ScreenManager
 {
     public class GenericPostureAngle
     {
+        public string Name { get; private set; }
+
+        // Indices in the list of points. The baseline angle goes from leg1 to leg2.
         public int Origin { get; private set;}
         public int Leg1 { get; private set;}
         public int Leg2 { get; private set;}
@@ -37,10 +40,10 @@ namespace Kinovea.ScreenManager
         // Options defining the appearance of the angle on screen.
         public int Radius { get; set;}
         public bool Tenth { get; private set; }
-        public string Symbol { get; private set; }
         public Color Color { get; private set; }
+        public string Symbol { get; private set; }
 
-        // Option defining the way to measure the actual value.
+        // Options defining the way to measure the actual value.
         public bool Signed { get; private set; }
         public bool CCW { get; private set; }
         public bool Supplementary { get; private set; }
@@ -51,9 +54,11 @@ namespace Kinovea.ScreenManager
         {
             //<Angle origin="1" leg1="2" leg2="3" relative="true" />
 
+            Name = "";
+            Symbol = "";
+
             Radius = 40;
             Tenth = false;
-            Symbol = "";
             Color = Color.Transparent;
 
             Signed = true;
@@ -63,7 +68,10 @@ namespace Kinovea.ScreenManager
             OptionGroup = "";
             
             bool isEmpty = r.IsEmptyElement;
-            
+
+            if (r.MoveToAttribute("name"))
+                Name = r.ReadContentAsString();
+
             if(r.MoveToAttribute("origin"))
                 Origin = r.ReadContentAsInt();
             
@@ -78,21 +86,21 @@ namespace Kinovea.ScreenManager
 
             if(r.MoveToAttribute("tenth"))
                 Tenth = XmlHelper.ParseBoolean(r.ReadContentAsString());
-            
-            if(r.MoveToAttribute("symbol"))
-                Symbol = r.ReadContentAsString();
                 
             if(r.MoveToAttribute("color"))
                 Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
+
+            if (r.MoveToAttribute("symbol"))
+                Name = r.ReadContentAsString();
 
             if(r.MoveToAttribute("signed"))
                 Signed = XmlHelper.ParseBoolean(r.ReadContentAsString());
 
             if (r.MoveToAttribute("ccw"))
-                Signed = XmlHelper.ParseBoolean(r.ReadContentAsString());
+                CCW = XmlHelper.ParseBoolean(r.ReadContentAsString());
 
             if (r.MoveToAttribute("supplementary"))
-                Signed = XmlHelper.ParseBoolean(r.ReadContentAsString());
+                Supplementary = XmlHelper.ParseBoolean(r.ReadContentAsString());
             
             if(r.MoveToAttribute("optionGroup"))
                 OptionGroup = r.ReadContentAsString();

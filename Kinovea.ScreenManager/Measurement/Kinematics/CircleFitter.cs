@@ -50,16 +50,23 @@ namespace Kinovea.ScreenManager
                 v[i, 0] = point.X * point.X + point.Y * point.Y;
             }
 
-            Matrix mt = m.Clone();
-            mt.Transpose();
-            Matrix b = mt.Multiply(m);
-            Matrix c = mt.Multiply(v);
-            Matrix z = b.Solve(c);
+            try
+            {
+                Matrix mt = m.Clone();
+                mt.Transpose();
+                Matrix b = mt.Multiply(m);
+                Matrix c = mt.Multiply(v);
+                Matrix z = b.Solve(c);
 
-            PointF center = new PointF((float)(z[0, 0] * 0.5), (float)(z[1, 0] * 0.5));
-            double radius = Math.Sqrt(z[2, 0] + (center.X * center.X) + (center.Y * center.Y));
+                PointF center = new PointF((float)(z[0, 0] * 0.5), (float)(z[1, 0] * 0.5));
+                double radius = Math.Sqrt(z[2, 0] + (center.X * center.X) + (center.Y * center.Y));
 
-            return new Circle(center, (float)radius);
+                return new Circle(center, (float)radius);
+            }
+            catch (InvalidOperationException)
+            {
+                return Circle.Empty;
+            }
         }
     }
 }
