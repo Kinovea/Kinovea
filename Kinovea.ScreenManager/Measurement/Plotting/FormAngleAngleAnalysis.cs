@@ -30,7 +30,7 @@ namespace Kinovea.ScreenManager
         public FormAngleAngleAnalysis(Metadata metadata)
         {
             this.metadata = metadata;
-            ImportData(metadata);
+            AngularPlotHelper.ImportData(metadata, timeSeriesData);
 
             InitializeComponent();
 
@@ -40,43 +40,6 @@ namespace Kinovea.ScreenManager
             PopulatePlotSpecifications();
 
             UpdatePlot();
-        }
-
-        private void ImportData(Metadata metadata)
-        {
-            AngularKinematics angularKinematics = new AngularKinematics();
-            
-            // Angle drawings
-            foreach (DrawingAngle drawingAngle in metadata.Angles())
-            {
-                Dictionary<string, TrackablePoint> trackablePoints = metadata.TrackabilityManager.GetTrackablePoints(drawingAngle);
-                Dictionary<string, FilteredTrajectory> trajs = new Dictionary<string, FilteredTrajectory>();
-                
-                bool tracked = true;
-
-                foreach (string key in trackablePoints.Keys)
-                {
-                    Timeline<TrackFrame> timeline = trackablePoints[key].Timeline;
-                    if (timeline.Count == 0)
-                    {
-                        tracked = false;
-                        break;
-                    }
-
-                    List<TimedPoint> samples = timeline.Enumerate().Select(p => new TimedPoint(p.Location.X, p.Location.Y, p.Time)).ToList();
-                    FilteredTrajectory traj = new FilteredTrajectory();
-                    traj.Initialize(samples, metadata.CalibrationHelper);
-
-                    trajs.Add(key, traj);
-                }
-
-                if (!tracked)
-                    continue;
-
-                TimeSeriesCollection tsc = angularKinematics.BuildKinematics(trajs, drawingAngle.AngleOptions, metadata.CalibrationHelper);
-                TimeSeriesPlotData data = new TimeSeriesPlotData(drawingAngle.Name, drawingAngle.Color, tsc);
-                timeSeriesData.Add(data);
-            }
         }
 
         private void Localize()
