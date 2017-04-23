@@ -114,6 +114,14 @@ namespace Kinovea.ScreenManager
         }
         public CalibrationHelper CalibrationHelper { get; set; }
         public bool ShowMeasurableInfo { get; set; }
+        public List<GenericPostureAngle> GenericPostureAngles 
+        {
+            get { return genericPosture.Angles; }
+        }
+        public List<GenericPostureHandle> GenericPostureHandles
+        {
+            get { return genericPosture.Handles; }
+        }
         #endregion
         
         #region Members
@@ -201,6 +209,9 @@ namespace Kinovea.ScreenManager
                 DrawAngles(penEdge, basePenEdgeColor, brushFill, baseBrushFillColor, alpha, alphaBackground, opacity, canvas, transformer, points);
                 DrawDistances(brushFill, baseBrushFillColor, alphaBackground, opacity, canvas, transformer, points);
                 DrawPositions(brushFill, baseBrushFillColor, alphaBackground, opacity, canvas, transformer, points);
+
+                // Debug: draw the indices at all points.
+                //DrawDebug(brushFill, opacity, canvas, transformer, points);
             }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
@@ -546,13 +557,6 @@ namespace Kinovea.ScreenManager
                 {
                     brushHandle.Color = handle.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, handle.Color);
                     canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
-
-                    /*Pen p = new Pen(handle.Color);
-                    Point point = points[handle.Reference];
-                    Rectangle block = point.Box(_transformer.Transform(genericPosture.CustomTrackingProfile.BlockWindow));
-                    Rectangle search = point.Box(_transformer.Transform(genericPosture.CustomTrackingProfile.SearchWindow));
-                    canvas.DrawRectangle(p, block);
-                    canvas.DrawRectangle(p, search);*/
                 }
             }
             
@@ -677,6 +681,15 @@ namespace Kinovea.ScreenManager
             canvas.DrawString(label, tempFont, brush, textOrigin);
             tempFont.Dispose();
         }
+        private void DrawDebug(SolidBrush brushFill, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
+        {
+            for (int i = 0; i < genericPosture.Points.Count; i++)
+            {
+                string label = i.ToString();
+                PointF p = points[i];
+                DrawPointText(p, label, canvas, opacity, transformer, brushFill);
+            }
+        }
         #endregion
         
         #region Lower level helpers
@@ -725,8 +738,8 @@ namespace Kinovea.ScreenManager
                 PointF leg2 = genericPosture.Points[genericPosture.Angles[i].Leg2];
 
                 bool signed = genericPosture.Angles[i].Signed;
-                bool ccw = true;
-                bool supplementary = false;
+                bool ccw = genericPosture.Angles[i].CCW;
+                bool supplementary = genericPosture.Angles[i].Supplementary;
                 
                 angles[i].Update(origin, leg1, leg2, signed, ccw, supplementary, CalibrationHelper);
             }

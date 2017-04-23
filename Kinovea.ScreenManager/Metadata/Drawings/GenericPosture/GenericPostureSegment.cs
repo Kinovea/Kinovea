@@ -30,6 +30,7 @@ namespace Kinovea.ScreenManager
 {
     public class GenericPostureSegment
     {
+        public string Name { get; private set; }
         public int Start { get; private set;}
         public int End { get; private set;}
         public SegmentLineStyle Style { get; private set;}
@@ -44,13 +45,17 @@ namespace Kinovea.ScreenManager
         public GenericPostureSegment(XmlReader r)
         {
             //<Segment point1="0" point2="1" name="" style="Solid" width="1"/>
+            Name = "";
             Width = 2;
             Style = SegmentLineStyle.Solid;
             Color = Color.Transparent;
             OptionGroup = "";
             
             bool isEmpty = r.IsEmptyElement;
-            
+
+            if (r.MoveToAttribute("name"))
+                Name = r.ReadContentAsString();
+
             if(r.MoveToAttribute("point1"))
                 Start = XmlHelper.ParsePointReference(r.ReadContentAsString());
             

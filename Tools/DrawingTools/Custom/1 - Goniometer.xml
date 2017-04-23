@@ -11,10 +11,10 @@
     <Segment point1="1" point2="3" name="" style="Solid" width="2"/>
   </Segments>
   <Angles>
-    <Angle origin="1" leg1="3" leg2="2" relative="true" tenth="true"/>
+    <Angle origin="1" leg1="0" leg2="3" signed="true" ccw="true" supplementary="true" tenth="true"/>
   </Angles>
   <Handles>
-    <Handle type="Point" reference="0" trackable="true">
+    <Handle type="Point" name="knee" reference="0" trackable="true">
       <Impact type="KeepAngle">
         <KeepAngle origin="1" leg1="0" leg2="2"/>
       </Impact>

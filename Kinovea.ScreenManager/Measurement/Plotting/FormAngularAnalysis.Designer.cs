@@ -123,7 +123,7 @@
             this.pageAbout.Location = new System.Drawing.Point(4, 22);
             this.pageAbout.Name = "pageAbout";
             this.pageAbout.Padding = new System.Windows.Forms.Padding(3);
-            this.pageAbout.Size = new System.Drawing.Size(910, 677);
+            this.pageAbout.Size = new System.Drawing.Size(734, 631);
             this.pageAbout.TabIndex = 1;
             this.pageAbout.Text = "About";
             this.pageAbout.UseVisualStyleBackColor = true;
@@ -199,7 +199,7 @@
             // 
             // gbLabels
             // 
-            this.gbLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.gbLabels.Controls.Add(this.lblTitle);
             this.gbLabels.Controls.Add(this.tbYAxis);
             this.gbLabels.Controls.Add(this.tbXAxis);
@@ -400,7 +400,8 @@
             // 
             // gbSource
             // 
-            this.gbSource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.gbSource.Controls.Add(this.cmbTimeModel);
             this.gbSource.Controls.Add(this.lblTimeModel);
             this.gbSource.Controls.Add(this.clbSources);

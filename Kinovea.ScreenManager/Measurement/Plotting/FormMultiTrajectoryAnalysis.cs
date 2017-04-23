@@ -45,13 +45,21 @@ namespace Kinovea.ScreenManager
 
         private void ImportData(Metadata metadata)
         {
-            // Tracks
+            ImportTrackData(metadata);
+            ImportOtherDrawingsData(metadata);
+        }
+
+        private void ImportTrackData(Metadata metadata)
+        {
             foreach (DrawingTrack track in metadata.Tracks())
             {
                 TimeSeriesPlotData data = new TimeSeriesPlotData(track.Label, track.MainColor, track.TimeSeriesCollection);
                 timeSeriesData.Add(data);
             }
+        }
 
+        private void ImportOtherDrawingsData(Metadata metadata)
+        {
             LinearKinematics linearKinematics = new LinearKinematics();
 
             // Trackable drawing's individual points.
@@ -75,7 +83,27 @@ namespace Kinovea.ScreenManager
 
                     TimeSeriesCollection tsc = linearKinematics.BuildKinematics(traj, metadata.CalibrationHelper);
 
-                    string name = string.Format("{0}.{1}", trackable.Name, pair.Key);
+                    string name = trackable.Name;
+
+                    // Custom drawings may have dedicated names for their handles.
+                    DrawingGenericPosture dgp = trackable as DrawingGenericPosture;
+                    if (dgp == null)
+                    {
+                        name = name + " - " + pair.Key;
+                    }
+                    else
+                    {
+                        foreach (var handle in dgp.GenericPostureHandles)
+                        {
+                            if (handle.Reference.ToString() != pair.Key)
+                                continue;
+
+                            name = name + " - " + (string.IsNullOrEmpty(handle.Name) ? pair.Key : handle.Name);
+                            
+                            break;
+                        }
+                    }
+
                     TimeSeriesPlotData data = new TimeSeriesPlotData(name, trackable.Color, tsc);
                     timeSeriesData.Add(data);
                 }

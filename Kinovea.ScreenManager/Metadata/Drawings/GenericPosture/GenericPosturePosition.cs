@@ -29,24 +29,25 @@ namespace Kinovea.ScreenManager
     public class GenericPosturePosition
     {
         public int Point { get; private set;}
-        public string Symbol { get; private set;}
+        public string Symbol { get; private set; }
         public Color Color { get; private set; }
         public string OptionGroup { get; private set;}
         
         public GenericPosturePosition(XmlReader r)
         {
             //<Position point="2" />
+            Symbol = "";
             Color = Color.Transparent;
             OptionGroup = "";
             
             bool isEmpty = r.IsEmptyElement;
-            
+
             if(r.MoveToAttribute("point"))
                 Point = XmlHelper.ParsePointReference(r.ReadContentAsString());
-            
-            if(r.MoveToAttribute("symbol"))
+
+            if (r.MoveToAttribute("symbol"))
                 Symbol = r.ReadContentAsString();
-            
+
             if(r.MoveToAttribute("color"))
                 Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
             

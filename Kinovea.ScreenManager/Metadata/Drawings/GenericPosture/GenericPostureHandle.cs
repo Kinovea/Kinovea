@@ -30,6 +30,7 @@ namespace Kinovea.ScreenManager
 {
     public class GenericPostureHandle
     {
+        public string Name { get; private set; }
         public HandleType Type { get; private set;}
         public Color Color { get; private set; }
         public int Reference { get; private set;}
@@ -54,6 +55,7 @@ namespace Kinovea.ScreenManager
             
             // TODO: maybe use the same pattern for Handle than for constraints, impacts and hit zones.
             
+            Name = "";
             Constraint = null;
             Impacts = new List<GenericPostureAbstractImpact>();
             Color = Color.Transparent;
@@ -61,9 +63,12 @@ namespace Kinovea.ScreenManager
             
             bool isEmpty = r.IsEmptyElement;
             
+            if (r.MoveToAttribute("name"))
+                Name = r.ReadContentAsString();
+            
             if(r.MoveToAttribute("type"))
                 Type = (HandleType) Enum.Parse(typeof(HandleType), r.ReadContentAsString());
-            
+
             if(r.MoveToAttribute("reference"))
                 Reference = r.ReadContentAsInt();
             
