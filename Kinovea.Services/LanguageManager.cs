@@ -140,7 +140,6 @@ namespace Kinovea.Services
         }
         #endregion
 
-        private static bool initialized = false;
         private static Dictionary<string, string> languages = null;
         private static List<string> legacyLanguages = null;
         private static bool useOldSerbianCodes = false;
