@@ -24,6 +24,7 @@
     <Keyword>ManagedCProj</Keyword>
     <ProjectName>Kinovea.Video.FFMpeg</ProjectName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
