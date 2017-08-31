@@ -5,12 +5,12 @@
 The current build chain is not very friendly and requires old tools. Hopefully we can move to a more modern environment soon.
 We've spent a good deal of time trying to make this work without the dependency on the old IDEs but there is no solution at the moment.
 
-## Requirements:
+## Requirements
 - Visual Studio 2008 + Visual Studio 2008 SP1 + VS90SP1-KB976656-x86.exe.
 - Visual Studio 2010.
 - Optional: a more modern IDE like VS2015 (still requires VS2008 and VS2010 installed on the machine).
 
-## Reasons for the odd requirements.
+## Reasons for the odd requirements
 
 #### VS2008
 - The reason for VS2008 is a combination of having a C++/CLI project, targetting .NET 3.5 and targetting x64 systems.
@@ -30,16 +30,16 @@ We've spent a good deal of time trying to make this work without the dependency 
 ## Rebuilding
 
 Open the solution in Visual Studio, set the build configuration to Debug and x64, rebuild the projects in the following order:
-- 1. Kinovea.Video
-- 2. Kinovea.Services
-- 3. Kinovea.Video.FFMpeg, Kinovea.Video.Bitmap, Kinovea.Video.GIF, Kinovea.Video.SVG
-- 4. Kinovea.Camera
-- 5. Kinovea.Camera.DirectShow, Kinovea.Camera.HTTP
-- 6. Kinovea.ScreenManager.
-- 7. Kinovea.FileBrowser, Kinovea.Updater
-- 8. Kinovea
+- Kinovea.Video
+- Kinovea.Services
+- Kinovea.Video.FFMpeg, Kinovea.Video.Bitmap, Kinovea.Video.GIF, Kinovea.Video.SVG
+- Kinovea.Camera
+- Kinovea.Camera.DirectShow, Kinovea.Camera.HTTP
+- Kinovea.ScreenManager.
+- Kinovea.FileBrowser, Kinovea.Updater
+- Kinovea
 
-The lower projects are dependent on the upper ones so you can pinpoint the problems. Usually Kinovea.Video.FFMpeg is the usual suspect. Make sure you have all the requirements.
+The lower projects are dependent on the upper ones so you can pinpoint the problems. Usually Kinovea.Video.FFMpeg is the usual suspect. Make sure you have all the requirements as described above.
 
 
 
