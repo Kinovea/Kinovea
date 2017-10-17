@@ -59,6 +59,7 @@ namespace Kinovea.Root
         private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.General_General };
         private string uiCultureName;
         private int maxRecentFiles;
+        private bool allowMultipleInstances;
 
         #endregion
         
@@ -81,6 +82,7 @@ namespace Kinovea.Root
         {
             uiCultureName = LanguageManager.GetCurrentCultureName();
             maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
+            allowMultipleInstances = PreferencesManager.GeneralPreferences.AllowMultipleInstances;
         }
         private void InitPage()
         {
@@ -97,6 +99,9 @@ namespace Kinovea.Root
 
             SelectCurrentLanguage();
             cmbHistoryCount.SelectedIndex = maxRecentFiles;
+
+            //chkAllowMultipleInstances.Text = RootLang.dlgPreferences_Drawings_chkAllowMultipleInstances;
+            chkAllowMultipleInstances.Checked = allowMultipleInstances;
         }
         private void SelectCurrentLanguage()
         {
@@ -127,12 +132,17 @@ namespace Kinovea.Root
         {
             maxRecentFiles = cmbHistoryCount.SelectedIndex;
         }
+        private void chkAllowMultipleInstances_CheckedChanged(object sender, EventArgs e)
+        {
+            allowMultipleInstances = chkAllowMultipleInstances.Checked;
+        }
         #endregion
-        
+
         public void CommitChanges()
         {
             PreferencesManager.GeneralPreferences.SetCulture(uiCultureName);
             PreferencesManager.FileExplorerPreferences.MaxRecentFiles = maxRecentFiles;
+            PreferencesManager.GeneralPreferences.AllowMultipleInstances = allowMultipleInstances;
         }
     }
 }

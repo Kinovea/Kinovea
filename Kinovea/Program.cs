@@ -22,9 +22,8 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-
-using Kinovea.Services;
 using System.Reflection;
+using Kinovea.Services;
 
 namespace Kinovea.Root
 {
@@ -41,7 +40,7 @@ namespace Kinovea.Root
         }
         private static Mutex mutex;
         private static string appGuid = "b049b83e-90f3-4e84-9289-52ee6ea2a9ea";
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 
         [STAThread]
@@ -49,14 +48,15 @@ namespace Kinovea.Root
         {
             AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
             
-            if (!Program.FirstInstance)
-                return;
-            
             Thread.CurrentThread.Name = "Main";
             
             Assembly assembly = Assembly.GetExecutingAssembly();
             Software.Initialize(assembly.GetName().Version);
             Software.SanityCheckDirectories();
+            PreferencesManager.Initialize();
+            if (!PreferencesManager.GeneralPreferences.AllowMultipleInstances && !Program.FirstInstance)
+                return;
+
             Software.LogInfo();
                 
             log.Debug("Application level initialisations.");
@@ -67,8 +67,6 @@ namespace Kinovea.Root
             FormSplashScreen splashForm = new FormSplashScreen();
             splashForm.Show();
             splashForm.Update();
-            
-            PreferencesManager.Initialize();
             
             RootKernel kernel = new RootKernel();
             kernel.Prepare();
@@ -84,11 +82,11 @@ namespace Kinovea.Root
         {
             Exception ex = (Exception)args.ExceptionObject;
             
-            string message = String.Format("Message: {0}", ex.Message);
-            string source = String.Format("Source: {0}", ex.Source);
-            string target = String.Format("Target site: {0}", ex.TargetSite);
-            string inner = String.Format("InnerException: {0}", ex.InnerException);
-            string trace = String.Format("Stack: {0}", ex.StackTrace);
+            string message = string.Format("Message: {0}", ex.Message);
+            string source = string.Format("Source: {0}", ex.Source);
+            string target = string.Format("Target site: {0}", ex.TargetSite);
+            string inner = string.Format("InnerException: {0}", ex.InnerException);
+            string trace = string.Format("Stack: {0}", ex.StackTrace);
             
             string dumpFile = string.Format("Unhandled Crash - {0}.txt", Guid.NewGuid());
             using (StreamWriter sw = File.AppendText(Path.Combine(Software.SettingsDirectory, dumpFile)))
