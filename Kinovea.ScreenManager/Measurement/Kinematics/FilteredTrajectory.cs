@@ -152,10 +152,9 @@ namespace Kinovea.ScreenManager
 
         public PointF Coordinates(int index)
         {
-            if (XCutoffIndex < 0 || YCutoffIndex < 0)
-                return RawCoordinates(index);
-            else
-                return new PointF((float)FilterResultXs[XCutoffIndex].Data[index], (float)FilterResultYs[YCutoffIndex].Data[index]);
+            float x = XCutoffIndex < 0 ? RawCoordinates(index).X : (float)FilterResultXs[XCutoffIndex].Data[index];
+            float y = YCutoffIndex < 0 ? RawCoordinates(index).Y : (float)FilterResultYs[YCutoffIndex].Data[index];
+            return new PointF(x, y);
         }
     }
 }
