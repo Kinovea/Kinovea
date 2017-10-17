@@ -30,6 +30,7 @@ We've spent a good deal of time trying to make this work without the dependency 
 ## Rebuilding
 
 Open the solution in Visual Studio, set the build configuration to Debug and x64, rebuild the projects in the following order:
+
 - Kinovea.Video
 - Kinovea.Services
 - Kinovea.Video.FFMpeg, Kinovea.Video.Bitmap, Kinovea.Video.GIF, Kinovea.Video.SVG
@@ -39,7 +40,7 @@ Open the solution in Visual Studio, set the build configuration to Debug and x64
 - Kinovea.FileBrowser, Kinovea.Updater
 - Kinovea
 
-The lower projects are dependent on the upper ones so you can pinpoint the problems. Usually Kinovea.Video.FFMpeg is the usual suspect. Make sure you have all the requirements as described above.
+The lower projects are dependent on the upper ones so you can pinpoint the problems. Kinovea.Video.FFMpeg is the usual suspect. Make sure you have all the requirements as described above.
 
 
 
