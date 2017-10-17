@@ -84,6 +84,9 @@ namespace Kinovea.ScreenManager
 
                 double[] residuals = samples.Subtract(filtered);
                 double dw = StatsHelper.DurbinWatson(residuals);
+                if (double.IsNaN(dw))
+                  continue;
+
                 double dwNormalized = Math.Abs(2 - dw) / 2;
 
                 FilteringResult result = new FilteringResult(fc, filtered, dwNormalized);
