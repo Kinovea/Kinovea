@@ -35,12 +35,19 @@ namespace Kinovea.Services
         public bool ExplorerVisible
         {
             get { return explorerVisible; }
-            set { explorerVisible = value;}
+            set { explorerVisible = value; }
         }
+
         public int ExplorerSplitterDistance
         {
             get { return explorerSplitterDistance; }
             set { explorerSplitterDistance = value; }
+        }
+
+        public bool AllowMultipleInstances
+        {
+            get { return allowMultipleInstances; }
+            set { allowMultipleInstances = value; }
         }
 
         public int PreferencePage
@@ -49,23 +56,22 @@ namespace Kinovea.Services
             set { preferencePage = value; }
         }
         
-
         private string uiCultureName;
         private bool explorerVisible = true;
         private int explorerSplitterDistance = 250;
+        private bool allowMultipleInstances = false;
         private int preferencePage;
-        
-        
+
         public GeneralPreferences()
         {
-            uiCultureName = Thread.CurrentThread.CurrentUICulture.Name;            
+            uiCultureName = Thread.CurrentThread.CurrentUICulture.Name;
         }
-        
+
         public void SetCulture(string cultureName)
         {
             uiCultureName = cultureName;
         }
-        
+
         /// <summary>
         /// Returns a CultureInfo object corresponding to the culture selected by the user.
         /// The object is safe to be assigned CurrentThread.CurrentUICulture for this specific platform (codename may differ from the saved one).
@@ -74,27 +80,28 @@ namespace Kinovea.Services
         public CultureInfo GetSupportedCulture()
         {
             CultureInfo ci = new CultureInfo(LanguageManager.FixCultureName(uiCultureName));
-            if(LanguageManager.IsSupportedCulture(ci))
+            if (LanguageManager.IsSupportedCulture(ci))
                 return ci;
             else
                 return new CultureInfo("en");
         }
-        
+
         public void WriteXML(XmlWriter writer)
         {
             writer.WriteElementString("Culture", uiCultureName);
             writer.WriteElementString("ExplorerVisible", explorerVisible ? "true" : "false");
             writer.WriteElementString("ExplorerSplitterDistance", explorerSplitterDistance.ToString());
+            writer.WriteElementString("AllowMultipleInstances", allowMultipleInstances ? "true" : "false");
             writer.WriteElementString("PreferencesPage", preferencePage.ToString());
         }
-        
+
         public void ReadXML(XmlReader reader)
         {
             reader.ReadStartElement();
 
-            while(reader.NodeType == XmlNodeType.Element)
+            while (reader.NodeType == XmlNodeType.Element)
             {
-                switch(reader.Name)
+                switch (reader.Name)
                 {
                     case "Culture":
                         uiCultureName = reader.ReadElementContentAsString();
@@ -105,6 +112,9 @@ namespace Kinovea.Services
                     case "ExplorerSplitterDistance":
                         explorerSplitterDistance = reader.ReadElementContentAsInt();
                         break;
+                    case "AllowMultipleInstances":
+                        allowMultipleInstances = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
                     case "PreferencesPage":
                         preferencePage = reader.ReadElementContentAsInt();
                         break;
@@ -113,8 +123,8 @@ namespace Kinovea.Services
                         break;
                 }
             }
-            
-            reader.ReadEndElement();   
+
+            reader.ReadEndElement();
         }
     }
 }

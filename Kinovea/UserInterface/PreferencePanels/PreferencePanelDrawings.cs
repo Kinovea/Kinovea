@@ -230,17 +230,5 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(defaultFading);
             PreferencesManager.PlayerPreferences.TrackingProfile = trackingProfile;
         }
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
     }
 }
