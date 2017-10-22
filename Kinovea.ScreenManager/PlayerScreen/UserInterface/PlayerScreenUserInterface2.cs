@@ -306,7 +306,7 @@ namespace Kinovea.ScreenManager
 
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuConfigureFading = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAlwaysVisible = new ToolStripMenuItem();
         private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGotoKeyframe = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDrawingTracking = new ToolStripMenuItem();
@@ -1021,8 +1021,8 @@ namespace Kinovea.ScreenManager
             // 2. Drawings context menu (Configure, Delete, Track this)
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
             mnuConfigureDrawing.Image = Properties.Drawings.configure;
-            mnuConfigureFading.Click += new EventHandler(mnuConfigureFading_Click);
-            mnuConfigureFading.Image = Properties.Drawings.persistence;
+            mnuAlwaysVisible.Click += mnuAlwaysVisible_Click;
+            mnuAlwaysVisible.Image = Properties.Drawings.persistence;
             mnuConfigureOpacity.Click += new EventHandler(mnuConfigureOpacity_Click);
             mnuConfigureOpacity.Image = Properties.Drawings.persistence;
             mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
@@ -1089,6 +1089,7 @@ namespace Kinovea.ScreenManager
             // Load texts
             ReloadMenusCulture();
         }
+        
         private ToolStripMenuItem CreateMagnificationMenu(double magnificationFactor)
         {
             ToolStripMenuItem mnu = new ToolStripMenuItem();
@@ -2444,7 +2445,7 @@ namespace Kinovea.ScreenManager
             
             // 2. Drawings context menu.
             mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
-            mnuConfigureFading.Text = ScreenManagerLang.mnuConfigureFading;
+            mnuAlwaysVisible.Text = ScreenManagerLang.dlgConfigureFading_chkAlwaysVisible;
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
@@ -2859,7 +2860,8 @@ namespace Kinovea.ScreenManager
             
             if(PreferencesManager.PlayerPreferences.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
             {
-                popMenu.Items.Add(mnuConfigureFading);
+                mnuAlwaysVisible.Checked = drawing.InfosFading.AlwaysVisible;
+                popMenu.Items.Add(mnuAlwaysVisible);
             }
             
             if((drawing.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
@@ -3892,20 +3894,13 @@ namespace Kinovea.ScreenManager
             fcd.Dispose();
             DoInvalidate();
         }
-        private void mnuConfigureFading_Click(object sender, EventArgs e)
+        private void mnuAlwaysVisible_Click(object sender, EventArgs e)
         {
+            mnuAlwaysVisible.Checked = !mnuAlwaysVisible.Checked;
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-
             HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, drawing.Id, drawing.ToolDisplayName, SerializationFilter.Fading);
-
-            formConfigureFading fcf = new formConfigureFading(drawing, pbSurfaceScreen);
-            FormsHelper.Locate(fcf);
-            fcf.ShowDialog();
-
-            if (fcf.DialogResult == DialogResult.OK)
-                m_FrameServer.HistoryStack.PushNewCommand(memento);
-
-            fcf.Dispose();
+            drawing.InfosFading.AlwaysVisible = mnuAlwaysVisible.Checked;
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
             DoInvalidate();
         }
         private void mnuConfigureOpacity_Click(object sender, EventArgs e)
@@ -3933,11 +3928,17 @@ namespace Kinovea.ScreenManager
         private void mnuDrawingTrackingToggle_Click(object sender, EventArgs e)
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-
+            
             // Tracking is not compatible with custom decoding size, force the use of the original size.
             CheckCustomDecodingSize(true);
             ShowNextFrame(m_iCurrentPosition, true);
             ToggleTrackingCommand.Execute(drawing);
+
+            // Force always visible to make sure we continue seeing the drawing during tracking.
+            bool tracked = ToggleTrackingCommand.CurrentState(drawing);
+            if (tracked && (drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading)
+                drawing.InfosFading.AlwaysVisible = true;
+            
             RefreshImage();
         }
 
@@ -3979,7 +3980,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region Tracking Menus
+        #region Trajectory tool menus
         private void mnuStopTracking_Click(object sender, EventArgs e)
         {
             DrawingTrack track = m_FrameServer.Metadata.HitDrawing as DrawingTrack;
