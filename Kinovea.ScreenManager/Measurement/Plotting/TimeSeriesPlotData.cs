@@ -6,7 +6,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Piece of data required to plot one time series. 
-    /// This is used by the UI to fill the list of source objects.
+    /// This is used by the UI to fill the list of source objects (trajectory, tracked drawing).
     /// </summary>
     public class TimeSeriesPlotData
     {

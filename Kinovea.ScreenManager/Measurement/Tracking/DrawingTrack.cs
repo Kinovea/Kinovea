@@ -200,6 +200,10 @@ namespace Kinovea.ScreenManager
                 return contextMenu;
             }
         }
+        public FilteredTrajectory FilteredTrajectory
+        {
+            get { return filteredTrajectory; }
+        }
         public TimeSeriesCollection TimeSeriesCollection
         {
             get { return timeSeriesCollection; }
