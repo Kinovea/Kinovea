@@ -463,13 +463,13 @@ namespace Kinovea.ScreenManager
         {
             genericPosture.FlipHorizontal();
             SignalAllTrackablePointsMoved();
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         private void menuFlipVertical_Click(object sender, EventArgs e)
         {
             genericPosture.FlipVertical();
             SignalAllTrackablePointsMoved();
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         
         #region Drawing helpers
@@ -714,7 +714,7 @@ namespace Kinovea.ScreenManager
                 menu.Click += (s, e) => {
                     genericPosture.OptionGroups[closureOption] = !genericPosture.OptionGroups[closureOption];
                     menu.Checked = genericPosture.OptionGroups[closureOption];
-                    CallInvalidateFromMenu(s);
+                    InvalidateFromMenu(s);
                 };
                 
                 menuOptions.DropDownItems.Add(menu);

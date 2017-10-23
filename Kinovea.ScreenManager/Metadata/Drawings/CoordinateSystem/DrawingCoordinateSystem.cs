@@ -323,22 +323,22 @@ namespace Kinovea.ScreenManager
         private void menuShowAxis_Click(object sender, EventArgs e)
         {
             showAxis = !showAxis;
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         private void menuShowGrid_Click(object sender, EventArgs e)
         {
             showGrid = !showGrid;
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         private void menuShowGraduations_Click(object sender, EventArgs e)
         {
             showGraduations = !showGraduations;
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         private void menuHide_Click(object sender, EventArgs e)
         {
             Visible = false;
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         #endregion
 

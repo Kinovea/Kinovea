@@ -405,7 +405,7 @@ namespace Kinovea.ScreenManager
 
             signedAngle = mnuSignedAngle.Checked;
             SignalAllTrackablePointsMoved();
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
 
         private void mnuCounterClockwise_Click(object sender, EventArgs e)
@@ -414,7 +414,7 @@ namespace Kinovea.ScreenManager
 
             counterClockwise = mnuCounterClockwise.Checked;
             SignalAllTrackablePointsMoved();
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
 
         private void mnuSupplementaryAngle_Click(object sender, EventArgs e)
@@ -423,7 +423,7 @@ namespace Kinovea.ScreenManager
 
             supplementaryAngle = mnuSupplementaryAngle.Checked;
             SignalAllTrackablePointsMoved();
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
 
         #endregion

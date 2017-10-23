@@ -456,15 +456,13 @@ namespace Kinovea.ScreenManager
         #region Context menu
         private void mnuFinish_Click(object sender, EventArgs e)
         {
-            // TODO: remove point from trackability.
-            InitializeEnd(true);
-
-            CallInvalidateFromMenu(sender);
+            InitializeEndFromMenu(sender, true);
+            InvalidateFromMenu(sender);
         }
         private void mnuAddThenFinish_Click(object sender, EventArgs e)
         {
-            InitializeEnd(false);
-            CallInvalidateFromMenu(sender);
+            InitializeEndFromMenu(sender, false);
+            InvalidateFromMenu(sender);
         }
         private void mnuCloseMenu_Click(object sender, EventArgs e)
         {

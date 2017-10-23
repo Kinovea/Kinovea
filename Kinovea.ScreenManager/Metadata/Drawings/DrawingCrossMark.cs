@@ -323,7 +323,7 @@ namespace Kinovea.ScreenManager
             if(ShowMeasurableInfoChanged != null)
                 ShowMeasurableInfoChanged(this, EventArgs.Empty);
             
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         #endregion
         

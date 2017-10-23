@@ -453,7 +453,7 @@ namespace Kinovea.ScreenManager
             if(ShowMeasurableInfoChanged != null)
                 ShowMeasurableInfoChanged(this, EventArgs.Empty);
             
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         
         private void mnuSealMeasure_Click(object sender, EventArgs e)
@@ -473,7 +473,7 @@ namespace Kinovea.ScreenManager
             fcm.ShowDialog();
             fcm.Dispose();
             
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         #endregion
         

@@ -520,7 +520,7 @@ namespace Kinovea.ScreenManager
             fcp.ShowDialog();
             fcp.Dispose();
             
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         #endregion
 

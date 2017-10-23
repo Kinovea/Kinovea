@@ -144,19 +144,30 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Concrete methods
-        public static void CallInvalidateFromMenu(object sender)
+        public static void InvalidateFromMenu(object sender)
         {
-            // The screen invalidate hook was injected inside menus during popMenu attach.
-            // This avoids having an injection hanging in DrawingTool.
-            // TODO: probably better to raise an event and handle it in the PlayerScreen presenter.
+            // The screen hook was injected inside menus during AddDrawingCustomMenus in PlayerScreenUserInterface.
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
-            if (tsmi != null)
-            {
-                Action screenInvalidate = tsmi.Tag as Action;
-                if (screenInvalidate != null) 
-                    screenInvalidate();
-            }
+            if (tsmi == null)
+                return;
+            
+            PlayerScreenUserInterface psui = tsmi.Tag as PlayerScreenUserInterface;
+            if (psui != null)
+                psui.DoInvalidate();
         }
+
+        public static void InitializeEndFromMenu(object sender, bool cancelLastPoint)
+        {
+            // The screen hook was injected inside menus during AddDrawingCustomMenus in PlayerScreenUserInterface.
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+            
+            PlayerScreenUserInterface psui = tsmi.Tag as PlayerScreenUserInterface;
+            if (psui != null)
+                psui.InitializeEndFromMenu(cancelLastPoint);
+        }
+
         public bool ShouldSerializeCore(SerializationFilter filter)
         {
             return (filter & SerializationFilter.Core) == SerializationFilter.Core;
