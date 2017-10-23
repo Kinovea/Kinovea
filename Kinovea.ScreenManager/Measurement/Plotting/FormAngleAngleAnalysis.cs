@@ -248,6 +248,8 @@ namespace Kinovea.ScreenManager
                 return;
 
             List<string> lines = GetCSV();
+            if (lines.Count <= 1)
+                return;
 
             StringBuilder b = new StringBuilder();
             foreach (string line in lines)
@@ -272,6 +274,8 @@ namespace Kinovea.ScreenManager
                 return;
 
             List<string> lines = GetCSV();
+            if (lines.Count <= 1)
+                return;
 
             using (StreamWriter w = File.CreateText(saveFileDialog.FileName))
             {
@@ -283,70 +287,26 @@ namespace Kinovea.ScreenManager
         private List<string> GetCSV()
         {
             List<string> csv = new List<string>();
-            return csv;
+            string separator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
 
-            /*string separator = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+            string line = string.Format("{0}{1}{2}", plotView.Model.Axes[0].Title, separator, plotView.Model.Axes[1].Title);
+            csv.Add(line);
+            
+            Dictionary<double, double> points = new Dictionary<double, double>();
+            LineSeries s = plotView.Model.Series[0] as LineSeries;
+            if (s == null)
+                return csv;
 
-            // Header.
-            List<string> headers = new List<string>();
-            headers.Add(plotView.Model.Axes[0].Title);
-
-            foreach (var serie in plotView.Model.Series)
+            foreach (DataPoint p in s.Points)
             {
-                LineSeries s = serie as LineSeries;
-                if (s == null)
-                    continue;
+                string x = double.IsNaN(p.X) ? "" : p.X.ToString();
+                string y = double.IsNaN(p.Y) ? "" : p.Y.ToString();
 
-                headers.Add(s.Title);
-            }
-
-            string header = string.Join(separator, headers.ToArray());
-            csv.Add(header);
-
-            // Values.
-            TimeModel timeModel = (TimeModel)cmbTimeModel.SelectedIndex;
-            SortedDictionary<double, List<double>> points = new SortedDictionary<double, List<double>>();
-            int totalSeries = plotView.Model.Series.Count;
-            for (int i = 0; i < plotView.Model.Series.Count; i++)
-            {
-                LineSeries s = plotView.Model.Series[i] as LineSeries;
-                if (s == null)
-                    continue;
-
-                foreach (DataPoint p in s.Points)
-                {
-                    if (double.IsNaN(p.Y))
-                        continue;
-
-                    double time = p.X;
-                    if (timeModel == TimeModel.Absolute || timeModel == TimeModel.Relative)
-                        time = Math.Round(time);
-                    else
-                        time = Math.Round(time, 3);
-
-                    if (!points.ContainsKey(time))
-                    {
-                        points[time] = new List<double>();
-                        points[time].Add(time);
-
-                        // Each line must have slots for all series, even if there is nothing recorded.
-                        for (int j = 0; j < totalSeries; j++)
-                            points[time].Add(double.NaN);
-                    }
-
-                    points[time][i + 1] = p.Y;
-                }
-            }
-
-            // Project to strings.
-            foreach (var p in points)
-            {
-                string[] values = p.Value.Select(v => double.IsNaN(v) ? "" : v.ToString()).ToArray();
-                string line = string.Join(separator, values);
+                line = string.Format("{0}{1}{2}", x, separator, y);
                 csv.Add(line);
             }
-
-            return csv;*/
+            
+            return csv;
         }
     }
 }
