@@ -220,7 +220,7 @@ namespace Kinovea.ScreenManager
         private void menuHide_Click(object sender, EventArgs e)
         {
             Visible = false;
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         #endregion
     }

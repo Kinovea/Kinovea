@@ -350,7 +350,7 @@ namespace Kinovea.ScreenManager
             if (LensCalibrationAsked != null)
                 LensCalibrationAsked(this, EventArgs.Empty);
 
-            CallInvalidateFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         #endregion
 

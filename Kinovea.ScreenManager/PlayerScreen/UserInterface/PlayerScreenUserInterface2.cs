@@ -2892,7 +2892,12 @@ namespace Kinovea.ScreenManager
                         subMenu.Tag = (Action)DoInvalidate;
                 }
                 
-                tsmi.Tag = (Action)DoInvalidate;    // Inject dependency on this screen's invalidate method.
+                // Inject a dependency on this screen into the drawing.
+                // Since the drawing now owns a piece of the UI, it may need to call back into functions here.
+                // This is used to invalidate the view and complete operations that are normally handled here and 
+                // require calls to other objects that the drawing itself doesn't have access to, like when the 
+                // polyline drawing handles InitializeEnd and needs to remove the last point added to tracking.
+                tsmi.Tag = this;
                 
                 if (tsmi.MergeIndex >= 0)
                     menuItems.Insert(tsmi.MergeIndex, tsmi);
@@ -3331,6 +3336,10 @@ namespace Kinovea.ScreenManager
             
             // Invalidate is asynchronous and several Invalidate calls will be grouped together. (Only one repaint will be done).
             pbSurfaceScreen.Invalidate();
+        }
+        public void InitializeEndFromMenu(bool cancelLastPoint)
+        {
+            m_FrameServer.Metadata.InitializeEnd(cancelLastPoint);
         }
         #endregion
 
