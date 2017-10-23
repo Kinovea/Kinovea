@@ -24,7 +24,21 @@ namespace Kinovea.ScreenManager
 {
     public enum PositionningSource
     {
+        /// <summary>
+        /// The placement of the object was done by the user.
+        /// </summary>
         Manual,
-        TemplateMatching
+
+        /// <summary>
+        /// The placement of the object was done by template matching tracking.
+        /// </summary>
+        TemplateMatching,
+
+        /// <summary>
+        /// The template matching failed but we need the data if the tracked point is 
+        /// part of the bigger drawing that has other points that successfully matched.
+        /// In this case the placement reuses old data.
+        /// </summary>
+        ForcedClosest
     }
 }

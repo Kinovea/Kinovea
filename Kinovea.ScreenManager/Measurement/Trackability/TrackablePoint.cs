@@ -104,10 +104,14 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Track the point in the current image, or use the existing data if already known.
         /// We do this even if the drawing is currently not tracking, to push the existing tracked data in the object.
+        /// Important: for drawings containing multiple trackable points, either all or none of them should have a new value.
+        /// If some of them successfully track and some other don't, the one that didn't must insert the closest frame value.
+        /// This way we ensure the timelines are always of the same length.
         /// </summary>
         /// <param name="context"></param>
-        public void Track(TrackingContext context)
+        public bool Track(TrackingContext context)
         {
+            bool inserted = false;
             this.context = context;
            
             TrackFrame closestFrame = trackTimeline.ClosestFrom(context.Time);
@@ -117,34 +121,34 @@ namespace Kinovea.ScreenManager
                 currentValue = nonTrackingValue;
 
                 if (isTracking)
+                {
                     trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.Manual));
+                }
                 
-                return;
+                return isTracking;
             }
 
             if (closestFrame.Template == null)
             {
+                // We may not have the template if the timeline was imported from KVA.
                 currentValue = closestFrame.Location;
 
                 if (isTracking)
-                {
-                    // We may not have the template if the timeline was imported from KVA.
                     trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, closestFrame.PositionningSource));
-                }
-                
-                return;
+
+                return isTracking;
             }
 
             if(closestFrame.Time == context.Time)
             {
                 currentValue = closestFrame.Location;
-                return;
+                return false;
             }
 
             if (!isTracking)
             {
                 currentValue = closestFrame.Location;
-                return;
+                return false;
             }
 
             TrackResult result = Tracker.Track(trackerParameters.SearchWindow, closestFrame, context.Image);
@@ -163,12 +167,32 @@ namespace Kinovea.ScreenManager
                 {
                     trackTimeline.Insert(context.Time, CreateTrackFrame(result.Location, PositionningSource.TemplateMatching));  
                 }
-                
+
+                inserted = true;
             }
             else
             {
-               currentValue = closestFrame.Location;
+                currentValue = closestFrame.Location;
+                inserted = false;
             }
+
+            return inserted;
+        }
+
+        public void ForceInsertClosestLocation()
+        {
+            // This function is used when a drawing containing multiple trackable points has some of the points failing the template matching and others succeeding.
+            // We must always keep the same number of entries in the timelines of all trackable points of a given drawing.
+            // In this function we force the points that failed tracking to insert a dummy value in their timeline.
+            if (!isTracking)
+                return;
+
+            TrackFrame closestFrame = trackTimeline.ClosestFrom(context.Time);
+            if (closestFrame == null)
+                return;
+
+            currentValue = closestFrame.Location;
+            trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.ForcedClosest));
         }
         
         public void Reset()
@@ -176,17 +200,23 @@ namespace Kinovea.ScreenManager
             ClearTimeline();
         }
        
-        public void SetTracking(bool isTracking)
+        public bool SetTracking(bool isTracking)
         {
             if(this.isTracking == isTracking)
-                return;
+                return false;
             
             this.isTracking = isTracking;
             
             if(!isTracking)
+            {
                 currentValue = nonTrackingValue;
-            else if (context != null)
-                Track(context);
+                return false;
+            }
+
+            if (context != null)
+                return Track(context);
+            else
+                return false;
         }
 
         public PointF GetLocation(long time)
