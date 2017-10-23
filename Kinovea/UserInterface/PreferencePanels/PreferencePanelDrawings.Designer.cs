@@ -52,10 +52,8 @@ namespace Kinovea.Root
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.chkDrawOnPlay = new System.Windows.Forms.CheckBox();
             this.tabPersistence = new System.Windows.Forms.TabPage();
-            this.chkAlwaysVisible = new System.Windows.Forms.CheckBox();
-            this.lblFading = new System.Windows.Forms.Label();
-            this.trkFading = new System.Windows.Forms.TrackBar();
-            this.chkEnablePersistence = new System.Windows.Forms.CheckBox();
+            this.lblFadingFrames = new System.Windows.Forms.Label();
+            this.trkFadingFrames = new System.Windows.Forms.TrackBar();
             this.tabTracking = new System.Windows.Forms.TabPage();
             this.lblDescription = new System.Windows.Forms.Label();
             this.cmbSearchWindowUnit = new System.Windows.Forms.ComboBox();
@@ -68,10 +66,13 @@ namespace Kinovea.Root
             this.label4 = new System.Windows.Forms.Label();
             this.tbBlockWidth = new System.Windows.Forms.TextBox();
             this.lblObjectWindow = new System.Windows.Forms.Label();
+            this.lblDefaultOpacity = new System.Windows.Forms.Label();
+            this.rbAlwaysVisible = new System.Windows.Forms.RadioButton();
+            this.rbFading = new System.Windows.Forms.RadioButton();
             this.tabSubPages.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabPersistence.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trkFading)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trkFadingFrames)).BeginInit();
             this.tabTracking.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -111,62 +112,40 @@ namespace Kinovea.Root
             // 
             // tabPersistence
             // 
-            this.tabPersistence.Controls.Add(this.chkAlwaysVisible);
-            this.tabPersistence.Controls.Add(this.lblFading);
-            this.tabPersistence.Controls.Add(this.trkFading);
-            this.tabPersistence.Controls.Add(this.chkEnablePersistence);
+            this.tabPersistence.Controls.Add(this.rbFading);
+            this.tabPersistence.Controls.Add(this.rbAlwaysVisible);
+            this.tabPersistence.Controls.Add(this.lblDefaultOpacity);
+            this.tabPersistence.Controls.Add(this.lblFadingFrames);
+            this.tabPersistence.Controls.Add(this.trkFadingFrames);
             this.tabPersistence.Location = new System.Drawing.Point(4, 22);
             this.tabPersistence.Name = "tabPersistence";
             this.tabPersistence.Padding = new System.Windows.Forms.Padding(3);
             this.tabPersistence.Size = new System.Drawing.Size(424, 210);
             this.tabPersistence.TabIndex = 1;
-            this.tabPersistence.Text = "Persistence";
+            this.tabPersistence.Text = "Opacity";
             this.tabPersistence.UseVisualStyleBackColor = true;
             // 
-            // chkAlwaysVisible
+            // lblFadingFrames
             // 
-            this.chkAlwaysVisible.AutoSize = true;
-            this.chkAlwaysVisible.Location = new System.Drawing.Point(19, 137);
-            this.chkAlwaysVisible.Name = "chkAlwaysVisible";
-            this.chkAlwaysVisible.Size = new System.Drawing.Size(91, 17);
-            this.chkAlwaysVisible.TabIndex = 55;
-            this.chkAlwaysVisible.Text = "Always visible";
-            this.chkAlwaysVisible.UseVisualStyleBackColor = true;
-            this.chkAlwaysVisible.CheckedChanged += new System.EventHandler(this.chkAlwaysVisible_CheckedChanged);
+            this.lblFadingFrames.Location = new System.Drawing.Point(79, 96);
+            this.lblFadingFrames.Name = "lblFadingFrames";
+            this.lblFadingFrames.Size = new System.Drawing.Size(328, 32);
+            this.lblFadingFrames.TabIndex = 52;
+            this.lblFadingFrames.Text = "Number of frames to fade in/out: 20.";
+            this.lblFadingFrames.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblFading
+            // trkFadingFrames
             // 
-            this.lblFading.Location = new System.Drawing.Point(15, 39);
-            this.lblFading.Name = "lblFading";
-            this.lblFading.Size = new System.Drawing.Size(362, 32);
-            this.lblFading.TabIndex = 52;
-            this.lblFading.Text = "By default, drawings will stay visible for 12 images around the Key Image. kdjfns" +
-                "kdjbnsdkjbksdjvbdvkbj";
-            this.lblFading.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            // 
-            // trkFading
-            // 
-            this.trkFading.BackColor = System.Drawing.Color.White;
-            this.trkFading.Location = new System.Drawing.Point(19, 77);
-            this.trkFading.Maximum = 200;
-            this.trkFading.Minimum = 1;
-            this.trkFading.Name = "trkFading";
-            this.trkFading.Size = new System.Drawing.Size(359, 45);
-            this.trkFading.TabIndex = 54;
-            this.trkFading.TickFrequency = 5;
-            this.trkFading.Value = 5;
-            this.trkFading.ValueChanged += new System.EventHandler(this.trkFading_ValueChanged);
-            // 
-            // chkEnablePersistence
-            // 
-            this.chkEnablePersistence.AutoSize = true;
-            this.chkEnablePersistence.Location = new System.Drawing.Point(15, 15);
-            this.chkEnablePersistence.Name = "chkEnablePersistence";
-            this.chkEnablePersistence.Size = new System.Drawing.Size(116, 17);
-            this.chkEnablePersistence.TabIndex = 53;
-            this.chkEnablePersistence.Text = "Enable persistence";
-            this.chkEnablePersistence.UseVisualStyleBackColor = true;
-            this.chkEnablePersistence.CheckedChanged += new System.EventHandler(this.chkFading_CheckedChanged);
+            this.trkFadingFrames.BackColor = System.Drawing.Color.White;
+            this.trkFadingFrames.Location = new System.Drawing.Point(73, 131);
+            this.trkFadingFrames.Maximum = 200;
+            this.trkFadingFrames.Minimum = 1;
+            this.trkFadingFrames.Name = "trkFadingFrames";
+            this.trkFadingFrames.Size = new System.Drawing.Size(279, 45);
+            this.trkFadingFrames.TabIndex = 54;
+            this.trkFadingFrames.TickFrequency = 5;
+            this.trkFadingFrames.Value = 5;
+            this.trkFadingFrames.ValueChanged += new System.EventHandler(this.trkFading_ValueChanged);
             // 
             // tabTracking
             // 
@@ -284,6 +263,39 @@ namespace Kinovea.Root
             this.lblObjectWindow.TabIndex = 56;
             this.lblObjectWindow.Text = "Object window :";
             // 
+            // lblDefaultOpacity
+            // 
+            this.lblDefaultOpacity.Location = new System.Drawing.Point(20, 18);
+            this.lblDefaultOpacity.Name = "lblDefaultOpacity";
+            this.lblDefaultOpacity.Size = new System.Drawing.Size(362, 32);
+            this.lblDefaultOpacity.TabIndex = 56;
+            this.lblDefaultOpacity.Text = "Default opacity of new drawings:";
+            this.lblDefaultOpacity.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // rbAlwaysVisible
+            // 
+            this.rbAlwaysVisible.AutoSize = true;
+            this.rbAlwaysVisible.Location = new System.Drawing.Point(45, 53);
+            this.rbAlwaysVisible.Name = "rbAlwaysVisible";
+            this.rbAlwaysVisible.Size = new System.Drawing.Size(146, 17);
+            this.rbAlwaysVisible.TabIndex = 57;
+            this.rbAlwaysVisible.TabStop = true;
+            this.rbAlwaysVisible.Text = "Visible for the entire video";
+            this.rbAlwaysVisible.UseVisualStyleBackColor = true;
+            this.rbAlwaysVisible.CheckedChanged += new System.EventHandler(this.rbOpacity_CheckedChanged);
+            // 
+            // rbFading
+            // 
+            this.rbFading.AutoSize = true;
+            this.rbFading.Location = new System.Drawing.Point(45, 76);
+            this.rbFading.Name = "rbFading";
+            this.rbFading.Size = new System.Drawing.Size(233, 17);
+            this.rbFading.TabIndex = 58;
+            this.rbFading.TabStop = true;
+            this.rbFading.Text = "Fade in/out of the frame they were added to";
+            this.rbFading.UseVisualStyleBackColor = true;
+            this.rbFading.CheckedChanged += new System.EventHandler(this.rbOpacity_CheckedChanged);
+            // 
             // PreferencePanelDrawings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -296,7 +308,7 @@ namespace Kinovea.Root
             this.tabGeneral.PerformLayout();
             this.tabPersistence.ResumeLayout(false);
             this.tabPersistence.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trkFading)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trkFadingFrames)).EndInit();
             this.tabTracking.ResumeLayout(false);
             this.tabTracking.PerformLayout();
             this.ResumeLayout(false);
@@ -305,10 +317,8 @@ namespace Kinovea.Root
 		private System.Windows.Forms.TabControl tabSubPages;
 		private System.Windows.Forms.TabPage tabGeneral;
 		private System.Windows.Forms.TabPage tabPersistence;
-		private System.Windows.Forms.CheckBox chkEnablePersistence;
-		private System.Windows.Forms.TrackBar trkFading;
-		private System.Windows.Forms.Label lblFading;
-		private System.Windows.Forms.CheckBox chkAlwaysVisible;
+		private System.Windows.Forms.TrackBar trkFadingFrames;
+		private System.Windows.Forms.Label lblFadingFrames;
 		private System.Windows.Forms.CheckBox chkDrawOnPlay;
         private System.Windows.Forms.TabPage tabTracking;
         private System.Windows.Forms.TextBox tbSearchHeight;
@@ -322,5 +332,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.ComboBox cmbSearchWindowUnit;
         private System.Windows.Forms.ComboBox cmbBlockWindowUnit;
         private System.Windows.Forms.Label lblDescription;
-	}
+        private System.Windows.Forms.RadioButton rbFading;
+        private System.Windows.Forms.RadioButton rbAlwaysVisible;
+        private System.Windows.Forms.Label lblDefaultOpacity;
+    }
 }

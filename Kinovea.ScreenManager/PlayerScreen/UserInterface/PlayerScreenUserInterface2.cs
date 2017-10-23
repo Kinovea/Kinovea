@@ -3899,6 +3899,7 @@ namespace Kinovea.ScreenManager
             mnuAlwaysVisible.Checked = !mnuAlwaysVisible.Checked;
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
             HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, drawing.Id, drawing.ToolDisplayName, SerializationFilter.Fading);
+            drawing.InfosFading.UseDefault = false;
             drawing.InfosFading.AlwaysVisible = mnuAlwaysVisible.Checked;
             m_FrameServer.HistoryStack.PushNewCommand(memento);
             DoInvalidate();
@@ -3937,7 +3938,10 @@ namespace Kinovea.ScreenManager
             // Force always visible to make sure we continue seeing the drawing during tracking.
             bool tracked = ToggleTrackingCommand.CurrentState(drawing);
             if (tracked && (drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading)
+            {
+                drawing.InfosFading.UseDefault = false;
                 drawing.InfosFading.AlwaysVisible = true;
+            }
             
             RefreshImage();
         }
