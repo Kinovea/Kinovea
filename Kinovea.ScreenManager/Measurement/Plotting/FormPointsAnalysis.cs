@@ -18,6 +18,9 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Scatter analysis based on all the points registered.
+    /// </summary>
     public partial class FormPointsAnalysis : Form
     {
         private List<DrawingCrossMark> drawings = new List<DrawingCrossMark>();

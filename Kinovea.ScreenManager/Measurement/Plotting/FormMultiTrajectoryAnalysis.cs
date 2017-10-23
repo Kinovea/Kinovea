@@ -24,6 +24,7 @@ namespace Kinovea.ScreenManager
     {
         private Metadata metadata;
         private List<TimeSeriesPlotData> timeSeriesData = new List<TimeSeriesPlotData>();
+        private Dictionary<TimeSeriesPlotData, FilteredTrajectory> filteredTrajectories = new Dictionary<TimeSeriesPlotData, FilteredTrajectory>();
         private PlotHelper plotHelper;
         private bool manualUpdate;
 
@@ -55,6 +56,7 @@ namespace Kinovea.ScreenManager
             {
                 TimeSeriesPlotData data = new TimeSeriesPlotData(track.Label, track.MainColor, track.TimeSeriesCollection);
                 timeSeriesData.Add(data);
+                filteredTrajectories.Add(data, track.FilteredTrajectory);
             }
         }
 
@@ -106,6 +108,7 @@ namespace Kinovea.ScreenManager
 
                     TimeSeriesPlotData data = new TimeSeriesPlotData(name, trackable.Color, tsc);
                     timeSeriesData.Add(data);
+                    filteredTrajectories.Add(data, traj);
                 }
             }
         }
@@ -135,20 +138,11 @@ namespace Kinovea.ScreenManager
             btnDataCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
             btnExportData.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
 
-            lblCutoffFrequencies.Text = "Selected cutoff frequencies:";
-
-            /*if (kinematics.CanFilter)
-            {
-                LocalizeInfo();
-                CreateDurbinWatsonPlot();
-            }
-            else
-            {
-                tabControl.TabPages.Remove(pageAbout);
-            }*/
+            LocalizeTabAbout();
+            lblCutoffFrequencies.Text = "Cutoff frequencies (Hz)";
         }
 
-        private void LocalizeInfo()
+        private void LocalizeTabAbout()
         {
             Font fontHeader = new Font("Microsoft Sans Serif", 9, FontStyle.Bold);
             Font fontText = new Font("Microsoft Sans Serif", 8.25f, FontStyle.Regular);
@@ -182,62 +176,13 @@ namespace Kinovea.ScreenManager
             b.AppendLine("2. Challis J. (1999). A procedure for the automatic determination of filter cutoff frequency for the processing of biomechanical data., Journal of Applied Biomechanics, Volume 15, Issue 3.");
             b.AppendLine("3. Winter, D. A. (2009). Biomechanics and motor control of human movements (4th ed.). Hoboken, New Jersey: John Wiley & Sons, Inc.");
             rtbInfo2.AppendText(b.ToString());
+
+            lvCutoffFrequencies.Clear();
+            lvCutoffFrequencies.Columns.Add("Source", 100);
+            lvCutoffFrequencies.Columns.Add("X", 73);
+            lvCutoffFrequencies.Columns.Add("Y", 73);
         }
-
-        /*private void CreateDurbinWatsonPlot()
-        {
-            if (kinematics.Xs == null || kinematics.Ys == null)
-            {
-                plotDurbinWatson.Visible = false;
-                return;
-            }
-
-            PlotModel model = new PlotModel();
-            model.TitleFontSize = 12;
-            model.Title = "Residuals autocorrelation";
-
-            LinearAxis xAxis = new LinearAxis();
-            xAxis.Position = AxisPosition.Bottom;
-            xAxis.MajorGridlineStyle = LineStyle.Solid;
-            xAxis.MinorGridlineStyle = LineStyle.Dot;
-            xAxis.Title = "Cutoff frequency (Hz)";
-            xAxis.TitleFontSize = 10;
-            model.Axes.Add(xAxis);
-
-            LinearAxis yAxis = new LinearAxis();
-            yAxis.Position = AxisPosition.Left;
-            yAxis.MajorGridlineStyle = LineStyle.Solid;
-            yAxis.MinorGridlineStyle = LineStyle.Dot;
-            yAxis.Title = "Autocorrelation (norm.)";
-            yAxis.TitleFontSize = 10; 
-            model.Axes.Add(yAxis);
-
-            LineSeries xseries = new LineSeries();
-            xseries.Color = OxyColors.Green;
-            xseries.MarkerType = MarkerType.None;
-            xseries.Smooth = true;
-
-
-            LineSeries yseries = new LineSeries();
-            yseries.Color = OxyColors.Tomato;
-            yseries.MarkerType = MarkerType.None;
-            yseries.Smooth = true;
-            
-            foreach (FilteringResult r in kinematics.FilterResultXs)
-                xseries.Points.Add(new DataPoint(r.CutoffFrequency, r.DurbinWatson));
-
-            foreach (FilteringResult r in kinematics.FilterResultYs)
-                yseries.Points.Add(new DataPoint(r.CutoffFrequency, r.DurbinWatson));
-
-            model.Series.Add(xseries);
-            model.Series.Add(yseries);
-            plotDurbinWatson.Model = model;
-            plotDurbinWatson.BackColor = Color.White;
-
-            lblCutoffX.Text = string.Format("X: {0:0.000} Hz", kinematics.FilterResultXs[kinematics.XCutoffIndex].CutoffFrequency);
-            lblCutoffY.Text = string.Format("Y: {0:0.000} Hz", kinematics.FilterResultYs[kinematics.YCutoffIndex].CutoffFrequency);
-        }*/
-
+        
         private void PopulateDataSources()
         {
             // TODO: determine which ones should be checked based on saved state.
@@ -289,6 +234,7 @@ namespace Kinovea.ScreenManager
         {
             manualUpdate = true;
             UpdatePlot();
+            UpdateCutoffPlot();
             manualUpdate = false;
         }
 
@@ -296,20 +242,14 @@ namespace Kinovea.ScreenManager
         {
             manualUpdate = true;
             UpdatePlot();
+            UpdateCutoffPlot();
             manualUpdate = false;
         }
 
         private void UpdatePlot()
         {
             // Create plot values from selected options.
-
-            List<TimeSeriesPlotData> enabledTimeSeries = new List<TimeSeriesPlotData>();
-            for (int i = 0; i < clbSources.Items.Count; i++)
-            {
-                if (clbSources.GetItemChecked(i))
-                    enabledTimeSeries.Add(clbSources.Items[i] as TimeSeriesPlotData);
-            }
-
+            List<TimeSeriesPlotData> enabledTimeSeries = GetEnabledTimeSeries();
             TimeSeriesPlotSpecification spec = cmbDataSource.SelectedItem as TimeSeriesPlotSpecification;
             if (spec == null)
                 return;
@@ -403,6 +343,92 @@ namespace Kinovea.ScreenManager
             return model;
         }
 
+        private void UpdateCutoffPlot()
+        {
+            List<TimeSeriesPlotData> enabledTimeSeries = GetEnabledTimeSeries();
+            PlotModel model = CreateCutoffPlot(enabledTimeSeries);
+            plotDurbinWatson.Model = model;
+            plotDurbinWatson.BackColor = Color.White;
+        }
+
+        private PlotModel CreateCutoffPlot(IEnumerable<TimeSeriesPlotData> timeSeriesPlotData)
+        {
+            if (timeSeriesPlotData == null)
+                return null;
+
+            PlotModel model = new PlotModel();
+            model.TitleFontSize = 12;
+            model.Title = "Residuals autocorrelation";
+
+            LinearAxis xAxis = new LinearAxis();
+            xAxis.Position = AxisPosition.Bottom;
+            xAxis.MajorGridlineStyle = LineStyle.Solid;
+            xAxis.MinorGridlineStyle = LineStyle.Dot;
+            xAxis.Title = "Cutoff frequency (Hz)";
+            xAxis.TitleFontSize = 10;
+            model.Axes.Add(xAxis);
+
+            LinearAxis yAxis = new LinearAxis();
+            yAxis.Position = AxisPosition.Left;
+            yAxis.MajorGridlineStyle = LineStyle.Solid;
+            yAxis.MinorGridlineStyle = LineStyle.Dot;
+            yAxis.Title = "Autocorrelation (normalized)";
+            yAxis.TitleFontSize = 10;
+            yAxis.Maximum = 1.0f;
+            model.Axes.Add(yAxis);
+
+            lvCutoffFrequencies.Items.Clear();
+
+            foreach (TimeSeriesPlotData tspd in timeSeriesPlotData)
+            {
+                if (!filteredTrajectories.ContainsKey(tspd))
+                    continue;
+
+                // X=red and Y=green matches the typical mapping used in 3D apps.
+                LineSeries xseries = new LineSeries();
+                xseries.Color = OxyColors.Tomato;
+                xseries.MarkerType = MarkerType.None;
+                xseries.Smooth = true;
+
+                LineSeries yseries = new LineSeries();
+                yseries.Color = OxyColors.Green; 
+                yseries.MarkerType = MarkerType.None;
+                yseries.Smooth = true;
+
+                FilteredTrajectory ft = filteredTrajectories[tspd];
+
+                foreach (FilteringResult r in ft.FilterResultXs)
+                    xseries.Points.Add(new DataPoint(r.CutoffFrequency, r.DurbinWatson));
+                
+                foreach (FilteringResult r in ft.FilterResultYs)
+                    yseries.Points.Add(new DataPoint(r.CutoffFrequency, r.DurbinWatson));
+
+                model.Series.Add(xseries);
+                model.Series.Add(yseries);
+
+                // Filtering tab.
+                double xcutoff = ft.FilterResultXs[ft.XCutoffIndex].CutoffFrequency;
+                double ycutoff = ft.FilterResultXs[ft.YCutoffIndex].CutoffFrequency;
+                string strXCutoff = string.Format("{0:0.000}", xcutoff);
+                string strYCutoff = string.Format("{0:0.000}", ycutoff);
+                lvCutoffFrequencies.Items.Add(new ListViewItem(new string[] { tspd.Label, strXCutoff, strYCutoff}));
+            }
+
+            return model;
+       }
+
+        private List<TimeSeriesPlotData> GetEnabledTimeSeries()
+        {
+            List<TimeSeriesPlotData> enabledTimeSeries = new List<TimeSeriesPlotData>();
+            for (int i = 0; i < clbSources.Items.Count; i++)
+            {
+                if (clbSources.GetItemChecked(i))
+                    enabledTimeSeries.Add(clbSources.Items[i] as TimeSeriesPlotData);
+            }
+
+            return enabledTimeSeries;
+        }
+        
         private double TimestampToMilliseconds(long ts)
         {
             long relative = ts - metadata.SelectionStart;
