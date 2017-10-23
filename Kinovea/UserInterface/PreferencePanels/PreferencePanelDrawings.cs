@@ -28,6 +28,7 @@ using Kinovea.Root.Properties;
 using Kinovea.ScreenManager;
 using Kinovea.Services;
 using System.Collections.Generic;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.Root
 {
@@ -86,26 +87,37 @@ namespace Kinovea.Root
         {
             drawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;
             defaultFading = new InfosFading(0, 0);
-            //defaultFading = PreferencesManager.PlayerPreferences.DefaultFading;
             trackingProfile = PreferencesManager.PlayerPreferences.TrackingProfile;
         }
         private void InitPage()
         {
+            InitPageGeneral();
+            InitPageOpacity();
+            InitPageTracking();
+        }
+        private void InitPageGeneral()
+        {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDrawOnPlay.Text = RootLang.dlgPreferences_Drawings_chkDrawOnPlay;
-            
-            tabPersistence.Text = RootLang.dlgPreferences_Drawings_tabPersistence;
-            chkEnablePersistence.Text = RootLang.dlgPreferences_Drawings_chkEnablePersistence;
-            chkAlwaysVisible.Text = RootLang.dlgPreferences_Drawings_chkAlwaysVisible;
-            
-            chkDrawOnPlay.Checked = drawOnPlay;
-            chkEnablePersistence.Checked = defaultFading.Enabled;
-            trkFading.Maximum = PreferencesManager.PlayerPreferences.MaxFading;
-            trkFading.Value = Math.Min(defaultFading.FadingFrames, trkFading.Maximum);
-            chkAlwaysVisible.Checked = defaultFading.AlwaysVisible;
-            EnableDisableFadingOptions();
-            lblFading.Text = String.Format(RootLang.dlgPreferences_Drawings_lblFading, trkFading.Value);
 
+            chkDrawOnPlay.Checked = drawOnPlay;
+        }
+        private void InitPageOpacity()
+        {
+            tabPersistence.Text = ScreenManagerLang.Generic_Opacity;
+            lblDefaultOpacity.Text = "Default opacity of new drawings:";
+            rbAlwaysVisible.Text = "Visible for the entire video";
+            rbFading.Text = "Fade in/out of the frame they were added to";
+            
+            rbAlwaysVisible.Checked = defaultFading.AlwaysVisible;
+            rbFading.Checked = !defaultFading.AlwaysVisible;
+            trkFadingFrames.Maximum = PreferencesManager.PlayerPreferences.MaxFading;
+            trkFadingFrames.Value = Math.Min(defaultFading.FadingFrames, trkFadingFrames.Maximum);
+
+            lblFadingFrames.Text = string.Format("Number of frames to fade in/out the drawing: {0}", trkFadingFrames.Value);
+        }
+        private void InitPageTracking()
+        {
             tabTracking.Text = RootLang.dlgPreferences_Player_Tracking;
             lblDescription.Text = RootLang.dlgPreferences_Player_TrackingDescription;
             lblObjectWindow.Text = RootLang.dlgPreferences_Player_TrackingObjectWindow;
@@ -115,20 +127,17 @@ namespace Kinovea.Root
             cmbSearchWindowUnit.Items.Add(RootLang.dlgPreferences_Player_TrackingPercentage);
             cmbSearchWindowUnit.Items.Add(RootLang.dlgPreferences_Player_TrackingPixels);
 
-            //------------
             int blockWindowUnit = (int)trackingProfile.BlockWindowUnit;
             cmbBlockWindowUnit.SelectedIndex = blockWindowUnit < cmbBlockWindowUnit.Items.Count ? blockWindowUnit : 0;
-
             int searchWindowUnit = (int)trackingProfile.SearchWindowUnit;
             cmbSearchWindowUnit.SelectedIndex = searchWindowUnit < cmbSearchWindowUnit.Items.Count ? searchWindowUnit : 0;
-
             tbBlockWidth.Text = trackingProfile.BlockWindow.Width.ToString();
             tbBlockHeight.Text = trackingProfile.BlockWindow.Height.ToString();
             tbSearchWidth.Text = trackingProfile.SearchWindow.Width.ToString();
             tbSearchHeight.Text = trackingProfile.SearchWindow.Height.ToString();
         }
         #endregion
-        
+
         #region Handlers
         #region General
         private void chkDrawOnPlay_CheckedChanged(object sender, EventArgs e)
@@ -136,22 +145,18 @@ namespace Kinovea.Root
             drawOnPlay = chkDrawOnPlay.Checked;
         }
         #endregion
-        
-        #region Persistence
-        private void chkFading_CheckedChanged(object sender, EventArgs e)
+
+        #region Opacity
+        private void rbOpacity_CheckedChanged(object sender, EventArgs e)
         {
-            defaultFading.Enabled = chkEnablePersistence.Checked;
-            EnableDisableFadingOptions();
+            defaultFading.AlwaysVisible = rbAlwaysVisible.Checked;
+            lblFadingFrames.Enabled = !rbAlwaysVisible.Checked;
+            trkFadingFrames.Enabled = !rbAlwaysVisible.Checked;
         }
         private void trkFading_ValueChanged(object sender, EventArgs e)
         {
-            lblFading.Text = String.Format(RootLang.dlgPreferences_Drawings_lblFading, trkFading.Value);
-            defaultFading.FadingFrames = trkFading.Value;
-            chkAlwaysVisible.Checked = false;
-        }
-        private void chkAlwaysVisible_CheckedChanged(object sender, EventArgs e)
-        {
-            defaultFading.AlwaysVisible = chkAlwaysVisible.Checked;
+            lblFadingFrames.Text = string.Format("Number of frames to fade in/out the drawing: {0}", trkFadingFrames.Value);
+            defaultFading.FadingFrames = trkFadingFrames.Value;
         }
         #endregion
 
@@ -216,14 +221,7 @@ namespace Kinovea.Root
         }
         #endregion
         #endregion
-
-        private void EnableDisableFadingOptions()
-        {
-            trkFading.Enabled = chkEnablePersistence.Checked;
-            lblFading.Enabled = chkEnablePersistence.Checked;
-            chkAlwaysVisible.Enabled = chkEnablePersistence.Checked;
-        }
-    
+        
         public void CommitChanges()
         {
             PreferencesManager.PlayerPreferences.DrawOnPlay = drawOnPlay;
