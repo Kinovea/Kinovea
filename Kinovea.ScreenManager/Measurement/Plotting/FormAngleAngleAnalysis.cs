@@ -65,11 +65,8 @@ namespace Kinovea.ScreenManager
             gbExportData.Text = ScreenManagerLang.DataAnalysis_ExportData;
             btnDataCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
             btnExportData.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
-
-            //lblCutoffFrequencies.Text = "Selected cutoff frequencies:";
         }
-
-
+        
         private void PopulateDataSources()
         {
             foreach (TimeSeriesPlotData data in timeSeriesData)
