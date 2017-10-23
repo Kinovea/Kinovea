@@ -7,7 +7,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Description of the data that will be filled for one plot.
-    /// This is used by the UI to fill the list of possible kinematic plots.
+    /// This is used by the UI to fill the list of possible kinematic plots (speed, acceleration, etc.).
     /// </summary>
     public class TimeSeriesPlotSpecification
     {
