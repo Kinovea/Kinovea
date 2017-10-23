@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 using Kinovea.Video;
 using System.Xml;
@@ -89,7 +90,8 @@ namespace Kinovea.ScreenManager
         private bool assigned;
         private TrackerParameters parameters;
         private Dictionary<string, TrackablePoint> trackablePoints = new Dictionary<string, TrackablePoint>();
-        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public DrawingTracker(ITrackable drawing, TrackingContext context, TrackerParameters parameters)
         {
             this.drawing = drawing;
@@ -129,11 +131,20 @@ namespace Kinovea.ScreenManager
         {
             // This is where we would spawn new threads for each tracking.
             // TODO: Extract the bitmapdata once and pass it to all.
+            Dictionary<string, bool> insertionMap = new Dictionary<string, bool>();
+            bool atLeastOneInserted = false;
             foreach(KeyValuePair<string, TrackablePoint> pair in trackablePoints)
             {
-                pair.Value.Track(context);
+                bool inserted = pair.Value.Track(context);
                 drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue);
+
+                insertionMap[pair.Key] = inserted;
+                if (inserted)
+                    atLeastOneInserted = true;
             }
+
+            if (atLeastOneInserted)
+                FixTimelineSync(insertionMap);
         }
         
         public void ToggleTracking()
@@ -152,12 +163,43 @@ namespace Kinovea.ScreenManager
 
         private void AfterToggleTracking()
         {
-            foreach(KeyValuePair<string, TrackablePoint> pair in trackablePoints)
-                pair.Value.SetTracking(isTracking);
+            Dictionary<string, bool> insertionMap = new Dictionary<string, bool>();
+            bool atLeastOneInserted = false;
+
+            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+            {
+                bool inserted = pair.Value.SetTracking(isTracking);
+                
+                insertionMap[pair.Key] = inserted;
+                if (inserted)
+                    atLeastOneInserted = true;
+            }
             
             drawing.SetTracking(isTracking);
+
+            if (atLeastOneInserted)
+                FixTimelineSync(insertionMap);
         }
-        
+
+        /// <summary>
+        /// For drawings containing multiple trackable points, make sure that if any one of them 
+        /// successfully tracked by template matching, we have a corresponding data point in the timeline 
+        /// of the other trackable points. 
+        /// Contract: caller must gather that at least one point has tracked, and only call in here if so.
+        /// </summary>
+        private void FixTimelineSync(Dictionary<string, bool> insertionMap)
+        {
+            foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
+            {
+                if (insertionMap[pair.Key])
+                    continue;
+
+                // Force insert using closest existing value.
+                pair.Value.ForceInsertClosestLocation();
+                drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue);
+            }
+        }
+
         public void Reset()
         {
             foreach (TrackablePoint trackablePoint in trackablePoints.Values)
