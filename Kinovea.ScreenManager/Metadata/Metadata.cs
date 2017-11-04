@@ -147,7 +147,7 @@ namespace Kinovea.ScreenManager
         }
         public bool HasTrack 
         {
-            get { return extraDrawings.Any(drawing => drawing is DrawingTrack); }
+            get { return trackManager.Drawings.Count > 0; }
         }
         public bool TextEditingInProgress
         {
