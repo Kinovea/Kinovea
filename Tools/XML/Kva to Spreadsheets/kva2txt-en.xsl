@@ -19,14 +19,17 @@
 
 <xsl:template match="Tracks">
 	<xsl:for-each select="Track">
+		
+		<xsl:text>&#10;# </xsl:text>
+		<xsl:value-of select="MainLabel/@Text"/>
+		<xsl:text>&#10;</xsl:text>
+
 		<xsl:for-each select="TrackPointList/TrackPoint">
 			<xsl:value-of select="@UserTime"/><xsl:text> </xsl:text>
 			<xsl:value-of select="@UserX"/><xsl:text> </xsl:text>
 			<xsl:value-of select="@UserY"/><xsl:text> </xsl:text>
 			<xsl:text>&#10;</xsl:text>
 		</xsl:for-each>
-		<xsl:text>&#10;</xsl:text>
-		<xsl:text>&#10;</xsl:text>
 	</xsl:for-each>
 </xsl:template>
 
