@@ -21,7 +21,7 @@ namespace Kinovea.ScreenManager
                 return samples;
 
             int padding = 50;
-            padding = Math.Min(padding, samples.Length - (sentinels*4));
+            padding = Math.Max(0, Math.Min(padding, samples.Length - (sentinels*4)));
             double[] padded = AddPadding(samples, padding, sentinels);
 
             int frames = (int)(span / (2 * interval));
