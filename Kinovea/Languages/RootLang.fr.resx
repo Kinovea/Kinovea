@@ -83,6 +83,7 @@
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Général</value></data>
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Lecture</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Clavier</value></data>
+   <data name="dlgPreferences_Drawings_chkAllowMultipleInstances" xml:space="preserve"><value>Autoriser plusieurs instances de Kinovea</value></data>
    <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Synchronisation de l'affichage</value></data>
    <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Image camera</value></data>
    <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Fréquence fixe</value></data>
@@ -114,9 +115,11 @@
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Macro</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Mémoire</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Mémoire allouée pour la mémoire tampon : {0} Mo.</value></data>
-   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Toujours Visible</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Montrer les dessins pendant la lecture vidéo</value></data>
-   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Activer la persistance</value></data>
+   <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Opacité par défaut pour les nouveaux dessins :</value></data>
+   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Visible pendant toute la durée de la vidéo</value></data>
+   <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Disparaissent autour de l’image à laquelle ils ont été ajouté</value></data>
+   <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>Nombre d’images couvrant la disparition du dessin : {0}</value></data>
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Toujours désentrelacer à l'ouverture d'une nouvelle vidéo.</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Mettre à jour l'image pendant le déplacement du curseur de temps</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Lier les contrôles de vitesse lors de la comparaison de vidéos.</value></data>

@@ -111,6 +111,18 @@
    
    
    
+   
+   
+   
+   
+   
+   
+   
+   <data name="DataAnalysis_AngularPosition" xml:space="preserve"><value>Úhel</value></data>
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Barvy…</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Barevný profil…</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Nastavit na předvolený barevný profil</value></data>
@@ -122,10 +134,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Konfigurovat nákres</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Vždy viditelné</value></data>
-   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Použít předvolenou hodnotu</value></data>
-   <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Umožnit prodlevu zobrazení</value></data>
-   <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} obrazů.</value></data>
-   <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Konfigurovat prodlevu zobrazení</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Počet dělení:</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Konfigurovat mřížku</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Konfigurovat opacitu</value></data>
@@ -151,6 +159,8 @@
    
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Měření:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Žádný</value></data>
+   
+   
    
    
    
@@ -195,7 +205,6 @@
    
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Uložit sekvenci obrazů</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Berte do úvahy zpomalený pohyb. (Stávající = </value></data>
-   <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Možnosti</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Uložit metodu</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Uložit pouze analýzu</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Budou uloženy pouze popisy nákresů a ostatní objekty analýzy.#Soubor lze importovat do videa později. </value></data>
@@ -270,6 +279,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Velikost fontu:</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Šířka:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacita</value></data>
+   <data name="Generic_Options" xml:space="preserve"><value>Možnosti</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Velikost:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Uložit</value></data>
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Tvar linky:</value></data>
@@ -333,13 +343,14 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Zavřít tuto obrazovku</value></data>
    
    
-   
    <data name="mnuConfigureFading" xml:space="preserve"><value>Trvání zobrazení…</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Konfigurovat zobrazení trasy</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Vymazat</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Vymazat trasu za tímto bodem</value></data>
    <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Vymazat všechny trasy</value></data>
+   
+   
    <data name="mnuTwoCaptures" xml:space="preserve"><value>2 snímací obrazovky</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>1 snímací obrazovka a 1 obrazovka pro přehrávání</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>2 obrazovky pro přehrávání</value></data>
@@ -358,7 +369,9 @@
    <data name="mnuGridsHide" xml:space="preserve"><value>Skrýt</value></data>
    <data name="mnuHome" xml:space="preserve"><value>File Explorer</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importovat obrázek…</value></data>
-   <data name="mnuInvertAngle" xml:space="preserve"><value>Doplňkový úhel</value></data>
+   
+   
+   
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Nahrát data klíčových pozic</value></data>

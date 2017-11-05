@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
             radioSaveAnalysis.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioAnalysis;
             tbSaveAnalysis.Lines = ScreenManagerLang.dlgSaveAnalysisOrVideo_HintAnalysis.Split('#');
             
-            groupOptions.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupOptions;
+            groupOptions.Text = ScreenManagerLang.Generic_Options;
             checkSlowMotion.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_CheckSlow;
             checkSlowMotion.Text = checkSlowMotion.Text + string.Format("{0:0.00} %).", m_fSlowmotionPercentage);
 

@@ -111,6 +111,18 @@
    
    
    
+   
+   
+   
+   
+   
+   
+   
+   <data name="DataAnalysis_AngularPosition" xml:space="preserve"><value>Winkelmessung</value></data>
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Farben</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Farbprofil...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Standardprofil zurücksetzen</value></data>
@@ -122,10 +134,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Zeichnung konfigurieren</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>immer sichtbar</value></data>
-   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Standardwerte verwenden</value></data>
-   <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Nachleuchten aktivieren</value></data>
-   <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} Bilder.</value></data>
-   <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Nachleuchten konfigurieren</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Anzahl der Kategorien:</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Gitter einrichten</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Deckkraft</value></data>
@@ -151,6 +159,8 @@
    
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Messung :</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Keine Messung </value></data>
+   
+   
    
    
    
@@ -195,7 +205,6 @@
    
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Bildsequenz speichern</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Berücksichtige Slow-Motion (Aktuell =</value></data>
-   <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Optionen</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Speichermethode</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Speichere nur Schlüsselbilddaten</value></data>
    
@@ -270,6 +279,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Schriftgröße:</value></data>
    
    <data name="Generic_Opacity" xml:space="preserve"><value>Deckkraft</value></data>
+   <data name="Generic_Options" xml:space="preserve"><value>Optionen</value></data>
    
    <data name="Generic_Save" xml:space="preserve"><value>Speichern</value></data>
    
@@ -333,13 +343,14 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Fenster schließen</value></data>
    
    
-   
    <data name="mnuConfigureFading" xml:space="preserve"><value>Nachleuchten</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Konfiguriere Trajektorien Bildschirm</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Löschen</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Lösche Trajektorien nach diesem Punkt</value></data>
    <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Lösche alle Trajektorien</value></data>
+   
+   
    <data name="mnuTwoCaptures" xml:space="preserve"><value>2x Aufnahmefenster</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Aufnahme- und Wiedergabefenster</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>2x Wiedergabefenster</value></data>
@@ -358,7 +369,9 @@
    <data name="mnuGridsHide" xml:space="preserve"><value>Ausblenden</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Datei Explorer</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Bild importieren</value></data>
-   <data name="mnuInvertAngle" xml:space="preserve"><value>Winkel invertieren</value></data>
+   
+   
+   
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Lade die Informationen der Schlüsselbilder...</value></data>

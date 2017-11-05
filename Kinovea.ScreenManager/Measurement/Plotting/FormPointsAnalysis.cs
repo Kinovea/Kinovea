@@ -54,13 +54,13 @@ namespace Kinovea.ScreenManager
         
         private void Localize()
         {
-            Text = ScreenManagerLang.DataAnalysis;
+            Text = ScreenManagerLang.DataAnalysis_ScatterDiagram;
             pagePlot.Text = ScreenManagerLang.DataAnalysis_PagePlot;
             gbLabels.Text = ScreenManagerLang.DataAnalysis_Labels;
             lblTitle.Text = ScreenManagerLang.DataAnalysis_Title;
             lblXAxis.Text = ScreenManagerLang.DataAnalysis_XaxisLabel;
             lblYAxis.Text = ScreenManagerLang.DataAnalysis_YaxisLabel;
-            tbTitle.Text = ScreenManagerLang.DataAnalysis_ScatterPlot;
+            tbTitle.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram;
             tbXAxis.Text = ScreenManagerLang.DataAnalysis_XaxisDefaultPoints;
             tbYAxis.Text = ScreenManagerLang.DataAnalysis_YaxisDefaultPoints;
             cbCalibrationPlane.Text = ScreenManagerLang.DataAnalysis_CalibrationPlane;

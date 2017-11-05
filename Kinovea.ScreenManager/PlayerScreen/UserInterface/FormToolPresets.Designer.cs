@@ -163,9 +163,9 @@ namespace Kinovea.ScreenManager
             // 
             // grpConfig
             // 
-            this.grpConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpConfig.Controls.Add(this.lblFirstElement);
             this.grpConfig.Controls.Add(this.btnFirstElement);
             this.grpConfig.Location = new System.Drawing.Point(215, 85);
@@ -196,8 +196,8 @@ namespace Kinovea.ScreenManager
             // 
             // lvPresets
             // 
-            this.lvPresets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.lvPresets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lvPresets.Location = new System.Drawing.Point(13, 48);
             this.lvPresets.Name = "lvPresets";
             this.lvPresets.Size = new System.Drawing.Size(196, 239);
@@ -230,7 +230,12 @@ namespace Kinovea.ScreenManager
             this.Controls.Add(this.btnDefault);
             this.Controls.Add(this.btnSaveProfile);
             this.Controls.Add(this.btnLoadProfile);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "FormToolPresets";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "FormToolPresets";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);

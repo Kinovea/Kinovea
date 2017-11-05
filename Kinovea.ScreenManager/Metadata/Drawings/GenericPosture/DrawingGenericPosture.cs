@@ -90,7 +90,7 @@ namespace Kinovea.ScreenManager
                 
                 if(genericPosture.OptionGroups.Count > 0)
                 {
-                    menuOptions.Text = "Options"; // TODO: translate.
+                    menuOptions.Text = ScreenManagerLang.Generic_Options;
                     contextMenu.Add(menuOptions);
                 }
                 

@@ -112,6 +112,18 @@
    
    
    
+   
+   
+   
+   
+   
+   
+   <data name="DataAnalysis_AngularPosition" xml:space="preserve"><value>Vinkel</value></data>
+   
+   
+   
+   
+   
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Fargeprofil...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Standard fargeprofil</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Last inn fargeprofil</value></data>
@@ -122,10 +134,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Konfigurer tegning</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
-   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Bruk standardverdier</value></data>
-   <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Start vedlikehold</value></data>
-   <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} bilder.</value></data>
-   <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Konfigurer vedlikehold</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Antall kategorier:</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Konfigurer rutenett</value></data>
    
@@ -151,6 +159,8 @@
    
    <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Måling:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Ingen måling</value></data>
+   
+   
    
    
    
@@ -195,7 +205,6 @@
    
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Lagre en sekvens av bilder</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Ta høyde for slow motion (Current =</value></data>
-   <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Alternativer</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Lagre metode</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Lagre bare nøkkelbilde data</value></data>
    
@@ -270,6 +279,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Skriftstørrelse:</value></data>
    
    
+   <data name="Generic_Options" xml:space="preserve"><value>Alternativer</value></data>
    
    <data name="Generic_Save" xml:space="preserve"><value>Lagre</value></data>
    
@@ -333,13 +343,14 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Lukk vindu</value></data>
    
    
-   
    <data name="mnuConfigureFading" xml:space="preserve"><value>Likevekt</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Konfigurer banevisning</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Oppløsing</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Slett</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Slett etter dette punktet</value></data>
    <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Slett alle baner</value></data>
+   
+   
    <data name="mnuTwoCaptures" xml:space="preserve"><value>To opptaksvinduer</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Et opptaksvindu og et avspillingsvindu</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>To avspillingsvinduer</value></data>
@@ -357,6 +368,8 @@
    <data name="mnuGrid" xml:space="preserve"><value>Rutenett</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Skjul</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Utforsk fil</value></data>
+   
+   
    
    
    

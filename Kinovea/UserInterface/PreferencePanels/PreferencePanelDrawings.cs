@@ -105,16 +105,16 @@ namespace Kinovea.Root
         private void InitPageOpacity()
         {
             tabPersistence.Text = ScreenManagerLang.Generic_Opacity;
-            lblDefaultOpacity.Text = "Default opacity of new drawings:";
-            rbAlwaysVisible.Text = "Visible for the entire video";
-            rbFading.Text = "Fade in/out of the frame they were added to";
+            lblDefaultOpacity.Text = RootLang.dlgPreferences_Drawings_lblDefaultOpacity;
+            rbAlwaysVisible.Text = RootLang.dlgPreferences_Drawings_rbAlwaysVisible;
+            rbFading.Text = RootLang.dlgPreferences_Drawings_rbFading;
             
             rbAlwaysVisible.Checked = defaultFading.AlwaysVisible;
             rbFading.Checked = !defaultFading.AlwaysVisible;
             trkFadingFrames.Maximum = PreferencesManager.PlayerPreferences.MaxFading;
             trkFadingFrames.Value = Math.Min(defaultFading.FadingFrames, trkFadingFrames.Maximum);
-
-            lblFadingFrames.Text = string.Format("Number of frames to fade in/out the drawing: {0}", trkFadingFrames.Value);
+            
+            lblFadingFrames.Text = string.Format(RootLang.dlgPreferences_Drawings_lblFadingFrames, trkFadingFrames.Value);
         }
         private void InitPageTracking()
         {
@@ -155,7 +155,7 @@ namespace Kinovea.Root
         }
         private void trkFading_ValueChanged(object sender, EventArgs e)
         {
-            lblFadingFrames.Text = string.Format("Number of frames to fade in/out the drawing: {0}", trkFadingFrames.Value);
+            lblFadingFrames.Text = string.Format(RootLang.dlgPreferences_Drawings_lblFadingFrames, trkFadingFrames.Value);
             defaultFading.FadingFrames = trkFadingFrames.Value;
         }
         #endregion

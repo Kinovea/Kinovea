@@ -45,20 +45,18 @@ namespace Kinovea.ScreenManager
 
         private void Localize()
         {
-            Text = ScreenManagerLang.DataAnalysis;
+            Text = ScreenManagerLang.DataAnalysis_AngularKinematics;
             pagePlot.Text = ScreenManagerLang.DataAnalysis_PagePlot;
             gbSource.Text = ScreenManagerLang.DataAnalysis_DataSource;
             lblData.Text = ScreenManagerLang.DataAnalysis_DataLabel;
-            //cmbDataSource
+            lblTimeModel.Text = ScreenManagerLang.DataAnalysis_TimeModel;
 
             gbLabels.Text = ScreenManagerLang.DataAnalysis_Labels;
             lblTitle.Text = ScreenManagerLang.DataAnalysis_Title;
             lblXAxis.Text = ScreenManagerLang.DataAnalysis_XaxisLabel;
             lblYAxis.Text = ScreenManagerLang.DataAnalysis_YaxisLabel;
-            tbTitle.Text = ScreenManagerLang.DataAnalysis_ScatterPlot;
-            //tbXAxis.Text = ScreenManagerLang.;
-            //tbYAxis.Text = "Y axis";
-
+            tbTitle.Text = ScreenManagerLang.DataAnalysis_AngularKinematics;
+            
             gbExportGraph.Text = ScreenManagerLang.DataAnalysis_ExportGraph;
             lblPixels.Text = ScreenManagerLang.DataAnalysis_Pixels;
             btnImageCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
@@ -89,23 +87,23 @@ namespace Kinovea.ScreenManager
             
             // We don't show the relative displacement from frame to frame 
             // as it is dependent on framerate and thus doesn't make a lot of sense here.
-            AddPlotSpecification(Kinematics.AngularPosition, theta, "Angle");
-            AddPlotSpecification(Kinematics.TotalAngularDisplacement, theta, "Total displacement");
-            AddPlotSpecification(Kinematics.AngularVelocity, omega, "Angular velocity");
-            AddPlotSpecification(Kinematics.TangentialVelocity, v, "Tangential velocity");
-            AddPlotSpecification(Kinematics.AngularAcceleration, alpha, "Angular acceleration");
-            AddPlotSpecification(Kinematics.TangentialAcceleration, a, "Tangential acceleration");
-            AddPlotSpecification(Kinematics.CentripetalAcceleration, a, "Centripetal acceleration");
-            AddPlotSpecification(Kinematics.ResultantLinearAcceleration, a, "Resultant acceleration");
+            AddPlotSpecification(Kinematics.AngularPosition, theta, ScreenManagerLang.DataAnalysis_AngularPosition);
+            AddPlotSpecification(Kinematics.TotalAngularDisplacement, theta, ScreenManagerLang.DataAnalysis_TotalAngularDisplacement);
+            AddPlotSpecification(Kinematics.AngularVelocity, omega, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularVelocity);
+            AddPlotSpecification(Kinematics.TangentialVelocity, v, ScreenManagerLang.DataAnalysis_TangentialVelocity);
+            AddPlotSpecification(Kinematics.AngularAcceleration, alpha, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularAcceleration);
+            AddPlotSpecification(Kinematics.TangentialAcceleration, a, ScreenManagerLang.DataAnalysis_TangentialAcceleration);
+            AddPlotSpecification(Kinematics.CentripetalAcceleration, a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_CentripetalAcceleration);
+            AddPlotSpecification(Kinematics.ResultantLinearAcceleration, a, ScreenManagerLang.DataAnalysis_ResultantLinearAcceleration);
 
             cmbDataSource.SelectedIndex = 0;
         }
 
         private void PopulateTimeModels()
         {
-            cmbTimeModel.Items.Add("Absolute");
-            cmbTimeModel.Items.Add("Relative");
-            cmbTimeModel.Items.Add("Normalized");
+            cmbTimeModel.Items.Add(ScreenManagerLang.DataAnalysis_TimeModel_Absolute);
+            cmbTimeModel.Items.Add(ScreenManagerLang.DataAnalysis_TimeModel_Relative);
+            cmbTimeModel.Items.Add(ScreenManagerLang.DataAnalysis_TimeModel_Normalized);
             cmbTimeModel.SelectedIndex = 0;
         }
 

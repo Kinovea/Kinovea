@@ -83,6 +83,7 @@
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>General</value></data>
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Reproducció</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Teclat</value></data>
+   
    <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Sincronització</value></data>
    <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Fotograma de la càmera</value></data>
    <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Freqüència fixa</value></data>
@@ -114,9 +115,11 @@
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Macro</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memòria</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memòria reservada per la la memòria cau : {0} MB</value></data>
-   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Sempre visible</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Mostra els dibuixos mentre el video es reprodueix</value></data>
-   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Activar al persistència</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Desentrellaçar sempre que s'obri un nou video</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Actualitzar la imatge mentre es mou el cursor de temps</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Enllaçar les barres de velocitats en la comparació de videos</value></data>
