@@ -100,7 +100,7 @@ namespace Kinovea.Root
             SelectCurrentLanguage();
             cmbHistoryCount.SelectedIndex = maxRecentFiles;
 
-            //chkAllowMultipleInstances.Text = RootLang.dlgPreferences_Drawings_chkAllowMultipleInstances;
+            chkAllowMultipleInstances.Text = RootLang.dlgPreferences_Drawings_chkAllowMultipleInstances;
             chkAllowMultipleInstances.Checked = allowMultipleInstances;
         }
         private void SelectCurrentLanguage()

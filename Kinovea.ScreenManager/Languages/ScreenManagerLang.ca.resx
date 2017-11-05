@@ -95,6 +95,10 @@
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Intercanviar les pantalles</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Mostra/Amaga els controls comuns</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>Anàlisi de ddades</value></data>
+   <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Diagrama de dispersió</value></data>
+   
+   
+   
    <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>Gràfica</value></data>
    <data name="DataAnalysis_Labels" xml:space="preserve"><value>Etiquetas</value></data>
    <data name="DataAnalysis_Title" xml:space="preserve"><value>Títol:</value></data>
@@ -103,7 +107,6 @@
    <data name="DataAnalysis_YaxisLabel" xml:space="preserve"><value>Eix Y:</value></data>
    <data name="DataAnalysis_YaxisDefaultPoints" xml:space="preserve"><value>Eix Y</value></data>
    <data name="DataAnalysis_TimeAxisMilliseconds" xml:space="preserve"><value>Temps (ms)</value></data>
-   <data name="DataAnalysis_ScatterPlot" xml:space="preserve"><value>Diagrama de dispersió</value></data>
    <data name="DataAnalysis_CalibrationPlane" xml:space="preserve"><value>Pla de calibració</value></data>
    <data name="DataAnalysis_ExportGraph" xml:space="preserve"><value>Exportar la gràfica</value></data>
    <data name="DataAnalysis_Pixels" xml:space="preserve"><value>píxels</value></data>
@@ -111,6 +114,15 @@
    <data name="DataAnalysis_ExportData" xml:space="preserve"><value>Exportar les dades</value></data>
    <data name="DataAnalysis_DataSource" xml:space="preserve"><value>Orígen de les dades</value></data>
    <data name="DataAnalysis_DataLabel" xml:space="preserve"><value>Dades:</value></data>
+   
+   
+   
+   
+   <data name="DataAnalysis_AngularPosition" xml:space="preserve"><value>Angle</value></data>
+   
+   
+   
+   
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Colors</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Perfil de colors</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Restablir el perfil de colors per defecte</value></data>
@@ -122,10 +134,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurar el dibuix</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Nom</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Sempre visible</value></data>
-   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Utilitzar el valor per defecte</value></data>
-   <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Activar la persistència</value></data>
-   <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} fotogrames</value></data>
-   <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configurar la persistència</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Número de divisions</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configurar la graella</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configurar l'opacitat</value></data>
@@ -155,6 +163,8 @@
    <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve"><value>Posició vertical</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve"><value>Posició horitzontal</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distància total</value></data>
+   
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Velocitat</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve"><value>Velocitat vertical</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve"><value>Velocitat horitzontal</value></data>
@@ -195,7 +205,6 @@
    <data name="dlgRafaleExport_ExportTimeDecimationMilliseconds" xml:space="preserve"><value>Exportar una imatge cada {0:0}ms.</value></data>
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Desar una seqüència d'imatges</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Tenir en compte l'Slow Motion (Actual =</value></data>
-   <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opcions</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Mètode d'enregistrament</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Desar només l'anàlisi</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Només es desaran les descripcions dels dibuixos i altres objectes de l'anàlisi.# L'arxiu pot ser importat en un vídeo posteriorment</value></data>
@@ -270,6 +279,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Mida de la font :</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Amplada:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacitat</value></data>
+   <data name="Generic_Options" xml:space="preserve"><value>Opcions</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Mida :</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Desar</value></data>
    <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Forma de la línia :</value></data>
@@ -333,13 +343,14 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Tanca aquesta finestra</value></data>
    <data name="mnuCopyToClipboard" xml:space="preserve"><value>Copiar al porta-retalls</value></data>
    <data name="mnuCopyImageToClipboard" xml:space="preserve"><value>Copiar l'imatge al porta-retalls</value></data>
-   <data name="mnuDataAnalysis" xml:space="preserve"><value>Anàlisi de dades...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistència...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configurar la visualització de la trajectòria</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Des-entrellaçar</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Esborrar</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Esborrar la trajectòria després d'aquest Punt.</value></data>
    <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Esborrar tota la trajectòria</value></data>
+   
+   
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Dues pantalles de Captura</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Una pantalla de captura i una pantalla de reproducció</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Dues pantalles de reproducció</value></data>
@@ -358,7 +369,9 @@
    <data name="mnuGridsHide" xml:space="preserve"><value>Amagar</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Explorador d'arxius</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importar una imatge...</value></data>
-   <data name="mnuInvertAngle" xml:space="preserve"><value>Inverteix l'angle</value></data>
+   
+   
+   
    <data name="mnuFlipHorizontally" xml:space="preserve"><value>Reflexa horitzontalment</value></data>
    <data name="mnuFlipVertically" xml:space="preserve"><value>Reflexa verticalment</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Carregar dades de imatges clau...</value></data>

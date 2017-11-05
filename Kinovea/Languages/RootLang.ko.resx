@@ -94,6 +94,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>이미지 포맷:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>비디오 포맷:</value></data>
    
@@ -114,9 +115,11 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>메모리</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>캡처 버퍼에 메모리 할당됨:{0}</value></data>
-   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>항상 보임</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>비디오 재생시 그림 보이기</value></data>
-   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>지속 가능하게 함</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>새 비디오를 열때 항상 디인터레이싱을 가능하게 함.</value></data>
    
    

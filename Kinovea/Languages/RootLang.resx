@@ -83,6 +83,7 @@
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>General</value></data>
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Playback</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Keyboard</value></data>
+   <data name="dlgPreferences_Drawings_chkAllowMultipleInstances" xml:space="preserve"><value>Allow multiple instances of Kinovea</value></data>
    <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Display synchronization</value></data>
    <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Camera frame</value></data>
    <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Forced framerate</value></data>
@@ -113,10 +114,12 @@
    <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>Context</value></data>
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Macro</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memory</value></data>
-   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memory allocated for capture buffers: {0} MB.</value></data>
-   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Always Visible</value></data>
+   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memory allocated for delay buffers: {0} MB.</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Show drawings when video is playing</value></data>
-   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Enable persistence</value></data>
+   <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Default opacity of new drawings:</value></data>
+   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Visible for the entire video</value></data>
+   <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Fade in/out around the frame they were added to</value></data>
+   <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>Number of frames to fade in/out the drawing: {0}</value></data>
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Always deinterlace when opening a new video.</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Update image during time cursor movement</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Link speed sliders when comparing videos.</value></data>
@@ -126,7 +129,7 @@
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Switch To Analysis Mode</value></data>
    <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Persistence</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Number of files in history:</value></data>
-   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Default image format:</value></data>
+   <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Default aspect ratio:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Language:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>And</value></data>
    <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Working Zone will take less than {0} MB of Memory.</value></data>

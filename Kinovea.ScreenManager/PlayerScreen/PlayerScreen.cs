@@ -634,7 +634,7 @@ namespace Kinovea.ScreenManager
             f.Dispose();
         }
 
-        public void ShowPointAnalysis()
+        public void ShowScatterDiagram()
         {
             FormPointsAnalysis fpa = new FormPointsAnalysis(frameServer.Metadata);
             FormsHelper.Locate(fpa);

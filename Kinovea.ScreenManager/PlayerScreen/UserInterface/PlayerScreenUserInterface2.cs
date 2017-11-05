@@ -2449,10 +2449,10 @@ namespace Kinovea.ScreenManager
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
-            mnuDrawingTracking.Text = "Tracking";
+            mnuDrawingTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
             mnuDrawingTrackingConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
-            mnuDrawingTrackingStart.Text = "Start tracking";
-            mnuDrawingTrackingStop.Text = "Stop tracking";
+            mnuDrawingTrackingStart.Text = ScreenManagerLang.mnuDrawingTrackingStart;
+            mnuDrawingTrackingStop.Text = ScreenManagerLang.mnuDrawingTrackingStop;
 
             // 3. Tracking pop menu (Restart, Stop tracking)
             mnuStopTracking.Text = ScreenManagerLang.mnuStopTracking;
@@ -3959,14 +3959,7 @@ namespace Kinovea.ScreenManager
         {
 
         }
-
-        private void mnuDataAnalysis_Click(object sender, EventArgs e)
-        {
-            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-
-            if (DataAnalysisAsked != null)
-                DataAnalysisAsked(this, new EventArgs<AbstractDrawing>(drawing));
-        }
+        
         private void mnuDeleteDrawing_Click(object sender, EventArgs e)
         {
             DeleteSelectedDrawing();

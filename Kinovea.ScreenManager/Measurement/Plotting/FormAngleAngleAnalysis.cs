@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
 
         private void Localize()
         {
-            Text = ScreenManagerLang.DataAnalysis;
+            Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams;
             pagePlot.Text = ScreenManagerLang.DataAnalysis_PagePlot;
             gbSource.Text = ScreenManagerLang.DataAnalysis_DataSource;
             lblSourceXAxis.Text = ScreenManagerLang.DataAnalysis_XaxisLabel;
@@ -55,7 +55,7 @@ namespace Kinovea.ScreenManager
             lblTitle.Text = ScreenManagerLang.DataAnalysis_Title;
             lblXAxis.Text = ScreenManagerLang.DataAnalysis_XaxisLabel;
             lblYAxis.Text = ScreenManagerLang.DataAnalysis_YaxisLabel;
-            tbTitle.Text = ScreenManagerLang.DataAnalysis_ScatterPlot;
+            tbTitle.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams;
             
             gbExportGraph.Text = ScreenManagerLang.DataAnalysis_ExportGraph;
             lblPixels.Text = ScreenManagerLang.DataAnalysis_Pixels;
@@ -92,14 +92,9 @@ namespace Kinovea.ScreenManager
             string omega = metadata.CalibrationHelper.GetAngularVelocityAbbreviation();
             string alpha = metadata.CalibrationHelper.GetAngularAccelerationAbbreviation();
             
-            AddPlotSpecification(Kinematics.AngularPosition, theta, "Angle");
-            AddPlotSpecification(Kinematics.AngularVelocity, omega, "Angular velocity");
-            AddPlotSpecification(Kinematics.TangentialVelocity, v, "Tangential velocity");
-            /*AddPlotSpecification(Kinematics.AngularAcceleration, alpha, "Angular acceleration");
-            AddPlotSpecification(Kinematics.TangentialAcceleration, a, "Tangential acceleration");
-            AddPlotSpecification(Kinematics.CentripetalAcceleration, a, "Centripetal acceleration");
-            AddPlotSpecification(Kinematics.ResultantLinearAcceleration, a, "Resultant acceleration");*/
-
+            AddPlotSpecification(Kinematics.AngularPosition, theta, ScreenManagerLang.DataAnalysis_AngularPosition);
+            AddPlotSpecification(Kinematics.AngularVelocity, omega, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularVelocity);
+            AddPlotSpecification(Kinematics.TangentialVelocity, v, ScreenManagerLang.DataAnalysis_TangentialVelocity);
             cmbDataSource.SelectedIndex = 0;
         }
 

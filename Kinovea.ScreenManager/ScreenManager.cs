@@ -113,7 +113,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCameraCalibration = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTrajectoryAnalysis = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuPointAnalysis = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuScatterDiagram = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAngularAnalysis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAngleAngleAnalysis = new ToolStripMenuItem();
 
@@ -420,9 +420,9 @@ namespace Kinovea.ScreenManager
             mnuTrajectoryAnalysis.Click += mnuTrajectoryAnalysis_OnClick;
             mnuTrajectoryAnalysis.MergeAction = MergeAction.Append;
 
-            mnuPointAnalysis.Image = Properties.Resources.function;
-            mnuPointAnalysis.Click += mnuPointAnalysis_OnClick;
-            mnuPointAnalysis.MergeAction = MergeAction.Append;
+            mnuScatterDiagram.Image = Properties.Resources.function;
+            mnuScatterDiagram.Click += mnuScatterDiagram_OnClick;
+            mnuScatterDiagram.MergeAction = MergeAction.Append;
 
             mnuAngularAnalysis.Image = Properties.Resources.function;
             mnuAngularAnalysis.Click += mnuAngularAnalysis_OnClick;
@@ -438,7 +438,7 @@ namespace Kinovea.ScreenManager
                 mnuCoordinateAxis, 
                 mnuCameraCalibration, 
                 new ToolStripSeparator(),
-                mnuPointAnalysis,
+                mnuScatterDiagram,
                 mnuTrajectoryAnalysis,
                 mnuAngularAnalysis,
                 mnuAngleAngleAnalysis
@@ -901,7 +901,7 @@ namespace Kinovea.ScreenManager
                     mnuCoordinateAxis.Enabled = true;
                     mnuCameraCalibration.Enabled = true;
                     mnuTrajectoryAnalysis.Enabled = true;
-                    mnuPointAnalysis.Enabled = true;
+                    mnuScatterDiagram.Enabled = true;
                     mnuAngularAnalysis.Enabled = true;
                     mnuAngleAngleAnalysis.Enabled = true;
                     
@@ -941,7 +941,7 @@ namespace Kinovea.ScreenManager
                     mnuCoordinateAxis.Enabled = false;
                     mnuCameraCalibration.Enabled = false;
                     mnuTrajectoryAnalysis.Enabled = false;
-                    mnuPointAnalysis.Enabled = false;
+                    mnuScatterDiagram.Enabled = false;
                     mnuAngularAnalysis.Enabled = false;
                     mnuAngleAngleAnalysis.Enabled = false;
                 }
@@ -989,7 +989,7 @@ namespace Kinovea.ScreenManager
                 mnuCoordinateAxis.Enabled = false;
                 mnuCameraCalibration.Enabled = false;
                 mnuTrajectoryAnalysis.Enabled = false;
-                mnuPointAnalysis.Enabled = false;
+                mnuScatterDiagram.Enabled = false;
                 mnuAngularAnalysis.Enabled = false;
                 mnuAngleAngleAnalysis.Enabled = false;
             }
@@ -1235,10 +1235,10 @@ namespace Kinovea.ScreenManager
             mnuTestGrid.Text = ScreenManagerLang.DrawingName_TestGrid;
             mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
             mnuCameraCalibration.Text = ScreenManagerLang.dlgCameraCalibration_Title + "…";
-            mnuTrajectoryAnalysis.Text = "Linear kinematics…";
-            mnuPointAnalysis.Text = "Scatter analysis…";
-            mnuAngularAnalysis.Text = "Angular kinematics…";
-            mnuAngleAngleAnalysis.Text = "Angle-angle diagrams…";
+            mnuScatterDiagram.Text = ScreenManagerLang.DataAnalysis_ScatterDiagram + "…";
+            mnuTrajectoryAnalysis.Text = ScreenManagerLang.DataAnalysis_LinearKinematics + "…";
+            mnuAngularAnalysis.Text = ScreenManagerLang.DataAnalysis_AngularKinematics + "…";
+            mnuAngleAngleAnalysis.Text = ScreenManagerLang.DataAnalysis_AngleAngleDiagrams + "…";
         }
             
         private void RefreshCultureMenuFilters()
@@ -1904,13 +1904,13 @@ namespace Kinovea.ScreenManager
 
             ps.ShowTrajectoryAnalysis();
         }
-        private void mnuPointAnalysis_OnClick(object sender, EventArgs e)
+        private void mnuScatterDiagram_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;
             if (ps == null)
                 return;
 
-            ps.ShowPointAnalysis();
+            ps.ShowScatterDiagram();
         }
         private void mnuAngularAnalysis_OnClick(object sender, EventArgs e)
         {

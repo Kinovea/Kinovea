@@ -83,6 +83,7 @@
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>عام</value></data>
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>اعادة العرض</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>لوحة المفاتيح</value></data>
+   
    <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>تزامن العرض</value></data>
    <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>تردد الكاميرا</value></data>
    <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>معدل التردد القسري</value></data>
@@ -114,9 +115,11 @@
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>ماكرو</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>الذاكرة</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>الذاكرة المخصصة للالتقاط المؤقت: {0} ميغابايت</value></data>
-   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>مرئي دائما</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>اظهار الرسومات عند تشغيل الفيديو</value></data>
-   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>تفعيل الاستمرار</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>فك التشابك دائما عند فتح فيديو جديد.</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>تحديث الصورة عند حركة المؤشر</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ربط شرائط تمرير السرعة عند مقارنة الفيديوهات</value></data>

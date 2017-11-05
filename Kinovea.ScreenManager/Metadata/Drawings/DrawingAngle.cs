@@ -81,9 +81,9 @@ namespace Kinovea.ScreenManager
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
 
-                mnuSignedAngle.Text = "Signed angle";
-                mnuCounterClockwise.Text = "Counter clockwise";
-                mnuSupplementaryAngle.Text = "Supplementary angle";
+                mnuSignedAngle.Text = ScreenManagerLang.mnuSignedAngle;
+                mnuCounterClockwise.Text = ScreenManagerLang.mnuCounterClockwise;
+                mnuSupplementaryAngle.Text = ScreenManagerLang.mnuSupplementaryAngle;
                 contextMenu.AddRange(new ToolStripItem[] { mnuSignedAngle, mnuCounterClockwise, mnuSupplementaryAngle});
                 
                 return contextMenu; 

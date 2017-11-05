@@ -94,6 +94,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>イメージフォーマット:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>ビデオフォーマット:</value></data>
    
@@ -114,9 +115,11 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>メモリー</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>キャプチャバッファー用メモリー: {0} MB.</value></data>
-   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>常に表示</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>ビデオ再生中にドローイングを表示する</value></data>
-   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>継続時間の有効化</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>新しいビデオを開くときはインターレースを解除する</value></data>
    
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ビデオを比較する際、スピードスライダーを連動させる</value></data>

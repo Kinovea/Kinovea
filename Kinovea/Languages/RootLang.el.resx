@@ -94,6 +94,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Μορφή εικονας:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Μορφή βίντεο:</value></data>
    
@@ -114,9 +115,11 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Μνήμη</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Προσδιορισμένη ενδιάμεση μνήμη αποτύπωσης: {0} MB.</value></data>
-   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Ορατό Πάντα</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Απεικόνηση σχεδίων κατά την αναπαραγωγή</value></data>
-   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Ενεργοποίηση Επιμονής</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Απόπλεξη πάντα όταν ανοίγει ένα νέο video</value></data>
    
    

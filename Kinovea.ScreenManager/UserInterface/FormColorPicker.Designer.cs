@@ -48,23 +48,24 @@ namespace Kinovea.ScreenManager
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.SuspendLayout();
-			// 
-			// FormColorPicker
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSize = true;
-			this.ClientSize = new System.Drawing.Size(209, 176);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "FormColorPicker";
-			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-			this.Text = "ColorPicker";
-			this.ResumeLayout(false);
+            this.SuspendLayout();
+            // 
+            // FormColorPicker
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(209, 176);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "FormColorPicker";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Text = "ColorPicker";
+            this.ResumeLayout(false);
+
 		}
 	}
 }

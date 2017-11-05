@@ -94,6 +94,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Paveikslėlio formatas:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Vaizdo formatas:</value></data>
    
@@ -114,9 +115,11 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Atmintis</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Užimta atminties įrašymo buferiui: {0} MB.</value></data>
-   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Visą laiką rodyti</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Rodyti piešinius rodant vaizdą</value></data>
-   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Įjungti išlaikymą</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Deinterlace filtro naudojimas.</value></data>
    
    

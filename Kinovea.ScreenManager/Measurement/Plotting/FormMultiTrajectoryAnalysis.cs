@@ -115,20 +115,18 @@ namespace Kinovea.ScreenManager
 
         private void Localize()
         {
-            Text = ScreenManagerLang.DataAnalysis;
+            Text = ScreenManagerLang.DataAnalysis_LinearKinematics;
             pagePlot.Text = ScreenManagerLang.DataAnalysis_PagePlot;
             gbSource.Text = ScreenManagerLang.DataAnalysis_DataSource;
             lblData.Text = ScreenManagerLang.DataAnalysis_DataLabel;
-            //cmbDataSource
+            lblTimeModel.Text = ScreenManagerLang.DataAnalysis_TimeModel;
 
             gbLabels.Text = ScreenManagerLang.DataAnalysis_Labels;
             lblTitle.Text = ScreenManagerLang.DataAnalysis_Title;
             lblXAxis.Text = ScreenManagerLang.DataAnalysis_XaxisLabel;
             lblYAxis.Text = ScreenManagerLang.DataAnalysis_YaxisLabel;
-            tbTitle.Text = ScreenManagerLang.DataAnalysis_ScatterPlot;
-            //tbXAxis.Text = ScreenManagerLang.;
-            //tbYAxis.Text = "Y axis";
-
+            tbTitle.Text = ScreenManagerLang.DataAnalysis_LinearKinematics;
+            
             gbExportGraph.Text = ScreenManagerLang.DataAnalysis_ExportGraph;
             lblPixels.Text = ScreenManagerLang.DataAnalysis_Pixels;
             btnImageCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
@@ -139,7 +137,6 @@ namespace Kinovea.ScreenManager
             btnExportData.Text = ScreenManagerLang.DataAnalysis_SaveToFile;
 
             LocalizeTabAbout();
-            lblCutoffFrequencies.Text = "Cutoff frequencies (Hz)";
         }
 
         private void LocalizeTabAbout()
@@ -177,6 +174,7 @@ namespace Kinovea.ScreenManager
             b.AppendLine("3. Winter, D. A. (2009). Biomechanics and motor control of human movements (4th ed.). Hoboken, New Jersey: John Wiley & Sons, Inc.");
             rtbInfo2.AppendText(b.ToString());
 
+            lblCutoffFrequencies.Text = "Cutoff frequencies (Hz)";
             lvCutoffFrequencies.Clear();
             lvCutoffFrequencies.Columns.Add("Source", 100);
             lvCutoffFrequencies.Columns.Add("X", 73);
@@ -203,8 +201,8 @@ namespace Kinovea.ScreenManager
             AddPlotSpecification(Kinematics.Y, d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalPosition);
             
             AddPlotSpecification(Kinematics.LinearDistance, d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
-            AddPlotSpecification(Kinematics.LinearHorizontalDisplacement, d, "Total horizontal displacement");
-            AddPlotSpecification(Kinematics.LinearVerticalDisplacement, d, "Total vertical displacement");
+            AddPlotSpecification(Kinematics.LinearHorizontalDisplacement, d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement);
+            AddPlotSpecification(Kinematics.LinearVerticalDisplacement, d, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement);
 
             AddPlotSpecification(Kinematics.LinearSpeed, v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed);
             AddPlotSpecification(Kinematics.LinearHorizontalVelocity, v, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity);
@@ -219,9 +217,9 @@ namespace Kinovea.ScreenManager
 
         private void PopulateTimeModels()
         {
-            cmbTimeModel.Items.Add("Absolute");
-            cmbTimeModel.Items.Add("Relative");
-            cmbTimeModel.Items.Add("Normalized");
+            cmbTimeModel.Items.Add(ScreenManagerLang.DataAnalysis_TimeModel_Absolute);
+            cmbTimeModel.Items.Add(ScreenManagerLang.DataAnalysis_TimeModel_Relative);
+            cmbTimeModel.Items.Add(ScreenManagerLang.DataAnalysis_TimeModel_Normalized);
             cmbTimeModel.SelectedIndex = 0;
         }
 

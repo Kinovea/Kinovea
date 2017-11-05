@@ -738,8 +738,8 @@ namespace Kinovea.ScreenManager
                 case TrackExtraData.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
 
                 case TrackExtraData.TotalDistance: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance;
-                case TrackExtraData.TotalHorizontalDisplacement: return "Total horizontal displacement";
-                case TrackExtraData.TotalVerticalDisplacement: return "Total vertical displacement";
+                case TrackExtraData.TotalHorizontalDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement;
+                case TrackExtraData.TotalVerticalDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement;
 
                 case TrackExtraData.Speed: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed;
                 case TrackExtraData.HorizontalVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalVelocity;
@@ -748,11 +748,6 @@ namespace Kinovea.ScreenManager
                 case TrackExtraData.Acceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Acceleration;
                 case TrackExtraData.HorizontalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalAcceleration;
                 case TrackExtraData.VerticalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalAcceleration;
-                
-                /*case TrackExtraData.AngularDisplacement: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularDisplacement;
-                case TrackExtraData.AngularVelocity: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularVelocity;
-                case TrackExtraData.AngularAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_AngularAcceleration;
-                case TrackExtraData.CentripetalAcceleration: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_CentripetalAcceleration;*/
             }
 
             return "";

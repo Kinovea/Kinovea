@@ -94,6 +94,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Format imagine:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Format video:</value></data>
    
@@ -114,9 +115,11 @@
    
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memorie</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memorie alocată bufferelor de captură: {0} MB.</value></data>
-   <data name="dlgPreferences_Drawings_chkAlwaysVisible" xml:space="preserve"><value>Întotdeauna vizibil</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Arată desenele când este rulat fişierul video</value></data>
-   <data name="dlgPreferences_Drawings_chkEnablePersistence" xml:space="preserve"><value>Activează persistenţa</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Ruleaza intotdeauna filtrul deintretesere cand este deschis un nou fisier video</value></data>
    
    
