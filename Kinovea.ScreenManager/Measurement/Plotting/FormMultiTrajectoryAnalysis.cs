@@ -379,9 +379,9 @@ namespace Kinovea.ScreenManager
 
             foreach (TimeSeriesPlotData tspd in timeSeriesPlotData)
             {
-                if (!filteredTrajectories.ContainsKey(tspd))
+                if (!filteredTrajectories.ContainsKey(tspd) || !filteredTrajectories[tspd].CanFilter)
                     continue;
-
+                
                 // X=red and Y=green matches the typical mapping used in 3D apps.
                 LineSeries xseries = new LineSeries();
                 xseries.Color = OxyColors.Tomato;
