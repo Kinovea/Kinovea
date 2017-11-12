@@ -86,6 +86,7 @@ namespace Kinovea.ScreenManager
                     TimeSeriesCollection tsc = linearKinematics.BuildKinematics(traj, metadata.CalibrationHelper);
 
                     string name = trackable.Name;
+                    Color color = trackable.Color;
 
                     // Custom drawings may have dedicated names for their handles.
                     DrawingGenericPosture dgp = trackable as DrawingGenericPosture;
@@ -101,12 +102,12 @@ namespace Kinovea.ScreenManager
                                 continue;
 
                             name = name + " - " + (string.IsNullOrEmpty(handle.Name) ? pair.Key : handle.Name);
-                            
+                            color = handle.Color == Color.Transparent ? trackable.Color : handle.Color;
                             break;
                         }
                     }
 
-                    TimeSeriesPlotData data = new TimeSeriesPlotData(name, trackable.Color, tsc);
+                    TimeSeriesPlotData data = new TimeSeriesPlotData(name, color, tsc);
                     timeSeriesData.Add(data);
                     filteredTrajectories.Add(data, traj);
                 }
