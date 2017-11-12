@@ -120,6 +120,7 @@
    
    
    
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Altijd de-interlace toepassen bij het openen van nieuwe video</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Aanpassen van afbeelding gedurende het bewegen van de cursor</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Verbind de snelheid-regelaars tijdens het vergelijken van de videos.</value></data>

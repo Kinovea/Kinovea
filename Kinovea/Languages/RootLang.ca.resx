@@ -120,6 +120,7 @@
    
    
    
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Desentrellaçar sempre que s'obri un nou video</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Actualitzar la imatge mentre es mou el cursor de temps</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Enllaçar les barres de velocitats en la comparació de videos</value></data>

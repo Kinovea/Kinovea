@@ -58,6 +58,7 @@ namespace Kinovea.Root
         private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Drawings_General, PreferenceTab.Drawings_Persistence, PreferenceTab.Drawings_Tracking };
         private InfosFading defaultFading;
         private bool drawOnPlay;
+        private bool enableFiltering;
         private TrackingProfile trackingProfile;
         #endregion
         
@@ -86,6 +87,7 @@ namespace Kinovea.Root
         private void ImportPreferences()
         {
             drawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;
+            enableFiltering = PreferencesManager.PlayerPreferences.EnableFiltering;
             defaultFading = new InfosFading(0, 0);
             trackingProfile = PreferencesManager.PlayerPreferences.TrackingProfile;
         }
@@ -99,8 +101,10 @@ namespace Kinovea.Root
         {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDrawOnPlay.Text = RootLang.dlgPreferences_Drawings_chkDrawOnPlay;
+            chkEnableFiltering.Text = RootLang.dlgPreferences_Drawings_chkEnableFiltering;
 
             chkDrawOnPlay.Checked = drawOnPlay;
+            chkEnableFiltering.Checked = enableFiltering;
         }
         private void InitPageOpacity()
         {
@@ -143,6 +147,10 @@ namespace Kinovea.Root
         private void chkDrawOnPlay_CheckedChanged(object sender, EventArgs e)
         {
             drawOnPlay = chkDrawOnPlay.Checked;
+        }
+        private void chkEnableFiltering_CheckedChanged(object sender, EventArgs e)
+        {
+            enableFiltering = chkEnableFiltering.Checked;
         }
         #endregion
 
@@ -225,6 +233,7 @@ namespace Kinovea.Root
         public void CommitChanges()
         {
             PreferencesManager.PlayerPreferences.DrawOnPlay = drawOnPlay;
+            PreferencesManager.PlayerPreferences.EnableFiltering = enableFiltering;
             PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(defaultFading);
             PreferencesManager.PlayerPreferences.TrackingProfile = trackingProfile;
         }
