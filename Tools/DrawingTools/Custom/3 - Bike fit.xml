@@ -78,7 +78,7 @@
         <KeepAngle origin="6" leg1="5" leg2="7"/>
       </Impacts>
     </Handle>
-    <Handle type="Point" name="foot" reference="7" trackable="true" color="#6c71c4">
+    <Handle type="Point" name="foot" reference="7" trackable="true" color="#2aa198">
       <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
         <DistanceToPoint point="6"/>
       </Constraint>
