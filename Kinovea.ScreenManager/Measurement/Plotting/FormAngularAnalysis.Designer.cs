@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.tabControl = new System.Windows.Forms.TabControl();
+            this.pagePlot = new System.Windows.Forms.TabPage();
+            this.plotView = new OxyPlot.WindowsForms.PlotView();
             this.gbLabels = new System.Windows.Forms.GroupBox();
             this.lblTitle = new System.Windows.Forms.Label();
             this.tbYAxis = new System.Windows.Forms.TextBox();
@@ -52,16 +54,14 @@
             this.clbSources = new System.Windows.Forms.CheckedListBox();
             this.cmbDataSource = new System.Windows.Forms.ComboBox();
             this.lblData = new System.Windows.Forms.Label();
-            this.plotView = new OxyPlot.WindowsForms.PlotView();
-            this.pagePlot = new System.Windows.Forms.TabPage();
             this.tabControl.SuspendLayout();
+            this.pagePlot.SuspendLayout();
             this.gbLabels.SuspendLayout();
             this.gbExportData.SuspendLayout();
             this.gbExportGraph.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
             this.gbSource.SuspendLayout();
-            this.pagePlot.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -75,6 +75,33 @@
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(742, 657);
             this.tabControl.TabIndex = 2;
+            // 
+            // pagePlot
+            // 
+            this.pagePlot.Controls.Add(this.plotView);
+            this.pagePlot.Location = new System.Drawing.Point(4, 22);
+            this.pagePlot.Name = "pagePlot";
+            this.pagePlot.Padding = new System.Windows.Forms.Padding(3);
+            this.pagePlot.Size = new System.Drawing.Size(734, 631);
+            this.pagePlot.TabIndex = 0;
+            this.pagePlot.Text = "Plot";
+            this.pagePlot.UseVisualStyleBackColor = true;
+            // 
+            // plotView
+            // 
+            this.plotView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotView.BackColor = System.Drawing.Color.White;
+            this.plotView.Location = new System.Drawing.Point(16, 15);
+            this.plotView.Name = "plotView";
+            this.plotView.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotView.Size = new System.Drawing.Size(703, 604);
+            this.plotView.TabIndex = 0;
+            this.plotView.Text = "plotView1";
+            this.plotView.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotView.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotView.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // gbLabels
             // 
@@ -340,7 +367,7 @@
             this.cmbDataSource.Name = "cmbDataSource";
             this.cmbDataSource.Size = new System.Drawing.Size(154, 21);
             this.cmbDataSource.TabIndex = 6;
-            this.cmbDataSource.SelectedIndexChanged += new System.EventHandler(this.PlotOption_Changed);
+            this.cmbDataSource.SelectedIndexChanged += new System.EventHandler(this.PlotSpec_Changed);
             // 
             // lblData
             // 
@@ -352,33 +379,6 @@
             this.lblData.Size = new System.Drawing.Size(36, 13);
             this.lblData.TabIndex = 5;
             this.lblData.Text = "Data :";
-            // 
-            // plotView
-            // 
-            this.plotView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotView.BackColor = System.Drawing.Color.White;
-            this.plotView.Location = new System.Drawing.Point(16, 15);
-            this.plotView.Name = "plotView";
-            this.plotView.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotView.Size = new System.Drawing.Size(703, 604);
-            this.plotView.TabIndex = 0;
-            this.plotView.Text = "plotView1";
-            this.plotView.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotView.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotView.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
-            // 
-            // pagePlot
-            // 
-            this.pagePlot.Controls.Add(this.plotView);
-            this.pagePlot.Location = new System.Drawing.Point(4, 22);
-            this.pagePlot.Name = "pagePlot";
-            this.pagePlot.Padding = new System.Windows.Forms.Padding(3);
-            this.pagePlot.Size = new System.Drawing.Size(734, 631);
-            this.pagePlot.TabIndex = 0;
-            this.pagePlot.Text = "Plot";
-            this.pagePlot.UseVisualStyleBackColor = true;
             // 
             // FormAngularAnalysis
             // 
@@ -397,6 +397,7 @@
             this.ShowInTaskbar = false;
             this.Text = "Angular kinematics";
             this.tabControl.ResumeLayout(false);
+            this.pagePlot.ResumeLayout(false);
             this.gbLabels.ResumeLayout(false);
             this.gbLabels.PerformLayout();
             this.gbExportData.ResumeLayout(false);
@@ -406,7 +407,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).EndInit();
             this.gbSource.ResumeLayout(false);
             this.gbSource.PerformLayout();
-            this.pagePlot.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

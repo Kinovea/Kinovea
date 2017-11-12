@@ -41,7 +41,10 @@ namespace Kinovea.ScreenManager
             PopulatePlotSpecifications();
             PopulateTimeModels();
 
+            manualUpdate = true;
             UpdatePlot();
+            UpdateTitles();
+            manualUpdate = false;
         }
 
         private void ImportData(Metadata metadata)
@@ -213,7 +216,7 @@ namespace Kinovea.ScreenManager
             AddPlotSpecification(Kinematics.LinearHorizontalAcceleration, a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_HorizontalAcceleration);
             AddPlotSpecification(Kinematics.LinearVerticalAcceleration, a, ScreenManagerLang.dlgConfigureTrajectory_ExtraData_VerticalAcceleration);
             
-            cmbDataSource.SelectedIndex = 5;
+            cmbPlotSpec.SelectedIndex = 5;
         }
 
         private void PopulateTimeModels()
@@ -226,7 +229,7 @@ namespace Kinovea.ScreenManager
 
         private void AddPlotSpecification(Kinematics component, string abbreviation, string label)
         {
-            cmbDataSource.Items.Add(new TimeSeriesPlotSpecification(label, component, abbreviation));
+            cmbPlotSpec.Items.Add(new TimeSeriesPlotSpecification(label, component, abbreviation));
         }
 
         private void PlotOption_Changed(object sender, EventArgs e)
@@ -237,6 +240,16 @@ namespace Kinovea.ScreenManager
             manualUpdate = false;
         }
 
+        private void PlotSpec_Changed(object sender, EventArgs e)
+        {
+            // This UI change is the only one that should reset the titles.
+            manualUpdate = true;
+            UpdatePlot();
+            UpdateCutoffPlot();
+            UpdateTitles();
+            manualUpdate = false;
+        }
+        
         private void clbSources_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             manualUpdate = true;
@@ -249,7 +262,7 @@ namespace Kinovea.ScreenManager
         {
             // Create plot values from selected options.
             List<TimeSeriesPlotData> enabledTimeSeries = GetEnabledTimeSeries();
-            TimeSeriesPlotSpecification spec = cmbDataSource.SelectedItem as TimeSeriesPlotSpecification;
+            TimeSeriesPlotSpecification spec = cmbPlotSpec.SelectedItem as TimeSeriesPlotSpecification;
             if (spec == null)
                 return;
 
@@ -261,9 +274,16 @@ namespace Kinovea.ScreenManager
             PlotModel model = CreatePlot(enabledTimeSeries, spec.Component, spec.Abbreviation, spec.Label, timeModel);
 
             plotView.Model = model;
-            tbTitle.Text = model.Title;
-            tbXAxis.Text = model.Axes[0].Title;
-            tbYAxis.Text = model.Axes[1].Title;
+        }
+
+        private void UpdateTitles()
+        {
+            if (plotView.Model == null)
+                return;
+
+            tbTitle.Text = plotView.Model.Title;
+            tbXAxis.Text = plotView.Model.Axes[0].Title;
+            tbYAxis.Text = plotView.Model.Axes[1].Title;
         }
 
         private PlotModel CreatePlot(IEnumerable<TimeSeriesPlotData> timeSeriesPlotData, Kinematics component, string abbreviation, string title, TimeModel timeModel)
