@@ -340,7 +340,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recording mode.
+        ///   Looks up a localized string similar to Recording mode and delay.
         /// </summary>
         public static string dlgPreferences_Capture_RecordingMode {
             get {
@@ -349,7 +349,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Camera.
+        ///   Looks up a localized string similar to Camera: records the video stream coming straight from the camera.
         /// </summary>
         public static string dlgPreferences_Capture_RecordingMode_Camera {
             get {
@@ -358,7 +358,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display.
+        ///   Looks up a localized string similar to Display: records what is currently displayed on the screen.
         /// </summary>
         public static string dlgPreferences_Capture_RecordingMode_Display {
             get {

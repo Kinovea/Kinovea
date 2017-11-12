@@ -98,9 +98,9 @@
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Format image :</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Format vidéo :</value></data>
    <data name="dlgPreferences_Capture_Recording" xml:space="preserve"><value>Enregistrement</value></data>
-   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Mode d’enregistrement</value></data>
-   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Camera</value></data>
-   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Écran</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Mode d’enregistrement et délai</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Camera : enregistre le flux video provennant directement de la caméra</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Écran : enregistre ce qui est actuellement visible à l’écran</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Année</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mois</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Jour</value></data>
