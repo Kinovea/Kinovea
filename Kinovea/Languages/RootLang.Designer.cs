@@ -430,6 +430,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable coordinates filtering.
+        /// </summary>
+        public static string dlgPreferences_Drawings_chkEnableFiltering {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawings_chkEnableFiltering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default opacity of new drawings:.
         /// </summary>
         public static string dlgPreferences_Drawings_lblDefaultOpacity {

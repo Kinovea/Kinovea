@@ -116,6 +116,7 @@
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memory</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memory allocated for delay buffers: {0} MB.</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Show drawings when video is playing</value></data>
+   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Enable coordinates filtering</value></data>
    <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Default opacity of new drawings:</value></data>
    <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Visible for the entire video</value></data>
    <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Fade in/out around the frame they were added to</value></data>

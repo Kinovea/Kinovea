@@ -52,6 +52,9 @@ namespace Kinovea.Root
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.chkDrawOnPlay = new System.Windows.Forms.CheckBox();
             this.tabPersistence = new System.Windows.Forms.TabPage();
+            this.rbFading = new System.Windows.Forms.RadioButton();
+            this.rbAlwaysVisible = new System.Windows.Forms.RadioButton();
+            this.lblDefaultOpacity = new System.Windows.Forms.Label();
             this.lblFadingFrames = new System.Windows.Forms.Label();
             this.trkFadingFrames = new System.Windows.Forms.TrackBar();
             this.tabTracking = new System.Windows.Forms.TabPage();
@@ -66,9 +69,7 @@ namespace Kinovea.Root
             this.label4 = new System.Windows.Forms.Label();
             this.tbBlockWidth = new System.Windows.Forms.TextBox();
             this.lblObjectWindow = new System.Windows.Forms.Label();
-            this.lblDefaultOpacity = new System.Windows.Forms.Label();
-            this.rbAlwaysVisible = new System.Windows.Forms.RadioButton();
-            this.rbFading = new System.Windows.Forms.RadioButton();
+            this.chkEnableFiltering = new System.Windows.Forms.CheckBox();
             this.tabSubPages.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabPersistence.SuspendLayout();
@@ -90,6 +91,7 @@ namespace Kinovea.Root
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.chkEnableFiltering);
             this.tabGeneral.Controls.Add(this.chkDrawOnPlay);
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
@@ -124,6 +126,39 @@ namespace Kinovea.Root
             this.tabPersistence.TabIndex = 1;
             this.tabPersistence.Text = "Opacity";
             this.tabPersistence.UseVisualStyleBackColor = true;
+            // 
+            // rbFading
+            // 
+            this.rbFading.AutoSize = true;
+            this.rbFading.Location = new System.Drawing.Point(45, 76);
+            this.rbFading.Name = "rbFading";
+            this.rbFading.Size = new System.Drawing.Size(233, 17);
+            this.rbFading.TabIndex = 58;
+            this.rbFading.TabStop = true;
+            this.rbFading.Text = "Fade in/out of the frame they were added to";
+            this.rbFading.UseVisualStyleBackColor = true;
+            this.rbFading.CheckedChanged += new System.EventHandler(this.rbOpacity_CheckedChanged);
+            // 
+            // rbAlwaysVisible
+            // 
+            this.rbAlwaysVisible.AutoSize = true;
+            this.rbAlwaysVisible.Location = new System.Drawing.Point(45, 53);
+            this.rbAlwaysVisible.Name = "rbAlwaysVisible";
+            this.rbAlwaysVisible.Size = new System.Drawing.Size(146, 17);
+            this.rbAlwaysVisible.TabIndex = 57;
+            this.rbAlwaysVisible.TabStop = true;
+            this.rbAlwaysVisible.Text = "Visible for the entire video";
+            this.rbAlwaysVisible.UseVisualStyleBackColor = true;
+            this.rbAlwaysVisible.CheckedChanged += new System.EventHandler(this.rbOpacity_CheckedChanged);
+            // 
+            // lblDefaultOpacity
+            // 
+            this.lblDefaultOpacity.Location = new System.Drawing.Point(20, 18);
+            this.lblDefaultOpacity.Name = "lblDefaultOpacity";
+            this.lblDefaultOpacity.Size = new System.Drawing.Size(362, 32);
+            this.lblDefaultOpacity.TabIndex = 56;
+            this.lblDefaultOpacity.Text = "Default opacity of new drawings:";
+            this.lblDefaultOpacity.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblFadingFrames
             // 
@@ -263,38 +298,16 @@ namespace Kinovea.Root
             this.lblObjectWindow.TabIndex = 56;
             this.lblObjectWindow.Text = "Object window :";
             // 
-            // lblDefaultOpacity
+            // chkEnableFiltering
             // 
-            this.lblDefaultOpacity.Location = new System.Drawing.Point(20, 18);
-            this.lblDefaultOpacity.Name = "lblDefaultOpacity";
-            this.lblDefaultOpacity.Size = new System.Drawing.Size(362, 32);
-            this.lblDefaultOpacity.TabIndex = 56;
-            this.lblDefaultOpacity.Text = "Default opacity of new drawings:";
-            this.lblDefaultOpacity.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // rbAlwaysVisible
-            // 
-            this.rbAlwaysVisible.AutoSize = true;
-            this.rbAlwaysVisible.Location = new System.Drawing.Point(45, 53);
-            this.rbAlwaysVisible.Name = "rbAlwaysVisible";
-            this.rbAlwaysVisible.Size = new System.Drawing.Size(146, 17);
-            this.rbAlwaysVisible.TabIndex = 57;
-            this.rbAlwaysVisible.TabStop = true;
-            this.rbAlwaysVisible.Text = "Visible for the entire video";
-            this.rbAlwaysVisible.UseVisualStyleBackColor = true;
-            this.rbAlwaysVisible.CheckedChanged += new System.EventHandler(this.rbOpacity_CheckedChanged);
-            // 
-            // rbFading
-            // 
-            this.rbFading.AutoSize = true;
-            this.rbFading.Location = new System.Drawing.Point(45, 76);
-            this.rbFading.Name = "rbFading";
-            this.rbFading.Size = new System.Drawing.Size(233, 17);
-            this.rbFading.TabIndex = 58;
-            this.rbFading.TabStop = true;
-            this.rbFading.Text = "Fade in/out of the frame they were added to";
-            this.rbFading.UseVisualStyleBackColor = true;
-            this.rbFading.CheckedChanged += new System.EventHandler(this.rbOpacity_CheckedChanged);
+            this.chkEnableFiltering.AutoSize = true;
+            this.chkEnableFiltering.Location = new System.Drawing.Point(17, 62);
+            this.chkEnableFiltering.Name = "chkEnableFiltering";
+            this.chkEnableFiltering.Size = new System.Drawing.Size(153, 17);
+            this.chkEnableFiltering.TabIndex = 53;
+            this.chkEnableFiltering.Text = "Enable coordinates filtering";
+            this.chkEnableFiltering.UseVisualStyleBackColor = true;
+            this.chkEnableFiltering.CheckedChanged += new System.EventHandler(this.chkEnableFiltering_CheckedChanged);
             // 
             // PreferencePanelDrawings
             // 
@@ -335,5 +348,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.RadioButton rbFading;
         private System.Windows.Forms.RadioButton rbAlwaysVisible;
         private System.Windows.Forms.Label lblDefaultOpacity;
+        private System.Windows.Forms.CheckBox chkEnableFiltering;
     }
 }

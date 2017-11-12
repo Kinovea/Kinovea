@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -123,13 +124,12 @@ namespace Kinovea.ScreenManager
                 Times[i] = samples[i].T;
             }
 
-            this.CanFilter = samples.Count > 10;
+            this.CanFilter = PreferencesManager.PlayerPreferences.EnableFiltering && samples.Count > 10;
             if (this.CanFilter)
             {
                 double framerate = calibrationHelper.CaptureFramesPerSecond;
 
                 ButterworthFilter filter = new ButterworthFilter();
-                
 
                 // Filter the results a hundred times and store all data along with the best cutoff frequency.
                 int tests = 100;

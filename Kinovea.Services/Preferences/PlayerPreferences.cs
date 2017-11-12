@@ -138,8 +138,13 @@ namespace Kinovea.Services
             get { return trackingProfile; }
             set { trackingProfile = value; }
         }
+        public bool EnableFiltering
+        {
+            get { return enableFiltering; }
+            set { enableFiltering = value; }
+        }
         #endregion
-        
+
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
         private SpeedUnit speedUnit = SpeedUnit.MetersPerSecond;
         private AccelerationUnit accelerationUnit = AccelerationUnit.MetersPerSecondSquared;
@@ -162,6 +167,7 @@ namespace Kinovea.Services
         private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
         private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MKV;
         private TrackingProfile trackingProfile = new TrackingProfile();
+        private bool enableFiltering = true;
         
         public void AddRecentColor(Color _color)
         {
@@ -213,6 +219,8 @@ namespace Kinovea.Services
             writer.WriteStartElement("TrackingProfile");
             trackingProfile.WriteXml(writer);
             writer.WriteEndElement();
+
+            writer.WriteElementString("EnableFiltering", enableFiltering ? "true" : "false");
         }
         
         public void ReadXML(XmlReader reader)
@@ -288,6 +296,9 @@ namespace Kinovea.Services
                         break;
                     case "TrackingProfile":
                         trackingProfile.ReadXml(reader);
+                        break;
+                    case "EnableFiltering":
+                        enableFiltering = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();

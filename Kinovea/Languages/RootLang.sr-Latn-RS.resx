@@ -120,6 +120,7 @@
    
    
    
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Uvek raspleti kada otvaraš novi video.</value></data>
    
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Poveži brze klizače kada upoređuješ video zapise.</value></data>

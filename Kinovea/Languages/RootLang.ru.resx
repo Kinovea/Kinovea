@@ -120,6 +120,7 @@
    
    
    
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Выполнять деинтерлейсинг при открытии нового видео</value></data>
    
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Выровнять скорость при сравнении видео </value></data>
