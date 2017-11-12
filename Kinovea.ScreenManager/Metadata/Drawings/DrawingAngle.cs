@@ -281,6 +281,15 @@ namespace Kinovea.ScreenManager
                     case "PointB":
                         points["b"] = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
                         break;
+                    case "Signed":
+                        signedAngle = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "CCW":
+                        counterClockwise = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "Supplementary":
+                        supplementaryAngle = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -313,6 +322,9 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("PointO", XmlHelper.WritePointF(points["o"]));
                 w.WriteElementString("PointA", XmlHelper.WritePointF(points["a"]));
                 w.WriteElementString("PointB", XmlHelper.WritePointF(points["b"]));
+                w.WriteElementString("Signed", XmlHelper.WriteBoolean(signedAngle));
+                w.WriteElementString("CCW", XmlHelper.WriteBoolean(counterClockwise));
+                w.WriteElementString("Supplementary", XmlHelper.WriteBoolean(supplementaryAngle));
             }
 
             if (ShouldSerializeStyle(filter))
