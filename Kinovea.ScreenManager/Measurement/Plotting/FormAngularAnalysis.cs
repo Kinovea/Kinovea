@@ -40,7 +40,10 @@ namespace Kinovea.ScreenManager
             PopulatePlotSpecifications();
             PopulateTimeModels();
 
+            manualUpdate = true;
             UpdatePlot();
+            UpdateTitles();
+            manualUpdate = false;
         }
 
         private void Localize()
@@ -56,7 +59,7 @@ namespace Kinovea.ScreenManager
             lblXAxis.Text = ScreenManagerLang.DataAnalysis_XaxisLabel;
             lblYAxis.Text = ScreenManagerLang.DataAnalysis_YaxisLabel;
             tbTitle.Text = ScreenManagerLang.DataAnalysis_AngularKinematics;
-            
+
             gbExportGraph.Text = ScreenManagerLang.DataAnalysis_ExportGraph;
             lblPixels.Text = ScreenManagerLang.DataAnalysis_Pixels;
             btnImageCopy.Text = ScreenManagerLang.mnuCopyToClipboard;
@@ -84,7 +87,7 @@ namespace Kinovea.ScreenManager
             string theta = metadata.CalibrationHelper.GetAngleAbbreviation();
             string omega = metadata.CalibrationHelper.GetAngularVelocityAbbreviation();
             string alpha = metadata.CalibrationHelper.GetAngularAccelerationAbbreviation();
-            
+
             // We don't show the relative displacement from frame to frame 
             // as it is dependent on framerate and thus doesn't make a lot of sense here.
             AddPlotSpecification(Kinematics.AngularPosition, theta, ScreenManagerLang.DataAnalysis_AngularPosition);
@@ -119,6 +122,14 @@ namespace Kinovea.ScreenManager
             manualUpdate = false;
         }
 
+        private void PlotSpec_Changed(object sender, EventArgs e)
+        {
+            manualUpdate = true;
+            UpdatePlot();
+            UpdateTitles();
+            manualUpdate = false;
+        }
+
         private void clbSources_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             manualUpdate = true;
@@ -149,9 +160,16 @@ namespace Kinovea.ScreenManager
             PlotModel model = CreatePlot(enabledSeries, spec.Component, spec.Abbreviation, spec.Label, timeModel);
 
             plotView.Model = model;
-            tbTitle.Text = model.Title;
-            tbXAxis.Text = model.Axes[0].Title;
-            tbYAxis.Text = model.Axes[1].Title;
+        }
+
+        private void UpdateTitles()
+        { 
+            if (plotView.Model == null)
+                    return;
+                
+            tbTitle.Text = plotView.Model.Title;
+            tbXAxis.Text = plotView.Model.Axes[0].Title;
+            tbYAxis.Text = plotView.Model.Axes[1].Title;
         }
 
         private PlotModel CreatePlot(IEnumerable<TimeSeriesPlotData> timeSeriesPlotData, Kinematics component, string abbreviation, string title, TimeModel timeModel)

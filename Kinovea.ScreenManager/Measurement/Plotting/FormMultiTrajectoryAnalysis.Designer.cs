@@ -32,6 +32,10 @@
             this.pagePlot = new System.Windows.Forms.TabPage();
             this.plotView = new OxyPlot.WindowsForms.PlotView();
             this.pageAbout = new System.Windows.Forms.TabPage();
+            this.lvCutoffFrequencies = new System.Windows.Forms.ListView();
+            this.chSource = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chX = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chY = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.rtbInfo1 = new System.Windows.Forms.RichTextBox();
             this.lblCutoffFrequencies = new System.Windows.Forms.Label();
             this.plotDurbinWatson = new OxyPlot.WindowsForms.PlotView();
@@ -57,12 +61,8 @@
             this.cmbTimeModel = new System.Windows.Forms.ComboBox();
             this.lblTimeModel = new System.Windows.Forms.Label();
             this.clbSources = new System.Windows.Forms.CheckedListBox();
-            this.cmbDataSource = new System.Windows.Forms.ComboBox();
+            this.cmbPlotSpec = new System.Windows.Forms.ComboBox();
             this.lblData = new System.Windows.Forms.Label();
-            this.lvCutoffFrequencies = new System.Windows.Forms.ListView();
-            this.chSource = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.chX = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.chY = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControl.SuspendLayout();
             this.pagePlot.SuspendLayout();
             this.pageAbout.SuspendLayout();
@@ -128,6 +128,39 @@
             this.pageAbout.TabIndex = 1;
             this.pageAbout.Text = "About";
             this.pageAbout.UseVisualStyleBackColor = true;
+            // 
+            // lvCutoffFrequencies
+            // 
+            this.lvCutoffFrequencies.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvCutoffFrequencies.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lvCutoffFrequencies.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chSource,
+            this.chX,
+            this.chY});
+            this.lvCutoffFrequencies.GridLines = true;
+            this.lvCutoffFrequencies.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.lvCutoffFrequencies.Location = new System.Drawing.Point(490, 236);
+            this.lvCutoffFrequencies.Name = "lvCutoffFrequencies";
+            this.lvCutoffFrequencies.Size = new System.Drawing.Size(250, 207);
+            this.lvCutoffFrequencies.TabIndex = 6;
+            this.lvCutoffFrequencies.UseCompatibleStateImageBehavior = false;
+            this.lvCutoffFrequencies.View = System.Windows.Forms.View.Details;
+            // 
+            // chSource
+            // 
+            this.chSource.Text = "Source";
+            this.chSource.Width = 100;
+            // 
+            // chX
+            // 
+            this.chX.Text = "X";
+            this.chX.Width = 73;
+            // 
+            // chY
+            // 
+            this.chY.Text = "Y";
+            this.chY.Width = 73;
             // 
             // rtbInfo1
             // 
@@ -387,7 +420,7 @@
             this.gbSource.Controls.Add(this.cmbTimeModel);
             this.gbSource.Controls.Add(this.lblTimeModel);
             this.gbSource.Controls.Add(this.clbSources);
-            this.gbSource.Controls.Add(this.cmbDataSource);
+            this.gbSource.Controls.Add(this.cmbPlotSpec);
             this.gbSource.Controls.Add(this.lblData);
             this.gbSource.Location = new System.Drawing.Point(784, 34);
             this.gbSource.Name = "gbSource";
@@ -434,16 +467,16 @@
             this.clbSources.SelectedIndexChanged += new System.EventHandler(this.PlotOption_Changed);
             this.clbSources.DoubleClick += new System.EventHandler(this.PlotOption_Changed);
             // 
-            // cmbDataSource
+            // cmbPlotSpec
             // 
-            this.cmbDataSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.cmbPlotSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbDataSource.FormattingEnabled = true;
-            this.cmbDataSource.Location = new System.Drawing.Point(63, 137);
-            this.cmbDataSource.Name = "cmbDataSource";
-            this.cmbDataSource.Size = new System.Drawing.Size(130, 21);
-            this.cmbDataSource.TabIndex = 6;
-            this.cmbDataSource.SelectedIndexChanged += new System.EventHandler(this.PlotOption_Changed);
+            this.cmbPlotSpec.FormattingEnabled = true;
+            this.cmbPlotSpec.Location = new System.Drawing.Point(63, 137);
+            this.cmbPlotSpec.Name = "cmbPlotSpec";
+            this.cmbPlotSpec.Size = new System.Drawing.Size(130, 21);
+            this.cmbPlotSpec.TabIndex = 6;
+            this.cmbPlotSpec.SelectedIndexChanged += new System.EventHandler(this.PlotSpec_Changed);
             // 
             // lblData
             // 
@@ -455,39 +488,6 @@
             this.lblData.Size = new System.Drawing.Size(36, 13);
             this.lblData.TabIndex = 5;
             this.lblData.Text = "Data :";
-            // 
-            // lvCutoffFrequencies
-            // 
-            this.lvCutoffFrequencies.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvCutoffFrequencies.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lvCutoffFrequencies.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chSource,
-            this.chX,
-            this.chY});
-            this.lvCutoffFrequencies.GridLines = true;
-            this.lvCutoffFrequencies.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.lvCutoffFrequencies.Location = new System.Drawing.Point(490, 236);
-            this.lvCutoffFrequencies.Name = "lvCutoffFrequencies";
-            this.lvCutoffFrequencies.Size = new System.Drawing.Size(250, 207);
-            this.lvCutoffFrequencies.TabIndex = 6;
-            this.lvCutoffFrequencies.UseCompatibleStateImageBehavior = false;
-            this.lvCutoffFrequencies.View = System.Windows.Forms.View.Details;
-            // 
-            // chSource
-            // 
-            this.chSource.Text = "Source";
-            this.chSource.Width = 100;
-            // 
-            // chX
-            // 
-            this.chX.Text = "X";
-            this.chX.Width = 73;
-            // 
-            // chY
-            // 
-            this.chY.Text = "Y";
-            this.chY.Width = 73;
             // 
             // FormMultiTrajectoryAnalysis
             // 
@@ -544,7 +544,7 @@
         private System.Windows.Forms.NumericUpDown nudHeight;
         private System.Windows.Forms.NumericUpDown nudWidth;
         private System.Windows.Forms.GroupBox gbSource;
-        private System.Windows.Forms.ComboBox cmbDataSource;
+        private System.Windows.Forms.ComboBox cmbPlotSpec;
         private System.Windows.Forms.Label lblData;
         private System.Windows.Forms.TabPage pageAbout;
         private System.Windows.Forms.RichTextBox rtbInfo1;
