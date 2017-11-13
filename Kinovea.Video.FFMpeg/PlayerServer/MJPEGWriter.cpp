@@ -266,7 +266,7 @@ SaveResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
     return result;
 }
 
-SaveResult MJPEGWriter::SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length)
+SaveResult MJPEGWriter::SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown)
 {
     SaveResult result = SaveResult::Success;
     bool saved = false;
@@ -274,13 +274,13 @@ SaveResult MJPEGWriter::SaveFrame(ImageFormat format, array<System::Byte>^ buffe
     switch (format)
     {
     case ImageFormat::RGB32:
-        saved = EncodeAndWriteVideoFrameRGB32(m_SavingContext, buffer, length);
+        saved = EncodeAndWriteVideoFrameRGB32(m_SavingContext, buffer, length, topDown);
         break;
     case ImageFormat::RGB24:
-        saved = EncodeAndWriteVideoFrameRGB24(m_SavingContext, buffer, length);
+        saved = EncodeAndWriteVideoFrameRGB24(m_SavingContext, buffer, length, topDown);
         break;
     case ImageFormat::Y800:
-        saved = EncodeAndWriteVideoFrameY800(m_SavingContext, buffer, length);
+        saved = EncodeAndWriteVideoFrameY800(m_SavingContext, buffer, length, topDown);
         break;
     case ImageFormat::JPEG:
         saved = EncodeAndWriteVideoFrameJPEG(m_SavingContext, buffer, length);
@@ -501,7 +501,7 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext)
 ///<summary>
 /// Encode an RGB32 image into a JPEG and push it to the file.
 ///</summary>
-bool MJPEGWriter::EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length)
+bool MJPEGWriter::EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown)
 {
     bool written = false;
     
@@ -520,8 +520,11 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, a
         avpicture_fill((AVPicture*)_SavingContext->pInputFrame, pRGB32Buffer, AV_PIX_FMT_BGRA, inWidth, inHeight);
         
         // Alter planes and stride to vertically flip image during conversion.
-        //_SavingContext->pInputFrame->data[0] += _SavingContext->pInputFrame->linesize[0] * (inHeight - 1);
-        //_SavingContext->pInputFrame->linesize[0] = - _SavingContext->pInputFrame->linesize[0];
+        if (!topDown)
+        {
+          _SavingContext->pInputFrame->data[0] += _SavingContext->pInputFrame->linesize[0] * (inHeight - 1);
+          _SavingContext->pInputFrame->linesize[0] = -_SavingContext->pInputFrame->linesize[0];
+        }
 
         // Prepare the color space converted frame.
         if ((pYUV420Frame = av_frame_alloc()) == nullptr) 
@@ -593,7 +596,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, a
 ///<summary>
 /// Encode an RGB24 image into a JPEG and push it to the file.
 ///</summary>
-bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length)
+bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown)
 {
     bool written = false;
     
@@ -612,8 +615,11 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
         avpicture_fill((AVPicture*)_SavingContext->pInputFrame, pRGB24Buffer, AV_PIX_FMT_BGR24, inWidth, inHeight);
         
         // Alter planes and stride to vertically flip image during conversion.
-        //_SavingContext->pInputFrame->data[0] += _SavingContext->pInputFrame->linesize[0] * (inHeight - 1);
-        //_SavingContext->pInputFrame->linesize[0] = - _SavingContext->pInputFrame->linesize[0];
+        if (!topDown)
+        {
+          _SavingContext->pInputFrame->data[0] += _SavingContext->pInputFrame->linesize[0] * (inHeight - 1);
+          _SavingContext->pInputFrame->linesize[0] = -_SavingContext->pInputFrame->linesize[0];
+        }
 
         // Prepare the color space converted frame.
         if ((pYUV420Frame = av_frame_alloc()) == nullptr) 
@@ -688,7 +694,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
 ///<summary>
 /// Encode a monochrome 8 image into a JPEG and push it to the file.
 ///</summary>
-bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length)
+bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown)
 {
     bool written = false;
     bool yuvFrameAllocated = false;
@@ -717,7 +723,12 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
 
         avpicture_fill((AVPicture*)pInputFrame, pInputBuffer, AV_PIX_FMT_GRAY8, inWidth, inHeight);
         
-        
+        if (!topDown)
+        {
+          _SavingContext->pInputFrame->data[0] += _SavingContext->pInputFrame->linesize[0] * (inHeight - 1);
+          _SavingContext->pInputFrame->linesize[0] = -_SavingContext->pInputFrame->linesize[0];
+        }
+
         // Convert color space.
         // Unfortunately the MJPEG encoder doesn't know how to work directly with Y800/GRAY8 images.
         // Instead of directly pushing the buffer to the AVFrame we need to allocate a new buffer and convert it.
