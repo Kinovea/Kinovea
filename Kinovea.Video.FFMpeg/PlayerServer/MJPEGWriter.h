@@ -61,7 +61,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     public:
         SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval);
         SaveResult CloseSavingContext(bool _bEncodingSuccess);
-        SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length);
+        SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
     
     // Private Methods
     private:
@@ -69,9 +69,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool SetupMuxer(SavingContext^ _SavingContext);
         bool SetupEncoder(SavingContext^ _SavingContext);
         
-        bool EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
-        bool EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
-        bool EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
+        bool EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
+        bool EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
+        bool EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
         bool EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
 
         bool WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);

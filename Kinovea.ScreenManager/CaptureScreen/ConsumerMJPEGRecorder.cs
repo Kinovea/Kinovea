@@ -68,7 +68,7 @@ namespace Kinovea.ScreenManager
 
         protected override void ProcessEntry(long position, Frame entry)
         {
-            writer.SaveFrame(imageDescriptor.Format, entry.Buffer, entry.PayloadLength);
+            writer.SaveFrame(imageDescriptor.Format, entry.Buffer, entry.PayloadLength, imageDescriptor.TopDown);
         }
     }
 }
