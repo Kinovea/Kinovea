@@ -101,9 +101,9 @@ namespace Kinovea.ScreenManager
             
             log.Debug(String.Format("Composite size: {0}.", composite.Size));
 
-            VideoInfo info = new VideoInfo 
-            { 
-                OriginalSize = composite.Size 
+            VideoInfo info = new VideoInfo
+            {
+                ReferenceSize = composite.Size
             };
             
             double frameInterval = (double)commonTimeline.FrameTime / 1000;
