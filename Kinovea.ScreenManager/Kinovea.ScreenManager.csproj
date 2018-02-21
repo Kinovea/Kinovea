@@ -1276,6 +1276,18 @@
   <ItemGroup>
     <None Include="Resources\capturedock5.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rotate90.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rotate180.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rotate270.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imagerotate.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

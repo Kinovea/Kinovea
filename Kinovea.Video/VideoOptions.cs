@@ -25,16 +25,18 @@ namespace Kinovea.Video
     public class VideoOptions
     {
         public ImageAspectRatio ImageAspectRatio { get; set; }
+        public ImageRotation ImageRotation { get; set; }
         public bool Deinterlace { get; set; }
 
-        public VideoOptions(ImageAspectRatio _ratio, bool _deint)
+        public VideoOptions(ImageAspectRatio aspect, ImageRotation rotation, bool deint)
         {
-            ImageAspectRatio = _ratio;
-            Deinterlace = _deint;
+            ImageAspectRatio = aspect;
+            ImageRotation = rotation;
+            Deinterlace = deint;
         }
         
         public static VideoOptions Default {
-            get { return new VideoOptions(ImageAspectRatio.Auto, false);}
+            get { return new VideoOptions(ImageAspectRatio.Auto, ImageRotation.Rotate0, false);}
         }
     }
 }

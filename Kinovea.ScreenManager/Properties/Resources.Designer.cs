@@ -663,6 +663,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap imagerotate {
+            get {
+                object obj = ResourceManager.GetObject("imagerotate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap images {
             get {
                 object obj = ResourceManager.GetObject("images", resourceCulture);
@@ -906,6 +916,36 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap revert {
             get {
                 object obj = ResourceManager.GetObject("revert", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rotate180 {
+            get {
+                object obj = ResourceManager.GetObject("rotate180", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rotate270 {
+            get {
+                object obj = ResourceManager.GetObject("rotate270", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rotate90 {
+            get {
+                object obj = ResourceManager.GetObject("rotate90", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

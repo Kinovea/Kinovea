@@ -151,6 +151,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual void PostLoad() override;
         virtual String^ ReadMetadata() override;
         virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
+        virtual bool ChangeImageRotation(ImageRotation rotation) override;
         virtual bool ChangeDeinterlace(bool _deint) override;
         virtual void ChangeDecodingSize(Size _size) override;
         virtual void DisableCustomDecodingSize() override;
@@ -218,7 +219,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
         static void DisposeFrame(VideoFrame^ _frame);
         static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
-        void SetAspectRatioSize(ImageAspectRatio _ratio);
+        void UpdateReferenceSizes(ImageAspectRatio _ratio);
         Size FixSize(Size _size, bool sideways);
         void ResetDecodingSize();
         void PreBufferingWorker(Object^ _canceler);

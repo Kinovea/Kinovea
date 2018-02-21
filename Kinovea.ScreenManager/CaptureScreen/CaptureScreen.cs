@@ -92,6 +92,11 @@ namespace Kinovea.ScreenManager
             get { return cameraSummary == null ? ImageAspectRatio.Auto : Convert(cameraSummary.AspectRatio); }
             set { ChangeAspectRatio(value); }
         }
+        public override ImageRotation ImageRotation
+        {
+            get { return ImageRotation.Rotate0; }
+            set { }
+        }
         public bool TestGridVisible
         {
             get { return metadata.TestGridVisible; }

@@ -91,9 +91,23 @@ namespace Kinovea.ScreenManager
                 if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
                     view.UpdateWorkingZone(true);
                     
-                view.AspectRatioChanged();
+                view.ReferenceImageSizeChanged();
             }
         }
+        public override ImageRotation ImageRotation
+        {
+            get { return frameServer.VideoReader.Options.ImageRotation; }
+            set
+            {
+                bool uncached = frameServer.VideoReader.ChangeImageRotation(value);
+
+                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                    view.UpdateWorkingZone(true);
+
+                view.ReferenceImageSizeChanged();
+            }
+        }
+
         public FrameServerPlayer FrameServer
         {
             get { return frameServer; }

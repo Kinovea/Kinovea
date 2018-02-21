@@ -39,6 +39,7 @@ namespace Kinovea.Video
         CanChangeFrameRate = 128,
         CanChangeDecodingSize = 256,
         CanScaleIndefinitely = 512,
+        CanChangeImageRotation = 1024,
     }
     
     /// <summary>

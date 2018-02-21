@@ -818,13 +818,13 @@ namespace Kinovea.ScreenManager
                 DoInvalidate();
             }
         }
-        public void AspectRatioChanged()
+        public void ReferenceImageSizeChanged()
         {
             m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Info.ReferenceSize;
             m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_FrameServer.ImageTransform.ReinitZoom();
-            
+
             ResizeUpdate(true);
         }
         public void FullScreen(bool _bFullScreen)
