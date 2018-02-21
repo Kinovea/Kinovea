@@ -132,12 +132,9 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
     m_Filename = _FilePath;
     m_SavingContext->pFilePath = static_cast<char*>(Marshal::StringToHGlobalAnsi(_FilePath).ToPointer());
     
-    // Apparently not all output size are ok, some crash sws_scale.
-    // We will keep the input size and use the input pixel aspect ratio for maximum compatibility.
-    // [2011-08-21] - Check if the issue with output size is related to odd number of rows.
-    if(!_info.OriginalSize.IsEmpty)
-        m_SavingContext->outputSize = _info.OriginalSize;
-    
+    if(!_info.ReferenceSize.IsEmpty)
+        m_SavingContext->outputSize = _info.ReferenceSize;
+
     if(_info.PixelAspectRatio > 0)
         m_SavingContext->fPixelAspectRatio = _info.PixelAspectRatio;
 
