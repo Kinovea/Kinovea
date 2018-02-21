@@ -103,6 +103,11 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuFormatAuto = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFormatForce43 = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFormatForce169 = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRotation = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRotation0 = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRotation90 = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRotation180 = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRotation270 = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuTimebase = new ToolStripMenuItem();
@@ -344,18 +349,33 @@ namespace Kinovea.ScreenManager
             mnuDeinterlace.MergeAction = MergeAction.Append;
             
             mnuFormatAuto.Checked = true;
-            mnuFormatAuto.Click += new EventHandler(mnuFormatAutoOnClick);
+            mnuFormatAuto.Click += mnuFormatAutoOnClick;
             mnuFormatAuto.MergeAction = MergeAction.Append;
             mnuFormatForce43.Image = Properties.Resources.format43;
-            mnuFormatForce43.Click += new EventHandler(mnuFormatForce43OnClick);
+            mnuFormatForce43.Click += mnuFormatForce43OnClick;
             mnuFormatForce43.MergeAction = MergeAction.Append;
             mnuFormatForce169.Image = Properties.Resources.format169;
-            mnuFormatForce169.Click += new EventHandler(mnuFormatForce169OnClick);
+            mnuFormatForce169.Click += mnuFormatForce169OnClick;
             mnuFormatForce169.MergeAction = MergeAction.Append;
             mnuFormat.Image = Properties.Resources.shape_formats;
             mnuFormat.MergeAction = MergeAction.Append;
             mnuFormat.DropDownItems.AddRange(new ToolStripItem[] { mnuFormatAuto, new ToolStripSeparator(), mnuFormatForce43, mnuFormatForce169});
-                        
+
+            mnuRotation0.Click += mnuRotation0_Click;
+            mnuRotation0.MergeAction = MergeAction.Append;
+            mnuRotation90.Image = Properties.Resources.rotate90;
+            mnuRotation90.Click += mnuRotation90_Click;
+            mnuRotation90.MergeAction = MergeAction.Append;
+            mnuRotation180.Image = Properties.Resources.rotate180;
+            mnuRotation180.Click += mnuRotation180_Click;
+            mnuRotation180.MergeAction = MergeAction.Append;
+            mnuRotation270.Image = Properties.Resources.rotate270;
+            mnuRotation270.Click += mnuRotation270_Click;
+            mnuRotation270.MergeAction = MergeAction.Append;
+            mnuRotation.Image = Properties.Resources.imagerotate;
+            mnuRotation.MergeAction = MergeAction.Append;
+            mnuRotation.DropDownItems.AddRange(new ToolStripItem[] { mnuRotation0, mnuRotation90, mnuRotation270, mnuRotation180 });
+
             mnuMirror.Image = Properties.Resources.shape_mirror;
             mnuMirror.Checked = false;
             mnuMirror.ShortcutKeys = Keys.Control | Keys.M;
@@ -366,6 +386,7 @@ namespace Kinovea.ScreenManager
 
             mnuCatchImage.DropDownItems.Add(mnuDeinterlace);
             mnuCatchImage.DropDownItems.Add(mnuFormat);
+            mnuCatchImage.DropDownItems.Add(mnuRotation);
             mnuCatchImage.DropDownItems.Add(mnuMirror);
             mnuCatchImage.DropDownItems.Add(new ToolStripSeparator());
             
@@ -454,7 +475,7 @@ namespace Kinovea.ScreenManager
 
             RefreshCultureMenu();
         }
-        
+
         public void ExtendToolBar(ToolStrip toolbar)
         {
             // Save
@@ -887,9 +908,15 @@ namespace Kinovea.ScreenManager
                     mnuDeinterlace.Checked = player.Deinterlaced;
                     mnuMirror.Checked = player.Mirrored;
                     if (!player.IsSingleFrame)
+                    {
                         ConfigureImageFormatMenus(player);
+                        ConfigureImageRotationMenus(player);
+                    }
                     else
+                    {
                         ConfigureImageFormatMenus(null);
+                        ConfigureImageRotationMenus(null);
+                    }
 
                     // Video
                     mnuTimebase.Enabled = true;
@@ -929,6 +956,7 @@ namespace Kinovea.ScreenManager
                     mnuDeinterlace.Checked = false;
                     mnuMirror.Checked = false;
                     ConfigureImageFormatMenus(captureScreen);
+                    ConfigureImageRotationMenus(captureScreen);
                     
                     // Video
                     mnuTimebase.Enabled = false;
@@ -977,6 +1005,7 @@ namespace Kinovea.ScreenManager
                 mnuDeinterlace.Checked = false;
                 mnuMirror.Checked = false;
                 ConfigureImageFormatMenus(null);
+                ConfigureImageRotationMenus(null);
                 
                 // Video
                 mnuTimebase.Enabled = false;
@@ -1165,6 +1194,45 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
+        private void ConfigureImageRotationMenus(AbstractScreen screen)
+        {
+            if (screen == null ||
+               !screen.Full ||
+              (screen is PlayerScreen && !((PlayerScreen)screen).FrameServer.VideoReader.CanChangeImageRotation))
+            {
+                mnuRotation.Enabled = false;
+                return;
+            }
+
+            mnuRotation.Enabled = true;
+            mnuRotation0.Enabled = true;
+            mnuRotation90.Enabled = true;
+            mnuRotation180.Enabled = true;
+            mnuRotation270.Enabled = true;
+
+            // Reset all checks before setting the right one.
+            mnuRotation0.Checked = false;
+            mnuRotation90.Checked = false;
+            mnuRotation180.Checked = false;
+            mnuRotation270.Checked = false;
+            
+            switch (screen.ImageRotation)
+            {
+                case ImageRotation.Rotate90:
+                    mnuRotation90.Checked = true;
+                    break;
+                case ImageRotation.Rotate180:
+                    mnuRotation180.Checked = true;
+                    break;
+                case ImageRotation.Rotate270:
+                    mnuRotation270.Checked = true;
+                    break;
+                case ImageRotation.Rotate0:
+                default:
+                    mnuRotation0.Checked = true;
+                    break;
+            }
+        }
         private void OnSVGFilesChanged(object source, FileSystemEventArgs e)
         {
             // We are in the file watcher thread. NO direct UI Calls from here.
@@ -1223,6 +1291,11 @@ namespace Kinovea.ScreenManager
             mnuFormatForce43.Text = ScreenManagerLang.mnuFormatForce43;
             mnuFormatForce169.Text = ScreenManagerLang.mnuFormatForce169;
             mnuFormat.Text = ScreenManagerLang.mnuFormat;
+            mnuRotation0.Text = "No Rotation";
+            mnuRotation90.Text = "90° Clockwise";
+            mnuRotation180.Text = "180°";
+            mnuRotation270.Text = "90° Counter-clockwise";
+            mnuRotation.Text = "Image Rotation";
             mnuMirror.Text = ScreenManagerLang.mnuMirror;
             RefreshCultureMenuFilters();
 
@@ -1812,17 +1885,46 @@ namespace Kinovea.ScreenManager
         {
             ChangeAspectRatio(ImageAspectRatio.Force169);
         }      
-        private void ChangeAspectRatio(Video.ImageAspectRatio _aspectRatio)
+        private void ChangeAspectRatio(ImageAspectRatio aspect)
         {
             if(activeScreen == null)
                 return;
         
-            if(activeScreen.AspectRatio != _aspectRatio)
-                activeScreen.AspectRatio = _aspectRatio;
+            if(activeScreen.AspectRatio != aspect)
+                activeScreen.AspectRatio = aspect;
             
-            mnuFormatForce43.Checked = _aspectRatio == ImageAspectRatio.Force43;
-            mnuFormatForce169.Checked = _aspectRatio == ImageAspectRatio.Force169;
-            mnuFormatAuto.Checked = _aspectRatio == ImageAspectRatio.Auto;
+            mnuFormatForce43.Checked = aspect == ImageAspectRatio.Force43;
+            mnuFormatForce169.Checked = aspect == ImageAspectRatio.Force169;
+            mnuFormatAuto.Checked = aspect == ImageAspectRatio.Auto;
+        }
+        private void mnuRotation0_Click(object sender, EventArgs e)
+        {
+            ChangeImageRotation(ImageRotation.Rotate0);
+        }
+        private void mnuRotation90_Click(object sender, EventArgs e)
+        {
+            ChangeImageRotation(ImageRotation.Rotate90);
+        }
+        private void mnuRotation180_Click(object sender, EventArgs e)
+        {
+            ChangeImageRotation(ImageRotation.Rotate180);
+        }
+        private void mnuRotation270_Click(object sender, EventArgs e)
+        {
+            ChangeImageRotation(ImageRotation.Rotate270);
+        }
+        private void ChangeImageRotation(ImageRotation rot)
+        {
+            if (activeScreen == null)
+                return;
+
+            if (activeScreen.ImageRotation != rot)
+                activeScreen.ImageRotation = rot;
+
+            mnuRotation0.Checked = rot == ImageRotation.Rotate0;
+            mnuRotation90.Checked = rot == ImageRotation.Rotate90;
+            mnuRotation180.Checked = rot == ImageRotation.Rotate180;
+            mnuRotation270.Checked = rot == ImageRotation.Rotate270;
         }
         private void mnuMirrorOnClick(object sender, EventArgs e)
         {

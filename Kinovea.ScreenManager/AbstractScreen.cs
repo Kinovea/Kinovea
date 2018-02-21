@@ -95,6 +95,11 @@ namespace Kinovea.ScreenManager
         	get;
         	set;
         }
+        public abstract ImageRotation ImageRotation
+        {
+            get;
+            set;
+        }
 
         public abstract void DisplayAsActiveScreen(bool active);
         public abstract void RefreshUICulture();

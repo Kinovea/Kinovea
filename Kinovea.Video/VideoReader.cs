@@ -97,6 +97,10 @@ namespace Kinovea.Video
         public bool CanChangeAspectRatio {
             get { return (Flags & VideoCapabilities.CanChangeAspectRatio) != 0; }
         }
+        public bool CanChangeImageRotation
+        {
+            get { return (Flags & VideoCapabilities.CanChangeImageRotation) != 0; }
+        }
         public bool CanChangeDeinterlacing {
             get { return (Flags & VideoCapabilities.CanChangeDeinterlacing) != 0; }
         }
@@ -213,7 +217,16 @@ namespace Kinovea.Video
         /// Force a specific aspect ratio.
         /// </summary>
         /// <returns>returns true if the cache has been invalidated by the operation</returns>
-        public virtual bool ChangeAspectRatio(ImageAspectRatio _ratio)
+        public virtual bool ChangeAspectRatio(ImageAspectRatio ratio)
+        {
+            // Does nothing by default. Override to implement.
+            return false;
+        }
+        /// <summary>
+        /// Force a specific image rotation.
+        /// </summary>
+        /// <returns>returns true if the cache has been invalidated by the operation</returns>
+        public virtual bool ChangeImageRotation(ImageRotation rotation)
         {
             // Does nothing by default. Override to implement.
             return false;
@@ -222,7 +235,7 @@ namespace Kinovea.Video
         /// Set deinterlace on or off.
         /// </summary>
         /// <returns>returns true if the cache has been invalidated by the operation</returns>
-        public virtual bool ChangeDeinterlace(bool _deint)
+        public virtual bool ChangeDeinterlace(bool deint)
         {
             // Does nothing by default. Override to implement.
             return false;
@@ -232,7 +245,7 @@ namespace Kinovea.Video
         /// Ask the reader to provide its images at a specific size.
         /// Not necessarily honored by the reader.
         /// </summary>
-        public virtual void ChangeDecodingSize(Size _size)
+        public virtual void ChangeDecodingSize(Size size)
         {
             // Does nothing by default. Override to implement.
         }
@@ -247,7 +260,7 @@ namespace Kinovea.Video
         /// <summary>
         /// Provide a lazy enumerator on each frame of the Working Zone.
         /// </summary>
-        public IEnumerable<VideoFrame> FrameEnumerator(long _interval)
+        public IEnumerable<VideoFrame> FrameEnumerator(long interval)
         {
             if(DecodingMode == VideoDecodingMode.PreBuffering)
                 throw new ThreadStateException("Frame enumerator called while prebuffering");
@@ -257,10 +270,10 @@ namespace Kinovea.Video
             
             while(hasMore)
             {
-                if(_interval == 0)
+                if(interval == 0)
                     hasMore = MoveNext(0, true);
                 else
-                    hasMore = MoveTo(Current.Timestamp + _interval);
+                    hasMore = MoveTo(Current.Timestamp + interval);
                 
                 yield return Current;
             }
