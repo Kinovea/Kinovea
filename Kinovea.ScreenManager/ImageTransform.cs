@@ -32,16 +32,15 @@ namespace Kinovea.ScreenManager
     /// Includes : 
     /// - stretching, image may be stretched or squeezed relative to the original.
     /// - zooming, the actual view may be a sub window of the original image.
-    /// - rotating. (todo).
-    /// - mirroring. (todo, currently handled elsewhere).
     /// 
     /// TODO: replace all these special cases with matrix maths.
     /// TODO: merge with ImageToViewportTransformer.
     /// 
     /// The class will keep track of the current changes relatively to the 
-    /// original image size and provide conversion routines.
+    /// reference image size and provide conversion routines.
+    /// The reference image size is the original image size adjusted for aspect ratio and rotation.
     /// 
-    /// All drawings coordinates are kept in the system of the original image.
+    /// All drawings coordinates are kept in the system of the reference size.
     /// For actually drawing them on screen we ask the transformation. 
     /// 
     /// The image aspect ratio is never altered. Skew is not supported.
@@ -99,12 +98,12 @@ namespace Kinovea.ScreenManager
         public ImageTransform Identity
         {
             // Return a barebone system with no stretch and no zoom, based on current image size. Used for saving. 
-            get { return new ImageTransform(originalSize); }
+            get { return new ImageTransform(referenceSize); }
         }
         #endregion
         
         #region Members
-        private Size originalSize;			// Decoding size of the image
+        private Size referenceSize;			
         private double stretch = 1.0;		// factor to go from decoding size to viewport size.
         private double zoom = 1.0;
         private Rectangle directZoomWindow;
@@ -118,27 +117,29 @@ namespace Kinovea.ScreenManager
         public ImageTransform() : this(new Size(1,1)){}
         public ImageTransform(Size _size)
         {
-            originalSize = _size;
-            directZoomWindow = new Rectangle(0, 0, originalSize.Width, originalSize.Height);
+            referenceSize = _size;
+            directZoomWindow = new Rectangle(0, 0, referenceSize.Width, referenceSize.Height);
             renderingZoomWindow = directZoomWindow;
         }
         #endregion
 
         #region System manipulation
-        public void SetOriginalSize(Size _size)
+        public void SetReferenceSize(Size _size)
         {
-            originalSize = _size;
+            referenceSize = _size;
         }
         public void Reset()
         {
             stretch = 1.0f;
             zoom = 1.0f;
-            directZoomWindow = new Rectangle(0, 0, originalSize.Width, originalSize.Height);
+            directZoomWindow = new Rectangle(0, 0, referenceSize.Width, referenceSize.Height);
+            UpdateRenderingZoomWindow();
         }
         public void ReinitZoom()
         {
             zoom = 1.0f;
-            directZoomWindow = new Rectangle(0, 0, originalSize.Width, originalSize.Height);
+            directZoomWindow = new Rectangle(0, 0, referenceSize.Width, referenceSize.Height);
+            UpdateRenderingZoomWindow();
         }
         public void RelocateZoomWindow()
         {
@@ -149,11 +150,11 @@ namespace Kinovea.ScreenManager
             // Recreate the zoom window coordinates, given a new zoom factor, keeping the window center.
             // This used when increasing and decreasing the zoom factor,
             // to automatically adjust the viewing window.
-            Size newSize = new Size((int)(originalSize.Width / zoom), (int)(originalSize.Height / zoom));
+            Size newSize = new Size((int)(referenceSize.Width / zoom), (int)(referenceSize.Height / zoom));
             int left = center.X - (newSize.Width / 2);
             int top = center.Y - (newSize.Height / 2);
             
-            Point newLocation = ConfineZoomWindow(left, top, newSize, originalSize);
+            Point newLocation = ConfineZoomWindow(left, top, newSize, referenceSize);
 
             directZoomWindow = new Rectangle(newLocation, newSize);
             UpdateRenderingZoomWindow();
@@ -161,10 +162,15 @@ namespace Kinovea.ScreenManager
         public void MoveZoomWindow(double dx, double dy)
         {
             // Move the zoom window keeping the same zoom factor.
-            Point newLocation = ConfineZoomWindow((int)(directZoomWindow.Left - dx), (int)(directZoomWindow.Top - dy), directZoomWindow.Size, originalSize);
+            Point newLocation = ConfineZoomWindow((int)(directZoomWindow.Left - dx), (int)(directZoomWindow.Top - dy), directZoomWindow.Size, referenceSize);
             directZoomWindow = new Rectangle(newLocation.X, newLocation.Y, directZoomWindow.Width, directZoomWindow.Height);
             UpdateRenderingZoomWindow();
         }
+
+        /// <summary>
+        /// Set the factor used to compute the zoom window in the received images.
+        /// This should be related to the decoding size vs (unrotated) reference size.
+        /// </summary>
         public void SetRenderingZoomFactor(double zoomFactor)
         {
             renderingZoomFactor = zoomFactor;
@@ -173,6 +179,9 @@ namespace Kinovea.ScreenManager
         private void UpdateRenderingZoomWindow()
         {
             renderingZoomWindow = directZoomWindow.Scale(renderingZoomFactor, renderingZoomFactor);
+
+            //log.DebugFormat("UpdateRenderingZoomWindow: stretch:{0:0.00}, zoom:{1:0.00}, renderingZoomFactor:{2:0.00}, directZoomWindow:{3}, renderingZoomWindow:{4}", 
+            //    stretch, zoom, renderingZoomFactor, directZoomWindow, renderingZoomWindow);
         }
         private Point ConfineZoomWindow(int left, int top, Size zoomWindow, Size containerSize)
         {

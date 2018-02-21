@@ -83,10 +83,10 @@ namespace Kinovea.ScreenManager
         public void Manipulate(Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
         {
             // One of the constraint has changed, recompute the sizes.
-            bool sideways = true;
-            ComputeRenderingSize(sideways, _containerSize, _stretchFactor, _fillContainer);
+            bool sideway = reader.Info.ImageRotation == ImageRotation.Rotate90 || reader.Info.ImageRotation == ImageRotation.Rotate270;
+            ComputeRenderingSize(sideway, _containerSize, _stretchFactor, _fillContainer);
 
-            ComputeDecodingSize(sideways, _containerSize, _zoomFactor, _enableCustomDecodingSize, _scalable);
+            ComputeDecodingSize(sideway, _containerSize, _zoomFactor, _enableCustomDecodingSize, _scalable);
 
             // Rendering zoom factor
             // Used to find the final zoom window in the received images.
@@ -102,7 +102,7 @@ namespace Kinovea.ScreenManager
         /// Compute the rendering size, rendering location, and update the stretch factor if the original one doesn't fit in the container.
         /// The stretch factor is how much the user want to stretch the image and is based on image corner manipulation. It can go either way of 1.0f.
         /// </summary>
-        private void ComputeRenderingSize(bool sideways, Size _containerSize, double _stretchFactor, bool _fillContainer)
+        private void ComputeRenderingSize(bool sideway, Size _containerSize, double _stretchFactor, bool _fillContainer)
         {
             Size referenceSize = reader.Info.ReferenceSize;
             stretchFactor = _stretchFactor;
@@ -135,13 +135,13 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Compute the decoding size.
         /// </summary>
-        private void ComputeDecodingSize(bool sideways, Size _containerSize, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
+        private void ComputeDecodingSize(bool sideway, Size _containerSize, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
         {
             // Updates the following globals: decodingSize, mayDrawUnscaled, renderingZoomFactor.
             // Note: the decoding size doesn't care about rotation, as the pipeline is read > scale > rotate.
             Size aspectRatioSize = reader.Info.AspectRatioSize;
             Size unrotatedRenderingSize = renderingSize;
-            if (sideways)
+            if (sideway)
                 unrotatedRenderingSize = new Size(renderingSize.Height, renderingSize.Width);
 
             if (!_enableCustomDecodingSize)
@@ -158,14 +158,14 @@ namespace Kinovea.ScreenManager
                 if (_zoomFactor == 1.0)
                 {
                     decodingSize = unrotatedRenderingSize;
-                    mayDrawUnscaled = !sideways;
+                    mayDrawUnscaled = !sideway;
                 }
                 else
                 {
                     // zoomDecodingSize is the size at which we would need to decode the image if we wanted to be able
                     // to draw the region of interest (zoom subwindow) directly on the viewport.
                     Size zoomDecodingSize = new Size((int)(unrotatedRenderingSize.Width * _zoomFactor), (int)(unrotatedRenderingSize.Height * _zoomFactor));
-                    Size zoomDecodingSizeRotated = sideways ? new Size(zoomDecodingSize.Height, zoomDecodingSize.Width) : zoomDecodingSize;
+                    Size zoomDecodingSizeRotated = sideway ? new Size(zoomDecodingSize.Height, zoomDecodingSize.Width) : zoomDecodingSize;
 
                     // We don't actually care if the scaled image fits in the container as we are not rendering it fully anyway, 
                     // but we use the container size as an upper boundary to what we allow the decoding size to be, 
@@ -179,7 +179,7 @@ namespace Kinovea.ScreenManager
                     else
                     {
                         decodingSize = zoomDecodingSize;
-                        mayDrawUnscaled = !sideways;
+                        mayDrawUnscaled = !sideway;
                     }
                 }
             }
