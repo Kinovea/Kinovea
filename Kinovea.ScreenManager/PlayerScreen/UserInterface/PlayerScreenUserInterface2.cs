@@ -912,6 +912,7 @@ namespace Kinovea.ScreenManager
             m_ePlayingMode = PlayingMode.Loop;
             m_fill = false;
             m_FrameServer.ImageTransform.Reset();
+            m_lastUserStretch = 1.0f;
             
             // Sync
             m_bSynched = false;
