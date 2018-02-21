@@ -39,6 +39,7 @@ namespace Kinovea.Video
         public double PixelAspectRatio;
         public Fraction SampleAspectRatio;
         public bool IsCodecMpeg2;
+        public ImageRotation ImageRotation;
 
         // Timing info - some of this might be overriden by the user.
         public long AverageTimeStampsPerFrame;
@@ -51,7 +52,7 @@ namespace Kinovea.Video
         public long DurationTimeStamps;
         
         public static VideoInfo Empty {
-            get { 
+            get {
                 return new VideoInfo {
                     FilePath = "",
                     HasKva = false,
@@ -62,7 +63,8 @@ namespace Kinovea.Video
                     PixelAspectRatio = 1.0F,
                     SampleAspectRatio = new Fraction(),
                     IsCodecMpeg2 = false,
-
+                    ImageRotation = ImageRotation.Rotate0,
+       
                     AverageTimeStampsPerFrame = 0,
                     AverageTimeStampsPerSeconds = 0,
                     FramesPerSeconds = 0,
