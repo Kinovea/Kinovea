@@ -525,11 +525,11 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.FullPath = m_FrameServer.VideoReader.FilePath;
             m_FrameServer.Metadata.SelectionStart = m_iSelStart;
             m_FrameServer.Metadata.SelectionEnd = m_iSelEnd;
-            m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
+            m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
 
             // Screen position and size.
-            m_FrameServer.ImageTransform.SetOriginalSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
+            m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_FrameServer.ImageTransform.ReinitZoom();
             SetUpForNewMovie();
             m_KeyframeCommentsHub.UserActivated = false;
@@ -820,9 +820,9 @@ namespace Kinovea.ScreenManager
         }
         public void AspectRatioChanged()
         {
-            m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Info.AspectRatioSize;
-            m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
-            m_FrameServer.ImageTransform.SetOriginalSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
+            m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Info.ReferenceSize;
+            m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.ReferenceSize);
+            m_FrameServer.ImageTransform.SetReferenceSize(m_FrameServer.VideoReader.Info.ReferenceSize);
             m_FrameServer.ImageTransform.ReinitZoom();
             
             ResizeUpdate(true);
@@ -2080,23 +2080,23 @@ namespace Kinovea.ScreenManager
             if(!targetSize.FitsIn(panelCenter.Size))
                 return;
             
-            if(!m_bManualSqueeze && !m_FrameServer.VideoReader.Info.AspectRatioSize.FitsIn(targetSize))
+            if(!m_bManualSqueeze && !m_FrameServer.VideoReader.Info.ReferenceSize.FitsIn(targetSize))
                 return;
             
             // Area of the original size is sticky on the inside.
-            if(!m_FrameServer.VideoReader.Info.AspectRatioSize.FitsIn(targetSize) && 
-               (m_FrameServer.VideoReader.Info.AspectRatioSize.Width - _iTargetWidth < 40 &&
-                m_FrameServer.VideoReader.Info.AspectRatioSize.Height - _iTargetHeight < 40))
+            if(!m_FrameServer.VideoReader.Info.ReferenceSize.FitsIn(targetSize) && 
+               (m_FrameServer.VideoReader.Info.ReferenceSize.Width - _iTargetWidth < 40 &&
+                m_FrameServer.VideoReader.Info.ReferenceSize.Height - _iTargetHeight < 40))
             {
-                _iTargetWidth = m_FrameServer.VideoReader.Info.AspectRatioSize.Width;
-                _iTargetHeight = m_FrameServer.VideoReader.Info.AspectRatioSize.Height;
+                _iTargetWidth = m_FrameServer.VideoReader.Info.ReferenceSize.Width;
+                _iTargetHeight = m_FrameServer.VideoReader.Info.ReferenceSize.Height;
             }
             
             if(!m_MinimalSize.FitsIn(targetSize))
                 return;
             
-            double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.VideoReader.Info.AspectRatioSize.Height);
-            double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.VideoReader.Info.AspectRatioSize.Width);
+            double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.VideoReader.Info.ReferenceSize.Height);
+            double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.VideoReader.Info.ReferenceSize.Width);
 
             m_FrameServer.ImageTransform.Stretch = (fWidthFactor + fHeightFactor) / 2;
             m_fill = false;
@@ -3237,8 +3237,8 @@ namespace Kinovea.ScreenManager
                         rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
                     else
                         rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
-
-                    g.DrawImage(_sourceImage, rDst, _transform.ZoomWindow, GraphicsUnit.Pixel);
+                    
+                    g.DrawImage(_sourceImage, rDst, _transform.RenderingZoomWindow, GraphicsUnit.Pixel);
                     //log.DebugFormat("drawing scaled.");
                 }
             }
@@ -3327,7 +3327,7 @@ namespace Kinovea.ScreenManager
             // Note: the Graphics object must not be the one extracted from the image itself.
             // If needed, clone the image.
             if (currentImage != null && m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None)
-                m_FrameServer.Metadata.Magnifier.Draw(currentImage, canvas, transform, m_FrameServer.Metadata.Mirrored, m_FrameServer.VideoReader.Info.AspectRatioSize);
+                m_FrameServer.Metadata.Magnifier.Draw(currentImage, canvas, transform, m_FrameServer.Metadata.Mirrored, m_FrameServer.VideoReader.Info.ReferenceSize);
         }
         public void DoInvalidate()
         {

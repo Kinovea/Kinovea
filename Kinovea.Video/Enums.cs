@@ -59,6 +59,14 @@ namespace Kinovea.Video
         Force169,
         ForcedSquarePixels
     }
+
+    public enum ImageRotation
+    {
+        Rotate0,
+        Rotate90,
+        Rotate180,
+        Rotate270
+    }
     
     public enum OpenVideoResult
     {

@@ -138,7 +138,7 @@ namespace Kinovea.ScreenManager
 
             if (init)
             {
-                metadata.ImageSize = videoReader.Info.AspectRatioSize;
+                metadata.ImageSize = videoReader.Info.ReferenceSize;
                 metadata.UserInterval = videoReader.Info.FrameIntervalMilliseconds;
                 metadata.AverageTimeStampsPerFrame = videoReader.Info.AverageTimeStampsPerFrame;
                 metadata.AverageTimeStampsPerSecond = videoReader.Info.AverageTimeStampsPerSeconds;

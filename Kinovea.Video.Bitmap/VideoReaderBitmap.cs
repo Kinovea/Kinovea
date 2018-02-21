@@ -174,8 +174,9 @@ namespace Kinovea.Video.Bitmap
                 videoInfo.OriginalSize = generator.Size;
             else
                 videoInfo.OriginalSize = new Size(640, 480);
+
             videoInfo.AspectRatioSize = videoInfo.OriginalSize;
-            
+            videoInfo.ReferenceSize = videoInfo.OriginalSize;
         }
         private bool UpdateCurrent(long timestamp)
         {

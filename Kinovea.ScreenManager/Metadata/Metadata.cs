@@ -342,7 +342,7 @@ namespace Kinovea.ScreenManager
             : this(historyStack, timecodeBuilder)
         {
             // This should reflect what we do in FrameServerPlayer.SetupMetadata
-            imageSize = info.AspectRatioSize;
+            imageSize = info.ReferenceSize;
             userInterval = info.FrameIntervalMilliseconds;
             averageTimeStampsPerFrame = info.AverageTimeStampsPerFrame;
             averageTimeStampsPerSecond = info.AverageTimeStampsPerSeconds;
