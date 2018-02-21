@@ -364,6 +364,11 @@
    <data name="mnuFormatAuto" xml:space="preserve"><value>Automatisch</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>4:3 erzwingen</value></data>
    <data name="mnuFormatForce169" xml:space="preserve"><value>16:9 erzwingen</value></data>
+   
+   
+   
+   
+   
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Gehe zum Schlüsselbild</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Raster</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Ausblenden</value></data>

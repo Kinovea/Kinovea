@@ -1291,11 +1291,11 @@ namespace Kinovea.ScreenManager
             mnuFormatForce43.Text = ScreenManagerLang.mnuFormatForce43;
             mnuFormatForce169.Text = ScreenManagerLang.mnuFormatForce169;
             mnuFormat.Text = ScreenManagerLang.mnuFormat;
-            mnuRotation0.Text = "No Rotation";
-            mnuRotation90.Text = "90° Clockwise";
-            mnuRotation180.Text = "180°";
-            mnuRotation270.Text = "90° Counter-clockwise";
-            mnuRotation.Text = "Image Rotation";
+            mnuRotation0.Text = ScreenManagerLang.mnuRotation0;
+            mnuRotation90.Text = ScreenManagerLang.mnuRotation90;
+            mnuRotation180.Text = ScreenManagerLang.mnuRotation180;
+            mnuRotation270.Text = ScreenManagerLang.mnuRotation270;
+            mnuRotation.Text = ScreenManagerLang.mnuRotation;
             mnuMirror.Text = ScreenManagerLang.mnuMirror;
             RefreshCultureMenuFilters();
 

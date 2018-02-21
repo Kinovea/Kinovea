@@ -364,6 +364,11 @@
    <data name="mnuFormatAuto" xml:space="preserve"><value>Rilevazione automatica</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Applica 4:3</value></data>
    <data name="mnuFormatForce169" xml:space="preserve"><value>Applica 16:9</value></data>
+   
+   
+   
+   
+   
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Vai al Fotogramma dell'Immagine Chiave</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Griglia</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Nascondi</value></data>
