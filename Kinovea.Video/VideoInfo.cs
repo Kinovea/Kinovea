@@ -30,9 +30,16 @@ namespace Kinovea.Video
     {
         // Structural info
         public string FilePath;
-        public Size AspectRatioSize;
         public bool HasKva;
-        
+
+        // Image size - Not included: decoding size.
+        public Size OriginalSize;           // The image size in the file.
+        public Size AspectRatioSize;        // The unscaled size after aspect ratio fix, either from pixel aspect ratio or forced by user. Padded to 4 bytes along rotated width.
+        public Size ReferenceSize;          // The unscaled size after aspect ratio fix and rotation.
+        public double PixelAspectRatio;
+        public Fraction SampleAspectRatio;
+        public bool IsCodecMpeg2;
+
         // Timing info - some of this might be overriden by the user.
         public long AverageTimeStampsPerFrame;
         public double AverageTimeStampsPerSeconds;
@@ -43,29 +50,26 @@ namespace Kinovea.Video
         public long LastTimeStamp;
         public long DurationTimeStamps;
         
-        // Saving support.
-        public Size OriginalSize;
-        public double PixelAspectRatio;
-        public Fraction SampleAspectRatio;
-        public bool IsCodecMpeg2;
-        
         public static VideoInfo Empty {
             get { 
                 return new VideoInfo {
                     FilePath = "",
-                    AspectRatioSize = Size.Empty,
                     HasKva = false,
+
+                    OriginalSize = Size.Empty,
+                    AspectRatioSize = Size.Empty,
+                    ReferenceSize = Size.Empty,
+                    PixelAspectRatio = 1.0F,
+                    SampleAspectRatio = new Fraction(),
+                    IsCodecMpeg2 = false,
+
                     AverageTimeStampsPerFrame = 0,
                     AverageTimeStampsPerSeconds = 0,
                     FramesPerSeconds = 0,
                     FrameIntervalMilliseconds = 0,
                     FirstTimeStamp = 0,
                     LastTimeStamp = 0,
-                    DurationTimeStamps = 0,
-                    OriginalSize = Size.Empty,
-                    PixelAspectRatio = 1.0F,
-                    SampleAspectRatio = new Fraction(),
-                    IsCodecMpeg2 = false
+                    DurationTimeStamps = 0
                 };
             }
         }

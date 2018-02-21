@@ -168,6 +168,7 @@ namespace Kinovea.Video.Synthetic
             
             videoInfo.OriginalSize = video.ImageSize;
             videoInfo.AspectRatioSize = videoInfo.OriginalSize;
+            videoInfo.ReferenceSize = videoInfo.OriginalSize;
         }
         private bool UpdateCurrent(long timestamp)
         {

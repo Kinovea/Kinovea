@@ -169,6 +169,7 @@ namespace Kinovea.Video.SVG
             
             decodingSize = videoInfo.OriginalSize;
             videoInfo.AspectRatioSize = videoInfo.OriginalSize;
+            videoInfo.ReferenceSize = videoInfo.OriginalSize;
         }
 
         private bool UpdateCurrent(long timestamp)

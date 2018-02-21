@@ -219,7 +219,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         static void DisposeFrame(VideoFrame^ _frame);
         static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
         void SetAspectRatioSize(ImageAspectRatio _ratio);
-        Size FixSize(Size _size);
+        Size FixSize(Size _size, bool sideways);
         void ResetDecodingSize();
         void PreBufferingWorker(Object^ _canceler);
         bool WorkingZoneFitsInMemory(VideoSection _newZone, int _maxSeconds, int _maxMemory);

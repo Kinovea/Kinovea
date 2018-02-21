@@ -140,10 +140,11 @@ namespace Kinovea.Video.GIF
                 videoInfo.FramesPerSeconds = 100D/interval;
                 videoInfo.AverageTimeStampsPerFrame = interval;
 
-                videoInfo.AspectRatioSize = gif.Size;
                 videoInfo.OriginalSize = gif.Size;
+                videoInfo.AspectRatioSize = videoInfo.OriginalSize;
+                videoInfo.ReferenceSize = videoInfo.OriginalSize;
                 
-                if(cache)
+                if (cache)
                     LoadCache(dimension);
                 
                 loaded = true;
@@ -167,9 +168,9 @@ namespace Kinovea.Video.GIF
         private Bitmap GetFrameAt(FrameDimension dimension, int target)
         {
             gif.SelectActiveFrame(dimension, target);
-            Bitmap bmp = new Bitmap(videoInfo.AspectRatioSize.Width, videoInfo.AspectRatioSize.Height, PixelFormat.Format32bppPArgb);
+            Bitmap bmp = new Bitmap(videoInfo.OriginalSize.Width, videoInfo.OriginalSize.Height, PixelFormat.Format32bppPArgb);
             Graphics g = Graphics.FromImage(bmp);
-            g.DrawImage(gif, 0, 0, videoInfo.AspectRatioSize.Width, videoInfo.AspectRatioSize.Height);
+            g.DrawImage(gif, 0, 0, videoInfo.OriginalSize.Width, videoInfo.OriginalSize.Height);
             return bmp;
         }
         private void DumpInfo()
@@ -181,7 +182,7 @@ namespace Kinovea.Video.GIF
             log.DebugFormat("[GIF] - Duration (ts): {0}", videoInfo.DurationTimeStamps);
             log.DebugFormat("[GIF] - Duration (s): {0}", (double)videoInfo.DurationTimeStamps/(double)videoInfo.AverageTimeStampsPerSeconds);
             log.DebugFormat("[GIF] - Computed fps: {0}", videoInfo.FramesPerSeconds);
-            log.DebugFormat("[GIF] - Size (pixels): {0}", videoInfo.AspectRatioSize);
+            log.DebugFormat("[GIF] - Size (pixels): {0}", videoInfo.OriginalSize);
             log.Debug("---------------------------------------------------");
         }
         #endregion
