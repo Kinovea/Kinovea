@@ -3,3 +3,12 @@ root=true
 [*.cs]
 indent_size = 4
 indent_style = space
+
+[*.cpp]
+indent_size = 4
+indent_style = space
+
+[*.h]
+indent_size = 4
+indent_style = space
+

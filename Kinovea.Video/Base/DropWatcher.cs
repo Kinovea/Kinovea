@@ -40,7 +40,7 @@ namespace Kinovea.Base
         }
         public double Ratio {
             get {
-                return (double)m_Drops / m_Total;
+                return m_Total == 0 ? 0 : (double)m_Drops / m_Total;
             }
         }
         public void Restart()
