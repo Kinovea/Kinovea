@@ -215,7 +215,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         OpenVideoResult Load(String^ _filePath, bool _forSummary);
         ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode, bool _approximate);
         int SeekTo(int64_t _target);
-        void SetTimestampFromPacket(int64_t _dts, int64_t _pts, bool _bDecoded);
         bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
         static void DisposeFrame(VideoFrame^ _frame);
         static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
