@@ -49,47 +49,41 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeUI()
         {
-            this.Text = ScreenManagerLang.FormConfigureComposite_Title;
-            lblCompositeType.Text = ScreenManagerLang.FormConfigureComposite_Type;
+            //this.Text = ScreenManagerLang.FormConfigureComposite_Title;
+            this.Text = "Configure delay mode";
             gbConfiguration.Text = ScreenManagerLang.Generic_Configuration;
-
-            cbType.Items.Add(ScreenManagerLang.FormConfigureComposite_TypeBasic);
-            cbType.Items.Add(ScreenManagerLang.FormConfigureComposite_TypeMultipleReviews);
-            cbType.Items.Add(ScreenManagerLang.FormConfigureComposite_TypeSlowMotion);
-            cbType.Items.Add(ScreenManagerLang.FormConfigureComposite_TypeFrozenMosaic);
-            cbType.Items.Add(ScreenManagerLang.FormConfigureComposite_TypeMixed);
-            
-            // Each panel has its own configuration instance, initialized with default values.
-            // The panel of the current configuration is populated with the current data.
-            configurationPanels.Add(DelayCompositeType.MultiReview, new DelayCompositeMultiReviewControl(currentConfiguration));
-            configurationPanels.Add(DelayCompositeType.SlowMotion, new DelayCompositeSlowMotionControl(currentConfiguration));
-            configurationPanels.Add(DelayCompositeType.FrozenMosaic, new DelayCompositeFrozenMosaicControl(currentConfiguration));
+            rbDelay.Text = "Delay";
+            rbSlowMotion.Text = "Slow motion";
+            rbQuadrants.Text = "Quadrants";
             
             int currentType = (int)currentConfiguration.CompositeType;
-            cbType.SelectedIndex = (currentType < cbType.Items.Count) ? currentType : 0;
+
+            switch (currentConfiguration.CompositeType)
+            {
+                case DelayCompositeType.SlowMotion:
+                    rbSlowMotion.Checked = true;
+                    break;
+                case DelayCompositeType.MultiReview:
+                    rbQuadrants.Checked = true;
+                    break;
+                default:
+                case DelayCompositeType.Basic:
+                    rbDelay.Checked = true;
+                    break;
+            }
         }
 
         private DelayCompositeConfiguration GetConfiguration()
         {
-            DelayCompositeConfiguration config = new DelayCompositeConfiguration();
-            DelayCompositeType t = (DelayCompositeType)cbType.SelectedIndex;
-            config.CompositeType = t;
+            DelayCompositeConfiguration config = PreferencesManager.CapturePreferences.DelayCompositeConfiguration;
 
-            switch (t)
-            {
-                case DelayCompositeType.MultiReview:
-                    DelayCompositeMultiReviewControl dcmrc = configurationPanels[DelayCompositeType.MultiReview] as DelayCompositeMultiReviewControl;
-                    return dcmrc.Configuration;
-                case DelayCompositeType.SlowMotion:
-                    DelayCompositeSlowMotionControl dcsmc = configurationPanels[DelayCompositeType.SlowMotion] as DelayCompositeSlowMotionControl;
-                    return dcsmc.Configuration;
-                case DelayCompositeType.FrozenMosaic:
-                    DelayCompositeFrozenMosaicControl dcfmc = configurationPanels[DelayCompositeType.FrozenMosaic] as DelayCompositeFrozenMosaicControl;
-                    return dcfmc.Configuration;
-                default:
-                    break;
-            }
-
+            if (rbSlowMotion.Checked)
+                config.CompositeType = DelayCompositeType.SlowMotion;
+            else if (rbQuadrants.Checked)
+                config.CompositeType = DelayCompositeType.MultiReview;
+            else
+                config.CompositeType = DelayCompositeType.Basic;
+            
             return config;
         }
         
@@ -97,43 +91,6 @@ namespace Kinovea.ScreenManager
         {
             DialogResult = DialogResult.OK;
             this.Close();
-        }
-
-        private void cbType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DelayCompositeType t = (DelayCompositeType)cbType.SelectedIndex;
-            
-            gbConfiguration.Controls.Clear();
-
-            switch (t)
-            {
-                case DelayCompositeType.MultiReview:
-                    gbConfiguration.Enabled = true;
-                    gbConfiguration.Controls.Add(configurationPanels[DelayCompositeType.MultiReview]);                    
-                    break;
-                case DelayCompositeType.SlowMotion:
-                    gbConfiguration.Enabled = true;
-                    gbConfiguration.Controls.Add(configurationPanels[DelayCompositeType.SlowMotion]);
-                    break;
-                case DelayCompositeType.FrozenMosaic:
-                    gbConfiguration.Enabled = true;
-                    gbConfiguration.Controls.Add(configurationPanels[DelayCompositeType.FrozenMosaic]);
-                    break;
-                case DelayCompositeType.Basic:
-                case DelayCompositeType.Mixed:
-                default:
-                    gbConfiguration.Enabled = false;
-                    break;
-            }
-
-            if (gbConfiguration.Controls.Count == 1)
-            {
-                Control panel = gbConfiguration.Controls[0];
-                panel.Top = 20;
-                panel.Left = 10;
-                panel.Width = 288;
-                panel.Height = 125;
-            }
         }
     }
 }

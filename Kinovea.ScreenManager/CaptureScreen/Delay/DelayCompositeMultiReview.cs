@@ -25,11 +25,10 @@ namespace Kinovea.ScreenManager
         }
 
         private List<IDelaySubframe> subframes = new List<IDelaySubframe>();
-        private int imageCount;
+        private int imageCount = 4;
 
-        public DelayCompositeMultiReview(DelayCompositeConfiguration configuration)
+        public DelayCompositeMultiReview()
         {
-            this.imageCount = configuration.ImageCount;
         }
 
         public void UpdateSubframes(ImageDescriptor imageDescriptor, int totalFrames)

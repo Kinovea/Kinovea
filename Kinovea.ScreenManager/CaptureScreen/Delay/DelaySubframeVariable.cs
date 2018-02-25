@@ -21,7 +21,6 @@ namespace Kinovea.ScreenManager
         private float refreshRate;
         private int totalFrames;
         private int startPosition;
-        private int currentPosition;
         private int cycleDuration;
 
         public DelaySubframeVariable(Rectangle bounds, float refreshRate, int totalFrames, int startPosition, int cycleDuration)
@@ -33,6 +32,13 @@ namespace Kinovea.ScreenManager
             this.cycleDuration = cycleDuration;
         }
 
+        public void UpdateRefreshRate(float refreshRate, int cycleDuration, int currentPosition)
+        {
+            this.refreshRate = refreshRate;
+            this.cycleDuration = cycleDuration;
+            this.startPosition = currentPosition;
+        }
+
         public int GetAge(int currentPosition, int totalFrames)
         {
             int positionInCycle = currentPosition - startPosition;
@@ -42,7 +48,7 @@ namespace Kinovea.ScreenManager
 
             int targetPosition = startPosition + (int)(positionInCycle * refreshRate);
 
-            if (targetPosition % cycleDuration == 0)
+            if (targetPosition >= startPosition + cycleDuration)
             {
                 targetPosition = currentPosition;
                 startPosition = currentPosition;

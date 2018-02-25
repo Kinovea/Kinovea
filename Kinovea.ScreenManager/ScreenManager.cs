@@ -1198,7 +1198,7 @@ namespace Kinovea.ScreenManager
         {
             if (screen == null ||
                !screen.Full ||
-              (screen is PlayerScreen && !((PlayerScreen)screen).FrameServer.VideoReader.CanChangeImageRotation))
+              !(screen is PlayerScreen))
             {
                 mnuRotation.Enabled = false;
                 return;

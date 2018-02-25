@@ -66,6 +66,17 @@ namespace Kinovea.ScreenManager
             this.presenter = presenter;
             ToggleCapturedVideosPanel();
             sldrDelay.ValueChanged += SldrDelay_ValueChanged;
+            sldrRefreshRate.ValueChanged += SldrRefreshRate_ValueChanged;
+
+            sldrRefreshRate.Minimum = 0;
+            sldrRefreshRate.Maximum = 100;
+            sldrRefreshRate.Sticky = false;
+            sldrRefreshRate.StickyValue = 100;
+            sldrRefreshRate.Value = 100;
+            sldrRefreshRate.Location = sldrDelay.Location;
+            sldrRefreshRate.Width = sldrDelay.Width;
+            lblRefreshRate.Location = lblDelay.Location;
+
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("CaptureScreen");
         }
 
@@ -119,7 +130,7 @@ namespace Kinovea.ScreenManager
         {
             pnlDrawingToolsBar.Controls.Add(toolbar);
         }
-        
+
         public void UpdateTitle(string title, Bitmap icon)
         {
             btnIcon.BackgroundImage = icon;
@@ -183,6 +194,11 @@ namespace Kinovea.ScreenManager
             // If the delayer was not allocated, fake a number so that we have a slider stuck at the 0th image.
             sldrDelay.Maximum = delay == 0 ? 0.9 : delay;
         }
+        public void UpdateRefreshRateLabel(float rate)
+        {
+            string formattedSpeed = string.Format("{0}", Math.Round(rate * 100));
+            lblRefreshRate.Text = string.Format("Speed: {0}%", formattedSpeed);
+        }
         public void UpdateNextImageFilename(string filename)
         {
             fnbImage.Filename = filename;
@@ -203,6 +219,31 @@ namespace Kinovea.ScreenManager
                 ToggleCapturedVideosPanel();
         }
 
+        /// <summary>
+        /// Show the correct control based on display type.
+        /// </summary>
+        public void ConfigureDisplayControl(DelayCompositeType type)
+        {
+            sldrDelay.Visible = false;
+            lblDelay.Visible = false;
+            sldrRefreshRate.Visible = false;
+            lblRefreshRate.Visible = false;
+
+            switch (type)
+            {
+                case DelayCompositeType.Basic:
+                    sldrDelay.Visible = true;
+                    lblDelay.Visible = true;
+                    break;
+                case DelayCompositeType.SlowMotion:
+                    sldrRefreshRate.Visible = true;
+                    lblRefreshRate.Visible = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
         /// <summary>
         /// Disposes resources used by the control.
         /// </summary>
@@ -235,6 +276,11 @@ namespace Kinovea.ScreenManager
         private void SldrDelay_ValueChanged(object sender, EventArgs e)
         {
             presenter.View_DelayChanged(sldrDelay.Value);
+        }
+        private void SldrRefreshRate_ValueChanged(object sender, EventArgs e)
+        {
+            float value = (float)(sldrRefreshRate.Value / 100.0f);
+            presenter.View_RefreshRateChanged(value);
         }
         private void BtnSettingsClick(object sender, EventArgs e)
         {
@@ -315,6 +361,13 @@ namespace Kinovea.ScreenManager
             else
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
         }
+        private void ChangeSpeed(int change)
+        {
+            if (change == 0)
+                return;
+
+            sldrRefreshRate.StepJump(change / 100.0f);
+        }
         #endregion
 
         #region Commands
@@ -380,10 +433,14 @@ namespace Kinovea.ScreenManager
                 case CaptureScreenCommands.IncreaseDelay:
                     sldrDelay.Value = sldrDelay.Value + 1;
                     sldrDelay.Invalidate();
+
+                    ChangeSpeed(25);
                     break;
                 case CaptureScreenCommands.DecreaseDelay:
                     sldrDelay.Value = sldrDelay.Value - 1;
                     sldrDelay.Invalidate();
+
+                    ChangeSpeed(-25);
                     break;
                 case CaptureScreenCommands.Close:
                     presenter.View_Close();

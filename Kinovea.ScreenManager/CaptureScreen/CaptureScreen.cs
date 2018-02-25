@@ -202,7 +202,8 @@ namespace Kinovea.ScreenManager
             delayCompositeConfiguration = PreferencesManager.CapturePreferences.DelayCompositeConfiguration;
             delayComposite = GetComposite(delayCompositeConfiguration);
             delayCompositer.SetComposite(delayComposite);
-
+            view.ConfigureDisplayControl(delayCompositeConfiguration.CompositeType);
+            
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             
             view.SetToolbarView(drawingToolbarPresenter.View);
@@ -372,6 +373,10 @@ namespace Kinovea.ScreenManager
         public void View_DelayChanged(double value)
         {
             DelayChanged(value);
+        }
+        public void View_RefreshRateChanged(float value)
+        {
+            RefreshRateChanged(value);
         }
         public void View_SnapshotAsked()
         {
@@ -616,7 +621,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             FormConfigureComposite form = new FormConfigureComposite(delayCompositeConfiguration);
-            FormsHelper.Locate(form);
+            form.StartPosition = FormStartPosition.CenterScreen;
 
             if (form.ShowDialog() == DialogResult.OK)
             {
@@ -625,9 +630,12 @@ namespace Kinovea.ScreenManager
                 delayCompositer.ResetComposite(delayComposite);
                 PreferencesManager.CapturePreferences.DelayCompositeConfiguration = delayCompositeConfiguration;
                 PreferencesManager.Save();
+
+                view.ConfigureDisplayControl(delayCompositeConfiguration.CompositeType);
             }
 
             form.Dispose();
+
         }
 
         private void pipelineManager_FrameSignaled(object sender, EventArgs e)
@@ -1214,6 +1222,21 @@ namespace Kinovea.ScreenManager
             }
         }
         
+        private void RefreshRateChanged(float rate)
+        {
+            rate = Math.Max(rate, 0.01f);
+            view.UpdateRefreshRateLabel(rate);
+
+            DelayCompositeSlowMotion2 dcsm = delayComposite as DelayCompositeSlowMotion2;
+            if (dcsm == null)
+                return;
+
+            dcsm.UpdateRefreshRate(rate);
+            delayCompositeConfiguration.RefreshRate = rate;
+            PreferencesManager.CapturePreferences.DelayCompositeConfiguration = delayCompositeConfiguration;
+            PreferencesManager.Save();
+        }
+
         private void UpdateDelayMaxAge()
         {
             view.UpdateDelayMaxAge(delayer.Capacity);
@@ -1241,13 +1264,9 @@ namespace Kinovea.ScreenManager
             switch (configuration.CompositeType)
             {
                 case DelayCompositeType.MultiReview:
-                    return new DelayCompositeMultiReview(configuration);
+                    return new DelayCompositeMultiReview();
                 case DelayCompositeType.SlowMotion:
-                    return new DelayCompositeSlowMotion(configuration);
-                case DelayCompositeType.FrozenMosaic:
-                    return new DelayCompositeFrozenMosaic(configuration);
-                case DelayCompositeType.Mixed:
-                    return new DelayCompositeMixed();
+                    return new DelayCompositeSlowMotion2(configuration);
                 default:
                     return new DelayCompositeBasic();
             }
