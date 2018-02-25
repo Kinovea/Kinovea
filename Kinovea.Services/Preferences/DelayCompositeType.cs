@@ -8,8 +8,10 @@ namespace Kinovea.Services
     public enum DelayCompositeType
     {
         Basic,
-        MultiReview,
         SlowMotion,
+        MultiReview,
+
+        // DEPRECATED /  UNUSED
         FrozenMosaic,
         Mixed,
         Custom

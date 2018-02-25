@@ -56,6 +56,8 @@ namespace Kinovea.ScreenManager
             this.pnlDrawingToolsBar = new System.Windows.Forms.Panel();
             this.btnFoldCapturedVideosPanel = new System.Windows.Forms.Button();
             this.toolTips = new System.Windows.Forms.ToolTip(this.components);
+            this.sldrRefreshRate = new Kinovea.ScreenManager.SliderLinear();
+            this.lblRefreshRate = new System.Windows.Forms.Label();
             this.pnlControls.SuspendLayout();
             this.pnlCaptureDock.SuspendLayout();
             this.pnlTitle.SuspendLayout();
@@ -65,6 +67,8 @@ namespace Kinovea.ScreenManager
             // pnlControls
             // 
             this.pnlControls.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.pnlControls.Controls.Add(this.lblRefreshRate);
+            this.pnlControls.Controls.Add(this.sldrRefreshRate);
             this.pnlControls.Controls.Add(this.sldrDelay);
             this.pnlControls.Controls.Add(this.fnbVideo);
             this.pnlControls.Controls.Add(this.fnbImage);
@@ -229,14 +233,14 @@ namespace Kinovea.ScreenManager
             this.lblDelay.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDelay.Location = new System.Drawing.Point(232, 16);
             this.lblDelay.Name = "lblDelay";
-            this.lblDelay.Size = new System.Drawing.Size(61, 12);
+            this.lblDelay.Size = new System.Drawing.Size(44, 12);
             this.lblDelay.TabIndex = 2;
-            this.lblDelay.Text = "Décalage : 0s";
+            this.lblDelay.Text = "Delay: 0s";
             // 
             // pnlCapturedVideos
             // 
-            this.pnlCapturedVideos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlCapturedVideos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlCapturedVideos.AutoScroll = true;
             this.pnlCapturedVideos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
             this.pnlCapturedVideos.Location = new System.Drawing.Point(0, 345);
@@ -315,9 +319,9 @@ namespace Kinovea.ScreenManager
             // 
             // pnlViewport
             // 
-            this.pnlViewport.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlViewport.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlViewport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
             this.pnlViewport.Location = new System.Drawing.Point(0, 25);
             this.pnlViewport.MinimumSize = new System.Drawing.Size(345, 25);
@@ -327,8 +331,8 @@ namespace Kinovea.ScreenManager
             // 
             // pnlDrawingToolsBar
             // 
-            this.pnlDrawingToolsBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlDrawingToolsBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlDrawingToolsBar.AutoScroll = true;
             this.pnlDrawingToolsBar.BackColor = System.Drawing.Color.White;
             this.pnlDrawingToolsBar.Controls.Add(this.btnFoldCapturedVideosPanel);
@@ -355,6 +359,31 @@ namespace Kinovea.ScreenManager
             this.btnFoldCapturedVideosPanel.TabIndex = 17;
             this.btnFoldCapturedVideosPanel.UseVisualStyleBackColor = false;
             this.btnFoldCapturedVideosPanel.Click += new System.EventHandler(this.BtnCapturedVideosFold_Click);
+            // 
+            // sldrRefreshRate
+            // 
+            this.sldrRefreshRate.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.sldrRefreshRate.Location = new System.Drawing.Point(577, 12);
+            this.sldrRefreshRate.Maximum = 100D;
+            this.sldrRefreshRate.Minimum = 0D;
+            this.sldrRefreshRate.Name = "sldrRefreshRate";
+            this.sldrRefreshRate.Size = new System.Drawing.Size(75, 23);
+            this.sldrRefreshRate.Sticky = false;
+            this.sldrRefreshRate.StickyValue = 0D;
+            this.sldrRefreshRate.TabIndex = 44;
+            this.sldrRefreshRate.Text = "sliderLinear1";
+            this.sldrRefreshRate.Value = 0D;
+            // 
+            // lblRefreshRate
+            // 
+            this.lblRefreshRate.AutoSize = true;
+            this.lblRefreshRate.BackColor = System.Drawing.Color.Transparent;
+            this.lblRefreshRate.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRefreshRate.Location = new System.Drawing.Point(575, 36);
+            this.lblRefreshRate.Name = "lblRefreshRate";
+            this.lblRefreshRate.Size = new System.Drawing.Size(59, 12);
+            this.lblRefreshRate.TabIndex = 45;
+            this.lblRefreshRate.Text = "Speed: 100%";
             // 
             // CaptureScreenView
             // 
@@ -398,5 +427,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnIcon;
         private System.Windows.Forms.Button btnConfigureComposite;
         private System.Windows.Forms.ToolTip toolTips;
+        private System.Windows.Forms.Label lblRefreshRate;
+        private SliderLinear sldrRefreshRate;
     }
 }

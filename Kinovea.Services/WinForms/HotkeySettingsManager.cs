@@ -188,8 +188,8 @@ namespace Kinovea.Services
                     //hk(CaptureScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
                     //hk(CaptureScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
                     //hk(CaptureScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
-                    hk(CaptureScreenCommands.IncreaseDelay, Keys.Control | Keys.Up),
-                    hk(CaptureScreenCommands.DecreaseDelay, Keys.Control | Keys.Down), 
+                    hk(CaptureScreenCommands.IncreaseDelay, Keys.Up),
+                    hk(CaptureScreenCommands.DecreaseDelay, Keys.Down), 
                     hk(CaptureScreenCommands.Close, Keys.Control | Keys.F4)
                     }
                 }

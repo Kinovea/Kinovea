@@ -51,15 +51,17 @@ namespace Kinovea.ScreenManager
         {
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.cbType = new System.Windows.Forms.ComboBox();
-            this.lblCompositeType = new System.Windows.Forms.Label();
             this.gbConfiguration = new System.Windows.Forms.GroupBox();
+            this.rbDelay = new System.Windows.Forms.RadioButton();
+            this.rbSlowMotion = new System.Windows.Forms.RadioButton();
+            this.rbQuadrants = new System.Windows.Forms.RadioButton();
+            this.gbConfiguration.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point(116, 235);
+            this.btnOk.Location = new System.Drawing.Point(58, 127);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(99, 24);
             this.btnOk.TabIndex = 16;
@@ -71,44 +73,60 @@ namespace Kinovea.ScreenManager
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(221, 235);
+            this.btnCancel.Location = new System.Drawing.Point(163, 127);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(99, 24);
             this.btnCancel.TabIndex = 17;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // cbType
+            // gbDelayMode
             // 
-            this.cbType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbType.FormattingEnabled = true;
-            this.cbType.Location = new System.Drawing.Point(116, 24);
-            this.cbType.Name = "cbType";
-            this.cbType.Size = new System.Drawing.Size(204, 21);
-            this.cbType.TabIndex = 18;
-            this.cbType.SelectedIndexChanged += new System.EventHandler(this.cbType_SelectedIndexChanged);
-            // 
-            // lblCompositeType
-            // 
-            this.lblCompositeType.AutoSize = true;
-            this.lblCompositeType.Location = new System.Drawing.Point(23, 27);
-            this.lblCompositeType.Name = "lblCompositeType";
-            this.lblCompositeType.Size = new System.Drawing.Size(37, 13);
-            this.lblCompositeType.TabIndex = 19;
-            this.lblCompositeType.Text = "Type :";
-            // 
-            // gbConfiguration
-            // 
-            this.gbConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbConfiguration.Location = new System.Drawing.Point(15, 64);
-            this.gbConfiguration.Name = "gbConfiguration";
-            this.gbConfiguration.Size = new System.Drawing.Size(305, 154);
+            this.gbConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbConfiguration.Controls.Add(this.rbQuadrants);
+            this.gbConfiguration.Controls.Add(this.rbSlowMotion);
+            this.gbConfiguration.Controls.Add(this.rbDelay);
+            this.gbConfiguration.Location = new System.Drawing.Point(12, 12);
+            this.gbConfiguration.Name = "gbDelayMode";
+            this.gbConfiguration.Size = new System.Drawing.Size(249, 109);
             this.gbConfiguration.TabIndex = 20;
             this.gbConfiguration.TabStop = false;
-            this.gbConfiguration.Text = "Configuration";
+            this.gbConfiguration.Text = "Delay mode";
+            // 
+            // rbDelay
+            // 
+            this.rbDelay.AutoSize = true;
+            this.rbDelay.Location = new System.Drawing.Point(17, 25);
+            this.rbDelay.Name = "rbDelay";
+            this.rbDelay.Size = new System.Drawing.Size(52, 17);
+            this.rbDelay.TabIndex = 0;
+            this.rbDelay.TabStop = true;
+            this.rbDelay.Text = "Delay";
+            this.rbDelay.UseVisualStyleBackColor = true;
+            // 
+            // rbSlowMotion
+            // 
+            this.rbSlowMotion.AutoSize = true;
+            this.rbSlowMotion.Location = new System.Drawing.Point(17, 48);
+            this.rbSlowMotion.Name = "rbSlowMotion";
+            this.rbSlowMotion.Size = new System.Drawing.Size(82, 17);
+            this.rbSlowMotion.TabIndex = 1;
+            this.rbSlowMotion.TabStop = true;
+            this.rbSlowMotion.Text = "Slow motion";
+            this.rbSlowMotion.UseVisualStyleBackColor = true;
+            // 
+            // rbQuadrants
+            // 
+            this.rbQuadrants.AutoSize = true;
+            this.rbQuadrants.Location = new System.Drawing.Point(17, 71);
+            this.rbQuadrants.Name = "rbQuadrants";
+            this.rbQuadrants.Size = new System.Drawing.Size(74, 17);
+            this.rbQuadrants.TabIndex = 2;
+            this.rbQuadrants.TabStop = true;
+            this.rbQuadrants.Text = "Quadrants";
+            this.rbQuadrants.UseVisualStyleBackColor = true;
             // 
             // FormConfigureComposite
             // 
@@ -117,10 +135,8 @@ namespace Kinovea.ScreenManager
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(332, 271);
+            this.ClientSize = new System.Drawing.Size(274, 163);
             this.Controls.Add(this.gbConfiguration);
-            this.Controls.Add(this.lblCompositeType);
-            this.Controls.Add(this.cbType);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.btnCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -129,15 +145,17 @@ namespace Kinovea.ScreenManager
             this.Name = "FormConfigureComposite";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "Configure delay composite";
+            this.Text = "Configure delay mode";
+            this.gbConfiguration.ResumeLayout(false);
+            this.gbConfiguration.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.ComboBox cbType;
-        private System.Windows.Forms.Label lblCompositeType;
         private System.Windows.Forms.GroupBox gbConfiguration;
+        private System.Windows.Forms.RadioButton rbQuadrants;
+        private System.Windows.Forms.RadioButton rbSlowMotion;
+        private System.Windows.Forms.RadioButton rbDelay;
     }
 }
