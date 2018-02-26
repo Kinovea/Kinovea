@@ -56,8 +56,9 @@ namespace Kinovea.ScreenManager
         private CapturedFilesView capturedFilesView;
         private bool recording;
         private bool grabbing;
+        private DelayCompositeType delayCompositeType;
         #endregion
-        
+
         public CaptureScreenView(CaptureScreen presenter)
         {
             InitializeComponent();
@@ -68,14 +69,14 @@ namespace Kinovea.ScreenManager
             sldrDelay.ValueChanged += SldrDelay_ValueChanged;
             sldrRefreshRate.ValueChanged += SldrRefreshRate_ValueChanged;
 
+            sldrRefreshRate.Location = sldrDelay.Location;
+            sldrRefreshRate.Width = sldrDelay.Width / 2;
+            lblRefreshRate.Location = lblDelay.Location;
             sldrRefreshRate.Minimum = 0;
             sldrRefreshRate.Maximum = 100;
-            sldrRefreshRate.Sticky = false;
-            sldrRefreshRate.StickyValue = 100;
             sldrRefreshRate.Value = 100;
-            sldrRefreshRate.Location = sldrDelay.Location;
-            sldrRefreshRate.Width = sldrDelay.Width;
-            lblRefreshRate.Location = lblDelay.Location;
+            sldrRefreshRate.Sticky = true;
+            sldrRefreshRate.StickyValue = 50;
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("CaptureScreen");
         }
@@ -224,6 +225,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void ConfigureDisplayControl(DelayCompositeType type)
         {
+            delayCompositeType = type;
             sldrDelay.Visible = false;
             lblDelay.Visible = false;
             sldrRefreshRate.Visible = false;
@@ -431,16 +433,28 @@ namespace Kinovea.ScreenManager
                     presenter.View_Configure();
                     break;
                 case CaptureScreenCommands.IncreaseDelay:
-                    sldrDelay.Value = sldrDelay.Value + 1;
-                    sldrDelay.Invalidate();
-
-                    ChangeSpeed(25);
+                    if (delayCompositeType == DelayCompositeType.Basic)
+                    {
+                        sldrDelay.Value = sldrDelay.Value + 1;
+                        sldrDelay.Invalidate();
+                    }
+                    else if (delayCompositeType == DelayCompositeType.SlowMotion)
+                    {
+                        ChangeSpeed(25);
+                        sldrRefreshRate.Invalidate();
+                    }
                     break;
                 case CaptureScreenCommands.DecreaseDelay:
-                    sldrDelay.Value = sldrDelay.Value - 1;
-                    sldrDelay.Invalidate();
-
-                    ChangeSpeed(-25);
+                    if (delayCompositeType == DelayCompositeType.Basic)
+                    {
+                        sldrDelay.Value = sldrDelay.Value - 1;
+                        sldrDelay.Invalidate();
+                    }
+                    else if (delayCompositeType == DelayCompositeType.SlowMotion)
+                    {
+                        ChangeSpeed(-25);
+                        sldrRefreshRate.Invalidate();
+                    }
                     break;
                 case CaptureScreenCommands.Close:
                     presenter.View_Close();

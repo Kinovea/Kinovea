@@ -37,17 +37,12 @@ namespace Kinovea.ScreenManager
             get { return GetConfiguration(); }
         }
 
-        private DelayCompositeConfiguration currentConfiguration;
-        private Dictionary<DelayCompositeType, UserControl> configurationPanels = new Dictionary<DelayCompositeType, UserControl>();
-
         public FormConfigureComposite(DelayCompositeConfiguration current)
         {
-            this.currentConfiguration = current;
-
             InitializeComponent();
-            InitializeUI();
+            InitializeUI(current);
         }
-        private void InitializeUI()
+        private void InitializeUI(DelayCompositeConfiguration current)
         {
             //this.Text = ScreenManagerLang.FormConfigureComposite_Title;
             this.Text = "Configure delay mode";
@@ -56,9 +51,9 @@ namespace Kinovea.ScreenManager
             rbSlowMotion.Text = "Slow motion";
             rbQuadrants.Text = "Quadrants";
             
-            int currentType = (int)currentConfiguration.CompositeType;
+            int currentType = (int)current.CompositeType;
 
-            switch (currentConfiguration.CompositeType)
+            switch (current.CompositeType)
             {
                 case DelayCompositeType.SlowMotion:
                     rbSlowMotion.Checked = true;
@@ -75,7 +70,7 @@ namespace Kinovea.ScreenManager
 
         private DelayCompositeConfiguration GetConfiguration()
         {
-            DelayCompositeConfiguration config = PreferencesManager.CapturePreferences.DelayCompositeConfiguration;
+            DelayCompositeConfiguration config = new DelayCompositeConfiguration();
 
             if (rbSlowMotion.Checked)
                 config.CompositeType = DelayCompositeType.SlowMotion;
