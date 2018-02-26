@@ -261,6 +261,8 @@ namespace Kinovea.ScreenManager
             metadata.CalibrationHelper.AngleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
             
             view.RefreshUICulture();
+            view.UpdateDelayLabel(AgeToSeconds(delay), delay);
+            view.UpdateSlomoRefreshRate(refreshRate);
             drawingToolbarPresenter.RefreshUICulture();
         }
         public override void PreferencesUpdated()
@@ -378,6 +380,10 @@ namespace Kinovea.ScreenManager
         public void View_RefreshRateChanged(float value)
         {
             RefreshRateChanged(value);
+        }
+        public void View_ForceDelaySynchronization()
+        {
+            ForceDelaySynchronization();
         }
         public void View_SnapshotAsked()
         {
@@ -715,6 +721,12 @@ namespace Kinovea.ScreenManager
             {
                 view.UpdateInfo(string.Format("Signal: {0:0.00} fps. Bandwidth: {1:0.00} MB/s. Drops: {2}.",
                     pipelineManager.Frequency, cameraGrabber.LiveDataRate, pipelineManager.Drops));
+            }
+
+            DelayCompositeSlowMotion2 dcsm = delayComposite as DelayCompositeSlowMotion2;
+            if (dcsm != null)
+            {
+                view.UpdateSlomoCountdown(AgeToSeconds(dcsm.GetCountdown()));
             }
 
         }
@@ -1226,17 +1238,27 @@ namespace Kinovea.ScreenManager
         private void RefreshRateChanged(float rate)
         {
             rate = Math.Max(rate, 0.01f);
-            view.UpdateRefreshRateLabel(rate);
+            view.UpdateSlomoRefreshRate(rate);
 
             DelayCompositeSlowMotion2 dcsm = delayComposite as DelayCompositeSlowMotion2;
             if (dcsm == null)
                 return;
 
             dcsm.UpdateRefreshRate(rate);
+
             // We don't use PreferencesManager.CapturePreferences.DelayCompositeConfiguration.RefreshRate.
             // We want each capture screen to have its own value.
             // We do keep the value locally so we can re-inject it when switching between delay and slomo modes.
             refreshRate = rate;
+        }
+
+        private void ForceDelaySynchronization()
+        {
+            DelayCompositeSlowMotion2 dcsm = delayComposite as DelayCompositeSlowMotion2;
+            if (dcsm == null)
+                return;
+
+            dcsm.Sync();
         }
 
         private void UpdateDelayMaxAge()

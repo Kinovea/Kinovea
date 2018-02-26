@@ -61,6 +61,20 @@ namespace Kinovea.ScreenManager
                 ((DelaySubframeVariable)subframe).UpdateRefreshRate(refreshRate, cycleDuration, currentPosition);
         }
 
+        public void Sync()
+        {
+            foreach (IDelaySubframe subframe in subframes)
+                ((DelaySubframeVariable)subframe).Sync(currentPosition);
+        }
+
+        public int GetCountdown()
+        {
+            if (subframes.Count > 0)
+                return ((DelaySubframeVariable)subframes[0]).GetCountdown(currentPosition);
+            else
+                return 0;
+        }
+
         private void SetConfiguration(ImageDescriptor imageDescriptor, int totalFrames)
         {
             subframes.Clear();
