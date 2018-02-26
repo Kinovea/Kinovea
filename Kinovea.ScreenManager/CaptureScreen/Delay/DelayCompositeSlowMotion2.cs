@@ -30,9 +30,9 @@ namespace Kinovea.ScreenManager
         private int totalFrames;
         private float refreshRate = 1.0f;
 
-        public DelayCompositeSlowMotion2(DelayCompositeConfiguration config)
+        public DelayCompositeSlowMotion2(float refreshRate)
         {
-            refreshRate = config.RefreshRate;
+            this.refreshRate = refreshRate;
         }
 
         public void UpdateSubframes(ImageDescriptor imageDescriptor, int totalFrames)

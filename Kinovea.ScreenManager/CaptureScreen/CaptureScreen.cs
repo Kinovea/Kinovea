@@ -152,6 +152,7 @@ namespace Kinovea.ScreenManager
         private DelayCompositeConfiguration delayCompositeConfiguration;
         private IDelayComposite delayComposite;
         private int delay; // The current image age in number of frames.
+        private float refreshRate = 1.0f;
 
         private ViewportController viewportController;
         private FilenameHelper filenameHelper = new FilenameHelper();
@@ -1232,9 +1233,10 @@ namespace Kinovea.ScreenManager
                 return;
 
             dcsm.UpdateRefreshRate(rate);
-            delayCompositeConfiguration.RefreshRate = rate;
-            PreferencesManager.CapturePreferences.DelayCompositeConfiguration = delayCompositeConfiguration;
-            PreferencesManager.Save();
+            // We don't use PreferencesManager.CapturePreferences.DelayCompositeConfiguration.RefreshRate.
+            // We want each capture screen to have its own value.
+            // We do keep the value locally so we can re-inject it when switching between delay and slomo modes.
+            refreshRate = rate;
         }
 
         private void UpdateDelayMaxAge()
@@ -1266,7 +1268,7 @@ namespace Kinovea.ScreenManager
                 case DelayCompositeType.MultiReview:
                     return new DelayCompositeMultiReview();
                 case DelayCompositeType.SlowMotion:
-                    return new DelayCompositeSlowMotion2(configuration);
+                    return new DelayCompositeSlowMotion2(refreshRate);
                 default:
                     return new DelayCompositeBasic();
             }
