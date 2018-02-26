@@ -36,7 +36,17 @@ namespace Kinovea.ScreenManager
         {
             this.refreshRate = refreshRate;
             this.cycleDuration = cycleDuration;
-            this.startPosition = currentPosition;
+            startPosition = currentPosition;
+        }
+
+        public void Sync(int currentPosition)
+        {
+            startPosition = currentPosition;
+        }
+
+        public int GetCountdown(int currentPosition)
+        {
+            return startPosition + totalFrames - currentPosition;
         }
 
         public int GetAge(int currentPosition, int totalFrames)

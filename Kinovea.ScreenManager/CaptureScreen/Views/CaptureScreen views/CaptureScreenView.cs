@@ -69,14 +69,19 @@ namespace Kinovea.ScreenManager
             sldrDelay.ValueChanged += SldrDelay_ValueChanged;
             sldrRefreshRate.ValueChanged += SldrRefreshRate_ValueChanged;
 
-            sldrRefreshRate.Location = sldrDelay.Location;
-            sldrRefreshRate.Width = sldrDelay.Width / 2;
             lblRefreshRate.Location = lblDelay.Location;
+            sldrRefreshRate.Top = sldrDelay.Top + 3;
+            sldrRefreshRate.Left = sldrDelay.Left - 15;
+            sldrRefreshRate.Width = sldrDelay.Width / 2;
             sldrRefreshRate.Minimum = 0;
             sldrRefreshRate.Maximum = 100;
             sldrRefreshRate.Value = 100;
             sldrRefreshRate.Sticky = true;
             sldrRefreshRate.StickyValue = 50;
+            btnSlomoSync.Top = sldrRefreshRate.Top - 5;
+            btnSlomoSync.Left = sldrRefreshRate.Right + 15;
+            lblSlomoSync.Top = lblRefreshRate.Top;
+            lblSlomoSync.Left = btnSlomoSync.Right - 2;
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("CaptureScreen");
         }
@@ -97,7 +102,6 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             capturedFilesView.RefreshUICulture();
-            UpdateDelayLabel(0, 0);
             ReloadTooltipsCulture();
         }
         
@@ -195,10 +199,14 @@ namespace Kinovea.ScreenManager
             // If the delayer was not allocated, fake a number so that we have a slider stuck at the 0th image.
             sldrDelay.Maximum = delay == 0 ? 0.9 : delay;
         }
-        public void UpdateRefreshRateLabel(float rate)
+        public void UpdateSlomoRefreshRate(float rate)
         {
             string formattedSpeed = string.Format("{0}", Math.Round(rate * 100));
             lblRefreshRate.Text = string.Format("Speed: {0}%", formattedSpeed);
+        }
+        public void UpdateSlomoCountdown(double countdown)
+        {
+            lblSlomoSync.Text = string.Format("{0:0.00}", countdown);
         }
         public void UpdateNextImageFilename(string filename)
         {
@@ -226,10 +234,13 @@ namespace Kinovea.ScreenManager
         public void ConfigureDisplayControl(DelayCompositeType type)
         {
             delayCompositeType = type;
+
             sldrDelay.Visible = false;
             lblDelay.Visible = false;
             sldrRefreshRate.Visible = false;
             lblRefreshRate.Visible = false;
+            btnSlomoSync.Visible = false;
+            lblSlomoSync.Visible = false;
 
             switch (type)
             {
@@ -240,6 +251,8 @@ namespace Kinovea.ScreenManager
                 case DelayCompositeType.SlowMotion:
                     sldrRefreshRate.Visible = true;
                     lblRefreshRate.Visible = true;
+                    btnSlomoSync.Visible = true;
+                    lblSlomoSync.Visible = true;
                     break;
                 default:
                     break;
@@ -283,6 +296,10 @@ namespace Kinovea.ScreenManager
         {
             float value = (float)(sldrRefreshRate.Value / 100.0f);
             presenter.View_RefreshRateChanged(value);
+        }
+        private void btnSlomoSync_Click(object sender, EventArgs e)
+        {
+            presenter.View_ForceDelaySynchronization();
         }
         private void BtnSettingsClick(object sender, EventArgs e)
         {
@@ -465,6 +482,7 @@ namespace Kinovea.ScreenManager
 
             return true;
         }
+
 
         #endregion
 
