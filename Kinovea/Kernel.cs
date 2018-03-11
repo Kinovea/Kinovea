@@ -33,6 +33,7 @@ using System.Windows.Forms;
 using Kinovea.FileBrowser;
 using Kinovea.Root.Languages;
 using Kinovea.ScreenManager;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Updater;
 using Kinovea.Video;
@@ -615,10 +616,7 @@ namespace Kinovea.Root
             else
             {
                 log.Error(String.Format("Cannot find the video tutorial file. ({0}).", resourceUri));
-                MessageBox.Show(screenManager.resManager.GetString("LoadMovie_FileNotOpened"),
-                                    screenManager.resManager.GetString("LoadMovie_Error"),
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Exclamation);
+                MessageBox.Show(ScreenManagerLang.LoadMovie_FileNotOpened, ScreenManagerLang.LoadMovie_Error, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
         private void mnuAbout_OnClick(object sender, EventArgs e)
@@ -695,10 +693,7 @@ namespace Kinovea.Root
             }
             else
             {
-                MessageBox.Show(screenManager.resManager.GetString("LoadMovie_FileNotOpened"),
-                    screenManager.resManager.GetString("LoadMovie_Error"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Exclamation);
+                MessageBox.Show(ScreenManagerLang.LoadMovie_FileNotOpened, ScreenManagerLang.LoadMovie_Error, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
         private string GetLocalizedHelpResource(bool manual)
