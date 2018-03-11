@@ -25,13 +25,23 @@ namespace UnusedResources
             Directory.CreateDirectory(result);
         }
 
-        public void ProcessAssembly(string directory, string resx)
+        public void ProcessAssembly(string resx, List<string> directories, List<string> patterns)
         {
-            string dir = Path.Combine(root, directory);
             string module = Path.GetFileNameWithoutExtension(resx);
             designer = module + ".Designer.cs";
-            HashSet<string> defined = FindDefined(Path.Combine(dir, resx));
-            HashSet<string> unused = FindUnused(dir, defined);
+            HashSet<string> defined = FindDefined(Path.Combine(root, resx));
+
+            // Look into each file and try to find each resource string.
+            HashSet<string> used = new HashSet<string>();
+            foreach (string directory in directories)
+            {
+                Console.WriteLine("Looking for unused resources in {0}", Path.GetFileName(directory));
+                string dir = Path.Combine(root, directory);
+                ProcessDirectory(dir, patterns, defined, used);
+            }
+            
+            IEnumerable<string> unused = defined.Except(used);
+            
             SaveToFile(module, unused);
         }
 
@@ -52,58 +62,47 @@ namespace UnusedResources
             return defined;
         }
 
-        /// <summary>
-        /// Browse the sources and check usage of each defined resource.
-        /// </summary>
-        private HashSet<string> FindUnused(string directory, HashSet<string> defined)
-        {
-            Console.WriteLine("Looking for unused resources in {0}", Path.GetFileName(directory));
-            HashSet<string> unused = new HashSet<string>();
-
-            foreach (string resource in defined)
-            {
-                if (!IsResourceUsed(directory, resource))
-                    unused.Add(resource);
-            }
-
-            return unused;
-        }
-
-        /// <summary>
-        /// Recursively test files in a directory and return whether the specified resource was found anywhere.
-        /// </summary>
-        private bool IsResourceUsed(string directory, string resource)
+        private void ProcessDirectory(string directory, List<string> patterns, HashSet<string> defined, HashSet<string> used)
         {
             if (ignore.Contains(Path.GetFileName(directory)))
-                return false;
+                return;
 
-            foreach (string file in Directory.GetFiles(directory, "*.cs"))
+            // Process the files in this directory.
+            foreach (string pattern in patterns)
             {
-                if (Path.GetFileName(file) == designer)
-                    continue;
-
-                using (StreamReader r = new StreamReader(file))
+                foreach (string file in Directory.GetFiles(directory, pattern))
                 {
-                    string source = r.ReadToEnd();
-                    bool used = source.Contains(resource);
-                    if (used)
-                        return true;
+                    if (Path.GetFileName(file) == designer)
+                        continue;
+
+                    // Look for each resource in this file and note which ones are actually used.
+                    foreach (string resource in defined)
+                    {
+                        // Skip if we already found that resource somewhere else.
+                        if (used.Contains(resource))
+                            continue;
+
+                        using (StreamReader r = new StreamReader(file))
+                        {
+                            string source = r.ReadToEnd();
+                            bool found = source.Contains(resource);
+                            if (found)
+                                used.Add(resource);
+                        }
+                    }
                 }
             }
 
+            // Recurse into subdirectories.
             foreach (string dir in Directory.GetDirectories(directory))
             {
-                bool used = IsResourceUsed(dir, resource);
-                if (used)
-                    return true;
+                ProcessDirectory(dir, patterns, defined, used);
             }
-
-            return false;
         }
-
-        private void SaveToFile(string module, HashSet<string> unused)
+        
+        private void SaveToFile(string module, IEnumerable<string> unused)
         {
-            if (unused.Count == 0)
+            if (unused.Count() == 0)
                 return;
 
             string file = Path.Combine(result, module + ".txt");
