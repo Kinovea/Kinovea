@@ -376,8 +376,8 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateSlomoRefreshRateLabel()
         {
-            string formattedSpeed = string.Format("{0}", Math.Round(refreshRate * 100));
-            lblRefreshRate.Text = string.Format("Speed: {0}%", formattedSpeed);
+            string formattedSpeed = string.Format("{0}%", Math.Round(refreshRate * 100));
+            lblRefreshRate.Text = string.Format(ScreenManagerLang.lblSpeedTuner_Text, formattedSpeed);
         }
         private void ReloadTooltipsCulture()
         {
