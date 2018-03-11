@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
         void UpdateInfo(string info);
         void UpdateGrabbingStatus(bool grabbing);
         void UpdateRecordingStatus(bool recording);
-        void UpdateDelayLabel(double delaySeconds, int delayFrames);
+        void UpdateDelay(double delaySeconds, int delayFrames);
         void UpdateSlomoRefreshRate(float rate);
         void UpdateSlomoCountdown(double countdown);
         void UpdateDelayMaxAge(double max);

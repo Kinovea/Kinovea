@@ -35,6 +35,7 @@ namespace Kinovea.ScreenManager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CaptureScreenView));
             this.pnlControls = new System.Windows.Forms.Panel();
             this.lblSlomoSync = new System.Windows.Forms.Label();
             this.btnSlomoSync = new System.Windows.Forms.Button();
@@ -90,7 +91,7 @@ namespace Kinovea.ScreenManager
             this.lblSlomoSync.AutoSize = true;
             this.lblSlomoSync.BackColor = System.Drawing.Color.Transparent;
             this.lblSlomoSync.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSlomoSync.Location = new System.Drawing.Point(554, 16);
+            this.lblSlomoSync.Location = new System.Drawing.Point(546, 20);
             this.lblSlomoSync.Name = "lblSlomoSync";
             this.lblSlomoSync.Size = new System.Drawing.Size(10, 12);
             this.lblSlomoSync.TabIndex = 47;
@@ -106,7 +107,7 @@ namespace Kinovea.ScreenManager
             this.btnSlomoSync.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnSlomoSync.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSlomoSync.Image = global::Kinovea.ScreenManager.Properties.Capture.slomo_sync;
-            this.btnSlomoSync.Location = new System.Drawing.Point(518, 11);
+            this.btnSlomoSync.Location = new System.Drawing.Point(510, 15);
             this.btnSlomoSync.MinimumSize = new System.Drawing.Size(30, 25);
             this.btnSlomoSync.Name = "btnSlomoSync";
             this.btnSlomoSync.Size = new System.Drawing.Size(30, 25);
@@ -119,7 +120,7 @@ namespace Kinovea.ScreenManager
             this.lblRefreshRate.AutoSize = true;
             this.lblRefreshRate.BackColor = System.Drawing.Color.Transparent;
             this.lblRefreshRate.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRefreshRate.Location = new System.Drawing.Point(570, 18);
+            this.lblRefreshRate.Location = new System.Drawing.Point(562, 22);
             this.lblRefreshRate.Name = "lblRefreshRate";
             this.lblRefreshRate.Size = new System.Drawing.Size(59, 12);
             this.lblRefreshRate.TabIndex = 45;
@@ -128,7 +129,7 @@ namespace Kinovea.ScreenManager
             // sldrRefreshRate
             // 
             this.sldrRefreshRate.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.sldrRefreshRate.Location = new System.Drawing.Point(314, 15);
+            this.sldrRefreshRate.Location = new System.Drawing.Point(306, 19);
             this.sldrRefreshRate.Maximum = 100D;
             this.sldrRefreshRate.Minimum = 0D;
             this.sldrRefreshRate.Name = "sldrRefreshRate";
@@ -142,7 +143,7 @@ namespace Kinovea.ScreenManager
             // sldrDelay
             // 
             this.sldrDelay.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.sldrDelay.Location = new System.Drawing.Point(314, 12);
+            this.sldrDelay.Location = new System.Drawing.Point(306, 16);
             this.sldrDelay.Maximum = 100D;
             this.sldrDelay.Minimum = 0D;
             this.sldrDelay.Name = "sldrDelay";
@@ -202,7 +203,7 @@ namespace Kinovea.ScreenManager
             this.btnConfigureComposite.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnConfigureComposite.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnConfigureComposite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnConfigureComposite.Image = global::Kinovea.ScreenManager.Properties.Capture.display_mode;
+            this.btnConfigureComposite.Image = ((System.Drawing.Image)(resources.GetObject("btnConfigureComposite.Image")));
             this.btnConfigureComposite.Location = new System.Drawing.Point(35, 6);
             this.btnConfigureComposite.MinimumSize = new System.Drawing.Size(30, 25);
             this.btnConfigureComposite.Name = "btnConfigureComposite";
@@ -289,7 +290,7 @@ namespace Kinovea.ScreenManager
             this.lblDelay.AutoSize = true;
             this.lblDelay.BackColor = System.Drawing.Color.Transparent;
             this.lblDelay.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDelay.Location = new System.Drawing.Point(232, 16);
+            this.lblDelay.Location = new System.Drawing.Point(224, 20);
             this.lblDelay.Name = "lblDelay";
             this.lblDelay.Size = new System.Drawing.Size(44, 12);
             this.lblDelay.TabIndex = 2;

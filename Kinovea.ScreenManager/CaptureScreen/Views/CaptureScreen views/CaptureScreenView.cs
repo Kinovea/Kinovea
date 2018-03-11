@@ -57,6 +57,9 @@ namespace Kinovea.ScreenManager
         private bool recording;
         private bool grabbing;
         private DelayCompositeType delayCompositeType;
+        private double delaySeconds;
+        private int delayFrames;
+        private float refreshRate;
         #endregion
 
         public CaptureScreenView(CaptureScreen presenter)
@@ -91,33 +94,30 @@ namespace Kinovea.ScreenManager
         #region ICaptureScreenView
         public void DisplayAsActiveScreen(bool active)
         {
-        
         }
         
         public void FullScreen(bool fullScreen)
         {
-        
         }
         
         public void RefreshUICulture()
         {
             capturedFilesView.RefreshUICulture();
+            UpdateDelayLabel();
+            UpdateSlomoRefreshRateLabel();
             ReloadTooltipsCulture();
         }
         
         public void AddImageDrawing(string filename, bool svg)
         {
-        
         }
         
         public void AddImageDrawing(Bitmap bmp)
         {
-        
         }
         
         public void BeforeClose()
         {
-        
         }
         
         public void SetViewport(Viewport viewport)
@@ -182,27 +182,21 @@ namespace Kinovea.ScreenManager
             fnbImage.Enabled = !recording;
             fnbVideo.Enabled = !recording;
         }
-        public void UpdateDelayLabel(double delaySeconds, int delayFrames)
+        public void UpdateDelay(double delaySeconds, int delayFrames)
         {
-            double round = Math.Round(delaySeconds);
-
-            string formattedDelay = "";
-            if (round < 10)
-                formattedDelay = string.Format("{0:0.00}", delaySeconds);
-            else
-                formattedDelay = string.Format("{0}", round);
-
-            lblDelay.Text = string.Format(ScreenManagerLang.lblDelay_Text, formattedDelay, delayFrames);
+            this.delaySeconds = delaySeconds;
+            this.delayFrames = delayFrames;
+            UpdateDelayLabel();
         }
         public void UpdateDelayMaxAge(double delay)
         {
             // If the delayer was not allocated, fake a number so that we have a slider stuck at the 0th image.
             sldrDelay.Maximum = delay == 0 ? 0.9 : delay;
         }
-        public void UpdateSlomoRefreshRate(float rate)
+        public void UpdateSlomoRefreshRate(float refreshRate)
         {
-            string formattedSpeed = string.Format("{0}", Math.Round(rate * 100));
-            lblRefreshRate.Text = string.Format("Speed: {0}%", formattedSpeed);
+            this.refreshRate = refreshRate;
+            UpdateSlomoRefreshRateLabel();
         }
         public void UpdateSlomoCountdown(double countdown)
         {
@@ -241,6 +235,10 @@ namespace Kinovea.ScreenManager
             lblRefreshRate.Visible = false;
             btnSlomoSync.Visible = false;
             lblSlomoSync.Visible = false;
+
+            sldrRefreshRate.Enabled = true;
+            lblRefreshRate.Enabled = true;
+            lblSlomoSync.Enabled = true;
 
             switch (type)
             {
@@ -363,6 +361,23 @@ namespace Kinovea.ScreenManager
                 pnlDrawingToolsBar.Top = pnlControls.Top - pnlDrawingToolsBar.Height;
                 pnlViewport.Height = pnlControls.Top - pnlViewport.Top;
             }
+        }
+        private void UpdateDelayLabel()
+        {
+            double round = Math.Round(delaySeconds);
+
+            string formattedDelay = "";
+            if (round < 10)
+                formattedDelay = string.Format("{0:0.00}", delaySeconds);
+            else
+                formattedDelay = string.Format("{0}", round);
+
+            lblDelay.Text = string.Format(ScreenManagerLang.lblDelay_Text, formattedDelay, delayFrames);
+        }
+        private void UpdateSlomoRefreshRateLabel()
+        {
+            string formattedSpeed = string.Format("{0}", Math.Round(refreshRate * 100));
+            lblRefreshRate.Text = string.Format("Speed: {0}%", formattedSpeed);
         }
         private void ReloadTooltipsCulture()
         {
