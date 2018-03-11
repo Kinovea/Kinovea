@@ -13,7 +13,7 @@ namespace Kinovea.ScreenManager
     /// The stream has synchronization gaps but the user can reset it manually.
     /// This is more usable than the version where the user has to guess where to look.
     /// </summary>
-    public class DelayCompositeSlowMotion2 : IDelayComposite
+    public class DelayCompositeSlowMotion : IDelayComposite
     {
         public List<IDelaySubframe> Subframes
         {
@@ -25,14 +25,18 @@ namespace Kinovea.ScreenManager
             get { return true; }
         }
 
+        public float RefreshRate
+        {
+            get { return refreshRate; }
+        }
+
         private List<IDelaySubframe> subframes = new List<IDelaySubframe>();
         private int currentPosition;
         private int totalFrames;
         private float refreshRate = 1.0f;
 
-        public DelayCompositeSlowMotion2(float refreshRate)
+        public DelayCompositeSlowMotion()
         {
-            this.refreshRate = refreshRate;
         }
 
         public void UpdateSubframes(ImageDescriptor imageDescriptor, int totalFrames)
@@ -46,6 +50,12 @@ namespace Kinovea.ScreenManager
             currentPosition++;
         }
 
+        public void Rewind(int position)
+        {
+            currentPosition = position;
+            Sync();
+        }
+        
         public int GetAge(IDelaySubframe subframe)
         {
             DelaySubframeVariable dsv = subframe as DelaySubframeVariable;

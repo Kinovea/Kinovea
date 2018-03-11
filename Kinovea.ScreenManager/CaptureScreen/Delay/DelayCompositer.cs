@@ -16,11 +16,10 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class DelayCompositer
     {
+        public int CurrentPosition => currentPosition;
+        
         #region Members
         private Delayer delayer;
-        //private IDelayComposite composite = new DelayCompositeBasic();
-        //private IDelayComposite composite = new DelayCompositeMultiReview();
-        //private IDelayComposite composite = new DelayCompositeFrozenMosaic();
         private IDelayComposite composite;
         private bool allocated;
         private Bitmap image;
@@ -101,7 +100,7 @@ namespace Kinovea.ScreenManager
             currentPosition = 0;
             composite.UpdateSubframes(imageDescriptor, delayer.Capacity);
         }
-
+        
         public Bitmap Get(int age)
         {
             if (composite == null)
@@ -124,17 +123,12 @@ namespace Kinovea.ScreenManager
             foreach (IDelaySubframe subframe in composite.Subframes)
             {
                 int subframeAge = composite.GetAge(subframe);
-
+                
                 if (subframeAge < 0)
                     continue;
 
                 Bitmap subframeImage = delayer.Get(subframeAge);
                 g.DrawImage(subframeImage, subframe.Bounds);
-                
-                // Debug
-                //int subframePosition = currentPosition - subframeAge;
-                //string text = string.Format("frame:{0}, current:{1}.", subframePosition, currentPosition);
-                //g.DrawString(text, font, Brushes.Red, subframe.Bounds.Location);
             }
             
             return image;

@@ -213,7 +213,7 @@
     <Compile Include="CaptureScreen\Delay\DelayCompositeMixed.cs" />
     <Compile Include="CaptureScreen\Delay\DelayCompositeMultiReview.cs" />
     <Compile Include="CaptureScreen\Delay\DelayCompositer.cs" />
-    <Compile Include="CaptureScreen\Delay\DelayCompositeSlowMotion2.cs" />
+    <Compile Include="CaptureScreen\Delay\DelayCompositeSlowMotion.cs" />
     <Compile Include="CaptureScreen\Delay\Delayer.cs" />
     <Compile Include="CaptureScreen\Delay\DelaySubframeConstant.cs" />
     <Compile Include="CaptureScreen\Delay\DelaySubframeVariable.cs" />
