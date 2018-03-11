@@ -9,11 +9,6 @@ namespace Kinovea.Services
     {
         Basic,
         SlowMotion,
-        MultiReview,
-
-        // DEPRECATED /  UNUSED
-        FrozenMosaic,
-        Mixed,
-        Custom
+        MultiReview
     }
 }
