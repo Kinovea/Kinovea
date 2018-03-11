@@ -115,74 +115,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Camera not found.
-        /// </summary>
-        public static string Capture_CameraNotFound {
-            get {
-                return ResourceManager.GetString("Capture_CameraNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Network camera.
-        /// </summary>
-        public static string Capture_NetworkCamera {
-            get {
-                return ResourceManager.GetString("Capture_NetworkCamera", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Next image :.
-        /// </summary>
-        public static string Capture_NextImage {
-            get {
-                return ResourceManager.GetString("Capture_NextImage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Next video :.
-        /// </summary>
-        public static string Capture_NextVideo {
-            get {
-                return ResourceManager.GetString("Capture_NextVideo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Screen for Capture.
-        /// </summary>
-        public static string CommandAddCaptureScreen_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandAddCaptureScreen_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Stopwatch.
-        /// </summary>
-        public static string CommandAddChrono_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandAddChrono_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add Drawing.
         /// </summary>
         public static string CommandAddDrawing_FriendlyName {
             get {
                 return ResourceManager.GetString("CommandAddDrawing_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Screen for Playback.
-        /// </summary>
-        public static string CommandAddPlayerScreen_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandAddPlayerScreen_FriendlyName", resourceCulture);
             }
         }
         
@@ -205,74 +142,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load Video.
-        /// </summary>
-        public static string CommandLoadMovie_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandLoadMovie_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Load Video.
-        /// </summary>
-        public static string CommandLoadMovieInScreen_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandLoadMovieInScreen_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Play Video.
-        /// </summary>
-        public static string CommandPlayMovie_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandPlayMovie_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close Screen.
-        /// </summary>
-        public static string CommandRemoveScreen_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandRemoveScreen_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Save Video.
         /// </summary>
         public static string CommandSaveMovie_FriendlyName {
             get {
                 return ResourceManager.GetString("CommandSaveMovie_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show Screens.
-        /// </summary>
-        public static string CommandShowScreen_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandShowScreen_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Swap Screens.
-        /// </summary>
-        public static string CommandSwapScreens_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandSwapScreens_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Toggle Common Controls.
-        /// </summary>
-        public static string CommandToggleCommonControls_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandToggleCommonControls_FriendlyName", resourceCulture);
             }
         }
         
@@ -718,24 +592,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of Divisions :.
-        /// </summary>
-        public static string dlgConfigureGrids_Divisions {
-            get {
-                return ResourceManager.GetString("dlgConfigureGrids_Divisions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure Grid.
-        /// </summary>
-        public static string dlgConfigureGrids_Title {
-            get {
-                return ResourceManager.GetString("dlgConfigureGrids_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Real size of the segment :.
         /// </summary>
         public static string dlgConfigureMeasure_lblRealSize {
@@ -1047,60 +903,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string dlgConfigureTrajectory_VisibilityOneSecond {
             get {
                 return ResourceManager.GetString("dlgConfigureTrajectory_VisibilityOneSecond", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current device.
-        /// </summary>
-        public static string dlgDevicePicker_CurrentDevice {
-            get {
-                return ResourceManager.GetString("dlgDevicePicker_CurrentDevice", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Properties.
-        /// </summary>
-        public static string dlgDevicePicker_DeviceProperties {
-            get {
-                return ResourceManager.GetString("dlgDevicePicker_DeviceProperties", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No other option available.
-        /// </summary>
-        public static string dlgDevicePicker_NoConf {
-            get {
-                return ResourceManager.GetString("dlgDevicePicker_NoConf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select another device.
-        /// </summary>
-        public static string dlgDevicePicker_SelectAnother {
-            get {
-                return ResourceManager.GetString("dlgDevicePicker_SelectAnother", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Type :.
-        /// </summary>
-        public static string dlgDevicePicker_Type {
-            get {
-                return ResourceManager.GetString("dlgDevicePicker_Type", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to URL :.
-        /// </summary>
-        public static string dlgDevicePicker_Url {
-            get {
-                return ResourceManager.GetString("dlgDevicePicker_Url", resourceCulture);
             }
         }
         
@@ -1600,24 +1402,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Couldn&apos;t find any device to connect to.\nPlease make sure the device is properly plugged to the computer..
-        /// </summary>
-        public static string Error_Capture_CannotConnect_Text {
-            get {
-                return ResourceManager.GetString("Error_Capture_CannotConnect_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot connect to video device.
-        /// </summary>
-        public static string Error_Capture_CannotConnect_Title {
-            get {
-                return ResourceManager.GetString("Error_Capture_CannotConnect_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The file {0} already exists.\nDo you want to replace it?.
         /// </summary>
         public static string Error_Capture_FileExists_Text {
@@ -1704,15 +1488,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string Error_SavePausedVideo {
             get {
                 return ResourceManager.GetString("Error_SavePausedVideo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You need to add some key images before using this function..
-        /// </summary>
-        public static string Error_SavePausedVideo_NoKeyframes {
-            get {
-                return ResourceManager.GetString("Error_SavePausedVideo_NoKeyframes", resourceCulture);
             }
         }
         
@@ -1843,110 +1618,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of images:.
-        /// </summary>
-        public static string FormConfigureComposite_ImageCount {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_ImageCount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Interval:.
-        /// </summary>
-        public static string FormConfigureComposite_Interval {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_Interval", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refresh rate:.
-        /// </summary>
-        public static string FormConfigureComposite_RefreshRate {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_RefreshRate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Slow motion factor:.
-        /// </summary>
-        public static string FormConfigureComposite_SlowMotionFactor {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_SlowMotionFactor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Start:.
-        /// </summary>
-        public static string FormConfigureComposite_Start {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_Start", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Configure mosaic.
         /// </summary>
         public static string FormConfigureComposite_Title {
             get {
                 return ResourceManager.GetString("FormConfigureComposite_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Type:.
-        /// </summary>
-        public static string FormConfigureComposite_Type {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_Type", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Single view.
-        /// </summary>
-        public static string FormConfigureComposite_TypeBasic {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_TypeBasic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Time freeze.
-        /// </summary>
-        public static string FormConfigureComposite_TypeFrozenMosaic {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_TypeFrozenMosaic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mixed.
-        /// </summary>
-        public static string FormConfigureComposite_TypeMixed {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_TypeMixed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Multiple views.
-        /// </summary>
-        public static string FormConfigureComposite_TypeMultipleReviews {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_TypeMultipleReviews", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Slow motion.
-        /// </summary>
-        public static string FormConfigureComposite_TypeSlowMotion {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_TypeSlowMotion", resourceCulture);
             }
         }
         
@@ -2005,15 +1681,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saving Video....
-        /// </summary>
-        public static string FormFileSave_Title {
-            get {
-                return ResourceManager.GetString("FormFileSave_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Exported Images :.
         /// </summary>
         public static string FormFramesExport_Infos {
@@ -2028,24 +1695,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string FormFramesExport_Title {
             get {
                 return ResourceManager.GetString("FormFramesExport_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Decompressed Frames : .
-        /// </summary>
-        public static string FormFramesImport_Infos {
-            get {
-                return ResourceManager.GetString("FormFramesImport_Infos", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Importing Frames....
-        /// </summary>
-        public static string FormFramesImport_Title {
-            get {
-                return ResourceManager.GetString("FormFramesImport_Title", resourceCulture);
             }
         }
         
@@ -2527,42 +2176,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Canceling....
-        /// </summary>
-        public static string LoadMovieProgress_Cancellation {
-            get {
-                return ResourceManager.GetString("LoadMovieProgress_Cancellation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Decoded frames :.
-        /// </summary>
-        public static string LoadMovieProgress_Infos {
-            get {
-                return ResourceManager.GetString("LoadMovieProgress_Infos", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File Load Progress.
-        /// </summary>
-        public static string LoadMovieProgress_Title {
-            get {
-                return ResourceManager.GetString("LoadMovieProgress_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Total unknown.
-        /// </summary>
-        public static string LoadMovieProgress_TotalUnknown {
-            get {
-                return ResourceManager.GetString("LoadMovieProgress_TotalUnknown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Lock the Working Zone Boundaries.
         /// </summary>
         public static string LockSelectionLock {
@@ -2649,15 +2262,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuCloseScreen {
             get {
                 return ResourceManager.GetString("mnuCloseScreen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Persistence....
-        /// </summary>
-        public static string mnuConfigureFading {
-            get {
-                return ResourceManager.GetString("mnuConfigureFading", resourceCulture);
             }
         }
         
@@ -2793,15 +2397,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuDrawingTrackingStop {
             get {
                 return ResourceManager.GetString("mnuDrawingTrackingStop", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edges Only....
-        /// </summary>
-        public static string mnuEdges {
-            get {
-                return ResourceManager.GetString("mnuEdges", resourceCulture);
             }
         }
         
@@ -3139,15 +2734,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sharpen....
-        /// </summary>
-        public static string mnuSharpen {
-            get {
-                return ResourceManager.GetString("mnuSharpen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Display coordinates.
         /// </summary>
         public static string mnuShowCoordinates {
@@ -3310,29 +2896,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Buffer: {0}%.
-        /// </summary>
-        public static string statusBufferFill {
-            get {
-                return ResourceManager.GetString("statusBufferFill", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Empty.
         /// </summary>
         public static string statusEmptyScreen {
             get {
                 return ResourceManager.GetString("statusEmptyScreen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disconnected.
-        /// </summary>
-        public static string Toast_Disconnected {
-            get {
-                return ResourceManager.GetString("Toast_Disconnected", resourceCulture);
             }
         }
         
@@ -3445,29 +3013,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select source.
-        /// </summary>
-        public static string ToolTip_DevicePicker {
-            get {
-                return ResourceManager.GetString("ToolTip_DevicePicker", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Angle.
         /// </summary>
         public static string ToolTip_DrawingToolAngle2D {
             get {
                 return ResourceManager.GetString("ToolTip_DrawingToolAngle2D", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Arrow.
-        /// </summary>
-        public static string ToolTip_DrawingToolArrow {
-            get {
-                return ResourceManager.GetString("ToolTip_DrawingToolArrow", resourceCulture);
             }
         }
         
@@ -3715,15 +3265,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select directory.
-        /// </summary>
-        public static string ToolTip_SelectFolder {
-            get {
-                return ResourceManager.GetString("ToolTip_SelectFolder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Set the First Frame of Working Zone to the Current Frame.
         /// </summary>
         public static string ToolTip_SetHandlerLeft {
@@ -3765,15 +3306,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string ToolTip_SideBySideVideo {
             get {
                 return ResourceManager.GetString("ToolTip_SideBySideVideo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Change Playback Speed.
-        /// </summary>
-        public static string ToolTip_sldrSpeed {
-            get {
-                return ResourceManager.GetString("ToolTip_sldrSpeed", resourceCulture);
             }
         }
         

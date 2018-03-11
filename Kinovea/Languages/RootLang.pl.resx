@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Zmień język</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Pokaż/Ukryj przeglądarkę plików</value></data>
    
    
    
@@ -128,14 +126,12 @@
    
    
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Przejdź do trybu Analizy</value></data>
-   
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Liczba plików w historii :</value></data>
    
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Język :</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>I</value></data>
    <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>Strefa obróbki zajmie mniej niż {0} MB pamięci.</value></data>
    <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>Strefa obróbki jest mniejsza niż {0} sekund.</value></data>
-   
    
    
    
@@ -204,6 +200,7 @@
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Setne części minuty</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dziesięcio-tysięczne części godziny</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
+   
    
    
    

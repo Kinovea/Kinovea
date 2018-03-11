@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Změň jazyk</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Zobrazit/Skrýt File Explorer</value></data>
    
    
    
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Formát 4:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Autodetekce</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Přepnout do módu analýzy</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Přetrvání zobrazení</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Počet souborů v historii:</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Přednastavený formát obrazu:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Jazyk</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometry za hodinu ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Stopy za sekundu ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Míle za hodinu ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Uzly ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preference</value></data>
    
    
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Desetitisícina hodiny</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Časová razítka</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasické zobarzení + číslo snímku</value></data>
+   
    
    
    

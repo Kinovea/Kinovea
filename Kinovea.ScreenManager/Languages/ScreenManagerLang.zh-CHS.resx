@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>跳到两个视频的下一帧</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>跳到两个视频的上一帧</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>播放 | 暂停 两个视频</value></data>
-   
-   
-   
-   
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>新增捕捉屏幕</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>新增秒表</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>新增绘制</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>新增播放画面</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>删除绘制</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>移除一个关键帧</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>载入视频</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>载入视频</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>播放视频</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>关闭屏幕</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>保存视频</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>显示屏幕</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>交换屏幕</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>切换公共控件</value></data>
    
    
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>配置绘图</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>一直可见</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>网格数量 :</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>配置网格</value></data>
    
    
    
@@ -180,12 +164,6 @@
    
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>片段真实大小 :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>校准测量</value></data>
-   
-   
-   
-   
-   
-   
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>每个关键图像的长短 : {0} 百秒.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>每个关键图像的长短 : {0:0.00} 秒.</value></data>
@@ -245,12 +223,9 @@
    
    
    
-   
-   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>无法创建幻灯片.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>一张幻灯片是在视频文件内保存的一系列关键图像序列.\n 请在生成幻灯片之前添加一些关键图像.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>不能建立暂停视频</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>在使用此功能之前必须添加关键图像.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>写入文件出错.\n请确认目标目录有足够的权限及文件是否被打开.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>保存视频文件出错. </value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>保存视频文件出错.\n请尝试不同保存格式.</value></data>
@@ -259,12 +234,9 @@
    
    
    <data name="FormFileSave_Infos" xml:space="preserve"><value>进度:</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>正在保存视频…</value></data>
    
    <data name="FormFramesExport_Title" xml:space="preserve"><value>正在导出的图像...</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>被解压缩的帧 : </value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>进度</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>正在导入帧...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>外观</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>提交</value></data>
    
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>失败: 无法打开文件 : 无法找到视频流相关信息.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>失败: 无法打开文件 : 未知错误.</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>失败: 无法打开文件 : 无法找到视频流.</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>正在取消...</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>被解码的帧 :</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>文件加载进度</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>所有未知</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>锁定工作区界限</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>解锁工作区界限</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>透视网格</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>关闭这个屏幕</value></data>
    
    
-   <data name="mnuConfigureFading" xml:space="preserve"><value>持久度...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>配置路径显示</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>反交错</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>删除</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>双摄像头采集模式</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>单屏幕单摄像头模式</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>双屏幕显示模式</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>只有边缘...</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>导出至电子表格</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    
    
    
-   <data name="mnuSharpen" xml:space="preserve"><value>锐化...</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>显示测量</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>结束路径 </value></data>
@@ -420,14 +385,11 @@
    
    
    
-   
-   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>新增一个关键图像</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>转到上一帧</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>颜色配置</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>禁用叠加图像</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>启用叠加图像</value></data>
-   
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>角度</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>秒表</value></data>
    
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>铅笔</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>移动</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>文字</value></data>
-   
    
    
    <data name="ToolTip_First" xml:space="preserve"><value>回到开始</value></data>
@@ -462,11 +423,9 @@
    
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>从关键图像里保存一个幻灯片</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>在每一个关键图像上添加暂停并保存</value></data>
-   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>设置工作区的第一帧为当前帧</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>设置工作区的最后一帧为当前帧</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>显示注释</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>变换播放速度</value></data>
    
    
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>设置工作区</value></data>
@@ -476,16 +435,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>马赛克...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>反向...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>自动对比度...</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    

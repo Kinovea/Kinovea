@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Modifică limba</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Arată/Ascunde Exploratorul de fişiere</value></data>
    
    
    
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Forteaza format 4:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Detectie automata</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Schimbă in Modul Analiză</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Persistenţă</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Număr de fişiere în istoric :</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Formatul de imagine implicit</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Limba :</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometri pe oră ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Picioare (30.5 cm) pe secundă ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mile (1609 m) pe oră ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Noduri (milă pe oră) ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferinţe</value></data>
    
    
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zece miimi de oră</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Markeri timp</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clasic+Numarul cadrelor</value></data>
+   
    
    
    

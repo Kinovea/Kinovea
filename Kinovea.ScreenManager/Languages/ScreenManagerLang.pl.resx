@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Idź do Następnej Klatki obu plików wideo</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Idź do Poprzedniej Klatki obu plików wideo</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Odtwórz | Zatrzymaj wideo</value></data>
-   
-   
-   
-   
-   
-   
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Dodaj rysunek</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Dodaj ekran do </value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Usuń rysunek</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Usuń obraz kluczowy</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Wczytaj wideo</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Wczytaj wideo</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Odtwórz wideo</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>Zamknij ekran</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Zapisz wideo</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Pokaż ekrany</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Zamień ekrany</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Przełącz Wspólne Sterowanie</value></data>
    
    
    
@@ -128,14 +114,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Domyślny profil kolorów</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Wczytaj profil koloru</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Zapisz profil koloru</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    
@@ -245,8 +223,6 @@
    
    
    
-   
-   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - nie można utworzyć pokazu slajdów.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Pokaz slajdów jest to sekwencja kluczowy obrazów zapisanych w formacie wideo.\n Dodaj proszę kilka kluczowych obrazów przed generacją pokazu.</value></data>
    
@@ -257,14 +233,10 @@
    
    
    
-   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Postęp :</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>Zapisywanie pliku wideo...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Wyskeportowane obrazy :</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Eksportowanie obrazów...</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Zdekompresowane klatki :</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Postęp</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>Importowanie klatek...</value></data>
    
    <data name="Generic_Apply" xml:space="preserve"><value>Zastosuj</value></data>
    
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Błąd podczas próby otwarcia pliku : nie znaleziono informacji o strumieniu.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Błąd podczas próby otwarcia pliku : nieznany błąd.</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Błąd przy próbie otwarcia pliku : nie znaleziono strumienia wideo.</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Anulowanie...</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Klatek zdekodowanych :</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Postęp w ładowaniu pliku</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Całkowicie nieznany</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Zablokuj granice obszaru roboczego</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Odblokuj granice obszaru roboczego</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Widok 3D</value></data>
@@ -345,7 +313,6 @@
    
    
    
-   
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Skasuj</value></data>
    
    
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Dwa zrzuty ekranu</value></data>
    
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Dwa ekrany odtwarzania</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>Tylko krawędzie...</value></data>
    
    
    
@@ -393,7 +359,6 @@
    
    
    
-   <data name="mnuSharpen" xml:space="preserve"><value>Wyostrz...</value></data>
    
    
    
@@ -420,12 +385,9 @@
    
    
    
-   
-   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Dodaj kluczowy obraz</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Idź do poprzedniej klatki</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Profil koloru</value></data>
-   
    
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Kąt</value></data>
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Ołówek</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Przesuń</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Tekst</value></data>
-   
    
    
    <data name="ToolTip_First" xml:space="preserve"><value>Idź do początku</value></data>
@@ -462,11 +423,9 @@
    
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Zapisz pokaz slajdów z kluczowych obrazów</value></data>
    
-   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Ustaw aktualną klatkę jako pierwszą klatkę Obszaru Roboczego</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Ustaw aktualną klatkę jako ostatnią klatkę Obszaru Roboczego</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Pokaż komentarze</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Różna prędkość odtwarzania</value></data>
    
    
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Ustaw Obszar Roboczy</value></data>
@@ -476,16 +435,6 @@
    
    
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Kontrast...</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    

@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Και τα δυο Video ένα πλαίσιο μπροστά</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Και τα δυο Video ένα πλαίσιο πίσω</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Αναπαραγωγή | Παύση και τα δυο Video</value></data>
-   <data name="Capture_NextImage" xml:space="preserve"><value>Επόμενη εικόνα</value></data>
-   <data name="Capture_NextVideo" xml:space="preserve"><value>Επόμενο Βίντεο</value></data>
-   <data name="Capture_CameraNotFound" xml:space="preserve"><value>Δεν βρέθηκε κάμερα</value></data>
-   <data name="Capture_NetworkCamera" xml:space="preserve"><value>Κάμερα δικτύου</value></data>
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Προσθήκη οθόνης για αποτύπωση</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Προσθήκη Χρονομέτρου</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Προσθήκη Σχεδίου</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Προσθήκη Οθόνης για αναπαραγωγή</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Διαγραφή Σχεδίου</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Κατάργηση Εικόνας "Κλειδί"</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Φόρτωση Video</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Φόρτωση Video</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Αναπαραγωγή Video</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>Κλείσιμο Οθόνης</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Αποθήκευση Video</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Εμφάνιση Οθονών</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Εναλλαγή Οθονών</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Κοινές Λειτουργίες On/Off</value></data>
    
    
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Διευθέτηση Σχεδίου</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Ορατό Πάντα</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Αριθμός Διαιρέσεων:</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Διευθέτηση Πλέγματος</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Διευθέτηση Αδιαφάνειας</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Αδιαφάνεια: {0:0}%</value></data>
    
@@ -181,12 +165,6 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Πραγματικό μέγεθος του τμήματος</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Μέτρηση σφραγίδας</value></data>
    
-   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Παρούσα συσκευή</value></data>
-   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Ιδιότητες</value></data>
-   <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Καμμία άλλη επιλογή διθέσιμη</value></data>
-   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Επιλογή άλλης συσκευής</value></data>
-   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL :</value></data>
-   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>Τύπος :</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Διάρκεια κάθε Βασικής εικόνας : {0} εκατοστά του δευτερολέπτου.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Διάρκεια κάθε Βασικής εικόνας : {0:0.00} δευτερόλεπτα.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Αποθήκευση Video</value></data>
@@ -241,8 +219,6 @@
    
    
    
-   <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Αδύνατη η σύνδεση στην συσκευή εικόνας</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Δεν βρέθηκε συσκευή για σύνδεση.\n Παρακαλούμε βεβαιωθείτε ότι η συσκευή είναι κατάλληλα συνδεδεμένη στον υπολογιστή.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Επικάλυψη αρχείου</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Το αρχείο {0} ήδη υπάρχει.\nΘέλετε να το αντικαταστήσετε?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Άκυρο όνομα αρχείου</value></data>
@@ -250,7 +226,6 @@
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Αδύνατη η δημιουργία Προβολής Διαφανειών</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Μια Προβολή Διαφανειών είναι μια ακολουθία Βασικών Εικόνων αποθηκευμένες σε μορφή video.\n Παρακαλούμε προσθέστε μερικές Βασικές Εικόνες πριν δημιουργήσετε την Προβολή Διαφανειών </value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Αδύνατη η δημιουργία Video με παύση</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Πρέπει να προσθέστε μερικές Βασικές Εικόνες πριν χρησιμοποιήσετε αυτή την λειτουργία.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Αδύνατη η εγγραφή σε αρχείο.\n Σιγουρευτείτε ότι έχετε τα δικαιώματα να γράψετε στον φάκελο προορισμού και πως το αρχείο δεν χρησιμοποιείται αυτή την στιγμή.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Αδύνατη η αποθήκευση του Video. </value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Αδύνατη η αποθήκευση του Video. \n Ξαναπροσπαθήστε με άλλη μορφή αρχείου.</value></data>
@@ -259,12 +234,9 @@
    
    
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Πρόοδος :</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>Αποθήκευση Video…</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Εξαγόμενες εικόνες :</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Εικόνες Εξάγονται…</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Αποσυμπιεσμένα πλαίσια :</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Πρόοδος</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>Εισαγωγή Πλαισίων…</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Εμφάνιση</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Εφαρμογή</value></data>
    
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Αποτυχία: Αδύνατο το άνοιγμα του αρχείου : Πληροφορία ροής δεν βρέθηκε.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Αποτυχία: Αδύνατο το άνοιγμα του αρχείου : Άγνωστο σφάλμα.</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Αποτυχία: Αδύνατο το άνοιγμα του αρχείου : Ροή video δεν βρέθηκε.</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Ακύρωση…</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Αποκωδικοποιημένα πλαίσια :</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Πρόοδος φόρτωσης Αρχείου</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Συνολικά άγνωστα</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Κλείδωμα Ορίων της Ζώνης Εργασίας</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Ξεκλείδωμα Ορίων της Ζώνης Εργασίας</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Πλέγμα Προοπτικής</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Κλείσιμο αυτής της Οθόνης</value></data>
    
    
-   <data name="mnuConfigureFading" xml:space="preserve"><value>Επιμονή…</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Διευθέτηση Απεικόνισης Διαδρομής</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Απόπλεξη</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Διαγραφή</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Δυο Οθόνες Αποτύπωσης</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Μια οθόνη Αποτύπωσης και μια Αναπαραγωγής</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Δυο Οθόνες Αναπαραγωγής</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>Μόνο οι Άκρες…</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Εξαγωγή σε Λογιστικό φύλλο</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    
    <data name="mnuSendPic" xml:space="preserve"><value>Αποστολή εικόνας στο άλλο βίντεο</value></data>
    
-   <data name="mnuSharpen" xml:space="preserve"><value>Όξυνση…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Απεικόνηση συντεταγμένων</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Απεικόνιση Μέτρησης</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Τερματισμός Έκδοσης Διαδρομής</value></data>
@@ -415,10 +380,8 @@
    
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Πρόσφατα χρησιμοποιημένα χρώματα:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Άδειο</value></data>
-   <data name="statusBufferFill" xml:space="preserve"><value>Ενδιάμεση μνήμη: {0}%</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Παύση</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Μεχέθυνση: {0}%</value></data>
-   <data name="Toast_Disconnected" xml:space="preserve"><value>Αποσύνδεση</value></data>
    <data name="Toast_StartRecord" xml:space="preserve"><value>Η εγγραφή ξεκίνησε</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Η εγγραφή σταμάτησε</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Η εικόνα σώθηκε</value></data>
@@ -427,7 +390,6 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Προφίλ Χρώματος…</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Απενεργοποίηση επαλληλίας εικόνων</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Ενεργοποίηση επαλληλίας εικόνων</value></data>
-   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Επολογή πηγής</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Γωνία</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Χρονόμετρο</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Κύκλος</value></data>
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Μολύβι</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Μετακίνηση</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Κείμενο</value></data>
-   
    
    
    <data name="ToolTip_First" xml:space="preserve"><value>Πήγαινε Πίσω στην Αρχή</value></data>
@@ -462,11 +423,9 @@
    <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>Χρώμα φόντου</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Αποθήκευση προβολής-διαφανειών από τις Βασικές Εικόνες</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Αποθήκευση video με παύση σε κάθε βασική εικόνα</value></data>
-   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>Επιλογή Κατεύθυνσης Προορισμού</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Τοποθέτηση του Πρώτου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Τοποθέτηση του Τελευταίου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Εμφάνιση Σχολίων</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Μεταβαλλόμενη Ταχύτητα Αναπαραγωγής</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Αποθήκευση και των δύο εικόνων σαν μια σύνθετη εικόνα</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Αποθήκευση και των δύο βίντεο σαν ένα σύνθετο βίντεο</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Καθορισμός της Ζώνης Εργασίας</value></data>
@@ -476,16 +435,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Περίληψη…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Αντιστροφή…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Αυτόματη Αντίθεση...</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    

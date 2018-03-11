@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Skift sprog</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Vis/Gem filoversigt</value></data>
    
    
    
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Gennemtving 4:3 format</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Auto detektering</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Skift til analyse mode</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Vedholdenhed</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Antal filer i historik:</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard billedformat:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Sprog:</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometer i timen ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Fod pr. Sek. ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Miles i timen ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knob ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Indstillinger</value></data>
    
    
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>10/1000 time</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tidsstempler</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassisk + Billednumre</value></data>
+   
    
    
    

@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Gå til neste bilde for begge videoer</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Gå til forrige bilde for begge videoer</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Spill av | Pause for begge videoer</value></data>
-   
-   
-   
-   
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Legg til vindu for opptak</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Legg til stoppeklokke</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Legg til tegning</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Legg til vindu for avspilling</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Slett tegning</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Slett nøkkelbilde</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Last inn video</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Last inn video</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Spill av video</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>Lukk vindu</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Lagre video</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Vis vindu</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Bytt vindu</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Åpne standardverktøy</value></data>
    
    
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Konfigurer tegning</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Antall kategorier:</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Konfigurer rutenett</value></data>
    
    
    
@@ -180,12 +164,6 @@
    
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Reell størrelse på segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrere måling</value></data>
-   
-   
-   
-   
-   
-   
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Varighet av hvert Nøkkelbilde : {0} hundredels sekund</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Varighet av hvert Nøkkelbilde : {0:0.00} sekunder</value></data>
@@ -245,12 +223,9 @@
    
    
    
-   
-   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – kan ikke lage slideshow</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Et slidehow er en sekvens nøkkelbilder som er lagret I et videoformat.\n Vennligst legg til nøkkelbilder før du genererer slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Kan ikke lage video</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Du må legge til nøkkelbilder før du kan benytte denne funksjonen</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Kan ikke skrive til fil.\nPass på at du har rettighetene til å skrive til aktuell mappe og at filen ikke er I bruk. </value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – kan ikke lagre video</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan ikke lagre video. \n Prøv igjen med et annet format.</value></data>
@@ -259,12 +234,9 @@
    
    
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Framdrift:</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>Lagrer video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Eksporterte bilder:</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Eksporterer bilder...</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Dekomprimerte bilder:</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Framdrift:</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>Importerer bilder...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Utseende</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Bruk</value></data>
    
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Advarsel: Kan ikke åpne fil : streamin informasjon ikke funnet</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Advarsel: Kan ikke åpne fil : ukjent feil</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Advarsel: Kan ikke åpne fil : videostream ikke funnet</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Avbryter...</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Dekodete bilder:</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Innlastingsprosess</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Totalt ukjente</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lås arbeidssonegrensene</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Åpne arbeidssonegrensene</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektiv Rutenett</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Lukk vindu</value></data>
    
    
-   <data name="mnuConfigureFading" xml:space="preserve"><value>Likevekt</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Konfigurer banevisning</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Oppløsing</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Slett</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>To opptaksvinduer</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Et opptaksvindu og et avspillingsvindu</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>To avspillingsvinduer</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>Bare kanter...</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Eksporter til regneark</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    
    
    
-   <data name="mnuSharpen" xml:space="preserve"><value>Skarp opp</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>End bane Editor</value></data>
@@ -420,14 +385,11 @@
    
    
    
-   
-   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Legg til nøkkelbilde</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Gå til forrige bilde</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Fargeprofil</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Deaktiver superposisjon av bilde</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Aktiver superposisjon av bilde</value></data>
-   
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Vinkel</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stoppeklokke</value></data>
    
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Blyant</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Flytt</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Tekst</value></data>
-   
    
    
    <data name="ToolTip_First" xml:space="preserve"><value>Gå tilbake til start</value></data>
@@ -462,11 +423,9 @@
    
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Lagre slideshow fra nøkkelbilder</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Lagre video med en pause ved hvert bilde</value></data>
-   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Sett første bilde I arbeidssonen til det aktuelle bilde</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Sett siste bilde I arbeidssonen til det aktuelle bilde</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Vis kommentarer</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Endre avspillingshastighet</value></data>
    
    
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Marker arbeidsfeltet</value></data>
@@ -476,16 +435,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    

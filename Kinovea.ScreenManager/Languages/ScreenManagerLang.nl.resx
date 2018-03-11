@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Ga naar het volgende frame van beide videos</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Ga naar het vorige frame van beide videos</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Speel | Pauzeer beide videos</value></data>
-   <data name="Capture_NextImage" xml:space="preserve"><value>Volgende afbeelding:</value></data>
-   <data name="Capture_NextVideo" xml:space="preserve"><value>Volgende video:</value></data>
-   <data name="Capture_CameraNotFound" xml:space="preserve"><value>Camera niet gevonden</value></data>
-   <data name="Capture_NetworkCamera" xml:space="preserve"><value>Netwerk camera</value></data>
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Voeg een Opnamescherm toe</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Start Stopwatch</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Voeg een tekening toe</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Voeg scherm toe voor afspelen/analyse</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Verwijder tekening</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Verwijder een Kernbeeld</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Laad video</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Laad video</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Speel video</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>Sluit scherm</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Bewaar video</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Toon schermen</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Wissel schermen</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Open/sluiten standaard bediening</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>Gegevens analyse</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Spreidings diagram</value></data>
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configureer Tekening</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Naam</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Altijd zichtbaar</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Aantal delen:</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configureer raster</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configureer doorzichtigheid</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Doorzichtigheid: {0:0}%</value></data>
    <data name="dlgTimebase_Title" xml:space="preserve"><value>Configureer de timing van de video</value></data>
@@ -181,12 +165,6 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Werkelijke afmetingen van het segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Lijn Calibratie</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Vlak Calibratie</value></data>
-   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Huidige selectie:</value></data>
-   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Eigenschappen</value></data>
-   <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Geen andere optie beschikbaar</value></data>
-   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Kies een ander apparaat</value></data>
-   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL:</value></data>
-   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>Type:</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duur van elke Kernbeeld :{0} hondersten van seconden.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duur van elk Kernbeeld :{0:0.00} seconden.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Bewaar video</value></data>
@@ -241,8 +219,6 @@
    <data name="DrawingName_HumanModel" xml:space="preserve"><value>Model van mens</value></data>
    <data name="DrawingName_HumanModel2" xml:space="preserve"><value>Model van mens (2)</value></data>
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>Testraster voor camera</value></data>
-   <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Kan niet verbinden met video apparaat.</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Kan geen apparaat vinden om mee te verbinden.\n Zorg er voor dat het apparaat verbonden is met de computer.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overschrijf bestand</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Het bestand {0} bestaat reeds.\nWilt u het vervangen?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Incorrecte bestandsnaam</value></data>
@@ -250,7 +226,6 @@
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Kan geen Diavoorstelling maken</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Een diavoorstelling is een rij opeenvolgende Kernbeelden opgeslagen in video format.\n Voer a.u.b. enkele kernbeelden in,voordat u de diavoorstelling maakt.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Kan geen video met pauzes maken</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>U dient enkele Kernbeelden toe te voegen, voordat u deze functie kunt gebruiken.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Onmogelijk bestand te maken. \nZorg ervoor dat u de rechten heeft om bestanden op te slaan in doelmap en dat het bestand nu niet in gebruik is.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Kan bestand niet opslaan.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan video niet opslaan.\nProbeer nogmaals met een ander format.</value></data>
@@ -259,12 +234,9 @@
    <data name="FormCameraAlias_Icon" xml:space="preserve"><value>Icoon</value></data>
    <data name="FormIconPicker_Title" xml:space="preserve"><value>Iconen</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Voortgang :</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>Bewaar video…</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Geëxporteerde afbeeldingen:</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Exporteren van de afbeeldingen…</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Gekozen frames :</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Voortgang</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>Importeren van frames…</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Verschijning</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Toepassen</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Pijlen:</value></data>
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Fout bij het openen van het bestand : informatie van voortgang niet gevonden.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Fout bij openen van bestand : onbekende fout.</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Fout bij openen van het bestand : geen video voortgang gevonden.</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Annuleren…</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Gedecodeerde frames :</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Inleesproces :</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Totaal onbekend</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Werkgebiedgrenzen vergrendelen</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Werkgebiedgrenzen ontgrendelen</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspectief raster</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Sluit dit scherm</value></data>
    <data name="mnuCopyToClipboard" xml:space="preserve"><value>Kopieer naar klembord</value></data>
    <data name="mnuCopyImageToClipboard" xml:space="preserve"><value>Kopieer afbeelding naar klembord</value></data>
-   <data name="mnuConfigureFading" xml:space="preserve"><value>Persistentie...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configureer Trajectpad beeldscherm</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Verwijder</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Twee opname schermen</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Eén opnamescherm en één afspeelscherm</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Twee afspeel schermen</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>Randen alleen…</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Export naar Spreadsheet</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibreer…</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Zend beeld naar de andere video</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configureer de videotiming…</value></data>
-   <data name="mnuSharpen" xml:space="preserve"><value>Verscherp…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Toon coördinaten</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Toon afmeting</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Beëindig Trajectory bewerking</value></data>
@@ -415,10 +380,8 @@
    <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Sluit dit menu</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Recent gebruikte kleuren:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Leeg</value></data>
-   <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pauze</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zoom: {0}%</value></data>
-   <data name="Toast_Disconnected" xml:space="preserve"><value>Niet verbonden</value></data>
    <data name="Toast_StartRecord" xml:space="preserve"><value>Opname gestart</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Opname gestopt</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Beeld opgeslagen</value></data>
@@ -427,7 +390,6 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Kleurprofiel</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Deactiveer superposition van de beelden</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Activeer superposition van de beelden</value></data>
-   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Kies opnamebron</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Hoek</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopwatch/tijdas</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Cirkel</value></data>
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Potlood</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Verplaats</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Tekst</value></data>
-   <data name="ToolTip_DrawingToolArrow" xml:space="preserve"><value>Pijl</value></data>
    <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve"><value>Spotlicht</value></data>
    <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve"><value>Automatische nummering</value></data>
    <data name="ToolTip_First" xml:space="preserve"><value>Ga terug naar het begin</value></data>
@@ -462,11 +423,9 @@
    <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>Achtergrondkleur</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Bewaar een diashow van de kernafbeeldingen</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Sla de video op met een pauze op elk Kernbeeld</value></data>
-   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>Kies map</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Maak eerste frame van het werkgebied nu het huidige frame</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Maak laatste frame van het werkgebied nu het huidige frame</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Toon commentaar</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Varieer afspeelsnelheid</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Bewaar beide beelden in een samengestelde afbeelding</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Bewaar beide videos in een samengestelde video</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Definieer werkgebied</value></data>
@@ -482,17 +441,7 @@
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Datum</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>De volgende projecten werden niet correct opgeslagen, maar kunnen hersteld worden:</value></data>
    <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Configureer het mozaïek</value></data>
-   <data name="FormConfigureComposite_Type" xml:space="preserve"><value>Type: </value></data>
-   <data name="FormConfigureComposite_TypeBasic" xml:space="preserve"><value>Enkele weergave</value></data>
-   <data name="FormConfigureComposite_TypeMultipleReviews" xml:space="preserve"><value>Meervoudige weergave</value></data>
-   <data name="FormConfigureComposite_TypeSlowMotion" xml:space="preserve"><value>Slow Motion</value></data>
-   <data name="FormConfigureComposite_TypeFrozenMosaic" xml:space="preserve"><value>Tijd gestopt</value></data>
-   <data name="FormConfigureComposite_TypeMixed" xml:space="preserve"><value>Gemengd</value></data>
-   <data name="FormConfigureComposite_ImageCount" xml:space="preserve"><value>Aantal beelden:</value></data>
-   <data name="FormConfigureComposite_Interval" xml:space="preserve"><value>Interval: </value></data>
-   <data name="FormConfigureComposite_RefreshRate" xml:space="preserve"><value>Verversingssnelheid:</value></data>
-   <data name="FormConfigureComposite_Start" xml:space="preserve"><value>Start:</value></data>
-   <data name="FormConfigureComposite_SlowMotionFactor" xml:space="preserve"><value>Slow motion factor:</value></data>
+   
    
    
    

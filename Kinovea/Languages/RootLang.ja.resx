@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>言語の変更</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>エクスプローラーの表示/非表示</value></data>
    
    
    
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>4:3に変換</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>自動検出</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>分析モードに変更</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>継続時間</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>履歴上のファイル数:</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>デフォルト画像フォーマット:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>言語:</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>時速/km ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>秒速/ft ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>時速/miles ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>ノット ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>設定</value></data>
    
    
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>1/10,000時間</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>タイムスタンプ</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>クラシック + フレーム 数</value></data>
+   
    
    
    

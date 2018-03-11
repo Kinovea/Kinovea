@@ -86,7 +86,7 @@ for pattern in patterns:
         os.remove(file)
 
 # 0. Extract content.xml from the OpenOffice document.
-z = zipfile.ZipFile("Kinovea-l14n-rev0019.ods", "r")
+z = zipfile.ZipFile("Kinovea-l14n-rev0020.ods", "r")
 z.extract("content.xml")
 
 print("\nGenerate all Resx, first pass.")
@@ -111,7 +111,7 @@ generate_resource_accessor("ScreenManager", "Kinovea.ScreenManager")
 generate_resource_accessor("Camera", "Kinovea.Camera")
 
 # Extra work to handle Serbian culture name change in Windows 10.
-# We compile two extra satellite assembly per module.
+# We compile two extra satellite assemblies per module.
 # When Kinovea runs on Windows < 10 it will use these cultures.
 
 
