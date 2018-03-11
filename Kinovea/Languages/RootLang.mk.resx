@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Промена на јазик</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Покажи/Скриј истражувач на датотеката</value></data>
    
    
    
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Сила 4:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Автоматско пронаоѓање</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Префрли се на режимот за анализа</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Постојаност</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Број на датотеки во историјата:</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Стандарден формат на сликата:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Јазик</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Килмометри на час</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Стапки во секунда</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Милји во секунда</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Наутичка милја ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Параметри</value></data>
    
    
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет илјадити дел од часот</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Бележење на времето</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Класично + Број на фрејмови</value></data>
+   
    
    
    

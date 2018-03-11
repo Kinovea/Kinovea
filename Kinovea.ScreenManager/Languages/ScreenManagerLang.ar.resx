@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>الذهاب إلى الكادر التالي لكلا الفيديوهين</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>الذهاب إلى الكادر السابق لكلا الفيديوهين</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>تشغيل| ايقاف كلا الفديوهين</value></data>
-   <data name="Capture_NextImage" xml:space="preserve"><value>الصورة التالية :</value></data>
-   <data name="Capture_NextVideo" xml:space="preserve"><value>الفيديو التالي :</value></data>
-   <data name="Capture_CameraNotFound" xml:space="preserve"><value>لم يتم العثور علي الكاميرا</value></data>
-   <data name="Capture_NetworkCamera" xml:space="preserve"><value>كاميرا متصلة بالشبكة</value></data>
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>إضافة شاشة للالتقاط</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>إضافة ساعة توقيت</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>إضافة رسم</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>إضافة شاشة للتشغيل</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>حذف الرسم</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>إزالة صورة الرئيسية</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>تحميل فيديو</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>تحميل فيديو</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>تشغيل الفيديو</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>إغلاق الشاشة</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>حفظ الفيديو</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>عرض الشاشات</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>تبديل موضع الفيديو</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>إظهار / إخفاء عناصر التحكم العامة</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>تحليل البيانات</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>نقاط منتشرة</value></data>
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>اعدادت الرسم</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>اسم</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>مرئي دائما</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>عدد الأقسام:</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>اعدادات الشبكة</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>اعدادت التعتيم</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>التعتيم: {0: 0}٪</value></data>
    <data name="dlgTimebase_Title" xml:space="preserve"><value>اعدادات توقيت الفيديو</value></data>
@@ -181,12 +165,6 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>الحجم الحقيقي للمقطع:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>معايرة الخط</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>خطة المعايرة</value></data>
-   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>الجهاز الحالي</value></data>
-   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>الخصائص</value></data>
-   <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>لايوجد خيار متاح</value></data>
-   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>حدد جهاز آخر</value></data>
-   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL:</value></data>
-   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>النوع :</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>المدة في كل صورة رئيسية: {0} مائة من الثواني.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>مدة كل صورة رئيسية: {0: 0.00} ثواني.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>حفظ الفيديو</value></data>
@@ -241,8 +219,6 @@
    <data name="DrawingName_HumanModel" xml:space="preserve"><value>نموذج الإنسان</value></data>
    <data name="DrawingName_HumanModel2" xml:space="preserve"><value>نموذج الإنسان 2 </value></data>
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>شبكة اختبار الكاميرا</value></data>
-   <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>لا يمكن الاتصال إلى جهاز الفيديو</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>لا يمكن العثور على أي جهاز للاتصال. \n الرجاء التأكد من توصيل الجهاز بشكل صحيح إلى الكمبيوتر.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>الكتابة علي ملف</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>الملف {0} موجود بالفعل. \n هل تريد استبداله؟</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>اسم الملف غير صالح</value></data>
@@ -250,7 +226,6 @@
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>كينوفيا - غير قادر علي إنشاء عرض للشرائح. </value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>عرض الشرائح هو سلسلة من الصور الرئيسية محفوظة في شكل شريط فيديو. \n الرجاء إضافة بعض الصور الرئيسية قبل إنشاء عرض الشرائح.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>كينوفيا - غير قادر علي إنشاء فيديو مؤقت.</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>تحتاج إلى إضافة بعض الصور الرئيسية قبل استخدام هذه الخاصية.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>غير قادر على الكتابة علي الملف. \n تأكد ان لديك الحق في الكتابة في المجلد المحدد، وأنه لم يتم استخدام الملف حاليا.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>كينوفيا - غير قادر على حفظ الفيديو.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>غير قادر على حفظ الفيديو. \n حاول مرة أخرى بصيغة مختلفة.</value></data>
@@ -259,12 +234,9 @@
    <data name="FormCameraAlias_Icon" xml:space="preserve"><value>أيقونة:</value></data>
    <data name="FormIconPicker_Title" xml:space="preserve"><value>الرموز</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>تقدم :</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>حفط الفيديو...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>الصور المصدرة :</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>تصدير الصور...</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>الكادرات الغير مضغوطة :</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>تقدم</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>استيراد كادرات...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>الظهور</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>تطبيق</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>اسهم:</value></data>
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: معلومات البث غير موجوده.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: خطأ غير معروف.</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: بث الفيديو غير موجود.</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>إلغاء...</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>فك تشفير الكادرات:</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>تقدم تحميل ملف</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>غير معروف بالكامل</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>قفل حدود منطقة العمل</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>فتح حدود منطقة العمل</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>شبكة المنظور</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>إغلاق هذه الشاشة</value></data>
    <data name="mnuCopyToClipboard" xml:space="preserve"><value>نسخ إلى الحافظة</value></data>
    <data name="mnuCopyImageToClipboard" xml:space="preserve"><value>نسخ صورة إلى الحافظة</value></data>
-   <data name="mnuConfigureFading" xml:space="preserve"><value>استمرار ...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>اعدادات عرض المسار</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>فك التشابك</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>حذف</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>شاشتين للالتقاط</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>شاشة للالتقاط وشاشة للعرض</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>شاشتين للعرض</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>حواف فقط...</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>تصدير الي ورقة جدولية</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    <data name="mnuCalibrate" xml:space="preserve"><value>معايرة...</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>إرسال صورة إلى الفيديو اخر</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>اعدادات توقيت الفيديو ...</value></data>
-   <data name="mnuSharpen" xml:space="preserve"><value>حدة الوضوح...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>عرض الاحداثيات</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>عرض القياس</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>انهاء تحرير المسار</value></data>
@@ -415,10 +380,8 @@
    <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>إغلاق هذه القائمة</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>الألوان المستخدمة مؤخرا:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>فارغ</value></data>
-   <data name="statusBufferFill" xml:space="preserve"><value>المخزن المؤقت: {0}٪</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>وقف</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>التكبير: {0}٪</value></data>
-   <data name="Toast_Disconnected" xml:space="preserve"><value>انقطع الاتصال</value></data>
    <data name="Toast_StartRecord" xml:space="preserve"><value>بدأ تسجيل</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>توقف تسجيل</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>الصورة المحفوظة</value></data>
@@ -427,7 +390,6 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>بروفايل اللون...</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>تعطيل تراكب الصور</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>تمكين تراكب الصور</value></data>
-   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>اختر مصدر</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>زاوية</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>ساعة ايقاف</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>دائرة</value></data>
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>قلم</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>حرك</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>نص</value></data>
-   <data name="ToolTip_DrawingToolArrow" xml:space="preserve"><value>سهم</value></data>
    <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve"><value>ضوء كشاف</value></data>
    <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve"><value>ترقيم تلقائي</value></data>
    <data name="ToolTip_First" xml:space="preserve"><value>العودة إلى البداية</value></data>
@@ -462,11 +423,9 @@
    <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>لون الخلفية</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>حفظ شرائح من الصور الرئيسية</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>حفظ الفيديو مع وقفة على كل صورة الرئيسية</value></data>
-   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>اختار المسار</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>تعيين الكادر الأول في منطقة العمل إلى الكادر الحالي</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>تعيين الكادر الأخير من منطقة العامل إلى الكادر الحالي</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>اظهار التعليقات</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>تغير سرعة العرض</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>حفظ كل الصور في صورة مركبة</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>حفظ كلا الفيديوهين في فيديو مركب</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>اعداد منطقة العمل</value></data>
@@ -482,17 +441,7 @@
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>تاريخ</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>لم يتم حفظ المشاريع التالية بشكل صحيح ولكن يمكن استردادها:</value></data>
    <data name="FormConfigureComposite_Title" xml:space="preserve"><value>اعدادات التداخلات</value></data>
-   <data name="FormConfigureComposite_Type" xml:space="preserve"><value>نوع:</value></data>
-   <data name="FormConfigureComposite_TypeBasic" xml:space="preserve"><value>عرض واحد</value></data>
-   <data name="FormConfigureComposite_TypeMultipleReviews" xml:space="preserve"><value>رؤية متعدده</value></data>
-   <data name="FormConfigureComposite_TypeSlowMotion" xml:space="preserve"><value>العرض البطيء</value></data>
-   <data name="FormConfigureComposite_TypeFrozenMosaic" xml:space="preserve"><value>تجميد الوقت</value></data>
-   <data name="FormConfigureComposite_TypeMixed" xml:space="preserve"><value>مختلط</value></data>
-   <data name="FormConfigureComposite_ImageCount" xml:space="preserve"><value>عدد الصور:</value></data>
-   <data name="FormConfigureComposite_Interval" xml:space="preserve"><value>فترة:</value></data>
-   <data name="FormConfigureComposite_RefreshRate" xml:space="preserve"><value>معدل التحديث:</value></data>
-   <data name="FormConfigureComposite_Start" xml:space="preserve"><value>بداية:</value></data>
-   <data name="FormConfigureComposite_SlowMotionFactor" xml:space="preserve"><value>عامل العرض البطيء:</value></data>
+   
    
    
    

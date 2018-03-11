@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Оди на следната слика од двете видеа</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Оди на претходната слика од двете видеа</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Старт | Пауза на двете видеа</value></data>
-   <data name="Capture_NextImage" xml:space="preserve"><value>Следна слика :</value></data>
-   <data name="Capture_NextVideo" xml:space="preserve"><value>Следно видео :</value></data>
-   <data name="Capture_CameraNotFound" xml:space="preserve"><value>Камерата не е пронајдена</value></data>
-   <data name="Capture_NetworkCamera" xml:space="preserve"><value>Камерата не е пронајдена</value></data>
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Додади екран за снимање</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Додади стоперица</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Додади цртање</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Додади екран за репродукција</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Избриши го цртаното</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Отстрани ја клучната слика</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Вчитај го видеото</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Вчитај го видеото</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Стартувај го видеото</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>Зачувај го видеото</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Зачувај го видео</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Прикажи ги екраните</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Смени ги екраните</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Вклучувач на вообичаните контроли</value></data>
    
    
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Прилагодување на цртањето</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Секогаш видливо</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Број на делови :</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Прилагодување на координатната мрежа</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Прилагодување на нејасност</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Нејасност: {0:0}%</value></data>
    
@@ -181,12 +165,6 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Оригинална големина на сегментот:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Калибрација на линијата</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Калибрација на рамнината</value></data>
-   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Актуелен уред</value></data>
-   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Својства</value></data>
-   <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Не е достапна друга опција</value></data>
-   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Одбери друг уред</value></data>
-   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL :</value></data>
-   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>Тип :</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Траење на секоја клучна слика : {0} стоти дел од секунда.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Траење на секоја клучна слика : {0:0.00} секунди.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Зачувај го видеото</value></data>
@@ -241,8 +219,6 @@
    
    
    
-   <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Не може да се поврзе со видео уредот</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Не може да се најде уред за да се конектира на. \n Ве молам осигурајте се дека уредот е правилно поврзан со компјутерот.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Датотека презапиши</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Датотеката {0} веќе постои. \n Дали сакаш да ја замениш?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Невалидно име на датотеката</value></data>
@@ -250,7 +226,6 @@
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Киновеа – не може да креира слајдшоу</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Слајдшоу е секвенца од клучни слиии зачувани во видео формат. \n Ве молам додадете некои клучни слики пред да генерирате слајдшоу.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Киновеа – не може да креира паузирано видео</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Треба да додадете некои клучни слики пред да ја користите оваа функција.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Не може да се впише датотека. \nОсигурајте се дека имате дозвола да пишувате во оваа папка и дека датотеката моментално не се користи.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Киновеа – не може да го зачува видеото.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Не може да се зачува видеото.\nОбидете се со друг формат.</value></data>
@@ -259,12 +234,9 @@
    
    
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Прогрес:</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>Зачувување на видеото...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Експортирани слики:</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Експортирање слики...</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Декомпресирани слики:</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Прогрес:</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>Импортирање слики...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Изглед</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Примени</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Стрелки:</value></data>
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Проблем: Не може да се отвори датотеката : текот на информациите не е пронајден.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Проблем: не може да се отвори датотеката : непозната грешка.</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Проблем: не може да се отвори датотеката : текот на видеото не е пронајден.</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Откажување</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Декодирани слики :</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Прогрес на вчитување на датотеката</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Вкупно непознато</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Заклучи ги границите на работната зона</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Отклучи ги границите на работната зона</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Перспектива на координатната мрежа</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Затвори го овој екран</value></data>
    
    
-   <data name="mnuConfigureFading" xml:space="preserve"><value>Постојаност...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Конфигурарај го патот на прикажување</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Расплетување</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Бриши</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Два екрани за снимање</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Еден екран за снимање и еден екран за репродукција</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Два екрани за репродукција</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>Само границите</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Експорт во табеларен приказ</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    <data name="mnuCalibrate" xml:space="preserve"><value>Калибрирај...</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Прати ја сликата на друго видео</value></data>
    
-   <data name="mnuSharpen" xml:space="preserve"><value>Изострување...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Прикажи координати</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Прикажи мерка</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Зврши со уредување на патеката</value></data>
@@ -415,10 +380,8 @@
    
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Неодамна користени бои:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Празно</value></data>
-   <data name="statusBufferFill" xml:space="preserve"><value>Бафер: {0}%</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Пауза</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Зум: {0}%</value></data>
-   <data name="Toast_Disconnected" xml:space="preserve"><value>Исклучено</value></data>
    <data name="Toast_StartRecord" xml:space="preserve"><value>Снимањето е започнато</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Снимањето е стопирано</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Зачувана слика</value></data>
@@ -427,7 +390,6 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Боја на профилот</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Оневозможи суперпозиција на сликите</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Овозможи суперпозиција на сликите</value></data>
-   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Одбери извор</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Агол</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Стоперица</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Круг</value></data>
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Молив</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Движи</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Текст</value></data>
-   <data name="ToolTip_DrawingToolArrow" xml:space="preserve"><value>Стрелка</value></data>
    <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve"><value>Центар на внимание</value></data>
    <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve"><value>Авто броеви</value></data>
    <data name="ToolTip_First" xml:space="preserve"><value>Врати се на почетокот</value></data>
@@ -462,11 +423,9 @@
    <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>Боја на заднината</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Зачувај слајдшоу од клучните слики</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Зачувај го видеото со пауза на секоја клучна слика</value></data>
-   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>Одбери директориум</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Постави го првиот фрејм од работната зона како моментален фрејм</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Постави го последниот фрејм од работната зона како моментален фрејм</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Прикажи коментари</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Промени ја брзината на репродукција</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Зачувај ги двете слики како композитна слика</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Зачувај ги двете видеа во композитно видео</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Прилагоди ја работната зона</value></data>
@@ -476,16 +435,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Преглед...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Обратно...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Автоматско прилагодување на контрастот...</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    

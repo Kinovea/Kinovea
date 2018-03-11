@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Wijzig de taal</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Toon/Verberg bestandsverkenner</value></data>
    <data name="dlgAbout_Translation" xml:space="preserve"><value>Vertaling</value></data>
    <data name="dlgAbout_License" xml:space="preserve"><value>Licentie</value></data>
    <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Bouwstenen</value></data>
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Forceer 4:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatische Detectie</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Schakel naar Analyse-modus</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Persistentie</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Aantal bestanden in historie:</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standaard beeldformaat:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Taal:</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometer per uur ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Voet per seconde ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mijl per uur ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knopen ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Voorkeuren</value></data>
    <data name="mnuTimeFormat" xml:space="preserve"><value>Tijd</value></data>
    <data name="dlgPreferences_Player_UnitTime" xml:space="preserve"><value>Tijd:</value></data>
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een uur</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tijdsstempel</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassiek + Beeldnummers</value></data>
+   
    
    
    

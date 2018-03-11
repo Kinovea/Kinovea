@@ -61,24 +61,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Language.
-        /// </summary>
-        public static string CommandSwitchUICulture_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandSwitchUICulture_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show/Hide File Explorer.
-        /// </summary>
-        public static string CommandToggleFileExplorer_FriendlyName {
-            get {
-                return ResourceManager.GetString("CommandToggleFileExplorer_FriendlyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Building blocks.
         /// </summary>
         public static string dlgAbout_BuildingBlocks {
@@ -484,15 +466,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Persistence.
-        /// </summary>
-        public static string dlgPreferences_Drawings_tabPersistence {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Drawings_tabPersistence", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Number of files in history:.
         /// </summary>
         public static string dlgPreferences_General_lblHistoryCount {
@@ -885,15 +858,6 @@ namespace Kinovea.Root.Languages {
         public static string dlgPreferences_Speed_KilometersPerHour {
             get {
                 return ResourceManager.GetString("dlgPreferences_Speed_KilometersPerHour", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Knots ({0}).
-        /// </summary>
-        public static string dlgPreferences_Speed_Knots {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Speed_Knots", resourceCulture);
             }
         }
         

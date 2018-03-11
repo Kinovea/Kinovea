@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>تغيير اللغة</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>اظهار/اخفاء متصفح الملفات</value></data>
    <data name="dlgAbout_Translation" xml:space="preserve"><value>الترجمة</value></data>
    <data name="dlgAbout_License" xml:space="preserve"><value>الرحضة</value></data>
    <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>البنية الاساسية</value></data>
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>مصدر 4:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>اكتشاف تلقائي</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>التبديل الي وضع التحليل</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>الاستمرار</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>عدد الملفات في سجل التصفح:</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>تهيئة الصورة الافتراضية:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>اللغة:</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>كيلومتر في الساعة ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>قدم في الثانية ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>ميل في الساعة ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>عقدة ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>التفضيلات</value></data>
    <data name="mnuTimeFormat" xml:space="preserve"><value>الزمن</value></data>
    <data name="dlgPreferences_Player_UnitTime" xml:space="preserve"><value>الزمن:</value></data>
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>عشرة آلاف في الساعة</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>الطوابع الزمنية</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>كلاسيكي + عدد الكادرات</value></data>
+   
    
    
    

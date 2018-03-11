@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Canviar l'idioma</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Mostrar/amagar l'explorador d'arxius</value></data>
    <data name="dlgAbout_Translation" xml:space="preserve"><value>Traducció</value></data>
    <data name="dlgAbout_License" xml:space="preserve"><value>Llicència</value></data>
    <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Fonaments</value></data>
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Forçar 4:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Detecció automàtica</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Canviar a Mode d'Anàlisis</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Persistència</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Nombre d'arxius a l'historial</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Format d'imatge per defecte</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Idioma</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Quilòmetre per hora ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Peus per sogon ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Milles per hora ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Nusos ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferències</value></data>
    <data name="mnuTimeFormat" xml:space="preserve"><value>Temps</value></data>
    <data name="dlgPreferences_Player_UnitTime" xml:space="preserve"><value>Temps:</value></data>
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deumilèssimes d'hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Marques de temps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classic + Número de fotogrames</value></data>
+   
    
    
    

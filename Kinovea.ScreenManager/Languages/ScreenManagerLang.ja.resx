@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>両方のビデオの次のフレームへ</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>両方のビデオの前のフレームへ</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>両方のビデオの再生 | 停止</value></data>
-   <data name="Capture_NextImage" xml:space="preserve"><value>次のイメージ:</value></data>
-   <data name="Capture_NextVideo" xml:space="preserve"><value>次のビデオ:</value></data>
-   <data name="Capture_CameraNotFound" xml:space="preserve"><value>カメラが検出されませんでした</value></data>
-   <data name="Capture_NetworkCamera" xml:space="preserve"><value>ネットワークカメラ</value></data>
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>キャプチャ用スクリーンの追加</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>ストップウォッチの追加</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>ドローイングの追加</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>プレイバック用スクリーンの追加</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>ドローイングの削除</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>キーイメージの削除</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>ビデオを開く</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>ビデオを開く</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>ビデオを再生</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>スクリーンを閉じる</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>ビデオの保存</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>スクリーンの表示</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>スクリーンの交換</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>同時コントロールの切り替え</value></data>
    
    
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>ドローイングの設定</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>常に表示</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>分割の数:</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>グリッドの設定</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>透明度の設定</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>透明度: {0:0}%</value></data>
    
@@ -181,12 +165,6 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>セグメントの実際のサイズ:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>ライン較正</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>平面較正</value></data>
-   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>現行のデバイス</value></data>
-   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>プロパティ</value></data>
-   <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>他のオプションは選択不可</value></data>
-   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>他のデバイスを選択してください。</value></data>
-   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL :</value></data>
-   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>タイプ :</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>各キーイメージの継続性 : {0} 1/100秒。</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>各キーイメージの継続性 : {0:0.00} 秒。 </value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>ビデオの保存</value></data>
@@ -241,8 +219,6 @@
    
    
    
-   <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>ビデオデバイスと接続できません</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>接続可能デバイスが検出されません。\nデバイスが正しくコンピューターに接続されていることを確認して下さい。</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>ファイル上書き</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>ファイル {0} は既に存在します。\n置き換えますか？</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>無効なファイル名</value></data>
@@ -250,7 +226,6 @@
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - スライドショーを生成できません</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>スライドショーはビデオフォーマットで保存された一連のキーイメージです。\nスライドショーを生成する前にキーイメージを追加してください。</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - 停止したビデオを生成できません。</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>この機能を使うためにはキーイメージを追加する必要があります。</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>ファイルを上書きできません。\nターゲットフォルダに書き込む権利を有し、別の場所でファイルが使われていないことを確認して下さい。</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - ビデオを保存できませんでした</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>ビデオを保存できませんでした。\n別のフォーマットでもう一度試してみてください。</value></data>
@@ -259,12 +234,9 @@
    
    
    <data name="FormFileSave_Infos" xml:space="preserve"><value>進行中…</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>ビデオ保存中…</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>イメージエクスポート:</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>イメージエクスポート中:</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>解凍されたフレーム:</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>進行中</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>フレームインポート中…</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>外観</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>適用</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>矢印:</value></data>
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : ストリーム情報が検出されませんでした。</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : 不明なエラー。</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : ビデオストリームが検出されませんでした。</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>キャンセル中…</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>デコードされたフレーム: </value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>ファイルロード中</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>合計不能</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>作業範囲を固定</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>作業範囲の固定解除</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>パースペクティブグリッド</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>このスクリーンを閉じる</value></data>
    
    
-   <data name="mnuConfigureFading" xml:space="preserve"><value>継続時間…</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>軌道表示設定</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>インターランス解除</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>削除</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>二つのキャプチャスクリーン</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>キャプチャスクリーンとプレイバックスクリーン</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>二つのプレイバックスクリーン</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>エッジのみ…</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>スプレッドシートにエクスポート</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    <data name="mnuCalibrate" xml:space="preserve"><value>較正…</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>イメージを他のビデオに送る</value></data>
    
-   <data name="mnuSharpen" xml:space="preserve"><value>鮮明化…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>座標を表示</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>計測値を表示</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>軌道の最終地点を確定</value></data>
@@ -415,10 +380,8 @@
    
    <data name="RecentlyUsedColors" xml:space="preserve"><value>最近使用されたカラー:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>空</value></data>
-   <data name="statusBufferFill" xml:space="preserve"><value>バッファ: {0}%</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>一時停止</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>ズーム: {0}%</value></data>
-   <data name="Toast_Disconnected" xml:space="preserve"><value>接続解除</value></data>
    <data name="Toast_StartRecord" xml:space="preserve"><value>録画開始</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>録画停止</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>イメージが保存されました</value></data>
@@ -427,7 +390,6 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>カラープロファイル</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>イメージの重複を無効化</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>イメージの重複を有効化</value></data>
-   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>ソースを選択</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>角度</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>ストップウォッチ</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>円</value></data>
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>ペン</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>移動</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>テキスト</value></data>
-   <data name="ToolTip_DrawingToolArrow" xml:space="preserve"><value>矢印</value></data>
    <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve"><value>スポットライト</value></data>
    <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve"><value>オートナンバー</value></data>
    <data name="ToolTip_First" xml:space="preserve"><value>最初に戻る</value></data>
@@ -462,11 +423,9 @@
    <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>背景の色</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>キーイメージからスライドショーを保存</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>各キーイメージで一時停止したビデオを保存</value></data>
-   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>ディレクトリを選択</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>作業範囲の最初のフレームを現在のフレームにセット</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>作業範囲の最後のフレームを現在のフレームにセット</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>コメントを表示</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>再生スピードを変更 </value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>両方のイメージをコンポジットイメージに保存</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>両方のビデオをコンポジットビデオに保存</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>作業範囲を設定</value></data>
@@ -476,16 +435,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>概要…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>逆再生…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>オートコントラスト…</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    

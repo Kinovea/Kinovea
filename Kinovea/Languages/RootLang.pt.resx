@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Escolher Idioma</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Mostrar/Ocultar o Gerenciador de Arquivos</value></data>
    
    
    
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Forçar formato 4:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Auto Detecção</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Mudar para o Módulo de Análise</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Persistência</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Número de arquivos no histórico:</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Formato padrão de imagem:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Idioma:</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilomêtros por hora ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Pés por segundo ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Milhas por hora ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Nós ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferências</value></data>
    
    
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dez milésimos de uma hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Contador de Tempo</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clássico + Número de Quadros</value></data>
+   
    
    
    

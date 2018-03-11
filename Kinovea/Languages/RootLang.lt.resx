@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Pakeisti kalba</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Rodyti/slėpti dokumentų naršyklę</value></data>
    
    
    
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Formatas 4:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatinis aptikimas</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Pereitį į analizavimo rėžimą</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Išlaikymas</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Dokumentų kiekis atmintyje:</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Numatytasis paveikslėlio formatas:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Kalba:</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometrai per valandą ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Pedų per sekundę ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Milių per valandą ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Mazgų ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Parinktys</value></data>
    
    
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dešimt tūkstantoji valandos</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Laiko žyma</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Standartinis + Kadro numeriai</value></data>
+   
    
    
    

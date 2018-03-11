@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Her İki Video için Bir Sonraki Kareye Git</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Her İki Video için Bir Önceki Kareye Git</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Her İki Videoyu Oynat | Duraklat</value></data>
-   <data name="Capture_NextImage" xml:space="preserve"><value>Sonraki imaj:</value></data>
-   <data name="Capture_NextVideo" xml:space="preserve"><value>Sonraki video:</value></data>
-   <data name="Capture_CameraNotFound" xml:space="preserve"><value>Kamera bulunamadı</value></data>
-   <data name="Capture_NetworkCamera" xml:space="preserve"><value>Ağ kamerası</value></data>
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Görüntü Yakalama için Ekran Ekle</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Kronometre Ekle</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Çizim Ekle</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Oynatma için Ekran Ekle</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Çizim Sil</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Bir Anahtar İmajı Kaldır </value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Video Yükle</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Video Yükle</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Video Oynat</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>Ekran Kapat</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Video Kaydet</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Ekranları Göster</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Ekranları Karşılıklı Değiştir</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Ortak Kontrollere Geç</value></data>
    
    
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Çizimi Ayarla</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Her zaman Görünür</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Bölüm Sayısı :</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Izgarayı Ayarla</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Opaklığı Ayarla</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opaklık: {0:0}%</value></data>
    
@@ -181,12 +165,6 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmentin gerçek büyüklüğü :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Ölçümü Kalibre Et</value></data>
    
-   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Geçerli aygıt</value></data>
-   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Özellikler</value></data>
-   <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Başka bir seçenek yok</value></data>
-   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Başka bir aygıt seç</value></data>
-   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL :</value></data>
-   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>Tip :</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Her bir Anahtar İmaj üzerinde geçen süre: saniyenin yüzde {0} sı.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Her bir Anahtar İmaj üzerinde geçen süre : {0:0.00} saniye.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Videoyu Kaydet</value></data>
@@ -241,8 +219,6 @@
    
    
    
-   <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Video aygıtına bağlanamıyor</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Bağlanacak bir aygıt bulunamadı.\nLütfen aygıtın bilgisayara uygun şekilde bağlı olduğundan emin olun.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Dosyanın üzerine yaz</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Dosya {0} zaten mevcut.\nDeğiştirmek istiyor musunuz?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Geçersiz dosya ismi</value></data>
@@ -250,7 +226,6 @@
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Slayt gösterisi yaratılamıyor.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Slayt gösterisi, video formatı olarak kaydedilen bir Anahtar İmaj sekansıdır.\n Lütfen slayt gösterimini yaratmadan önce bir miktar Anahtar İmaj ekleyin.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Duraklatılmış video yaratılamıyor.</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Bu fonksiyonu kullanmadan önce bir miktar anahtar imaj eklemelisiniz.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Dosyayı yazamıyor.\n Hedef klasöre yazmak için gerekli izinlere sahip olduğunuzdan ve dosyanın şu anda kullanımda olmadığından emin olun.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Videoyu Kaydedemiyor.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Videoyu Kaydedemiyor.\n Başka bir format ile tekrar deneyin.</value></data>
@@ -259,12 +234,9 @@
    
    
    <data name="FormFileSave_Infos" xml:space="preserve"><value>İlerleme :</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>Videoyu Kaydediyor...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Export edilen İmajlar :</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>İmajları export ediyor...</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Açılan Kareler:</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>İlerleme</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>Kareleri import ediyor...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Görünüm</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Uygula</value></data>
    
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Hata: Dosya açılamıyor : akış bilgisi bulunamadı.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Hata: Dosya açılamıyor : bilinmeyen hata.</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Hata: Dosya açılamıyor : video akışı bulunamadı.</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>İptal Ediyor...</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Çözülmüş kareler :</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Dosya Yükleme İlerlemesi</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Toplam bilinmeyen</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Çalışma Alanı Sınırlarını Kilitle</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Çalışma Alanı Sınırlarının Kilidini Aç</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektif Izgarası</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Bu Ekranı Kapa</value></data>
    
    
-   <data name="mnuConfigureFading" xml:space="preserve"><value>Kalıcılık...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Yol Görünümünü Ayarla</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Sil</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>İki Görüntü Yakalama Ekranı</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Bir Görüntü Yakalama ekranı ve Bir Oynatma ekranı </value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>İki Oynatma Ekranı</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>Sadece Kenarlar...</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Spreadsheet'e export et</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    
    <data name="mnuSendPic" xml:space="preserve"><value>İmajı diğer videoya gönder</value></data>
    
-   <data name="mnuSharpen" xml:space="preserve"><value>Keskinleştir...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Koordinatları göster</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Ölçümü Göster</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Yol Düzenlemesini Sonlandır</value></data>
@@ -415,10 +380,8 @@
    
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Yeni kullanılmış renkler:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Boş</value></data>
-   <data name="statusBufferFill" xml:space="preserve"><value>Tampon bellek: {0}%</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Duraklat</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Yaklaştır: {0}%</value></data>
-   <data name="Toast_Disconnected" xml:space="preserve"><value>Bağlantı koptu</value></data>
    <data name="Toast_StartRecord" xml:space="preserve"><value>Kayıt başladı</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Kayıt durdu</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>İmaj kaydedildi</value></data>
@@ -427,7 +390,6 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Renk Profili</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>İmajların süperkonumlandırmasını İptal Et</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>İmajların süperkonumlandırmasını Aktive Et</value></data>
-   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Kaynak seç</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Açı</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Kronometre</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Daire</value></data>
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Kalem</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Taşı</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Metin</value></data>
-   
    
    
    <data name="ToolTip_First" xml:space="preserve"><value>Başa Geri Dön</value></data>
@@ -462,11 +423,9 @@
    <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>Arkaplan rengi</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Anahtar İmajlardan bir slayt gösterimi kaydet</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Videoyu her bir anahtar imaj üzerinde duraklama ile kaydet</value></data>
-   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>Klasör seç</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Çalışma Alanının İlk Karesini Geçerli Kareye Denkleştir</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Çalışma Alanının Son Karesini Geçerli Kareye Denkleştir</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Yorumları Göster</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Oynatma Hızını Değiştir</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>İki imajı kompozit bir imaja kaydet</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>İki videoyu kompozit bir videoya kaydet</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Çalışma Alanını Ayarla</value></data>
@@ -476,16 +435,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Göz Atma...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Geri...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Oto Kontrast...</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    

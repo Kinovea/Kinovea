@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Mene kummankin videon seuraavaan kuvaan</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Palaa kummankin videon edelliseen kuvaan</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Käynnistä | Pysäytä kummatkin videot</value></data>
-   <data name="Capture_NextImage" xml:space="preserve"><value>Seuraava kuva:</value></data>
-   <data name="Capture_NextVideo" xml:space="preserve"><value>Seuraava video:</value></data>
-   <data name="Capture_CameraNotFound" xml:space="preserve"><value>Kameraa ei löydy</value></data>
-   <data name="Capture_NetworkCamera" xml:space="preserve"><value>Verkkokamera</value></data>
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Lisää näyttö kuvaukseen</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Lisää ajanotto</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Lisää piirros</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Lisää näyttö Katseluun/Analyysiin</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Poista piirros</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Poista Avainkuva</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Lataa video</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Lataa video</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Käynnistä video</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>Sulje katselunäyttö</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Tallenna video</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Näytä katselunäytöt</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Vaihda katselunäytöt</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Avaa yleiset työkalut</value></data>
    
    
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Konfiguroi piirros</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Aina näkyvillä</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Jakojen lukumäärä:</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Konfiguroi ruudukkoa</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Säädä läpinäkyvyys</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Läpinäkyvyys : {0:0}%</value></data>
    
@@ -181,12 +165,6 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmentin oikea koko:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Sulje mitta</value></data>
    
-   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Käytössä oleva laite</value></data>
-   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Ominaisuudet</value></data>
-   <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Ei muuta vaihtoehtoa käytettävissä</value></data>
-   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Valitse muu laite</value></data>
-   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL:</value></data>
-   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>Tyyppi:</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Erilliskuvan kesto : {0} sadasosa sekuntia</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Erilliskuvan kesto: {0:0.00} sekuntia.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Tallenna video</value></data>
@@ -241,8 +219,6 @@
    
    
    
-   <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Ei voida kytkeä videolaitteeseen</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>EI löytynyt kytkettävää laitetta.\nVarmista että laite on kytketty tietokoneeseen oikein.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Tiedoston korvaaminen</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Tiedosto {0}on jo olemassa.\nHaluatko korvata sen?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Tiedoston nimi ei kelpaa</value></data>
@@ -250,7 +226,6 @@
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Ei voi luoda diaesitystä</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Diaesitys on avainkuvien sarja tallennettuna videomuotoon.\n Lisää avainkuvia luodaksesi diaesityksen.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Tauotetun videon luonti ei onnistu</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Sinun on lisättävä avainkuvia tämän toiminnon suorittamiseksi.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Tiedoston kirjoittaminen ei onnistu.\nVarmista käyttöoikeutesi tähän kohdehakemistoon ja että kyseinen tiedosto ei ole käytössä.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Videon tallennus ei onnistu.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Videon tallennus ei onnistu.\nKokeile uudestaan toisella formaatilla.</value></data>
@@ -259,12 +234,9 @@
    
    
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Edistyminen:</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>Video tallennetaan...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Kirkkaus:</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Värisyvyys:</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Kontrasti:</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Tarkenna</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>Tuodaan kuvia...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Ulkoasu</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Sovella</value></data>
    
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Tiedoston avaus epäonnistui: stream-tietoja ei löytynyt.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Tiedoston avaus epäonnistui: tuntematon virhe.</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Tiedoston avaus epäonnistui: video stream ei löytynyt.</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Peruutetaan...</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Puretut kuvat:</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Tiedoston avauksen eteneminen</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Kaikki tuntemattomat</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lukitse työstöjakson rajat.</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Avaa työstöjakson rajat.</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektiiviruudukko</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Sulje tämä näyttö</value></data>
    
    
-   <data name="mnuConfigureFading" xml:space="preserve"><value>Pysyvyys</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Konfiguroi liikeradan näyttöä</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Poista kuvien limitys</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Poista</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Kaksi kuvausnäyttöä</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Yksi kuvausnäyttö ja yksi videonäyttö</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Kaksi video/analyysinäyttöä</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>Vain rajat...</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Vie taulukko-ohjelmaan</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    
    <data name="mnuSendPic" xml:space="preserve"><value>Lähetä kuva toiseen videoon</value></data>
    
-   <data name="mnuSharpen" xml:space="preserve"><value>Tarkenna...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Näytä koordinaatit</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Näytä mitta</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Lopeta liikeradan editointi</value></data>
@@ -415,10 +380,8 @@
    
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Äsken käytetyt värit:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tyhjä</value></data>
-   <data name="statusBufferFill" xml:space="preserve"><value>Puskuri: {0}%</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Tauko</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zoom: {0}%</value></data>
-   <data name="Toast_Disconnected" xml:space="preserve"><value>Kytketty pois</value></data>
    <data name="Toast_StartRecord" xml:space="preserve"><value>Nauhoitus alkanut</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Nauhoitus päättynyt</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Kuva tallennettu</value></data>
@@ -427,7 +390,6 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Väriprofiili</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Sulje kuvien päällekkäisyystoiminto</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Mahdollista kuvien päällekkäisyys</value></data>
-   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Valitse lähde</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Kulma</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Ajanotto</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Ympyrä</value></data>
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Kynä</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Siirrä</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Teksti</value></data>
-   
    
    
    <data name="ToolTip_First" xml:space="preserve"><value>Palaa alkuun</value></data>
@@ -462,11 +423,9 @@
    <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>Taustan väritys</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Tallenna diaesitys avainkuvista</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Tallenna video tauolla jokaisen avainkuvan kohdalla</value></data>
-   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>Valitse hakemisto</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Aseta työstöjakson ensimmäinen kuva nykyiseksi kuvaksi</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Aseta työstöjakson viimeinen kuva nykyiseksi kuvaksi</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Näytä kommentit</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Muuntele videon nopeutta</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Tallenna kummatkin kuvat yhdistelmäkuvaan</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Tallenna kummatkin videot yhdistelmävideoon</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Aseta työstöjakso</value></data>
@@ -476,16 +435,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Katsaus...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Käänteinen...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automaattinen tarkennus...</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    

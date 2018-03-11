@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Измени језик</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Прикажи/сакриј истраживач датотеке</value></data>
    <data name="dlgAbout_Translation" xml:space="preserve"><value>Превод</value></data>
    <data name="dlgAbout_License" xml:space="preserve"><value>Лиценца</value></data>
    <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Блокови за изградњу</value></data>
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Сила 14:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Аутоматско откривање</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Пребаци на режим за анализу</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Постојаност</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Број датотека у историји:</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Подразумевани формат слика:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Језик:</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Километра на сат ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Стопа у секунди ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Миља на сат ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Чворова ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Жељене опције</value></data>
    <data name="mnuTimeFormat" xml:space="preserve"><value>Време</value></data>
    <data name="dlgPreferences_Player_UnitTime" xml:space="preserve"><value>Време:</value></data>
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет стотинки сата</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Временске ознаке </value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Класични + број слика секунди</value></data>
+   
    
    
    

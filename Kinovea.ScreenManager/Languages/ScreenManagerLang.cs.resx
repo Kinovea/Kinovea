@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Přejít na následující snímek obou videí</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Přejít na předcházející snímek obou videí</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Přehrát I Pozastavit obě videa</value></data>
-   <data name="Capture_NextImage" xml:space="preserve"><value>Následující obraz:</value></data>
-   <data name="Capture_NextVideo" xml:space="preserve"><value>Následující video:</value></data>
-   <data name="Capture_CameraNotFound" xml:space="preserve"><value>Kamera nenalezena</value></data>
-   <data name="Capture_NetworkCamera" xml:space="preserve"><value>Síťová kamera</value></data>
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Přidat obrazovku pro snímání</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Přidat stopky</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Přidat nákres</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Přidat obrazovku pro přehrávání</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Odstranit nákres</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Odstranit klíčovou pozici</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Nahrát video</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Nahrát video</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Přehrát video</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>Zavřít obrazovku</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Uložit video</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Ukázat obrazovky</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Přepnout obrazovky</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Přepnout ovládací prvky</value></data>
    
    
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Konfigurovat nákres</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Vždy viditelné</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Počet dělení:</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Konfigurovat mřížku</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Konfigurovat opacitu</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacita: {0:0}%</value></data>
    
@@ -181,12 +165,6 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Skutečná velikost segmentu:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrace měření</value></data>
    
-   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Stávající zařízení</value></data>
-   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Vlastnosti</value></data>
-   <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Nejsou jiné možnosti</value></data>
-   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Vyber jiné zařízení</value></data>
-   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL:</value></data>
-   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>Typ:</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Výdrž na každé klíčové pozici : {0} setin sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Výdrž na každé klíčové pozici: {0:0.00} sekund</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Ulož video</value></data>
@@ -241,8 +219,6 @@
    
    
    
-   <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Nelze připojit k video zařízení</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Nemůže najít zařízení pro připojení.\nUbezpečte se, že je zařízení řádně připojeno k počítači.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Přepsat soubor</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Soubor {0} již existuje.\nChcete jej nahradit?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Neplatné jméno souboru</value></data>
@@ -250,7 +226,6 @@
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - nemůže vytvořit Slideshow.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Slideshow je sekvence klíčových pozic uložených ve video formátu\n Přidejte klíčové pozice před vytvořením Slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - nemůže vytvořit video s pauzami.</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Přidejte klíčové pozice před použitím této funkce.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Do souboru nelze zapisovat.\nUbezpečte se, že máte oprávnění zapisovat do cílové složky a že soubor není právě používán.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - nemůže uložit video.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Video nelze uložit.\nZkuste znovu s jiným formátem.</value></data>
@@ -259,12 +234,9 @@
    
    
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Zpracování:</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>Ukládání videa….</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exportované obrazy:</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Exportování obrazů…</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Dekomprimované snímky:</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Zpracování:</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>Importování snímků…</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Vzhled</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Použít</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Šipky:</value></data>
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: stream informace nenalezena.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: neznámá chyba.</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: video stream nenalezen.</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Ukončování…</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Dekodované snímky:</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Načítání souboru</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Celkem neznámé</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Uzamčít hranice pracovní oblasti</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Odemčít hranice pracovní oblasti</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektivní mřížka</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Zavřít tuto obrazovku</value></data>
    
    
-   <data name="mnuConfigureFading" xml:space="preserve"><value>Trvání zobrazení…</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Konfigurovat zobrazení trasy</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Vymazat</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>2 snímací obrazovky</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>1 snímací obrazovka a 1 obrazovka pro přehrávání</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>2 obrazovky pro přehrávání</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>Pouze okraje…</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Export do tabulkového procesoru</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    
    <data name="mnuSendPic" xml:space="preserve"><value>Poslat obraz do jiného videa</value></data>
    
-   <data name="mnuSharpen" xml:space="preserve"><value>Zaostřit…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Zobrazit souřadnice</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Zobrazit měření</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Konec trasování</value></data>
@@ -415,10 +380,8 @@
    
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Naposledy použité barvy:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Prázdný</value></data>
-   <data name="statusBufferFill" xml:space="preserve"><value>Vyrovnávací paměť: {0}%</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pauza</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zoom: {0}%</value></data>
-   <data name="Toast_Disconnected" xml:space="preserve"><value>Odpojeno</value></data>
    <data name="Toast_StartRecord" xml:space="preserve"><value>Záznam byl zahájen</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Záznam byl ukončen</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Obraz uložen</value></data>
@@ -427,7 +390,6 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Barevný profil</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Neumožnit superpozici obrazů</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Umožnit superpozici obrazů</value></data>
-   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Vyber zdroj</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Úhel</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopky</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Kružnice</value></data>
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Tužka</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Posun</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Text</value></data>
-   
    
    
    <data name="ToolTip_First" xml:space="preserve"><value>Zpět na začátek</value></data>
@@ -462,11 +423,9 @@
    <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>Barva pozadí</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Uložit slideshow z klíčových pozic</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Uložit video s prodlevou na každé klíčové pozici</value></data>
-   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>Vybrat adresář</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Nastavit první snímek pracovní oblasti na stávající snímek</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Nastavit poslední snímek pracovní oblasti na stávající snímek</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Ukázat komentář</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Změnit rychlost přehrávání</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Uložit oba obrazy do kompozitního videa</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Uložit obě videa jako kompozitní video</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Nastavit pracovní oblast</value></data>
@@ -476,16 +435,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Celkový přehled</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Zpětné přehrávání…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast….</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    

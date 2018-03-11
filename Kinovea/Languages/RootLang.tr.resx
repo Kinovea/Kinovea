@@ -70,8 +70,6 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Dili Değiştir</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Dosya Yöneticisini Göster/Gizle</value></data>
    
    
    
@@ -128,7 +126,6 @@
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>4:3'ü Zorla</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Otomatik Bulma</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Analiz Moduna Geç</value></data>
-   <data name="dlgPreferences_Drawings_tabPersistence" xml:space="preserve"><value>Kalıcılık</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Geçmişteki dosya sayısı:</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Öntanımlı imaj formatı:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Dil:</value></data>
@@ -141,7 +138,6 @@
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometre bölü saat ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Ayak bölü saniye({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mil bölü saat ({0})</value></data>
-   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Deniz mili ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Tercihler</value></data>
    
    
@@ -205,6 +201,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin on bindesi</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Zaman Etiketleri</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasik + Kare sayıları</value></data>
+   
    
    
    

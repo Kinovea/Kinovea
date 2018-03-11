@@ -76,24 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Gå till nästa bild i båda videona</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Gå till föregående bild i båda videona</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Starta | Pausa båda videona</value></data>
-   <data name="Capture_NextImage" xml:space="preserve"><value>Nästa bild :</value></data>
-   <data name="Capture_NextVideo" xml:space="preserve"><value>Nästa video :</value></data>
-   <data name="Capture_CameraNotFound" xml:space="preserve"><value>Hittar ingen kamera</value></data>
-   <data name="Capture_NetworkCamera" xml:space="preserve"><value>Nätverkskamera</value></data>
-   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Lägg till fönster för inspelning</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Lägg till stoppur</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Lägg tilll ritning</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Lägg till fönster för uppspelning</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Ta bort ritning</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Ta bort nyckelbild</value></data>
-   <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Ladda Video</value></data>
-   <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Ladda Video</value></data>
-   <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Starta Video</value></data>
-   <data name="CommandRemoveScreen_FriendlyName" xml:space="preserve"><value>Stäng fönster</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Spara Video</value></data>
-   <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Visa fönster</value></data>
-   <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Byt plats på fönster</value></data>
-   <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Dölj/Visa gemensamma kontroller</value></data>
    
    
    
@@ -134,8 +120,6 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Inställningar ritning</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Antal indelningar :</value></data>
-   <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Inställningar rutverk</value></data>
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Inställningar transparens</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Transparens: {0:0}%</value></data>
    
@@ -181,12 +165,6 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Verklig storlek av segmentet :</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrera Längd</value></data>
    
-   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Aktuell enhet</value></data>
-   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Egenskaper</value></data>
-   <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Inga fler alternativ finns</value></data>
-   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Välj en annan enhet</value></data>
-   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL :</value></data>
-   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>Typ :</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Längd på varje nyckelbild : {0} hundradels sekunder</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Längd på varje nyckelbild : {0:0.00} sekunder</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Spara Video</value></data>
@@ -241,8 +219,6 @@
    
    
    
-   <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Kan inte koppla till videoenhet</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Hittar ingen enhet att koppla upp.\nKontrollera att enheten är rätt kopplad till datorn.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Skriv över fil</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Filen {0} finns redan.\nSkriv över?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Ogiltigt filnamn</value></data>
@@ -250,7 +226,6 @@
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Kan inte skapa bildspel.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Bildspel är en sekvens av nyckelbilder  som sparats i videoformat.\n Lägg till nyckelbilder innan bildspel skapas.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Kan inte skapa pausad video</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Du måste lägga till nyckelbilder innan den  här funktionen kan användas.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Kan inte skriva fil.\nHar du rättighet att skriva i målmapp eller används filen av någon?</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Kan inte spara video.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan inte spara video.\nProva något annat format.</value></data>
@@ -259,12 +234,9 @@
    
    
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Arbetsskede :</value></data>
-   <data name="FormFileSave_Title" xml:space="preserve"><value>Spara Video</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exporterade Bilder :</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Exporterar Bilder :</value></data>
-   <data name="FormFramesImport_Infos" xml:space="preserve"><value>Okomprimerade bilder : </value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Arbetsskede</value></data>
-   <data name="FormFramesImport_Title" xml:space="preserve"><value>Importera bilder...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Utseende</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Använd</value></data>
    
@@ -327,10 +299,6 @@
    <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Fel: Kan ej öppna filen : stream-informationen saknas.</value></data>
    <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Fel: kan ej öppna filen : okänt fel.</value></data>
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Fel: Kan ej öppna filen : stream-informationen saknas.</value></data>
-   <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Avbryts...</value></data>
-   <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Avkodade bilder...</value></data>
-   <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Laddning av fil pågår</value></data>
-   <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Okänd total</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lås arbetszonens gränser</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Lås upp arbetszonens gränser</value></data>
    <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Rutverk med perspektiv</value></data>
@@ -343,7 +311,6 @@
    <data name="mnuCloseScreen" xml:space="preserve"><value>Stäng detta fönster</value></data>
    
    
-   <data name="mnuConfigureFading" xml:space="preserve"><value>Synlighet...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Konfigurera visning av banan </value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Uppflätning</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Radera</value></data>
@@ -354,7 +321,6 @@
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Två inspelningsfönster</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Ett inspelningsönster och ett uppspelningsfönster</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Två uppspelningsfönster</value></data>
-   <data name="mnuEdges" xml:space="preserve"><value>Endast kanter...</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Exportera till kalkylblad</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
@@ -393,7 +359,6 @@
    
    <data name="mnuSendPic" xml:space="preserve"><value>Sänd bilden till andra videon</value></data>
    
-   <data name="mnuSharpen" xml:space="preserve"><value>Skärp...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Visa Koordinater</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Visa längd</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Avsluta banans editering</value></data>
@@ -415,10 +380,8 @@
    
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Senaste använda färger:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tomt</value></data>
-   <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pausa</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zooma : {0}%</value></data>
-   <data name="Toast_Disconnected" xml:space="preserve"><value>Frånkopplad</value></data>
    <data name="Toast_StartRecord" xml:space="preserve"><value>Inspelning startad</value></data>
    <data name="Toast_StopRecord" xml:space="preserve"><value>Inspelning stoppad</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Bild sparad</value></data>
@@ -427,7 +390,6 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Färgprofil</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Inaktivera överlagring av bilder</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Aktivera överlagring av bilder</value></data>
-   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Välj källa</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Vinkel</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stoppur</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Cirkel</value></data>
@@ -436,7 +398,6 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Penna</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Flytta</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Text</value></data>
-   
    
    
    <data name="ToolTip_First" xml:space="preserve"><value>Gå tillbaka till början</value></data>
@@ -462,11 +423,9 @@
    <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>Bakgrundsfärg</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Spara nyckelbilder som bildspel</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Spara video med paus vid varje nyckelbild</value></data>
-   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>Välj katalog</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Placera arbetszonens första bild som nuvarande bild</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Placera arbetszonens sista bild som nuvarande bild</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Visa kommentarer</value></data>
-   <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Variera uppspelningshastighet</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Spara båda bilderna till en sammansatt bild</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Spara båda videona till en sammansatt video</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Ställ in arbetszonen</value></data>
@@ -476,16 +435,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Översikt...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertera...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisk kontrast...</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    
