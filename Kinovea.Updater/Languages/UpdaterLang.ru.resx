@@ -80,7 +80,7 @@
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Изменение регистрации:</value></data>
    <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>Новая версия была успешно загружена.\n Пожалуйста, закройте Kinovea и запустите инсталлятор из места установки.</value></data>
    <data name="Updater_MegaBytes" xml:space="preserve"><value>МБ</value></data>
-   <data name="Updater_NewVersion" xml:space="preserve"><value>Новая версия </value></data>
+   <data name="Updater_NewVersion" xml:space="preserve"><value>Новая версия</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Выйти</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - проверить новую версию</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Ваша версия обновлена!</value></data>

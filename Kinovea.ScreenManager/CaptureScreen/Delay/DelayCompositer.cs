@@ -16,7 +16,10 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class DelayCompositer
     {
-        public int CurrentPosition => currentPosition;
+        public int CurrentPosition
+        {
+            get { return currentPosition; }
+        }
         
         #region Members
         private Delayer delayer;
