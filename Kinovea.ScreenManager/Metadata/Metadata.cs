@@ -291,6 +291,7 @@ namespace Kinovea.ScreenManager
         private SpotlightManager spotlightManager;
         private AutoNumberManager autoNumberManager;
         private DrawingCoordinateSystem drawingCoordinateSystem;
+        private Guid memoCoordinateSystemId;
         private DrawingTestGrid drawingTestGrid;
         private ChronoManager chronoManager = new ChronoManager();
         private TrackManager trackManager = new TrackManager();
@@ -863,6 +864,12 @@ namespace Kinovea.ScreenManager
             foreach(DrawingTrack t in Tracks())
                 t.StopTracking();
         }
+        public void ClearTracking()
+        {
+            foreach (DrawingTrack t in Tracks())
+                t.Clear();
+        }
+
         public void UpdateTrackPoint(Bitmap bitmap)
         {
             // Happens when mouse up and editing a track.
@@ -947,9 +954,13 @@ namespace Kinovea.ScreenManager
             kvaImporting = true;
             StopAllTracking();
             UnselectAll();
+
+            memoCoordinateSystemId = drawingCoordinateSystem.Id;
         }
         public void AfterKVAImport()
         {
+            trackabilityManager.UpdateId(memoCoordinateSystemId, drawingCoordinateSystem.Id);
+            
             foreach (ITrackable drawing in TrackableDrawings())
                 trackabilityManager.Assign(drawing);
 
@@ -1157,7 +1168,7 @@ namespace Kinovea.ScreenManager
             // Semi reset: we keep Image size and AverageTimeStampsPerFrame
             trackabilityManager.Clear();
             keyframes.Clear();
-            StopAllTracking();
+            ClearTracking();
             trackManager.Clear();
             chronoManager.Clear();
             extraDrawings.RemoveRange(totalStaticExtraDrawings, extraDrawings.Count - totalStaticExtraDrawings);

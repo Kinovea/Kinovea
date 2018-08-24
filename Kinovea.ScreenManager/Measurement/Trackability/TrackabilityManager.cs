@@ -84,6 +84,15 @@ namespace Kinovea.ScreenManager
                 trackers[drawing.Id].Assign(drawing);
         }
 
+        public void UpdateId(Guid oldId, Guid newId)
+        {
+            if (oldId == newId || !trackers.ContainsKey(oldId) || trackers.ContainsKey(newId))
+                return;
+
+            trackers.Add(newId, trackers[oldId]);
+            trackers.Remove(oldId);
+        }
+
         public void AddPoint(ITrackable drawing, VideoFrame videoFrame, string key, PointF point)
         {
             if (!trackers.ContainsKey(drawing.Id))
