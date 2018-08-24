@@ -2148,6 +2148,7 @@ namespace Kinovea.ScreenManager
             if(wasCustomDecodingSize && !m_bEnableCustomDecodingSize)
             {
                 m_FrameServer.VideoReader.DisableCustomDecodingSize();
+                ResizeUpdate(true);
             }
             else if(!wasCustomDecodingSize && m_bEnableCustomDecodingSize)
             {
