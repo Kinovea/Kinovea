@@ -1330,6 +1330,11 @@ namespace Kinovea.ScreenManager
             filteredTrajectory.Initialize(samples, parentMetadata.CalibrationHelper);
             timeSeriesCollection = linearKinematics.BuildKinematics(filteredTrajectory, parentMetadata.CalibrationHelper);
         }
+        public void Clear()
+        {
+            positions.Clear();
+            keyframesLabels.Clear();
+        }
         public void IntegrateKeyframes()
         {
             //-----------------------------------------------------------------------------------
