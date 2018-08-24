@@ -342,11 +342,13 @@ namespace Kinovea.ScreenManager
         {
             if (!manualClose) 
             {
+                // Cancel by way of closing the form.
                 UnhookEvents();
                 Revert();
             }
 
             track.Status = memoStatus;
+            track.AfterMainStyleChange();
         }
         private void UnhookEvents()
         {
