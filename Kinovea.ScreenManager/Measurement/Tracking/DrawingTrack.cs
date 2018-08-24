@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
                 
                 hash ^= defaultCrossRadius.GetHashCode();
                 hash ^= styleHelper.ContentHash;
-                hash ^= mainLabel.GetHashCode();
+                hash ^= miniLabel.GetHashCode();
                 
                 foreach (KeyframeLabel kfl in keyframesLabels)
                     hash ^= kfl.GetHashCode();
@@ -238,7 +238,7 @@ namespace Kinovea.ScreenManager
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
-        private KeyframeLabel mainLabel = new KeyframeLabel();
+        private KeyframeLabel miniLabel = new KeyframeLabel();
         private string mainLabelText = "Label";
         private List<KeyframeLabel> keyframesLabels = new List<KeyframeLabel>();
         private InfosFading infosFading = new InfosFading(long.MaxValue, 1);
@@ -271,7 +271,7 @@ namespace Kinovea.ScreenManager
 
             beginTimeStamp = t;
             endTimeStamp = t;
-            mainLabel.SetAttach(origin, true);
+            miniLabel.SetAttach(origin, true);
                 
             infosFading.FadingFrames = allowedFramesOver;
             infosFading.UseDefault = false;
@@ -280,13 +280,13 @@ namespace Kinovea.ScreenManager
             styleHelper.Color = Color.Black;
             styleHelper.LineSize = 3;
             styleHelper.TrackShape = TrackShape.Dash;
+            styleHelper.ValueChanged += StyleHelper_ValueChanged;
             if (preset != null)
             {
                 style = preset.Clone();
                 BindStyle();
             }
 
-            styleHelper.ValueChanged += StyleHelper_ValueChanged;
             
             ReinitializeMenu();
         }
@@ -684,11 +684,11 @@ namespace Kinovea.ScreenManager
             if (fadingFactor != 1.0f || trackStatus == TrackStatus.Configuration)
                 return;
             
-            mainLabel.SetAttach(positions[currentPoint].Point, true);
+            miniLabel.SetAttach(positions[currentPoint].Point, true);
                 
             string text = trackView == TrackView.Label ? mainLabelText : GetExtraDataText(currentPoint);
-            mainLabel.SetText(text);
-            mainLabel.Draw(canvas, transformer, fadingFactor);
+            miniLabel.SetText(text);
+            miniLabel.Draw(canvas, transformer, fadingFactor);
         }
         private Pen GetTrackPen(TrackStatus status, double fadingFactor, bool before)
         {
@@ -848,7 +848,7 @@ namespace Kinovea.ScreenManager
                 if(trackExtraData != TrackExtraData.None && labelNumber == 2)
                 {
                     // Move the main label.
-                    mainLabel.MoveLabel(dx, dy);
+                    miniLabel.MoveLabel(dx, dy);
                 }
                 else
                 {
@@ -859,7 +859,7 @@ namespace Kinovea.ScreenManager
             }
             else if (trackView == TrackView.Label)
             {
-                mainLabel.MoveLabel(dx, dy);
+                miniLabel.MoveLabel(dx, dy);
             }
         }
         private int IsOnKeyframesLabels(PointF point, IImageToViewportTransformer transformer)
@@ -868,7 +868,7 @@ namespace Kinovea.ScreenManager
             int hitResult = -1;
             if (trackView == TrackView.Label)
             {
-                if (mainLabel.HitTest(point, transformer))
+                if (miniLabel.HitTest(point, transformer))
                     hitResult = 2;
             }
             else
@@ -877,7 +877,7 @@ namespace Kinovea.ScreenManager
                 // if we are displaying the extra data (distance, speed).
                 if (trackExtraData != TrackExtraData.None)
                 {
-                    if (mainLabel.HitTest(point, transformer))
+                    if (miniLabel.HitTest(point, transformer))
                         hitResult = 2;
                 }
                 
@@ -1093,13 +1093,13 @@ namespace Kinovea.ScreenManager
 
                 // Reset to first point.
                 if (positions.Count > 0)
-                    mainLabel.SetAttach(positions[0].Point, true);
+                    miniLabel.SetAttach(positions[0].Point, true);
 
-                mainLabel.WriteXml(w);
+                miniLabel.WriteXml(w);
                 w.WriteEndElement();
 
                 if (positions.Count > 0 && currentPoint < positions.Count)
-                    mainLabel.SetAttach(positions[currentPoint].Point, true);
+                    miniLabel.SetAttach(positions[currentPoint].Point, true);
 
                 if (keyframesLabels.Count > 0)
                 {
@@ -1214,7 +1214,7 @@ namespace Kinovea.ScreenManager
                     case "MainLabel":
                         {
                             mainLabelText = xmlReader.GetAttribute("Text");
-                            mainLabel = new KeyframeLabel(xmlReader, scale);
+                            miniLabel = new KeyframeLabel(xmlReader, scale);
                             break;
                         }
                     case "KeyframeLabelList":
@@ -1233,8 +1233,8 @@ namespace Kinovea.ScreenManager
             if (positions.Count > 0)
             {
                 endTimeStamp = positions.Last().T;
-                mainLabel.SetAttach(positions[0].Point, false);
-                mainLabel.SetText(Label);
+                miniLabel.SetAttach(positions[0].Point, false);
+                miniLabel.SetText(Label);
                 
                 if(positions.Count > 1 || 
                    positions[0].X != 0 || 
@@ -1506,7 +1506,7 @@ namespace Kinovea.ScreenManager
         private void AfterMainStyleChange()
         {
             // Impact the style of mini labels based on the main color.
-            mainLabel.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleHelper.Color;
             foreach (KeyframeLabel kfl in keyframesLabels)
                 kfl.BackColor = styleHelper.Color;
         }

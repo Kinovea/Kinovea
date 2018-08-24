@@ -102,7 +102,7 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         
-        private KeyframeLabel labelCoordinates;
+        private KeyframeLabel miniLabel;
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
         public DrawingCrossMark(PointF center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
         {
             points["0"] = center;
-            labelCoordinates = new KeyframeLabel(points["0"], Color.Black, transformer);
+            miniLabel = new KeyframeLabel(points["0"], Color.Black, transformer);
             
             // Decoration & binding with editors
             styleHelper.Color = Color.CornflowerBlue;
@@ -170,20 +170,20 @@ namespace Kinovea.ScreenManager
             
             if(ShowMeasurableInfo)
             {
-                labelCoordinates.SetText(CalibrationHelper.GetPointText(new PointF(points["0"].X, points["0"].Y), true, true, infosFading.ReferenceTimestamp));
-                labelCoordinates.Draw(canvas, transformer, opacityFactor);
+                miniLabel.SetText(CalibrationHelper.GetPointText(new PointF(points["0"].X, points["0"].Y), true, true, infosFading.ReferenceTimestamp));
+                miniLabel.Draw(canvas, transformer, opacityFactor);
             }
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             if(handleNumber == 1)
-                labelCoordinates.SetLabel(point);
+                miniLabel.SetLabel(point);
         }
         public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
             points["0"] = points["0"].Translate(dx, dy);
             SignalTrackablePointMoved();
-            labelCoordinates.SetAttach(points["0"], true);
+            miniLabel.SetAttach(points["0"], true);
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
@@ -192,7 +192,7 @@ namespace Kinovea.ScreenManager
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             if (tracking || opacity > 0)
             {
-                if(ShowMeasurableInfo && labelCoordinates.HitTest(point, transformer))
+                if(ShowMeasurableInfo && miniLabel.HitTest(point, transformer))
                     result = 1;
                 else if (HitTester.HitTest(points["0"], point, transformer))
                     result = 0;
@@ -224,6 +224,11 @@ namespace Kinovea.ScreenManager
                     case "CoordinatesVisible":
                         ShowMeasurableInfo = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
+                    case "MeasureLabel":
+                        {
+                            miniLabel = new KeyframeLabel(xmlReader, scale);
+                            break;
+                        }
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -239,8 +244,8 @@ namespace Kinovea.ScreenManager
             }
             
             xmlReader.ReadEndElement();
-            labelCoordinates.SetAttach(points["0"], true);
-            labelCoordinates.BackColor = styleHelper.Color;
+            miniLabel.SetAttach(points["0"], false);
+            miniLabel.BackColor = styleHelper.Color;
             SignalTrackablePointMoved();
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -249,6 +254,10 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteElementString("CenterPoint", XmlHelper.WritePointF(points["0"]));
                 w.WriteElementString("CoordinatesVisible", ShowMeasurableInfo.ToString().ToLower());
+
+                w.WriteStartElement("MeasureLabel");
+                miniLabel.WriteXml(w);
+                w.WriteEndElement();
             }
 
             if (ShouldSerializeStyle(filter))
@@ -306,7 +315,7 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
-            labelCoordinates.SetAttach(points["0"], true);
+            miniLabel.SetAttach(points["0"], true);
         }
         private void SignalTrackablePointMoved()
         {
@@ -339,7 +348,7 @@ namespace Kinovea.ScreenManager
 
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
-            labelCoordinates.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleHelper.Color;
         }
         #endregion
 
