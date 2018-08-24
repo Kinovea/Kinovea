@@ -151,12 +151,6 @@ namespace Kinovea.ScreenManager
         public Color MainColor
         {    
             get { return styleHelper.Color; }
-            set 
-            { 
-                styleHelper.Color = value;
-                style.ReadValue();
-                mainLabel.BackColor = value;
-            }
         }
         public string Label
         {
@@ -233,7 +227,6 @@ namespace Kinovea.ScreenManager
         private List<AbstractTrackPoint> positions = new List<AbstractTrackPoint>();
         private FilteredTrajectory filteredTrajectory = new FilteredTrajectory();
         private TimeSeriesCollection timeSeriesCollection;
-        private List<KeyframeLabel> keyframesLabels = new List<KeyframeLabel>();
         private LinearKinematics linearKinematics = new LinearKinematics();
         private IImageToViewportTransformer transformer;
         
@@ -247,6 +240,7 @@ namespace Kinovea.ScreenManager
         private DrawingStyle style;
         private KeyframeLabel mainLabel = new KeyframeLabel();
         private string mainLabelText = "Label";
+        private List<KeyframeLabel> keyframesLabels = new List<KeyframeLabel>();
         private InfosFading infosFading = new InfosFading(long.MaxValue, 1);
         private const int baseAlpha = 224;                // alpha of track in most cases.
         private const int afterCurrentAlpha = 64;        // alpha of track after the current point when in normal mode.
@@ -291,6 +285,8 @@ namespace Kinovea.ScreenManager
                 style = preset.Clone();
                 BindStyle();
             }
+
+            AfterMainStyleChange();
             
             ReinitializeMenu();
         }
@@ -1248,6 +1244,8 @@ namespace Kinovea.ScreenManager
                     invalid = false;
                 }
             }
+
+            AfterMainStyleChange();
         }
         public void ParseTrackPointList(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
@@ -1396,7 +1394,10 @@ namespace Kinovea.ScreenManager
                 for( int iKfl = 0; iKfl < keyframesLabels.Count; iKfl++)
                     keyframesLabels[iKfl].SetText(GetExtraDataText(keyframesLabels[iKfl].AttachIndex));
             }
-            
+
+            // Reapply style.
+            foreach (KeyframeLabel kfl in keyframesLabels)
+                kfl.BackColor = styleHelper.Color;
         }
         public void MemorizeState()
         {
@@ -1408,9 +1409,16 @@ namespace Kinovea.ScreenManager
         {
             // Used when the user cancels his modifications on formConfigureTrajectory.
             // styleHelper has been reverted already as part of style elements framework.
-            // This in turn triggered mainStyle_ValueChanged() event handler so the mainLabel has been reverted already too.
             trackView = memoTrackView;
             mainLabelText = memoLabel;
+            AfterMainStyleChange();
+        }
+        public void AfterMainStyleChange()
+        {
+            // Impact the style of mini labels based on the main color.
+            mainLabel.BackColor = styleHelper.Color;
+            foreach (KeyframeLabel kfl in keyframesLabels)
+              kfl.BackColor = styleHelper.Color;
         }
         public PointF GetPosition(long timestamp)
         {
@@ -1488,10 +1496,7 @@ namespace Kinovea.ScreenManager
 
             return closest;
         }
-        private void mainStyle_ValueChanged(object sender, EventArgs e)
-        {
-            mainLabel.BackColor = styleHelper.Color;
-        }
+        
         private void BindStyle()
         {
             style.Bind(styleHelper, "Color", "color");
