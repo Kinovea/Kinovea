@@ -550,47 +550,4 @@ namespace Kinovea.ScreenManager
         }
         #endregion
     }
-
-    /// <summary>
-    /// A simple wrapper around two color values.
-    /// When setting the background color, the foreground color is automatically adjusted 
-    /// to black or white depending on the luminosity of the background color.
-    /// </summary>
-    public struct Bicolor
-    {
-        public Color Foreground
-        {
-            get { return foreground;}
-        }
-        public Color Background
-        {
-            get { return background;}
-            set 
-            { 
-                background = value;
-                foreground = value.GetBrightness() >= 0.5  ? Color.Black : Color.White;
-            }
-        }
-        public int ContentHash
-        {
-            get 
-            {
-                return background.GetHashCode() ^ foreground.GetHashCode();
-            }
-        }
-        
-        private Color foreground;
-        private Color background;
-        
-        public Bicolor(Color backColor)
-        {
-            background = backColor;
-            foreground = backColor.GetBrightness() >= 0.5  ? Color.Black : Color.White;
-        }
-    }
-    
-    
-    
-    
-        
 }
