@@ -2888,18 +2888,20 @@ namespace Kinovea.ScreenManager
             foreach(ToolStripItem tsmi in drawing.ContextMenu)
             {
                 ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
-                if(menuItem != null && menuItem.DropDownItems.Count > 0)
-                {
-                    foreach(ToolStripItem subMenu in menuItem.DropDownItems)
-                        subMenu.Tag = (Action)DoInvalidate;
-                }
-                
+
                 // Inject a dependency on this screen into the drawing.
                 // Since the drawing now owns a piece of the UI, it may need to call back into functions here.
                 // This is used to invalidate the view and complete operations that are normally handled here and 
                 // require calls to other objects that the drawing itself doesn't have access to, like when the 
                 // polyline drawing handles InitializeEnd and needs to remove the last point added to tracking.
                 tsmi.Tag = this;
+
+                // Also inject for all the sub menus.
+                if (menuItem != null && menuItem.DropDownItems.Count > 0)
+                {
+                    foreach (ToolStripItem subMenu in menuItem.DropDownItems)
+                        subMenu.Tag = this;
+                }
                 
                 if (tsmi.MergeIndex >= 0)
                     menuItems.Insert(tsmi.MergeIndex, tsmi);
