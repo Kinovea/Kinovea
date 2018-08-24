@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
-        private KeyframeLabel labelMeasure;
+        private KeyframeLabel miniLabel = new KeyframeLabel();
         private InfosFading infosFading;
         
         // Context menu
@@ -132,7 +132,8 @@ namespace Kinovea.ScreenManager
         {
             points["a"] = origin;
             points["b"] = origin.Translate(10, 0);
-            labelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black, transformer);
+            miniLabel.SetAttach(GetMiddlePoint(), true);
+            //miniLabel = new KeyframeLabel(, Color.Black, transformer);
 
             styleHelper.Color = Color.DarkSlateGray;
             styleHelper.LineSize = 1;
@@ -185,10 +186,11 @@ namespace Kinovea.ScreenManager
             if(ShowMeasurableInfo)
             {
                 // Text of the measure. (The helpers knows the unit)
+                // Attach point is determined in DrawStraight or DrawCurved.
                 PointF a = new PointF(points["a"].X, points["a"].Y);
                 PointF b = new PointF(points["b"].X, points["b"].Y);
-                labelMeasure.SetText(CalibrationHelper.GetLengthText(a, b, true, true));
-                labelMeasure.Draw(canvas, transformer, opacityFactor);
+                miniLabel.SetText(CalibrationHelper.GetLengthText(a, b, true, true));
+                miniLabel.Draw(canvas, transformer, opacityFactor);
             }
         }
         private void DrawDistorted(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penEdges, Point start, Point end)
@@ -212,7 +214,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawCurve(penEdges, transformedCurve.ToArray());
             }
 
-            labelMeasure.SetAttach(curve[curve.Count / 2], true);
+            miniLabel.SetAttach(curve[curve.Count / 2], true);
         }
         private void DrawStraight(Graphics canvas, IImageToViewportTransformer transformer, Pen penEdges, Point start, Point end)
         {
@@ -230,7 +232,7 @@ namespace Kinovea.ScreenManager
                 canvas.DrawLine(penEdges, start, end);
             }
 
-            labelMeasure.SetAttach(GetMiddlePoint(), true);
+            miniLabel.SetAttach(GetMiddlePoint(), true);
 
             if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
                 ArrowHelper.Draw(canvas, penEdges, start, end);
@@ -248,7 +250,7 @@ namespace Kinovea.ScreenManager
             
             if (tracking || opacity > 0)
             {
-                if(ShowMeasurableInfo && labelMeasure.HitTest(point, transformer))
+                if(ShowMeasurableInfo && miniLabel.HitTest(point, transformer))
                     result = 3;
                 else if (HitTester.HitTest(points["a"], point, transformer))
                     result = 1;
@@ -283,7 +285,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case 3:
                     // Move the center of the mini label to the mouse coord.
-                    labelMeasure.SetLabel(point);
+                    miniLabel.SetLabel(point);
                     break;
             }
         }
@@ -322,6 +324,12 @@ namespace Kinovea.ScreenManager
                             points["b"] = p.Scale(scale.X, scale.Y);
                             break;
                         }
+                    case "MeasureLabel":
+                        {
+                            //labelMeasure.
+                            miniLabel = new KeyframeLabel(xmlReader, scale);
+                            break;
+                        }
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -341,7 +349,8 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
             initializing = false;
-            labelMeasure.BackColor = styleHelper.Color;
+            miniLabel.SetAttach(GetMiddlePoint(), false);
+            miniLabel.BackColor = styleHelper.Color;
             SignalAllTrackablePointsMoved();
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -351,6 +360,10 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Start", XmlHelper.WritePointF(points["a"]));
                 w.WriteElementString("End", XmlHelper.WritePointF(points["b"]));
                 w.WriteElementString("MeasureVisible", ShowMeasurableInfo.ToString().ToLower());
+
+                w.WriteStartElement("MeasureLabel");
+                miniLabel.WriteXml(w);
+                w.WriteEndElement();
             }
 
             if (ShouldSerializeStyle(filter))
@@ -488,7 +501,7 @@ namespace Kinovea.ScreenManager
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
-            labelMeasure.BackColor = styleHelper.Color;
+            miniLabel.BackColor = styleHelper.Color;
         }
         private bool IsPointInObject(PointF point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
