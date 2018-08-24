@@ -494,7 +494,7 @@ namespace Kinovea.Tests.Metadata
                 w.WriteStartElement("KeyframeLabelList");
                 w.WriteAttributeString("Count", keyframesLabels.Count.ToString());
 
-                foreach (KeyframeLabel kfl in keyframesLabels)
+                foreach (MiniLabel kfl in keyframesLabels)
                 {
                     w.WriteStartElement("KeyframeLabel");
                     kfl.WriteXml(w);

@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
-        private KeyframeLabel miniLabel = new KeyframeLabel();
+        private MiniLabel miniLabel = new MiniLabel();
         private InfosFading infosFading;
         
         // Context menu
@@ -133,8 +133,7 @@ namespace Kinovea.ScreenManager
             points["a"] = origin;
             points["b"] = origin.Translate(10, 0);
             miniLabel.SetAttach(GetMiddlePoint(), true);
-            //miniLabel = new KeyframeLabel(, Color.Black, transformer);
-
+            
             styleHelper.Color = Color.DarkSlateGray;
             styleHelper.LineSize = 1;
             styleHelper.ValueChanged += StyleHelper_ValueChanged;
@@ -326,8 +325,7 @@ namespace Kinovea.ScreenManager
                         }
                     case "MeasureLabel":
                         {
-                            //labelMeasure.
-                            miniLabel = new KeyframeLabel(xmlReader, scale);
+                            miniLabel = new MiniLabel(xmlReader, scale);
                             break;
                         }
                     case "DrawingStyle":

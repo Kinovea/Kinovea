@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
     /// 
     /// The text to display is actually reset just before we need to draw it.
     /// </summary>
-    public class KeyframeLabel
+    public class MiniLabel
     {
         #region Properties
         public long Timestamp
@@ -75,8 +75,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Construction
-        public KeyframeLabel() : this(PointF.Empty, Color.Black, null){}
-        public KeyframeLabel(PointF attachPoint, Color color, IImageToViewportTransformer transformer)
+        public MiniLabel() : this(PointF.Empty, Color.Black, null){}
+        public MiniLabel(PointF attachPoint, Color color, IImageToViewportTransformer transformer)
         {
             this.attachLocation = attachPoint;
             int tx = -20;
@@ -91,7 +91,7 @@ namespace Kinovea.ScreenManager
             styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
             styleHelper.Bicolor = new Bicolor(Color.FromArgb(160, color));
         }
-        public KeyframeLabel(XmlReader xmlReader, PointF scale)
+        public MiniLabel(XmlReader xmlReader, PointF scale)
             : this(PointF.Empty, Color.Black, null)
         {
             ReadXml(xmlReader, scale);

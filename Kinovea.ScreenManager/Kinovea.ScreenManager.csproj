@@ -548,7 +548,7 @@
     <Compile Include="Measurement\Geometry\QuadrilateralF.cs" />
     <Compile Include="Measurement\Geometry\Vector.cs" />
     <Compile Include="Metadata\DrawingManager\Keyframe.cs" />
-    <Compile Include="Metadata\KeyframeLabel.cs" />
+    <Compile Include="Metadata\MiniLabel.cs" />
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
     <Compile Include="Metadata\Metadata.cs" />
     <Compile Include="Metadata\Timeline.cs" />
