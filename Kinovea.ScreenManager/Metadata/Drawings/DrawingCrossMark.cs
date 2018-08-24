@@ -124,18 +124,21 @@ namespace Kinovea.ScreenManager
             
             // Decoration & binding with editors
             styleHelper.Color = Color.CornflowerBlue;
+            styleHelper.ValueChanged += StyleHelper_ValueChanged;
             if(preset != null)
             {
                 style = preset.Clone();
                 BindStyle();
             }
-                        
+
+
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             
             // Context menu
             mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
             mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
+
         public DrawingCrossMark(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("CrossMark"), null)
         {
@@ -237,6 +240,7 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
             labelCoordinates.SetAttach(points["0"], true);
+            labelCoordinates.BackColor = styleHelper.Color;
             SignalTrackablePointMoved();
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -331,6 +335,11 @@ namespace Kinovea.ScreenManager
         private void BindStyle()
         {
             style.Bind(styleHelper, "Color", "back color");
+        }
+
+        private void StyleHelper_ValueChanged(object sender, EventArgs e)
+        {
+            labelCoordinates.BackColor = styleHelper.Color;
         }
         #endregion
 
