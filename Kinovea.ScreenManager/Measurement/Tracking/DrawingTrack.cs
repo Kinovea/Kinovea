@@ -286,11 +286,11 @@ namespace Kinovea.ScreenManager
                 BindStyle();
             }
 
-            AfterMainStyleChange();
+            styleHelper.ValueChanged += StyleHelper_ValueChanged;
             
             ReinitializeMenu();
         }
-
+        
         public DrawingTrack(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
             : this(PointF.Empty, 0, null)
         {
@@ -1245,6 +1245,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            // Depending on the order of parsing the main style initialization may have not impacted the mini labels.
             AfterMainStyleChange();
         }
         public void ParseTrackPointList(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
@@ -1409,16 +1410,9 @@ namespace Kinovea.ScreenManager
         {
             // Used when the user cancels his modifications on formConfigureTrajectory.
             // styleHelper has been reverted already as part of style elements framework.
+            // The minilabels should have been reverted through the main styleHelper value changed event.
             trackView = memoTrackView;
             mainLabelText = memoLabel;
-            AfterMainStyleChange();
-        }
-        public void AfterMainStyleChange()
-        {
-            // Impact the style of mini labels based on the main color.
-            mainLabel.BackColor = styleHelper.Color;
-            foreach (KeyframeLabel kfl in keyframesLabels)
-              kfl.BackColor = styleHelper.Color;
         }
         public PointF GetPosition(long timestamp)
         {
@@ -1426,7 +1420,7 @@ namespace Kinovea.ScreenManager
             return positions[index].Point;
         }
         #endregion
-        
+
         #region Miscellaneous private methods
         private void ReinitializeMenu()
         {
@@ -1502,6 +1496,19 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "line size");
             style.Bind(styleHelper, "TrackShape", "track shape");
+        }
+
+        private void StyleHelper_ValueChanged(object sender, EventArgs e)
+        {
+            AfterMainStyleChange();
+        }
+
+        private void AfterMainStyleChange()
+        {
+            // Impact the style of mini labels based on the main color.
+            mainLabel.BackColor = styleHelper.Color;
+            foreach (KeyframeLabel kfl in keyframesLabels)
+                kfl.BackColor = styleHelper.Color;
         }
         #endregion
     }

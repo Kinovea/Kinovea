@@ -348,7 +348,6 @@ namespace Kinovea.ScreenManager
             }
 
             track.Status = memoStatus;
-            track.AfterMainStyleChange();
         }
         private void UnhookEvents()
         {

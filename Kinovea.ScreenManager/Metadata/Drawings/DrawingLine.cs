@@ -136,7 +136,7 @@ namespace Kinovea.ScreenManager
 
             styleHelper.Color = Color.DarkSlateGray;
             styleHelper.LineSize = 1;
-
+            styleHelper.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Line");
             
@@ -152,6 +152,7 @@ namespace Kinovea.ScreenManager
             mnuSealMeasure.Click += mnuSealMeasure_Click;
             mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
         }
+        
         public DrawingLine(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)
         {
@@ -340,7 +341,7 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
             initializing = false;
-            
+            labelMeasure.BackColor = styleHelper.Color;
             SignalAllTrackablePointsMoved();
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -484,6 +485,10 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "LineSize", "line size");
             style.Bind(styleHelper, "LineShape", "line shape");
             style.Bind(styleHelper, "LineEnding", "arrows");
+        }
+        private void StyleHelper_ValueChanged(object sender, EventArgs e)
+        {
+            labelMeasure.BackColor = styleHelper.Color;
         }
         private bool IsPointInObject(PointF point, DistortionHelper distorter, IImageToViewportTransformer transformer)
         {
