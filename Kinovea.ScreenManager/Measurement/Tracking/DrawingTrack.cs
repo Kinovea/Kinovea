@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
                 hash ^= styleHelper.ContentHash;
                 hash ^= miniLabel.GetHashCode();
                 
-                foreach (KeyframeLabel kfl in keyframesLabels)
+                foreach (MiniLabel kfl in keyframesLabels)
                     hash ^= kfl.GetHashCode();
 
                 hash ^= tracker.Parameters.ContentHash;
@@ -238,9 +238,9 @@ namespace Kinovea.ScreenManager
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
-        private KeyframeLabel miniLabel = new KeyframeLabel();
+        private MiniLabel miniLabel = new MiniLabel();
         private string mainLabelText = "Label";
-        private List<KeyframeLabel> keyframesLabels = new List<KeyframeLabel>();
+        private List<MiniLabel> keyframesLabels = new List<MiniLabel>();
         private InfosFading infosFading = new InfosFading(long.MaxValue, 1);
         private const int baseAlpha = 224;                // alpha of track in most cases.
         private const int afterCurrentAlpha = 64;        // alpha of track after the current point when in normal mode.
@@ -630,7 +630,7 @@ namespace Kinovea.ScreenManager
             if (fadingFactor < 0 || trackStatus == TrackStatus.Configuration)
                 return;
             
-            foreach (KeyframeLabel kl in keyframesLabels)
+            foreach (MiniLabel kl in keyframesLabels)
             {
                 // In focus mode, only show labels that are in focus section.
                 if(trackView == TrackView.Complete || infosFading.IsVisible(positions[currentPoint].T, kl.Timestamp, focusFadingFrames))
@@ -1106,7 +1106,7 @@ namespace Kinovea.ScreenManager
                     w.WriteStartElement("KeyframeLabelList");
                     w.WriteAttributeString("Count", keyframesLabels.Count.ToString());
 
-                    foreach (KeyframeLabel kfl in keyframesLabels)
+                    foreach (MiniLabel kfl in keyframesLabels)
                     {
                         w.WriteStartElement("KeyframeLabel");
                         kfl.WriteXml(w);
@@ -1214,7 +1214,7 @@ namespace Kinovea.ScreenManager
                     case "MainLabel":
                         {
                             mainLabelText = xmlReader.GetAttribute("Text");
-                            miniLabel = new KeyframeLabel(xmlReader, scale);
+                            miniLabel = new MiniLabel(xmlReader, scale);
                             break;
                         }
                     case "KeyframeLabelList":
@@ -1284,7 +1284,7 @@ namespace Kinovea.ScreenManager
             {
                 if(xmlReader.Name == "KeyframeLabel")
                 {
-                    KeyframeLabel kfl = new KeyframeLabel(xmlReader, scale);
+                    MiniLabel kfl = new MiniLabel(xmlReader, scale);
                     
                     if (positions.Count > 0)
                     {
@@ -1370,7 +1370,7 @@ namespace Kinovea.ScreenManager
                     else
                     {
                         // Unknown Keyframe, Configure and add it to list.
-                        KeyframeLabel kfl = new KeyframeLabel();
+                        MiniLabel kfl = new MiniLabel();
                         kfl.AttachIndex = FindClosestPoint(parentMetadata[i].Position);
                         kfl.SetAttach(positions[kfl.AttachIndex].Point, true);
                         kfl.Timestamp = positions[kfl.AttachIndex].T;                        
@@ -1397,7 +1397,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Reapply style.
-            foreach (KeyframeLabel kfl in keyframesLabels)
+            foreach (MiniLabel kfl in keyframesLabels)
                 kfl.BackColor = styleHelper.Color;
         }
         public void MemorizeState()
@@ -1507,7 +1507,7 @@ namespace Kinovea.ScreenManager
         {
             // Impact the style of mini labels based on the main color.
             miniLabel.BackColor = styleHelper.Color;
-            foreach (KeyframeLabel kfl in keyframesLabels)
+            foreach (MiniLabel kfl in keyframesLabels)
                 kfl.BackColor = styleHelper.Color;
         }
         #endregion

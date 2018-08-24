@@ -102,7 +102,7 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         
-        private KeyframeLabel miniLabel;
+        private MiniLabel miniLabel;
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
         public DrawingCrossMark(PointF center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
         {
             points["0"] = center;
-            miniLabel = new KeyframeLabel(points["0"], Color.Black, transformer);
+            miniLabel = new MiniLabel(points["0"], Color.Black, transformer);
             
             // Decoration & binding with editors
             styleHelper.Color = Color.CornflowerBlue;
@@ -226,7 +226,7 @@ namespace Kinovea.ScreenManager
                         break;
                     case "MeasureLabel":
                         {
-                            miniLabel = new KeyframeLabel(xmlReader, scale);
+                            miniLabel = new MiniLabel(xmlReader, scale);
                             break;
                         }
                     case "DrawingStyle":
