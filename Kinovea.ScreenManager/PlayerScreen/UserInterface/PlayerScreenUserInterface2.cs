@@ -298,6 +298,7 @@ namespace Kinovea.ScreenManager
         #region Context Menus
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuDirectTrack = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPlayPause = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSendPic = new ToolStripMenuItem();
@@ -316,6 +317,9 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuDrawingTrackingStop = new ToolStripMenuItem();
         private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
         private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
+        private ToolStripSeparator mnuSepDrawing3 = new ToolStripSeparator();
+        private ToolStripMenuItem mnuCutDrawing = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCopyDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
         
         private ContextMenuStrip popMenuTrack = new ContextMenuStrip();
@@ -1009,6 +1013,8 @@ namespace Kinovea.ScreenManager
             // 1. Default context menu.
             mnuDirectTrack.Click += new EventHandler(mnuDirectTrack_Click);
             mnuDirectTrack.Image = Properties.Drawings.track;
+            mnuPasteDrawing.Click += new EventHandler(mnuPasteDrawing_Click);
+            mnuPasteDrawing.Image = Properties.Drawings.paste;
             mnuPlayPause.Click += new EventHandler(buttonPlay_Click);
             mnuSavePic.Click += new EventHandler(btnSnapShot_Click);
             mnuSavePic.Image = Properties.Resources.picture_save;
@@ -1018,7 +1024,7 @@ namespace Kinovea.ScreenManager
             mnuCopyPic.Image = Properties.Resources.clipboard_block;
             mnuCloseScreen.Click += new EventHandler(btnClose_Click);
             mnuCloseScreen.Image = Properties.Resources.film_close3;
-            popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuSavePic, mnuSendPic, mnuCopyPic, new ToolStripSeparator(), mnuCloseScreen });
+            popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuPasteDrawing, mnuSavePic, mnuSendPic, mnuCopyPic, new ToolStripSeparator(), mnuCloseScreen });
 
             // 2. Drawings context menu (Configure, Delete, Track this)
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
@@ -1041,6 +1047,11 @@ namespace Kinovea.ScreenManager
             mnuDrawingTracking.Image = Properties.Drawings.track;
             //mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] { mnuDrawingTrackingConfigure, new ToolStripSeparator(), mnuDrawingTrackingStart, mnuDrawingTrackingStop, new ToolStripSeparator(), mnuDrawingTrackingShowNotTracked });
             mnuDrawingTracking.DropDownItems.AddRange(new ToolStripItem[] { mnuDrawingTrackingStart, mnuDrawingTrackingStop });
+
+            mnuCutDrawing.Click += new EventHandler(mnuCutDrawing_Click);
+            mnuCutDrawing.Image = Properties.Drawings.cut;
+            mnuCopyDrawing.Click += new EventHandler(mnuCopyDrawing_Click);
+            mnuCopyDrawing.Image = Properties.Drawings.copy;
             mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
             mnuDeleteDrawing.Image = Properties.Drawings.delete;
             
@@ -2442,6 +2453,7 @@ namespace Kinovea.ScreenManager
             
             // 1. Default context menu.
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
+            mnuPasteDrawing.Text = "Paste drawing";
             mnuPlayPause.Text = ScreenManagerLang.mnuPlayPause;
             mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
             mnuSendPic.Text = ScreenManagerLang.mnuSendPic;
@@ -2454,6 +2466,8 @@ namespace Kinovea.ScreenManager
             mnuAlwaysVisible.Text = ScreenManagerLang.dlgConfigureFading_chkAlwaysVisible;
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
+            mnuCutDrawing.Text = "Cut";
+            mnuCopyDrawing.Text = "Copy";
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
             mnuDrawingTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
             mnuDrawingTrackingConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
@@ -2731,9 +2745,12 @@ namespace Kinovea.ScreenManager
             // Show the right Pop Menu depending on context.
             // (Drawing, Trajectory, Chronometer, Magnifier, Nothing)
             
+
             if (m_bIsCurrentlyPlaying)
             {
                 mnuDirectTrack.Visible = false;
+                mnuPasteDrawing.Visible = false;
+                mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
                 mnuSendPic.Visible = false;
                 panelCenter.ContextMenuStrip = popMenu;
                 return;
@@ -2745,6 +2762,8 @@ namespace Kinovea.ScreenManager
             if(InteractiveFiltering)
             {
                 mnuDirectTrack.Visible = false;
+                mnuPasteDrawing.Visible = false;
+                mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
                 mnuSendPic.Visible = false;
                 panelCenter.ContextMenuStrip = popMenu;
             }
@@ -2752,6 +2771,9 @@ namespace Kinovea.ScreenManager
             {
                 AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
                 PrepareDrawingContextMenu(drawing, popMenuDrawings);
+                popMenuDrawings.Items.Add(mnuCutDrawing);
+                popMenuDrawings.Items.Add(mnuCopyDrawing);
+                popMenuDrawings.Items.Add(mnuSepDrawing3);
                 popMenuDrawings.Items.Add(mnuDeleteDrawing);
                 panelCenter.ContextMenuStrip = popMenuDrawings;
             }
@@ -2824,6 +2846,8 @@ namespace Kinovea.ScreenManager
             {
                 // No drawing touched and no tool selected, but not currently playing. Default menu.
                 mnuDirectTrack.Visible = true;
+                mnuPasteDrawing.Visible = true;
+                mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
                 mnuSendPic.Visible = m_bSynched;
                 panelCenter.ContextMenuStrip = popMenu;
             }
@@ -3371,6 +3395,8 @@ namespace Kinovea.ScreenManager
         private void PanelCenter_MouseDown(object sender, MouseEventArgs e)
         {
             mnuDirectTrack.Visible = false;
+            mnuPasteDrawing.Visible = false;
+            mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
             mnuSendPic.Visible = m_bSynched;
             panelCenter.ContextMenuStrip = popMenu;
         }
@@ -3981,7 +4007,60 @@ namespace Kinovea.ScreenManager
         {
 
         }
-        
+
+        private void mnuCutDrawing_Click(object sender, EventArgs e)
+        {
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+            if (drawing == null)
+                return;
+            
+            Guid keyframeId = m_FrameServer.Metadata.FindAttachmentKeyframeId(m_FrameServer.Metadata.HitDrawing);
+            AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
+            string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
+
+            DrawingClipboard.Put(data, m_DescaledMouse);
+
+            if (DrawingDeleting != null)
+                DrawingDeleting(this, new DrawingEventArgs(drawing, keyframeId));
+        }
+
+        private void mnuCopyDrawing_Click(object sender, EventArgs e)
+        {
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+            if (drawing == null)
+                return;
+            
+            Guid keyframeId = m_FrameServer.Metadata.FindAttachmentKeyframeId(m_FrameServer.Metadata.HitDrawing);
+            AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
+            string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
+
+            DrawingClipboard.Put(data, m_DescaledMouse);
+        }
+
+        private void mnuPasteDrawing_Click(object sender, EventArgs e)
+        {
+            string data = DrawingClipboard.Content;
+
+            AbstractDrawing drawing = DrawingSerializer.DeserializeMemento(data, m_FrameServer.Metadata);
+
+            Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
+            if (kf == null)
+            {
+                AddKeyframe();
+                kf = m_FrameServer.Metadata.HitKeyframe;
+            }
+
+            drawing.AfterCopy();
+            
+            // Relocate the drawing under the mouse based on relative motion since the "copy" or "cut" action.
+            float dx = m_DescaledMouse.X - DrawingClipboard.Position.X;
+            float dy = m_DescaledMouse.Y - DrawingClipboard.Position.Y;
+            drawing.MoveDrawing(dx, dy, Keys.None, m_FrameServer.Metadata.ImageTransform.Zooming);
+            
+            if (DrawingAdding != null)
+                DrawingAdding(this, new DrawingEventArgs(drawing, kf.Id));
+        }
+
         private void mnuDeleteDrawing_Click(object sender, EventArgs e)
         {
             DeleteSelectedDrawing();
