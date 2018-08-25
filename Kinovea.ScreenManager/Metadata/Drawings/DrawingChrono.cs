@@ -121,6 +121,7 @@ namespace Kinovea.ScreenManager
             set 
             { 
                 label = value;
+                Name = value;
                 UpdateLabelRectangle();
             }
         }

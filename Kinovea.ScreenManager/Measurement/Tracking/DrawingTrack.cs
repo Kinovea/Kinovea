@@ -155,7 +155,11 @@ namespace Kinovea.ScreenManager
         public string Label
         {
             get { return mainLabelText; }
-            set { mainLabelText = value;}
+            set
+            {
+                mainLabelText = value;
+                Name = value;
+            }
         }
         public Metadata ParentMetadata
         {
