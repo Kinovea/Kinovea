@@ -27,7 +27,7 @@ namespace Kinovea.ScreenManager
             this.drawingId = drawingId;
             this.drawingName = drawingName;
 
-            commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandAddDrawing_FriendlyName, drawingName);
+            UpdateCommandName(drawingName);
         }
 
         public override HistoryMemento PerformUndo()
@@ -38,6 +38,12 @@ namespace Kinovea.ScreenManager
             metadata.DeleteDrawing(managerId, drawingId);
 
             return redoMemento;
+        }
+
+        public void UpdateCommandName(string name)
+        {
+            drawingName = name;
+            commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandAddDrawing_FriendlyName, drawingName);
         }
     }
 }

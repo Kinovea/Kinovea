@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
             this.drawingName = drawingName;
             this.filter = filter;
 
-            commandName = string.Format("{0} ({1})", "Modify drawing", drawingName);
+            UpdateCommandName(drawingName);
 
             AbstractDrawingManager manager = metadata.GetDrawingManager(managerId);
 
@@ -46,6 +46,12 @@ namespace Kinovea.ScreenManager
             DrawingSerializer.DeserializeModifyMemento(managerId, drawingId, data, metadata);
             metadata.ModifiedDrawing(managerId, drawingId);
             return redoMemento;
+        }
+
+        public void UpdateCommandName(string name)
+        {
+            drawingName = name;
+            commandName = commandName = string.Format("{0} ({1})", "Modify drawing", drawingName);
         }
     }
 }

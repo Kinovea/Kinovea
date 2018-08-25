@@ -183,7 +183,7 @@ namespace Kinovea.ScreenManager
             if (keyframe == null || drawing == null)
                 return;
 
-            HistoryMemento memento = new HistoryMementoDeleteDrawing(metadata, keyframe.Id, drawing.Id, drawing.ToolDisplayName);
+            HistoryMemento memento = new HistoryMementoDeleteDrawing(metadata, keyframe.Id, drawing.Id, drawing.Name);
             metadata.DeleteDrawing(keyframe.Id, drawing.Id);
             metadata.HistoryStack.PushNewCommand(memento);
         }
@@ -195,14 +195,17 @@ namespace Kinovea.ScreenManager
             if (keyframe == null || drawing == null || decorable == null)
                 return;
 
-            HistoryMemento memento = new HistoryMementoModifyDrawing(metadata, keyframe.Id, drawing.Id, drawing.ToolDisplayName, SerializationFilter.Style);
+            HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(metadata, keyframe.Id, drawing.Id, drawing.Name, SerializationFilter.Style);
 
             FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorable, refresh);
             FormsHelper.Locate(fcd);
             fcd.ShowDialog();
 
             if (fcd.DialogResult == DialogResult.OK)
+            {
+                memento.UpdateCommandName(drawing.Name);
                 metadata.HistoryStack.PushNewCommand(memento);
+            }
 
             fcd.Dispose();
             
@@ -252,6 +255,7 @@ namespace Kinovea.ScreenManager
 
             HistoryMementoAddDrawing memento = new HistoryMementoAddDrawing(metadata, keyframeId, drawing.Id, drawing.ToolDisplayName);
             metadata.AddDrawing(keyframeId, drawing);
+            memento.UpdateCommandName(drawing.Name);
             metadata.HistoryStack.PushNewCommand(memento);
             
             // Special cases
