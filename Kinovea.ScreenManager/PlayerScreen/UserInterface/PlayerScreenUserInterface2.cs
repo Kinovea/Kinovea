@@ -1248,6 +1248,18 @@ namespace Kinovea.ScreenManager
                         DeleteKeyframe(id);
                     }
                     break;
+                case PlayerScreenCommands.CutDrawing:
+                    CutDrawing();
+                    break;
+                case PlayerScreenCommands.CopyDrawing:
+                    CopyDrawing();
+                    break;
+                case PlayerScreenCommands.PasteDrawing:
+                    PasteDrawing(false);
+                    break;
+                case PlayerScreenCommands.PasteInPlaceDrawing:
+                    PasteDrawing(true);
+                    break;
                 case PlayerScreenCommands.DeleteDrawing:
                     DeleteSelectedDrawing();
                     break;
@@ -1350,6 +1362,7 @@ namespace Kinovea.ScreenManager
             //------------------------------------------------------------------------------
             // This function is a hub event handler for all button press, mouse clicks, etc.
             // Signal itself as the active screen to the ScreenManager
+            // This will trigger an update of the top-level menu to enable/disable specific menus.
             //---------------------------------------------------------------------
             if (SetAsActiveScreen != null)
                 SetAsActiveScreen(this, EventArgs.Empty);
@@ -4013,34 +4026,52 @@ namespace Kinovea.ScreenManager
 
         private void mnuCutDrawing_Click(object sender, EventArgs e)
         {
-            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-            if (drawing == null)
-                return;
-            
-            Guid keyframeId = m_FrameServer.Metadata.FindAttachmentKeyframeId(m_FrameServer.Metadata.HitDrawing);
-            AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
-            string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
-
-            DrawingClipboard.Put(data, m_DescaledMouse);
-
-            if (DrawingDeleting != null)
-                DrawingDeleting(this, new DrawingEventArgs(drawing, keyframeId));
+            CutDrawing();
         }
 
-        private void mnuCopyDrawing_Click(object sender, EventArgs e)
+        private void CutDrawing()
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
             if (drawing == null)
                 return;
-            
+
             Guid keyframeId = m_FrameServer.Metadata.FindAttachmentKeyframeId(m_FrameServer.Metadata.HitDrawing);
             AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
             string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
 
-            DrawingClipboard.Put(data, m_DescaledMouse);
+            DrawingClipboard.Put(data, drawing.GetPosition());
+            
+            if (DrawingDeleting != null)
+                DrawingDeleting(this, new DrawingEventArgs(drawing, keyframeId));
+
+            OnPoke();
+        }
+
+        private void mnuCopyDrawing_Click(object sender, EventArgs e)
+        {
+            CopyDrawing();
+        }
+
+        private void CopyDrawing()
+        {
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+            if (drawing == null)
+                return;
+
+            Guid keyframeId = m_FrameServer.Metadata.FindAttachmentKeyframeId(m_FrameServer.Metadata.HitDrawing);
+            AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
+            string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
+
+            DrawingClipboard.Put(data, drawing.GetPosition());
+
+            OnPoke();
         }
 
         private void mnuPasteDrawing_Click(object sender, EventArgs e)
+        {
+            PasteDrawing(false);
+        }
+        private void PasteDrawing(bool inPlace)
         {
             string data = DrawingClipboard.Content;
 
@@ -4055,15 +4086,18 @@ namespace Kinovea.ScreenManager
 
             drawing.AfterCopy();
             
-            // Relocate the drawing under the mouse based on relative motion since the "copy" or "cut" action.
-            float dx = m_DescaledMouse.X - DrawingClipboard.Position.X;
-            float dy = m_DescaledMouse.Y - DrawingClipboard.Position.Y;
-            drawing.MoveDrawing(dx, dy, Keys.None, m_FrameServer.Metadata.ImageTransform.Zooming);
+            if (!inPlace)
+            {
+                // Relocate the drawing under the mouse based on relative motion since the "copy" or "cut" action.
+                float dx = m_DescaledMouse.X - DrawingClipboard.Position.X;
+                float dy = m_DescaledMouse.Y - DrawingClipboard.Position.Y;
+                drawing.MoveDrawing(dx, dy, Keys.None, m_FrameServer.Metadata.ImageTransform.Zooming);
+            }
             
             if (DrawingAdding != null)
                 DrawingAdding(this, new DrawingEventArgs(drawing, kf.Id));
         }
-
+        
         private void mnuDeleteDrawing_Click(object sender, EventArgs e)
         {
             DeleteSelectedDrawing();

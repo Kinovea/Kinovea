@@ -138,8 +138,14 @@ namespace Kinovea.ScreenManager
         /// <param name="modifierKeys">Modifiers key pressed while moving the drawing</param>
         /// <param name="zooming">Whether the image is currently zoomed in</param>
         public abstract void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming);
-        
-        
+
+        /// <summary>
+        /// Should return a standard position for the drawing based on the internal values.
+        /// This is used for copy/paste support, to know where the drawing was at the time of copy, 
+        /// so we can relocate the paste correctly.
+        /// </summary>
+        /// <returns></returns>
+        public abstract PointF GetPosition();
         
         #endregion
 

@@ -516,8 +516,12 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
-       #endregion
-        
+        public override PointF GetPosition()
+        {
+            return positions[0].Point;
+        }
+        #endregion
+
         #region Drawing routines
         private void DrawTrajectory(Graphics canvas, int start, int end, bool before, double fadingFactor, IImageToViewportTransformer transformer)
         {

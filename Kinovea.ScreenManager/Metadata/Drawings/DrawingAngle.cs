@@ -255,6 +255,10 @@ namespace Kinovea.ScreenManager
             points["b"] = points["b"].Translate(dx, dy);
             SignalAllTrackablePointsMoved();
         }
+        public override PointF GetPosition()
+        {
+            return points["o"];
+        }
         #endregion
             
         #region KVA Serialization

@@ -266,8 +266,12 @@ namespace Kinovea.ScreenManager
             mainBackground.Move(dx, dy);
             lblBackground.Move(dx, dy);
         }
+        public override PointF GetPosition()
+        {
+            return mainBackground.Rectangle.Center();
+        }
         #endregion
-        
+
         #region KVA Serialization
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {

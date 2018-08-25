@@ -268,7 +268,5 @@ namespace Kinovea.ScreenManager
                 ((DrawingText)drawing).SetEditMode(true, transformer);
             }
         }
-        
-        
     }
 }

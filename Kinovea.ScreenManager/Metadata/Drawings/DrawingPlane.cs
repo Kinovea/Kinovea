@@ -309,6 +309,10 @@ namespace Kinovea.ScreenManager
             SignalTrackablePointMoved(handle);
             CalibrationHelper.CalibrationByPlane_Update(quadImage);
         }
+        public override PointF GetPosition()
+        {
+            return quadImage.A;
+        }
         #endregion
 
         #region IKvaSerializable

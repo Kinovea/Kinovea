@@ -143,6 +143,10 @@ namespace Kinovea.ScreenManager
                 
             return result;
         }
+        public override PointF GetPosition()
+        {
+            return pointList[0];
+        }
         #endregion
 
         #region KVA Serialization

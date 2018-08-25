@@ -205,6 +205,10 @@ namespace Kinovea.ScreenManager
             int handle = handleNumber - 1;
             points[handle] = point;
         }
+        public override PointF GetPosition()
+        {
+            return points[0];
+        }
         #endregion
 
         #region IKvaSerializable
