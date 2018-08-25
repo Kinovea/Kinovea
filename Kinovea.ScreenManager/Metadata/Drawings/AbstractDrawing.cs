@@ -168,6 +168,14 @@ namespace Kinovea.ScreenManager
                 psui.InitializeEndFromMenu(cancelLastPoint);
         }
 
+        public void AfterCopy()
+        {
+            identifier = Guid.NewGuid();
+
+            // A new name will automatically be picked up after insertion.
+            Name = "";
+        }
+
         public bool ShouldSerializeCore(SerializationFilter filter)
         {
             return (filter & SerializationFilter.Core) == SerializationFilter.Core;

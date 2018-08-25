@@ -228,6 +228,7 @@
     <Compile Include="CaptureScreen\Delay\FormConfigureComposite.Designer.cs">
       <DependentUpon>FormConfigureComposite.cs</DependentUpon>
     </Compile>
+    <Compile Include="DrawingClipboard.cs" />
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\FilePatternContexts.cs" />
     <Compile Include="FilePatterns\FilePatternSymbols.cs" />
@@ -1270,6 +1271,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\slomo_sync.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\paste.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
