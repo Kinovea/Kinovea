@@ -306,6 +306,7 @@ namespace Kinovea.ScreenManager
 
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSetStyleAsDefault = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAlwaysVisible = new ToolStripMenuItem();
         private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGotoKeyframe = new ToolStripMenuItem();
@@ -1022,6 +1023,8 @@ namespace Kinovea.ScreenManager
             // 2. Drawings context menu (Configure, Delete, Track this)
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
             mnuConfigureDrawing.Image = Properties.Drawings.configure;
+            mnuSetStyleAsDefault.Click += new EventHandler(mnuSetStyleAsDefault_Click);
+            mnuSetStyleAsDefault.Image = Resources.SwatchIcon3;
             mnuAlwaysVisible.Click += mnuAlwaysVisible_Click;
             mnuAlwaysVisible.Image = Properties.Drawings.persistence;
             mnuConfigureOpacity.Click += new EventHandler(mnuConfigureOpacity_Click);
@@ -2447,6 +2450,7 @@ namespace Kinovea.ScreenManager
             
             // 2. Drawings context menu.
             mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
+            mnuSetStyleAsDefault.Text = "Set style as default";
             mnuAlwaysVisible.Text = ScreenManagerLang.dlgConfigureFading_chkAlwaysVisible;
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
@@ -2858,6 +2862,9 @@ namespace Kinovea.ScreenManager
             {
                 mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 popMenu.Items.Add(mnuConfigureDrawing);
+                
+                mnuSetStyleAsDefault.Text = "Set style as default";
+                popMenu.Items.Add(mnuSetStyleAsDefault);
             }
             
             if(PreferencesManager.PlayerPreferences.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
@@ -3906,6 +3913,17 @@ namespace Kinovea.ScreenManager
             
             fcd.Dispose();
             DoInvalidate();
+        }
+        private void mnuSetStyleAsDefault_Click(object sender, EventArgs e)
+        {
+            // Assign the active drawing style to the drawing tool.
+            Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
+            IDecorable drawing = m_FrameServer.Metadata.HitDrawing as IDecorable;
+            if (drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
+                return;
+
+            ToolManager.SetStylePreset(m_ActiveTool.Name, drawing.DrawingStyle);
+            ToolManager.SavePresets();
         }
         private void mnuAlwaysVisible_Click(object sender, EventArgs e)
         {
