@@ -239,9 +239,6 @@ namespace Kinovea.ScreenManager
             if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
                 ArrowHelper.Draw(canvas, penEdges, end, start);
         }
-
-        
-
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
@@ -293,6 +290,10 @@ namespace Kinovea.ScreenManager
             points["a"] = points["a"].Translate(dx, dy);
             points["b"] = points["b"].Translate(dx, dy);
             SignalAllTrackablePointsMoved();
+        }
+        public override PointF GetPosition()
+        {
+            return GetMiddlePoint();
         }
         #endregion
 

@@ -90,6 +90,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportTEXT = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
 
+        private ToolStripMenuItem mnuCutDrawing = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCopyDrawing = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
+        
         private ToolStripMenuItem mnuOnePlayer = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTwoPlayers = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOneCapture = new ToolStripMenuItem();
@@ -292,6 +296,25 @@ namespace Kinovea.ScreenManager
             mnuCatchFile.DropDownItems.AddRange(subFile);
             #endregion
 
+            #region Edit
+            ToolStripMenuItem mnuCatchEdit = new ToolStripMenuItem();
+            mnuCatchEdit.MergeIndex = 1; // (Edit)
+            mnuCatchEdit.MergeAction = MergeAction.MatchOnly;
+
+            mnuCutDrawing.Image = Properties.Drawings.cut;
+            mnuCutDrawing.Click += new EventHandler(mnuCutDrawing_OnClick);
+            mnuCutDrawing.MergeAction = MergeAction.Append;
+            mnuCopyDrawing.Image = Properties.Drawings.copy;
+            mnuCopyDrawing.Click += new EventHandler(mnuCopyDrawing_OnClick);
+            mnuCopyDrawing.MergeAction = MergeAction.Append;
+            mnuPasteDrawing.Image = Properties.Drawings.paste;
+            mnuPasteDrawing.Click += new EventHandler(mnuPasteDrawing_OnClick);
+            mnuPasteDrawing.MergeAction = MergeAction.Append;
+            
+            ToolStripItem[] subEdit = new ToolStripItem[] { new ToolStripSeparator(), mnuCutDrawing, mnuCopyDrawing, mnuPasteDrawing };
+            mnuCatchEdit.DropDownItems.AddRange(subEdit);
+            #endregion
+
             #region View
             ToolStripMenuItem mnuCatchScreens = new ToolStripMenuItem();
             mnuCatchScreens.MergeIndex = 2; // (Screens)
@@ -468,7 +491,7 @@ namespace Kinovea.ScreenManager
             #endregion
 
             MenuStrip ThisMenu = new MenuStrip();
-            ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchFile, mnuCatchScreens, mnuCatchImage, mnuCatchVideo, mnuCatchTools });
+            ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchFile, mnuCatchEdit, mnuCatchScreens, mnuCatchImage, mnuCatchVideo, mnuCatchTools });
             ThisMenu.AllowMerge = true;
 
             ToolStripManager.Merge(ThisMenu, menu);
@@ -871,9 +894,6 @@ namespace Kinovea.ScreenManager
             // Enable / disable menus depending on state of active screen
             // and global screen configuration.
             
-            // TODO: fix selection of history stack context.
-
-
             #region Menus depending only on the state of the active screen
             bool activeScreenIsEmpty = false;
             if (activeScreen != null && screenList.Count > 0)
@@ -881,7 +901,6 @@ namespace Kinovea.ScreenManager
                 if(!activeScreen.Full)
                 {
                     activeScreenIsEmpty = true;
-                    HistoryMenuManager.SwitchContext(null);
                 }
                 else if (activeScreen is PlayerScreen)
                 {
@@ -901,6 +920,9 @@ namespace Kinovea.ScreenManager
                     
                     // Edit
                     HistoryMenuManager.SwitchContext(player.HistoryStack);
+                    mnuCutDrawing.Enabled = player.FrameServer.Metadata.HitDrawing != null;
+                    mnuCopyDrawing.Enabled = player.FrameServer.Metadata.HitDrawing != null;
+                    mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
 
                     // Image
                     mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanChangeDeinterlacing;
@@ -949,7 +971,8 @@ namespace Kinovea.ScreenManager
 
                     // Edit
                     HistoryMenuManager.SwitchContext(captureScreen.HistoryStack);
-                    
+                    //mnuCutDrawing.Enabled = captureScreen.Metadata.HitDrawing != null;
+
                     // Image
                     mnuDeinterlace.Enabled = false;
                     mnuMirror.Enabled = false;
@@ -977,14 +1000,12 @@ namespace Kinovea.ScreenManager
                 {
                     // KO ?
                     activeScreenIsEmpty = true;
-                    HistoryMenuManager.SwitchContext(null);
                 }
             }
             else
             {
                 // No active screen. ( = no screens)
                 activeScreenIsEmpty = true;
-                HistoryMenuManager.SwitchContext(null);
             }
 
             if (activeScreenIsEmpty)
@@ -998,6 +1019,12 @@ namespace Kinovea.ScreenManager
                 mnuExportMSXML.Enabled = false;
                 mnuExportXHTML.Enabled = false;
                 mnuExportTEXT.Enabled = false;
+
+                // Edit
+                HistoryMenuManager.SwitchContext(null);
+                mnuCutDrawing.Enabled = false;
+                mnuCopyDrawing.Enabled = false;
+                mnuPasteDrawing.Enabled = false;
 
                 // Image
                 mnuDeinterlace.Enabled = false;
@@ -1275,7 +1302,12 @@ namespace Kinovea.ScreenManager
             mnuExportXHTML.Text = ScreenManagerLang.mnuExportXHTML;
             mnuExportTEXT.Text = ScreenManagerLang.mnuExportTEXT;
             mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
-            
+
+            // Edit
+            mnuCutDrawing.Text = "Cut drawing";
+            mnuCopyDrawing.Text = "Copy drawing";
+            mnuPasteDrawing.Text = "Paste drawing";
+
             // View
             mnuOnePlayer.Text = ScreenManagerLang.mnuOnePlayer;
             mnuTwoPlayers.Text = ScreenManagerLang.mnuTwoPlayers;
@@ -1419,6 +1451,38 @@ namespace Kinovea.ScreenManager
                 return;
 
             MetadataExporter.Export(player.FrameServer.Metadata, saveFileDialog.FileName, format);
+        }
+        #endregion
+
+        #region Edit
+        private void mnuCutDrawing_OnClick(object sender, EventArgs e)
+        {
+            if (activeScreen is PlayerScreen)
+            {
+                PlayerScreen player = activeScreen as PlayerScreen;
+                player.ExecuteScreenCommand((int)PlayerScreenCommands.CutDrawing);
+            }
+            else if (activeScreen is CaptureScreen)
+            {
+                //CaptureScreen captureScreen = activeScreen as CaptureScreen;
+                //captureScreen.ExecuteScreenCommand((int)CaptureScreenCommands.CutDrawing);
+            }
+        }
+        private void mnuCopyDrawing_OnClick(object sender, EventArgs e)
+        {
+            if (activeScreen is PlayerScreen)
+            {
+                PlayerScreen player = activeScreen as PlayerScreen;
+                player.ExecuteScreenCommand((int)PlayerScreenCommands.CopyDrawing);
+            }
+        }
+        private void mnuPasteDrawing_OnClick(object sender, EventArgs e)
+        {
+            if (activeScreen is PlayerScreen)
+            {
+                PlayerScreen player = activeScreen as PlayerScreen;
+                player.ExecuteScreenCommand((int)PlayerScreenCommands.PasteInPlaceDrawing);
+            }
         }
         #endregion
 

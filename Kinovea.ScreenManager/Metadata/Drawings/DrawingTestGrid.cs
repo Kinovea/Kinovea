@@ -205,6 +205,11 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
         }
+        public override PointF GetPosition()
+        {
+            return new PointF(imageSize.Width / 2, imageSize.Height / 2);
+        }
+        
         #endregion
 
         #region IScalable implementation

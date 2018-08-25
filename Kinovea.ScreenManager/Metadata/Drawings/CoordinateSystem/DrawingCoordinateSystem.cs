@@ -275,9 +275,12 @@ namespace Kinovea.ScreenManager
         public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
         }
-        
+        public override PointF GetPosition()
+        {
+            return points["0"];
+        }
         #endregion
-        
+
         #region ITrackable implementation and support.
         public Color Color
         {

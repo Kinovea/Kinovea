@@ -405,10 +405,9 @@ namespace Kinovea.ScreenManager
         {
             AddDrawingWithMemento(e.ManagerId, e.Drawing);
         }
-
+        
         private void View_DrawingDeleting(object sender, DrawingEventArgs e)
         {
-            // Temporary function. This code should be done by metadata manipulator.
             HistoryMemento memento = new HistoryMementoDeleteDrawing(frameServer.Metadata, e.ManagerId, e.Drawing.Id, e.Drawing.Name);
             frameServer.Metadata.DeleteDrawing(e.ManagerId, e.Drawing.Id);
             historyStack.PushNewCommand(memento);

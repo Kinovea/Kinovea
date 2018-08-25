@@ -150,6 +150,10 @@ namespace Kinovea.ScreenManager
         {
             boundingBox.MoveAndSnap((int)dx, (int)dy, videoSize, snapMargin);
         }
+        public override PointF GetPosition()
+        {
+            return boundingBox.Rectangle.Center();
+        }
         #endregion
 
         #region IScalable

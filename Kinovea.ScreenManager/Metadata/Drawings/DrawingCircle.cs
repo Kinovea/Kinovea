@@ -168,9 +168,13 @@ namespace Kinovea.ScreenManager
                     result = 0;
             }
             return result;
-        }        
+        }
+        public override PointF GetPosition()
+        {
+            return center;
+        }
         #endregion
-        
+
         #region KVA Serialization
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {

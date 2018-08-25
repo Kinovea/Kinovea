@@ -188,6 +188,10 @@ namespace Kinovea.ScreenManager
             background.Move(dx, dy);
             RelocateEditbox();
         }
+        public override PointF GetPosition()
+        {
+            return background.Rectangle.Center();
+        }
         #endregion
 
         #region KVA Serialization

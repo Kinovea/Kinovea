@@ -133,8 +133,12 @@ namespace Kinovea.ScreenManager
             
             return handle;
         }
+        public override PointF GetPosition()
+        {
+            return PointF.Empty;
+        }
         #endregion
-        
+
         #region AbstractMultiDrawing Implementation
         public override AbstractMultiDrawingItem GetNewItem(PointF point, long position, long averageTimeStampsPerFrame)
         {

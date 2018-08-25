@@ -80,6 +80,10 @@ namespace Kinovea.Services
 
         AddKeyframe,
         DeleteKeyframe,
+        CutDrawing,
+        CopyDrawing,
+        PasteDrawing,
+        PasteInPlaceDrawing,
         DeleteDrawing,
         CopyImage,
         ValidateDrawing,
