@@ -167,7 +167,15 @@ namespace Kinovea.ScreenManager
 
             return Tools[tool].StylePreset.Clone();
         }
-        
+
+        public static void SetStylePreset(string tool, DrawingStyle style)
+        {
+            if (!Tools.ContainsKey(tool))
+                return;
+
+            Tools[tool].StylePreset = style;
+        }
+
         #region Private Methods
         private static DrawingStyle ImportPreset(DrawingStyle defaultStyle, DrawingStyle preset)
         {
