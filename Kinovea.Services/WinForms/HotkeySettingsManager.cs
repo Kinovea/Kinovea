@@ -8,6 +8,8 @@ namespace Kinovea.Services
 {
     public static class HotkeySettingsManager
     {
+        private static ToolStripMenuItem dummy = new ToolStripMenuItem();
+
         public static Dictionary<string, HotkeyCommand[]> Hotkeys
         {
             get { return hotkeys; }
@@ -39,6 +41,39 @@ namespace Kinovea.Services
             foreach (string category in imported.Keys)
                 foreach (HotkeyCommand command in imported[category])
                     Update(category, command);
+        }
+
+        public static Keys GetMenuShortcut(string category, int commandCode)
+        {
+            Keys keys = Keys.None;
+
+            if (hotkeys.ContainsKey(category))
+            {
+                HotkeyCommand[] result = null;
+                hotkeys.TryGetValue(category, out result);
+
+                foreach (HotkeyCommand c in hotkeys[category])
+                {
+                    if (c.CommandCode == commandCode)
+                    {
+                        // Some keys like 'Enter' can't be used as menu shortcuts.
+                        try
+                        {
+                            dummy.ShortcutKeys = c.KeyData;
+                            keys = c.KeyData;
+                        }
+                        catch
+                        {
+                            // This shortcut key cannot be used as a menu shortcut.
+                            keys = Keys.None;
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            return keys; 
         }
 
         /// <summary>

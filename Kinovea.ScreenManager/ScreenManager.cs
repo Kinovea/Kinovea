@@ -1329,7 +1329,10 @@ namespace Kinovea.ScreenManager
             mnuCutDrawing.Text = "Cut drawing";
             mnuCopyDrawing.Text = "Copy drawing";
             mnuPasteDrawing.Text = "Paste drawing";
-
+            mnuCutDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CutDrawing);
+            mnuCopyDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyDrawing);
+            mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
+            
             // View
             mnuOnePlayer.Text = ScreenManagerLang.mnuOnePlayer;
             mnuTwoPlayers.Text = ScreenManagerLang.mnuTwoPlayers;

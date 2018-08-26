@@ -2468,11 +2468,14 @@ namespace Kinovea.ScreenManager
             // 1. Default context menu.
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuPasteDrawing.Text = "Paste drawing";
+            mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
             mnuPlayPause.Text = ScreenManagerLang.mnuPlayPause;
             mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
             mnuSendPic.Text = ScreenManagerLang.mnuSendPic;
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
+            mnuCopyPic.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyImage);
             mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
+            mnuCloseScreen.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.Close);
             
             // 2. Drawings context menu.
             mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
@@ -2481,8 +2484,12 @@ namespace Kinovea.ScreenManager
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
             mnuCutDrawing.Text = "Cut";
+            mnuCutDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CutDrawing);
             mnuCopyDrawing.Text = "Copy";
+            mnuCopyDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyDrawing);
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
+            mnuDeleteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
+
             mnuDrawingTracking.Text = ScreenManagerLang.dlgConfigureTrajectory_Tracking;
             mnuDrawingTrackingConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuDrawingTrackingStart.Text = ScreenManagerLang.mnuDrawingTrackingStart;
@@ -2492,6 +2499,7 @@ namespace Kinovea.ScreenManager
             mnuStopTracking.Text = ScreenManagerLang.mnuStopTracking;
             mnuRestartTracking.Text = ScreenManagerLang.mnuRestartTracking;
             mnuDeleteTrajectory.Text = ScreenManagerLang.mnuDeleteTrajectory;
+            mnuDeleteTrajectory.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
             mnuDeleteEndOfTrajectory.Text = ScreenManagerLang.mnuDeleteEndOfTrajectory;
             mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             
@@ -2502,9 +2510,10 @@ namespace Kinovea.ScreenManager
             mnuChronoHide.Text = ScreenManagerLang.mnuChronoHide;
             mnuChronoCountdown.Text = ScreenManagerLang.mnuChronoCountdown;
             mnuChronoDelete.Text = ScreenManagerLang.mnuChronoDelete;
-            
+            mnuChronoDelete.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
+
             // 5. Magnifier
-            foreach(ToolStripMenuItem m in maginificationMenus)
+            foreach (ToolStripMenuItem m in maginificationMenus)
             {
                 double factor = (double)m.Tag;
                 m.Text = String.Format(ScreenManagerLang.mnuMagnification, factor.ToString());
