@@ -10,6 +10,7 @@ namespace Kinovea.ScreenManager
     {
         private static string content;
         private static PointF position;
+        private static string name;
 
         public static bool HasContent
         {
@@ -26,10 +27,16 @@ namespace Kinovea.ScreenManager
             get { return position; }
         }
 
-        public static void Put(string _content, PointF _position)
+        public static string Name
+        {
+            get { return name; }
+        }
+
+        public static void Put(string _content, PointF _position, string _name)
         {
             content = _content;
             position = _position;
+            name = _name;
         }
     }
 }

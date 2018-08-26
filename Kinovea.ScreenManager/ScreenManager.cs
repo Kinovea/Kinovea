@@ -920,9 +920,7 @@ namespace Kinovea.ScreenManager
                     
                     // Edit
                     HistoryMenuManager.SwitchContext(player.HistoryStack);
-                    mnuCutDrawing.Enabled = player.FrameServer.Metadata.HitDrawing != null;
-                    mnuCopyDrawing.Enabled = player.FrameServer.Metadata.HitDrawing != null;
-                    mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
+                    ConfigureClipboardMenus(player);
 
                     // Image
                     mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanChangeDeinterlacing;
@@ -971,7 +969,7 @@ namespace Kinovea.ScreenManager
 
                     // Edit
                     HistoryMenuManager.SwitchContext(captureScreen.HistoryStack);
-                    //mnuCutDrawing.Enabled = captureScreen.Metadata.HitDrawing != null;
+                    ConfigureClipboardMenus(activeScreen);
 
                     // Image
                     mnuDeinterlace.Enabled = false;
@@ -1022,9 +1020,7 @@ namespace Kinovea.ScreenManager
 
                 // Edit
                 HistoryMenuManager.SwitchContext(null);
-                mnuCutDrawing.Enabled = false;
-                mnuCopyDrawing.Enabled = false;
-                mnuPasteDrawing.Enabled = false;
+                ConfigureClipboardMenus(null);
 
                 // Image
                 mnuDeinterlace.Enabled = false;
@@ -1276,6 +1272,32 @@ namespace Kinovea.ScreenManager
             mnuSVGTools.DropDownItems.Clear();
             AddImportImageMenu(mnuSVGTools);
             AddSvgSubMenus(svgPath, mnuSVGTools);
+        }
+        private void ConfigureClipboardMenus(AbstractScreen screen)
+        {
+            if (screen is PlayerScreen)
+            {
+                PlayerScreen player = screen as PlayerScreen;
+                bool canCutOrCopy = player.FrameServer.Metadata.HitDrawing != null;
+                mnuCutDrawing.Enabled = canCutOrCopy;
+                mnuCopyDrawing.Enabled = canCutOrCopy;
+                if (!canCutOrCopy)
+                {
+                    mnuCutDrawing.Text = "Cut drawing";
+                    mnuCopyDrawing.Text = "Copy drawing";
+                }
+                else
+                {
+                    mnuCutDrawing.Text = string.Format("Cut drawing ({0})", player.FrameServer.Metadata.HitDrawing.Name);
+                    mnuCopyDrawing.Text = string.Format("Copy drawing ({0})", player.FrameServer.Metadata.HitDrawing.Name);
+                }
+                
+                mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
+                if (DrawingClipboard.HasContent)
+                {
+                    mnuPasteDrawing.Text = string.Format("Paste drawing ({0})", DrawingClipboard.Name);
+                }
+            }
         }
         #endregion
 

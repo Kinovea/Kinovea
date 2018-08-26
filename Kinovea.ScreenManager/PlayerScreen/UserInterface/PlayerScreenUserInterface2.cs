@@ -390,7 +390,7 @@ namespace Kinovea.ScreenManager
             DockKeyframePanel(true);
 
             m_TimerCallback = MultimediaTimer_Tick;
-            m_DeselectionTimer.Interval = 3000;
+            m_DeselectionTimer.Interval = 10000;
             m_DeselectionTimer.Tick += DeselectionTimer_OnTick;
 
             sldrSpeed.Minimum = 0;
@@ -2455,6 +2455,7 @@ namespace Kinovea.ScreenManager
             log.Debug("Deselection timer fired.");
             m_DeselectionTimer.Stop();
             DoInvalidate();
+            OnPoke();
         }
         #endregion
         
@@ -4039,7 +4040,7 @@ namespace Kinovea.ScreenManager
             AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
             string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
 
-            DrawingClipboard.Put(data, drawing.GetPosition());
+            DrawingClipboard.Put(data, drawing.GetPosition(), drawing.Name);
             
             if (DrawingDeleting != null)
                 DrawingDeleting(this, new DrawingEventArgs(drawing, keyframeId));
@@ -4062,7 +4063,7 @@ namespace Kinovea.ScreenManager
             AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
             string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
 
-            DrawingClipboard.Put(data, drawing.GetPosition());
+            DrawingClipboard.Put(data, drawing.GetPosition(), drawing.Name);
 
             OnPoke();
         }
