@@ -77,11 +77,6 @@ namespace Kinovea.ScreenManager
             get { return lineEnding; }
             set { lineEnding = value;}
         }
-        public bool Curved
-        {
-            get { return curved; }
-            set { curved = value; }
-        }
         public Font Font
         {
             get { return font; }
@@ -119,6 +114,12 @@ namespace Kinovea.ScreenManager
             get { return gridDivisions;}
             set { gridDivisions = value;}
         }
+        public bool Curved
+        {
+            get { return curved; }
+            set { curved = value; }
+        }
+
         public int ContentHash
         {
             get 
@@ -127,10 +128,12 @@ namespace Kinovea.ScreenManager
                 
                 iHash ^= color.GetHashCode();
                 iHash ^= lineSize.GetHashCode();
+                iHash ^= lineShape.GetHashCode();
+                iHash ^= lineEnding.GetHashCode();
                 iHash ^= font.GetHashCode();
                 iHash ^= bicolor.ContentHash;
-                iHash ^= lineEnding.GetHashCode();
                 iHash ^= trackShape.GetHashCode();
+                iHash ^= gridDivisions.GetHashCode();
                 iHash ^= curved.GetHashCode();
                 
                 return iHash;
