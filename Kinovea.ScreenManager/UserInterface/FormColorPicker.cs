@@ -36,42 +36,45 @@ namespace Kinovea.ScreenManager
         #region Properties
         public Color PickedColor
         {
-            get { return m_PickedColor; }
+            get { return pickedColor; }
         }
         #endregion
-        
+
         #region Members
-        private ColorPicker m_ColorPicker = new ColorPicker();
-        private Color m_PickedColor;
-        private List<Color> m_RecentColors;
+        private ColorPicker colorPicker;
+        private Color pickedColor;
+        private Color currentColor;
+        private List<Color> recentColors;
         #endregion
         
         #region Construction and Initialization
-        public FormColorPicker()
+        public FormColorPicker(Color currentColor)
         {
+            this.currentColor = currentColor;
             this.SuspendLayout();
             InitializeComponent();
-            m_ColorPicker.Top = 5;
-            m_ColorPicker.Left = 5;
-            m_ColorPicker.ColorPicked += colorPicker_ColorPicked;
+            colorPicker = new ColorPicker(currentColor);
+            colorPicker.Top = 5;
+            colorPicker.Left = 5;
+            colorPicker.ColorPicked += colorPicker_ColorPicked;
             
-            Controls.Add(m_ColorPicker);
+            Controls.Add(colorPicker);
             this.Text = "   " + ScreenManagerLang.dlgColorPicker_Title;
             this.ResumeLayout();
             
             // Recent colors.
-            m_RecentColors = PreferencesManager.PlayerPreferences.RecentColors;
+            recentColors = PreferencesManager.PlayerPreferences.RecentColors;
             
-            m_ColorPicker.DisplayRecentColors(m_RecentColors);
-            this.Height = m_ColorPicker.Bottom + 20;
+            colorPicker.DisplayRecentColors(recentColors);
+            this.Height = colorPicker.Bottom + 20;
         }
         #endregion
         
         #region event handlers
         private void colorPicker_ColorPicked(object sender, System.EventArgs e)
         {
-            m_PickedColor = m_ColorPicker.PickedColor;
-            PreferencesManager.PlayerPreferences.AddRecentColor(m_ColorPicker.PickedColor);
+            pickedColor = colorPicker.PickedColor;
+            PreferencesManager.PlayerPreferences.AddRecentColor(colorPicker.PickedColor);
             PreferencesManager.Save();
             DialogResult = DialogResult.OK;
             Close();
