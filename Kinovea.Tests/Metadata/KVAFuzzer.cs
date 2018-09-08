@@ -749,7 +749,7 @@ namespace Kinovea.Tests.Metadata
 
         private void WriteDrawingStyleGridDivisions(XmlTextWriter w, string key)
         {
-            string size = StyleElementGridDivisions.Options[random.Next(StyleElementGridDivisions.Options.Length)];
+            string size = StyleElementGridDivisions.options[random.Next(StyleElementGridDivisions.options.Count)].ToString();
 
             w.WriteStartElement("GridDivisions");
             w.WriteAttributeString("Key", key);

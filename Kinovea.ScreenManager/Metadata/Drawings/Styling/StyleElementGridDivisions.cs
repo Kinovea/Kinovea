@@ -22,8 +22,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using System.Globalization;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -37,7 +39,6 @@ namespace Kinovea.ScreenManager
     public class StyleElementGridDivisions : AbstractStyleElement
     {
         #region Properties
-        public static readonly string[] Options;
         public override object Value
         {
             get { return value; }
@@ -60,26 +61,26 @@ namespace Kinovea.ScreenManager
             get { return "GridDivisions";}
         }
         #endregion
-        
+
+        public static List<int> options;
+        public static readonly int defaultValue = 8;
+
         #region Members
         private int value;
-        private static readonly int defaultValue = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
         static StyleElementGridDivisions()
         {
-            List<string> d = new List<string>();
-            for (int i = 2; i < 21; i++)
-                d.Add(i.ToString());
-
-            Options = d.ToArray();
+            options = new List<int>();
+            for (int i = 2; i <= 20; i++)
+                options.Add(i);
         }
 
         public StyleElementGridDivisions(int initialValue)
         {
-            value = (Array.IndexOf(Options, initialValue.ToString()) >= 0) ? initialValue : defaultValue;
+            value = options.IndexOf(initialValue) >= 0 ? initialValue : defaultValue;
         }
         public StyleElementGridDivisions(XmlReader _xmlReader)
         {
@@ -92,8 +93,19 @@ namespace Kinovea.ScreenManager
         {
             ComboBox editor = new ComboBox();
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
-            editor.Items.AddRange(Options);
-            editor.SelectedIndex = Array.IndexOf(Options, value.ToString());
+            
+            int selectedIndex = 0;
+            for (int i = 0; i < options.Count; i++)
+            {
+                editor.Items.Add(GetDisplayValue(options[i]));
+
+                if (options[i] == value)
+                {
+                    selectedIndex = i;
+                    editor.Text = GetDisplayValue(value);
+                }
+            }
+            
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             return editor;
         }
@@ -118,26 +130,34 @@ namespace Kinovea.ScreenManager
             {
                 log.ErrorFormat("An error happened while parsing XML for Grid divisions. {0}", s);
             }
-            
-            // Restrict to the actual list of "athorized" values.
-            this.value = (Array.IndexOf(Options, value.ToString()) >= 0) ? value : defaultValue;
-            
+
+            this.value = options.IndexOf(value) >= 0 ? value : defaultValue;
             reader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter writer)
         {
-            writer.WriteElementString("Value", value.ToString());
+            writer.WriteElementString("Value", value.ToString(CultureInfo.InvariantCulture));
         }
         #endregion
         
         #region Private Methods
+        private static string GetDisplayValue(int value)
+        {
+            return string.Format("{0} × {0}", value);
+        }
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int i;
-            bool parsed = int.TryParse(((ComboBox)sender).Text, out i);
-            this.value = parsed ? i : defaultValue;
+            ComboBox editor = sender as ComboBox;
+            if (editor == null)
+                return;
+
+            if (editor.SelectedIndex < 0)
+                return;
+            
+            value = options[editor.SelectedIndex];
             RaiseValueChanged();
-            ((ComboBox)sender).Text = value.ToString();
+
+            editor.Text = GetDisplayValue(value);
         }
         #endregion
     }

@@ -248,8 +248,19 @@ namespace Kinovea.ScreenManager
             
             return new RectangleF(left, top, right - left, bottom - top);
         }
-        #endregion
+
+        public override int GetHashCode()
+        {
+            int iHash = 0;
+            iHash ^= A.GetHashCode();
+            iHash ^= B.GetHashCode();
+            iHash ^= C.GetHashCode();
+            iHash ^= D.GetHashCode();
+            return iHash;
+        } 
         
+        #endregion
+
         #region Private methods
         private bool IsQuadConvex()
         {
