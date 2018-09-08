@@ -35,6 +35,9 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// A flat or perspective grid.
+    /// </summary>
     [XmlType ("Plane")]
     public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable, IScalable, IMeasurable, ITrackable
     {
@@ -59,10 +62,7 @@ namespace Kinovea.ScreenManager
             get 
             {
                 int iHash = 0;
-                /*quadImage.A.GetHashCode();
-                iHash ^= quadImage.B.GetHashCode();
-                iHash ^= quadImage.C.GetHashCode();
-                iHash ^= quadImage.D.GetHashCode();*/
+                iHash ^= quadImage.GetHashCode();
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= infosFading.ContentHash;
                 return iHash;
@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private QuadrilateralF quadImage = QuadrilateralF.UnitSquare;        // Quadrilateral defined by user.
+        private QuadrilateralF quadImage = QuadrilateralF.UnitSquare;           // Quadrilateral defined by user in image space.
         private QuadrilateralF quadPlane;                                       // Corresponding rectangle in plane system.
         private ProjectiveMapping projectiveMapping = new ProjectiveMapping();  // maps quadImage to quadPlane and back.
         private float planeWidth;                                               // width and height of rectangle in plane system.
@@ -124,9 +124,9 @@ namespace Kinovea.ScreenManager
         
         private ToolStripMenuItem mnuCalibrate = new ToolStripMenuItem();
         
-        private const int minimumSubdivisions = 2;
-        private const int defaultSubdivisions = 8;
-        private const int maximumSubdivisions = 20;
+        private static readonly int minimumSubdivisions = StyleElementGridDivisions.options[0];
+        private static readonly int defaultSubdivisions = StyleElementGridDivisions.defaultValue;
+        private static readonly int maximumSubdivisions = StyleElementGridDivisions.options[StyleElementGridDivisions.options.Count - 1];
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
