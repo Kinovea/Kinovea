@@ -118,7 +118,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void editor_Click(object sender, EventArgs e)
 		{
-			FormColorPicker picker = new FormColorPicker();
+			FormColorPicker picker = new FormColorPicker(color);
 			FormsHelper.Locate(picker);
 			if (picker.ShowDialog() == DialogResult.OK)
 			{

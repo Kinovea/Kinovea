@@ -44,88 +44,91 @@ namespace Kinovea.ScreenManager
         #region Properties
         public Color PickedColor
         {
-            get { return m_PickedColor; }
+            get { return pickedColor; }
         }
         #endregion
         
         #region Members
-        private List<Button> m_ColorButtons = new List<Button>();
-        private Color m_PickedColor;
-        private static readonly int m_iButtonSize = 15;
+        private List<Button> buttons = new List<Button>();
+        private Color pickedColor;
+        private Color currentColor;
+        private Button currentColorButton;
+        private static readonly int buttonSize = 15;
         #endregion
         
         #region Construction and Initialization
-        public ColorPicker()
+        public ColorPicker(Color currentColor)
         {
+            this.currentColor = currentColor;
             this.SuspendLayout();
             InitializeComponent();
-            GeneratePalette(0, 0, m_iButtonSize, m_iButtonSize);
+            GeneratePalette(0, 0);
             this.ResumeLayout();
         }
-        private void GeneratePalette(int _left, int _top, int _buttonWidth, int _buttonHeight) 
+        private void GeneratePalette(int left, int top) 
         {
             int shades = 11;
             
-            createColorButtonColumn(255,0,0, _left, _top, _buttonWidth, _buttonHeight, shades);
+            createColorButtonColumn(255, 0, 0, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(255,255/2,0, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(255, 255/2, 0, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(255,255,0, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(255, 255, 0, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(255/2,255,0, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(255/2, 255, 0, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(0,255,0, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(0, 255, 0, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(0,255,255/2, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(0, 255, 255/2, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(0,255,255, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(0,255,255, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(0,255/2,255, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(0,255/2,255, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(0,0,255, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(0,0,255, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(255/2,0,255, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(255/2,0,255, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(255,0,255, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(255,0,255, left, top, shades);
             
-            _left += _buttonWidth;
-            createColorButtonColumn(255,0,255/2, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize;
+            createColorButtonColumn(255,0,255/2, left, top, shades);
             
             // Grayscale column.
-            _left += _buttonWidth + 5;
-            createColorButtonColumn(255/2,255/2,255/2, _left, _top, _buttonWidth, _buttonHeight, shades);
+            left += buttonSize + 5;
+            createColorButtonColumn(255/2,255/2,255/2, left, top, shades);
             
-            Controls.AddRange(m_ColorButtons.ToArray());
+            Controls.AddRange(buttons.ToArray());
         }
-        private void createColorButtonColumn(int red, int green, int blue, int x, int y, int w, int h, int shades) 
+        private void createColorButtonColumn(int red, int green, int blue, int x, int y, int shades) 
         {
             int shadedColorsNum = (shades - 1) / 2;
             
-            for(int i=0; i<=shadedColorsNum; i++)
+            for(int i=0; i <= shadedColorsNum; i++)
             {
-                m_ColorButtons.Add(createColorButton(red * i / shadedColorsNum, green * i /shadedColorsNum, blue * i / shadedColorsNum, x, y + i * h, w, h));
-                
-                if (i>0) 
-                {
-                    m_ColorButtons.Add(createColorButton(red + (255 - red) * i / shadedColorsNum, green + (255 - green)* i /shadedColorsNum, blue+ (255 - blue) * i / shadedColorsNum, x, y + (i+shadedColorsNum) * h, w,h));
-                }
+                buttons.Add(createColorButton(red * i / shadedColorsNum, green * i / shadedColorsNum, blue * i / shadedColorsNum, x, y + i * buttonSize));
+
+                if (i > 0)
+                    buttons.Add(createColorButton(red + (255 - red) * i / shadedColorsNum, green + (255 - green) * i / shadedColorsNum, blue + (255 - blue) * i / shadedColorsNum, x, y + (i + shadedColorsNum) * buttonSize));
             }
         }
-        private Button createColorButton(int red, int green, int blue, int x, int y, int w, int h) 
+
+        private Button createColorButton(int red, int green, int blue, int x, int y) 
         {
-            return createColorButton(Color.FromArgb(255, red, green, blue), x, y, w, h);
+            return createColorButton(Color.FromArgb(255, red, green, blue), x, y);
         }
-        private Button createColorButton(Color color,  int x, int y, int w, int h) 
+
+        private Button createColorButton(Color color, int x, int y) 
         {
             Button b = new Button();
             
@@ -135,12 +138,18 @@ namespace Kinovea.ScreenManager
             b.FlatAppearance.BorderColor = Color.FromArgb(color.A, 255 - color.R, 255 - color.G, 255 - color.B);
             b.FlatStyle = FlatStyle.Flat;
             b.Location = new Point(x,y);
-            b.Size = new Size(w,h);
+            b.Size = new Size(buttonSize, buttonSize);
             b.TabStop = false;
-                    
-            b.Click += new System.EventHandler(colorButton_Click);
-            b.MouseEnter += new EventHandler(colorButton_MouseEnter);
-            b.MouseLeave += new EventHandler(colorButton_MouseLeave);
+
+            if (currentColorButton == null && currentColor == color)
+            {
+                b.FlatAppearance.BorderSize = 1;
+                currentColorButton = b;
+            }
+
+            b.Click += colorButton_Click;
+            b.MouseEnter += colorButton_MouseEnter;
+            b.MouseLeave += colorButton_MouseLeave;
             
             return b;
         }
@@ -154,7 +163,7 @@ namespace Kinovea.ScreenManager
                 lblRecent.AutoSize = true;
                 
                 lblRecent.Text = ScreenManagerLang.RecentlyUsedColors;
-                lblRecent.Top = this.Margin.Top + (11 * m_iButtonSize) + 30;
+                lblRecent.Top = this.Margin.Top + (11 * buttonSize) + 30;
                 Controls.Add(lblRecent);
                 
                 List<Button> recentButtons = new List<Button>();
@@ -162,9 +171,9 @@ namespace Kinovea.ScreenManager
                 int y = lblRecent.Bottom + 5;
                 for(int i=0; i<_recentColors.Count;i++)
                 {
-                    Button b = createColorButton(_recentColors[i], x, y, m_iButtonSize, m_iButtonSize);
+                    Button b = createColorButton(_recentColors[i], x, y);
                     recentButtons.Add(b);
-                    x += m_iButtonSize;
+                    x += buttonSize;
                 }
                 
                 Controls.AddRange(recentButtons.ToArray());
@@ -175,24 +184,29 @@ namespace Kinovea.ScreenManager
         #region event handlers
         private void colorButton_Click(object sender, System.EventArgs e) 
         {
-            Button b = (Button) sender;
-            m_PickedColor = b.BackColor;
-            
-            // Raise event.
+            Button b = sender as Button;
+            if (b == null)
+                return;
+
+            pickedColor = b.BackColor;
             if(ColorPicked != null)
-            {
                 ColorPicked(this, e);
-            }
         }
         private void colorButton_MouseEnter(object sender, System.EventArgs e) 
         {
-            Button b = (Button) sender;
-            b.FlatAppearance.BorderSize = 1;
+            Button b = sender as Button;
+            if (b != null)
+                b.FlatAppearance.BorderSize = 1;
         }
         private void colorButton_MouseLeave(object sender, System.EventArgs e) 
         {
-            Button b = (Button) sender;
-            b.FlatAppearance.BorderSize = 0;
+            Button b = sender as Button;
+
+            if (currentColorButton == b)
+                return;
+
+            if (b != null)
+                b.FlatAppearance.BorderSize = 0;
         }
         #endregion
     }
