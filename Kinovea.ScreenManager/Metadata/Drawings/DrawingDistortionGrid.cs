@@ -52,7 +52,10 @@ namespace Kinovea.ScreenManager
             get
             {
                 int iHash = 0;
-                // FIXME
+
+                foreach (PointF p in points)
+                    iHash ^= p.GetHashCode();
+
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= infosFading.ContentHash;
                 return iHash;
