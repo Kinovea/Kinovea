@@ -40,10 +40,10 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override object Value
         {
-            get { return v; }
+            get { return value; }
             set
             {
-                v = (value is Boolean) ? (Boolean)value : false;
+                this.value = (value is Boolean) ? (Boolean)value : defaultValue;
                 RaiseValueChanged();
             }
         }
@@ -61,15 +61,17 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        public static readonly bool defaultValue = false;
+
         #region Members
-        protected bool v;
+        private bool value;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public StyleElementCurved(bool defaultValue)
+        public StyleElementCurved(bool initialValue)
         {
-            v = defaultValue;
+            value = initialValue;
         }
         public StyleElementCurved(XmlReader xmlReader)
         {
@@ -81,14 +83,14 @@ namespace Kinovea.ScreenManager
         public override Control GetEditor()
         {
             CheckBox editor = new CheckBox();
-            editor.Checked = v;
+            editor.Checked = value;
             editor.CheckedChanged += editor_CheckedChanged;
 
             return editor;
         }
         public override AbstractStyleElement Clone()
         {
-            AbstractStyleElement clone = new StyleElementCurved(v);
+            AbstractStyleElement clone = new StyleElementCurved(value);
             clone.Bind(this);
             return clone;
         }
@@ -96,19 +98,19 @@ namespace Kinovea.ScreenManager
         {
             xmlReader.ReadStartElement();
             string s = xmlReader.ReadElementContentAsString("Value", "");
-            v = XmlHelper.ParseBoolean(s);
+            value = XmlHelper.ParseBoolean(s);
             xmlReader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter xmlWriter)
         {
-            xmlWriter.WriteElementString("Value", v.ToString().ToLower());
+            xmlWriter.WriteElementString("Value", value.ToString().ToLower());
         }
         #endregion
 
         #region Private Methods
         private void editor_CheckedChanged(object sender, EventArgs e)
         {
-            v = ((CheckBox)sender).Checked;
+            value = ((CheckBox)sender).Checked;
             RaiseValueChanged();
         }
         #endregion

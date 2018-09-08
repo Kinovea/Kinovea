@@ -38,10 +38,10 @@ namespace Kinovea.ScreenManager
 		#region Properties
 		public override object Value
 		{
-			get { return color; }
+			get { return value; }
 			set 
 			{ 
-				color = (value is Color) ? (Color)value : Color.Black;
+				this.value = (value is Color) ? (Color)value : defaultValue;
 				RaiseValueChanged();
 			}
 		}
@@ -57,17 +57,19 @@ namespace Kinovea.ScreenManager
 		{
 			get { return "Color";}
 		}
-		#endregion
-		
+        #endregion
+
+        public static readonly Color defaultValue = Color.Black;
+
 		#region Members
-		private Color color;
+		private Color value;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
-		public StyleElementColor(Color defaultColor)
+		public StyleElementColor(Color initialValue)
 		{
-			color = defaultColor;
+			value = initialValue;
 		}
 		public StyleElementColor(XmlReader xmlReader)
 		{
@@ -85,7 +87,7 @@ namespace Kinovea.ScreenManager
 		}
 		public override AbstractStyleElement Clone()
 		{
-			AbstractStyleElement clone = new StyleElementColor(color);
+			AbstractStyleElement clone = new StyleElementColor(value);
 			clone.Bind(this);
 			return clone;
 		}
@@ -94,7 +96,7 @@ namespace Kinovea.ScreenManager
 		    // Do not use the .NET color converter at reading time either, it breaks on some installations.
 			xmlReader.ReadStartElement();
 			string s = xmlReader.ReadElementContentAsString("Value", "");
-			color = XmlHelper.ParseColor(s, Color.Black);
+			value = XmlHelper.ParseColor(s, Color.Black);
 			xmlReader.ReadEndElement();
 		}
 		public override void WriteXml(XmlWriter xmlWriter)
@@ -102,7 +104,7 @@ namespace Kinovea.ScreenManager
 			// Note: we don't use the .NET color converter at writing time.
 			// The color would be translated to its display name (DarkOliveGreen, CadetBlue, etc.), which is not portable.
 			// We do use a compatible format to be able to use the converter at reading time though.
-			string s = String.Format("{0};{1};{2};{3}", color.A, color.R, color.G, color.B);
+			string s = String.Format("{0};{1};{2};{3}", value.A, value.R, value.G, value.B);
 			xmlWriter.WriteElementString("Value", s);
 		}
 		#endregion
@@ -110,7 +112,7 @@ namespace Kinovea.ScreenManager
 		#region Private Methods
 		private void editor_Paint(object sender, PaintEventArgs e)
 		{
-			using(SolidBrush b = new SolidBrush(color))
+			using(SolidBrush b = new SolidBrush(value))
 			{
 				e.Graphics.FillRectangle(b, e.ClipRectangle);
 				e.Graphics.DrawRectangle(Pens.LightGray, e.ClipRectangle.Left, e.ClipRectangle.Top, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);	
@@ -118,11 +120,11 @@ namespace Kinovea.ScreenManager
 		}
 		private void editor_Click(object sender, EventArgs e)
 		{
-			FormColorPicker picker = new FormColorPicker(color);
+			FormColorPicker picker = new FormColorPicker(value);
 			FormsHelper.Locate(picker);
 			if (picker.ShowDialog() == DialogResult.OK)
 			{
-				color = picker.PickedColor;
+				value = picker.PickedColor;
 				RaiseValueChanged();
 				((Control)sender).Invalidate();
 			}

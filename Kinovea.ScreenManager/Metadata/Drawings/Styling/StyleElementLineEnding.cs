@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
+using System.Collections.Generic;
 
 using Kinovea.ScreenManager.Languages;
 
@@ -36,13 +37,12 @@ namespace Kinovea.ScreenManager
     public class StyleElementLineEnding : AbstractStyleElement
     {
         #region Properties
-        public static readonly LineEnding[] Options = { LineEnding.None, LineEnding.StartArrow, LineEnding.EndArrow, LineEnding.DoubleArrow };
         public override object Value
         {
-            get { return lineEnding; }
+            get { return value; }
             set 
             { 
-                lineEnding = (value is LineEnding) ? (LineEnding)value : LineEnding.None;
+                this.value = (value is LineEnding) ? (LineEnding)value : defaultValue;
                 RaiseValueChanged();
             }
         }
@@ -59,17 +59,22 @@ namespace Kinovea.ScreenManager
             get { return "Arrows";}
         }
         #endregion
-        
+
+        //public static readonly LineEnding[] Options = { LineEnding.None, LineEnding.StartArrow, LineEnding.EndArrow, LineEnding.DoubleArrow };
+        public static List<LineEnding> options = new List<LineEnding>() { LineEnding.None, LineEnding.StartArrow, LineEnding.EndArrow, LineEnding.DoubleArrow }; 
+        public static readonly LineEnding defaultValue = LineEnding.None;
+
         #region Members
-        private LineEnding lineEnding;
+        private LineEnding value;
         private static readonly int lineWidth = 6;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
-        public StyleElementLineEnding(LineEnding defaultValue)
+        public StyleElementLineEnding(LineEnding initialValue)
         {
-            lineEnding = (Array.IndexOf(Options, defaultValue) >= 0) ? defaultValue : LineEnding.None;
+            //value = (Array.IndexOf(Options, initialValue) >= 0) ? defaultValue : LineEnding.None;
+            value = options.IndexOf(initialValue) >= 0 ? initialValue : defaultValue;
         }
         public StyleElementLineEnding(XmlReader xmlReader)
         {
@@ -84,17 +89,24 @@ namespace Kinovea.ScreenManager
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
             editor.ItemHeight = 15;
             editor.DrawMode = DrawMode.OwnerDrawFixed;
-            for(int i=0;i<Options.Length;i++) 
+
+            int selectedIndex = 0;
+            for (int i = 0; i < options.Count; i++)
+            {
                 editor.Items.Add(new object());
-            
-            editor.SelectedIndex = Array.IndexOf(Options, lineEnding);
+
+                if (options[i] == value)
+                    selectedIndex = i;
+            }
+
+            editor.SelectedIndex = selectedIndex;
             editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             return editor;
         }
         public override AbstractStyleElement Clone()
         {
-            AbstractStyleElement clone = new StyleElementLineEnding(lineEnding);
+            AbstractStyleElement clone = new StyleElementLineEnding(value);
             clone.Bind(this);
             return clone;
         }
@@ -113,16 +125,17 @@ namespace Kinovea.ScreenManager
             {
                 log.ErrorFormat("An error happened while parsing XML for Line ending. {0}", s);
             }
-            
+
             // Restrict to the actual list of "athorized" values.
-            lineEnding = (Array.IndexOf(Options, value) >= 0) ? value : LineEnding.None;
-            
+            //this.value = (Array.IndexOf(Options, value) >= 0) ? value : LineEnding.None;
+            this.value = options.IndexOf(value) >= 0 ? value : defaultValue;
+
             xmlReader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter xmlWriter)
         {
-            TypeConverter converter = TypeDescriptor.GetConverter(lineEnding);
-            string s = converter.ConvertToString(lineEnding);
+            TypeConverter converter = TypeDescriptor.GetConverter(value);
+            string s = converter.ConvertToString(value);
             xmlWriter.WriteElementString("Value", s);
         }
         #endregion
@@ -130,14 +143,14 @@ namespace Kinovea.ScreenManager
         #region Private Methods
         private void editor_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index < 0 || e.Index >= Options.Length)
+            if (e.Index < 0 || e.Index >= options.Count)
                 return;
             
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             int top = e.Bounds.Height / 2;
                 
             Pen p = new Pen(Color.Black, lineWidth);
-            switch(Options[e.Index])
+            switch(options[e.Index])
             {
                 case LineEnding.None:
                     e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
@@ -159,14 +172,18 @@ namespace Kinovea.ScreenManager
             
             p.Dispose();
         }
+
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int index = ((ComboBox)sender).SelectedIndex;
-            if( index >= 0 && index < Options.Length)
-            {
-                lineEnding = Options[index];
-                RaiseValueChanged();
-            }
+            ComboBox editor = sender as ComboBox;
+            if (editor == null)
+                return;
+
+            if (editor.SelectedIndex < 0)
+                return;
+
+            value = options[editor.SelectedIndex];
+            RaiseValueChanged();
         }
         #endregion
     }
