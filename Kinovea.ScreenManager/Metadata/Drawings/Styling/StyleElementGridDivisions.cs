@@ -22,13 +22,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Globalization;
-
 using Kinovea.ScreenManager.Languages;
-using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -143,7 +140,7 @@ namespace Kinovea.ScreenManager
         #region Private Methods
         private static string GetDisplayValue(int value)
         {
-            return string.Format("{0} × {0}", value);
+            return string.Format(CultureInfo.InvariantCulture, "{0} × {0}", value);
         }
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
         {
