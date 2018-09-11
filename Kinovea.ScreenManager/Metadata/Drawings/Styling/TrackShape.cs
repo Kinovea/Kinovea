@@ -20,11 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.ComponentModel;
-using System.ComponentModel.Design.Serialization;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Globalization;
-using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -66,60 +62,28 @@ namespace Kinovea.ScreenManager
             DashStyle = style;
             ShowSteps = steps;
         }
-    }
 
-    /// <summary>
-    /// Converter class for TrackShape.
-    /// Support: string.
-    /// </summary>
-    public class TrackShapeConverter : TypeConverter
-    {
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        public override bool Equals(object obj)
         {
-            return sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
+            if (!(obj is TrackShape))
+                return false;
+            return Equals((TrackShape)obj);
         }
-
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+        public bool Equals(TrackShape other)
         {
-            return destinationType == typeof(string) ? true : base.CanConvertTo(context, destinationType);
+            return DashStyle == other.DashStyle && ShowSteps == other.ShowSteps;
         }
-
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        public static bool operator ==(TrackShape v1, TrackShape v2)
         {
-            if (!(value is string))
-                return base.ConvertFrom(context, culture, value);
-
-            string stringValue = value as string;
-
-            if (string.IsNullOrEmpty(stringValue))
-                return TrackShape.Solid;
-
-            string[] split = stringValue.Split(new Char[] { ';' });
-
-            if (split.Length != 2)
-                return TrackShape.Solid;
-
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DashStyle));
-            DashStyle dash = (DashStyle)enumConverter.ConvertFromString(context, culture, split[0]);
-
-            TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
-            bool steps = (bool)boolConverter.ConvertFromString(context, culture, split[1]);
-
-            return new TrackShape(dash, steps);
+            return v1.Equals(v2);
         }
-
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        public static bool operator !=(TrackShape v1, TrackShape v2)
         {
-            if (destinationType != typeof(string))
-                return base.ConvertTo(context, culture, value, destinationType);
-
-            TrackShape trackShape = (TrackShape)value;
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DashStyle));
-            string result = String.Format("{0};{1}",
-                enumConverter.ConvertToString(context, culture, (DashStyle)trackShape.DashStyle),
-                trackShape.ShowSteps ? "true" : "false");
-
-            return result;
+            return !v1.Equals(v2);
+        }
+        public override int GetHashCode()
+        {
+            return DashStyle.GetHashCode() ^ ShowSteps.GetHashCode();
         }
     }
 }

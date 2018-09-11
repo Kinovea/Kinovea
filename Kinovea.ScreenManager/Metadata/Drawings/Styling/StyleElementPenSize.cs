@@ -24,6 +24,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
+using System.Globalization;
+using System.Collections.Generic;
 using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
@@ -31,18 +33,17 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Style element to represent a pen size.
     /// Editor: owner drawn combo box.
-    /// Very similar to StyleElementLineStyle, just the rendering changes. (lines vs circles)
+    /// Very similar to StyleElementLineSize, just the rendering changes. (lines vs circles)
     /// </summary>
     public class StyleElementPenSize : AbstractStyleElement
     {
         #region Properties
-        public static readonly int[] Options = { 2, 3, 4, 5, 7, 9, 11, 13, 16, 19, 22, 25 };
         public override object Value
         {
-            get { return penSize; }
+            get { return value; }
             set 
             { 
-                penSize = (value is int) ? (int)value : defaultSize;
+                this.value = (value is int) ? (int)value : defaultValue;
                 RaiseValueChanged();
             }
         }
@@ -59,17 +60,22 @@ namespace Kinovea.ScreenManager
             get { return "PenSize";}
         }
         #endregion
+
+        public static readonly List<int> options = new List<int>() { 1, 2, 3, 4, 6, 8, 10, 12, 14, 18, 24, 30, 36 };
+        private static readonly int defaultValue = 3;
         
         #region Members
-        private static readonly int defaultSize = 3;
-        private int penSize;
+        private int value;
+        private int itemHeight = 18;
+        private int textMargin = 20;
+        private static readonly Font font = new Font("Arial", 8, FontStyle.Bold);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
-        public StyleElementPenSize(int givenDefault)
+        public StyleElementPenSize(int initialValue)
         {
-            penSize = (Array.IndexOf(Options, givenDefault) >= 0) ? givenDefault : defaultSize;
+            value = options.IndexOf(initialValue) >= 0 ? initialValue : defaultValue;
         }
         public StyleElementPenSize(XmlReader xmlReader)
         {
@@ -82,17 +88,26 @@ namespace Kinovea.ScreenManager
         {
             ComboBox editor = new ComboBox();
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
-            editor.ItemHeight = Options[Options.Length-1] + 2;
+            editor.ItemHeight = itemHeight;
             editor.DrawMode = DrawMode.OwnerDrawFixed;
-            foreach(int i in Options) editor.Items.Add(new object());
-            editor.SelectedIndex = Array.IndexOf(Options, penSize);
-            editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
-            editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
+
+            int selectedIndex = 0;
+            for (int i = 0; i < options.Count; i++)
+            {
+                editor.Items.Add(new object());
+
+                if (options[i] == value)
+                    selectedIndex = i;
+            }
+
+            editor.SelectedIndex = selectedIndex;
+            editor.DrawItem += editor_DrawItem;
+            editor.SelectedIndexChanged += editor_SelectedIndexChanged;
             return editor;
         }
         public override AbstractStyleElement Clone()
         {
-            AbstractStyleElement clone = new StyleElementPenSize(penSize);
+            AbstractStyleElement clone = new StyleElementPenSize(value);
             clone.Bind(this);
             return clone;
         }
@@ -101,7 +116,7 @@ namespace Kinovea.ScreenManager
             xmlReader.ReadStartElement();
             string s = xmlReader.ReadElementContentAsString("Value", "");
             
-            int value = defaultSize;
+            int value = defaultValue;
             try
             {
                 TypeConverter intConverter = TypeDescriptor.GetConverter(typeof(int));
@@ -111,38 +126,49 @@ namespace Kinovea.ScreenManager
             {
                 log.ErrorFormat("An error happened while parsing XML for Pen size. {0}", s);
             }
-            
-            // Restrict to the actual list of "athorized" values.
-            penSize = (Array.IndexOf(Options, value) >= 0) ? value : defaultSize;
-            
+
+            this.value = options.IndexOf(value) >= 0 ? value : defaultValue;
             xmlReader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter xmlWriter)
         {
-            xmlWriter.WriteElementString("Value", penSize.ToString());
+            xmlWriter.WriteElementString("Value", value.ToString());
         }
         #endregion
         
         #region Private Methods
         private void editor_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index < 0 || e.Index >= Options.Length)
+            if (e.Index < 0 || e.Index >= options.Count)
                 return;
-            
+
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            int itemPenSize = Options[e.Index];
-            int left = (e.Bounds.Width - itemPenSize) / 2;
-            int top = (e.Bounds.Height - itemPenSize) / 2;
-            e.Graphics.FillEllipse(Brushes.Black, e.Bounds.Left + left, e.Bounds.Top + top, itemPenSize, itemPenSize);
+
+            int itemValue = options[e.Index];
+            int itemSize = Math.Min(itemValue, itemHeight - 2);
+            int left = textMargin + ((e.Bounds.Width - textMargin) - itemSize) / 2;
+            int top = (e.Bounds.Height - itemSize) / 2;
+
+            Brush foregroundBrush = Brushes.Black;
+            Brush backgroundBrush = Brushes.White;
+            if ((e.State & DrawItemState.Focus) != 0)
+                backgroundBrush = Brushes.LightSteelBlue;
+
+            e.Graphics.FillRectangle(backgroundBrush, e.Bounds.Left, e.Bounds.Top, e.Bounds.Width, e.Bounds.Height);
+            e.Graphics.DrawString(itemValue.ToString(CultureInfo.InvariantCulture), font, foregroundBrush, e.Bounds.Left, e.Bounds.Top + 2);
+            e.Graphics.FillEllipse(foregroundBrush, e.Bounds.Left + left, e.Bounds.Top + top, itemSize, itemSize);
         }
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int index = ((ComboBox)sender).SelectedIndex;
-            if( index >= 0 && index < Options.Length)
-            {
-                penSize = Options[index];
-                RaiseValueChanged();
-            }
+            ComboBox editor = sender as ComboBox;
+            if (editor == null)
+                return;
+
+            if (editor.SelectedIndex < 0)
+                return;
+
+            value = options[editor.SelectedIndex];
+            RaiseValueChanged();
         }
         #endregion
     }
