@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
+using System.Collections.Generic;
 using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
@@ -35,13 +36,12 @@ namespace Kinovea.ScreenManager
     public class StyleElementLineShape : AbstractStyleElement
     {
         #region Properties
-        public static readonly LineShape[] Options = { LineShape.Solid, LineShape.Dash, LineShape.Squiggle };
         public override object Value
         {
-            get { return lineShape; }
+            get { return value; }
             set
             {
-                lineShape = (value is LineShape) ? (LineShape)value : LineShape.Solid;
+                this.value = (value is LineShape) ? (LineShape)value : defaultValue;
                 RaiseValueChanged();
             }
         }
@@ -59,16 +59,19 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        public static readonly List<LineShape> options = new List<LineShape>() { LineShape.Solid, LineShape.Dash, LineShape.Squiggle };
+        public static readonly LineShape defaultValue = LineShape.Solid;
+
         #region Members
-        private LineShape lineShape;
+        private LineShape value;
         private static readonly int lineWidth = 3;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public StyleElementLineShape(LineShape givenDefault)
+        public StyleElementLineShape(LineShape initialValue)
         {
-            lineShape = (Array.IndexOf(Options, givenDefault) >= 0) ? givenDefault : LineShape.Solid;
+            value = options.IndexOf(initialValue) >= 0 ? initialValue : defaultValue;
         }
         public StyleElementLineShape(XmlReader xmlReader)
         {
@@ -83,17 +86,24 @@ namespace Kinovea.ScreenManager
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
             editor.ItemHeight = 15;
             editor.DrawMode = DrawMode.OwnerDrawFixed;
-            for (int i = 0; i < Options.Length; i++) 
+
+            int selectedIndex = 0;
+            for (int i = 0; i < options.Count; i++)
+            {
                 editor.Items.Add(new object());
-            
-            editor.SelectedIndex = Array.IndexOf(Options, lineShape);
+
+                if (options[i] == value)
+                    selectedIndex = i;
+            }
+
+            editor.SelectedIndex = selectedIndex;
             editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             return editor;
         }
         public override AbstractStyleElement Clone()
         {
-            AbstractStyleElement clone = new StyleElementLineShape(lineShape);
+            AbstractStyleElement clone = new StyleElementLineShape(value);
             clone.Bind(this);
             return clone;
         }
@@ -113,15 +123,13 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("An error happened while parsing XML for Track shape. {0}", s);
             }
 
-            // Restrict to the actual list of "authorized" values.
-            lineShape = (Array.IndexOf(Options, value) >= 0) ? value : LineShape.Solid;
-
+            this.value = options.IndexOf(value) >= 0 ? value : defaultValue;
             xmlReader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter xmlWriter)
         {
-            TypeConverter converter = TypeDescriptor.GetConverter(lineShape);
-            string s = converter.ConvertToString(lineShape);
+            TypeConverter converter = TypeDescriptor.GetConverter(value);
+            string s = converter.ConvertToString(value);
             xmlWriter.WriteElementString("Value", s);
         }
         #endregion
@@ -129,14 +137,20 @@ namespace Kinovea.ScreenManager
         #region Private Methods
         private void editor_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index < 0 || e.Index >= Options.Length)
+            if (e.Index < 0 || e.Index >= options.Count)
                 return;
 
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             int top = e.Bounds.Height / 2;
 
+            Brush backgroundBrush = Brushes.White;
+            if ((e.State & DrawItemState.Focus) != 0)
+                backgroundBrush = Brushes.LightSteelBlue;
+
+            e.Graphics.FillRectangle(backgroundBrush, e.Bounds.Left, e.Bounds.Top, e.Bounds.Width, e.Bounds.Height);
+
             Pen p = new Pen(Color.Black, lineWidth);
-            switch (Options[e.Index])
+            switch (options[e.Index])
             {
                 case LineShape.Solid:
                     e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
@@ -154,12 +168,15 @@ namespace Kinovea.ScreenManager
         }
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int index = ((ComboBox)sender).SelectedIndex;
-            if (index >= 0 && index < Options.Length)
-            {
-                lineShape = Options[index];
-                RaiseValueChanged();
-            }
+            ComboBox editor = sender as ComboBox;
+            if (editor == null)
+                return;
+
+            if (editor.SelectedIndex < 0)
+                return;
+
+            value = options[editor.SelectedIndex];
+            RaiseValueChanged();
         }
         #endregion
     }

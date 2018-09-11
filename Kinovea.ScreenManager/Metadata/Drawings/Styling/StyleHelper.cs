@@ -151,9 +151,6 @@ namespace Kinovea.ScreenManager
         private TrackShape trackShape = TrackShape.Solid;
         private bool curved;
         private int gridDivisions;
-        
-        // Internal only
-        private static readonly int[] allowedFontSizes = { 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36 };
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -251,9 +248,9 @@ namespace Kinovea.ScreenManager
             // We must loop through all allowed font size and compute the output rectangle to find the best match.
             // We only compare with wanted height for simplicity.
             int smallestDiff = int.MaxValue;
-            int bestCandidate = allowedFontSizes[0];
+            int bestCandidate = StyleElementFontSize.options[0];
             
-            foreach(int size in allowedFontSizes)
+            foreach (int size in StyleElementFontSize.options)
             {
                 Font testFont = new Font(font.Name, size, font.Style);
                 SizeF bgSize = g.MeasureString(text + " ", testFont);

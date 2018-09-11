@@ -25,7 +25,6 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
 using System.Collections.Generic;
-
 using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
@@ -60,7 +59,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        //public static readonly LineEnding[] Options = { LineEnding.None, LineEnding.StartArrow, LineEnding.EndArrow, LineEnding.DoubleArrow };
         public static List<LineEnding> options = new List<LineEnding>() { LineEnding.None, LineEnding.StartArrow, LineEnding.EndArrow, LineEnding.DoubleArrow }; 
         public static readonly LineEnding defaultValue = LineEnding.None;
 
@@ -73,7 +71,6 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public StyleElementLineEnding(LineEnding initialValue)
         {
-            //value = (Array.IndexOf(Options, initialValue) >= 0) ? defaultValue : LineEnding.None;
             value = options.IndexOf(initialValue) >= 0 ? initialValue : defaultValue;
         }
         public StyleElementLineEnding(XmlReader xmlReader)
@@ -126,10 +123,7 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("An error happened while parsing XML for Line ending. {0}", s);
             }
 
-            // Restrict to the actual list of "athorized" values.
-            //this.value = (Array.IndexOf(Options, value) >= 0) ? value : LineEnding.None;
             this.value = options.IndexOf(value) >= 0 ? value : defaultValue;
-
             xmlReader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter xmlWriter)
@@ -148,7 +142,13 @@ namespace Kinovea.ScreenManager
             
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             int top = e.Bounds.Height / 2;
-                
+
+            Brush backgroundBrush = Brushes.White;
+            if ((e.State & DrawItemState.Focus) != 0)
+                backgroundBrush = Brushes.LightSteelBlue;
+
+            e.Graphics.FillRectangle(backgroundBrush, e.Bounds.Left, e.Bounds.Top, e.Bounds.Width, e.Bounds.Height);
+            
             Pen p = new Pen(Color.Black, lineWidth);
             switch(options[e.Index])
             {
