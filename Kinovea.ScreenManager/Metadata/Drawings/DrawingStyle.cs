@@ -154,6 +154,11 @@ namespace Kinovea.ScreenManager
                 element.Value.RaiseValueChanged();
             }
         }
+
+        /// <summary>
+        /// Signals that a value stored in the style element has been modified manually.
+        /// This will re-import the value into the style union.
+        /// </summary>
         public void ReadValue()
         {
             foreach(KeyValuePair<string, AbstractStyleElement> element in styleElements)

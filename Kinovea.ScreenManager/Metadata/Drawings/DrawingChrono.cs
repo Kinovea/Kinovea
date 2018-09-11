@@ -256,9 +256,9 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             // Invisible handler to change font size.
-            int wantedHeight = (int)(point.Y - mainBackground.Rectangle.Location.Y);
-            styleHelper.ForceFontSize(wantedHeight, timecode);
-            style.ReadValue();
+            int targetHeight = (int)(point.Y - mainBackground.Rectangle.Location.Y);
+            StyleElementFontSize elem = style.Elements["font size"] as StyleElementFontSize;
+            elem.ForceSize(targetHeight, timecode, styleHelper.Font);
             UpdateLabelRectangle();
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)

@@ -20,12 +20,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
-
+using System.Globalization;
 using Kinovea.ScreenManager.Languages;
-using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -36,14 +36,12 @@ namespace Kinovea.ScreenManager
     public class StyleElementFontSize : AbstractStyleElement
     {
         #region Properties
-        public static readonly string[] Options = { "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36" };
-        
         public override object Value
         {
-            get { return fontSize; }
+            get { return value; }
             set 
             { 
-                fontSize = (value is int) ? (int)value : defaultFontSize;
+                value = (value is int) ? (int)value : defaultValue;
                 RaiseValueChanged();
             }
         }
@@ -60,17 +58,24 @@ namespace Kinovea.ScreenManager
             get { return "FontSize";}
         }
         #endregion
+
+        public static List<int> options;
+        public static readonly int defaultValue = 14;
         
         #region Members
-        private int fontSize;
-        private static readonly int defaultFontSize = 10;
+        private int value;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor
-        public StyleElementFontSize(int givenDefault)
+        static StyleElementFontSize()
         {
-            fontSize = (Array.IndexOf(Options, givenDefault.ToString()) >= 0) ? givenDefault : defaultFontSize;
+            options = new List<int>() { 8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96 };
+        }
+
+        public StyleElementFontSize(int initialValue)
+        {
+            value = options.IndexOf(initialValue) >= 0 ? initialValue : defaultValue;
         }
         public StyleElementFontSize(XmlReader xmlReader)
         {
@@ -83,23 +88,34 @@ namespace Kinovea.ScreenManager
         {
             ComboBox editor = new ComboBox();
             editor.DropDownStyle = ComboBoxStyle.DropDownList;
-            editor.Items.AddRange(Options);
-            editor.SelectedIndex = Array.IndexOf(Options, fontSize.ToString());
+
+            int selectedIndex = 0;
+            for (int i = 0; i < options.Count; i++)
+            {
+                editor.Items.Add(GetDisplayValue(options[i]));
+
+                if (options[i] == value)
+                {
+                    selectedIndex = i;
+                    editor.Text = GetDisplayValue(value);
+                }
+            }
+
             editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
             return editor;
         }
         public override AbstractStyleElement Clone()
         {
-            AbstractStyleElement clone = new StyleElementFontSize(fontSize);
+            AbstractStyleElement clone = new StyleElementFontSize(value);
             clone.Bind(this);
             return clone;
         }
-        public override void ReadXML(XmlReader xmlReader)
+        public override void ReadXML(XmlReader reader)
         {
-            xmlReader.ReadStartElement();
-            string s = xmlReader.ReadElementContentAsString("Value", "");
+            reader.ReadStartElement();
+            string s = reader.ReadElementContentAsString("Value", "");
             
-            int value = defaultFontSize;
+            int value = defaultValue;
             try
             {
                 TypeConverter intConverter = TypeDescriptor.GetConverter(typeof(int));
@@ -109,26 +125,65 @@ namespace Kinovea.ScreenManager
             {
                 log.ErrorFormat("An error happened while parsing XML for Font size. {0}", s);
             }
-            
-            // Restrict to the actual list of "athorized" values.
-            fontSize = (Array.IndexOf(Options, value.ToString()) >= 0) ? value : defaultFontSize;
-            
-            xmlReader.ReadEndElement();
+
+            this.value = options.IndexOf(value) >= 0 ? value : defaultValue;
+            reader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter xmlWriter)
         {
-            xmlWriter.WriteElementString("Value", fontSize.ToString());
+            xmlWriter.WriteElementString("Value", value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        /// <summary>
+        /// Find the best size based on a given text height.
+        /// This used to dynamically change the value based on the user dragging a rectangle.
+        /// It depends on the text because the text can have multiple lines.
+        /// targetHeight is unscaled.
+        /// </summary>
+        public void ForceSize(int targetHeight, string text, Font font)
+        {
+            // We must loop through all allowed font size and compute the output rectangle to find the best match.
+            // Look for the first local minima, as the list is linearly increasing.
+            int minDiff = int.MaxValue;
+            int bestCandidate = options[0];
+
+            foreach (int size in options)
+            {
+                Font testFont = new Font(font.Name, size, font.Style);
+                int height = (int)TextHelper.MeasureString(text + " ", testFont).Height;
+                testFont.Dispose();
+                
+                int diff = Math.Abs(targetHeight - height);
+                if (diff > minDiff)
+                    break;
+                
+                minDiff = diff;
+                bestCandidate = size;
+            }
+
+            value = bestCandidate;
+            RaiseValueChanged();
         }
         #endregion
-        
+
         #region Private Methods
+        private static string GetDisplayValue(int value)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0}", value);
+        }
         private void editor_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int i;
-            bool parsed = int.TryParse(((ComboBox)sender).Text, out i);
-            fontSize = parsed ? i : defaultFontSize;
+            ComboBox editor = sender as ComboBox;
+            if (editor == null)
+                return;
+
+            if (editor.SelectedIndex < 0)
+                return;
+
+            value = options[editor.SelectedIndex];
             RaiseValueChanged();
-            ((ComboBox)sender).Text = fontSize.ToString();
+
+            editor.Text = GetDisplayValue(value);
         }
         #endregion
     }
