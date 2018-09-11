@@ -1462,8 +1462,7 @@ namespace Kinovea.ScreenManager
                 trackExtraData = data;
                 displayBestFitCircle = IsUsingAngularKinematics();
                 IntegrateKeyframes();
-                Action invalidateImage = (Action)mnu.Tag;
-                invalidateImage();
+                InvalidateFromMenu(s);
             };
 
             return mnu;
