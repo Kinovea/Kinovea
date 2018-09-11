@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
         private TextBox textBox;
         private Control host;
         
-        private const int defaultFontSize = 16;    		// will also be used for the text box.
+        private const int defaultFontSize = 14;    		// will also be used for the text box.
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -176,11 +176,11 @@ namespace Kinovea.ScreenManager
             return result;
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
-        {	
+        {
             // Invisible handler to change font size.
-            int wantedHeight = (int)(point.Y - background.Rectangle.Location.Y);
-            styleHelper.ForceFontSize(wantedHeight, text);
-            style.ReadValue();
+            int targetHeight = (int)(point.Y - background.Rectangle.Location.Y);
+            StyleElementFontSize elem = style.Elements["font size"] as StyleElementFontSize;
+            elem.ForceSize(targetHeight, text, styleHelper.Font);
             UpdateLabelRectangle();
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
@@ -301,6 +301,7 @@ namespace Kinovea.ScreenManager
             {
                 SizeF textSize = g.MeasureString(text, f);
                 background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
+                log.DebugFormat("update label rectangle: {0}", background.Rectangle.Height);
                 
                 // Also update the edit box size. (Use a fixed font though).
                 // The extra space is to account for blank new lines.

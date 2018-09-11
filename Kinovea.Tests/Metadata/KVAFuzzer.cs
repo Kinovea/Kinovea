@@ -718,7 +718,7 @@ namespace Kinovea.Tests.Metadata
 
         private void WriteDrawingStyleLineSize(XmlTextWriter w, string key)
         {
-            int lineSize = StyleElementLineSize.Options[random.Next(StyleElementLineSize.Options.Length)];
+            int lineSize = StyleElementLineSize.options[random.Next(StyleElementLineSize.options.Count)];
 
             w.WriteStartElement("LineSize");
             w.WriteAttributeString("Key", key);
@@ -728,7 +728,7 @@ namespace Kinovea.Tests.Metadata
 
         private void WriteDrawingStyleTrackShape(XmlTextWriter w, string key)
         {
-            TrackShape value = StyleElementTrackShape.Options[random.Next(StyleElementTrackShape.Options.Length)];
+            TrackShape value = StyleElementTrackShape.options[random.Next(StyleElementTrackShape.options.Count)];
             StyleElementTrackShape style = new StyleElementTrackShape(value);
             
             w.WriteStartElement("TrackShape");
@@ -739,12 +739,12 @@ namespace Kinovea.Tests.Metadata
 
         private void WriteDrawingStyleFont(XmlTextWriter w, string key)
         {
-            string fontSize = StyleElementFontSize.Options[random.Next(StyleElementFontSize.Options.Length)];
+            //string fontSize = StyleElementFontSize.options[random.Next(StyleElementFontSize.options.Count)];
 
-            w.WriteStartElement("FontSize");
-            w.WriteAttributeString("Key", key);
-            w.WriteElementString("Value", fontSize);
-            w.WriteEndElement();
+            //w.WriteStartElement("FontSize");
+            //w.WriteAttributeString("Key", key);
+            //w.WriteElementString("Value", fontSize);
+            //w.WriteEndElement();
         }
 
         private void WriteDrawingStyleGridDivisions(XmlTextWriter w, string key)

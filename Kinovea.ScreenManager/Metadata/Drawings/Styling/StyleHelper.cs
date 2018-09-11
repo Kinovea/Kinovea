@@ -29,17 +29,16 @@ using System.Windows.Forms;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// A class to encapsulate the various styling primitive a drawing may need for rendering, 
-    /// and provide some utility functions to get a Pen, Brush, Font or Color object according to client opacity or zoom.
-    /// Typical drawing would use just two or three of the primitive for its decoration and leave the others undefined.
+    /// Role: expose the final values used by the drawing routines to render the drawing.
+    /// The values are converted from bound style elements.
+    /// For example a style element of type StyleElementFontSize will be exposed here as an actual Font object.
+    /// 
+    /// This class also exposes utilities to get the objects according to requested opacity and scale.
+    /// This class contains all the possible primitives but only a few will actually be bound to style element sources.
     /// 
     /// The primitives can be bound to a style element (editable in the UI) through the Bind() method on the 
     /// style element, passing the name of the primitive. The binding will be effective only if types are compatible.
-    /// todo: example.
     /// </summary>
-    /// <remarks>
-    /// This class should merge and replace "LineStyle" and "InfoTextDecoration" classes.
-    /// </remarks>
     public class StyleHelper
     {
         #region Exposed function delegates
@@ -151,6 +150,9 @@ namespace Kinovea.ScreenManager
         private TrackShape trackShape = TrackShape.Solid;
         private bool curved;
         private int gridDivisions;
+        private Control dummyControl = new Control();
+        private Graphics dummyGraphics;
+        private int minFontSize = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -159,6 +161,7 @@ namespace Kinovea.ScreenManager
         {
             BindWrite = DoBindWrite;
             BindRead = DoBindRead;
+            dummyGraphics = dummyControl.CreateGraphics();
         }
         #endregion
         
@@ -236,42 +239,6 @@ namespace Kinovea.ScreenManager
         public Font GetFontDefaultSize(int fontSize)
         {
             return new Font(font.Name, fontSize, font.Style);
-        }
-        public void ForceFontSize(int wantedHeight, String text)
-        {
-            // Compute the optimal font size from a given background rectangle.
-            // This is used when the user drag the bottom right corner to resize the text.
-            // _wantedHeight is unscaled.
-            Button but = new Button();
-            Graphics g = but.CreateGraphics();
-
-            // We must loop through all allowed font size and compute the output rectangle to find the best match.
-            // We only compare with wanted height for simplicity.
-            int smallestDiff = int.MaxValue;
-            int bestCandidate = StyleElementFontSize.options[0];
-            
-            foreach (int size in StyleElementFontSize.options)
-            {
-                Font testFont = new Font(font.Name, size, font.Style);
-                SizeF bgSize = g.MeasureString(text + " ", testFont);
-                testFont.Dispose();
-                
-                int diff = (int)Math.Abs(wantedHeight - (int)bgSize.Height);
-                
-                if(diff < smallestDiff)
-                {
-                    smallestDiff = diff;
-                    bestCandidate = size;
-                }
-            }
-            
-            g.Dispose();
-            
-            // Push to internal value.
-            string fontName = font.Name;
-            FontStyle fontStyle = font.Style;
-            font.Dispose();
-            font = new Font(fontName, bestCandidate, fontStyle);
         }
         #endregion
         
@@ -536,9 +503,8 @@ namespace Kinovea.ScreenManager
             // The final font size returned here may not be part of the allowed font sizes
             // and may exeed the max allowed font size, because it's just for rendering purposes.
             float fontSize = (float)(font.Size * stretchFactor);
-            if(fontSize < 8) 
-                fontSize = 8;
-            
+            log.DebugFormat("get rescaled font size: {0}, {1}", font.Size, fontSize);
+            fontSize = Math.Max(fontSize, minFontSize);
             return fontSize;
         }
         private Pen NormalPen(Pen p)
