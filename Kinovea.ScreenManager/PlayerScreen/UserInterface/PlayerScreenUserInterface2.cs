@@ -3788,7 +3788,6 @@ namespace Kinovea.ScreenManager
             
             AbstractDrawingTool tool = ((ToolStripItem)sender).Tag as AbstractDrawingTool;
             m_ActiveTool = tool ?? m_PointerTool;
-            
             UpdateCursor();
             
             // Ensure there's a key image at this position, unless the tool creates unattached drawings.
@@ -3895,7 +3894,8 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                SetCursor(m_ActiveTool.GetCursor(m_FrameServer.ImageTransform.Stretch));
+                Cursor cursor = CursorManager.GetCursor(m_ActiveTool, m_FrameServer.ImageTransform.Stretch);
+                SetCursor(cursor);
             }
         }
         private void SetCursor(Cursor _cur)
@@ -3975,6 +3975,8 @@ namespace Kinovea.ScreenManager
 
             ToolManager.SetStylePreset(m_FrameServer.Metadata.HitDrawing, drawing.DrawingStyle);
             ToolManager.SavePresets();
+
+            UpdateCursor();
         }
         private void mnuAlwaysVisible_Click(object sender, EventArgs e)
         {

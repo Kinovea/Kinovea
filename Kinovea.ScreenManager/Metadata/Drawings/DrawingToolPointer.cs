@@ -119,10 +119,6 @@ namespace Kinovea.ScreenManager
         {
             return null;
         }
-        public override Cursor GetCursor(double stretchFactor)
-        {
-            return manipulationType == ManipulationType.None ? cursorHandOpen : cursorHandClose;
-        }
         #endregion
 
         #region Public Interface
@@ -238,6 +234,10 @@ namespace Kinovea.ScreenManager
         public void SetZoomLocation(Point point)
         {
             directZoomTopLeft = point;
+        }
+        public Cursor GetCursor()
+        {
+            return manipulationType == ManipulationType.None ? cursorHandOpen : cursorHandClose;
         }
         public Cursor GetCursor(int type)
         {

@@ -80,10 +80,6 @@ namespace Kinovea.ScreenManager
         {
            return null;
         }
-        public override Cursor GetCursor(double stretchFactor)
-        {
-            return Cursors.Cross;
-        }
         #endregion
     }
 }

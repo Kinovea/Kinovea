@@ -82,25 +82,6 @@ namespace Kinovea.ScreenManager
         {
             return new DrawingCrossMark(origin, timestamp, averageTimeStampsPerFrame, stylePreset, transformer);
         }
-        public override Cursor GetCursor(double stretchFactor)
-        {
-            // Draw custom cursor: cross inside a semi transparent circle (same as drawing).
-            Color c = (Color)stylePreset.Elements["back color"].Value;
-            Pen p = new Pen(c, 1);
-            Bitmap b = new Bitmap(9, 9);
-            Graphics g = Graphics.FromImage(b);
-
-            // Center point is {4,4}
-            g.DrawLine(p, 1, 4, 7, 4);
-            g.DrawLine(p, 4, 1, 4, 7);
-            
-            SolidBrush tempBrush = new SolidBrush(Color.FromArgb(32, c));
-            g.FillEllipse(tempBrush, 0, 0, 8, 8);
-            tempBrush.Dispose();
-            p.Dispose();
-            
-            return new Cursor(b.GetHicon());
-        }
         #endregion
     }
 }

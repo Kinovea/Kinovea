@@ -109,10 +109,6 @@ namespace Kinovea.ScreenManager
             AbstractDrawing drawing = new DrawingGenericPosture(id, origin, posture, timestamp, averageTimeStampsPerFrame, stylePreset);
             return drawing;
         }
-        public override Cursor GetCursor(double stretchFactor)
-        {
-            return Cursors.Cross;
-        }
         public void SetInfo(GenericPosture posture)
         {
             this.id = posture.Id;

@@ -81,11 +81,6 @@ namespace Kinovea.ScreenManager
         {
            return null;
         }
-        public override Cursor GetCursor(double stretchFactor)
-        {
-            // Would be cool to have a real cursor with the actual next number in it.
-            return Cursors.Cross;
-        }
         #endregion
     }
 }
