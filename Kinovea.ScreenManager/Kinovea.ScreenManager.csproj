@@ -457,10 +457,8 @@
     <Compile Include="Metadata\Drawings\DrawingStyle.cs" />
     <Compile Include="Metadata\Drawings\DrawingSVG.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolCoordinateSystem.cs" />
-    <Compile Include="Metadata\Drawings\DrawingToolGrid.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolMagnifier.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolAutoNumbers.cs" />
-    <Compile Include="Metadata\Drawings\DrawingToolPlane.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolSpotlight.cs" />
     <Compile Include="Metadata\Events\DrawingEventArgs.cs" />
     <Compile Include="Metadata\Events\MeasurableDrawingEventArgs.cs" />
@@ -943,6 +941,7 @@
     <EmbeddedResource Include="Properties\Drawings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Drawings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails\FormCameraAlias.resx">
       <DependentUpon>FormCameraAlias.cs</DependentUpon>

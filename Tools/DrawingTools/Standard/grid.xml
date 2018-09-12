@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>92deab7c-47bd-4036-b53c-28347fc8a5af</Id>
+  <Name>Grid</Name>
+  <DisplayName>ToolTip_DrawingToolGrid</DisplayName>
+  <Icon>grid</Icon>
+  <DrawingClass>DrawingPlane</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>false</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="color">
+      <Value>255;100;149;237</Value>
+    </Color>
+    <GridDivisions Key="divisions">
+      <Value>8</Value>
+    </GridDivisions>
+    <Curved Key="perspective">
+      <Value>false</Value>
+    </Curved>
+  </DefaultStyle>
+</KinoveaDrawingTool>
