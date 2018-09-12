@@ -98,8 +98,8 @@ namespace Kinovea.ScreenManager
                     case "GridDivisions":
                         styleElement = new StyleElementGridDivisions(xmlReader);
                         break;
-                    case "Curved":
-                        styleElement = new StyleElementCurved(xmlReader);
+                    case "Toggle":
+                        styleElement = new StyleElementToggle(xmlReader);
                         break;
                     default:
                         log.ErrorFormat("Could not import style element \"{0}\"", xmlReader.Name);

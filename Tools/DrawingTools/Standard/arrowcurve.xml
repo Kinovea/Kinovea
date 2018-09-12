@@ -22,8 +22,9 @@
     <Arrows Key="arrows">
       <Value>EndArrow</Value>
     </Arrows>
-    <Curved Key="curved">
+    <Toggle Key="curved">
       <Value>true</Value>
-    </Curved>
+      <Variant>Curved</Variant>
+    </Toggle>
   </DefaultStyle>
 </KinoveaDrawingTool>

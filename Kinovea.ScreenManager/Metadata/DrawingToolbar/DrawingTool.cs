@@ -148,7 +148,7 @@ namespace Kinovea.ScreenManager
                 }
                 catch (Exception)
                 {
-                    log.Error("An error happened during the parsing of the tool presets file");
+                    log.Error("An error happened during the parsing of a generic drawing tool file");
                 }
             }
 

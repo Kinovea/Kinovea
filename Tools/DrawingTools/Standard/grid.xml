@@ -16,8 +16,9 @@
     <GridDivisions Key="divisions">
       <Value>8</Value>
     </GridDivisions>
-    <Curved Key="perspective">
+    <Toggle Key="perspective">
       <Value>false</Value>
-    </Curved>
+      <Variant>Perspective</Variant>
+    </Toggle>
   </DefaultStyle>
 </KinoveaDrawingTool>
