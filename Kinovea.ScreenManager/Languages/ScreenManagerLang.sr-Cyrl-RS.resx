@@ -219,6 +219,8 @@
    <data name="DrawingName_HumanModel" xml:space="preserve"><value>Модел човека</value></data>
    <data name="DrawingName_HumanModel2" xml:space="preserve"><value>Модел човека (2)</value></data>
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>Мрежа за проверу камере</value></data>
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Координантна мрежа</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Перспектива координантне мреже</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Замена датотека</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Датотека {0} већ постоји.\nДа ли желите да је замените?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Име датотеке није одговарајуће</value></data>
@@ -241,6 +243,7 @@
    <data name="Generic_Apply" xml:space="preserve"><value>Примени</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Стрелице:</value></data>
    <data name="Generic_Curved" xml:space="preserve"><value>Крива:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Откажи</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Затвори</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Боја:</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Грешк : Није могуће отворити датотеку : ток видео записа није пронађен. </value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Закључајте границе радне зоне</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Откључајте границе радне зоне</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Перспектива координантне мреже</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Конфигуриши</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Режим одбројавања</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Обриши штоперицу</value></data>
@@ -336,7 +338,6 @@
    
    
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Иди на кључну слику</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>Координантна мрежа</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Сакриј</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Истраживач датотеке</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Увези слику...</value></data>

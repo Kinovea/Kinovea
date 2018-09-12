@@ -219,6 +219,8 @@
    
    
    
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Координатна мрежа</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Перспектива на координатната мрежа</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Датотека презапиши</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Датотеката {0} веќе постои. \n Дали сакаш да ја замениш?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Невалидно име на датотеката</value></data>
@@ -240,6 +242,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Изглед</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Примени</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Стрелки:</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Откажи</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Затвори</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Проблем: не може да се отвори датотеката : текот на видеото не е пронајден.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Заклучи ги границите на работната зона</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Отклучи ги границите на работната зона</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Перспектива на координатната мрежа</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Конфигурира</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Режим на одбројување</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Избриши стоперица</value></data>
@@ -336,7 +338,6 @@
    
    
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Оди на клучната слика</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>Координатна мрежа</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Сокриј</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Истражувач на датотеки</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Внеси слика</value></data>

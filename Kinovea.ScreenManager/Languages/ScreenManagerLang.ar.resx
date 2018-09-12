@@ -219,6 +219,8 @@
    <data name="DrawingName_HumanModel" xml:space="preserve"><value>نموذج الإنسان</value></data>
    <data name="DrawingName_HumanModel2" xml:space="preserve"><value>نموذج الإنسان 2 </value></data>
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>شبكة اختبار الكاميرا</value></data>
+   <data name="DrawingName_Grid" xml:space="preserve"><value>شبكة</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>شبكة المنظور</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>الكتابة علي ملف</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>الملف {0} موجود بالفعل. \n هل تريد استبداله؟</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>اسم الملف غير صالح</value></data>
@@ -241,6 +243,7 @@
    <data name="Generic_Apply" xml:space="preserve"><value>تطبيق</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>اسهم:</value></data>
    <data name="Generic_Curved" xml:space="preserve"><value>منحنى:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>إلغاء</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>اغلاق</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>لون:</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>فشل: غير قادر على فتح الملف: بث الفيديو غير موجود.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>قفل حدود منطقة العمل</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>فتح حدود منطقة العمل</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>شبكة المنظور</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>اعداد</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>وضع العد التنازلي</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>حذف ساعة توقيت</value></data>
@@ -336,7 +338,6 @@
    
    
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>الذهاب إلى صورة رئيسية</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>شبكة</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>إخفاء</value></data>
    <data name="mnuHome" xml:space="preserve"><value>متصفح الملفات</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>استيراد صورة ...</value></data>

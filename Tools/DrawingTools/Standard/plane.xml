@@ -3,7 +3,7 @@
   <FormatVersion>1.0</FormatVersion>
   <Id>6b59ec55-fe12-483f-99a0-013e693ef4e8</Id>
   <Name>Plane</Name>
-  <DisplayName>ToolTip_DrawingToolPlane</DisplayName>
+  <DisplayName>DrawingName_PerspectiveGrid</DisplayName>
   <Icon>plane</Icon>
   <DrawingClass>DrawingPlane</DrawingClass>
   <Attached>true</Attached>

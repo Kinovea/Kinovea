@@ -219,6 +219,8 @@
    
    
    
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Gitter</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektivgitter</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overskriv fil</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Filen {0} eksisterer allerede.\nØnsker du at overskrive den?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Ugyldigt filnavn</value></data>
@@ -240,6 +242,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Fremtoning</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Anvend</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Pile:</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuller</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Luk</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Fejl: Kan ikke åbne filen: video stream ikke fundet.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lås grænserne for arbejdszonen</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Frigør grænserne for arbejdszonen</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektivgitter</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfigurer</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Nedtællingstilstand</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Slet stopur</value></data>
@@ -336,7 +338,6 @@
    
    
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Gå til nøglebillede</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>Gitter</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Skjul</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Filoversigt</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importer billede…</value></data>

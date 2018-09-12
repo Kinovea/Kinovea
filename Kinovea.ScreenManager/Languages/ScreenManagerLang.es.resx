@@ -219,6 +219,8 @@
    
    
    
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Cuadrícula</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Cuadrícula de Perspectiva </value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobrescribir archivo</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>El archivo {0} ya existe.\n¿Desea reemplazarlo ?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nombre de archivo no válido</value></data>
@@ -239,6 +241,7 @@
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Progresiòn</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Apariencia</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Aplicar</value></data>
+   
    
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Carga de archivo imposible: no se encontró ningun flujo vídeo.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Bloquear la zona de trabajo </value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Desbloquear la zona de trabajo </value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Cuadrícula de Perspectiva </value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configurar</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Modo Cuenta Atràs</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Borrar Cronómetro</value></data>
@@ -336,7 +338,6 @@
    
    
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Ir a la Imagen Clave</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>Cuadrícula</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Ocultar</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Explorador De Archivos</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importar una imagen…</value></data>

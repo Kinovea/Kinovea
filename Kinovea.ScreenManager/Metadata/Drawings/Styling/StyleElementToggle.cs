@@ -151,7 +151,7 @@ namespace Kinovea.ScreenManager
             {
                 case StyleToggleVariant.Perspective:
                     icon = Properties.Drawings.plane;
-                    displayName = ScreenManagerLang.mnuPerspectiveGrid;
+                    displayName = ScreenManagerLang.Generic_Perspective;
                     break;
                 case StyleToggleVariant.Curved:
                 default:

@@ -219,6 +219,8 @@
    
    
    
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Izgara</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektif Izgarası</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Dosyanın üzerine yaz</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Dosya {0} zaten mevcut.\nDeğiştirmek istiyor musunuz?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Geçersiz dosya ismi</value></data>
@@ -239,6 +241,7 @@
    <data name="FormProgressBar_Title" xml:space="preserve"><value>İlerleme</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Görünüm</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Uygula</value></data>
+   
    
    
    <data name="Generic_Cancel" xml:space="preserve"><value>İptal Et</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Hata: Dosya açılamıyor : video akışı bulunamadı.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Çalışma Alanı Sınırlarını Kilitle</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Çalışma Alanı Sınırlarının Kilidini Aç</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektif Izgarası</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Ayarla</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Geriye doğru sayma Modu</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Kronometreyi Sil</value></data>
@@ -336,7 +338,6 @@
    
    
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Anahtar İmaja Git</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>Izgara</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Gizle</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Dosya Gezgini</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>İmaj import et...</value></data>

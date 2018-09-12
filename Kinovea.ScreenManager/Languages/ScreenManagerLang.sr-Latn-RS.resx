@@ -219,6 +219,8 @@
    
    
    
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Koordinantna mreža</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektiva koordinantne mreže</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Zamena datoteka</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Datoteka {0} već postoji.\nDa li želite da je zamenite?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Ime datoteke nije odgovarajuće</value></data>
@@ -240,6 +242,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Izgled</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Primeni</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Strelice:</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Otkaži</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Zatvori</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Grešk : Nije moguće otvoriti datoteku : tok video zapisa nije pronađen. </value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Zaključajte granice radne zone</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Otključajte granice radne zone</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektiva koordinantne mreže</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfiguriši</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Režim odbrojavanja</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Obriši štopericu</value></data>
@@ -336,7 +338,6 @@
    
    
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Idi na ključnu sliku</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>Koordinantna mreža</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Sakrij</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Istraživač datoteke</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Uveži sliku...</value></data>
