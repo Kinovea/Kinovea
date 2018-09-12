@@ -50,8 +50,17 @@ namespace Kinovea.ScreenManager
         private static Cursor GetCursorPencil(DrawingStyle style, double stretchFactor)
         {
             // Custom cursor: Colored and sized circle.
-            Color c = (Color)style.Elements["color"].Value;
-            int size = (int)(stretchFactor * (int)style.Elements["pen size"].Value);
+            string keyColor = "color";
+            string keySize = "pen size";
+
+            if (!style.Elements.ContainsKey(keyColor))
+                return null;
+
+            if (!style.Elements.ContainsKey(keySize))
+                return null;
+            
+            Color c = (Color)style.Elements[keyColor].Value;
+            int size = (int)(stretchFactor * (int)style.Elements[keySize].Value);
 
             Pen p = new Pen(c, 1);
             Bitmap b = new Bitmap(size + 2, size + 2);
@@ -65,7 +74,11 @@ namespace Kinovea.ScreenManager
         private static Cursor GetCursorCrossMark(DrawingStyle style)
         {
             // Custom cursor: cross inside a semi transparent circle (same as drawing).
-            Color c = (Color)style.Elements["back color"].Value;
+            string keyColor = "back color";
+            if (!style.Elements.ContainsKey(keyColor))
+                return null;
+
+            Color c = (Color)style.Elements[keyColor].Value;
             Pen p = new Pen(c, 1);
             Bitmap b = new Bitmap(9, 9);
             Graphics g = Graphics.FromImage(b);
