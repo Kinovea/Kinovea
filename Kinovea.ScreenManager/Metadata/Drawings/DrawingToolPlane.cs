@@ -84,10 +84,6 @@ namespace Kinovea.ScreenManager
         {
             return new DrawingPlane(true, timestamp, averageTimeStampsPerFrame, stylePreset);
         }
-        public override Cursor GetCursor(double stretchFactor)
-        {
-            return Cursors.Cross;
-        }
         #endregion
     }
 }

@@ -5,7 +5,6 @@ using System.Text;
 using System.Xml;
 using Kinovea.Services;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Reflection;
 using Kinovea.ScreenManager.Languages;
 
@@ -17,6 +16,9 @@ namespace Kinovea.ScreenManager
     /// As an example, the arrow and line tools are both generating DrawingLine, which has both capabilities.
     /// The fact that the endpoints display arrows or not is just a style attribute of the drawing.
     /// This is not the same as the GenericPosture tool.
+    /// 
+    /// This framework also allows for the removal of the DrawingTool*** classes that are now generic and described purely in XML.
+    /// In order to be compatible, the constructor for generated drawings must conform to a predefined prototype.
     /// </summary>
     public class DrawingTool : AbstractDrawingTool
     {
@@ -102,7 +104,7 @@ namespace Kinovea.ScreenManager
 
         public override AbstractDrawing GetNewDrawing(PointF origin, long timestamp, long averageTimeStampsPerFrame, IImageToViewportTransformer transformer)
         {
-            // Drawings constructors must follow one of two convention prototypes:
+            // Drawings constructors must conforms to one of two predefined prototypes:
             // (PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null).
             // (PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset).
             // Exemple for 1: DrawingAngle.
@@ -125,10 +127,6 @@ namespace Kinovea.ScreenManager
             }
 
             return null;
-        }
-        public override Cursor GetCursor(double stretchFactor)
-        {
-            return Cursors.Cross;
         }
 
         #region Deserialization

@@ -262,6 +262,7 @@
     <Compile Include="Measurement\Plotting\TimeModel.cs" />
     <Compile Include="Measurement\Plotting\TimeSeriesPlotData.cs" />
     <Compile Include="Measurement\Plotting\TimeSeriesPlotSpecification.cs" />
+    <Compile Include="CursorManager.cs" />
     <Compile Include="Metadata\Drawings\DrawingTestGrid.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolTestGrid.cs" />
     <Compile Include="Metadata\Drawings\Styling\Bicolor.cs" />

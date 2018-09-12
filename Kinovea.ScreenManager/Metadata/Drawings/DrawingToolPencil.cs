@@ -83,18 +83,6 @@ namespace Kinovea.ScreenManager
         {
             return new DrawingPencil(origin, timestamp, averageTimeStampsPerFrame, stylePreset, transformer);
         }
-        public override Cursor GetCursor(double stretchFactor)
-        {
-            // Draw custom cursor: Colored and sized circle.
-            Color c = (Color)stylePreset.Elements["color"].Value;
-            int size = (int)(stretchFactor * (int)stylePreset.Elements["pen size"].Value);
-            Pen p = new Pen(c, 1);
-            Bitmap b = new Bitmap(size + 2, size + 2);
-            Graphics g = Graphics.FromImage(b);
-            g.DrawEllipse(p, 1, 1, size, size);
-            p.Dispose();
-            return new Cursor(b.GetHicon());
-        }
         #endregion
     }
 }
