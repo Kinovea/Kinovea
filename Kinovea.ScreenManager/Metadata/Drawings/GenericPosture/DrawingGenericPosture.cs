@@ -122,9 +122,14 @@ namespace Kinovea.ScreenManager
         {
             get { return genericPosture.Handles; }
         }
+        public Guid ToolId
+        {
+            get { return toolId; }
+        }
         #endregion
-        
+
         #region Members
+        private Guid toolId;
         private bool tracking;
         private PointF origin;
         private GenericPosture genericPosture;
@@ -141,8 +146,9 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public DrawingGenericPosture(PointF origin, GenericPosture posture, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
+        public DrawingGenericPosture(Guid toolId, PointF origin, GenericPosture posture, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
         {
+            this.toolId = toolId;
             this.origin = origin;
             this.genericPosture = posture;
             if(genericPosture != null)
@@ -170,7 +176,7 @@ namespace Kinovea.ScreenManager
             menuFlipVertical.Image = Properties.Drawings.flipvertical;
         }
         public DrawingGenericPosture(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(PointF.Empty, null, 0, 0, null)
+            : this(Guid.Empty, PointF.Empty, null, 0, 0, null)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -280,9 +286,8 @@ namespace Kinovea.ScreenManager
         #region KVA Serialization
         public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
         {
-            // The id must be read before the point list.
-            Guid toolId;
-
+            // The tool id must be read before the point list.
+            
             if (xmlReader.MoveToAttribute("id"))
                 identifier = new Guid(xmlReader.ReadContentAsString());
 

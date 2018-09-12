@@ -76,6 +76,10 @@ namespace Kinovea.ScreenManager
         {
             get { return defaultStylePreset;}
         }
+        public Guid ToolId
+        {
+            get { return id; }
+        }
         #endregion
         
         #region Members
@@ -102,7 +106,8 @@ namespace Kinovea.ScreenManager
                 stylePreset = ToolManager.GetStylePreset(name);
             
             GenericPosture posture = GenericPostureManager.Instanciate(id, false);
-            return new DrawingGenericPosture(origin, posture, timestamp, averageTimeStampsPerFrame, stylePreset);
+            AbstractDrawing drawing = new DrawingGenericPosture(id, origin, posture, timestamp, averageTimeStampsPerFrame, stylePreset);
+            return drawing;
         }
         public override Cursor GetCursor(double stretchFactor)
         {

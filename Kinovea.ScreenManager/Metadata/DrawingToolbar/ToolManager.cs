@@ -170,10 +170,73 @@ namespace Kinovea.ScreenManager
 
         public static void SetStylePreset(string tool, DrawingStyle style)
         {
-            if (!Tools.ContainsKey(tool))
+            if (string.IsNullOrEmpty(tool) || !Tools.ContainsKey(tool))
                 return;
 
             Tools[tool].StylePreset = style;
+        }
+
+        public static void SetStylePreset(AbstractDrawing drawing, DrawingStyle style)
+        {
+            string tool = GetToolName(drawing);
+            SetStylePreset(tool, style);
+        }
+        
+        /// <summary>
+        /// Try to find the tool that generates this kind of drawings.
+        /// </summary>
+        private static string GetToolName(AbstractDrawing drawing)
+        {
+            if (drawing == null)
+                return null;
+
+            // For external custom tools the drawing retains the tool identifier.
+            if (drawing is DrawingGenericPosture)
+            {
+                Guid toolId = ((DrawingGenericPosture)drawing).ToolId;
+
+                foreach (DrawingToolGenericPosture customTool in GenericPostureManager.Tools)
+                {
+                    if (customTool.ToolId == toolId)
+                        return customTool.Name;
+                }
+
+                return null;
+            }
+
+            foreach (var tool in tools.Values)
+            {
+                // For external standard tools, we check via the class of drawing they instanciate.
+                if (tool is DrawingTool)
+                {
+                    if (((DrawingTool)tool).DrawingType == drawing.GetType())
+                    {
+                        return tool.Name;
+                    }
+                }
+                else
+                {
+                    // For internal standard tool, we have to check types one by one.
+                    if (drawing is DrawingCrossMark)
+                    {
+                        return "CrossMark";
+                    }
+                    else if (drawing is DrawingPencil)
+                    {
+                        return "Pencil";
+                    }
+                    else if (drawing is DrawingPlane)
+                    {
+                        if (((DrawingPlane)drawing).InPerspective)
+                            return "Plane";
+                        else
+                            return "Grid";
+                    }
+                }
+            }
+
+            // At this point we don't recognize the drawing type.
+            return null;
         }
 
         #region Private Methods
