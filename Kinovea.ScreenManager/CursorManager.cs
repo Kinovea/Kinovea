@@ -11,29 +11,30 @@ namespace Kinovea.ScreenManager
     {
         public static Cursor GetCursor(AbstractDrawingTool tool, double stretchFactor)
         {
-            if (tool is DrawingToolPencil)
+            if (tool is DrawingToolPointer)
+                return ((DrawingToolPointer)tool).GetCursor();
+
+            if (tool is DrawingTool)
             {
-                DrawingStyle style = ToolManager.GetStylePreset(tool.Name);
-                return GetCursorPencil(style, stretchFactor);
+                if (tool.Name == "Pencil")
+                {
+                    DrawingStyle style = ToolManager.GetStylePreset(tool.Name);
+                    return GetCursorPencil(style, stretchFactor);
+                }
+                else
+                {
+                    return Cursors.Cross;
+                }
             }
             else if (tool is DrawingToolCrossMark)
             {
                 DrawingStyle style = ToolManager.GetStylePreset(tool.Name);
                 return GetCursorCrossMark(style);
             }
-            else if (tool is DrawingToolPointer)
-            {
-                return ((DrawingToolPointer)tool).GetCursor();
-            }
-            else if (tool is DrawingToolAutoNumbers)
-            {
-                // Would be cool to have a cursor with the actual next number in it.
-                return Cursors.Cross;
-            }
-            else if (tool is DrawingTool ||
-                     tool is DrawingToolCoordinateSystem ||
+            else if (tool is DrawingToolCoordinateSystem ||
                      tool is DrawingToolGrid ||
                      tool is DrawingToolPlane ||
+                     tool is DrawingToolAutoNumbers ||
                      tool is DrawingToolSpotlight ||
                      tool is DrawingToolGenericPosture ||
                      tool is DrawingToolTestGrid)
