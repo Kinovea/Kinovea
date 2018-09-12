@@ -138,24 +138,27 @@ namespace Kinovea.ScreenManager
         public void MakeRectangle(int anchor)
         {
             // Forces the other points to align with the anchor.
-            // Assumes the opposite point is already aligned with the other two.
             switch (anchor)
             {
                 case 0:
                     B = new PointF(B.X, A.Y);
                     D = new PointF(A.X, D.Y);
+                    C = new PointF(B.X, D.Y);
                     break;
                 case 1:
                     A = new PointF(A.X, B.Y);
                     C = new PointF(B.X, C.Y);
+                    D = new PointF(A.X, C.Y);
                     break;
                 case 2:
                     D = new PointF(D.X, C.Y);
                     B = new PointF(C.X, B.Y);
+                    A = new PointF(D.X, B.Y);
                     break;
                 case 3:
                     C = new PointF(C.X, D.Y);
                     A = new PointF(D.X, A.Y);
+                    B = new PointF(C.X, A.Y);
                     break;
             }
         }
