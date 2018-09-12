@@ -219,6 +219,8 @@
    <data name="DrawingName_HumanModel" xml:space="preserve"><value>Model humà</value></data>
    <data name="DrawingName_HumanModel2" xml:space="preserve"><value>Model humà (2)</value></data>
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>Graella de test de càmera</value></data>
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Graella</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Graella de perspectiva</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobreescriure l'arixiu</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>L'arxiu {0} ja existeix.\n Voleu reemplaçar-lo?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nom d'arxiu invàlid</value></data>
@@ -241,6 +243,7 @@
    <data name="Generic_Apply" xml:space="preserve"><value>Aplicar</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Fletxes :</value></data>
    <data name="Generic_Curved" xml:space="preserve"><value>Corba:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Tancar</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color :</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Error: No s'ha pogut obrir l'arxiu: no s'ha trobat el flux del vídeo.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Bloqueja els límits de la zona de treball</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Desbloqueja els límits de la zona de treball</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Graella de perspectiva</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configurar</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Mode de compte enrere</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Esborra el Cronòmetre</value></data>
@@ -336,7 +338,6 @@
    
    
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Anar a l'imatge clau</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>Graella</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Amagar</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Explorador d'arxius</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importar una imatge...</value></data>

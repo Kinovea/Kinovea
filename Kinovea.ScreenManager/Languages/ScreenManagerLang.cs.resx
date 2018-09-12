@@ -219,6 +219,8 @@
    
    
    
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Mřížka</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektivní mřížka</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Přepsat soubor</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Soubor {0} již existuje.\nChcete jej nahradit?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Neplatné jméno souboru</value></data>
@@ -240,6 +242,7 @@
    <data name="Generic_Appearance" xml:space="preserve"><value>Vzhled</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Použít</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Šipky:</value></data>
+   
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Zrušit</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Zavřít</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: video stream nenalezen.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Uzamčít hranice pracovní oblasti</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Odemčít hranice pracovní oblasti</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektivní mřížka</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfigurovat</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Mód odpočítávání</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Vymazat stopky</value></data>
@@ -336,7 +338,6 @@
    
    
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Přejít na klíčovou pozici</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>Mřížka</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Skrýt</value></data>
    <data name="mnuHome" xml:space="preserve"><value>File Explorer</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importovat obrázek…</value></data>

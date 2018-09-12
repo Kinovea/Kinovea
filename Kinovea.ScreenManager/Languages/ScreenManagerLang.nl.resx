@@ -219,6 +219,8 @@
    <data name="DrawingName_HumanModel" xml:space="preserve"><value>Model van mens</value></data>
    <data name="DrawingName_HumanModel2" xml:space="preserve"><value>Model van mens (2)</value></data>
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>Testraster voor camera</value></data>
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Raster</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspectief raster</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overschrijf bestand</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Het bestand {0} bestaat reeds.\nWilt u het vervangen?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Incorrecte bestandsnaam</value></data>
@@ -241,6 +243,7 @@
    <data name="Generic_Apply" xml:space="preserve"><value>Toepassen</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Pijlen:</value></data>
    <data name="Generic_Curved" xml:space="preserve"><value>Curve:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuleer</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Sluiten</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Kleur:</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Fout bij openen van het bestand : geen video voortgang gevonden.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Werkgebiedgrenzen vergrendelen</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Werkgebiedgrenzen ontgrendelen</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspectief raster</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configureer</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Aftelmodus</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Verwijder Stopwatch</value></data>
@@ -336,7 +338,6 @@
    
    
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Ga naar Kernbeeld</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>Raster</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Verberg</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Bladeren</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importeer afbeelding…</value></data>

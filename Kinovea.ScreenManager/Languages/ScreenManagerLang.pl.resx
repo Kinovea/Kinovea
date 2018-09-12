@@ -219,6 +219,8 @@
    
    
    
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Siatka</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Widok 3D</value></data>
    
    
    
@@ -239,6 +241,7 @@
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Postęp</value></data>
    
    <data name="Generic_Apply" xml:space="preserve"><value>Zastosuj</value></data>
+   
    
    
    <data name="Generic_Cancel" xml:space="preserve"><value>Anuluj</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Błąd przy próbie otwarcia pliku : nie znaleziono strumienia wideo.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Zablokuj granice obszaru roboczego</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Odblokuj granice obszaru roboczego</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Widok 3D</value></data>
    
    
    
@@ -336,7 +338,6 @@
    
    
    
-   <data name="mnuGrid" xml:space="preserve"><value>Siatka</value></data>
    
    <data name="mnuHome" xml:space="preserve"><value>Przeglądarka plików</value></data>
    

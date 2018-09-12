@@ -219,6 +219,8 @@
    <data name="DrawingName_HumanModel" xml:space="preserve"><value>Human model</value></data>
    <data name="DrawingName_HumanModel2" xml:space="preserve"><value>Human model (2)</value></data>
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>Camera test grid</value></data>
+   <data name="DrawingName_Grid" xml:space="preserve"><value>Grid</value></data>
+   <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspective grid</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>File overwrite</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>The file {0} already exists.\nDo you want to replace it?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Invalid file name</value></data>
@@ -241,6 +243,7 @@
    <data name="Generic_Apply" xml:space="preserve"><value>Apply</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Arrows:</value></data>
    <data name="Generic_Curved" xml:space="preserve"><value>Curve:</value></data>
+   <data name="Generic_Perspective" xml:space="preserve"><value>Perspective:</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancel</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Close</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color:</value></data>
@@ -301,7 +304,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Failure: Unable to open the file : video stream not found.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lock the Working Zone Boundaries</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Unlock the Working Zone Boundaries</value></data>
-   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspective grid</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configure</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Countdown Mode</value></data>
    <data name="mnuChronoDelete" xml:space="preserve"><value>Delete Stopwatch</value></data>
@@ -336,7 +338,6 @@
    <data name="mnuRotation180" xml:space="preserve"><value>180°</value></data>
    <data name="mnuRotation270" xml:space="preserve"><value>90° Counter-clockwise</value></data>
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Go to Key Image</value></data>
-   <data name="mnuGrid" xml:space="preserve"><value>Grid</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Hide</value></data>
    <data name="mnuHome" xml:space="preserve"><value>File Explorer</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Import image…</value></data>
