@@ -65,6 +65,10 @@ namespace Kinovea.ScreenManager
         {
             get { return defaultStyle; }
         }
+        public Type DrawingType
+        {
+            get { return drawingType; }
+        }
         #endregion
 
         #region Members

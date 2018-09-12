@@ -97,7 +97,10 @@ namespace Kinovea.ScreenManager
         {
             get { return quadImage;}
         }
-        
+        public bool InPerspective
+        {
+            get { return inPerspective; }
+        }
         public CalibrationHelper CalibrationHelper { get; set; }
         public bool ShowMeasurableInfo { get; set; }
         public bool UsedForCalibration { get; set; }

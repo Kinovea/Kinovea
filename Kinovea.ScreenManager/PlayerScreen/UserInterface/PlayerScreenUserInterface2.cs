@@ -2687,7 +2687,6 @@ namespace Kinovea.ScreenManager
             if (!editingLabel)
             {
                 AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.ImageTransform);
-
                 if (drawing is DrawingText)
                 {
                     // Labels need to be switched immediately into edit mode.
@@ -3968,13 +3967,13 @@ namespace Kinovea.ScreenManager
         }
         private void mnuSetStyleAsDefault_Click(object sender, EventArgs e)
         {
-            // Assign the active drawing style to the drawing tool.
+            // Assign the style of the active drawing to the drawing tool that generated it.
             Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
             IDecorable drawing = m_FrameServer.Metadata.HitDrawing as IDecorable;
             if (drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
                 return;
 
-            ToolManager.SetStylePreset(m_ActiveTool.Name, drawing.DrawingStyle);
+            ToolManager.SetStylePreset(m_FrameServer.Metadata.HitDrawing, drawing.DrawingStyle);
             ToolManager.SavePresets();
         }
         private void mnuAlwaysVisible_Click(object sender, EventArgs e)
