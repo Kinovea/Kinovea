@@ -530,7 +530,6 @@ namespace Kinovea.ScreenManager
             // The final font size returned here may not be part of the allowed font sizes
             // and may exeed the max allowed font size, because it's just for rendering purposes.
             float fontSize = (float)(font.Size * stretchFactor);
-            log.DebugFormat("get rescaled font size: {0}, {1}", font.Size, fontSize);
             fontSize = Math.Max(fontSize, minFontSize);
             return fontSize;
         }

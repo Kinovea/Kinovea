@@ -301,7 +301,6 @@ namespace Kinovea.ScreenManager
             {
                 SizeF textSize = g.MeasureString(text, f);
                 background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
-                log.DebugFormat("update label rectangle: {0}", background.Rectangle.Height);
                 
                 // Also update the edit box size. (Use a fixed font though).
                 // The extra space is to account for blank new lines.
