@@ -118,6 +118,11 @@ namespace Kinovea.ScreenManager
             get { return curved; }
             set { curved = value; }
         }
+        public bool Perspective
+        {
+            get { return perspective; }
+            set { perspective = value; }
+        }
 
         public int ContentHash
         {
@@ -134,6 +139,7 @@ namespace Kinovea.ScreenManager
                 iHash ^= trackShape.GetHashCode();
                 iHash ^= gridDivisions.GetHashCode();
                 iHash ^= curved.GetHashCode();
+                iHash ^= perspective.GetHashCode();
                 
                 return iHash;
             }
@@ -149,6 +155,7 @@ namespace Kinovea.ScreenManager
         private LineEnding lineEnding = LineEnding.None;
         private TrackShape trackShape = TrackShape.Solid;
         private bool curved;
+        private bool perspective;
         private int gridDivisions;
         private Control dummyControl = new Control();
         private Graphics dummyGraphics;
@@ -335,9 +342,19 @@ namespace Kinovea.ScreenManager
                     }
                 case "Curved":
                     {
-                        if (value is Boolean)
+                        if (value is bool)
                         {
-                            curved = (Boolean)value;
+                            curved = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Perspective":
+                    {
+                        if (value is bool)
+                        {
+                            perspective = (bool)value;
                             imported = true;
                         }
 
@@ -448,9 +465,19 @@ namespace Kinovea.ScreenManager
                     }
                 case "Curved":
                     {
-                        if (targetType == typeof(Boolean))
+                        if (targetType == typeof(bool))
                         {
                             result = curved;
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Perspective":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = perspective;
                             converted = true;
                         }
 

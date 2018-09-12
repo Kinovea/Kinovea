@@ -54,9 +54,6 @@ namespace Kinovea.ScreenManager
 
             // Standard tools internally defined.
             // These tools cannot be easily externalized at the moment due to some special ctor parameters.
-            tools.Add("Grid", new DrawingToolGrid());
-            tools.Add("Plane", new DrawingToolPlane());
-            
             tools.Add("Spotlight", new DrawingToolSpotlight());
             tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
             tools.Add("Magnifier", new DrawingToolMagnifier());
@@ -215,24 +212,18 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     // For internal standard tool, we have to check types one by one.
-                    if (drawing is DrawingCrossMark)
+                    if (drawing is DrawingCoordinateSystem)
                     {
-                        return "CrossMark";
+                        return "CoordinateSystem";
                     }
-                    else if (drawing is DrawingPencil)
+                    else if (drawing is DrawingTestGrid)
                     {
-                        return "Pencil";
-                    }
-                    else if (drawing is DrawingPlane)
-                    {
-                        if (((DrawingPlane)drawing).InPerspective)
-                            return "Plane";
-                        else
-                            return "Grid";
+                        return "TestGrid";
                     }
                 }
             }
 
+            // TODO: handle style of sub drawings of multi drawings like autonumbers.
             // At this point we don't recognize the drawing type.
             return null;
         }

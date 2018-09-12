@@ -51,10 +51,7 @@ namespace Kinovea.ScreenManager
         {
             get 
             {  
-                if(inPerspective)
-                    return ToolManager.Tools["Plane"].DisplayName;
-                else
-                    return ToolManager.Tools["Grid"].DisplayName;
+                return ToolManager.Tools["Plane"].DisplayName;
             }
         }
         public override int ContentHash
@@ -97,10 +94,6 @@ namespace Kinovea.ScreenManager
         {
             get { return quadImage;}
         }
-        public bool InPerspective
-        {
-            get { return inPerspective; }
-        }
         public CalibrationHelper CalibrationHelper { get; set; }
         public bool ShowMeasurableInfo { get; set; }
         public bool UsedForCalibration { get; set; }
@@ -112,8 +105,6 @@ namespace Kinovea.ScreenManager
         private ProjectiveMapping projectiveMapping = new ProjectiveMapping();  // maps quadImage to quadPlane and back.
         private float planeWidth;                                               // width and height of rectangle in plane system.
         private float planeHeight;
-        
-        private bool inPerspective;
         private bool planeIsConvex = true;
         
         private bool tracking;
@@ -134,18 +125,18 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingPlane(bool inPerspective, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset)
+        public DrawingPlane(PointF origin, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
         {
-            this.inPerspective = inPerspective;
-            
             // Decoration
             styleHelper.Color = Color.Empty;
             styleHelper.GridDivisions = 8;
-            if(preset != null)
-            {
-                style = preset.Clone();
-                BindStyle();
-            }
+            styleHelper.Perspective = true;
+            styleHelper.ValueChanged += StyleHelper_ValueChanged;
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("Plane");
+            
+            style = preset.Clone();
+            BindStyle();
             
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             infosFading.UseDefault = false;
@@ -159,7 +150,7 @@ namespace Kinovea.ScreenManager
             mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingPlane(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(false, 0, 0, ToolManager.GetStylePreset("Grid"))
+            : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Grid"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -173,6 +164,8 @@ namespace Kinovea.ScreenManager
                return;
 
             QuadrilateralF quad = transformer.Transform(quadImage);
+
+            bool drawEdgesOnly = !planeIsConvex || (!styleHelper.Perspective && !quadImage.IsRectangle);
             
             using(penEdges = styleHelper.GetPen(opacityFactor, 1.0))
             using(SolidBrush br = styleHelper.GetBrush(opacityFactor))
@@ -180,7 +173,7 @@ namespace Kinovea.ScreenManager
                 foreach (PointF p in quad)
                     canvas.FillEllipse(br, p.Box(4));
 
-                if (planeIsConvex)
+                if (!drawEdgesOnly)
                 {
                     if (distorter != null && distorter.Initialized)
                     {
@@ -192,12 +185,11 @@ namespace Kinovea.ScreenManager
                         projectiveMapping.Update(quadPlane, quadImage);
                     }
 
-                    //DrawDiagonals(canvas, penEdges, quadPlane, projectiveMapping, distorter, transformer);
                     DrawGrid(canvas, penEdges, projectiveMapping, distorter, transformer);
                 }
                 else
                 {
-                    // Non convex quadrilateral: only draw the edges.
+                    // Non convex quadrilateral or non rectangle 2d grid: only draw the edges.
                     canvas.DrawLine(penEdges, quad.A, quad.B);
                     canvas.DrawLine(penEdges, quad.B, quad.C);
                     canvas.DrawLine(penEdges, quad.C, quad.D);
@@ -265,7 +257,7 @@ namespace Kinovea.ScreenManager
                     return i+1;
             }
             
-            if (!zooming && !inPerspective && quadImage.Contains(point))
+            if (!zooming && !styleHelper.Perspective && quadImage.Contains(point))
                 return 0;
             
             return -1;
@@ -283,7 +275,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                if (!inPerspective)
+                if (!styleHelper.Perspective)
                 {
                     quadImage.Translate(dx, dy);
                     CalibrationHelper.CalibrationByPlane_Update(quadImage);
@@ -297,7 +289,7 @@ namespace Kinovea.ScreenManager
             int handle = handleNumber - 1;
             quadImage[handle] = point;
             
-            if (inPerspective)
+            if (styleHelper.Perspective)
             {
                 planeIsConvex = quadImage.IsConvex;
             }
@@ -309,7 +301,7 @@ namespace Kinovea.ScreenManager
                     quadImage.MakeRectangle(handle);
             }
             
-            SignalTrackablePointMoved(handle);
+            SignalAllTrackablePointsMoved();
             CalibrationHelper.CalibrationByPlane_Update(quadImage);
         }
         public override PointF GetPosition()
@@ -353,9 +345,6 @@ namespace Kinovea.ScreenManager
                             quadImage.D = ReadPoint(xmlReader, scale);
                             break;
                         }
-                    case "Perspective":
-                        inPerspective = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
-                        break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -372,11 +361,7 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
             
-            // Sanity check for rectangular constraint.
-            if(!inPerspective && !quadImage.IsRectangle)
-                inPerspective = true;
-
-            if (inPerspective)
+            if (!styleHelper.Perspective)
                 planeIsConvex = quadImage.IsConvex;
 
             initialized = true;
@@ -396,8 +381,6 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("PointUpperRight", XmlHelper.WritePointF(quadImage.B));
                 w.WriteElementString("PointLowerRight", XmlHelper.WritePointF(quadImage.C));
                 w.WriteElementString("PointLowerLeft", XmlHelper.WritePointF(quadImage.D));
-
-                w.WriteElementString("Perspective", inPerspective.ToString().ToLower());
             }
 
             if (ShouldSerializeStyle(filter))
@@ -427,7 +410,7 @@ namespace Kinovea.ScreenManager
                 int horzTenth = (int)(((double)imageSize.Width) / 10);
                 int vertTenth = (int)(((double)imageSize.Height) / 10);
 
-                if (inPerspective)
+                if (styleHelper.Perspective)
                 {
                     // Initialize with a faked perspective.
                     quadImage.A = new Point(3 * horzTenth, 4 * vertTenth);
@@ -518,8 +501,17 @@ namespace Kinovea.ScreenManager
         {
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "GridDivisions", "divisions");
-        }   
-        
+            style.Bind(styleHelper, "Perspective", "perspective");
+        }
+        private void StyleHelper_ValueChanged(object sender, EventArgs e)
+        {
+            // Handle the case where we convert from a perspective plane to a grid.
+            // Note: we cannot force rectangle here because this would change the actual points, 
+            // these points are not part of the "style" and so if we cancelled the style change we would not 
+            // be able to go back to the original quad.
+            planeIsConvex = styleHelper.Perspective ? quadImage.IsConvex : true;
+        }
+
         private void mnuCalibrate_Click(object sender, EventArgs e)
         {
             FormCalibratePlane fcp = new FormCalibratePlane(CalibrationHelper, this);

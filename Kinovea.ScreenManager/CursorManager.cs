@@ -32,8 +32,6 @@ namespace Kinovea.ScreenManager
                 }
             }
             else if (tool is DrawingToolCoordinateSystem ||
-                     tool is DrawingToolGrid ||
-                     tool is DrawingToolPlane ||
                      tool is DrawingToolAutoNumbers ||
                      tool is DrawingToolSpotlight ||
                      tool is DrawingToolGenericPosture ||
