@@ -52,9 +52,8 @@ namespace Kinovea.ScreenManager
         {
             tools = new Dictionary<string, AbstractDrawingTool>();
 
-            // Built-ins
-            // These tools cannot be easily externalized at the moment due to some specificities like a custom cursor or ctor parameters.
-            tools.Add("CrossMark", new DrawingToolCrossMark());
+            // Standard tools internally defined.
+            // These tools cannot be easily externalized at the moment due to some special ctor parameters.
             tools.Add("Grid", new DrawingToolGrid());
             tools.Add("Plane", new DrawingToolPlane());
             

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>bd48ed6b-42f3-47e2-bb69-7de444fb529b</Id>
+  <Name>CrossMark</Name>
+  <DisplayName>ToolTip_DrawingToolCross2D</DisplayName>
+  <Icon>crossmark</Icon>
+  <DrawingClass>DrawingCrossMark</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>true</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>true</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="back color">
+      <Value>255;100;149;237</Value>
+    </Color>
+  </DefaultStyle>
+</KinoveaDrawingTool>

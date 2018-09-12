@@ -16,20 +16,20 @@ namespace Kinovea.ScreenManager
 
             if (tool is DrawingTool)
             {
+                DrawingStyle style = ToolManager.GetStylePreset(tool.Name);
+
                 if (tool.Name == "Pencil")
                 {
-                    DrawingStyle style = ToolManager.GetStylePreset(tool.Name);
                     return GetCursorPencil(style, stretchFactor);
+                }
+                else if (tool.Name == "CrossMark")
+                {
+                    return GetCursorCrossMark(style);
                 }
                 else
                 {
                     return Cursors.Cross;
                 }
-            }
-            else if (tool is DrawingToolCrossMark)
-            {
-                DrawingStyle style = ToolManager.GetStylePreset(tool.Name);
-                return GetCursorCrossMark(style);
             }
             else if (tool is DrawingToolCoordinateSystem ||
                      tool is DrawingToolGrid ||
