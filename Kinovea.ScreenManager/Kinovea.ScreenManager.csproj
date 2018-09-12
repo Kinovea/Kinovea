@@ -539,7 +539,6 @@
     <Compile Include="Metadata\Drawings\AbstractDrawingTool.cs" />
     <Compile Include="Metadata\Drawings\DrawingPencil.cs" />
     <Compile Include="Metadata\Drawings\DrawingText.cs" />
-    <Compile Include="Metadata\Drawings\DrawingToolCrossMark.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolPointer.cs" />
     <Compile Include="Measurement\Geometry\SweepAngle.cs" />
     <Compile Include="Measurement\Geometry\AngleHelper.cs" />
