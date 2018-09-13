@@ -2448,12 +2448,17 @@ namespace Kinovea.ScreenManager
         }
         private void DeselectionTimer_OnTick(object sender, EventArgs e) 
         {
+            if (m_FrameServer.Metadata.TextEditingInProgress)
+            {
+                // Ignore the timer if we are editing text, so we don't close the text editor under the user.
+                m_DeselectionTimer.Stop();
+                return;
+            }
+            
             // Deselect the currently selected drawing.
             // This is used for drawings that must show extra stuff for being transformed, but we 
             // don't want to show the extra stuff all the time for clarity.
-            
             m_FrameServer.Metadata.UnselectAll();
-            log.Debug("Deselection timer fired.");
             m_DeselectionTimer.Stop();
             DoInvalidate();
             OnPoke();
