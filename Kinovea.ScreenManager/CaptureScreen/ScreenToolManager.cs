@@ -63,7 +63,7 @@ namespace Kinovea.ScreenManager
         }
         public Cursor GetCursor(float scale)
         {
-            return CursorManager.GetCursor(activeTool, scale);
+            return CursorManager.GetToolCursor(activeTool, scale);
         }
     }
 }

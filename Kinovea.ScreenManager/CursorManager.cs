@@ -9,7 +9,7 @@ namespace Kinovea.ScreenManager
 {
     public static class CursorManager
     {
-        public static Cursor GetCursor(AbstractDrawingTool tool, double stretchFactor)
+        public static Cursor GetToolCursor(AbstractDrawingTool tool, double stretchFactor)
         {
             if (tool is DrawingToolPointer)
                 return ((DrawingToolPointer)tool).GetCursor();
@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    return GetCursorPrecision(style);
+                    return GetCursorPrecision(style, false);
                 }
             }
             else if (tool is DrawingToolCoordinateSystem ||
@@ -64,7 +64,7 @@ namespace Kinovea.ScreenManager
                 // Special internal tools. 
                 // Still nice to use a precision cursor with them, but the color might not make sense.
                 DrawingStyle style = ToolManager.GetStylePreset(tool.Name);
-                return GetCursorPrecision(style);
+                return GetCursorPrecision(style, false);
             }
             else
             {
@@ -72,6 +72,21 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        public static Cursor GetManipulationCursor(AbstractDrawing drawing)
+        {
+            IDecorable decorable = drawing as IDecorable;
+            if (decorable == null)
+                return GetCursorPrecision(null, false);
+
+            return GetCursorPrecision(decorable.DrawingStyle, false);
+        }
+
+        public static Cursor GetManipulationCursorMagnifier()
+        {
+            // Special case as the magnifier is not an AbstractDrawing.
+            return GetCursorPrecision(null, false);
+        }
+        
         private static Cursor GetCursorIcon(AbstractDrawingTool tool)
         {
             if (tool.Icon == null)
@@ -136,7 +151,7 @@ namespace Kinovea.ScreenManager
             return new Cursor(b.GetHicon());
         }
         
-        private static Cursor GetCursorPrecision(DrawingStyle style)
+        private static Cursor GetCursorPrecision(DrawingStyle style, bool invert)
         {
             // Try to find a color style element to use as the cursor color.
             Color color = Color.Empty;
@@ -149,7 +164,11 @@ namespace Kinovea.ScreenManager
                         object value = ((StyleElementColor)styleElement).Value;
                         if (value is Color)
                         {
-                            color = (Color)value;
+                            if (invert)
+                                color = Color.FromArgb(((Color)value).ToArgb() ^ 0xffffff);
+                            else
+                                color = (Color)value;
+                            break;
                         }
                     }
                 }

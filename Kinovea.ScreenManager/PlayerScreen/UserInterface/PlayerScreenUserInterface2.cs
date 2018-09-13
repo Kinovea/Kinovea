@@ -2618,9 +2618,13 @@ namespace Kinovea.ScreenManager
         {
             bool hitMagnifier = false;
             if(m_ActiveTool == m_PointerTool)
+            {
                 hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse, m_FrameServer.Metadata.ImageTransform);
+                if (hitMagnifier)
+                    SetCursor(CursorManager.GetManipulationCursorMagnifier());
+            }
                 
-            if(hitMagnifier || InteractiveFiltering)
+            if (hitMagnifier || InteractiveFiltering)
                 return;
             
             if (m_bIsCurrentlyPlaying)
@@ -2636,8 +2640,12 @@ namespace Kinovea.ScreenManager
             
             if (m_ActiveTool == m_PointerTool)
             {
-                SetCursor(m_PointerTool.GetCursor(1));
                 m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
+
+                if (m_FrameServer.Metadata.HitDrawing != null)
+                    SetCursor(CursorManager.GetManipulationCursor(m_FrameServer.Metadata.HitDrawing));
+                else
+                    SetCursor(m_PointerTool.GetCursor(1));
             }
             else if(m_ActiveTool == ToolManager.Tools["Spotlight"])
             {
@@ -3809,7 +3817,7 @@ namespace Kinovea.ScreenManager
             {
                 UnzoomDirectZoom(false);
                 m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Direct;
-                SetCursor(CursorManager.GetCursor(ToolManager.Tools["Magnifier"], 1.0));
+                SetCursor(CursorManager.GetManipulationCursorMagnifier());
                 
                 if(TrackableDrawingAdded != null)
                     TrackableDrawingAdded(this, new TrackableDrawingEventArgs(m_FrameServer.Metadata.Magnifier as ITrackable));
@@ -3894,7 +3902,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                Cursor cursor = CursorManager.GetCursor(m_ActiveTool, m_FrameServer.ImageTransform.Stretch);
+                Cursor cursor = CursorManager.GetToolCursor(m_ActiveTool, m_FrameServer.ImageTransform.Stretch);
                 SetCursor(cursor);
             }
         }
