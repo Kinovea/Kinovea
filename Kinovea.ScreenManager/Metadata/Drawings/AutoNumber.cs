@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimeStamp);
             if(opacity > 0)
-                return background.HitTest(point, false, transformer);
+                return background.HitTest(point, false, 0, transformer);
 
             return result;
         }

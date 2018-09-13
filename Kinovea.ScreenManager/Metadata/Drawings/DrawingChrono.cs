@@ -221,16 +221,20 @@ namespace Kinovea.ScreenManager
                 mainBackground.Rectangle = new RectangleF(mainBackground.Rectangle.Location, untransformed);
 
                 Rectangle rect = new Rectangle(bgLocation, bgSize);
-                RoundedRectangle.Draw(canvas, rect, brushBack, fontText.Height / 4, false, false, null);
+                int roundingRadius = fontText.Height / 4;
+                RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
                 canvas.DrawString(text, fontText, brushText, rect.Location);
 
                 if (showLabel && label.Length > 0)
                 {
                     using (Font fontLabel = styleHelper.GetFont((float)transformer.Scale * 0.5f))
                     {
-                        SizeF lblTextSize = canvas.MeasureString(label, fontLabel); 
-                        Rectangle lblRect = new Rectangle(rect.Location.X, rect.Location.Y - (int)lblTextSize.Height, (int)lblTextSize.Width, (int)lblTextSize.Height);
-                        RoundedRectangle.Draw(canvas, lblRect, brushBack, fontLabel.Height/3, true, false, null);
+                        // Note: the alignment here assumes fixed margins of the rounded rectangle class.
+                        SizeF lblTextSize = canvas.MeasureString(label, fontLabel);
+                        int labelRoundingRadius = fontLabel.Height / 3;
+                        int top = rect.Location.Y - (int)lblTextSize.Height - roundingRadius - labelRoundingRadius;
+                        Rectangle lblRect = new Rectangle(rect.Location.X, top, (int)lblTextSize.Width, (int)lblTextSize.Height);
+                        RoundedRectangle.Draw(canvas, lblRect, brushBack, labelRoundingRadius, true, false, null);
                         canvas.DrawString(label, fontLabel, brushText, lblRect.Location);
                     }
                 }
@@ -246,9 +250,14 @@ namespace Kinovea.ScreenManager
 
             if (currentTimestamp >= visibleTimestamp && currentTimestamp <= maxHitTimeStamps)
             {
-                result = mainBackground.HitTest(point, true, transformer);
+                using (Font fontText = styleHelper.GetFont(1.0f))
+                {
+                    int roundingRadius = fontText.Height / 4;
+                    result = mainBackground.HitTest(point, true, (int)(roundingRadius * 1.8f), transformer);
+                }
+               
                 if(result < 0) 
-                    result = lblBackground.HitTest(point, false, transformer);
+                    result = lblBackground.HitTest(point, false, 0, transformer);
             }
 
             return result;

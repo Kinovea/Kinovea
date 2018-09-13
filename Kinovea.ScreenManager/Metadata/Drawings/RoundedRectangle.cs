@@ -105,18 +105,17 @@ namespace Kinovea.ScreenManager
             
             gp.Dispose();
         }
-        public int HitTest(PointF point, bool hiddenHandle, IImageToViewportTransformer transformer)
+        public int HitTest(PointF point, bool hiddenHandle, int hiddenHandleRadius, IImageToViewportTransformer transformer)
         {
             int result = -1;
 
             SizeF size = rectangle.Size;
             RectangleF hitArea = rectangle;
 
-            if (hiddenHandle)
+            if (hiddenHandle && hiddenHandleRadius > 0)
             {
-                int boxSide = (int)(size.Width / 4);
-                PointF bottomRight = new PointF(hitArea.Right, hitArea.Bottom);
-                if (bottomRight.Box(boxSide).Contains(point))
+                PointF handleCenter = new PointF(hitArea.Right, hitArea.Bottom);
+                if (handleCenter.Box(hiddenHandleRadius).Contains(point))
                     result = 1;
             }
 
