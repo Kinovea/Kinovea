@@ -2677,6 +2677,7 @@ namespace Kinovea.ScreenManager
             bool zooming = m_FrameServer.Metadata.ImageTransform.Zooming;
             DistortionHelper distorter = m_FrameServer.Metadata.CalibrationHelper.DistortionHelper;
 
+            // Special case for the text tool: if we hit on another label we go into edit mode instead of adding a new one on top of it.
             bool editingLabel = false;
             if (m_ActiveTool == ToolManager.Tools["Label"])
             {
@@ -2695,13 +2696,6 @@ namespace Kinovea.ScreenManager
             if (!editingLabel)
             {
                 AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame, m_FrameServer.Metadata.ImageTransform);
-                if (drawing is DrawingText)
-                {
-                    // Labels need to be switched immediately into edit mode.
-                    ImportEditbox(drawing as DrawingText);
-                    ((DrawingText)drawing).SetEditMode(true, m_FrameServer.ImageTransform);
-                }
-
                 if (DrawingAdding != null)
                     DrawingAdding(this, new DrawingEventArgs(drawing, managerId));
             }
@@ -2709,7 +2703,11 @@ namespace Kinovea.ScreenManager
         private void AfterDrawingAdded(AbstractDrawing drawing)
         {
             if (drawing is DrawingText)
-                ImportEditbox(drawing as DrawingText);
+            {
+                DrawingText drawingText = drawing as DrawingText;
+                drawingText.InitializeText();
+                ImportEditbox(drawingText);
+            }
 
             if (drawing is DrawingTrack)
             {
