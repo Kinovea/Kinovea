@@ -622,6 +622,7 @@ namespace Kinovea.ScreenManager
             }
             
             m_FrameServer.SetupMetadata(false);
+            ImportEditboxes();
             m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
 
             if (KVAImported != null)
@@ -2730,11 +2731,19 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkers();
             RefreshImage();
         }
+        private void ImportEditboxes()
+        {
+            // Import edit boxes of all drawing text after a KVA import.
+            foreach (DrawingText drawingText in m_FrameServer.Metadata.Labels())
+            {
+                ImportEditbox(drawingText);
+            }
+        }
         private void ImportEditbox(DrawingText drawing)
         {
             if (panelCenter.Controls.Contains(drawing.EditBox))
                 return;
-            
+
             drawing.ContainerScreen = pbSurfaceScreen;
             panelCenter.Controls.Add(drawing.EditBox);
             drawing.EditBox.BringToFront();

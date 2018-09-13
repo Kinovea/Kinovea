@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
             int marginLeft = radius;
             int marginTop = radius;
             int marginRight = radius;
-            int marginBottom = (int)(radius * 0.8f);
+            int marginBottom = (int)(radius * 0.7f);
             float diameter = radius * 2;
 
             GraphicsPath gp = new GraphicsPath();
@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
             int marginLeft = radius;
             int marginTop = radius;
             int marginRight = radius;
-            int marginBottom = (int)(radius * 0.8f);
+            int marginBottom = (int)(radius * 0.7f);
             float diameter = radius * 2;
         
             GraphicsPath gp = new GraphicsPath();
