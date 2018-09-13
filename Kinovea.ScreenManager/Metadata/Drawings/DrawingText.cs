@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
         #region Constructors
         public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
         {
-            text = " ";
+            text = "";
             background.Rectangle = new RectangleF(p, SizeF.Empty);
             
             styleHelper.Bicolor = new Bicolor(Color.Black);
@@ -149,7 +149,7 @@ namespace Kinovea.ScreenManager
             if (opacityFactor <= 0 || editing)
                 return;
                 
-            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * 128)))
+            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * 192)))
             using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
             using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
             {
@@ -257,6 +257,14 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        public void InitializeText()
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                text = name;
+                UpdateLabelRectangle();
+            }
+        }
         public void SetEditMode(bool editing, IImageToViewportTransformer transformer)
         {
             this.editing = editing;
