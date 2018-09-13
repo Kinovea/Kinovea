@@ -455,7 +455,7 @@
     <Compile Include="Metadata\Drawings\DrawingChrono.cs" />
     <Compile Include="Metadata\Drawings\DrawingCircle.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\DrawingCoordinateSystem.cs" />
-    <Compile Include="Metadata\Drawings\DrawingStyle.cs" />
+    <Compile Include="Metadata\Drawings\Styling\DrawingStyle.cs" />
     <Compile Include="Metadata\Drawings\DrawingSVG.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolCoordinateSystem.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolMagnifier.cs" />
