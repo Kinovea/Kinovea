@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
         #region Public methods
         public bool HitTest(PointF point, IImageToViewportTransformer transformer)
         {
-            return (background.HitTest(point, false, transformer) > -1);
+            return (background.HitTest(point, false, 0, transformer) > -1);
         }
         public override int GetHashCode()
         {

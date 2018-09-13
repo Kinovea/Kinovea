@@ -162,7 +162,8 @@ namespace Kinovea.ScreenManager
                 background.Rectangle = new RectangleF(background.Rectangle.Location, untransformed);
                 
                 Rectangle rect = new Rectangle(bgLocation, bgSize);
-                RoundedRectangle.Draw(canvas, rect, brushBack, fontText.Height/4, false, false, null);
+                int roundingRadius = fontText.Height / 4;
+                RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
                 canvas.DrawString(text, fontText, brushText, rect.Location);
             }
         }
@@ -170,9 +171,16 @@ namespace Kinovea.ScreenManager
         {
             int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
-            if (opacity > 0)
-                result = background.HitTest(point, true, transformer);
-
+            if (opacity <= 0)
+                return -1;
+            
+            // Compute the size of the hidden handle zone based on the font size.
+            using (Font fontText = styleHelper.GetFont(1.0f))
+            {
+                int roundingRadius = fontText.Height / 4;
+                result = background.HitTest(point, true, (int)(roundingRadius * 1.8f), transformer);
+            }
+            
             return result;
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
