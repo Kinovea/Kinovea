@@ -85,45 +85,29 @@ namespace Kinovea.ScreenManager
         #region Public methods
         public void Draw(Graphics canvas, IImageToViewportTransformer transformer, long timestamp, StyleHelper styleHelper)
         {
-            double fOpacityFactor = infosFading.GetOpacityFactor(timestamp);
-            if(fOpacityFactor <= 0)
+            double opacityFactor = infosFading.GetOpacityFactor(timestamp);
+            if(opacityFactor <= 0)
                 return;
         
-            int alpha = (int)(255 * fOpacityFactor);
-
-            //SetText(styleHelper);
-
-            using(SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(fOpacityFactor * 255)))
-            using(SolidBrush brushFront = styleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
-            using(Pen penContour = styleHelper.GetForegroundPen((int)(fOpacityFactor * 255)))
-            using(Font f = styleHelper.GetFont((float)transformer.Scale))
+            using(SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * 255)))
+            using(SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
+            using(Font fontText = styleHelper.GetFont((float)transformer.Scale))
+            using(Pen penContour = styleHelper.GetForegroundPen((int)(opacityFactor * 255)))
             {
-                // Note: recompute the background size each time in case font floored.
+                // Note: recompute background size in case the font floored.
                 string text = value.ToString();
-                penContour.Width = 2;
-                SizeF textSize = canvas.MeasureString(text, f);
+                SizeF textSize = canvas.MeasureString(text, fontText);
+
                 Point bgLocation = transformer.Transform(background.Rectangle.Location);
+                Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
+
                 SizeF untransformed = transformer.Untransform(textSize);
                 background.Rectangle = new RectangleF(background.Rectangle.Location, untransformed);
                 
-                Size bgSize;
-                if(value < 10)
-                {
-                    bgSize = new Size((int)textSize.Height, (int)textSize.Height);
-                    Rectangle rect = new Rectangle(bgLocation, bgSize);
-                    canvas.FillEllipse(brushBack, rect);
-                    canvas.DrawEllipse(penContour, rect);
-                }
-                else
-                {
-                    bgSize = new Size((int)textSize.Width, (int)textSize.Height);
-                    Rectangle rect = new Rectangle(bgLocation, bgSize);
-                    RoundedRectangle.Draw(canvas, rect, brushBack, f.Height/4, false, true, penContour);    
-                }
-                
-                int verticalShift = (int)(textSize.Height / 10);
-                Point textLocation = new Point(bgLocation.X + (int)((bgSize.Width - textSize.Width)/2), bgLocation.Y + verticalShift);
-                canvas.DrawString(text, f, brushFront, textLocation);
+                penContour.Width = 2;
+                Rectangle rect = new Rectangle(bgLocation, bgSize);
+                RoundedRectangle.Draw(canvas, rect, brushBack, fontText.Height/4, false, true, penContour);
+                canvas.DrawString(text, fontText, brushText, rect.Location);
             }
         }
         public int HitTest(PointF point, long currentTimeStamp, IImageToViewportTransformer transformer)
