@@ -43,35 +43,59 @@ namespace Kinovea.ScreenManager
         /// Draw a rounded rectangle on the provided canvas. 
         /// This method is typically used after applying a transform to the original rectangle.
         /// </summary>
-        /// <param name="canvas">The graphics object on which to draw</param>
-        /// <param name="rect">The rectangle specifications</param>
-        /// <param name="brush">Brush to draw with</param>
-        /// <param name="radius">Radius of the rounded corners</param>
         public static void Draw(Graphics canvas, RectangleF rect, SolidBrush brush, int radius, bool dropShape, bool contour, Pen penContour)
         {
-            float diameter = 2F * radius;
-            RectangleF arc = new RectangleF(rect.Location, new SizeF(diameter, diameter));
+            if (dropShape)
+                DrawDropShape(canvas, rect, brush, radius, contour, penContour);
+            else
+                DrawRoundedRectangle(canvas, rect, brush, radius, contour, penContour);
+        }
+
+        private static void DrawDropShape(Graphics canvas, RectangleF rect, SolidBrush brush, int radius, bool contour, Pen penContour)
+        {
+            int marginLeft = radius;
+            int marginTop = radius;
+            int marginRight = radius;
+            int marginBottom = (int)(radius * 0.8f);
+            float diameter = radius * 2;
+
+            GraphicsPath gp = new GraphicsPath();
+            gp.StartFigure();
+
+            // Corners drawn starting from top-left, clockwise.
+            // The arc themselves are drawn using start/sweep angles in degrees, starts at X-axis and goes clockwise.
+            gp.AddLine(rect.Left - marginLeft, rect.Top - marginTop, rect.Left - marginLeft + diameter, rect.Top - marginTop);
+            gp.AddArc(rect.Right - diameter + marginRight, rect.Top - marginTop, diameter, diameter, 270, 90);
+            gp.AddLine(rect.Right + marginRight, rect.Bottom + marginBottom, rect.Right - diameter + marginRight, rect.Bottom + marginBottom);
+            gp.AddArc(rect.Left - marginLeft, rect.Bottom - diameter + marginBottom, diameter, diameter, 90, 90);
+            gp.CloseFigure();
+            gp.CloseFigure();
+
+            canvas.FillPath(brush, gp);
+
+            if (contour)
+                canvas.DrawPath(penContour, gp);
+
+            gp.Dispose();
+        }
+
+        private static void DrawRoundedRectangle(Graphics canvas, RectangleF rect, SolidBrush brush, int radius, bool contour, Pen penContour)
+        {
+            int marginLeft = radius;
+            int marginTop = radius;
+            int marginRight = radius;
+            int marginBottom = (int)(radius * 0.8f);
+            float diameter = radius * 2;
         
             GraphicsPath gp = new GraphicsPath();
             gp.StartFigure();
             
-            if(dropShape)
-                gp.AddLine(arc.Left, arc.Top, arc.Right, arc.Top);
-            else
-                gp.AddArc(arc, 180, 90);
-            
-            arc.X = rect.Right - diameter;
-            gp.AddArc(arc, 270, 90);
-
-            arc.Y = rect.Bottom - diameter;
-             if(dropShape)
-                gp.AddLine(arc.Right, arc.Top, arc.Right, arc.Bottom);
-            else
-                gp.AddArc(arc, 0, 90);
-            
-            arc.X = rect.Left;
-            gp.AddArc(arc, 90, 90);
-            
+            // Corners drawn starting from top-left, clockwise.
+            // The arc themselves are drawn using start/sweep angles in degrees, starts at X-axis and goes clockwise.
+            gp.AddArc(rect.Left - marginLeft, rect.Top - marginTop, diameter, diameter, 180, 90);
+            gp.AddArc(rect.Right - diameter + marginRight, rect.Top - marginTop, diameter, diameter, 270, 90);
+            gp.AddArc(rect.Right - diameter + marginRight, rect.Bottom - diameter + marginBottom, diameter, diameter, 0, 90);
+            gp.AddArc(rect.Left - marginLeft, rect.Bottom - diameter + marginBottom, diameter, diameter, 90, 90);
             gp.CloseFigure();
             
             canvas.FillPath(brush, gp);
