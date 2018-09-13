@@ -3809,7 +3809,7 @@ namespace Kinovea.ScreenManager
             {
                 UnzoomDirectZoom(false);
                 m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Direct;
-                SetCursor(Cursors.Cross);
+                SetCursor(CursorManager.GetCursor(ToolManager.Tools["Magnifier"], 1.0));
                 
                 if(TrackableDrawingAdded != null)
                     TrackableDrawingAdded(this, new TrackableDrawingEventArgs(m_FrameServer.Metadata.Magnifier as ITrackable));

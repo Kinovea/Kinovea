@@ -54,10 +54,10 @@ namespace Kinovea.ScreenManager
 
             // Standard tools internally defined.
             // These tools cannot be easily externalized at the moment due to some special ctor parameters.
-            tools.Add("Spotlight", new DrawingToolSpotlight());
             tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
-            tools.Add("Magnifier", new DrawingToolMagnifier());
             tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
+            tools.Add("Magnifier", new DrawingToolMagnifier());
+            tools.Add("Spotlight", new DrawingToolSpotlight());
             tools.Add("TestGrid", new DrawingToolTestGrid());
 
             // Custom tools (externally defined).
@@ -160,6 +160,9 @@ namespace Kinovea.ScreenManager
             if (!Tools.ContainsKey(tool))
                 return new DrawingStyle();
 
+            if (Tools[tool].StylePreset == null)
+                return new DrawingStyle();
+
             return Tools[tool].StylePreset.Clone();
         }
 
@@ -182,6 +185,12 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private static string GetToolName(AbstractDrawing drawing)
         {
+            // FIXME: this is broken at the moment.
+            // All the line-derived tools (arrow, squiggly arrow, line, etc.) are created by a tool
+            // that has DrawingLine as its target class.
+            // This means when we come here with a drawing of this class, we don't know how to find the 
+            // actual tool that generated it. As it stands we are always going to stop on the first match: Arrow.
+            
             if (drawing == null)
                 return null;
 
