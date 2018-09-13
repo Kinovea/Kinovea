@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace Kinovea.ScreenManager
 {
@@ -21,6 +22,11 @@ namespace Kinovea.ScreenManager
         public static SizeF MeasureString(string text, Font font)
         {
             return dummyGraphics.MeasureString(text, font);
+        }
+
+        public static string FixMissingCarriageReturns(string text)
+        {
+            return Regex.Replace(text, "(?<!\r)\n", "\r\n");
         }
     }
 }

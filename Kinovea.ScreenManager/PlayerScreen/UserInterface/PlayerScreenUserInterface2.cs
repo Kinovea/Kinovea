@@ -2753,6 +2753,7 @@ namespace Kinovea.ScreenManager
             panelCenter.Controls.Add(drawing.EditBox);
             drawing.EditBox.BringToFront();
             drawing.EditBox.Focus();
+            drawing.EditBox.Tag = this;
         }
         private void AfterDrawingDeleted()
         {

@@ -95,6 +95,7 @@ namespace Kinovea.ScreenManager
         private DrawingStyle style;
         private InfosFading infosFading;
         private bool editing;
+        private Font fontText;
         private IImageToViewportTransformer imageToViewportTransformer;
         
         private RoundedRectangle background = new RoundedRectangle();
@@ -114,7 +115,7 @@ namespace Kinovea.ScreenManager
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
 
-            if(stylePreset != null)
+            if (stylePreset != null)
             {
                 style = stylePreset.Clone();
                 BindStyle();
@@ -123,15 +124,21 @@ namespace Kinovea.ScreenManager
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             editing = false;
 
-            textBox = new TextBox() { 
-                Visible = false, 
+            fontText = styleHelper.GetFontDefaultSize(defaultFontSize);
+
+            textBox = new TextBox() {
+                Visible = false,
                 BackColor = Color.White, 
-                BorderStyle = BorderStyle.None, 
+                BorderStyle = BorderStyle.None,
                 Multiline = true,
                 Text = text,
-                Font = styleHelper.GetFontDefaultSize(defaultFontSize)
+                Font = fontText
             };
-            
+
+            textBox.Margin = new Padding(0, 0, 0, 0);
+            textBox.TextAlign = HorizontalAlignment.Left;
+            textBox.WordWrap = false;
+
             textBox.TextChanged += TextBox_TextChanged;
             UpdateLabelRectangle();
         }
@@ -146,14 +153,14 @@ namespace Kinovea.ScreenManager
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
-            if (opacityFactor <= 0 || editing)
+            if (opacityFactor <= 0)
                 return;
-                
-            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * 192)))
+
+            int backgroundOpacity = editing ? 255 : 192;
+            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
             using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
             using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
             {
-                // Note: recompute background size in case the font floored.
                 SizeF textSize = canvas.MeasureString(text, fontText);
                 Point bgLocation = transformer.Transform(background.Rectangle.Location);
                 Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
@@ -164,7 +171,9 @@ namespace Kinovea.ScreenManager
                 Rectangle rect = new Rectangle(bgLocation, bgSize);
                 int roundingRadius = fontText.Height / 4;
                 RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
-                canvas.DrawString(text, fontText, brushText, rect.Location);
+                
+                if (!editing)
+                    canvas.DrawString(text, fontText, brushText, rect.Location);
             }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
@@ -219,6 +228,7 @@ namespace Kinovea.ScreenManager
                 {
                     case "Text":
                         text = xmlReader.ReadElementContentAsString();
+                        text = TextHelper.FixMissingCarriageReturns(text);
                         break;
                     case "Position":
                         PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
@@ -283,10 +293,24 @@ namespace Kinovea.ScreenManager
             if (editing)
             {
                 RelocateEditbox(); // This is needed because the container top-left corner may have changed 
+                textBox.BackColor = styleHelper.Bicolor.Background;
+                textBox.ForeColor = styleHelper.Bicolor.Foreground;
+
+                fontText = styleHelper.GetFont((float)transformer.Scale);
+                textBox.Font.Dispose();
+                textBox.Font = new Font(fontText.Name, fontText.Size, fontText.Style);
                 textBox.Text = text;
+
+                UpdateLabelRectangle();
+
+                textBox.Visible = true;
+                textBox.Select(0, 1);
+                textBox.ScrollToCaret();
             }
-            
-            textBox.Visible = editing;
+            else
+            {
+                textBox.Visible = false;
+            }
         }
         public void RelocateEditbox()
         {
@@ -306,7 +330,11 @@ namespace Kinovea.ScreenManager
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
             text = textBox.Text;
+            if (string.IsNullOrEmpty(text))
+                text = " ";
+
             UpdateLabelRectangle();
+            InvalidateFromTextbox(sender);
         }
         private void UpdateLabelRectangle()
         {
@@ -317,11 +345,12 @@ namespace Kinovea.ScreenManager
             {
                 SizeF textSize = g.MeasureString(text, f);
                 background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
-                
-                // Also update the edit box size. (Use a fixed font though).
-                // The extra space is to account for blank new lines.
-                SizeF boxSize = g.MeasureString(text + " ", textBox.Font);
-                textBox.Size = new Size((int)boxSize.Width + 10, (int)boxSize.Height);
+
+                // Note that the edit box uses the stretched font size, taking into account zoom.
+                // The character spacing isn't exactly the same as during drawing, and there is a weird
+                // behavior with multiline strings.
+                SizeF boxSize = g.MeasureString(text, fontText);
+                textBox.Size = new Size((int)boxSize.Width, (int)boxSize.Height);
             }
         }
         #endregion
