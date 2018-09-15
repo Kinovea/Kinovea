@@ -134,11 +134,14 @@ namespace Kinovea.ScreenManager
         private PointF origin;
         private GenericPosture genericPosture;
         private List<AngleHelper> angles = new List<AngleHelper>();
-        
         private ToolStripMenuItem menuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem menuFlipHorizontal = new ToolStripMenuItem();
         private ToolStripMenuItem menuFlipVertical = new ToolStripMenuItem();
-        
+
+        private Font debugFont = new Font("Arial", 8, FontStyle.Bold);
+        private PointF debugOffset = new PointF(10, 10);
+        SolidBrush debugBrush = new SolidBrush(Color.FromArgb(160, 0, 0, 0));
+
         private DrawingStyle style;
         private StyleHelper styleHelper = new StyleHelper();
         private InfosFading infosFading;
@@ -216,8 +219,8 @@ namespace Kinovea.ScreenManager
                 DrawDistances(brushFill, baseBrushFillColor, alphaBackground, opacity, canvas, transformer, points);
                 DrawPositions(brushFill, baseBrushFillColor, alphaBackground, opacity, canvas, transformer, points);
 
-                // Debug: draw the indices at all points.
-                //DrawDebug(brushFill, opacity, canvas, transformer, points);
+                if (PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode)
+                    DrawDebug(opacity, canvas, transformer, points);
             }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
@@ -504,6 +507,9 @@ namespace Kinovea.ScreenManager
                     penEdge.Color = computedPoint.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, computedPoint.Color);
                     canvas.DrawEllipse(penEdge, p2.Box(3));
                 }
+                
+                if ((PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode)  && !string.IsNullOrEmpty(computedPoint.Name))
+                    DrawDebugText(p2, debugOffset, computedPoint.Name, canvas, opacity, transformer);
             }
             
             brushHandle.Color = baseBrushHandleColor;
@@ -530,6 +536,12 @@ namespace Kinovea.ScreenManager
                 PointF end = segment.End >= 0 ? points[segment.End] : GetComputedPoint(segment.End, transformer);
 
                 canvas.DrawLine(penEdge, start, end);
+
+                if (segment.ArrowBegin)
+                    ArrowHelper.Draw(canvas, penEdge, start.ToPoint(), end.ToPoint());
+
+                if (segment.ArrowEnd)
+                    ArrowHelper.Draw(canvas, penEdge, end.ToPoint(), start.ToPoint());
             }
             
             penEdge.Color = basePenEdgeColor;
@@ -601,7 +613,32 @@ namespace Kinovea.ScreenManager
                 }
 
                 Point origin = transformer.Transform(angleHelper.SweepAngle.Origin);
-                angleHelper.DrawText(canvas, opacity, brushFill, origin, transformer, CalibrationHelper, styleHelper);
+
+                if (!PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode)
+                {
+                    angleHelper.DrawText(canvas, opacity, brushFill, origin, transformer, CalibrationHelper, styleHelper);
+                }
+                else
+                {
+                    GenericPostureAngle gpa = genericPosture.Angles[i];
+                    
+                    float value = CalibrationHelper.ConvertAngle(angleHelper.CalibratedAngle);
+                    string debugLabel = string.Format("A{0} [P{1}, P{2}, P{3}]\n", i, gpa.Leg1, gpa.Origin, gpa.Leg2);
+                    if (!string.IsNullOrEmpty(gpa.Name))
+                        debugLabel += string.Format("Name:{0}\n", gpa.Name);
+
+                    debugLabel += string.Format("Signed:{0}\n", gpa.Signed);
+                    debugLabel += string.Format("CCW:{0}\n", gpa.CCW);
+                    debugLabel += string.Format("Supplementary:{0}\n", gpa.Supplementary);
+                    debugLabel += string.Format("Value: {0:0.0} {1}", value, CalibrationHelper.GetAngleAbbreviation());
+                    
+                    SizeF debugLabelSize = canvas.MeasureString(debugLabel, debugFont);
+                    int debugLabelDistance = (int)debugOffset.X * 3;
+                    PointF debugLabelPositionRelative = angleHelper.GetTextPosition(debugLabelDistance, debugLabelSize);
+                    debugLabelPositionRelative = debugLabelPositionRelative.Scale((float)transformer.Scale);
+                    PointF debugLabelPosition = new PointF(origin.X + debugLabelPositionRelative.X, origin.Y + debugLabelPositionRelative.Y);
+                    DrawDebugText(debugLabelPosition, debugOffset, debugLabel, canvas, opacity, transformer);
+                }
             }
             
             brushFill.Color = baseBrushFillColor;
@@ -682,6 +719,18 @@ namespace Kinovea.ScreenManager
             fontBrush.Dispose();
             tempFont.Dispose();
         }
+        private void DrawDebugText(PointF location, PointF offset, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer)
+        {
+            SizeF labelSize = canvas.MeasureString(label, debugFont);
+            PointF textOrigin = new PointF(location.X - (labelSize.Width / 2) + offset.X, location.Y - (labelSize.Height / 2) + offset.Y);
+            
+            RectangleF backRectangle = new RectangleF(textOrigin, labelSize);
+            int roundingRadius = (int)(debugFont.Height * 0.25f);
+            RoundedRectangle.Draw(canvas, backRectangle, debugBrush, roundingRadius, false, false, null);
+            
+            canvas.DrawString(label, debugFont, Brushes.White, backRectangle.Location);
+        }
+
         private void DrawSimpleText(PointF location, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brush)
         {
             Font tempFont = styleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
@@ -690,14 +739,39 @@ namespace Kinovea.ScreenManager
             canvas.DrawString(label, tempFont, brush, textOrigin);
             tempFont.Dispose();
         }
-        private void DrawDebug(SolidBrush brushFill, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
+        private void DrawDebug(double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
+            // Note: some of the labels are drawn during the normal method with an extra test there.
+            PointF offset = new PointF(10, 10);
+
+            // Points id.
             for (int i = 0; i < genericPosture.Points.Count; i++)
             {
-                string label = i.ToString();
+                string label = string.Format("P{0}", i);
                 PointF p = points[i];
-                DrawPointText(p, label, canvas, opacity, transformer, brushFill);
+                DrawDebugText(p, offset, label, canvas, opacity, transformer);
             }
+
+            // Segments id and name.
+            for (int i = 0; i < genericPosture.Segments.Count; i++)
+            {
+                GenericPostureSegment segment = genericPosture.Segments[i];
+                if (segment.Start < 0 || segment.End < 0)
+                    continue;
+
+                PointF start = points[segment.Start];
+                PointF end = points[segment.End];
+                PointF middle = GeometryHelper.GetMiddlePoint(start, end);
+                
+                string label = "";
+                if (!string.IsNullOrEmpty(segment.Name))
+                    label = string.Format("S{0} [P{1}, P{2}]: {3}", i, segment.Start, segment.End, segment.Name);
+                else
+                    label = string.Format("S{0} [P{1}, P{2}]", i, segment.Start, segment.End);
+
+                DrawDebugText(middle, offset, label, canvas, opacity, transformer);
+            }
+            
         }
         #endregion
         

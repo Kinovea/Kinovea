@@ -32,7 +32,10 @@ namespace Kinovea.ScreenManager
         public int PointToMove { get; private set;}
         public int Point1 { get; private set;}
         public int Point2 { get; private set;}
-        
+
+        // TODO: turn this into an amount of displacement relative to the segment length.
+        // "center" becomes 0.5f, and we can specify others.
+
         public GenericPostureImpactSegmentCenter(XmlReader r)
         {
             Type = ImpactType.SegmentCenter;
