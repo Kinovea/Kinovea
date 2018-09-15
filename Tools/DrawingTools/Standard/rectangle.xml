@@ -3,7 +3,7 @@
   <FormatVersion>1.0</FormatVersion>
   <Id>f18b2f5d-3683-4fff-b9bb-afd5a0b9bf7a</Id>
   <Name>Rectangle</Name>
-  <DisplayName>ToolTip_DrawingToolRectangle</DisplayName>
+  <DisplayName>DrawingName_Rectangle</DisplayName>
   <Icon>rectangle</Icon>
   <DrawingClass>DrawingRectangle</DrawingClass>
   <Attached>true</Attached>
