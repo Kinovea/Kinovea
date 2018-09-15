@@ -55,8 +55,10 @@ namespace Kinovea.ScreenManager
             get 
             {
                 int hash = 0;
+                hash ^= ShowMeasurableInfo.GetHashCode();
                 hash ^= styleHelper.ContentHash;
                 hash ^= infosFading.ContentHash;
+                hash ^= miniLabel.GetHashCode();
                 return hash;
             }
         } 
@@ -88,12 +90,10 @@ namespace Kinovea.ScreenManager
                 return contextMenu; 
             }
         }
-        
         public PointF Location
         {
             get { return points["0"]; }
         }
-        
         public CalibrationHelper CalibrationHelper { get; set; }
         public bool ShowMeasurableInfo { get; set; }
         #endregion
@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingCrossMark(PointF center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset, IImageToViewportTransformer transformer)
+        public DrawingCrossMark(PointF center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
         {
             points["0"] = center;
             miniLabel = new MiniLabel(points["0"], Color.Black, transformer);
@@ -125,13 +125,12 @@ namespace Kinovea.ScreenManager
             // Decoration & binding with editors
             styleHelper.Color = Color.CornflowerBlue;
             styleHelper.ValueChanged += StyleHelper_ValueChanged;
-            if(preset != null)
-            {
-                style = preset.Clone();
-                BindStyle();
-            }
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("CrossMark");
 
-
+            style = preset.Clone();
+            BindStyle();
+            
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             
             // Context menu
@@ -140,7 +139,7 @@ namespace Kinovea.ScreenManager
         }
 
         public DrawingCrossMark(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
-            : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("CrossMark"), null)
+            : this(PointF.Empty, 0, 0)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
