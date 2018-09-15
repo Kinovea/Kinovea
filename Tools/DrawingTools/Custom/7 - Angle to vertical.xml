@@ -10,7 +10,7 @@
     <Segment point1="1" point2="3" name="" style="Solid" width="2"/>
   </Segments>
   <Angles>
-    <Angle origin="1" leg1="2" leg2="3" relative="true" tenth="true"/>
+    <Angle origin="1" leg1="2" leg2="3" tenth="true"/>
   </Angles>
   <Handles>
     <Handle type="Point" reference="0">
