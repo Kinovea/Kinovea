@@ -9,14 +9,14 @@ namespace Kinovea.ScreenManager
     public static class GraphicsExtensions
     {
         public static float tension = 0.9f;
-        public static float halfPeriod = 8;
+        public static float dodgeFactor = 1.5f;
 
         public static void DrawSquigglyLine(this Graphics graphics, Pen pen, PointF pt1, PointF pt2)
         {
             List<PointF> pp = new List<PointF>();
             pp.Add(pt1);
 
-            AddSquigglePoints(pp, pt1, pt2);
+            AddSquigglePoints(pp, pt1, pt2, pen.Width);
             graphics.DrawCurve(pen, pp.ToArray(), tension);
         }
 
@@ -52,15 +52,20 @@ namespace Kinovea.ScreenManager
                 Point a = points[i];
                 Point b = points[i + 1];
                 if (a != b)
-                    AddSquigglePoints(pp, a, b);
+                    AddSquigglePoints(pp, a, b, pen.Width);
             }
 
             pp.Add(points.Last());
             graphics.DrawCurve(pen, pp.ToArray(), tension);
         }
 
-        private static void AddSquigglePoints(List<PointF> points, PointF a, PointF b)
+        private static void AddSquigglePoints(List<PointF> points, PointF a, PointF b, float refLength)
         {
+            // The half period corresponds to how much we stray away from the segment.
+            // Smaller dodgeFactor means tighter zigzags.
+            refLength = Math.Max(refLength, 4);
+            float halfPeriod = refLength * dodgeFactor;
+
             Vector v = new Vector(a, b);
             float norm = v.Norm();
             float ratio = halfPeriod / norm;

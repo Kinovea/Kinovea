@@ -9,9 +9,6 @@ namespace Kinovea.ScreenManager
 {
     public static class ArrowHelper
     {
-        private static float arrowBaseDistance = 20f;
-        private static float arrowBaseLength = 20f;
-
         /// <summary>
         /// Draws an arrow at the "a" endpoint of segment [ab].
         /// </summary>
@@ -19,36 +16,54 @@ namespace Kinovea.ScreenManager
         {
             Vector v = new Vector(a, b);
             float norm = v.Norm();
+            
+            // The arrow is drawn at the start point of the segment, so the vector [ab] can be used to get relative segments.
+            // All dimensions are relative to the segment width.
+            // Left and Right are to be understood as when the arrow is pointing downwards.
 
-            float cornerRatio = (arrowBaseLength / norm) / 2;
-            Vector cornerUp = new Vector(v.Y * cornerRatio, -v.X * cornerRatio);
-            Vector cornerDown = new Vector(-v.Y * cornerRatio, v.X * cornerRatio);
+            float refLength = penEdges.Width;
+            refLength = Math.Max(refLength, 4);
+            
+            // 1. Point along the segment, inside the segment.
+            float triangleBaseRatio = refLength / norm;
+            Vector triangleBaseRelative = v * triangleBaseRatio;
+            PointF triangleBase = new PointF(a.X + triangleBaseRelative.X, a.Y + triangleBaseRelative.Y);
 
-            float distanceRatio = arrowBaseDistance / norm;
-            Vector baseArrow = v * distanceRatio;
+            // 2. Point along the segment, outside the segment.
+            float triangleTopRatio = (refLength * 3) / norm;
+            Vector triangleTopRelative = v * triangleTopRatio;
+            PointF triangleTop = new PointF(a.X - triangleTopRelative.X, a.Y - triangleTopRelative.Y);
 
-            PointF u = new PointF(a.X + baseArrow.X + cornerUp.X, a.Y + baseArrow.Y + cornerUp.Y);
-            PointF d = new PointF(a.X + baseArrow.X + cornerDown.X, a.Y + baseArrow.Y + cornerDown.Y);
-
-            DrawArrow(canvas, penEdges, a, u, d);
+            // 3. Points perpendicular to the segment.
+            // When the constant goes smaller, the base of the triangle is smaller.
+            float triangleSideRatio = (refLength * 1.5f) / norm;
+            Vector triangleLeftRelative = new Vector(v.Y * triangleSideRatio, -v.X * triangleSideRatio);
+            PointF triangleLeft = new PointF(triangleBase.X + triangleLeftRelative.X, triangleBase.Y + triangleLeftRelative.Y);
+            Vector triangleRightRelative = new Vector(-v.Y * triangleSideRatio, v.X * triangleSideRatio);
+            PointF triangleRight = new PointF(triangleBase.X + triangleRightRelative.X, triangleBase.Y + triangleRightRelative.Y);
+            
+            FillTriangle(canvas, penEdges.Color, triangleTop, triangleLeft, triangleRight);
         }
-
-        private static void DrawArrow(Graphics canvas, Pen penEdges, PointF a, PointF u, PointF d)
+        
+        private static void DrawTriangle(Graphics canvas, Color color, PointF a, PointF b, PointF c)
         {
-            canvas.DrawLine(penEdges, a, u);
-            canvas.DrawLine(penEdges, a, d);
-        }
-
-        private static void DrawFilledArrow(Graphics canvas, Pen penEdges, PointF a, PointF u, PointF d)
-        {
-            using (GraphicsPath arrowPath = new GraphicsPath())
-            using (SolidBrush brush = new SolidBrush(penEdges.Color))
+            using (Pen pen = new Pen(color))
             {
-                arrowPath.AddLine(a, u);
-                arrowPath.AddLine(u, d);
-                arrowPath.CloseFigure();
+                canvas.DrawLine(pen, a, b);
+                canvas.DrawLine(pen, b, c);
+                canvas.DrawLine(pen, c, a);
+            }
+        }
 
-                canvas.FillPath(brush, arrowPath);
+        private static void FillTriangle(Graphics canvas, Color color, PointF a, PointF b, PointF c)
+        {
+            using (GraphicsPath path = new GraphicsPath())
+            using (SolidBrush brush = new SolidBrush(color))
+            {
+                path.AddLine(a, b);
+                path.AddLine(b, c);
+                path.CloseFigure();
+                canvas.FillPath(brush, path);
             }
         }
     }
