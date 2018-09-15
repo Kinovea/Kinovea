@@ -24,12 +24,20 @@ namespace Kinovea.ScreenManager
                 int expansion = 10;
                 int enlarger = Math.Max(1, transformer.Untransform(expansion));
 
-                using (Pen pathPen = new Pen(Color.Black, lineSize + enlarger))
+                try
                 {
-                    if (path.PathPoints.Length == 1)
-                        path.AddEllipse(path.PathPoints[0].Box(5));
-                    else
-                        path.Widen(pathPen);
+                    using (Pen pathPen = new Pen(Color.Black, lineSize + enlarger))
+                    {
+                        if (path.PathPoints.Length == 1)
+                            path.AddEllipse(path.PathPoints[0].Box(5));
+                        else
+                            path.Widen(pathPen);
+                    }
+                }
+                catch
+                {
+                    // Sometimes the path is invalid because it's too big or it collapsed.
+                    return false;
                 }
             }
             
