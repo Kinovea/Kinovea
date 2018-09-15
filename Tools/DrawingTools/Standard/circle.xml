@@ -14,7 +14,7 @@
       <Value>255;0;0;0</Value>
     </Color>
     <PenSize Key="pen size">
-      <Value>3</Value>
+      <Value>2</Value>
     </PenSize>
   </DefaultStyle>
 </KinoveaDrawingTool>
