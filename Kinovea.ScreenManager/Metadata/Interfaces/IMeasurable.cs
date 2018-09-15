@@ -24,6 +24,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Interface for objects that can be mapped to physical values.
+    /// Any object that can show its coordinates or length should implement this interface.
     /// </summary>
     public interface IMeasurable
     {
