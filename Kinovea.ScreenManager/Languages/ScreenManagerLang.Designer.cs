@@ -1312,6 +1312,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Central sacral vertical line.
+        /// </summary>
+        public static string DrawingName_CSVL {
+            get {
+                return ResourceManager.GetString("DrawingName_CSVL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Distance (horizontal).
         /// </summary>
         public static string DrawingName_DistanceHorizontal {

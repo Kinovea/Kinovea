@@ -59,6 +59,7 @@ namespace Kinovea.Root
         private InfosFading defaultFading;
         private bool drawOnPlay;
         private bool enableFiltering;
+        private bool enableCustomToolsDebug;
         private TrackingProfile trackingProfile;
         #endregion
         
@@ -88,6 +89,7 @@ namespace Kinovea.Root
         {
             drawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;
             enableFiltering = PreferencesManager.PlayerPreferences.EnableFiltering;
+            enableCustomToolsDebug = PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode;
             defaultFading = new InfosFading(0, 0);
             trackingProfile = PreferencesManager.PlayerPreferences.TrackingProfile;
         }
@@ -102,9 +104,12 @@ namespace Kinovea.Root
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDrawOnPlay.Text = RootLang.dlgPreferences_Drawings_chkDrawOnPlay;
             chkEnableFiltering.Text = RootLang.dlgPreferences_Drawings_chkEnableFiltering;
+            //chkCustomToolsDebug.Text = RootLang.dlgPreferences_Drawings_chkEnableFiltering;
+            chkCustomToolsDebug.Text = "Custom tools debug mode";
 
             chkDrawOnPlay.Checked = drawOnPlay;
             chkEnableFiltering.Checked = enableFiltering;
+            chkCustomToolsDebug.Checked = enableCustomToolsDebug;
         }
         private void InitPageOpacity()
         {
@@ -151,6 +156,10 @@ namespace Kinovea.Root
         private void chkEnableFiltering_CheckedChanged(object sender, EventArgs e)
         {
             enableFiltering = chkEnableFiltering.Checked;
+        }
+        private void chkCustomToolsDebug_CheckedChanged(object sender, EventArgs e)
+        {
+            enableCustomToolsDebug = chkCustomToolsDebug.Checked;
         }
         #endregion
 
@@ -234,8 +243,11 @@ namespace Kinovea.Root
         {
             PreferencesManager.PlayerPreferences.DrawOnPlay = drawOnPlay;
             PreferencesManager.PlayerPreferences.EnableFiltering = enableFiltering;
+            PreferencesManager.PlayerPreferences.EnableCustomToolsDebugMode = enableCustomToolsDebug;
             PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(defaultFading);
             PreferencesManager.PlayerPreferences.TrackingProfile = trackingProfile;
         }
+
+        
     }
 }
