@@ -130,7 +130,7 @@ namespace Kinovea.ScreenManager
             
             // Decoration & binding with editors
             styleHelper.Bicolor = new Bicolor(Color.Empty);
-            styleHelper.Font = new Font("Arial", 10, FontStyle.Bold);
+            styleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
             if(stylePreset != null)
             {
                 style = stylePreset.Clone();
