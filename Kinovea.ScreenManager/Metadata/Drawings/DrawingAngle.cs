@@ -184,12 +184,16 @@ namespace Kinovea.ScreenManager
             using(SolidBrush brushEdges = styleHelper.GetBackgroundBrush((int)(opacityFactor*255)))
             using(SolidBrush brushFill = styleHelper.GetBackgroundBrush((int)(opacityFactor*defaultBackgroundAlpha)))
             {
+                penEdges.Width = 2;
+                
                 // Disk section
                 canvas.FillPie(brushFill, boundingBox, angleHelper.SweepAngle.Start, angleHelper.SweepAngle.Sweep);
                 canvas.DrawArc(penEdges, boundingBox, angleHelper.SweepAngle.Start, angleHelper.SweepAngle.Sweep);
-    
+
                 // Edges
+                penEdges.DashStyle = DashStyle.Dash;
                 canvas.DrawLine(penEdges, pointO, pointA);
+                penEdges.DashStyle = DashStyle.Solid;
                 canvas.DrawLine(penEdges, pointO, pointB);
     
                 // Handlers
