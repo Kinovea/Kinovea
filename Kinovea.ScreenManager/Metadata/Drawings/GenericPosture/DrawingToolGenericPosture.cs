@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public DrawingToolGenericPosture()
         {
-            defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
+            defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.FromArgb(255, 0, 153, 153)));
             stylePreset = defaultStylePreset.Clone();
         }
         #endregion
