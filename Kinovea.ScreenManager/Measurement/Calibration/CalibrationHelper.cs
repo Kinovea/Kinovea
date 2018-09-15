@@ -302,6 +302,19 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Takes a scalar in image space and returns a scalar in world space.
+        /// Not suitable for geometry.
+        /// </summary>
+        public float GetScalar(float v)
+        {
+            PointF a = GetPoint(PointF.Empty);
+            PointF b = GetPoint(new PointF(v, 0));
+
+            float d = GeometryHelper.GetDistance(a, b);
+            return v < 0 ? -d : d;
+        }
+
+        /// <summary>
         /// Takes an interval in frames and returns it in seconds.
         /// </summary>
         public float GetTime(int frames)
@@ -462,8 +475,35 @@ namespace Kinovea.ScreenManager
             mapping.Update(QuadrilateralF.CenteredUnitSquare, quadImage);
             return mapping.Ellipse();
         }
+
+        /// <summary>
+        /// Takes a circle in image space and returns a cooresponding ellipse in image space.
+        /// </summary>
+        public Ellipse GetEllipseFromCircle(PointF center, float radius)
+        {
+            if (calibratorType == CalibratorType.Line)
+                return new Ellipse(center, radius, radius, 0);
+
+            // Rebuild the world-space circle based on center and radius alone.
+            PointF centerInWorld = GetPoint(center);
+
+            // Estimate the radius in world space.
+            // Assumes reference direction to be X-axis in image space for radius conversion.
+            float radiusInWorld = GetScalar(radius);
+
+            // Get the square enclosing the circle for mapping.
+            PointF a = GetImagePoint(centerInWorld.Translate(-radiusInWorld, -radiusInWorld));
+            PointF b = GetImagePoint(centerInWorld.Translate(radiusInWorld, -radiusInWorld));
+            PointF c = GetImagePoint(centerInWorld.Translate(radiusInWorld, radiusInWorld));
+            PointF d = GetImagePoint(centerInWorld.Translate(-radiusInWorld, radiusInWorld));
+            QuadrilateralF quadImage = new QuadrilateralF(a, b, c, d);
+            
+            ProjectiveMapping mapping = new ProjectiveMapping();
+            mapping.Update(QuadrilateralF.CenteredUnitSquare, quadImage);
+            return mapping.Ellipse();
+        }
         #endregion
-       
+
         #region Serialization
         public void WriteXml(XmlWriter w)
         {

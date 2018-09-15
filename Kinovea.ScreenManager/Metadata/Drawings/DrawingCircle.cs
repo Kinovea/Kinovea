@@ -33,14 +33,17 @@ using System.Xml;
 using System.Xml.Serialization;
 
 using Kinovea.ScreenManager.Languages;
-using Kinovea.Video;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Circle")]
-    public class DrawingCircle : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
+    public class DrawingCircle : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, IMeasurable
     {
+        #region Events
+        public event EventHandler ShowMeasurableInfoChanged;
+        #endregion
+
         #region Properties
         public override string ToolDisplayName
         {
@@ -50,10 +53,13 @@ namespace Kinovea.ScreenManager
         {
             get 
             { 
-                int iHash = center.GetHashCode();
-                iHash ^= radius.GetHashCode();
-                iHash ^= styleHelper.ContentHash;
-                return iHash;
+                int hash = center.GetHashCode();
+                hash ^= radius.GetHashCode();
+                hash ^= ShowMeasurableInfo.GetHashCode();
+                hash ^= miniLabel.GetHashCode();
+                hash ^= styleHelper.ContentHash;
+                hash ^= infosFading.ContentHash;
+                return hash;
             }
         } 
         public DrawingStyle DrawingStyle
@@ -71,12 +77,32 @@ namespace Kinovea.ScreenManager
         }
         public override List<ToolStripItem> ContextMenu
         {
-            get { return null; }
+            get
+            {
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                mnuShowCoordinates.Text = ScreenManagerLang.mnuShowCoordinates;
+                mnuShowCoordinates.Checked = ShowMeasurableInfo;
+                contextMenu.Add(mnuShowCoordinates);
+                return contextMenu;
+            }
         }
         public bool Initializing
         {
             get { return initializing; }
         }
+        public CalibrationHelper CalibrationHelper
+        {
+            get
+            {
+                return calibrationHelper;
+            }
+            set
+            {
+                calibrationHelper = value;
+                calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
+            }
+        }
+        public bool ShowMeasurableInfo { get; set; }
         #endregion
 
         #region Members
@@ -86,18 +112,32 @@ namespace Kinovea.ScreenManager
         private bool initializing = true;
         private static readonly float crossSize = 15;
         private static readonly float crossRadius = crossSize / 2.0f;
+        private MiniLabel miniLabel = new MiniLabel();
+        private ToolStripMenuItem mnuShowCoordinates = new ToolStripMenuItem();
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private InfosFading infosFading;
-        
+        private CalibrationHelper calibrationHelper;
+        private Ellipse ellipseInImage;
+
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
+
+        //------------------------------------------------------
+        // Note:
+        // When using the planar calibration, the projection of the circle in world space and back in image space
+        // creates an ellipse whose center is not exactly on the center of the original circle.
+        // This is why there are extra checks to move the minilabel attachment point everytime the drawing moves, 
+        // changes size, or when the calibration changes.
+        //------------------------------------------------------
 
         #region Constructor
         public DrawingCircle(PointF center, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null, IImageToViewportTransformer transformer = null)
         {
             this.center = center;
+            miniLabel.SetAttach(center, true);
 
             if (transformer != null)
                 this.radius = transformer.Untransform(25);
@@ -107,12 +147,15 @@ namespace Kinovea.ScreenManager
 
             styleHelper.Color = Color.Empty;
             styleHelper.LineSize = 1;
-
+            styleHelper.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Circle");
             
             style = preset.Clone();
             BindStyle();
+
+            mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
+            mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
         public DrawingCircle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)
@@ -131,26 +174,82 @@ namespace Kinovea.ScreenManager
             int alpha = (int)(opacityFactor * 255);
             using(Pen p = styleHelper.GetPen(alpha, transformer.Scale))
             {
-                Rectangle boundingBox = transformer.Transform(center.Box(radius));
-                canvas.DrawEllipse(p, boundingBox);
+                if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
+                {
+                    PointF ellipseCenter = transformer.Transform(ellipseInImage.Center);
+                    float semiMinorAxis = transformer.Transform((int)ellipseInImage.SemiMinorAxis);
+                    float semiMajorAxis = transformer.Transform((int)ellipseInImage.SemiMajorAxis);
+                    Ellipse ellipse = new Ellipse(ellipseCenter, semiMajorAxis, semiMinorAxis, ellipseInImage.Rotation);
+                    RectangleF rect = new RectangleF(-ellipse.SemiMajorAxis, -ellipse.SemiMinorAxis, ellipse.SemiMajorAxis * 2, ellipse.SemiMinorAxis * 2);
+                    float angle = (float)(ellipse.Rotation * MathHelper.RadiansToDegrees);
 
-                p.Width = 1.0f;
-                Point c = boundingBox.Center();
-                canvas.DrawLine(p, c.X - crossRadius, c.Y, c.X + crossRadius, c.Y);
-                canvas.DrawLine(p, c.X, c.Y - crossRadius, c.X, c.Y + crossRadius);
+                    canvas.TranslateTransform(ellipse.Center.X, ellipse.Center.Y);
+                    canvas.RotateTransform(angle);
+                    canvas.DrawEllipse(p, rect);
+                    canvas.RotateTransform(-angle);
+                    canvas.TranslateTransform(-ellipse.Center.X, -ellipse.Center.Y);
+
+                    // Precision center.
+                    p.Width = 1.0f;
+                    Point c = ellipseCenter.ToPoint();
+                    canvas.DrawLine(p, c.X - crossRadius, c.Y, c.X + crossRadius, c.Y);
+                    canvas.DrawLine(p, c.X, c.Y - crossRadius, c.X, c.Y + crossRadius);
+                }
+                else
+                {
+                    Rectangle boundingBox = transformer.Transform(center.Box(radius));
+                    canvas.DrawEllipse(p, boundingBox);
+
+                    // Precision center.
+                    p.Width = 1.0f;
+                    Point c = boundingBox.Center();
+                    canvas.DrawLine(p, c.X - crossRadius, c.Y, c.X + crossRadius, c.Y);
+                    canvas.DrawLine(p, c.X, c.Y - crossRadius, c.X, c.Y + crossRadius);
+                }
+
+                if (ShowMeasurableInfo)
+                {
+                    miniLabel.SetText(CalibrationHelper.GetPointText(new PointF(center.X, center.Y), true, true, infosFading.ReferenceTimestamp));
+                    miniLabel.Draw(canvas, transformer, opacityFactor);
+                }
             }
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
-            // User is dragging the outline of the circle, figure out the new radius at this point.
-            float shiftX = Math.Abs(point.X - center.X);
-            float shiftY = Math.Abs(point.Y - center.Y);
-            radius = (int)Math.Sqrt((shiftX*shiftX) + (shiftY*shiftY));
-            radius = Math.Max(radius, 10);
+            if (handleNumber == 1)
+            {
+                // User is dragging the outline of the circle, figure out the new radius at this point.
+                float shiftX = Math.Abs(point.X - center.X);
+                float shiftY = Math.Abs(point.Y - center.Y);
+                radius = (int)Math.Sqrt((shiftX * shiftX) + (shiftY * shiftY));
+                radius = Math.Max(radius, 10);
+
+                if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
+                {
+                    ellipseInImage = CalibrationHelper.GetEllipseFromCircle(center, radius);
+                    miniLabel.SetAttach(ellipseInImage.Center, true);
+                }
+            }
+            else if (handleNumber == 2)
+            {
+                miniLabel.SetLabel(point);
+            }
         }
         public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
             center = center.Translate(dx, dy);
+            if (CalibrationHelper == null)
+                return;
+
+            if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
+            {
+                ellipseInImage = CalibrationHelper.GetEllipseFromCircle(center, radius);
+                miniLabel.SetAttach(ellipseInImage.Center, true);
+            }
+            else
+            {
+                miniLabel.SetAttach(center, true);
+            }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
@@ -158,7 +257,10 @@ namespace Kinovea.ScreenManager
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             if (opacity <= 0)
                 return -1;
-            
+
+            if (ShowMeasurableInfo && miniLabel.HitTest(point, transformer))
+                return 2;
+
             if (IsPointOnHandler(point, transformer))
                 return 1;
 
@@ -194,6 +296,14 @@ namespace Kinovea.ScreenManager
                     case "Radius":
                         radius = (int)(xmlReader.ReadElementContentAsInt() * scale.X);
                         break;
+                    case "CoordinatesVisible":
+                        ShowMeasurableInfo = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "MeasureLabel":
+                        {
+                            miniLabel = new MiniLabel(xmlReader, scale);
+                            break;
+                        }
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -210,6 +320,8 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
             initializing = false;
+            miniLabel.SetAttach(center, false);
+            miniLabel.BackColor = styleHelper.Color;
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
@@ -217,6 +329,11 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteElementString("Origin", XmlHelper.WritePointF(center));
                 w.WriteElementString("Radius", radius.ToString());
+                w.WriteElementString("CoordinatesVisible", ShowMeasurableInfo.ToString().ToLower());
+
+                w.WriteStartElement("MeasureLabel");
+                miniLabel.WriteXml(w);
+                w.WriteEndElement();
             }
 
             if (ShouldSerializeStyle(filter))
@@ -250,19 +367,46 @@ namespace Kinovea.ScreenManager
             return null;
         }
         #endregion
-        
+
+        #region Context menu
+        private void mnuShowCoordinates_Click(object sender, EventArgs e)
+        {
+            // Enable / disable the display of the coordinates for this cross marker.
+            ShowMeasurableInfo = !ShowMeasurableInfo;
+
+            // Use this setting as the default value for new lines.
+            if (ShowMeasurableInfoChanged != null)
+                ShowMeasurableInfoChanged(this, EventArgs.Empty);
+
+            InvalidateFromMenu(sender);
+        }
+        #endregion
+
+        public void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
+        {
+            if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
+            {
+                ellipseInImage = CalibrationHelper.GetEllipseFromCircle(center, radius);
+                miniLabel.SetAttach(ellipseInImage.Center, true);
+            }
+        }
+
         #region Lower level helpers
         private void BindStyle()
         {
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "pen size");
         }
+        private void StyleHelper_ValueChanged(object sender, EventArgs e)
+        {
+            miniLabel.BackColor = styleHelper.Color;
+        }
         private bool IsPointInObject(PointF point, IImageToViewportTransformer transformer)
         {
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddEllipse(center.Box(radius + styleHelper.LineSize));
+                GetHitPath(areaPath);
                 hit = HitTester.HitTest(areaPath, point, 0, true, transformer);
             }
             return hit;
@@ -274,8 +418,28 @@ namespace Kinovea.ScreenManager
             
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddEllipse(center.Box(radius));
+                GetHitPath(areaPath);
                 return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
+            }
+        }
+
+        private void GetHitPath(GraphicsPath areaPath)
+        {
+            if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
+            {
+                RectangleF rect = new RectangleF(-ellipseInImage.SemiMajorAxis, -ellipseInImage.SemiMinorAxis, ellipseInImage.SemiMajorAxis * 2, ellipseInImage.SemiMinorAxis * 2);
+                float angle = (float)(ellipseInImage.Rotation * MathHelper.RadiansToDegrees);
+
+                areaPath.AddEllipse(rect);
+
+                Matrix transform = new Matrix();
+                transform.Translate(ellipseInImage.Center.X, ellipseInImage.Center.Y);
+                transform.Rotate(angle);
+                areaPath.Transform(transform);
+            }
+            else
+            {
+                areaPath.AddEllipse(center.Box(radius));
             }
         }
         #endregion
