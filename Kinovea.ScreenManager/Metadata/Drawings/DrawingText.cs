@@ -339,17 +339,15 @@ namespace Kinovea.ScreenManager
         private void UpdateLabelRectangle()
         {
             // Text changed or font size changed.
-            using(Button but = new Button())
-            using(Graphics g = but.CreateGraphics())
             using(Font f = styleHelper.GetFont(1F))
             {
-                SizeF textSize = g.MeasureString(text, f);
+                SizeF textSize = TextHelper.MeasureString(text, f);
                 background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
 
                 // Note that the edit box uses the stretched font size, taking into account zoom.
                 // The character spacing isn't exactly the same as during drawing, and there is a weird
                 // behavior with multiline strings.
-                SizeF boxSize = g.MeasureString(text, fontText);
+                SizeF boxSize = TextHelper.MeasureString(text, fontText);
                 textBox.Size = new Size((int)boxSize.Width, (int)boxSize.Height);
             }
         }

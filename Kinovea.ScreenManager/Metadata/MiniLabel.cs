@@ -155,12 +155,10 @@ namespace Kinovea.ScreenManager
         public void SetText(string text)
         {
             this.text = text;
-
-            using(Button but = new Button())
-            using(Graphics g = but.CreateGraphics())
+            
             using(Font f = styleHelper.GetFont(1F))
             {
-                SizeF textSize = g.MeasureString(text, f);
+                SizeF textSize = TextHelper.MeasureString(text, f);
                 background.Rectangle = new RectangleF(background.Rectangle.Location, textSize);
             }
         }

@@ -181,12 +181,10 @@ namespace Kinovea.ScreenManager
         private void SetText(StyleHelper styleHelper)
         {
             string text = value.ToString();
-
-            using(Button but = new Button())
-            using(Graphics g = but.CreateGraphics())
+            
             using(Font f = styleHelper.GetFont(1.0F))
             {
-                SizeF textSize = g.MeasureString(text, f);
+                SizeF textSize = TextHelper.MeasureString(text, f);
                 
                 float width = value < 10 ? textSize.Height : textSize.Width;
                 float height = textSize.Height;

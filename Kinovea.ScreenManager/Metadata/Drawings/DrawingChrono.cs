@@ -489,10 +489,8 @@ namespace Kinovea.ScreenManager
         private void UpdateLabelRectangle()
         {
             using(Font f = styleHelper.GetFont(0.5F))
-            using(Button but = new Button())
-            using(Graphics g = but.CreateGraphics())
             {
-                SizeF size = g.MeasureString(label, f);
+                SizeF size = TextHelper.MeasureString(label, f);
                 lblBackground.Rectangle = new RectangleF(
                     mainBackground.X, mainBackground.Y - lblBackground.Rectangle.Height, size.Width + 11, size.Height);
             }
