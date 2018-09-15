@@ -29,6 +29,10 @@ namespace Kinovea.ScreenManager
 {
     public class GenericPostureImpactKeepAngle : GenericPostureAbstractImpact
     {
+        /// <summary>
+        /// Moves the leg 2 point so that the original angle between leg1-origin and origin-leg2 is retained.
+        /// </summary>
+        
         public int Origin { get; private set;}
         public int Leg1 { get; private set;}
         public int Leg2 { get; private set;}

@@ -143,6 +143,11 @@ namespace Kinovea.Services
             get { return enableFiltering; }
             set { enableFiltering = value; }
         }
+        public bool EnableCustomToolsDebugMode
+        {
+            get { return enableCustomToolsDebugMode; }
+            set { enableCustomToolsDebugMode = value; }
+        }
         #endregion
 
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -168,6 +173,7 @@ namespace Kinovea.Services
         private KinoveaVideoFormat videoFormat = KinoveaVideoFormat.MKV;
         private TrackingProfile trackingProfile = new TrackingProfile();
         private bool enableFiltering = true;
+        private bool enableCustomToolsDebugMode = false;
         
         public void AddRecentColor(Color _color)
         {
@@ -221,6 +227,7 @@ namespace Kinovea.Services
             writer.WriteEndElement();
 
             writer.WriteElementString("EnableFiltering", enableFiltering ? "true" : "false");
+            writer.WriteElementString("EnableCustomToolsDebugMode", enableCustomToolsDebugMode ? "true" : "false");
         }
         
         public void ReadXML(XmlReader reader)
@@ -299,6 +306,9 @@ namespace Kinovea.Services
                         break;
                     case "EnableFiltering":
                         enableFiltering = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "EnableCustomToolsDebugMode":
+                        enableCustomToolsDebugMode = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();
