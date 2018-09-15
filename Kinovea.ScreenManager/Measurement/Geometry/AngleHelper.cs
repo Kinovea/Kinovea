@@ -107,7 +107,7 @@ namespace Kinovea.ScreenManager
             SizeF labelSizeTransformed = canvas.MeasureString(label, tempFontTransformed);
 
             // Background
-            PointF textPosition = GetTextPosition(SweepAngle.Start, SweepAngle.Sweep, textDistance, labelSize);
+            PointF textPosition = GetTextPosition(textDistance, labelSize);
             textPosition = textPosition.Scale((float)transformer.Scale);
 
             PointF backgroundOrigin = o.Translate(textPosition.X, textPosition.Y);
@@ -144,10 +144,10 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Get the position of the text in image space.
+        /// Get the relative position of the text in image space.
         /// The center of the text is placed at a fixed distance on the bissector of the angle.
         /// </summary>
-        private PointF GetTextPosition(float start, float sweep, int textDistance, SizeF labelSize)
+        public PointF GetTextPosition(int textDistance, SizeF labelSize)
         {
             // The sweep is going clockwise in drawpie conventions so the y-axis is downwards, 
             // which is also the direction of the y-axis of the image so the y variable doesn't need to be inverted here.
