@@ -402,10 +402,21 @@
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
     </Compile>
     <Compile Include="Measurement\Plotting\PlotHelper.cs" />
+    <Compile Include="PlayerScreen\UserInterface\Infobar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\Infobar.Designer.cs">
+      <DependentUpon>Infobar.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Player.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Player.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RecoveryManager.cs" />
     <Compile Include="ScreenRemover.cs" />
@@ -807,11 +818,6 @@
     <Compile Include="PlayerScreen\UserInterface\PlayerScreenUserInterface2.Designer.cs">
       <DependentUpon>PlayerScreenUserInterface2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserInterface\FormIconPicker.cs">
@@ -882,6 +888,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Measurement\Plotting\FormPointsAnalysis.resx">
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\Infobar.resx">
+      <DependentUpon>Infobar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Player.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -1281,6 +1290,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\imagesize_t1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bullet_file_flat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clock_flat2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
