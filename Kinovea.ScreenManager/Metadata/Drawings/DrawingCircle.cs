@@ -83,8 +83,9 @@ namespace Kinovea.ScreenManager
         // Core
         private PointF center;
         private int radius;
-        private bool selected;
         private bool initializing = true;
+        private static readonly float crossSize = 15;
+        private static readonly float crossRadius = crossSize / 2.0f;
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -128,19 +129,15 @@ namespace Kinovea.ScreenManager
                 return;
             
             int alpha = (int)(opacityFactor * 255);
-            this.selected = selected;
-            
             using(Pen p = styleHelper.GetPen(alpha, transformer.Scale))
             {
                 Rectangle boundingBox = transformer.Transform(center.Box(radius));
                 canvas.DrawEllipse(p, boundingBox);
-                
-                if(selected)
-                {
-                    // Handler: arc in lower right quadrant.
-                    p.Color = p.Color.Invert();
-                    canvas.DrawArc(p, boundingBox, 25, 40);
-                }
+
+                p.Width = 1.0f;
+                Point c = boundingBox.Center();
+                canvas.DrawLine(p, c.X - crossRadius, c.Y, c.X + crossRadius, c.Y);
+                canvas.DrawLine(p, c.X, c.Y - crossRadius, c.X, c.Y + crossRadius);
             }
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
@@ -158,16 +155,17 @@ namespace Kinovea.ScreenManager
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
-            int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
-            if (opacity > 0)
-            {
-                if (selected && IsPointOnHandler(point, transformer))
-                    result = 1;
-                else if (IsPointInObject(point, transformer))
-                    result = 0;
-            }
-            return result;
+            if (opacity <= 0)
+                return -1;
+            
+            if (IsPointOnHandler(point, transformer))
+                return 1;
+
+            if (IsPointInObject(point, transformer))
+                return 0;
+
+            return -1;
         }
         public override PointF GetPosition()
         {
@@ -276,7 +274,7 @@ namespace Kinovea.ScreenManager
             
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddArc(center.Box(radius), 25, 40);
+                areaPath.AddEllipse(center.Box(radius));
                 return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
             }
         }
