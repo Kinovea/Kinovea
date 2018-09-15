@@ -136,6 +136,8 @@ namespace Kinovea.ScreenManager
             
             styleHelper.Color = Color.DarkSlateGray;
             styleHelper.LineSize = 1;
+            styleHelper.LineShape = LineShape.Solid;
+            styleHelper.LineEnding = LineEnding.None;
             styleHelper.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Line");
@@ -174,7 +176,7 @@ namespace Kinovea.ScreenManager
             Point start = transformer.Transform(points["a"]);
             Point end = transformer.Transform(points["b"]);
 
-            using (Pen penEdges = styleHelper.GetPen((int)(opacityFactor * 255), transformer.Scale))
+            using (Pen penEdges = styleHelper.GetPen(opacityFactor, transformer.Scale))
             using (Brush brush = styleHelper.GetBrush(opacityFactor))
             {
                 if (distorter != null && distorter.Initialized)
