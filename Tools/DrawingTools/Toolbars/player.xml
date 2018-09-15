@@ -15,6 +15,7 @@
     <subentry name="Profile" />
     <subentry name="Genu" />
     <subentry name="Posture" />
+    <subentry name="CSVL" />
   </entry>
   <entry name="Line">
     <subentry name="Polyline" />
