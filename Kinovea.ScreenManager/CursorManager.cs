@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Kinovea.ScreenManager
 {
@@ -101,7 +102,7 @@ namespace Kinovea.ScreenManager
 
         private static Cursor GetCursorPencil(DrawingStyle style, double stretchFactor)
         {
-            // Colored and sized circle.
+            // Colored and sized circle with precision cross.
             string keyColor = "color";
             string keySize = "pen size";
 
@@ -112,12 +113,23 @@ namespace Kinovea.ScreenManager
                 return null;
             
             Color c = (Color)style.Elements[keyColor].Value;
-            int size = (int)(stretchFactor * (int)style.Elements[keySize].Value);
+            int circleSize = (int)(stretchFactor * (int)style.Elements[keySize].Value);
+
+            float crossSize = 15;
 
             Pen p = new Pen(c, 1);
-            Bitmap b = new Bitmap(size + 2, size + 2);
+            int bmpSize = Math.Max((int)crossSize, circleSize);
+            Bitmap b = new Bitmap(bmpSize, bmpSize);
             Graphics g = Graphics.FromImage(b);
-            g.DrawEllipse(p, 1, 1, size, size);
+            
+            float startCircle = (bmpSize - 1 - circleSize) / 2.0f;
+            g.DrawEllipse(p, startCircle, startCircle, circleSize, circleSize);
+
+            // Add precision cross
+            float startCross = (bmpSize - crossSize) / 2.0f;
+            float bmpCenter = bmpSize / 2.0f;
+            g.DrawLine(p, startCross, bmpCenter, startCross + crossSize, bmpCenter);
+            g.DrawLine(p, bmpCenter, startCross, bmpCenter, startCross + crossSize);
 
             g.Dispose();
             p.Dispose();
