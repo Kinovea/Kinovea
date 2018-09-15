@@ -345,9 +345,10 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMagnifierQuit = new ToolStripMenuItem();
         #endregion
 
-        ToolStripButton m_btnAddKeyFrame;
-        ToolStripButton m_btnShowComments;
-        ToolStripButton m_btnToolPresets;
+        private ToolStripButton m_btnAddKeyFrame;
+        private ToolStripButton m_btnShowComments;
+        private ToolStripButton m_btnToolPresets;
+        private Infobar infobar = new Infobar();
         
         private DropWatcher m_DropWatcher = new DropWatcher();
         private TimeWatcher m_TimeWatcher = new TimeWatcher();
@@ -373,6 +374,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.MultiDrawingItemDeleted += (s, e) => AfterMultiDrawingItemDeleted();
 
             InitializeComponent();
+            InitializeInfobar();
             InitializeDrawingTools(drawingToolbarPresenter);
             BuildContextMenus();
             AfterSyncAlphaChange();
@@ -419,7 +421,7 @@ namespace Kinovea.ScreenManager
             // 1. Reset all data.
             m_FrameServer.Unload();
             ResetData();
-            
+
             // 2. Reset all interface.
             ShowHideRenderingSurface(false);
             SetupPrimarySelectionPanel();
@@ -435,11 +437,11 @@ namespace Kinovea.ScreenManager
             slowMotion = 1;
             sldrSpeed.Force(timeMapper.GetInputFromSlowMotion(slowMotion));
             sldrSpeed.Enabled = false;
-            lblFileName.Text = "";
             m_KeyframeCommentsHub.Hide();
             UpdatePlayingModeButton();
             m_LaunchDescription = null;
-            
+            infobar.Visible = false;
+
             if (ResetAsked != null)
                 ResetAsked(this, EventArgs.Empty);
         }
@@ -860,6 +862,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Various Inits & Setups
+        public void InitializeInfobar()
+        {
+            this.panelTop.Controls.Add(infobar);
+            infobar.Visible = false;
+        }
         public void InitializeDrawingTools(DrawingToolbarPresenter drawingToolbarPresenter)
         {
             m_PointerTool = new DrawingToolPointer();
@@ -994,11 +1001,12 @@ namespace Kinovea.ScreenManager
                 return;
 
             string name = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
-
-            string info = string.Format("{0} - {1}×{2} @ {3:0.00} fps",
-                name, m_FrameServer.Metadata.ImageSize.Width, m_FrameServer.Metadata.ImageSize.Height, 1000 / timeMapper.UserInterval);
-            
-            lblFileName.Text = info;
+            string size = string.Format("{0} × {1} px", m_FrameServer.Metadata.ImageSize.Width, m_FrameServer.Metadata.ImageSize.Height);
+            string fps = string.Format("{0:0.00} fps", 1000 / timeMapper.UserInterval);
+                
+            infobar.Visible = true;
+            infobar.Dock = DockStyle.Fill;
+            infobar.UpdateValues(name, size, fps);
         }
         private void ShowHideRenderingSurface(bool _bShow)
         {

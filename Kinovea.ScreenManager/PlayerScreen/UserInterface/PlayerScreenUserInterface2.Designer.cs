@@ -19,17 +19,16 @@ namespace Kinovea.ScreenManager
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlayerScreenUserInterface));
             this.panelTop = new System.Windows.Forms.Panel();
-            this.lblFileName = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
             this.lblSelDuration = new System.Windows.Forms.Label();
             this.panelVideoControls = new System.Windows.Forms.Panel();
-            this.sldrSpeed = new Kinovea.ScreenManager.SliderLinear();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnSnapShot = new System.Windows.Forms.Button();
             this.btnPausedVideo = new System.Windows.Forms.Button();
             this.btnSaveVideo = new System.Windows.Forms.Button();
             this.btnDiaporama = new System.Windows.Forms.Button();
             this.btnRafale = new System.Windows.Forms.Button();
+            this.sldrSpeed = new Kinovea.ScreenManager.SliderLinear();
             this.btnHandlersReset = new System.Windows.Forms.Button();
             this.btnSetHandlerRight = new System.Windows.Forms.Button();
             this.btnSetHandlerLeft = new System.Windows.Forms.Button();
@@ -89,21 +88,12 @@ namespace Kinovea.ScreenManager
             // panelTop
             // 
             this.panelTop.BackColor = System.Drawing.Color.White;
-            this.panelTop.Controls.Add(this.lblFileName);
             this.panelTop.Controls.Add(this.btnClose);
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(420, 19);
+            this.panelTop.Size = new System.Drawing.Size(420, 22);
             this.panelTop.TabIndex = 0;
-            // 
-            // lblFileName
-            // 
-            this.lblFileName.AutoSize = true;
-            this.lblFileName.Location = new System.Drawing.Point(3, 4);
-            this.lblFileName.Name = "lblFileName";
-            this.lblFileName.Size = new System.Drawing.Size(0, 13);
-            this.lblFileName.TabIndex = 3;
             // 
             // btnClose
             // 
@@ -164,19 +154,6 @@ namespace Kinovea.ScreenManager
             this.panelVideoControls.TabIndex = 2;
             this.panelVideoControls.MouseEnter += new System.EventHandler(this.PanelVideoControls_MouseEnter);
             this.panelVideoControls.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
-            // 
-            // sldrSpeed
-            // 
-            this.sldrSpeed.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.sldrSpeed.Location = new System.Drawing.Point(196, 63);
-            this.sldrSpeed.Maximum = 100D;
-            this.sldrSpeed.Minimum = 0D;
-            this.sldrSpeed.Name = "sldrSpeed";
-            this.sldrSpeed.Size = new System.Drawing.Size(176, 23);
-            this.sldrSpeed.TabIndex = 28;
-            this.sldrSpeed.Text = "sliderLinear1";
-            this.sldrSpeed.Value = 0D;
-            this.sldrSpeed.ValueChanged += new System.EventHandler(this.sldrSpeed_ValueChanged);
             // 
             // panel1
             // 
@@ -289,6 +266,21 @@ namespace Kinovea.ScreenManager
             this.btnRafale.UseVisualStyleBackColor = false;
             this.btnRafale.Click += new System.EventHandler(this.btnRafale_Click);
             // 
+            // sldrSpeed
+            // 
+            this.sldrSpeed.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.sldrSpeed.Location = new System.Drawing.Point(196, 63);
+            this.sldrSpeed.Maximum = 100D;
+            this.sldrSpeed.Minimum = 0D;
+            this.sldrSpeed.Name = "sldrSpeed";
+            this.sldrSpeed.Size = new System.Drawing.Size(176, 23);
+            this.sldrSpeed.Sticky = false;
+            this.sldrSpeed.StickyValue = 0D;
+            this.sldrSpeed.TabIndex = 28;
+            this.sldrSpeed.Text = "sliderLinear1";
+            this.sldrSpeed.Value = 0D;
+            this.sldrSpeed.ValueChanged += new System.EventHandler(this.sldrSpeed_ValueChanged);
+            // 
             // btnHandlersReset
             // 
             this.btnHandlersReset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -350,8 +342,8 @@ namespace Kinovea.ScreenManager
             // 
             // trkSelection
             // 
-            this.trkSelection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.trkSelection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.trkSelection.Cursor = System.Windows.Forms.Cursors.Hand;
             this.trkSelection.Location = new System.Drawing.Point(91, 5);
             this.trkSelection.Maximum = ((long)(100));
@@ -370,8 +362,8 @@ namespace Kinovea.ScreenManager
             // 
             // trkFrame
             // 
-            this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.trkFrame.Cursor = System.Windows.Forms.Cursors.Hand;
             this.trkFrame.LeftHairline = ((long)(0));
             this.trkFrame.Location = new System.Drawing.Point(5, 45);
@@ -590,7 +582,7 @@ namespace Kinovea.ScreenManager
             this.panelCenter.Location = new System.Drawing.Point(0, 0);
             this.panelCenter.MinimumSize = new System.Drawing.Size(350, 25);
             this.panelCenter.Name = "panelCenter";
-            this.panelCenter.Size = new System.Drawing.Size(420, 235);
+            this.panelCenter.Size = new System.Drawing.Size(420, 233);
             this.panelCenter.TabIndex = 2;
             this.panelCenter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseClick);
             this.panelCenter.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseDown);
@@ -604,7 +596,7 @@ namespace Kinovea.ScreenManager
             this.ImageResizerNE.Cursor = System.Windows.Forms.Cursors.SizeNESW;
             this.ImageResizerNE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ImageResizerNE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-            this.ImageResizerNE.Location = new System.Drawing.Point(92, 70);
+            this.ImageResizerNE.Location = new System.Drawing.Point(92, 69);
             this.ImageResizerNE.Name = "ImageResizerNE";
             this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
             this.ImageResizerNE.TabIndex = 9;
@@ -619,7 +611,7 @@ namespace Kinovea.ScreenManager
             this.ImageResizerNW.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.ImageResizerNW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ImageResizerNW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-            this.ImageResizerNW.Location = new System.Drawing.Point(57, 70);
+            this.ImageResizerNW.Location = new System.Drawing.Point(57, 69);
             this.ImageResizerNW.Name = "ImageResizerNW";
             this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
             this.ImageResizerNW.TabIndex = 8;
@@ -634,7 +626,7 @@ namespace Kinovea.ScreenManager
             this.ImageResizerSW.Cursor = System.Windows.Forms.Cursors.SizeNESW;
             this.ImageResizerSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ImageResizerSW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-            this.ImageResizerSW.Location = new System.Drawing.Point(57, 95);
+            this.ImageResizerSW.Location = new System.Drawing.Point(57, 94);
             this.ImageResizerSW.Name = "ImageResizerSW";
             this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
             this.ImageResizerSW.TabIndex = 7;
@@ -650,7 +642,7 @@ namespace Kinovea.ScreenManager
             this.ImageResizerSE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ImageResizerSE.ForeColor = System.Drawing.Color.Transparent;
             this.ImageResizerSE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-            this.ImageResizerSE.Location = new System.Drawing.Point(92, 95);
+            this.ImageResizerSE.Location = new System.Drawing.Point(92, 94);
             this.ImageResizerSE.Name = "ImageResizerSE";
             this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
             this.ImageResizerSE.TabIndex = 6;
@@ -677,7 +669,7 @@ namespace Kinovea.ScreenManager
             // dbgAvailableRam
             // 
             this.dbgAvailableRam.AutoSize = true;
-            this.dbgAvailableRam.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgAvailableRam.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgAvailableRam.ForeColor = System.Drawing.Color.White;
             this.dbgAvailableRam.Location = new System.Drawing.Point(3, 148);
             this.dbgAvailableRam.Name = "dbgAvailableRam";
@@ -688,7 +680,7 @@ namespace Kinovea.ScreenManager
             // dbgDurationFrames
             // 
             this.dbgDurationFrames.AutoSize = true;
-            this.dbgDurationFrames.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgDurationFrames.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgDurationFrames.ForeColor = System.Drawing.Color.White;
             this.dbgDurationFrames.Location = new System.Drawing.Point(3, 134);
             this.dbgDurationFrames.Name = "dbgDurationFrames";
@@ -699,7 +691,7 @@ namespace Kinovea.ScreenManager
             // dbgCurrentFrame
             // 
             this.dbgCurrentFrame.AutoSize = true;
-            this.dbgCurrentFrame.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgCurrentFrame.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgCurrentFrame.ForeColor = System.Drawing.Color.White;
             this.dbgCurrentFrame.Location = new System.Drawing.Point(3, 120);
             this.dbgCurrentFrame.Name = "dbgCurrentFrame";
@@ -710,7 +702,7 @@ namespace Kinovea.ScreenManager
             // dbgCurrentPositionRel
             // 
             this.dbgCurrentPositionRel.AutoSize = true;
-            this.dbgCurrentPositionRel.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgCurrentPositionRel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgCurrentPositionRel.ForeColor = System.Drawing.Color.White;
             this.dbgCurrentPositionRel.Location = new System.Drawing.Point(3, 106);
             this.dbgCurrentPositionRel.Name = "dbgCurrentPositionRel";
@@ -721,7 +713,7 @@ namespace Kinovea.ScreenManager
             // dbgStartOffset
             // 
             this.dbgStartOffset.AutoSize = true;
-            this.dbgStartOffset.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgStartOffset.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgStartOffset.ForeColor = System.Drawing.Color.White;
             this.dbgStartOffset.Location = new System.Drawing.Point(3, 41);
             this.dbgStartOffset.Name = "dbgStartOffset";
@@ -732,7 +724,7 @@ namespace Kinovea.ScreenManager
             // dbgCurrentPositionAbs
             // 
             this.dbgCurrentPositionAbs.AutoSize = true;
-            this.dbgCurrentPositionAbs.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgCurrentPositionAbs.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgCurrentPositionAbs.ForeColor = System.Drawing.Color.White;
             this.dbgCurrentPositionAbs.Location = new System.Drawing.Point(3, 93);
             this.dbgCurrentPositionAbs.Name = "dbgCurrentPositionAbs";
@@ -743,7 +735,7 @@ namespace Kinovea.ScreenManager
             // dbgDrops
             // 
             this.dbgDrops.AutoSize = true;
-            this.dbgDrops.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgDrops.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgDrops.ForeColor = System.Drawing.Color.White;
             this.dbgDrops.Location = new System.Drawing.Point(3, 13);
             this.dbgDrops.Name = "dbgDrops";
@@ -754,7 +746,7 @@ namespace Kinovea.ScreenManager
             // dbgSelectionDuration
             // 
             this.dbgSelectionDuration.AutoSize = true;
-            this.dbgSelectionDuration.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgSelectionDuration.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgSelectionDuration.ForeColor = System.Drawing.Color.White;
             this.dbgSelectionDuration.Location = new System.Drawing.Point(3, 79);
             this.dbgSelectionDuration.Name = "dbgSelectionDuration";
@@ -765,7 +757,7 @@ namespace Kinovea.ScreenManager
             // dbgSelectionEnd
             // 
             this.dbgSelectionEnd.AutoSize = true;
-            this.dbgSelectionEnd.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgSelectionEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgSelectionEnd.ForeColor = System.Drawing.Color.White;
             this.dbgSelectionEnd.Location = new System.Drawing.Point(3, 66);
             this.dbgSelectionEnd.Name = "dbgSelectionEnd";
@@ -776,7 +768,7 @@ namespace Kinovea.ScreenManager
             // dbgSelectionStart
             // 
             this.dbgSelectionStart.AutoSize = true;
-            this.dbgSelectionStart.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgSelectionStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgSelectionStart.ForeColor = System.Drawing.Color.White;
             this.dbgSelectionStart.Location = new System.Drawing.Point(3, 54);
             this.dbgSelectionStart.Name = "dbgSelectionStart";
@@ -787,7 +779,7 @@ namespace Kinovea.ScreenManager
             // dbgFFps
             // 
             this.dbgFFps.AutoSize = true;
-            this.dbgFFps.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgFFps.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgFFps.ForeColor = System.Drawing.Color.White;
             this.dbgFFps.Location = new System.Drawing.Point(3, -1);
             this.dbgFFps.Name = "dbgFFps";
@@ -798,7 +790,7 @@ namespace Kinovea.ScreenManager
             // dbgDurationTimeStamps
             // 
             this.dbgDurationTimeStamps.AutoSize = true;
-            this.dbgDurationTimeStamps.Font = new System.Drawing.Font("Vrinda", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbgDurationTimeStamps.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dbgDurationTimeStamps.ForeColor = System.Drawing.Color.White;
             this.dbgDurationTimeStamps.Location = new System.Drawing.Point(3, 28);
             this.dbgDurationTimeStamps.Name = "dbgDurationTimeStamps";
@@ -811,7 +803,7 @@ namespace Kinovea.ScreenManager
             this.splitKeyframes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.splitKeyframes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitKeyframes.IsSplitterFixed = true;
-            this.splitKeyframes.Location = new System.Drawing.Point(0, 19);
+            this.splitKeyframes.Location = new System.Drawing.Point(0, 22);
             this.splitKeyframes.Margin = new System.Windows.Forms.Padding(0);
             this.splitKeyframes.Name = "splitKeyframes";
             this.splitKeyframes.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -828,8 +820,8 @@ namespace Kinovea.ScreenManager
             this.splitKeyframes.Panel2.Controls.Add(this.pnlThumbnails);
             this.splitKeyframes.Panel2.DoubleClick += new System.EventHandler(this.splitKeyframes_Panel2_DoubleClick);
             this.splitKeyframes.Panel2MinSize = 30;
-            this.splitKeyframes.Size = new System.Drawing.Size(420, 367);
-            this.splitKeyframes.SplitterDistance = 235;
+            this.splitKeyframes.Size = new System.Drawing.Size(420, 364);
+            this.splitKeyframes.SplitterDistance = 233;
             this.splitKeyframes.SplitterWidth = 2;
             this.splitKeyframes.TabIndex = 10;
             this.splitKeyframes.Resize += new System.EventHandler(this.splitKeyframes_Resize);
@@ -868,15 +860,15 @@ namespace Kinovea.ScreenManager
             // 
             // pnlThumbnails
             // 
-            this.pnlThumbnails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlThumbnails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlThumbnails.AutoScroll = true;
             this.pnlThumbnails.BackColor = System.Drawing.Color.Black;
             this.pnlThumbnails.Controls.Add(this.pictureBox1);
             this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
             this.pnlThumbnails.Name = "pnlThumbnails";
-            this.pnlThumbnails.Size = new System.Drawing.Size(420, 102);
+            this.pnlThumbnails.Size = new System.Drawing.Size(420, 101);
             this.pnlThumbnails.TabIndex = 3;
             this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
             this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
@@ -903,7 +895,6 @@ namespace Kinovea.ScreenManager
             this.Name = "PlayerScreenUserInterface";
             this.Size = new System.Drawing.Size(420, 510);
             this.panelTop.ResumeLayout(false);
-            this.panelTop.PerformLayout();
             this.panelVideoControls.ResumeLayout(false);
             this.panelVideoControls.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -951,7 +942,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Label dbgStartOffset;
         private System.Windows.Forms.Label dbgCurrentPositionRel;
         private System.Windows.Forms.Button btnClose;
-        private System.Windows.Forms.Label lblFileName;
         private System.Windows.Forms.Button btn_HandlersLock;
         private System.Windows.Forms.Label lblSpeedTuner;
         private FrameTracker trkFrame;
