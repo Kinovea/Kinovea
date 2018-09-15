@@ -101,7 +101,6 @@ namespace Kinovea.ScreenManager
 
             styleHelper.Color = Color.Black;
             styleHelper.LineSize = 1;
-            styleHelper.LineShape = LineShape.Solid;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Pencil");
 
@@ -128,19 +127,7 @@ namespace Kinovea.ScreenManager
                 
                 if (!initializing)
                 {
-                    if (styleHelper.LineShape == LineShape.Dash)
-                    {
-                        penLine.DashStyle = DashStyle.Dash;
-                        canvas.DrawCurve(penLine, points, 0.5f);
-                    }
-                    else if (styleHelper.LineShape == LineShape.Squiggle)
-                    {
-                        canvas.DrawSquigglyLines(penLine, points);
-                    }
-                    else
-                    {
-                        canvas.DrawCurve(penLine, points, 0.5f);
-                    }
+                    canvas.DrawCurve(penLine, points, 0.5f);
                 }
                 else
                 {
@@ -279,7 +266,6 @@ namespace Kinovea.ScreenManager
         {
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "pen size");
-            style.Bind(styleHelper, "LineShape", "line shape");
         }
         private void AddPoint(PointF point, Keys modifiers)
         {
