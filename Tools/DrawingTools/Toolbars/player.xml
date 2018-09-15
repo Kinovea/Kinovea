@@ -18,6 +18,7 @@
     <subentry name="CSVL" />
   </entry>
   <entry name="Line">
+    <subentry name="Curve" />
     <subentry name="Polyline" />
     <subentry name="Circle" />
   </entry>

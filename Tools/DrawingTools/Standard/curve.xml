@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>ded6df54-ca1d-4668-805d-b402e34e61bb</Id>
+  <Name>Curve</Name>
+  <DisplayName>DrawingName_Curve</DisplayName>
+  <Icon>polyline2</Icon>
+  <DrawingClass>DrawingPolyline</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>true</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>true</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="color">
+      <Value>255;0;153;0</Value>
+    </Color>
+    <LineSize Key="line size">
+      <Value>2</Value>
+    </LineSize>
+    <LineShape Key="line shape">
+      <Value>Solid</Value>
+    </LineShape>
+    <Arrows Key="arrows">
+      <Value>None</Value>
+    </Arrows>
+    <Toggle Key="curved">
+      <Value>true</Value>
+      <Variant>Curved</Variant>
+    </Toggle>
+  </DefaultStyle>
+</KinoveaDrawingTool>
