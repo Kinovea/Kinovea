@@ -7,8 +7,8 @@
   <Icon>circle</Icon>
   <DrawingClass>DrawingCircle</DrawingClass>
   <Attached>true</Attached>
-  <KeepToolAfterDrawingCreation>true</KeepToolAfterDrawingCreation>
-  <KeepToolAfterFrameChange>true</KeepToolAfterFrameChange>
+  <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>false</KeepToolAfterFrameChange>
   <DefaultStyle>
     <Color Key="color">
       <Value>255;0;0;0</Value>
