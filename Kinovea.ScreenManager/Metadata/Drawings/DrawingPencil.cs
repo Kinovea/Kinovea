@@ -101,11 +101,12 @@ namespace Kinovea.ScreenManager
 
             styleHelper.Color = Color.Black;
             styleHelper.LineSize = 1;
-            if(preset != null)
-            {
-                style = preset.Clone();
-                BindStyle();
-            }
+            styleHelper.LineShape = LineShape.Solid;
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("Pencil");
+
+            style = preset.Clone();
+            BindStyle();
         }
         public DrawingPencil(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Pencil"))
@@ -117,14 +118,36 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double fOpacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
-            if(fOpacityFactor <= 0)
+            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
+            if(opacityFactor <= 0)
                 return;
             
-            using(Pen penLine = styleHelper.GetPen(fOpacityFactor, transformer.Scale))
+            using(Pen penLine = styleHelper.GetPen(opacityFactor, transformer.Scale))
             {
                 Point[] points = transformer.Transform(pointList).ToArray();
-                canvas.DrawCurve(penLine, points, 0.5f);
+                
+                if (!initializing)
+                {
+                    if (styleHelper.LineShape == LineShape.Dash)
+                    {
+                        penLine.DashStyle = DashStyle.Dash;
+                        canvas.DrawCurve(penLine, points, 0.5f);
+                    }
+                    else if (styleHelper.LineShape == LineShape.Squiggle)
+                    {
+                        canvas.DrawSquigglyLines(penLine, points);
+                    }
+                    else
+                    {
+                        canvas.DrawCurve(penLine, points, 0.5f);
+                    }
+                }
+                else
+                {
+                    penLine.Width = 1.0f;
+                    canvas.DrawLines(penLine, points);
+                }
+                
             }
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
@@ -256,6 +279,7 @@ namespace Kinovea.ScreenManager
         {
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "pen size");
+            style.Bind(styleHelper, "LineShape", "line shape");
         }
         private void AddPoint(PointF point, Keys modifiers)
         {
