@@ -222,6 +222,7 @@
    
    <data name="DrawingName_Grid" xml:space="preserve"><value>Координатна мрежа</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Перспектива на координатната мрежа</value></data>
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Датотека презапиши</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Датотеката {0} веќе постои. \n Дали сакаш да ја замениш?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Невалидно име на датотеката</value></data>

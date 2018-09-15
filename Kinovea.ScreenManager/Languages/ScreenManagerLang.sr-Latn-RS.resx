@@ -222,6 +222,7 @@
    
    <data name="DrawingName_Grid" xml:space="preserve"><value>Koordinantna mreža</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektiva koordinantne mreže</value></data>
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Zamena datoteka</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Datoteka {0} već postoji.\nDa li želite da je zamenite?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Ime datoteke nije odgovarajuće</value></data>

@@ -222,6 +222,7 @@
    
    <data name="DrawingName_Grid" xml:space="preserve"><value>Griglia</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Griglia in prospettiva</value></data>
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sovrascrittura del file</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Il file {0} esiste gia'.\nVuoi sostituirlo?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nome file non valido</value></data>

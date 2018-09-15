@@ -222,6 +222,7 @@
    
    <data name="DrawingName_Grid" xml:space="preserve"><value>Πλέγμα</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Πλέγμα Προοπτικής</value></data>
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Επικάλυψη αρχείου</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Το αρχείο {0} ήδη υπάρχει.\nΘέλετε να το αντικαταστήσετε?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Άκυρο όνομα αρχείου</value></data>

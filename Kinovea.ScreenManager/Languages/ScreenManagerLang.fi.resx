@@ -222,6 +222,7 @@
    
    <data name="DrawingName_Grid" xml:space="preserve"><value>Ruudukko</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektiiviruudukko</value></data>
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Tiedoston korvaaminen</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Tiedosto {0}on jo olemassa.\nHaluatko korvata sen?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Tiedoston nimi ei kelpaa</value></data>

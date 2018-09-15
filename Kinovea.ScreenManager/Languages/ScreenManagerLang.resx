@@ -222,6 +222,7 @@
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>Camera test grid</value></data>
    <data name="DrawingName_Grid" xml:space="preserve"><value>Grid</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspective grid</value></data>
+   <data name="DrawingName_Rectangle" xml:space="preserve"><value>Rectangle</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>File overwrite</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>The file {0} already exists.\nDo you want to replace it?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Invalid file name</value></data>
