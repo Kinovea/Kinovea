@@ -162,6 +162,17 @@ namespace Kinovea.ScreenManager
                 psui.DoInvalidate();
         }
 
+        public static void InvalidateFromTextbox(object sender)
+        {
+            TextBox tb = sender as TextBox;
+            if (tb == null)
+                return;
+
+            PlayerScreenUserInterface psui = tb.Tag as PlayerScreenUserInterface;
+            if (psui != null)
+                psui.DoInvalidate();
+        }
+
         public static void InitializeEndFromMenu(object sender, bool cancelLastPoint)
         {
             // The screen hook was injected inside menus during AddDrawingCustomMenus in PlayerScreenUserInterface.

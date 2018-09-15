@@ -301,8 +301,9 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPlayPause = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSendPic = new ToolStripMenuItem();
+        //private ToolStripMenuItem mnuSendPic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCopyPic = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPastePic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
@@ -1019,13 +1020,13 @@ namespace Kinovea.ScreenManager
             mnuPlayPause.Click += new EventHandler(buttonPlay_Click);
             mnuSavePic.Click += new EventHandler(btnSnapShot_Click);
             mnuSavePic.Image = Properties.Resources.picture_save;
-            mnuSendPic.Click += new EventHandler(mnuSendPic_Click);
-            mnuSendPic.Image = Properties.Resources.image;
             mnuCopyPic.Click += (s, e) => { CopyImageToClipboard(); };
             mnuCopyPic.Image = Properties.Resources.clipboard_block;
+            mnuPastePic.Click += mnuPastePic_Click;
+            mnuPastePic.Image = Properties.Drawings.paste;
             mnuCloseScreen.Click += new EventHandler(btnClose_Click);
             mnuCloseScreen.Image = Properties.Resources.film_close3;
-            popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuPasteDrawing, mnuSavePic, mnuSendPic, mnuCopyPic, new ToolStripSeparator(), mnuCloseScreen });
+            popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuPasteDrawing, mnuSavePic, mnuCopyPic, mnuPastePic, new ToolStripSeparator(), mnuCloseScreen });
 
             // 2. Drawings context menu (Configure, Delete, Track this)
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
@@ -1105,7 +1106,7 @@ namespace Kinovea.ScreenManager
             // Load texts
             ReloadMenusCulture();
         }
-        
+
         private ToolStripMenuItem CreateMagnificationMenu(double magnificationFactor)
         {
             ToolStripMenuItem mnu = new ToolStripMenuItem();
@@ -2477,9 +2478,9 @@ namespace Kinovea.ScreenManager
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
             mnuPlayPause.Text = ScreenManagerLang.mnuPlayPause;
             mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
-            mnuSendPic.Text = ScreenManagerLang.mnuSendPic;
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
             mnuCopyPic.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyImage);
+            mnuPastePic.Text = "Paste image from clipboard";
             mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
             mnuCloseScreen.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.Close);
             
@@ -2787,14 +2788,12 @@ namespace Kinovea.ScreenManager
         {
             // Show the right Pop Menu depending on context.
             // (Drawing, Trajectory, Chronometer, Magnifier, Nothing)
-            
-
             if (m_bIsCurrentlyPlaying)
             {
                 mnuDirectTrack.Visible = false;
                 mnuPasteDrawing.Visible = false;
                 mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
-                mnuSendPic.Visible = false;
+                mnuPastePic.Enabled = Clipboard.ContainsImage();
                 panelCenter.ContextMenuStrip = popMenu;
                 return;
             }
@@ -2807,7 +2806,7 @@ namespace Kinovea.ScreenManager
                 mnuDirectTrack.Visible = false;
                 mnuPasteDrawing.Visible = false;
                 mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
-                mnuSendPic.Visible = false;
+                mnuPastePic.Enabled = Clipboard.ContainsImage();
                 panelCenter.ContextMenuStrip = popMenu;
             }
             else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
@@ -2891,7 +2890,7 @@ namespace Kinovea.ScreenManager
                 mnuDirectTrack.Visible = true;
                 mnuPasteDrawing.Visible = true;
                 mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
-                mnuSendPic.Visible = m_bSynched;
+                mnuPastePic.Enabled = Clipboard.ContainsImage();
                 panelCenter.ContextMenuStrip = popMenu;
             }
         }
@@ -3147,10 +3146,6 @@ namespace Kinovea.ScreenManager
                     ((DrawingText)drawing).SetEditMode(true, m_FrameServer.ImageTransform);
                     m_ActiveTool = ToolManager.Tools["Label"];
                     m_bTextEdit = true;
-                }
-                else if(drawing is DrawingSVG || drawing is DrawingBitmap)
-                {
-                    mnuConfigureOpacity_Click(null, EventArgs.Empty);
                 }
                 else
                 {
@@ -3440,7 +3435,7 @@ namespace Kinovea.ScreenManager
             mnuDirectTrack.Visible = false;
             mnuPasteDrawing.Visible = false;
             mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
-            mnuSendPic.Visible = m_bSynched;
+            mnuPastePic.Enabled = Clipboard.ContainsImage();
             panelCenter.ContextMenuStrip = popMenu;
         }
         #endregion
@@ -3946,18 +3941,28 @@ namespace Kinovea.ScreenManager
             if (DrawingAdding != null)
                 DrawingAdding(this, new DrawingEventArgs(track, m_FrameServer.Metadata.TrackManager.Id));
         }
-        private void mnuSendPic_Click(object sender, EventArgs e)
+        private void mnuPastePic_Click(object sender, EventArgs e)
         {
-            // Send the current image to the other screen for conversion into an observational reference.
-            if(m_bSynched && m_FrameServer.CurrentImage != null)
-            {
-                Bitmap img = CloneTransformedImage();
-                if (SendImage != null)
-                    SendImage(this, new EventArgs<Bitmap>(img));
-            }
+            if (!Clipboard.ContainsImage())
+                return;
+
+            Image img = Clipboard.GetImage();
+            if (img == null)
+                return;
+
+            Bitmap bmp = new Bitmap(img);
+
+            BeforeAddImageDrawing();
+            if (m_FrameServer.Metadata.HitKeyframe == null)
+                return;
+
+            AbstractDrawing drawing = new DrawingBitmap(m_FrameServer.VideoReader.Current.Timestamp, m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame, bmp);
+            
+            if (drawing != null && DrawingAdding != null)
+                DrawingAdding(this, new DrawingEventArgs(drawing, m_FrameServer.Metadata.HitKeyframe.Id));
         }
         #endregion
-        
+
         #region Drawings Menus
         private void mnuConfigureDrawing_Click(object sender, EventArgs e)
         {
