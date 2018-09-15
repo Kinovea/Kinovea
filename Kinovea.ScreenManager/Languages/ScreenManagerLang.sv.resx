@@ -222,6 +222,7 @@
    
    <data name="DrawingName_Grid" xml:space="preserve"><value>Rutverk</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Rutverk med perspektiv</value></data>
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Skriv över fil</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Filen {0} finns redan.\nSkriv över?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Ogiltigt filnamn</value></data>

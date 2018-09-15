@@ -222,6 +222,7 @@
    
    <data name="DrawingName_Grid" xml:space="preserve"><value>Tinklelis</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Pagrindinis tinklelis</value></data>
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Vaizdo perrašymas</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Dokumentas {0} jau yra.\nNorite pakeisti?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Neteisingas dokumento pavadinimas</value></data>

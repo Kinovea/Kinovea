@@ -1420,6 +1420,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rectangle.
+        /// </summary>
+        public static string DrawingName_Rectangle {
+            get {
+                return ResourceManager.GetString("DrawingName_Rectangle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Camera test grid.
         /// </summary>
         public static string DrawingName_TestGrid {
