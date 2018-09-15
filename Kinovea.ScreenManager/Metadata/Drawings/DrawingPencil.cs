@@ -123,6 +123,9 @@ namespace Kinovea.ScreenManager
             
             using(Pen penLine = styleHelper.GetPen(opacityFactor, transformer.Scale))
             {
+                penLine.EndCap = LineCap.Round;
+                penLine.StartCap = LineCap.Round;
+
                 Point[] points = transformer.Transform(pointList).ToArray();
                 
                 if (!initializing)
