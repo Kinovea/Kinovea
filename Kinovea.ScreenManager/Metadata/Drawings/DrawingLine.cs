@@ -63,11 +63,12 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                int iHash = 0;
-                iHash ^= styleHelper.ContentHash;
-                iHash ^= ShowMeasurableInfo.GetHashCode();
-                iHash ^= infosFading.ContentHash;
-                return iHash;
+                int hash = 0;
+                hash ^= styleHelper.ContentHash;
+                hash ^= ShowMeasurableInfo.GetHashCode();
+                hash ^= infosFading.ContentHash;
+                hash ^= miniLabel.GetHashCode();
+                return hash;
             }
         }
         public DrawingStyle DrawingStyle
