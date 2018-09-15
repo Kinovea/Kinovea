@@ -205,6 +205,7 @@
    <data name="DrawingName_ArrowPolyline" xml:space="preserve"><value>Flèche – Polyligne</value></data>
    <data name="DrawingName_ArrowPolylineDash" xml:space="preserve"><value>Flèche – Polyligne points tillés</value></data>
    <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve"><value>Flèche – Polyligne zigzag</value></data>
+   <data name="DrawingName_CSVL" xml:space="preserve"><value>Ligne médiane sacrée </value></data>
    <data name="DrawingName_Polyline" xml:space="preserve"><value>Polyligne</value></data>
    <data name="DrawingName_DistortionGrid" xml:space="preserve"><value>Grille de distorsion</value></data>
    <data name="DrawingName_Goniometer" xml:space="preserve"><value>Goniomètre</value></data>

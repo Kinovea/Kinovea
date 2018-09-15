@@ -219,6 +219,7 @@
    
    
    
+   
    <data name="DrawingName_Grid" xml:space="preserve"><value>Grade</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Grade de Perspectiva</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobrescrever o arquivo</value></data>

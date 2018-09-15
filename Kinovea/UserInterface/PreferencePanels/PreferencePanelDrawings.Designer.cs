@@ -50,6 +50,7 @@ namespace Kinovea.Root
 		{
             this.tabSubPages = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.chkEnableFiltering = new System.Windows.Forms.CheckBox();
             this.chkDrawOnPlay = new System.Windows.Forms.CheckBox();
             this.tabPersistence = new System.Windows.Forms.TabPage();
             this.rbFading = new System.Windows.Forms.RadioButton();
@@ -69,7 +70,7 @@ namespace Kinovea.Root
             this.label4 = new System.Windows.Forms.Label();
             this.tbBlockWidth = new System.Windows.Forms.TextBox();
             this.lblObjectWindow = new System.Windows.Forms.Label();
-            this.chkEnableFiltering = new System.Windows.Forms.CheckBox();
+            this.chkCustomToolsDebug = new System.Windows.Forms.CheckBox();
             this.tabSubPages.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabPersistence.SuspendLayout();
@@ -91,6 +92,7 @@ namespace Kinovea.Root
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.chkCustomToolsDebug);
             this.tabGeneral.Controls.Add(this.chkEnableFiltering);
             this.tabGeneral.Controls.Add(this.chkDrawOnPlay);
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
@@ -100,6 +102,17 @@ namespace Kinovea.Root
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // chkEnableFiltering
+            // 
+            this.chkEnableFiltering.AutoSize = true;
+            this.chkEnableFiltering.Location = new System.Drawing.Point(17, 62);
+            this.chkEnableFiltering.Name = "chkEnableFiltering";
+            this.chkEnableFiltering.Size = new System.Drawing.Size(153, 17);
+            this.chkEnableFiltering.TabIndex = 53;
+            this.chkEnableFiltering.Text = "Enable coordinates filtering";
+            this.chkEnableFiltering.UseVisualStyleBackColor = true;
+            this.chkEnableFiltering.CheckedChanged += new System.EventHandler(this.chkEnableFiltering_CheckedChanged);
             // 
             // chkDrawOnPlay
             // 
@@ -298,16 +311,16 @@ namespace Kinovea.Root
             this.lblObjectWindow.TabIndex = 56;
             this.lblObjectWindow.Text = "Object window :";
             // 
-            // chkEnableFiltering
+            // chkCustomToolsDebug
             // 
-            this.chkEnableFiltering.AutoSize = true;
-            this.chkEnableFiltering.Location = new System.Drawing.Point(17, 62);
-            this.chkEnableFiltering.Name = "chkEnableFiltering";
-            this.chkEnableFiltering.Size = new System.Drawing.Size(153, 17);
-            this.chkEnableFiltering.TabIndex = 53;
-            this.chkEnableFiltering.Text = "Enable coordinates filtering";
-            this.chkEnableFiltering.UseVisualStyleBackColor = true;
-            this.chkEnableFiltering.CheckedChanged += new System.EventHandler(this.chkEnableFiltering_CheckedChanged);
+            this.chkCustomToolsDebug.AutoSize = true;
+            this.chkCustomToolsDebug.Location = new System.Drawing.Point(17, 95);
+            this.chkCustomToolsDebug.Name = "chkCustomToolsDebug";
+            this.chkCustomToolsDebug.Size = new System.Drawing.Size(148, 17);
+            this.chkCustomToolsDebug.TabIndex = 54;
+            this.chkCustomToolsDebug.Text = "Custom tools debug mode";
+            this.chkCustomToolsDebug.UseVisualStyleBackColor = true;
+            this.chkCustomToolsDebug.CheckedChanged += new System.EventHandler(this.chkCustomToolsDebug_CheckedChanged);
             // 
             // PreferencePanelDrawings
             // 
@@ -349,5 +362,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.RadioButton rbAlwaysVisible;
         private System.Windows.Forms.Label lblDefaultOpacity;
         private System.Windows.Forms.CheckBox chkEnableFiltering;
+        private System.Windows.Forms.CheckBox chkCustomToolsDebug;
     }
 }

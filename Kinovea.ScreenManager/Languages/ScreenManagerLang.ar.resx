@@ -205,6 +205,7 @@
    <data name="DrawingName_ArrowPolyline" xml:space="preserve"><value>سهم - متعدد الخطوط</value></data>
    <data name="DrawingName_ArrowPolylineDash" xml:space="preserve"><value>سهم - خطوط متعددة مقطعة</value></data>
    <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve"><value>سهم - خطوط متعددة متعرجة</value></data>
+   
    <data name="DrawingName_Polyline" xml:space="preserve"><value>شكل متعدد الخطوط</value></data>
    <data name="DrawingName_DistortionGrid" xml:space="preserve"><value>شبكة الاعوجاج</value></data>
    <data name="DrawingName_Goniometer" xml:space="preserve"><value>منقلة لقياس الزوايا</value></data>
