@@ -11,7 +11,7 @@
   <KeepToolAfterFrameChange>false</KeepToolAfterFrameChange>
   <DefaultStyle>
     <Color Key="color">
-      <Value>255;0;0;0</Value>
+      <Value>255;100;149;237</Value>
     </Color>
     <PenSize Key="pen size">
       <Value>2</Value>
