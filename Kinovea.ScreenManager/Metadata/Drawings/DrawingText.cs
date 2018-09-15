@@ -283,7 +283,7 @@ namespace Kinovea.ScreenManager
                 UpdateLabelRectangle();
             }
         }
-        public void SetEditMode(bool editing, IImageToViewportTransformer transformer)
+        public void SetEditMode(bool editing, PointF point, IImageToViewportTransformer transformer)
         {
             this.editing = editing;
 
@@ -304,7 +304,12 @@ namespace Kinovea.ScreenManager
                 UpdateLabelRectangle();
 
                 textBox.Visible = true;
-                textBox.Select(0, 1);
+                textBox.Focus();
+
+                // It is hard to find the correct character because we don't know the location of the text box in image space. 
+                // We only have its location in the host panel.
+                // See index = textBox.GetCharIndexFromPosition(textBoxPoint);
+                textBox.Select(0, 0);
                 textBox.ScrollToCaret();
             }
             else

@@ -2694,7 +2694,7 @@ namespace Kinovea.ScreenManager
                     if (hit < 0)
                         continue;
                     
-                    label.SetEditMode(true, m_FrameServer.ImageTransform);
+                    label.SetEditMode(true, m_DescaledMouse, m_FrameServer.ImageTransform);
                     editingLabel = true;
                     break;
                 }
@@ -3143,7 +3143,7 @@ namespace Kinovea.ScreenManager
                 AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
                 if (drawing is DrawingText)
                 {
-                    ((DrawingText)drawing).SetEditMode(true, m_FrameServer.ImageTransform);
+                    ((DrawingText)drawing).SetEditMode(true, m_DescaledMouse, m_FrameServer.ImageTransform);
                     m_ActiveTool = ToolManager.Tools["Label"];
                     m_bTextEdit = true;
                 }

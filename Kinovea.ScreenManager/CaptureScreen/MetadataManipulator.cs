@@ -241,7 +241,7 @@ namespace Kinovea.ScreenManager
                 if(hit >= 0)
                 {
                     hitExisting = true;
-                    label.SetEditMode(true, transformer);
+                    label.SetEditMode(true, imagePoint, transformer);
                 }
             }
             
@@ -265,7 +265,7 @@ namespace Kinovea.ScreenManager
                 if(LabelAdded != null)
                     LabelAdded(this, new DrawingEventArgs(drawing, keyframeId));
                 
-                ((DrawingText)drawing).SetEditMode(true, transformer);
+                ((DrawingText)drawing).SetEditMode(true, imagePoint, transformer);
             }
         }
     }
