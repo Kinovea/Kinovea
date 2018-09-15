@@ -3910,7 +3910,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                Cursor cursor = CursorManager.GetToolCursor(m_ActiveTool, m_FrameServer.ImageTransform.Stretch);
+                Cursor cursor = CursorManager.GetToolCursor(m_ActiveTool, m_FrameServer.ImageTransform.Scale);
                 SetCursor(cursor);
             }
         }
@@ -4449,7 +4449,7 @@ namespace Kinovea.ScreenManager
         {
             if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None)
                 DisableMagnifier();
-
+            
             m_FrameServer.ImageTransform.Zoom = Math.Min(m_FrameServer.ImageTransform.Zoom + 0.10f, m_MaxZoomFactor);
             AfterZoomChange();
         }
@@ -4466,6 +4466,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.ImageTransform.RelocateZoomWindow();
             m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.Location);
             ToastZoom();
+            UpdateCursor();
             ReportForSyncMerge();
             
             ResizeUpdate(true);
