@@ -80,7 +80,6 @@ namespace Kinovea.ScreenManager
             
             // Clean up
             grpConfig.Controls.Clear();
-            Graphics helper = grpConfig.CreateGraphics();
             
             Size editorSize = new Size(60,20);
             // Initialize the horizontal layout with a minimal value, 
@@ -110,7 +109,7 @@ namespace Kinovea.ScreenManager
                 lbl.AutoSize = true;
                 lbl.Location = new Point(btn.Right + 10, lastEditorBottom + 20);
                 
-                SizeF labelSize = helper.MeasureString(lbl.Text, lbl.Font);
+                SizeF labelSize = TextHelper.MeasureString(lbl.Text, lbl.Font);
                 
                 // dynamic horizontal layout for high dpi and verbose languages.
                 if(lbl.Left + labelSize.Width + 25 > editorsLeft)
@@ -126,8 +125,6 @@ namespace Kinovea.ScreenManager
                 grpConfig.Controls.Add(lbl);
                 grpConfig.Controls.Add(miniEditor);
             }
-            
-            helper.Dispose();
             
             // Recheck all mini editors for the left positionning.
             foreach(Control c in grpConfig.Controls)

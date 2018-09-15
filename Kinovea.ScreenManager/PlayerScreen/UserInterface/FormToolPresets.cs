@@ -108,8 +108,6 @@ namespace Kinovea.ScreenManager
             // Clean up
             styleElements.Clear();
             grpConfig.Controls.Clear();
-            Graphics helper = grpConfig.CreateGraphics();
-            
             Size editorSize = new Size(60,20);
             
             int minimalWidth = btnApply.Width + btnCancel.Width + 10;
@@ -136,7 +134,7 @@ namespace Kinovea.ScreenManager
                 lbl.AutoSize = true;
                 lbl.Location = new Point(btn.Right + 10, lastEditorBottom + 20);
                 
-                SizeF labelSize = helper.MeasureString(lbl.Text, lbl.Font);
+                SizeF labelSize = TextHelper.MeasureString(lbl.Text, lbl.Font);
                 
                 if(lbl.Left + labelSize.Width + 25 > editorsLeft)
                 {
@@ -153,8 +151,6 @@ namespace Kinovea.ScreenManager
                 grpConfig.Controls.Add(lbl);
                 grpConfig.Controls.Add(miniEditor);
             }
-            
-            helper.Dispose();
             
             // Recheck all mini editors to realign them on the leftmost.
             foreach(Control c in grpConfig.Controls)

@@ -157,8 +157,6 @@ namespace Kinovea.ScreenManager
         private bool curved;
         private bool perspective;
         private int gridDivisions;
-        private Control dummyControl = new Control();
-        private Graphics dummyGraphics;
         private int minFontSize = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -168,7 +166,6 @@ namespace Kinovea.ScreenManager
         {
             BindWrite = DoBindWrite;
             BindRead = DoBindRead;
-            dummyGraphics = dummyControl.CreateGraphics();
         }
         #endregion
         

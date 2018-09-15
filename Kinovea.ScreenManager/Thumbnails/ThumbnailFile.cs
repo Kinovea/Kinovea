@@ -709,22 +709,20 @@ namespace Kinovea.ScreenManager
             try
             {
                 string text = Path.GetFileNameWithoutExtension(m_FileName);
-                using (Graphics g = lblFileName.CreateGraphics())
+                
+                bool fits = true;
+                float maxWidth = this.Width - paddingHorizontal;
+                while (TextHelper.MeasureString(text + "#", lblFileName.Font).Width >= maxWidth)
                 {
-                    bool fits = true;
-                    float maxWidth = this.Width - paddingHorizontal;
-                    while (g.MeasureString(text + "#", lblFileName.Font).Width >= maxWidth)
-                    {
-                        text = text.Substring(0, text.Length - 1);
-                        fits = false;
+                    text = text.Substring(0, text.Length - 1);
+                    fits = false;
 
-                        if (text.Length == 0)
-                            break;
+                    if (text.Length == 0)
+                        break;
 
-                    }
-
-                    lblFileName.Text = fits ? text : text + "…";
                 }
+
+                lblFileName.Text = fits ? text : text + "…";
             }
             catch
             {
