@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>CSVL</Name>
+  <DisplayName>DrawingName_CSVL</DisplayName>
+  <Id>954e9de2-f141-4b87-bcc2-4d87c362dcfa</Id>
+  <PointCount>5</PointCount>
+  <Segments>
+    <Segment name="Intercrestal line" point1="0" point2="2" style="Solid" width="2"/>
+    <Segment name="Central sacral vertical line" point1="4" point2="3" style="Dash" arrowEnd="true" width="2"/>
+  </Segments>
+  <Handles>
+    <Handle type="Point" reference="0">
+      <Impact type="SegmentCenter">
+        <SegmentCenter pointToMove="1" point1="0" point2="2"/>
+        <KeepAngle origin="1" leg1="0" leg2="4"/>
+        <KeepAngle origin="1" leg1="0" leg2="3"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="2">
+      <Impact type="SegmentCenter">
+        <SegmentCenter pointToMove="1" point1="0" point2="2"/>
+        <KeepAngle origin="1" leg1="2" leg2="4"/>
+        <KeepAngle origin="1" leg1="2" leg2="3"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="3">
+      <Constraint type="LineSlide">
+        <LineSlide point1="4" point2="1" position="AfterSegment"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="4">
+      <Constraint type="LineSlide">
+        <LineSlide point1="1" point2="4" position="AfterAndOnSegment"/>
+      </Constraint>
+    </Handle>
+  </Handles>
+  <Icon>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAACmVlamVlaxaWmzbGyz
+bGyuY2OzbGywZ2ezbGymVlamVlamVlamVlazbGymVlamVlazbGyrXV1ZfBw2AAAAEHRSTlMAZpgt
+0u2rmYF+eEg8JBsYpFhAlgAAADhJREFUGNNjIB+wCDJjCqABZgq08DKBAKsgG4jiBgrwCICAoKAQ
+iOICCvAzQgAHiEAYxMnOR7anAMd5Acrb1R4XAAAAAElFTkSuQmCC
+  </Icon>
+  <InitialConfiguration>
+    <Point>100;400</Point>
+    <Point>200;400</Point>
+    <Point>300;400</Point>
+    <Point>200;100</Point>
+    <Point>200;500</Point>
+  </InitialConfiguration>
+</KinoveaPostureTool>
