@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaDrawingTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Id>f18b2f5d-3683-4fff-b9bb-afd5a0b9bf7a</Id>
+  <Name>Rectangle</Name>
+  <DisplayName>ToolTip_DrawingToolRectangle</DisplayName>
+  <Icon>rectangle</Icon>
+  <DrawingClass>DrawingRectangle</DrawingClass>
+  <Attached>true</Attached>
+  <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>
+  <KeepToolAfterFrameChange>false</KeepToolAfterFrameChange>
+  <DefaultStyle>
+    <Color Key="color">
+      <Value>255;100;149;237</Value>
+    </Color>
+    <LineSize Key="line size">
+      <Value>2</Value>
+    </LineSize>
+  </DefaultStyle>
+</KinoveaDrawingTool>

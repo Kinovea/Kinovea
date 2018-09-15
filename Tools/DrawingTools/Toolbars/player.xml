@@ -20,6 +20,7 @@
   <entry name="Line">
     <subentry name="Curve" />
     <subentry name="Polyline" />
+    <subentry name="Rectangle" />
     <subentry name="Circle" />
   </entry>
   <entry name="Arrow">
