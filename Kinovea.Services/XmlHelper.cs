@@ -173,15 +173,6 @@ namespace Kinovea.Services
             return output;
         }
         
-        public static string ImageToBase64(Bitmap bmp, ImageFormat imageFormat)
-        {
-            MemoryStream stream = new MemoryStream();
-            bmp.Save(stream, imageFormat);
-            byte[] bytes = stream.ToArray();
-            string base64 = Convert.ToBase64String(bytes);
-            return base64;
-        }
-        
         public static Bitmap ParseImageFromBase64(string base64)
         {
             Bitmap result = null;
@@ -218,12 +209,45 @@ namespace Kinovea.Services
 
             return rectangle;
         }
-    
+
+        public static RectangleF ParseRectangleF(string str)
+        {
+            RectangleF rect = RectangleF.Empty;
+
+            try
+            {
+                string[] a = str.Split(new char[] { ';' });
+
+                float x;
+                float y;
+                float width;
+                float height;
+                bool readX = float.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out x);
+                bool readY = float.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out y);
+                bool readWidth = float.TryParse(a[2], NumberStyles.Any, CultureInfo.InvariantCulture, out width);
+                bool readHeight = float.TryParse(a[3], NumberStyles.Any, CultureInfo.InvariantCulture, out height);
+
+                if (readX && readY && readWidth && readHeight)
+                    rect = new RectangleF(x, y, width, height);
+            }
+            catch (Exception)
+            {
+                log.Error(String.Format("An error happened while parsing RectangleF value. ({0}).", str));
+            }
+
+            return rect;
+        }
+
         public static string WritePointF(PointF point)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0};{1}", point.X, point.Y);
         }
-        
+
+        public static string WriteRectangleF(RectangleF rect)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0};{1};{2};{3}", rect.X, rect.Y, rect.Width, rect.Height);
+        }
+
         public static string WriteSizeF(SizeF size)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0};{1}", size.Width, size.Height);
@@ -245,6 +269,16 @@ namespace Kinovea.Services
         public static string WriteBoolean(bool value)
         {
             return value.ToString().ToLower();
+        }
+
+        public static string WriteBitmap(Bitmap bitmap)
+        {
+            ImageFormat imageFormat = ImageFormat.Png;
+            MemoryStream stream = new MemoryStream();
+            bitmap.Save(stream, imageFormat);
+            byte[] bytes = stream.ToArray();
+            string base64 = Convert.ToBase64String(bytes);
+            return base64;
         }
     }
 }

@@ -57,9 +57,7 @@ namespace Kinovea.Services
             writer.WriteElementString("CameraType", CameraType);
             writer.WriteElementString("Identifier", Identifier);
             writer.WriteElementString("Alias", Alias);
-            
-            string iconBase64 = XmlHelper.ImageToBase64(Icon, ImageFormat.Png);
-            writer.WriteElementString("Icon", iconBase64);
+            writer.WriteElementString("Icon", XmlHelper.WriteBitmap(Icon));
             
             string displayRectangle = string.Format("{0};{1};{2};{3}", DisplayRectangle.X, DisplayRectangle.Y, DisplayRectangle.Width, DisplayRectangle.Height);
             writer.WriteElementString("DisplayRectangle", displayRectangle);

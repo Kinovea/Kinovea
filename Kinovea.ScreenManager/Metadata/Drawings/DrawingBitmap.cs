@@ -42,7 +42,13 @@ namespace Kinovea.ScreenManager
         }
         public override int ContentHash
         {
-            get { return 0; }
+            get
+            {
+                int hash = 0;
+                hash ^= boundingBox.ContentHash;
+                hash ^= infosFading.ContentHash;
+                return hash;
+            }
         } 
         public override InfosFading InfosFading
         {
@@ -51,7 +57,7 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
         {
-            get { return DrawingCapabilities.Opacity; }
+            get { return DrawingCapabilities.Fading; }
         }
         public override List<ToolStripItem> ContextMenu
         {
@@ -68,11 +74,9 @@ namespace Kinovea.ScreenManager
         private string filename;
         private Bitmap bitmap;
         private BoundingBox boundingBox = new BoundingBox();
-        private float initialScale = 1.0f;			            // The scale we apply upon loading to make sure the image fits the screen.
         private int originalWidth;
         private int originalHeight;
         private Size videoSize;
-        private static readonly int snapMargin = 0;
         private InfosFading infosFading;
         private ColorMatrix fadingColorMatrix = new ColorMatrix();
         private ImageAttributes fadingImgAttr = new ImageAttributes();
@@ -100,7 +104,6 @@ namespace Kinovea.ScreenManager
                 bitmap = AForge.Imaging.Image.Clone(bmp);
 
             valid = bitmap != null;
-            
             Initialize(timestamp, averageTimeStampsPerFrame);
         }
         public DrawingBitmap(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
@@ -127,29 +130,29 @@ namespace Kinovea.ScreenManager
             canvas.DrawImage(bitmap, rect, 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, fadingImgAttr);
 
             if (selected)
+            {
                 boundingBox.Draw(canvas, rect, penBoundingBox, brushBoundingBox, 4);
+            }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             if (!valid)
                 return -1;
+
+            if (infosFading.GetOpacityFactor(currentTimestamp) <= 0)
+                return -1;
             
-            // Convention: miss = -1, object = 0, handle = n.
-            int result = -1;
-            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
-            if (opacity > 0)
-                result = boundingBox.HitTest(point, transformer);
-            
-            return result;
+            return boundingBox.HitTest(point, transformer);
+        }
+        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
+        {
+            boundingBox.Move(dx, dy);
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
             boundingBox.MoveHandle(point, handleNumber, new Size(originalWidth, originalHeight), true);
         }
-        public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
-        {
-            boundingBox.MoveAndSnap((int)dx, (int)dy, videoSize, snapMargin);
-        }
+        
         public override PointF GetPosition()
         {
             return boundingBox.Rectangle.Center();
@@ -166,10 +169,13 @@ namespace Kinovea.ScreenManager
             originalWidth = bitmap.Width;
             originalHeight = bitmap.Height;
 
+            // Abort if the drawing is coming from XML.
+            if (!boundingBox.Rectangle.IsEmpty)
+                return;
+
             // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
             // For bitmap drawing, we only do this if no upsizing is involved.
-            initialScale = (float)(((float)videoSize.Height * 0.75) / originalHeight);
-            
+            float initialScale = (float)(((float)videoSize.Height * 0.75) / originalHeight);
             if (initialScale < 1.0)
             {
                 originalWidth = (int)((float)originalWidth * initialScale);
@@ -198,6 +204,13 @@ namespace Kinovea.ScreenManager
                     case "File":
                         filename = xmlReader.ReadElementContentAsString();
                         break;
+                    case "BoundingBox":
+                        RectangleF rect = XmlHelper.ParseRectangleF(xmlReader.ReadElementContentAsString());
+                        boundingBox.Rectangle = rect.ToRectangle();
+                        break;
+                    case "Bitmap":
+                        bitmap = XmlHelper.ParseImageFromBase64(xmlReader.ReadElementContentAsString());
+                        break;
                     case "InfosFading":
                         infosFading.ReadXml(xmlReader);
                         break;
@@ -210,7 +223,10 @@ namespace Kinovea.ScreenManager
 
             xmlReader.ReadEndElement();
 
-            if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
+            if (bitmap != null)
+                filename = null;
+
+            if (bitmap == null && !string.IsNullOrEmpty(filename) && File.Exists(filename))
                 bitmap = new Bitmap(filename);
 
             valid = bitmap != null;
@@ -218,7 +234,11 @@ namespace Kinovea.ScreenManager
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
             if (ShouldSerializeCore(filter))
+            {
                 w.WriteElementString("File", filename);
+                w.WriteElementString("BoundingBox", XmlHelper.WriteRectangleF(boundingBox.Rectangle));
+                w.WriteElementString("Bitmap", XmlHelper.WriteBitmap(bitmap));
+            }
 
             if (ShouldSerializeFading(filter))
             {
@@ -226,9 +246,6 @@ namespace Kinovea.ScreenManager
                 infosFading.WriteXml(w);
                 w.WriteEndElement();
             }
-            
-            // TODO: opacity value
-            // TODO: bounding box.
         }
         #endregion
         
@@ -236,8 +253,8 @@ namespace Kinovea.ScreenManager
         {
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-            infosFading.UseDefault = false;
-            infosFading.AlwaysVisible = true;
+            infosFading.UseDefault = true;
+            infosFading.AlwaysVisible = false;
 
             // This is used to set the opacity factor.
             fadingColorMatrix.Matrix00 = 1.0f;
