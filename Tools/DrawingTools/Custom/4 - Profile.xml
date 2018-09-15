@@ -44,7 +44,7 @@
         <DistanceToPoint point="2"/>
       </Constraint>
       <Impact type="Pivot">
-        <Pivot pivot="2" impacted="4;"/>
+        <Pivot pivot="2" impacted="4"/>
       </Impact>
     </Handle>
     <Handle type="Point" reference="4">

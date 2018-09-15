@@ -15,8 +15,8 @@
     <Segment point1="4" point2="5" name="" style="Dash" width="2"/>
   </Segments>
   <Angles>
-    <Angle origin="0" leg1="1" leg2="6" relative="true" radius="30"/>
-    <Angle origin="4" leg1="3" leg2="5" relative="true" radius="30"/>
+    <Angle origin="0" leg1="1" leg2="6" signed="true" ccw="true" supplementary="false" radius="30"/>
+    <Angle origin="4" leg1="5" leg2="3" signed="true" ccw="true" supplementary="false" radius="30"/>
   </Angles>
   <Handles>
     <Handle type="Point" reference="0">
