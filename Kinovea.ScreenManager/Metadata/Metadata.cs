@@ -851,7 +851,7 @@ namespace Kinovea.ScreenManager
         public void AllDrawingTextToNormalMode()
         {
             foreach (DrawingText label in Labels())
-                label.SetEditMode(false, null);
+                label.SetEditMode(false, PointF.Empty, null);
         }
         public void PerformTracking(VideoFrame videoframe)
         {
