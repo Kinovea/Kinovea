@@ -173,13 +173,14 @@ namespace Kinovea.ScreenManager
 
             Point start = transformer.Transform(points["a"]);
             Point end = transformer.Transform(points["b"]);
-            
-            using(Pen penEdges = styleHelper.GetPen((int)(opacityFactor * 255), transformer.Scale))
+
+            using (Pen penEdges = styleHelper.GetPen((int)(opacityFactor * 255), transformer.Scale))
+            using (Brush brush = styleHelper.GetBrush(opacityFactor))
             {
                 if (distorter != null && distorter.Initialized)
-                    DrawDistorted(canvas, distorter, transformer, penEdges, start, end);
+                    DrawDistorted(canvas, distorter, transformer, penEdges, brush, start, end);
                 else
-                    DrawStraight(canvas, transformer, penEdges, start, end);
+                    DrawStraight(canvas, transformer, penEdges, brush, start, end);
             }
 
             if(ShowMeasurableInfo)
@@ -192,7 +193,7 @@ namespace Kinovea.ScreenManager
                 miniLabel.Draw(canvas, transformer, opacityFactor);
             }
         }
-        private void DrawDistorted(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penEdges, Point start, Point end)
+        private void DrawDistorted(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penEdges, Brush brush, Point start, Point end)
         {
             List<PointF> curve = distorter.DistortLine(points["a"], points["b"]);
             List<Point> transformedCurve = transformer.Transform(curve);
@@ -214,8 +215,14 @@ namespace Kinovea.ScreenManager
             }
 
             miniLabel.SetAttach(curve[curve.Count / 2], true);
+
+            if (styleHelper.LineEnding == LineEnding.StartArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                ArrowHelper.Draw(canvas, penEdges, start, end);
+
+            if (styleHelper.LineEnding == LineEnding.EndArrow || styleHelper.LineEnding == LineEnding.DoubleArrow)
+                ArrowHelper.Draw(canvas, penEdges, end, start);
         }
-        private void DrawStraight(Graphics canvas, IImageToViewportTransformer transformer, Pen penEdges, Point start, Point end)
+        private void DrawStraight(Graphics canvas, IImageToViewportTransformer transformer, Pen penEdges, Brush brush, Point start, Point end)
         {
             if (styleHelper.LineShape == LineShape.Squiggle)
             {
