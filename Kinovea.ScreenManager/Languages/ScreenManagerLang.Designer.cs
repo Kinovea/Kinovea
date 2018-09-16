@@ -1438,6 +1438,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trajectory.
+        /// </summary>
+        public static string DrawingName_Trajectory {
+            get {
+                return ResourceManager.GetString("DrawingName_Trajectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file {0} already exists.\nDo you want to replace it?.
         /// </summary>
         public static string Error_Capture_FileExists_Text {

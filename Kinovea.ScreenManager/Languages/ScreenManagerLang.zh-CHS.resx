@@ -227,6 +227,7 @@
    
    
    
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>无法创建幻灯片.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>一张幻灯片是在视频文件内保存的一系列关键图像序列.\n 请在生成幻灯片之前添加一些关键图像.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>不能建立暂停视频</value></data>

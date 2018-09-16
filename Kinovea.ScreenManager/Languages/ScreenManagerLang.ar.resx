@@ -223,6 +223,7 @@
    <data name="DrawingName_Grid" xml:space="preserve"><value>شبكة</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>شبكة المنظور</value></data>
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>الكتابة علي ملف</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>الملف {0} موجود بالفعل. \n هل تريد استبداله؟</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>اسم الملف غير صالح</value></data>

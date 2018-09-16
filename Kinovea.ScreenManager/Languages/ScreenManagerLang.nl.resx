@@ -223,6 +223,7 @@
    <data name="DrawingName_Grid" xml:space="preserve"><value>Raster</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspectief raster</value></data>
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overschrijf bestand</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Het bestand {0} bestaat reeds.\nWilt u het vervangen?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Incorrecte bestandsnaam</value></data>
