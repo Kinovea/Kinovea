@@ -95,6 +95,9 @@ namespace Kinovea.ScreenManager
                     case "TrackShape":
                         styleElement = new StyleElementTrackShape(xmlReader);
                         break;
+                    case "PenShape":
+                        styleElement = new StyleElementPenShape(xmlReader);
+                        break;
                     case "GridDivisions":
                         styleElement = new StyleElementGridDivisions(xmlReader);
                         break;
