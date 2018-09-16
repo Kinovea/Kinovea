@@ -2626,6 +2626,8 @@ namespace Kinovea.ScreenManager
                 SurfaceScreen_LeftDown();
             else if (e.Button == MouseButtons.Right)
                 SurfaceScreen_RightDown();
+            else if (e.Button == MouseButtons.Middle)
+                SurfaceScreen_MiddleDown();
 
             DoInvalidate();
         }
@@ -2683,6 +2685,22 @@ namespace Kinovea.ScreenManager
                     CreateNewDrawing(m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex));
                 }
             }
+        }
+        private void SurfaceScreen_MiddleDown()
+        {
+            if (m_bIsCurrentlyPlaying)
+            {
+                // MouseDown while playing: Halt the video.
+                StopPlaying();
+                OnPauseAsked();
+                ActivateKeyframe(m_iCurrentPosition);
+                ToastPause();
+            }
+
+            m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
+
+            SetCursor(m_PointerTool.GetCursor(1));
+
         }
         private void CreateNewDrawing(Guid managerId)
         {
@@ -3079,13 +3097,45 @@ namespace Kinovea.ScreenManager
                     DoInvalidate();
                 }
             }
+            else if (e.Button == MouseButtons.Middle)
+            {
+                // Middle mouse button: allow to move stuff even if we have a tool selected.
+                // This allow to zoom and pan while having an active tool.
+                if (!m_bIsCurrentlyPlaying)
+                {
+                    bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.Location, ModifierKeys);
+                    if (!bMovingObject)
+                    {
+                        // Move the whole image.
+                        double fDeltaX = (double)m_PointerTool.MouseDelta.X;
+                        double fDeltaY = (double)m_PointerTool.MouseDelta.Y;
+                        if (m_FrameServer.Metadata.Mirrored)
+                            fDeltaX = -fDeltaX;
+
+                        m_FrameServer.ImageTransform.MoveZoomWindow(fDeltaX, fDeltaY);
+                    }
+
+                    DoInvalidate();
+                }
+            }
         }
         private void SurfaceScreen_MouseUp(object sender, MouseEventArgs e)
         {
             // End of an action.
             // Depending on the active tool we have various things to do.
             
-            if(!m_FrameServer.Loaded || e.Button != MouseButtons.Left)
+            if (!m_FrameServer.Loaded)
+                return;
+
+            if (e.Button == MouseButtons.Middle)
+            {
+                // Special case where we move around even with an active tool.
+                // On mouse up we need to restore the cursor of the active tool.
+                UpdateCursor();
+                return;
+            }
+
+            if (e.Button != MouseButtons.Left)
                 return;
             
             m_DescaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
