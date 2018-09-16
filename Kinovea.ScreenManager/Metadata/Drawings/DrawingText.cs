@@ -51,6 +51,8 @@ namespace Kinovea.ScreenManager
             { 
                 int hash = text.GetHashCode();
                 hash ^= background.Rectangle.Location.GetHashCode();
+                hash ^= showArrow.GetHashCode();
+                hash ^= arrowEnd.GetHashCode();
                 hash ^= styleHelper.ContentHash;
                 hash ^= infosFading.ContentHash;
                 return hash;
@@ -71,7 +73,14 @@ namespace Kinovea.ScreenManager
         }
         public override List<ToolStripItem> ContextMenu
         {
-            get { return null; }
+            get
+            {
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                mnuShowArrow.Text = "Show arrow";
+                mnuShowArrow.Checked = showArrow;
+                contextMenu.Add(mnuShowArrow);
+                return contextMenu;
+            }
         }
         public TextBox EditBox
         {
@@ -91,11 +100,14 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private string text;
+        private PointF arrowEnd;
+        private bool showArrow;
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private InfosFading infosFading;
         private bool editing;
         private Font fontText;
+        private ToolStripMenuItem mnuShowArrow = new ToolStripMenuItem();
         private IImageToViewportTransformer imageToViewportTransformer;
         
         private RoundedRectangle background = new RoundedRectangle();
@@ -111,6 +123,8 @@ namespace Kinovea.ScreenManager
         {
             text = "";
             background.Rectangle = new RectangleF(p, SizeF.Empty);
+            arrowEnd = p.Translate(-50, -50);
+            showArrow = false;
             
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
@@ -141,6 +155,9 @@ namespace Kinovea.ScreenManager
 
             textBox.TextChanged += TextBox_TextChanged;
             UpdateLabelRectangle();
+
+            mnuShowArrow.Click += new EventHandler(mnuShowArrow_Click);
+            mnuShowArrow.Image = Properties.Drawings.arrow;
         }
         public DrawingText(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Label"))
@@ -152,13 +169,15 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
-            if (opacityFactor <= 0)
+            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
+            if (opacity <= 0)
                 return;
 
-            int backgroundOpacity = editing ? 255 : 192;
-            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
-            using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
+            //int backgroundOpacity = editing ? 255 : 192;
+            int backgroundOpacity = 255;
+            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacity * backgroundOpacity)))
+            using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacity * 255)))
+            using (Pen pen = styleHelper.GetPen(backgroundOpacity))
             using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
             {
                 SizeF textSize = canvas.MeasureString(text, fontText);
@@ -167,42 +186,73 @@ namespace Kinovea.ScreenManager
 
                 SizeF untransformed = transformer.Untransform(textSize);
                 background.Rectangle = new RectangleF(background.Rectangle.Location, untransformed);
-                
+
                 Rectangle rect = new Rectangle(bgLocation, bgSize);
                 int roundingRadius = fontText.Height / 4;
+
+                if (showArrow)
+                {
+                    pen.Color = brushBack.Color;
+                    pen.Width = fontText.Height / 4;
+                    Point arrowStartInScreen = rect.Center();
+                    Point arrowEndInScreen = transformer.Transform(arrowEnd);
+                    canvas.DrawLine(pen, arrowStartInScreen, arrowEndInScreen);
+                    ArrowHelper.Draw(canvas, pen, arrowEndInScreen, arrowStartInScreen);
+                }
+
                 RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
-                
+
                 if (!editing)
                     canvas.DrawString(text, fontText, brushText, rect.Location);
             }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
-            int result = -1;
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             if (opacity <= 0)
                 return -1;
-            
+
+            // Background label: 0, hidden resizer: 1, arrow end: 2.
+            if (showArrow)
+            {
+                if (HitTester.HitTest(arrowEnd, point, transformer))
+                    return 2;
+
+                if (IsPointOnSegment(point, background.Rectangle.Center(), arrowEnd, transformer))
+                    return 0;
+            }
+
             // Compute the size of the hidden handle zone based on the font size.
             using (Font fontText = styleHelper.GetFont(1.0f))
             {
                 int roundingRadius = fontText.Height / 4;
-                result = background.HitTest(point, true, (int)(roundingRadius * 1.8f), transformer);
+                return background.HitTest(point, true, (int)(roundingRadius * 1.8f), transformer);
             }
-            
-            return result;
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
-            // Invisible handler to change font size.
-            int targetHeight = (int)(point.Y - background.Rectangle.Location.Y);
-            StyleElementFontSize elem = style.Elements["font size"] as StyleElementFontSize;
-            elem.ForceSize(targetHeight, text, styleHelper.Font);
-            UpdateLabelRectangle();
+            if (handleNumber == 2)
+            {
+                arrowEnd = point;
+            }
+            else if (handleNumber == 1)
+            {
+                // Invisible handler to change font size.
+                int targetHeight = (int)(point.Y - background.Rectangle.Location.Y);
+                StyleElementFontSize elem = style.Elements["font size"] as StyleElementFontSize;
+                elem.ForceSize(targetHeight, text, styleHelper.Font);
+                UpdateLabelRectangle();
+            }
         }
         public override void MoveDrawing(float dx, float dy, Keys modifierKeys, bool zooming)
         {
             background.Move(dx, dy);
+
+            // The default behavior is to move the entire drawing as it is the standard thing to do for most calls of MoveDrawing.
+            // To allow for moving only the text label while keeping the arrow end, we listen to the CTRL key.
+            if ((modifierKeys & Keys.Control) != Keys.Control)
+                arrowEnd = arrowEnd.Translate(dx, dy);
+
             RelocateEditbox();
         }
         public override PointF GetPosition()
@@ -234,6 +284,12 @@ namespace Kinovea.ScreenManager
                         PointF p = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
                         background.Rectangle = new RectangleF(p.Scale(scale.X, scale.Y), SizeF.Empty);
                         break;
+                    case "ArrowVisible":
+                        showArrow = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "ArrowEnd":
+                        arrowEnd = XmlHelper.ParsePointF(xmlReader.ReadElementContentAsString());
+                        break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -257,6 +313,8 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteElementString("Text", text);
                 w.WriteElementString("Position", XmlHelper.WritePointF(background.Rectangle.Location));
+                w.WriteElementString("ArrowVisible", showArrow.ToString().ToLower());
+                w.WriteElementString("ArrowEnd", XmlHelper.WritePointF(arrowEnd));
             }
 
             if (ShouldSerializeStyle(filter))
@@ -274,7 +332,15 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-        
+
+        #region Context menu
+        private void mnuShowArrow_Click(object sender, EventArgs e)
+        {
+            showArrow = !showArrow;
+            InvalidateFromMenu(sender);
+        }
+        #endregion
+
         public void InitializeText()
         {
             if (string.IsNullOrEmpty(text))
@@ -354,6 +420,18 @@ namespace Kinovea.ScreenManager
                 // behavior with multiline strings.
                 SizeF boxSize = TextHelper.MeasureString(text, fontText);
                 textBox.Size = new Size((int)boxSize.Width, (int)boxSize.Height);
+            }
+        }
+        private bool IsPointOnSegment(PointF point, PointF a, PointF b, IImageToViewportTransformer transformer)
+        {
+            using (GraphicsPath areaPath = new GraphicsPath())
+            {
+                if (a.NearlyCoincideWith(b))
+                    areaPath.AddLine(a.X, a.Y, a.X + 2, a.Y);
+                else
+                    areaPath.AddLine(a, b);
+
+                return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
             }
         }
         #endregion
