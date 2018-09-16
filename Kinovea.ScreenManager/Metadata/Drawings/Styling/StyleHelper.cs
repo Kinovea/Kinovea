@@ -108,6 +108,11 @@ namespace Kinovea.ScreenManager
             get { return trackShape; }
             set { trackShape = value;}
         }
+        public PenShape PenShape
+        {
+            get { return penShape; }
+            set { penShape = value; }
+        }
         public int GridDivisions
         {
             get { return gridDivisions;}
@@ -128,20 +133,19 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                int iHash = 0;
-                
-                iHash ^= color.GetHashCode();
-                iHash ^= lineSize.GetHashCode();
-                iHash ^= lineShape.GetHashCode();
-                iHash ^= lineEnding.GetHashCode();
-                iHash ^= font.GetHashCode();
-                iHash ^= bicolor.ContentHash;
-                iHash ^= trackShape.GetHashCode();
-                iHash ^= gridDivisions.GetHashCode();
-                iHash ^= curved.GetHashCode();
-                iHash ^= perspective.GetHashCode();
-                
-                return iHash;
+                int hash = 0;
+                hash ^= color.GetHashCode();
+                hash ^= lineSize.GetHashCode();
+                hash ^= lineShape.GetHashCode();
+                hash ^= lineEnding.GetHashCode();
+                hash ^= font.GetHashCode();
+                hash ^= bicolor.ContentHash;
+                hash ^= trackShape.GetHashCode();
+                hash ^= penShape.GetHashCode();
+                hash ^= gridDivisions.GetHashCode();
+                hash ^= curved.GetHashCode();
+                hash ^= perspective.GetHashCode();
+                return hash;
             }
         }
         #endregion
@@ -154,6 +158,7 @@ namespace Kinovea.ScreenManager
         private Bicolor bicolor;
         private LineEnding lineEnding = LineEnding.None;
         private TrackShape trackShape = TrackShape.Solid;
+        private PenShape penShape = PenShape.Solid;
         private bool curved;
         private bool perspective;
         private int gridDivisions;
@@ -337,6 +342,16 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
+                case "PenShape":
+                    {
+                        if (value is PenShape)
+                        {
+                            penShape = (PenShape)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
                 case "Curved":
                     {
                         if (value is bool)
@@ -456,6 +471,15 @@ namespace Kinovea.ScreenManager
                         if (targetType == typeof(TrackShape))
                         {
                             result = trackShape;
+                            converted = true;
+                        }
+                        break;
+                    }
+                case "PenShape":
+                    {
+                        if (targetType == typeof(PenShape))
+                        {
+                            result = penShape;
                             converted = true;
                         }
                         break;
