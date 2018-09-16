@@ -267,6 +267,9 @@ namespace Kinovea.ScreenManager
             if (zooming)
                 return;
 
+            if (CalibrationHelper == null)
+                return;
+
             if ((modifierKeys & Keys.Alt) == Keys.Alt)
             {
                 // Change the number of divisions.
