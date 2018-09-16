@@ -299,7 +299,7 @@ namespace Kinovea.ScreenManager
         private TrackerParameters lastUsedTrackerParameters;
         
         private bool mirrored;
-        private bool showingMeasurables;
+        private TrackExtraData trackExtraData;
         private bool initialized;
         
         private string globalTitle;
@@ -922,9 +922,7 @@ namespace Kinovea.ScreenManager
                 IMeasurable measurableDrawing = drawing as IMeasurable;
                 measurableDrawing.CalibrationHelper = calibrationHelper;
 
-                if (!measurableDrawing.ShowMeasurableInfo)
-                    measurableDrawing.ShowMeasurableInfo = showingMeasurables;
-
+                measurableDrawing.InitializeMeasurableData(trackExtraData);
                 measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
             }
 
@@ -1308,9 +1306,9 @@ namespace Kinovea.ScreenManager
             foreach (DrawingTrack t in Tracks())
                 t.CalibrationChanged();
         }
-        private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs e)
+        private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs<TrackExtraData> e)
         {
-            showingMeasurables = !showingMeasurables;
+            trackExtraData = e.Value;
         }
         private PointF GetCalibrationOrigin(long time)
         {

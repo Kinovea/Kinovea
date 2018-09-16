@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
-        public event EventHandler ShowMeasurableInfoChanged;
+        public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged;
         #endregion
         
         #region Properties
@@ -54,11 +54,10 @@ namespace Kinovea.ScreenManager
             get 
             {
                 int hash = 0;
-                
+
                 // The hash of positions will be taken into account by trackability manager.
                 hash ^= styleHelper.ContentHash;
                 hash ^= infosFading.ContentHash;
-                
                 return hash; 
             }
         } 
@@ -98,7 +97,6 @@ namespace Kinovea.ScreenManager
             get { return new AngleOptions(signedAngle, counterClockwise, supplementaryAngle); }
         }
         public CalibrationHelper CalibrationHelper { get; set; }
-        public bool ShowMeasurableInfo { get; set; }
         #endregion
 
         #region Members
@@ -447,7 +445,13 @@ namespace Kinovea.ScreenManager
         }
 
         #endregion
-        
+
+        #region IMeasurable implementation
+        public void InitializeMeasurableData(TrackExtraData trackExtraData)
+        {
+        }
+        #endregion
+
         #region Lower level helpers
         private void BindStyle()
         {

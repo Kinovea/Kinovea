@@ -43,7 +43,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
-        public event EventHandler ShowMeasurableInfoChanged;
+        public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged;
         #endregion
         
         #region Properties
@@ -64,10 +64,10 @@ namespace Kinovea.ScreenManager
             get 
             {
                 int hash = 0;
-                hash ^= styleHelper.ContentHash;
-                hash ^= ShowMeasurableInfo.GetHashCode();
-                hash ^= infosFading.ContentHash;
+                hash ^= trackExtraData.GetHashCode();
                 hash ^= miniLabel.GetHashCode();
+                hash ^= styleHelper.ContentHash;
+                hash ^= infosFading.ContentHash;
                 return hash;
             }
         }
@@ -90,13 +90,11 @@ namespace Kinovea.ScreenManager
             {
                 // Rebuild the menu to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                
-                mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
-                mnuShowMeasure.Checked = ShowMeasurableInfo;
-                mnuSealMeasure.Text = ScreenManagerLang.mnuCalibrate;
-                
-                contextMenu.Add(mnuShowMeasure);
-                contextMenu.Add(mnuSealMeasure);
+                ReinitializeMenu();
+                contextMenu.Add(mnuMeasurement);
+
+                mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
+                contextMenu.Add(mnuCalibrate);
                 
                 return contextMenu; 
             }
@@ -107,7 +105,6 @@ namespace Kinovea.ScreenManager
         }
         
         public CalibrationHelper CalibrationHelper { get; set; }
-        public bool ShowMeasurableInfo { get; set; }
         #endregion
 
         #region Members
@@ -119,11 +116,13 @@ namespace Kinovea.ScreenManager
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private MiniLabel miniLabel = new MiniLabel();
+        private TrackExtraData trackExtraData = TrackExtraData.None;
         private InfosFading infosFading;
-        
+
         // Context menu
-        private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSealMeasure = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
+        private List<ToolStripMenuItem> mnuMeasurementOptions = new List<ToolStripMenuItem>();
+        private ToolStripMenuItem mnuCalibrate = new ToolStripMenuItem();
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -148,12 +147,11 @@ namespace Kinovea.ScreenManager
             
             // Fading
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-            
+
             // Context menu
-            mnuShowMeasure.Click += mnuShowMeasure_Click;
-            mnuShowMeasure.Image = Properties.Drawings.measure;
-            mnuSealMeasure.Click += mnuSealMeasure_Click;
-            mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
+            ReinitializeMenu();
+            mnuCalibrate.Click += mnuCalibrate_Click;
+            mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         
         public DrawingLine(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
@@ -186,13 +184,10 @@ namespace Kinovea.ScreenManager
                     DrawStraight(canvas, transformer, penEdges, brush, start, end);
             }
 
-            if(ShowMeasurableInfo)
+            if(trackExtraData != TrackExtraData.None)
             {
-                // Text of the measure. (The helpers knows the unit)
-                // Attach point is determined in DrawStraight or DrawCurved.
-                PointF a = new PointF(points["a"].X, points["a"].Y);
-                PointF b = new PointF(points["b"].X, points["b"].Y);
-                miniLabel.SetText(CalibrationHelper.GetLengthText(a, b, true, true));
+                string text = GetExtraDataText();
+                miniLabel.SetText(text);
                 miniLabel.Draw(canvas, transformer, opacityFactor);
             }
         }
@@ -256,7 +251,7 @@ namespace Kinovea.ScreenManager
             
             if (tracking || opacity > 0)
             {
-                if(ShowMeasurableInfo && miniLabel.HitTest(point, transformer))
+                if(trackExtraData != TrackExtraData.None && miniLabel.HitTest(point, transformer))
                     result = 3;
                 else if (HitTester.HitTest(points["a"], point, transformer))
                     result = 1;
@@ -334,6 +329,12 @@ namespace Kinovea.ScreenManager
                             points["b"] = p.Scale(scale.X, scale.Y);
                             break;
                         }
+                    case "ExtraData":
+                        {
+                            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
+                            trackExtraData = (TrackExtraData)enumConverter.ConvertFromString(xmlReader.ReadElementContentAsString());
+                            break;
+                        }
                     case "MeasureLabel":
                         {
                             miniLabel = new MiniLabel(xmlReader, scale);
@@ -345,9 +346,6 @@ namespace Kinovea.ScreenManager
                         break;
                     case "InfosFading":
                         infosFading.ReadXml(xmlReader);
-                        break;
-                    case "MeasureVisible":
-                        ShowMeasurableInfo = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
@@ -368,7 +366,10 @@ namespace Kinovea.ScreenManager
             {
                 w.WriteElementString("Start", XmlHelper.WritePointF(points["a"]));
                 w.WriteElementString("End", XmlHelper.WritePointF(points["b"]));
-                w.WriteElementString("MeasureVisible", ShowMeasurableInfo.ToString().ToLower());
+
+                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
+                string xmlExtraData = enumConverter.ConvertToString(trackExtraData);
+                w.WriteElementString("ExtraData", xmlExtraData);
 
                 w.WriteStartElement("MeasureLabel");
                 miniLabel.WriteXml(w);
@@ -467,28 +468,83 @@ namespace Kinovea.ScreenManager
             TrackablePointMoved(this, new TrackablePointMovedEventArgs(name, points[name]));
         }
         #endregion
-        
+
         #region Context menu
-        private void mnuShowMeasure_Click(object sender, EventArgs e)
+        private void ReinitializeMenu()
         {
-            // Enable / disable the display of the measure for this line.
-            ShowMeasurableInfo = !ShowMeasurableInfo;
-            if(ShowMeasurableInfoChanged != null)
-                ShowMeasurableInfoChanged(this, EventArgs.Empty);
-            
-            InvalidateFromMenu(sender);
+            InitializeMenuMeasurement();
         }
-        
-        private void mnuSealMeasure_Click(object sender, EventArgs e)
+        private void InitializeMenuMeasurement()
+        {
+            mnuMeasurement.Image = Properties.Drawings.measure;
+            mnuMeasurement.Text = ScreenManagerLang.mnuShowMeasure;
+
+            // TODO: unhook event handlers ?
+            mnuMeasurement.DropDownItems.Clear();
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.None));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Name));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.TotalDistance));
+        }
+        private ToolStripMenuItem GetMeasurementMenu(TrackExtraData data)
+        {
+            ToolStripMenuItem mnu = new ToolStripMenuItem();
+            mnu.Text = GetExtraDataOptionText(data);
+            mnu.Checked = trackExtraData == data;
+
+            mnu.Click += (s, e) =>
+            {
+                trackExtraData = data;
+                InvalidateFromMenu(s);
+
+                // Use this setting as the default value for new measurable objects.
+                if(ShowMeasurableInfoChanged != null)
+                    ShowMeasurableInfoChanged(this, new EventArgs<TrackExtraData>(trackExtraData));
+            };
+
+            return mnu;
+        }
+        public string GetExtraDataOptionText(TrackExtraData data)
+        {
+            switch (data)
+            {
+                case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
+                case TrackExtraData.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
+                case TrackExtraData.TotalDistance: return "Length"; //ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
+            }
+
+            return "";
+        }
+        public string GetExtraDataText()
+        {
+            if (trackExtraData == TrackExtraData.None)
+                return "";
+            
+            string displayText = "###";
+            switch (trackExtraData)
+            {
+                case TrackExtraData.Name:
+                    displayText = name;
+                    break;
+                case TrackExtraData.TotalDistance:
+                default:
+                    PointF a = new PointF(points["a"].X, points["a"].Y);
+                    PointF b = new PointF(points["b"].X, points["b"].Y);
+                    displayText = CalibrationHelper.GetLengthText(a, b, true, true);
+                    break;
+            }
+
+            return displayText;
+        }
+        private void mnuCalibrate_Click(object sender, EventArgs e)
         {
             if(points["a"].NearlyCoincideWith(points["b"]))
                 return;
             
-            if(!ShowMeasurableInfo)
+            if (trackExtraData == TrackExtraData.None)
             {
-                ShowMeasurableInfo = true;
-                if(ShowMeasurableInfoChanged != null)
-                    ShowMeasurableInfoChanged(this, EventArgs.Empty);
+                trackExtraData = TrackExtraData.TotalDistance;
+                if (ShowMeasurableInfoChanged != null)
+                    ShowMeasurableInfoChanged(this, new EventArgs<TrackExtraData>(trackExtraData));
             }
             
             FormCalibrateLine fcm = new FormCalibrateLine(CalibrationHelper, this);
@@ -499,7 +555,17 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
         #endregion
-        
+
+        #region IMeasurable implementation
+        public void InitializeMeasurableData(TrackExtraData trackExtraData)
+        {
+            if (trackExtraData == TrackExtraData.None || trackExtraData == TrackExtraData.Name)
+                this.trackExtraData = trackExtraData;
+            else
+                this.trackExtraData = TrackExtraData.TotalDistance;
+        }
+        #endregion
+
         #region Lower level helpers
         private void BindStyle()
         {

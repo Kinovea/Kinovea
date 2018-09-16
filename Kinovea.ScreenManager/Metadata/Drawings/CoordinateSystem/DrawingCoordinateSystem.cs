@@ -40,10 +40,11 @@ namespace Kinovea.ScreenManager
     public class DrawingCoordinateSystem : AbstractDrawing, IScalable, ITrackable, IMeasurable, IDecorable
     {
         #region Events
-        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
-        public event EventHandler ShowMeasurableInfoChanged = delegate {}; // not used.
-        #endregion
+        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
+        public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged = delegate {}; // not used.
         
+        #endregion
+
         #region Properties
         public override string ToolDisplayName
         {
@@ -98,7 +99,6 @@ namespace Kinovea.ScreenManager
         
         public bool Visible { get; set; }
         public CalibrationHelper CalibrationHelper {get; set;}
-        public bool ShowMeasurableInfo { get; set; }
         #endregion
 
         #region Members
@@ -385,15 +385,20 @@ namespace Kinovea.ScreenManager
             }
 
             r.ReadEndElement();
-        }            
+        }
         #endregion
 
+        #region IMeasurable implementation
         public void UpdateOrigin()
         {
             if(CalibrationHelper != null)
                 points["0"] = CalibrationHelper.GetImagePoint(PointF.Empty);
         }
-        
+        public void InitializeMeasurableData(TrackExtraData trackExtraData)
+        {
+        }
+        #endregion
+
         #region Lower level helpers
         private void BindStyle()
         {
