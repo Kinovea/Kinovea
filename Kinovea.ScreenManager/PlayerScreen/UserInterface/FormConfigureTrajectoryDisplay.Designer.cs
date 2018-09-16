@@ -32,8 +32,8 @@ namespace Kinovea.ScreenManager
             this.btnCancel = new System.Windows.Forms.Button();
             this.grpAppearance = new System.Windows.Forms.GroupBox();
             this.tbLabel = new System.Windows.Forms.TextBox();
-            this.lblLabel = new System.Windows.Forms.Label();
             this.grpConfig = new System.Windows.Forms.GroupBox();
+            this.chkBestFitCircle = new System.Windows.Forms.CheckBox();
             this.cmbView = new System.Windows.Forms.ComboBox();
             this.lblView = new System.Windows.Forms.Label();
             this.cmbMarker = new System.Windows.Forms.ComboBox();
@@ -53,7 +53,6 @@ namespace Kinovea.ScreenManager
             this.tbBlockWidth = new System.Windows.Forms.TextBox();
             this.lblObjectWindow = new System.Windows.Forms.Label();
             this.pnlViewport = new System.Windows.Forms.Panel();
-            this.chkBestFitCircle = new System.Windows.Forms.CheckBox();
             this.grpConfig.SuspendLayout();
             this.grpIdentification.SuspendLayout();
             this.grpTracking.SuspendLayout();
@@ -94,22 +93,13 @@ namespace Kinovea.ScreenManager
             // 
             // tbLabel
             // 
-            this.tbLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLabel.Location = new System.Drawing.Point(146, 21);
+            this.tbLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLabel.Location = new System.Drawing.Point(24, 19);
             this.tbLabel.Name = "tbLabel";
-            this.tbLabel.Size = new System.Drawing.Size(138, 20);
+            this.tbLabel.Size = new System.Drawing.Size(260, 20);
             this.tbLabel.TabIndex = 30;
             this.tbLabel.TextChanged += new System.EventHandler(this.tbLabel_TextChanged);
-            // 
-            // lblLabel
-            // 
-            this.lblLabel.AutoSize = true;
-            this.lblLabel.Location = new System.Drawing.Point(21, 24);
-            this.lblLabel.Name = "lblLabel";
-            this.lblLabel.Size = new System.Drawing.Size(39, 13);
-            this.lblLabel.TabIndex = 43;
-            this.lblLabel.Text = "Label :";
             // 
             // grpConfig
             // 
@@ -127,10 +117,21 @@ namespace Kinovea.ScreenManager
             this.grpConfig.TabStop = false;
             this.grpConfig.Text = "Generic_Configuration";
             // 
+            // chkBestFitCircle
+            // 
+            this.chkBestFitCircle.AutoSize = true;
+            this.chkBestFitCircle.Location = new System.Drawing.Point(24, 115);
+            this.chkBestFitCircle.Name = "chkBestFitCircle";
+            this.chkBestFitCircle.Size = new System.Drawing.Size(122, 17);
+            this.chkBestFitCircle.TabIndex = 54;
+            this.chkBestFitCircle.Text = "Display best fit circle";
+            this.chkBestFitCircle.UseVisualStyleBackColor = true;
+            this.chkBestFitCircle.CheckedChanged += new System.EventHandler(this.chkBestFitCircle_CheckedChanged);
+            // 
             // cmbView
             // 
-            this.cmbView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbView.FormattingEnabled = true;
             this.cmbView.Location = new System.Drawing.Point(146, 19);
             this.cmbView.Name = "cmbView";
@@ -149,8 +150,8 @@ namespace Kinovea.ScreenManager
             // 
             // cmbMarker
             // 
-            this.cmbMarker.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbMarker.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbMarker.FormattingEnabled = true;
             this.cmbMarker.Location = new System.Drawing.Point(146, 48);
             this.cmbMarker.Name = "cmbMarker";
@@ -169,8 +170,8 @@ namespace Kinovea.ScreenManager
             // 
             // cmbExtraData
             // 
-            this.cmbExtraData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbExtraData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbExtraData.FormattingEnabled = true;
             this.cmbExtraData.Location = new System.Drawing.Point(146, 75);
             this.cmbExtraData.Name = "cmbExtraData";
@@ -190,13 +191,12 @@ namespace Kinovea.ScreenManager
             // grpIdentification
             // 
             this.grpIdentification.Controls.Add(this.tbLabel);
-            this.grpIdentification.Controls.Add(this.lblLabel);
             this.grpIdentification.Location = new System.Drawing.Point(12, 12);
             this.grpIdentification.Name = "grpIdentification";
             this.grpIdentification.Size = new System.Drawing.Size(297, 56);
             this.grpIdentification.TabIndex = 30;
             this.grpIdentification.TabStop = false;
-            this.grpIdentification.Text = "Identification";
+            this.grpIdentification.Text = "Name";
             // 
             // grpTracking
             // 
@@ -305,25 +305,14 @@ namespace Kinovea.ScreenManager
             // 
             // pnlViewport
             // 
-            this.pnlViewport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlViewport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlViewport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.pnlViewport.Location = new System.Drawing.Point(315, 12);
             this.pnlViewport.Name = "pnlViewport";
             this.pnlViewport.Size = new System.Drawing.Size(529, 452);
             this.pnlViewport.TabIndex = 52;
             this.pnlViewport.Click += new System.EventHandler(this.pnlViewport_Click);
-            // 
-            // chkBestFitCircle
-            // 
-            this.chkBestFitCircle.AutoSize = true;
-            this.chkBestFitCircle.Location = new System.Drawing.Point(24, 115);
-            this.chkBestFitCircle.Name = "chkBestFitCircle";
-            this.chkBestFitCircle.Size = new System.Drawing.Size(122, 17);
-            this.chkBestFitCircle.TabIndex = 54;
-            this.chkBestFitCircle.Text = "Display best fit circle";
-            this.chkBestFitCircle.UseVisualStyleBackColor = true;
-            this.chkBestFitCircle.CheckedChanged += new System.EventHandler(this.chkBestFitCircle_CheckedChanged);
             // 
             // formConfigureTrajectoryDisplay
             // 
@@ -367,7 +356,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.GroupBox grpConfig;
         private System.Windows.Forms.TextBox tbLabel;
-        private System.Windows.Forms.Label lblLabel;
         private System.Windows.Forms.ComboBox cmbMarker;
         private System.Windows.Forms.Label lblMarker;
         private System.Windows.Forms.ComboBox cmbView;

@@ -8,6 +8,7 @@ namespace Kinovea.ScreenManager
     public enum TrackExtraData
     {
         None,
+        Name,
         Position,
         
         TotalDistance,

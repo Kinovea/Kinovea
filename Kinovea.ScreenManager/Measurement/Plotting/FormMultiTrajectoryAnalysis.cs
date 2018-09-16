@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
         {
             foreach (DrawingTrack track in metadata.Tracks())
             {
-                TimeSeriesPlotData data = new TimeSeriesPlotData(track.Label, track.MainColor, track.TimeSeriesCollection);
+                TimeSeriesPlotData data = new TimeSeriesPlotData(track.Name, track.MainColor, track.TimeSeriesCollection);
                 timeSeriesData.Add(data);
                 filteredTrajectories.Add(data, track.FilteredTrajectory);
             }
