@@ -175,7 +175,7 @@ namespace Kinovea.ScreenManager
         }
         private void SetCurrentOptions()
         {
-            tbLabel.Text = track.Label;
+            tbLabel.Text = track.Name;
             cmbView.SelectedIndex = (int)track.View;
             cmbExtraData.SelectedIndex = (int)track.ExtraData;
             cmbMarker.SelectedIndex = (int)track.Marker;
@@ -184,8 +184,7 @@ namespace Kinovea.ScreenManager
         {
             this.Text = "   " + ScreenManagerLang.dlgConfigureTrajectory_Title;
 
-            grpIdentification.Text = ScreenManagerLang.dlgConfigureTrajectory_grpIdentification;
-            lblLabel.Text = ScreenManagerLang.dlgConfigureChrono_Label;
+            grpIdentification.Text = ScreenManagerLang.dlgConfigureDrawing_Name;
 
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
             lblView.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelVisibility;
@@ -236,7 +235,7 @@ namespace Kinovea.ScreenManager
         #region Event handlers
         private void tbLabel_TextChanged(object sender, EventArgs e)
         {
-            track.Label = tbLabel.Text;
+            track.Name = tbLabel.Text;
             if(invalidate != null) 
                 invalidate();
         }

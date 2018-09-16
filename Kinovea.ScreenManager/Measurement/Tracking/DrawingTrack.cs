@@ -152,15 +152,6 @@ namespace Kinovea.ScreenManager
         {    
             get { return styleHelper.Color; }
         }
-        public string Label
-        {
-            get { return mainLabelText; }
-            set
-            {
-                mainLabelText = value;
-                Name = value;
-            }
-        }
         public Metadata ParentMetadata
         {
             get { return parentMetadata; }    // unused.
@@ -243,7 +234,6 @@ namespace Kinovea.ScreenManager
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
         private MiniLabel miniLabel = new MiniLabel();
-        private string mainLabelText = "Label";
         private List<MiniLabel> keyframesLabels = new List<MiniLabel>();
         private InfosFading infosFading = new InfosFading(long.MaxValue, 1);
         private const int baseAlpha = 224;                // alpha of track in most cases.
@@ -694,7 +684,7 @@ namespace Kinovea.ScreenManager
             
             miniLabel.SetAttach(positions[currentPoint].Point, true);
                 
-            string text = trackView == TrackView.Label ? mainLabelText : GetExtraDataText(currentPoint);
+            string text = trackView == TrackView.Label ? name : GetExtraDataText(currentPoint);
             miniLabel.SetText(text);
             miniLabel.Draw(canvas, transformer, fadingFactor);
         }
@@ -739,6 +729,7 @@ namespace Kinovea.ScreenManager
             switch (data)
             {
                 case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
+                case TrackExtraData.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
                 case TrackExtraData.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
 
                 case TrackExtraData.TotalDistance: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance;
@@ -774,6 +765,9 @@ namespace Kinovea.ScreenManager
 
             switch(trackExtraData)
             {
+                case TrackExtraData.Name:
+                    displayText = name;
+                    break;
                 case TrackExtraData.Position:
                     double x = timeSeriesCollection[Kinematics.XRaw][index];
                     double y = timeSeriesCollection[Kinematics.YRaw][index];
@@ -1097,7 +1091,7 @@ namespace Kinovea.ScreenManager
                 TrackPointsToXml(w);
 
                 w.WriteStartElement("MainLabel");
-                w.WriteAttributeString("Text", mainLabelText);
+                w.WriteAttributeString("Text", name);
 
                 // Reset to first point.
                 if (positions.Count > 0)
@@ -1221,7 +1215,6 @@ namespace Kinovea.ScreenManager
                         break;
                     case "MainLabel":
                         {
-                            mainLabelText = xmlReader.GetAttribute("Text");
                             miniLabel = new MiniLabel(xmlReader, scale);
                             break;
                         }
@@ -1242,7 +1235,7 @@ namespace Kinovea.ScreenManager
             {
                 endTimeStamp = positions.Last().T;
                 miniLabel.SetAttach(positions[0].Point, false);
-                miniLabel.SetText(Label);
+                miniLabel.SetText(name);
                 
                 if(positions.Count > 1 || 
                    positions[0].X != 0 || 
@@ -1417,7 +1410,7 @@ namespace Kinovea.ScreenManager
         {
             // Used by formConfigureTrajectory to be able to modify the trajectory in real time.
             memoTrackView = trackView;
-            memoLabel = mainLabelText;
+            memoLabel = name;
         }
         public void RecallState()
         {
@@ -1425,7 +1418,7 @@ namespace Kinovea.ScreenManager
             // styleHelper has been reverted already as part of style elements framework.
             // The minilabels should have been reverted through the main styleHelper value changed event.
             trackView = memoTrackView;
-            mainLabelText = memoLabel;
+            name = memoLabel;
         }
         public PointF GetPosition(long timestamp)
         {
