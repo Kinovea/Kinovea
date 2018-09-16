@@ -223,6 +223,7 @@
    <data name="DrawingName_Grid" xml:space="preserve"><value>グリッド</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>パースペクティブグリッド</value></data>
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>ファイル上書き</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>ファイル {0} は既に存在します。\n置き換えますか？</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>無効なファイル名</value></data>

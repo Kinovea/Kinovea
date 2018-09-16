@@ -223,6 +223,7 @@
    <data name="DrawingName_Grid" xml:space="preserve"><value>Cuadrícula</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Cuadrícula de Perspectiva </value></data>
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobrescribir archivo</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>El archivo {0} ya existe.\n¿Desea reemplazarlo ?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nombre de archivo no válido</value></data>

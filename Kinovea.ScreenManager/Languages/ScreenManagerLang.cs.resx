@@ -223,6 +223,7 @@
    <data name="DrawingName_Grid" xml:space="preserve"><value>Mřížka</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektivní mřížka</value></data>
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Přepsat soubor</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Soubor {0} již existuje.\nChcete jej nahradit?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Neplatné jméno souboru</value></data>

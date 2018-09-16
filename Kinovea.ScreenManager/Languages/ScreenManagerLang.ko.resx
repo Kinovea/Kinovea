@@ -223,6 +223,7 @@
    <data name="DrawingName_Grid" xml:space="preserve"><value>그리드</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>원근 그리드</value></data>
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>파일 덮어쓰기</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>파일 {0}이 존재함.\n대체할까요?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>잘못된 파일명.</value></data>

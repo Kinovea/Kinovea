@@ -223,6 +223,7 @@
    <data name="DrawingName_Grid" xml:space="preserve"><value>Gitter</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektivgitter</value></data>
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overskriv fil</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Filen {0} eksisterer allerede.\nØnsker du at overskrive den?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Ugyldigt filnavn</value></data>

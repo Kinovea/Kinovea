@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override string ToolDisplayName
         {
-            get {  return ScreenManagerLang.mnuTrackTrajectory; }
+            get { return ScreenManagerLang.DrawingName_Trajectory; }
         }
         public override int ContentHash
         {
