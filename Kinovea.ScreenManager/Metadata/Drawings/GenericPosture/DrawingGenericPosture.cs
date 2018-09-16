@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
-        public event EventHandler ShowMeasurableInfoChanged = delegate {}; // not used.
+        public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged = delegate {}; // not used.
         #endregion
         
         #region Properties
@@ -113,7 +113,6 @@ namespace Kinovea.ScreenManager
             }
         }
         public CalibrationHelper CalibrationHelper { get; set; }
-        public bool ShowMeasurableInfo { get; set; }
         public List<GenericPostureAngle> GenericPostureAngles 
         {
             get { return genericPosture.Angles; }
@@ -774,7 +773,13 @@ namespace Kinovea.ScreenManager
             
         }
         #endregion
-        
+
+        #region IMeasurable implementation
+        public void InitializeMeasurableData(TrackExtraData trackExtraData)
+        {
+        }
+        #endregion
+
         #region Lower level helpers
         private void Init()
         {

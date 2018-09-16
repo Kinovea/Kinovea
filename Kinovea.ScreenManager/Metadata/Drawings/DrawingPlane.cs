@@ -43,7 +43,7 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
-        public event EventHandler ShowMeasurableInfoChanged;
+        public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged;
         #endregion
         
         #region Properties
@@ -95,7 +95,6 @@ namespace Kinovea.ScreenManager
             get { return quadImage;}
         }
         public CalibrationHelper CalibrationHelper { get; set; }
-        public bool ShowMeasurableInfo { get; set; }
         public bool UsedForCalibration { get; set; }
         #endregion
 
@@ -498,7 +497,13 @@ namespace Kinovea.ScreenManager
             
             projectiveMapping.Update(quadPlane, quadImage);
         }
-        
+
+        #region IMeasurable implementation
+        public void InitializeMeasurableData(TrackExtraData trackExtraData)
+        {
+        }
+        #endregion
+
         #region Private methods
         private void BindStyle()
         {

@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.Services;
 using System;
 
 namespace Kinovea.ScreenManager
@@ -29,7 +30,7 @@ namespace Kinovea.ScreenManager
     public interface IMeasurable
     {
         CalibrationHelper CalibrationHelper { get; set; }
-        bool ShowMeasurableInfo { get; set; }
-        event EventHandler ShowMeasurableInfoChanged;
+        void InitializeMeasurableData(TrackExtraData trackExtraData);
+        event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged;
     }
 }

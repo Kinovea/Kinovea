@@ -280,7 +280,6 @@ namespace Kinovea.ScreenManager
                 style = preset.Clone();
                 BindStyle();
             }
-
             
             ReinitializeMenu();
         }
