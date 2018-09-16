@@ -16,5 +16,8 @@
     <LineSize Key="line size">
       <Value>2</Value>
     </LineSize>
+    <PenShape Key="pen shape">
+      <Value>Solid</Value>
+    </PenShape>
   </DefaultStyle>
 </KinoveaDrawingTool>

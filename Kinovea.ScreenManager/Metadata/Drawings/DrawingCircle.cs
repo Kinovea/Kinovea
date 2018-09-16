@@ -147,6 +147,7 @@ namespace Kinovea.ScreenManager
 
             styleHelper.Color = Color.Empty;
             styleHelper.LineSize = 1;
+            styleHelper.PenShape = PenShape.Solid;
             styleHelper.ValueChanged += StyleHelper_ValueChanged;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Circle");
@@ -174,6 +175,9 @@ namespace Kinovea.ScreenManager
             int alpha = (int)(opacityFactor * 255);
             using(Pen p = styleHelper.GetPen(alpha, transformer.Scale))
             {
+                if (styleHelper.PenShape == PenShape.Dash)
+                    p.DashStyle = DashStyle.Dash;
+
                 if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
                 {
                     PointF ellipseCenter = transformer.Transform(ellipseInImage.Center);
@@ -182,29 +186,21 @@ namespace Kinovea.ScreenManager
                     Ellipse ellipse = new Ellipse(ellipseCenter, semiMajorAxis, semiMinorAxis, ellipseInImage.Rotation);
                     RectangleF rect = new RectangleF(-ellipse.SemiMajorAxis, -ellipse.SemiMinorAxis, ellipse.SemiMajorAxis * 2, ellipse.SemiMinorAxis * 2);
                     float angle = (float)(ellipse.Rotation * MathHelper.RadiansToDegrees);
-
+                    
                     canvas.TranslateTransform(ellipse.Center.X, ellipse.Center.Y);
                     canvas.RotateTransform(angle);
                     canvas.DrawEllipse(p, rect);
                     canvas.RotateTransform(-angle);
                     canvas.TranslateTransform(-ellipse.Center.X, -ellipse.Center.Y);
 
-                    // Precision center.
-                    p.Width = 1.0f;
-                    Point c = ellipseCenter.ToPoint();
-                    canvas.DrawLine(p, c.X - crossRadius, c.Y, c.X + crossRadius, c.Y);
-                    canvas.DrawLine(p, c.X, c.Y - crossRadius, c.X, c.Y + crossRadius);
+                    DrawCenter(canvas, p, ellipseCenter.ToPoint());
                 }
                 else
                 {
                     Rectangle boundingBox = transformer.Transform(center.Box(radius));
                     canvas.DrawEllipse(p, boundingBox);
 
-                    // Precision center.
-                    p.Width = 1.0f;
-                    Point c = boundingBox.Center();
-                    canvas.DrawLine(p, c.X - crossRadius, c.Y, c.X + crossRadius, c.Y);
-                    canvas.DrawLine(p, c.X, c.Y - crossRadius, c.X, c.Y + crossRadius);
+                    DrawCenter(canvas, p, boundingBox.Center());
                 }
 
                 if (ShowMeasurableInfo)
@@ -213,6 +209,15 @@ namespace Kinovea.ScreenManager
                     miniLabel.Draw(canvas, transformer, opacityFactor);
                 }
             }
+        }
+        private void DrawCenter(Graphics canvas, Pen pen, Point center)
+        {
+            // Precision center.
+            pen.Width = 1.0f;
+            pen.DashStyle = DashStyle.Solid;
+            Point c = center;
+            canvas.DrawLine(pen, center.X - crossRadius, center.Y, center.X + crossRadius, center.Y);
+            canvas.DrawLine(pen, center.X, center.Y - crossRadius, center.X, center.Y + crossRadius);
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
@@ -396,6 +401,7 @@ namespace Kinovea.ScreenManager
         {
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "pen size");
+            style.Bind(styleHelper, "PenShape", "pen shape");
         }
         private void StyleHelper_ValueChanged(object sender, EventArgs e)
         {
