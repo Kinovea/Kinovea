@@ -63,6 +63,7 @@ namespace Kinovea.Camera.DirectShow
         private List<string> snapshotting = new List<string>();
         private HashSet<string> blacklist = new HashSet<string>();
         private Regex idsPattern = new Regex(@"^UI\d{3,4}");
+        private Regex baslerPattern = new Regex(@"^Basler GenICam");
         #endregion
         
         public CameraManagerDirectShow()
@@ -280,11 +281,18 @@ namespace Kinovea.Camera.DirectShow
             if (blacklist.Contains(name))
                 return true;
 
-            // IDS uEye.
-            Match match = idsPattern.Match(name);
-            if (match.Success)
+            // We add the matching cameras to the blacklist to avoid running the regex on every device enumeration.
+            Match matchBasler = baslerPattern.Match(name);
+            if (matchBasler.Success)
             {
-                // Add the camera to the blacklist to avoid running the regex on every device enumeration.
+                blacklist.Add(name);
+                return true;
+            }
+
+            // IDS uEye.
+            Match matchIDS = idsPattern.Match(name);
+            if (matchIDS.Success)
+            {
                 blacklist.Add(name);
                 return true;
             }
