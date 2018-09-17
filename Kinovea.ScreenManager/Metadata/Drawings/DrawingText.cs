@@ -362,21 +362,32 @@ namespace Kinovea.ScreenManager
                 textBox.BackColor = styleHelper.Bicolor.Background;
                 textBox.ForeColor = styleHelper.Bicolor.Foreground;
                 
-                fontText = styleHelper.GetFont((float)transformer.Scale);
-                textBox.Font.Dispose();
-                textBox.Font = new Font(fontText.Name, fontText.Size, fontText.Style);
-                textBox.Text = text;
+                try
+                {
+                    Font oldFont = textBox.Font;
 
-                UpdateLabelRectangle();
+                    fontText = styleHelper.GetFont((float)transformer.Scale);
+                    textBox.Font = fontText;
+                    textBox.Text = text;
 
-                textBox.Visible = true;
-                textBox.Focus();
+                    UpdateLabelRectangle();
+                    
+                    textBox.Visible = true;
+                    textBox.Focus();
 
-                // It is hard to find the correct character because we don't know the location of the text box in image space. 
-                // We only have its location in the host panel.
-                // See index = textBox.GetCharIndexFromPosition(textBoxPoint);
-                textBox.Select(0, 0);
-                textBox.ScrollToCaret();
+                    // If this is done earlier it causes an exception in System.Drawing.Font.ToLogFont().
+                    oldFont.Dispose();
+
+                    // It is hard to find the correct character because we don't know the location of the text box in image space. 
+                    // We only have its location in the host panel.
+                    // See index = textBox.GetCharIndexFromPosition(textBoxPoint);
+                    textBox.Select(0, 0);
+                    textBox.ScrollToCaret();
+                }
+                catch (Exception e)
+                {
+                    log.ErrorFormat(e.Message);
+                }
             }
             else
             {
