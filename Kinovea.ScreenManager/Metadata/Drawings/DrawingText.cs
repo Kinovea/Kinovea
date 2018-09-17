@@ -361,7 +361,7 @@ namespace Kinovea.ScreenManager
                 RelocateEditbox(); // This is needed because the container top-left corner may have changed 
                 textBox.BackColor = styleHelper.Bicolor.Background;
                 textBox.ForeColor = styleHelper.Bicolor.Foreground;
-
+                
                 fontText = styleHelper.GetFont((float)transformer.Scale);
                 textBox.Font.Dispose();
                 textBox.Font = new Font(fontText.Name, fontText.Size, fontText.Style);
@@ -419,7 +419,7 @@ namespace Kinovea.ScreenManager
                 // The character spacing isn't exactly the same as during drawing, and there is a weird
                 // behavior with multiline strings.
                 SizeF boxSize = TextHelper.MeasureString(text, fontText);
-                textBox.Size = new Size((int)boxSize.Width, (int)boxSize.Height);
+                textBox.Size = new Size((int)boxSize.Width + 1, (int)boxSize.Height + 1);
             }
         }
         private bool IsPointOnSegment(PointF point, PointF a, PointF b, IImageToViewportTransformer transformer)
