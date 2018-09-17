@@ -9,7 +9,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("www.kinovea.org")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Copyright © 2006-2017 Joan Charmant")]
+[assembly: AssemblyCopyright("Copyright © 2006-2018 Joan Charmant")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
