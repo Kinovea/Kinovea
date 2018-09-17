@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2011. joan.charmant@gmail.com 
+Copyright © Joan Charmant 2011. jcharmant@gmail.com 
 Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 */
 #endregion

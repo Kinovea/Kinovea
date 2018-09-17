@@ -1,7 +1,7 @@
 #region License
 /*
 Copyright © Joan Charmant 2008.
-joan.charmant@gmail.com 
+jcharmant@gmail.com 
  
 This file is part of Kinovea.
 
