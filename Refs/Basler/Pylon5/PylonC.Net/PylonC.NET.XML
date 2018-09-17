@@ -14,9 +14,9 @@
             Creates a new callback handler for node callbacks.
             </summary>
         </member>
-        <member name="M:PylonC.NET.NodeCallbackHandler.OnCallbackEvent(PylonC.NET.NODE_HANDLE)">
+        <member name="T:PylonC.NET.NodeCallbackHandler.NodeCallback">
             <summary>
-            Notifies registered classes in case of a callback.
+            Prototype of a callback handling method
             </summary>
             <param name="hNode">Handle of the node causing the callback.</param>
         </member>
@@ -25,9 +25,9 @@
             Can be used to register for the callback event.
             </summary>
         </member>
-        <member name="T:PylonC.NET.NodeCallbackHandler.NodeCallback">
+        <member name="M:PylonC.NET.NodeCallbackHandler.OnCallbackEvent(PylonC.NET.NODE_HANDLE)">
             <summary>
-            Prototype of a callback handling method
+            Notifies registered classes in case of a callback.
             </summary>
             <param name="hNode">Handle of the node causing the callback.</param>
         </member>
@@ -41,9 +41,9 @@
             Creates a new callback handler for device removal callbacks.
             </summary>
         </member>
-        <member name="M:PylonC.NET.DeviceCallbackHandler.OnCallbackEvent(PylonC.NET.PYLON_DEVICE_HANDLE)">
+        <member name="T:PylonC.NET.DeviceCallbackHandler.DeviceCallback">
             <summary>
-            Notifies registered classes in case of a callback.
+            Prototype of a callback handling method
             </summary>
             <param name="hDev">Handle of the device causing the callback.</param>
         </member>
@@ -52,71 +52,15 @@
             Can be used to register for the callback event.
             </summary>
         </member>
-        <member name="T:PylonC.NET.DeviceCallbackHandler.DeviceCallback">
+        <member name="M:PylonC.NET.DeviceCallbackHandler.OnCallbackEvent(PylonC.NET.PYLON_DEVICE_HANDLE)">
             <summary>
-            Prototype of a callback handling method
+            Notifies registered classes in case of a callback.
             </summary>
             <param name="hDev">Handle of the device causing the callback.</param>
         </member>
         <member name="T:PylonC.NET.NODEMAP_HANDLE">
             <summary>
             A handle for a node map object.
-            </summary>
-        </member>
-        <member name="T:PylonC.NET.HandleBase">
-            <summary>
-            Provides the basic functionality of a handle.
-            </summary>
-        </member>
-        <member name="M:PylonC.NET.HandleBase.Equals(System.Object)">
-            <summary>
-            Overloaded. Determines whether two handles are equal.
-            </summary>
-            <param name="rhs">Determines whether the specified handle is equal to the current handle.</param>
-            <returns>True if equal.</returns>
-        </member>
-        <member name="M:PylonC.NET.HandleBase.op_Equality(PylonC.NET.HandleBase,PylonC.NET.HandleBase)">
-            <summary>
-            Determines whether two handles are equal.
-            </summary>
-            <param name="lhs">Handle A.</param>
-            <param name="rhs">Handle B.</param>
-            <returns>True if equal.</returns>
-        </member>
-        <member name="M:PylonC.NET.HandleBase.op_Inequality(PylonC.NET.HandleBase,PylonC.NET.HandleBase)">
-            <summary>
-            Determines whether two handles are not equal.
-            </summary>
-            <param name="lhs">Handle A.</param>
-            <param name="rhs">Handle B.</param>
-            <returns>True if not equal.</returns>
-        </member>
-        <member name="M:PylonC.NET.HandleBase.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type. GetHashCode is suitable for use in hashing algorithms and data structures like a hash table.
-            </summary>
-            <returns>Hash value</returns>
-        </member>
-        <member name="M:PylonC.NET.HandleBase.ToInt">
-            <summary>
-            Returns a unique integer value for the scope of object.
-            </summary>
-            <returns>Unique integer value for the scope of object</returns>
-        </member>
-        <member name="M:PylonC.NET.HandleBase.SetInvalid">
-            <summary>
-            Sets the handle invalid.
-            </summary>
-        </member>
-        <member name="M:PylonC.NET.HandleBase.FromInt(System.Int64)">
-            <summary>
-            Reserved, do not use
-            </summary>
-            <param name="handleAsInt">Reserved, do not use</param>
-        </member>
-        <member name="P:PylonC.NET.HandleBase.IsValid">
-            <summary>
-            Returns true if the handle is valid.
             </summary>
         </member>
         <member name="T:PylonC.NET.NODE_CALLBACK_HANDLE">
@@ -1297,6 +1241,62 @@
             
             Install a callback function, to be called whenever any of the node's attributes changes. This also includes the access mode of the node.
         </member>
+        <member name="T:PylonC.NET.HandleBase">
+            <summary>
+            Provides the basic functionality of a handle.
+            </summary>
+        </member>
+        <member name="P:PylonC.NET.HandleBase.IsValid">
+            <summary>
+            Returns true if the handle is valid.
+            </summary>
+        </member>
+        <member name="M:PylonC.NET.HandleBase.Equals(System.Object)">
+            <summary>
+            Overloaded. Determines whether two handles are equal.
+            </summary>
+            <param name="rhs">Determines whether the specified handle is equal to the current handle.</param>
+            <returns>True if equal.</returns>
+        </member>
+        <member name="M:PylonC.NET.HandleBase.op_Equality(PylonC.NET.HandleBase,PylonC.NET.HandleBase)">
+            <summary>
+            Determines whether two handles are equal.
+            </summary>
+            <param name="lhs">Handle A.</param>
+            <param name="rhs">Handle B.</param>
+            <returns>True if equal.</returns>
+        </member>
+        <member name="M:PylonC.NET.HandleBase.op_Inequality(PylonC.NET.HandleBase,PylonC.NET.HandleBase)">
+            <summary>
+            Determines whether two handles are not equal.
+            </summary>
+            <param name="lhs">Handle A.</param>
+            <param name="rhs">Handle B.</param>
+            <returns>True if not equal.</returns>
+        </member>
+        <member name="M:PylonC.NET.HandleBase.GetHashCode">
+            <summary>
+            Serves as a hash function for a particular type. GetHashCode is suitable for use in hashing algorithms and data structures like a hash table.
+            </summary>
+            <returns>Hash value</returns>
+        </member>
+        <member name="M:PylonC.NET.HandleBase.ToInt">
+            <summary>
+            Returns a unique integer value for the scope of object.
+            </summary>
+            <returns>Unique integer value for the scope of object</returns>
+        </member>
+        <member name="M:PylonC.NET.HandleBase.SetInvalid">
+            <summary>
+            Sets the handle invalid.
+            </summary>
+        </member>
+        <member name="M:PylonC.NET.HandleBase.FromInt(System.Int64)">
+            <summary>
+            Reserved, do not use
+            </summary>
+            <param name="handleAsInt">Reserved, do not use</param>
+        </member>
         <member name="T:PylonC.NET.PylonBuffer`1">
             <summary>
             The PylonBuffer support class eases the creation, the life time handling, and the pinning of a
@@ -1305,6 +1305,21 @@
             must not go out of scope while it is still registered.
             </summary>
             <typeparam name="T">Array element type SByte, Byte, Int16, UInt16, Int32, or UInt32</typeparam>
+        </member>
+        <member name="P:PylonC.NET.PylonBuffer`1.Array">
+            <summary>
+            Returns associated the array.
+            </summary>
+        </member>
+        <member name="P:PylonC.NET.PylonBuffer`1.Pointer">
+            <summary>
+            Returns the pointer to the array.
+            </summary>
+        </member>
+        <member name="P:PylonC.NET.PylonBuffer`1.SizeByte">
+            <summary>
+            Returns the size of the array in bytes.
+            </summary>
         </member>
         <member name="M:PylonC.NET.PylonBuffer`1.#ctor(System.UInt32,System.Boolean)">
             <summary>
@@ -1328,21 +1343,6 @@
         <member name="M:PylonC.NET.PylonBuffer`1.Dispose">
             <summary>
             Unpins and releases the array.
-            </summary>
-        </member>
-        <member name="P:PylonC.NET.PylonBuffer`1.Array">
-            <summary>
-            Returns associated the array.
-            </summary>
-        </member>
-        <member name="P:PylonC.NET.PylonBuffer`1.Pointer">
-            <summary>
-            Returns the pointer to the array.
-            </summary>
-        </member>
-        <member name="P:PylonC.NET.PylonBuffer`1.SizeByte">
-            <summary>
-            Returns the size of the array in bytes.
             </summary>
         </member>
         <member name="T:PylonC.NET.PylonGrabResult_t">
@@ -2043,6 +2043,11 @@
             Portable Network Graphics, lossless data compression. 
             </summary>
         </member>
+        <member name="F:PylonC.NET.EPylonImageFileFormat.ImageFileFormat_Raw">
+            <summary>
+            Saves the raw image buffer data. Packed image formats are unpacked. In the format used for saving, the data cannot be loaded using Pylon. ImagePersistenceLoad. 
+            </summary>
+        </member>
         <member name="T:PylonC.NET.EPylonImageOrientation">
             <summary>
             Defines the vertical orientation of an image in memory. 
@@ -2328,10 +2333,10 @@
             Enumerate all camera devices. 
             </summary>
             <returns>
-            Count of camera devices 
+            Count of camera devices found 
             </returns>
             
-            This function returns the total count of all camera devices detected by the pylon.NET system regardless of the cameras' interfaces (GigE, IEEE 1394, Camera Link,...). 
+            This function returns the total count of all camera devices detected by the pylon.NET system regardless of the cameras' interfaces (GigE, IEEE 1394, Camera Link,...) and creates an internal list of device information objects ordered by device type (USB first, then GigE, CameraLink, 1394) and serial number. The device information objects are accessible by the index with Pylon.GetDeviceInfo() function.  The internal list of device information objects changes for all threads. 
         </member>
         <member name="M:PylonC.NET.Pylon.GigEEnumerateAllDevices">
             <summary>
@@ -2341,7 +2346,7 @@
             Count of GigE camera devices 
             </returns>
             
-            This function returns the total count of all GigE camera devices detected by the pylon.NET system. In contrast to the Pylon.EnumerateDevices() method, devices will be listed that have a subnet configured that is different from the subnet of the application. 
+            This function returns the total count of all GigE camera devices detected by the pylon.NET system and creates an internal list of device information objects ordered by serial number. The devices are accessible by the index with Pylon.GetDeviceInfo() function. In contrast to the Pylon.EnumerateDevices() function, devices will be listed that have a subnet configured that is different from the subnet of the host system network adapters.  The internal list of device information objects changes for all threads. This function uses the same internal list of device information objects as the Pylon.EnumerateDevices() function. 
         </member>
         <member name="M:PylonC.NET.Pylon.GigEForceIp(System.String,System.String,System.String,System.String)">
             <summary>
@@ -2518,7 +2523,7 @@
             This method can be used to check if a camera device can be created and opened. 
             </summary>
             <param name="index">
-            Device index. 
+            Device index, see also Pylon.EnumerateDevices() for more information. 
             </param>
             <param name="accessMode">
             Used for defining how a device is accessed. The use of the mode information is transport layer specific. For IIDC 1394 devices the mode information is ignored. For GigE devices the flags Exclusive and Control are used for defining how a device is accessed. 
@@ -2527,7 +2532,7 @@
             True if device can be opened with provided access mode. 
             </returns>
             
-            This method can be used to check if a camera device can be created and opened. 
+            This method can be used to check if a camera device can be created and opened. The internal list of device information objects does not change. 
         </member>
         <member name="M:PylonC.NET.Pylon.DeviceOpen(PylonC.NET.PYLON_DEVICE_HANDLE,System.Int32)">
             <summary>
@@ -4611,7 +4616,7 @@
              Returns the action command result status.
              </param>
              If a Microsoft Windows operating system is used, sending a broadcast out on multiple network interfaces is executed for each interface sequentially. That's why additional latency is added to the execution time of a command, when sending a broadcast message over a wider broadcast address range than required, e.g. when using the broadcast address 255.255.255.255.IP4 addresses must be used. groupMask must not be 0. numResult 0 if a timeoutMs value other than 0 is passed. 
-             The method is thread-safe. 
+             The function is thread-safe. 
              <returns>
              Returns true if numResults have been received and the \c Status of all results is \c PylonGigEActionCommandStatus_Ok.
              </returns>
@@ -4677,7 +4682,7 @@
              Returns the action command result status.
              </param>
              If a Microsoft Windows operating system is used, sending a broadcast out on multiple network interfaces is executed for each interface sequentially. That's why additional latency is added to the execution time of a command, when sending a broadcast message over a wider broadcast address range than required, e.g. when using the broadcast address 255.255.255.255.IP4 addresses must be used. groupMask must not be 0. numResult 0 if a timeoutMs value other than 0 is passed. actionTimeNs must be smaller than or equal INT64_MAX. 
-             The method is thread-safe. 
+             The function is thread-safe. 
              <returns>
              Returns true if numResults have been received and the \c Status of all results is \c PylonGigEActionCommandStatus_Ok.
              </returns>
