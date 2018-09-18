@@ -2688,6 +2688,7 @@ namespace Kinovea.ScreenManager
         }
         private void SurfaceScreen_MiddleDown()
         {
+            // Middle mouse button is used to pan the image or move a drawing while the active tool is not the hand tool.
             if (m_bIsCurrentlyPlaying)
             {
                 // MouseDown while playing: Halt the video.
@@ -2698,9 +2699,10 @@ namespace Kinovea.ScreenManager
             }
 
             m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
-
-            SetCursor(m_PointerTool.GetCursor(1));
-
+            if (m_FrameServer.Metadata.HitDrawing != null)
+                SetCursor(CursorManager.GetManipulationCursor(m_FrameServer.Metadata.HitDrawing));
+            else
+                SetCursor(m_PointerTool.GetCursor(1));
         }
         private void CreateNewDrawing(Guid managerId)
         {
