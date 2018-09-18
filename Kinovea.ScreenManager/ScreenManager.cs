@@ -1278,7 +1278,7 @@ namespace Kinovea.ScreenManager
             if (screen is PlayerScreen)
             {
                 PlayerScreen player = screen as PlayerScreen;
-                bool canCutOrCopy = player.FrameServer.Metadata.HitDrawing != null;
+                bool canCutOrCopy = player.FrameServer.Metadata.HitDrawing != null && player.FrameServer.Metadata.HitDrawing.IsCopyPasteable;
                 mnuCutDrawing.Enabled = canCutOrCopy;
                 mnuCopyDrawing.Enabled = canCutOrCopy;
                 if (!canCutOrCopy)
@@ -1297,6 +1297,12 @@ namespace Kinovea.ScreenManager
                 {
                     mnuPasteDrawing.Text = string.Format("Paste drawing ({0})", DrawingClipboard.Name);
                 }
+            }
+            else
+            {
+                mnuCutDrawing.Enabled = false;
+                mnuCopyDrawing.Enabled = false;
+                mnuPasteDrawing.Enabled = false;
             }
         }
         #endregion

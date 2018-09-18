@@ -2839,9 +2839,7 @@ namespace Kinovea.ScreenManager
             {
                 AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
                 PrepareDrawingContextMenu(drawing, popMenuDrawings);
-                popMenuDrawings.Items.Add(mnuCutDrawing);
-                popMenuDrawings.Items.Add(mnuCopyDrawing);
-                popMenuDrawings.Items.Add(mnuSepDrawing3);
+                
                 popMenuDrawings.Items.Add(mnuDeleteDrawing);
                 panelCenter.ContextMenuStrip = popMenuDrawings;
             }
@@ -2944,6 +2942,13 @@ namespace Kinovea.ScreenManager
 
             if (hasExtraMenus)
                 popMenu.Items.Add(mnuSepDrawing2);
+
+            if (drawing.IsCopyPasteable)
+            {
+                popMenuDrawings.Items.Add(mnuCutDrawing);
+                popMenuDrawings.Items.Add(mnuCopyDrawing);
+                popMenuDrawings.Items.Add(mnuSepDrawing3);
+            }
         }
 
         private void PrepareDrawingContextMenuCapabilities(AbstractDrawing drawing, ContextMenuStrip popMenu)
@@ -4127,7 +4132,7 @@ namespace Kinovea.ScreenManager
         private void CutDrawing()
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-            if (drawing == null)
+            if (drawing == null || !drawing.IsCopyPasteable)
                 return;
 
             Guid keyframeId = m_FrameServer.Metadata.FindAttachmentKeyframeId(m_FrameServer.Metadata.HitDrawing);
@@ -4150,7 +4155,7 @@ namespace Kinovea.ScreenManager
         private void CopyDrawing()
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-            if (drawing == null)
+            if (drawing == null || !drawing.IsCopyPasteable)
                 return;
 
             Guid keyframeId = m_FrameServer.Metadata.FindAttachmentKeyframeId(m_FrameServer.Metadata.HitDrawing);
@@ -4171,6 +4176,8 @@ namespace Kinovea.ScreenManager
             string data = DrawingClipboard.Content;
 
             AbstractDrawing drawing = DrawingSerializer.DeserializeMemento(data, m_FrameServer.Metadata);
+            if (!drawing.IsCopyPasteable)
+                return;
 
             Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
             if (kf == null)

@@ -31,6 +31,7 @@ namespace Kinovea.ScreenManager
         Fading = 4,
         Opacity = 8,
         Track = 16,
-        DataAnalysis = 32
+        DataAnalysis = 32,
+        CopyPaste = 64
     }
 }
