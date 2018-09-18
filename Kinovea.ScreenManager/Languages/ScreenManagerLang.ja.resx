@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>両方のビデオの前のフレームへ</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>両方のビデオの再生 | 停止</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>ドローイングの追加</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>ドローイングの削除</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>キーイメージの削除</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>ビデオの保存</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>パースペクティブグリッド</value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>ファイル上書き</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>ファイル {0} は既に存在します。\n置き換えますか？</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>無効なファイル名</value></data>
@@ -264,6 +266,9 @@
    <data name="Generic_Image" xml:space="preserve"><value>イメージ</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>ビデオ</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>イメージの保存</value></data>
+   
+   
+   
    
    
    
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>保存…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>計測値の較正…</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>較正…</value></data>
-   <data name="mnuSendPic" xml:space="preserve"><value>イメージを他のビデオに送る</value></data>
    
    <data name="mnuShowCoordinates" xml:space="preserve"><value>座標を表示</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>計測値を表示</value></data>
@@ -379,6 +383,12 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>グリッド</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>目盛り</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>隠す</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>作業範囲をビデオ全体にリセット</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>太字</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>イタリック</value></data>
@@ -439,6 +448,13 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>概要…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>逆再生…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>オートコントラスト…</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    

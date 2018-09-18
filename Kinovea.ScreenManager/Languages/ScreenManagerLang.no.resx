@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Gå til forrige bilde for begge videoer</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Spill av | Pause for begge videoer</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Legg til tegning</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Slett tegning</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Slett nøkkelbilde</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Lagre video</value></data>
@@ -228,6 +229,7 @@
    
    
    
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – kan ikke lage slideshow</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Et slidehow er en sekvens nøkkelbilder som er lagret I et videoformat.\n Vennligst legg til nøkkelbilder før du genererer slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Kan ikke lage video</value></data>
@@ -264,6 +266,9 @@
    <data name="Generic_Image" xml:space="preserve"><value>Bilde</value></data>
    
    <data name="Generic_SaveImage" xml:space="preserve"><value>Lagre bilde</value></data>
+   
+   
+   
    
    
    
@@ -363,7 +368,6 @@
    
    
    
-   
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>End bane Editor</value></data>
    
@@ -374,6 +378,12 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Vis/Skjul Standardverktøy</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Følg banen</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Tilbakestill arbeidssonen til hele videoen</value></data>
    
    
@@ -439,6 +448,13 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    

@@ -115,6 +115,7 @@
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Mémoire allouée pour la mémoire tampon : {0} Mo.</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Montrer les dessins pendant la lecture vidéo</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Activer le filtrage des coordonnées</value></data>
+   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve"><value>Mode de debug pour les outils personalisés</value></data>
    <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Opacité par défaut pour les nouveaux dessins :</value></data>
    <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Visible pendant toute la durée de la vidéo</value></data>
    <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Disparaissent autour de l’image à laquelle ils ont été ajouté</value></data>

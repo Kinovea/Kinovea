@@ -1283,19 +1283,19 @@ namespace Kinovea.ScreenManager
                 mnuCopyDrawing.Enabled = canCutOrCopy;
                 if (!canCutOrCopy)
                 {
-                    mnuCutDrawing.Text = "Cut drawing";
-                    mnuCopyDrawing.Text = "Copy drawing";
+                    mnuCutDrawing.Text = ScreenManagerLang.mnuCutDrawing;
+                    mnuCopyDrawing.Text = ScreenManagerLang.mnuCopyDrawing;
                 }
                 else
                 {
-                    mnuCutDrawing.Text = string.Format("Cut drawing ({0})", player.FrameServer.Metadata.HitDrawing.Name);
-                    mnuCopyDrawing.Text = string.Format("Copy drawing ({0})", player.FrameServer.Metadata.HitDrawing.Name);
+                    mnuCutDrawing.Text = string.Format("{0} ({1})", ScreenManagerLang.mnuCutDrawing, player.FrameServer.Metadata.HitDrawing.Name);
+                    mnuCopyDrawing.Text = string.Format("{0} ({1})", ScreenManagerLang.mnuCopyDrawing, player.FrameServer.Metadata.HitDrawing.Name);
                 }
                 
                 mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
                 if (DrawingClipboard.HasContent)
                 {
-                    mnuPasteDrawing.Text = string.Format("Paste drawing ({0})", DrawingClipboard.Name);
+                    mnuPasteDrawing.Text = string.Format("{0} ({1})", ScreenManagerLang.mnuPasteDrawing, DrawingClipboard.Name);
                 }
             }
             else
@@ -1332,9 +1332,9 @@ namespace Kinovea.ScreenManager
             mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
 
             // Edit
-            mnuCutDrawing.Text = "Cut drawing";
-            mnuCopyDrawing.Text = "Copy drawing";
-            mnuPasteDrawing.Text = "Paste drawing";
+            mnuCutDrawing.Text = ScreenManagerLang.mnuCutDrawing;
+            mnuCopyDrawing.Text = ScreenManagerLang.mnuCopyDrawing;
+            mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             mnuCutDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CutDrawing);
             mnuCopyDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyDrawing);
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);

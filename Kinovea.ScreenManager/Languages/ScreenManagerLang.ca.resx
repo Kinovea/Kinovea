@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Anar al fotograma anterior en ambdós vídeos</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reproduir | Pausar ambdós vídeos</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Afegir un dibuix</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Esborrar dibuix</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Esborrar un fotograma clau</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Desar el vídeo</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Graella de perspectiva</value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobreescriure l'arixiu</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>L'arxiu {0} ja existeix.\n Voleu reemplaçar-lo?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nom d'arxiu invàlid</value></data>
@@ -269,6 +271,9 @@
    <data name="Generic_Import" xml:space="preserve"><value>Importar</value></data>
    <data name="Generic_Restore" xml:space="preserve"><value>Restaurar paràmetres per defecte</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Sortir</value></data>
+   
+   
+   
    <data name="FileProperty_Size" xml:space="preserve"><value>Mesura</value></data>
    <data name="FileProperty_Framerate" xml:space="preserve"><value>Freqüència d'imatges</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>Duració</value></data>
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>Desar</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar la mesura...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar...</value></data>
-   <data name="mnuSendPic" xml:space="preserve"><value>Enviar l'imatge a l'altre vídeo</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configurar la velocitat del video</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Mostrar coordenades</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar mesura</value></data>
@@ -382,6 +386,12 @@
    <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Finalitzar la polilínia aquí</value></data>
    <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Finalitzar la polilínia al punt anterior</value></data>
    <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Tancar aquest menú</value></data>
+   
+   
+   
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Colors emprats recentment:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Buit</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pausa</value></data>
@@ -416,7 +426,6 @@
    <data name="ToolTip_StopRecording" xml:space="preserve"><value>Finalitzar la gravació de vídeo</value></data>
    <data name="ToolTip_PauseCamera" xml:space="preserve"><value>Aturar la càmera</value></data>
    <data name="ToolTip_StartCamera" xml:space="preserve"><value>Iniciar la càmera</value></data>
-   <data name="ToolTip_ConfigureCaptureMosaic" xml:space="preserve"><value>Configurar el mosaic</value></data>
    <data name="ToolTip_ConfigureCamera" xml:space="preserve"><value>Configurar la càmera</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Restablir la zona de treball a tot el vídeo</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Negreta</value></data>
@@ -444,7 +453,14 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Arxiu</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Data</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Els següents projectes no han estat desats però poden ser recuperats:</value></data>
-   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Configurar el mosaic</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

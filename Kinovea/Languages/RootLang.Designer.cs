@@ -403,6 +403,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom tools debug mode.
+        /// </summary>
+        public static string dlgPreferences_Drawings_chkCustomToolsDebugMode {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Drawings_chkCustomToolsDebugMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show drawings when video is playing.
         /// </summary>
         public static string dlgPreferences_Drawings_chkDrawOnPlay {

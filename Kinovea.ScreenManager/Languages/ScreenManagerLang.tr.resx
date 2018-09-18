@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Her İki Video için Bir Önceki Kareye Git</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Her İki Videoyu Oynat | Duraklat</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Çizim Ekle</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Çizim Sil</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Bir Anahtar İmajı Kaldır </value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Video Kaydet</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektif Izgarası</value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Dosyanın üzerine yaz</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Dosya {0} zaten mevcut.\nDeğiştirmek istiyor musunuz?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Geçersiz dosya ismi</value></data>
@@ -264,6 +266,9 @@
    <data name="Generic_Image" xml:space="preserve"><value>İmaj</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>İmaj Kaydet</value></data>
+   
+   
+   
    
    
    
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>Kaydet...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Ölçümü Kalibre Et...</value></data>
    
-   <data name="mnuSendPic" xml:space="preserve"><value>İmajı diğer videoya gönder</value></data>
    
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Koordinatları göster</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Ölçümü Göster</value></data>
@@ -374,6 +378,12 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Ortak Kontrolleri Göster/Gizle</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>İzlenen Yol</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Çalışma Alanını Tam Videoya Geri Ayarla</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Koyu</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>İtalik</value></data>
@@ -439,6 +448,13 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Göz Atma...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Geri...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Oto Kontrast...</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    

@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Idź do Poprzedniej Klatki obu plików wideo</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Odtwórz | Zatrzymaj wideo</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Dodaj rysunek</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Usuń rysunek</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Usuń obraz kluczowy</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Zapisz wideo</value></data>
@@ -228,6 +229,7 @@
    
    
    
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - nie można utworzyć pokazu slajdów.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Pokaz slajdów jest to sekwencja kluczowy obrazów zapisanych w formacie wideo.\n Dodaj proszę kilka kluczowych obrazów przed generacją pokazu.</value></data>
    
@@ -264,6 +266,9 @@
    
    
    <data name="Generic_SaveImage" xml:space="preserve"><value>Zapisz obraz</value></data>
+   
+   
+   
    
    
    
@@ -366,13 +371,18 @@
    
    
    
-   
    <data name="mnuSwapScreens" xml:space="preserve"><value>Odwróć pozycję wideo</value></data>
    
    
    
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Pokaż/Ukryj wspólne sterowanie</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Zresetuj Obszar Roboczy</value></data>
    
    
@@ -439,6 +448,13 @@
    
    
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Kontrast...</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    

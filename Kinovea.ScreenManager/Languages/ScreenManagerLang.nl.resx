@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Ga naar het vorige frame van beide videos</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Speel | Pauzeer beide videos</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Voeg een tekening toe</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Verwijder tekening</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Verwijder een Kernbeeld</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Bewaar video</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspectief raster</value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overschrijf bestand</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Het bestand {0} bestaat reeds.\nWilt u het vervangen?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Incorrecte bestandsnaam</value></data>
@@ -269,6 +271,9 @@
    <data name="Generic_Import" xml:space="preserve"><value>Importeren</value></data>
    <data name="Generic_Restore" xml:space="preserve"><value>Herstel naar standaard</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Afsluiten</value></data>
+   
+   
+   
    <data name="FileProperty_Size" xml:space="preserve"><value>Grootte</value></data>
    <data name="FileProperty_Framerate" xml:space="preserve"><value>Framerate</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>Lengte</value></data>
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Fixeer de afmeting</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibreer…</value></data>
-   <data name="mnuSendPic" xml:space="preserve"><value>Zend beeld naar de andere video</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configureer de videotiming…</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Toon coördinaten</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Toon afmeting</value></data>
@@ -382,6 +386,12 @@
    <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Beëindig polylijn hier</value></data>
    <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Beëindigi polylijn bij vorige punt</value></data>
    <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Sluit dit menu</value></data>
+   
+   
+   
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Recent gebruikte kleuren:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Leeg</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pauze</value></data>
@@ -416,7 +426,6 @@
    <data name="ToolTip_StopRecording" xml:space="preserve"><value>Stop video opname</value></data>
    <data name="ToolTip_PauseCamera" xml:space="preserve"><value>Pauzeer camera</value></data>
    <data name="ToolTip_StartCamera" xml:space="preserve"><value>Start camera</value></data>
-   <data name="ToolTip_ConfigureCaptureMosaic" xml:space="preserve"><value>Configureer het mozaïek</value></data>
    <data name="ToolTip_ConfigureCamera" xml:space="preserve"><value>Configureer de camera</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Herstel het werkgebied naar volledige video</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Vet</value></data>
@@ -444,7 +453,14 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Bestand</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Datum</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>De volgende projecten werden niet correct opgeslagen, maar kunnen hersteld worden:</value></data>
-   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Configureer het mozaïek</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

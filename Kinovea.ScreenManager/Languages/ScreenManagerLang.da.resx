@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Hop til forrige billede på begge videoer</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Afspil | Pause begge videoer</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Tilføj tegning</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Slet tegning</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Fjern nøglebillede</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Gem video</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektivgitter</value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overskriv fil</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Filen {0} eksisterer allerede.\nØnsker du at overskrive den?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Ugyldigt filnavn</value></data>
@@ -264,6 +266,9 @@
    <data name="Generic_Image" xml:space="preserve"><value>Billede</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Gem billede</value></data>
+   
+   
+   
    
    
    
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>Gem…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrer måling…</value></data>
    
-   <data name="mnuSendPic" xml:space="preserve"><value>Send billede til den anden video</value></data>
    
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Vis koordinater</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
@@ -374,6 +378,12 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Vis/skjul almindlig styring</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Følg spor</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Nulstil arbejdsområde til hele videoen</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Frenhævet</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Kursiv</value></data>
@@ -439,6 +448,13 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overblik…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Omvendt rækkefølge…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast…</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    

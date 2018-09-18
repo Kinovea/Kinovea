@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Ir al cuadro anterior de ambos videos.</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reproducir | Pausar ambos videos</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Añadir Diseño</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Borrar Diseño</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Remover Imagen Clave</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Guardar Video</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Cuadrícula de Perspectiva </value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobrescribir archivo</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>El archivo {0} ya existe.\n¿Desea reemplazarlo ?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nombre de archivo no válido</value></data>
@@ -264,6 +266,9 @@
    <data name="Generic_Image" xml:space="preserve"><value>Imagen </value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Guardar la imagen.</value></data>
+   
+   
+   
    
    
    
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>Guardar el video o los datos de las imàgenes clave…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Contrastar la medida</value></data>
    
-   <data name="mnuSendPic" xml:space="preserve"><value>Enviar imagen a la otra pantalla</value></data>
    
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Mostrar las coordenadas</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostar la medida</value></data>
@@ -374,6 +378,12 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Mostrar / Ocultar controles comunes</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Seguir la Trayectoria</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reinicializar la zona de trabajo</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Negrita</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Cursiva</value></data>
@@ -439,6 +448,13 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Resumen</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertido...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste...</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    
