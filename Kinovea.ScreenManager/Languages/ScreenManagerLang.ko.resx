@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>두 비디오의 이전 프레임으로</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>두 비디오의 재생|멈춤</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>그림 추가</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>그림 삭제</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>키 이미지' 삭제</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>비디오 저장</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>원근 그리드</value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>파일 덮어쓰기</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>파일 {0}이 존재함.\n대체할까요?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>잘못된 파일명.</value></data>
@@ -264,6 +266,9 @@
    <data name="Generic_Image" xml:space="preserve"><value>이미지</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>비디오</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>이미지 저장</value></data>
+   
+   
+   
    
    
    
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>저장…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>자를 측정함</value></data>
    
-   <data name="mnuSendPic" xml:space="preserve"><value>다른 비디오로 이미지를 보냄</value></data>
    
    <data name="mnuShowCoordinates" xml:space="preserve"><value>좌표 표시</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>자 표시</value></data>
@@ -374,6 +378,12 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>공통 조절을 보임/감춤</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>경로를 추적</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>작업영역을 전체로 초기화</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>굵게</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>이태릭체로</value></data>
@@ -439,6 +448,13 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>개관(overview)…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>반대(reverse)…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    

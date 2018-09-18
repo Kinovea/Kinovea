@@ -119,6 +119,7 @@
    
    
    
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>فك التشابك دائما عند فتح فيديو جديد.</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>تحديث الصورة عند حركة المؤشر</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ربط شرائط تمرير السرعة عند مقارنة الفيديوهات</value></data>

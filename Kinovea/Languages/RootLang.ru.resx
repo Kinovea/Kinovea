@@ -115,6 +115,7 @@
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Выделенная память для съемки в буфер : {0} MB.</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Показывать рисунки во время воспроизведения видео</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Разрешить фильтрацию координат</value></data>
+   
    <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Новые рисунки по умолчанию непрозрачные</value></data>
    <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Видимый на протяжении всего видео</value></data>
    <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Эффект выцветания при удалении от кадра на котором они были добавлены</value></data>

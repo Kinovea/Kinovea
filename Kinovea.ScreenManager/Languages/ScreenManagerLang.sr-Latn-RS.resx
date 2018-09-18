@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Idi na prethodni okvir za oba video zapisa</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reprodukuj | zaustavi oba video zapisa</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Dodaj crtež</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Obriši crtež</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Ukloni ključnu sliku</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Sačuvaj video</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektiva koordinantne mreže</value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Zamena datoteka</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Datoteka {0} već postoji.\nDa li želite da je zamenite?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Ime datoteke nije odgovarajuće</value></data>
@@ -264,6 +266,9 @@
    <data name="Generic_Image" xml:space="preserve"><value>Slika</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Sačuvaj sliku</value></data>
+   
+   
+   
    
    
    
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>Sačuvaj...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibriši meru...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Kalibriši...</value></data>
-   <data name="mnuSendPic" xml:space="preserve"><value>Pošaljite sliku drugom video zapisu</value></data>
    
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Prikaži koordinate</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Prikaži meru</value></data>
@@ -379,6 +383,12 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Koordinatna mreža</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Stepenovanje</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Sakriti</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Vrati Radnu zonu na videozapis u celosti</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Podebljano</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Kurziv</value></data>
@@ -439,6 +448,13 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Pregled...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverzija...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatsko podešavanje kontrasta...</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    

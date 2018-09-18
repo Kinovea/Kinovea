@@ -44,12 +44,11 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeUI(DelayCompositeConfiguration current)
         {
-            //this.Text = ScreenManagerLang.FormConfigureComposite_Title;
-            this.Text = "Configure delay mode";
+            this.Text = ScreenManagerLang.FormConfigureComposite_Title;
             gbConfiguration.Text = ScreenManagerLang.Generic_Configuration;
-            rbDelay.Text = "Delay";
-            rbSlowMotion.Text = "Slow motion";
-            rbQuadrants.Text = "Quadrants";
+            rbDelay.Text = ScreenManagerLang.FormConfigureComposite_Delay;
+            rbSlowMotion.Text = ScreenManagerLang.FormConfigureComposite_SlowMotion;
+            rbQuadrants.Text = ScreenManagerLang.FormConfigureComposite_Quadrants;
             
             int currentType = (int)current.CompositeType;
 

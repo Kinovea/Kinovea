@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>跳到两个视频的上一帧</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>播放 | 暂停 两个视频</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>新增绘制</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>删除绘制</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>移除一个关键帧</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>保存视频</value></data>
@@ -228,6 +229,7 @@
    
    
    
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>无法创建幻灯片.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>一张幻灯片是在视频文件内保存的一系列关键图像序列.\n 请在生成幻灯片之前添加一些关键图像.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>不能建立暂停视频</value></data>
@@ -264,6 +266,9 @@
    <data name="Generic_Image" xml:space="preserve"><value>图片</value></data>
    
    <data name="Generic_SaveImage" xml:space="preserve"><value>保存图片</value></data>
+   
+   
+   
    
    
    
@@ -363,7 +368,6 @@
    
    
    
-   
    <data name="mnuShowMeasure" xml:space="preserve"><value>显示测量</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>结束路径 </value></data>
    
@@ -374,6 +378,12 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>显示/隐藏 常见控制</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>跟踪路径</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>重置工作区的全部视频</value></data>
    
    
@@ -439,6 +448,13 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>马赛克...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>反向...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>自动对比度...</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    

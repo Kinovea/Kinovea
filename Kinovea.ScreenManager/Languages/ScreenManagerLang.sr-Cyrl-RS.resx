@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Иди на претходну слику за оба видео записа</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Репродукуј | заустави оба видео записа</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Додај цртеж</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Обриши цртеж</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Уклони кључну слику</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Сачувај видео</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Перспектива координантне мреже</value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Замена датотека</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Датотека {0} већ постоји.\nДа ли желите да је замените?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Име датотеке није одговарајуће</value></data>
@@ -269,6 +271,9 @@
    <data name="Generic_Import" xml:space="preserve"><value>Увези</value></data>
    <data name="Generic_Restore" xml:space="preserve"><value>Поништи подразумевано</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Напусти</value></data>
+   
+   
+   
    <data name="FileProperty_Size" xml:space="preserve"><value>Величина</value></data>
    <data name="FileProperty_Framerate" xml:space="preserve"><value>Број слика у секунди</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>Трајање</value></data>
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>Сачувај...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Калибриши меру...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Калибриши...</value></data>
-   <data name="mnuSendPic" xml:space="preserve"><value>Пошаљите слику другом видео запису</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Подеси време видео записа</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Прикажи координате</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Прикажи меру</value></data>
@@ -382,6 +386,12 @@
    <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Заврши линију из више делова овде</value></data>
    <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Заврши линију из више делова на претходној тачки</value></data>
    <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Затвори овај мени</value></data>
+   
+   
+   
+   
+   
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Недавно коришћење боје :</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Празно</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Паузирај</value></data>
@@ -416,7 +426,6 @@
    <data name="ToolTip_StopRecording" xml:space="preserve"><value>Прекини снимање видео записа</value></data>
    <data name="ToolTip_PauseCamera" xml:space="preserve"><value>Паузирај камеру</value></data>
    <data name="ToolTip_StartCamera" xml:space="preserve"><value>Покрени камеру</value></data>
-   <data name="ToolTip_ConfigureCaptureMosaic" xml:space="preserve"><value>Подеси мозаик</value></data>
    <data name="ToolTip_ConfigureCamera" xml:space="preserve"><value>Подеси камеру</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Врати Радну зону на видеозапис у целости</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Подебљано</value></data>
@@ -444,7 +453,14 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Датотека</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Датум</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Пројекат није сачуван исправно али се може опоравити:</value></data>
-   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Подеси мозаик</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    

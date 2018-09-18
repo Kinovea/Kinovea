@@ -43,8 +43,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override string ToolDisplayName
         {
-            //get {  return ScreenManagerLang.ToolTip_DrawingToolRectangle; }
-            get { return "Rectangle"; }
+            get { return ScreenManagerLang.DrawingName_Rectangle; }
         }
         public override int ContentHash
         {

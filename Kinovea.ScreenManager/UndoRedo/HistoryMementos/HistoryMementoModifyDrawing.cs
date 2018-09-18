@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
         public void UpdateCommandName(string name)
         {
             drawingName = name;
-            commandName = commandName = string.Format("{0} ({1})", "Modify drawing", drawingName);
+            commandName = commandName = string.Format("{0} ({1})", ScreenManagerLang.CommandModifyDrawing_FriendlyName, drawingName);
         }
     }
 }

@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Mergi la cadrul anterior pentru ambele fişiere video </value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Rulează | Pune pauză pentru ambele fişiere video</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Adaugă desen</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Şterge desen</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Şterge cadru cheie</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Salvează fişier video</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Grilă de perspectivă</value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Suprascrie fişierul</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Fişierul {0} există deja.\nDoriţi să-l înlocuiţi?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nume fişier invalid</value></data>
@@ -264,6 +266,9 @@
    <data name="Generic_Image" xml:space="preserve"><value>Imagine</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video </value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Salvează cadrul</value></data>
+   
+   
+   
    
    
    
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>Salvează fişierul video sau datele cadrelor cheie...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibreaza...</value></data>
    
-   <data name="mnuSendPic" xml:space="preserve"><value>Trimite imaginea către alt fişier video</value></data>
    
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Afişează coordonatele</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afiseaza indicator</value></data>
@@ -374,6 +378,12 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Arată/Ascunde controalele comune</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Urmăreşte traiectoria</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Resetează zona de lucru</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Bold</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Italic</value></data>
@@ -439,6 +448,13 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Privire de ansamblu</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inversează...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast automat...</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    

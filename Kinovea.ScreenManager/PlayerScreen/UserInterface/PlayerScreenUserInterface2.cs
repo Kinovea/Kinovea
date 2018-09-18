@@ -301,7 +301,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPlayPause = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
-        //private ToolStripMenuItem mnuSendPic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCopyPic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPastePic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
@@ -2482,25 +2481,25 @@ namespace Kinovea.ScreenManager
             
             // 1. Default context menu.
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
-            mnuPasteDrawing.Text = "Paste drawing";
+            mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
             mnuPlayPause.Text = ScreenManagerLang.mnuPlayPause;
             mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
             mnuCopyPic.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyImage);
-            mnuPastePic.Text = "Paste image from clipboard";
+            mnuPastePic.Text = ScreenManagerLang.mnuPasteImage;
             mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
             mnuCloseScreen.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.Close);
             
             // 2. Drawings context menu.
             mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
-            mnuSetStyleAsDefault.Text = "Set style as default";
+            mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
             mnuAlwaysVisible.Text = ScreenManagerLang.dlgConfigureFading_chkAlwaysVisible;
             mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
-            mnuCutDrawing.Text = "Cut";
+            mnuCutDrawing.Text = ScreenManagerLang.Generic_Cut;
             mnuCutDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CutDrawing);
-            mnuCopyDrawing.Text = "Copy";
+            mnuCopyDrawing.Text = ScreenManagerLang.Generic_Copy;
             mnuCopyDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyDrawing);
             mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
             mnuDeleteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
@@ -2820,8 +2819,7 @@ namespace Kinovea.ScreenManager
             {
                 mnuDirectTrack.Visible = false;
                 mnuPasteDrawing.Visible = false;
-                mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
-                mnuPastePic.Enabled = Clipboard.ContainsImage();
+                mnuPastePic.Visible = false;
                 panelCenter.ContextMenuStrip = popMenu;
                 return;
             }
@@ -2833,8 +2831,7 @@ namespace Kinovea.ScreenManager
             {
                 mnuDirectTrack.Visible = false;
                 mnuPasteDrawing.Visible = false;
-                mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
-                mnuPastePic.Enabled = Clipboard.ContainsImage();
+                mnuPastePic.Visible = false;
                 panelCenter.ContextMenuStrip = popMenu;
             }
             else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
@@ -2916,6 +2913,7 @@ namespace Kinovea.ScreenManager
                 mnuDirectTrack.Visible = true;
                 mnuPasteDrawing.Visible = true;
                 mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
+                mnuPastePic.Visible = true;
                 mnuPastePic.Enabled = Clipboard.ContainsImage();
                 panelCenter.ContextMenuStrip = popMenu;
             }
@@ -2962,7 +2960,7 @@ namespace Kinovea.ScreenManager
                 mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 popMenu.Items.Add(mnuConfigureDrawing);
                 
-                mnuSetStyleAsDefault.Text = "Set style as default";
+                mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
                 popMenu.Items.Add(mnuSetStyleAsDefault);
             }
             
@@ -3499,8 +3497,7 @@ namespace Kinovea.ScreenManager
         {
             mnuDirectTrack.Visible = false;
             mnuPasteDrawing.Visible = false;
-            mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
-            mnuPastePic.Enabled = Clipboard.ContainsImage();
+            mnuPastePic.Visible = false;
             panelCenter.ContextMenuStrip = popMenu;
         }
         #endregion

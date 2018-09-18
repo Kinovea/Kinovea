@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Vai al fotogramma precedente per entrambi i Video</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Riproduci | metti in Pausa entrambi i Video</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Aggiungi disegno</value></data>
+   
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Cancella il disegno</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Rimuovi un'Immagine Chiave</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Salva il Video</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Griglia in prospettiva</value></data>
    
    
+   
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sovrascrittura del file</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Il file {0} esiste gia'.\nVuoi sostituirlo?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nome file non valido</value></data>
@@ -264,6 +266,9 @@
    <data name="Generic_Image" xml:space="preserve"><value>Immagine</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Salva l'Immagine </value></data>
+   
+   
+   
    
    
    
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>Salva...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Misura stabilita...</value></data>
    
-   <data name="mnuSendPic" xml:space="preserve"><value>Invia un'immagine all'altro video</value></data>
    
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Visualizza le coordinate</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Visualizza la misura</value></data>
@@ -374,6 +378,12 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Mostra/nascondi i Controlli Comuni</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Traccia la Traiettoria</value></data>
+   
+   
+   
+   
+   
+   
    
    
    
@@ -417,7 +427,6 @@
    
    
    
-   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reimposta la Zona Lavoro pari al Video Intero</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Grassetto</value></data>
    <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Italico</value></data>
@@ -439,6 +448,13 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Panoramica...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>A ritroso...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrasto automatico...</value></data>
+   
+   
+   
+   
+   
+   
+   
    
    
    

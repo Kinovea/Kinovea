@@ -382,7 +382,7 @@ namespace Kinovea.ScreenManager
         private void ReloadTooltipsCulture()
         {
             toolTips.SetToolTip(btnSettings, ScreenManagerLang.ToolTip_ConfigureCamera);
-            toolTips.SetToolTip(btnConfigureComposite, ScreenManagerLang.ToolTip_ConfigureCaptureMosaic);
+            toolTips.SetToolTip(btnConfigureComposite, ScreenManagerLang.FormConfigureComposite_Title);
             toolTips.SetToolTip(btnSnapshot, ScreenManagerLang.Generic_SaveImage);
 
             if (recording)

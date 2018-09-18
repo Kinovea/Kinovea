@@ -76,7 +76,7 @@ namespace Kinovea.ScreenManager
             get
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                mnuShowArrow.Text = "Show arrow";
+                mnuShowArrow.Text = ScreenManagerLang.mnuShowArrow;
                 mnuShowArrow.Checked = showArrow;
                 contextMenu.Add(mnuShowArrow);
                 return contextMenu;

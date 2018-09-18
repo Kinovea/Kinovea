@@ -77,6 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Go to Previous Frame for Both Videos</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Play | Pause Both Videos</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Add Drawing</value></data>
+   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>Modify Drawing</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Delete Drawing</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Remove a Key Image</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Save Video</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspective grid</value></data>
    <data name="DrawingName_Rectangle" xml:space="preserve"><value>Rectangle</value></data>
    <data name="DrawingName_Trajectory" xml:space="preserve"><value>Trajectory</value></data>
+   <data name="DrawingName_Curve" xml:space="preserve"><value>Curve</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>File overwrite</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>The file {0} already exists.\nDo you want to replace it?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Invalid file name</value></data>
@@ -269,6 +271,9 @@
    <data name="Generic_Import" xml:space="preserve"><value>Import</value></data>
    <data name="Generic_Restore" xml:space="preserve"><value>Restore default</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Quit</value></data>
+   <data name="Generic_Cut" xml:space="preserve"><value>Cut</value></data>
+   <data name="Generic_Copy" xml:space="preserve"><value>Copy</value></data>
+   <data name="Generic_Paste" xml:space="preserve"><value>Paste</value></data>
    <data name="FileProperty_Size" xml:space="preserve"><value>Size</value></data>
    <data name="FileProperty_Framerate" xml:space="preserve"><value>Framerate</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>Duration</value></data>
@@ -361,7 +366,6 @@
    <data name="mnuSave" xml:space="preserve"><value>Save...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrate measure...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrate...</value></data>
-   <data name="mnuSendPic" xml:space="preserve"><value>Send image to the other video</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configure video timing...</value></data>
    <data name="mnuShowCoordinates" xml:space="preserve"><value>Display coordinates</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Display Measure</value></data>
@@ -382,6 +386,12 @@
    <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Finish polyline here</value></data>
    <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Finish polyline at previous point</value></data>
    <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Close this menu</value></data>
+   <data name="mnuCutDrawing" xml:space="preserve"><value>Cut drawing</value></data>
+   <data name="mnuCopyDrawing" xml:space="preserve"><value>Copy drawing</value></data>
+   <data name="mnuPasteDrawing" xml:space="preserve"><value>Paste drawing</value></data>
+   <data name="mnuSetStyleAsDefault" xml:space="preserve"><value>Set style as default</value></data>
+   <data name="mnuPasteImage" xml:space="preserve"><value>Paste image from clipboard</value></data>
+   <data name="mnuShowArrow" xml:space="preserve"><value>Show arrow</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Recently used colors:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Empty</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pause</value></data>
@@ -416,7 +426,6 @@
    <data name="ToolTip_StopRecording" xml:space="preserve"><value>Stop recording video</value></data>
    <data name="ToolTip_PauseCamera" xml:space="preserve"><value>Pause camera</value></data>
    <data name="ToolTip_StartCamera" xml:space="preserve"><value>Start camera</value></data>
-   <data name="ToolTip_ConfigureCaptureMosaic" xml:space="preserve"><value>Configure mosaic</value></data>
    <data name="ToolTip_ConfigureCamera" xml:space="preserve"><value>Configure camera</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reset the Working Zone to Full Video</value></data>
    <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Bold</value></data>
@@ -444,7 +453,14 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>File</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Date</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>The following projects were not saved properly but can be recovered:</value></data>
-   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Configure mosaic</value></data>
+   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Configure delay mode</value></data>
+   <data name="FormConfigureComposite_Delay" xml:space="preserve"><value>Delay</value></data>
+   <data name="FormConfigureComposite_SlowMotion" xml:space="preserve"><value>Slow motion</value></data>
+   <data name="FormConfigureComposite_Quadrants" xml:space="preserve"><value>Quadrants</value></data>
+   
+   
+   
+   
    
    
    
