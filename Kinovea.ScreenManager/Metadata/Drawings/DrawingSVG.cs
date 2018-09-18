@@ -161,7 +161,7 @@ namespace Kinovea.ScreenManager
         {
             boundingBox.MoveAndSnap((int)dx, (int)dy, videoSize, snapMargin);
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return boundingBox.Rectangle.Center();
         }

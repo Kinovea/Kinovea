@@ -275,7 +275,7 @@ namespace Kinovea.ScreenManager
         public override void MoveDrawing(float dx, float dy, Keys _ModifierKeys, bool zooming)
         {
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return points["0"];
         }

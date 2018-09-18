@@ -4141,7 +4141,7 @@ namespace Kinovea.ScreenManager
             AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
             string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
 
-            DrawingClipboard.Put(data, drawing.GetPosition(), drawing.Name);
+            DrawingClipboard.Put(data, drawing.GetCopyPoint(), drawing.Name);
             
             if (DrawingDeleting != null)
                 DrawingDeleting(this, new DrawingEventArgs(drawing, keyframeId));
@@ -4164,7 +4164,7 @@ namespace Kinovea.ScreenManager
             AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
             string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
 
-            DrawingClipboard.Put(data, drawing.GetPosition(), drawing.Name);
+            DrawingClipboard.Put(data, drawing.GetCopyPoint(), drawing.Name);
 
             OnPoke();
         }
@@ -4196,8 +4196,13 @@ namespace Kinovea.ScreenManager
                 float dx = m_DescaledMouse.X - DrawingClipboard.Position.X;
                 float dy = m_DescaledMouse.Y - DrawingClipboard.Position.Y;
                 drawing.MoveDrawing(dx, dy, Keys.None, m_FrameServer.Metadata.ImageTransform.Zooming);
+                log.DebugFormat("Pasted drawing [{0}] under the mouse.", DrawingClipboard.Name);
             }
-            
+            else
+            {
+                log.DebugFormat("Pasted drawing [{0}] in place.", DrawingClipboard.Name);
+            }
+
             if (DrawingAdding != null)
                 DrawingAdding(this, new DrawingEventArgs(drawing, kf.Id));
         }

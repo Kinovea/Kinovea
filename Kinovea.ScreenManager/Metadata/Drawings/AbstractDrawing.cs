@@ -147,12 +147,13 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Should return a standard position for the drawing based on the internal values.
         /// This is used for copy/paste support, to know where the drawing was at the time of copy, 
-        /// so we can relocate the paste correctly.
+        /// so we can relocate the paste correctly. 
+        /// Drawings keep their internal values in absolute image-space.
         /// The offset between that point and the mouse at copy-time will be computed, 
-        /// and at paste-time we will move the drawing away from the mouse by the same amount.
+        /// and that offset will be injected back at paste-time based on the paste point mouse.
         /// </summary>
         /// <returns></returns>
-        public abstract PointF GetPosition();
+        public abstract PointF GetCopyPoint();
         
         #endregion
 

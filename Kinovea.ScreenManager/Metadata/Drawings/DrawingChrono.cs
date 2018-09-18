@@ -275,7 +275,7 @@ namespace Kinovea.ScreenManager
             mainBackground.Move(dx, dy);
             lblBackground.Move(dx, dy);
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return mainBackground.Rectangle.Center();
         }

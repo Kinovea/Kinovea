@@ -296,7 +296,7 @@ namespace Kinovea.ScreenManager
             points["b"] = points["b"].Translate(dx, dy);
             SignalAllTrackablePointsMoved();
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return GetMiddlePoint();
         }
@@ -347,6 +347,9 @@ namespace Kinovea.ScreenManager
                     case "InfosFading":
                         infosFading.ReadXml(xmlReader);
                         break;
+                    case "Measure":
+                        xmlReader.ReadOuterXml();
+                        break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
@@ -389,7 +392,6 @@ namespace Kinovea.ScreenManager
                 infosFading.WriteXml(w);
                 w.WriteEndElement();
             }
-            
             
             if(ShouldSerializeAll(filter))
             {

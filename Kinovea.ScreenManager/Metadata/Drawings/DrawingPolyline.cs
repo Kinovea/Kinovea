@@ -264,7 +264,7 @@ namespace Kinovea.ScreenManager
             
             SignalAllTrackablePointsMoved();
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return points["0"];
         }

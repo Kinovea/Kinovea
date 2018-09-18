@@ -195,7 +195,7 @@ namespace Kinovea.ScreenManager
             
             return result;
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return points["0"];
         }
@@ -237,6 +237,9 @@ namespace Kinovea.ScreenManager
                         break;
                     case "InfosFading":
                         infosFading.ReadXml(xmlReader);
+                        break;
+                    case "Coordinates":
+                        xmlReader.ReadOuterXml();
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();

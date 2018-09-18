@@ -306,7 +306,7 @@ namespace Kinovea.ScreenManager
             SignalAllTrackablePointsMoved();
             CalibrationHelper.CalibrationByPlane_Update(quadImage);
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return quadImage.A;
         }

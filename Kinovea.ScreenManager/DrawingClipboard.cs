@@ -11,6 +11,7 @@ namespace Kinovea.ScreenManager
         private static string content;
         private static PointF position;
         private static string name;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static bool HasContent
         {
@@ -37,6 +38,8 @@ namespace Kinovea.ScreenManager
             content = _content;
             position = _position;
             name = _name;
+
+            log.DebugFormat("Copied drawing [{0}] to clipboard. Position: {1}", name, position);
         }
     }
 }
