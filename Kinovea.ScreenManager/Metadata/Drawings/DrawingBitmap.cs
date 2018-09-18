@@ -153,7 +153,7 @@ namespace Kinovea.ScreenManager
             boundingBox.MoveHandle(point, handleNumber, new Size(originalWidth, originalHeight), true);
         }
         
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return boundingBox.Rectangle.Center();
         }

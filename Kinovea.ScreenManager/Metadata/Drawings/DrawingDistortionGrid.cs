@@ -208,7 +208,7 @@ namespace Kinovea.ScreenManager
             int handle = handleNumber - 1;
             points[handle] = point;
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return points[0];
         }

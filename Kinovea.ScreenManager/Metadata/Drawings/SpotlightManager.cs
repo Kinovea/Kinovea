@@ -170,7 +170,7 @@ namespace Kinovea.ScreenManager
             
             return handle;
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return PointF.Empty;
         }

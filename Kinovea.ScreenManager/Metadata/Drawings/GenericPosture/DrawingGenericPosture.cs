@@ -280,9 +280,9 @@ namespace Kinovea.ScreenManager
             
             SignalAllTrackablePointsMoved();
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
-            return origin;
+            return genericPosture.Points[0];
         }
         #endregion
 

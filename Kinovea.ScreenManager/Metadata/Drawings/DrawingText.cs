@@ -255,7 +255,7 @@ namespace Kinovea.ScreenManager
 
             RelocateEditbox();
         }
-        public override PointF GetPosition()
+        public override PointF GetCopyPoint()
         {
             return background.Rectangle.Center();
         }
