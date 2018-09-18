@@ -248,6 +248,8 @@ namespace Kinovea.ScreenManager
                 
                 popMenu.Items.Add(new ToolStripSeparator());
             }
+
+            // TODO: Add copy and paste menu here.
             
             popMenu.Items.Add(mnuDeleteDrawing);
         }

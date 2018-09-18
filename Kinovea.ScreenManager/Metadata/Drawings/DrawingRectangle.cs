@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
         {
-            get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
+            get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading | DrawingCapabilities.CopyPaste; }
         }
         public override List<ToolStripItem> ContextMenu
         {

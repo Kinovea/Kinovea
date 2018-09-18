@@ -75,10 +75,11 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                if(genericPosture.Trackable)
-                    return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading | DrawingCapabilities.Track;
-                else
-                    return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading;
+                DrawingCapabilities basicCaps = DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading | DrawingCapabilities.CopyPaste;
+                if (genericPosture.Trackable)
+                    basicCaps |= DrawingCapabilities.Track;
+
+                return basicCaps;
             }
         }
         public override List<ToolStripItem> ContextMenu
