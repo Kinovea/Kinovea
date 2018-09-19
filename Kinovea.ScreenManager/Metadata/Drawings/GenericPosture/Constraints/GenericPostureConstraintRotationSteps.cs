@@ -26,9 +26,14 @@ namespace Kinovea.ScreenManager
 {
     public class GenericPostureConstraintRotationSteps : GenericPostureAbstractConstraint
     {
+        /// <summary>
+        /// Restrict the point so that the angle between leg1-origin and origin-point can only take specific values.
+        /// </summary>
+
         public int Origin { get; private set;}
         public int Leg1 { get; private set;}
         public int Step { get; private set;}
+        public bool KeepDistance { get; private set; }
         
         public GenericPostureConstraintRotationSteps(XmlReader r)
         {
@@ -42,7 +47,10 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("step"))
                 Step = r.ReadContentAsInt();
-            
+
+            if (r.MoveToAttribute("keepDistance"))
+                KeepDistance = r.ReadContentAsBoolean();
+
             r.ReadStartElement();
             
             //if(!isEmpty)
