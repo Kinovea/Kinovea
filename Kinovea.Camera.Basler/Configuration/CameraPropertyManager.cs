@@ -243,11 +243,10 @@ namespace Kinovea.Camera.Basler
             EGenApiRepresentation repr = GenApi.FloatGetRepresentation(nodeHandle);
             double currentValue = GenApi.FloatGetValue(nodeHandle);
 
-            // Fix values that should be log.
-            double range = Math.Log(max - min, 10);
-            if (range > 4 && repr == EGenApiRepresentation.Linear)
-                repr = EGenApiRepresentation.Logarithmic;
-
+            // All float values will be handled by the log slider for now.
+            // We don't have a control for pure numbers (edit box).
+            repr = EGenApiRepresentation.Logarithmic;
+            
             p.Minimum = min.ToString(CultureInfo.InvariantCulture);
             p.Maximum = max.ToString(CultureInfo.InvariantCulture);
             p.Representation = ConvertRepresentation(repr);

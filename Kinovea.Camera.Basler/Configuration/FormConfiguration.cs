@@ -56,6 +56,11 @@ namespace Kinovea.Camera.Basler
             get { return selectedStreamFormat; }
         }
 
+        public bool Debayering
+        {
+            get { return debayering; }
+        }
+
         public Dictionary<string, CameraProperty> CameraProperties
         {
             get { return cameraProperties; }
@@ -66,6 +71,7 @@ namespace Kinovea.Camera.Basler
         private bool iconChanged;
         private bool specificChanged;
         private GenApiEnum selectedStreamFormat;
+        private bool debayering;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -91,14 +97,14 @@ namespace Kinovea.Camera.Basler
             if (cameraProperties.Count != specific.CameraProperties.Count)
                 specificChanged = true;
 
-            Populate();
+            Populate(specific);
         }
         
-        private void Populate()
+        private void Populate(SpecificInfo specific)
         {
             try
             {
-                PopulateStreamFormat();
+                PopulateStreamFormat(specific);
                 PopulateCameraControls();
             }
             catch
@@ -120,7 +126,7 @@ namespace Kinovea.Camera.Basler
             fip.Dispose();
         }
 
-        private void PopulateStreamFormat()
+        private void PopulateStreamFormat(SpecificInfo specific)
         {
             bool readable = Pylon.DeviceFeatureIsReadable(deviceHandle, "PixelFormat");
             if (!readable)
@@ -147,6 +153,10 @@ namespace Kinovea.Camera.Basler
                     cmbFormat.SelectedIndex = cmbFormat.Items.Count - 1;
                 }
             }
+
+            debayering = specific.Debayering;
+            chkDebayering.Enabled = cmbFormat.Enabled;
+            chkDebayering.Checked = debayering;
         }
 
         private void PopulateCameraControls()
@@ -216,6 +226,12 @@ namespace Kinovea.Camera.Basler
                 return;
 
             selectedStreamFormat = selected;
+            specificChanged = true;
+        }
+
+        private void chkDebayering_CheckedChanged(object sender, EventArgs e)
+        {
+            debayering = chkDebayering.Checked;
             specificChanged = true;
         }
     }

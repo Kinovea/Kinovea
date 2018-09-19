@@ -49,6 +49,7 @@ namespace Kinovea.Camera.Basler
         private void InitializeComponent()
         {
             this.gbProperties = new System.Windows.Forms.GroupBox();
+            this.chkDebayering = new System.Windows.Forms.CheckBox();
             this.lblAuto = new System.Windows.Forms.Label();
             this.cmbFormat = new System.Windows.Forms.ComboBox();
             this.lblColorSpace = new System.Windows.Forms.Label();
@@ -63,24 +64,36 @@ namespace Kinovea.Camera.Basler
             // 
             // gbProperties
             // 
-            this.gbProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbProperties.Controls.Add(this.chkDebayering);
             this.gbProperties.Controls.Add(this.lblAuto);
             this.gbProperties.Controls.Add(this.cmbFormat);
             this.gbProperties.Controls.Add(this.lblColorSpace);
             this.gbProperties.Location = new System.Drawing.Point(12, 94);
             this.gbProperties.Name = "gbProperties";
-            this.gbProperties.Size = new System.Drawing.Size(434, 276);
+            this.gbProperties.Size = new System.Drawing.Size(434, 275);
             this.gbProperties.TabIndex = 84;
             this.gbProperties.TabStop = false;
+            // 
+            // chkDebayering
+            // 
+            this.chkDebayering.AutoSize = true;
+            this.chkDebayering.Location = new System.Drawing.Point(24, 70);
+            this.chkDebayering.Name = "chkDebayering";
+            this.chkDebayering.Size = new System.Drawing.Size(158, 17);
+            this.chkDebayering.TabIndex = 102;
+            this.chkDebayering.Text = "Convert raw formats to color";
+            this.chkDebayering.UseVisualStyleBackColor = true;
+            this.chkDebayering.CheckedChanged += new System.EventHandler(this.chkDebayering_CheckedChanged);
             // 
             // lblAuto
             // 
             this.lblAuto.BackColor = System.Drawing.Color.Transparent;
             this.lblAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAuto.ForeColor = System.Drawing.Color.Black;
-            this.lblAuto.Location = new System.Drawing.Point(380, 56);
+            this.lblAuto.Location = new System.Drawing.Point(372, 91);
             this.lblAuto.Name = "lblAuto";
             this.lblAuto.Size = new System.Drawing.Size(56, 23);
             this.lblAuto.TabIndex = 101;
@@ -89,8 +102,8 @@ namespace Kinovea.Camera.Basler
             // 
             // cmbFormat
             // 
-            this.cmbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFormat.FormattingEnabled = true;
             this.cmbFormat.Location = new System.Drawing.Point(214, 26);
@@ -113,8 +126,8 @@ namespace Kinovea.Camera.Basler
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.tbAlias);
             this.groupBox2.Controls.Add(this.lblSystemName);
             this.groupBox2.Controls.Add(this.btnIcon);
@@ -166,7 +179,7 @@ namespace Kinovea.Camera.Basler
             // 
             this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnApply.Location = new System.Drawing.Point(349, 376);
+            this.btnApply.Location = new System.Drawing.Point(349, 375);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(99, 24);
             this.btnApply.TabIndex = 89;
@@ -178,7 +191,7 @@ namespace Kinovea.Camera.Basler
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(458, 412);
+            this.ClientSize = new System.Drawing.Size(458, 411);
             this.Controls.Add(this.btnApply);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.gbProperties);
@@ -189,6 +202,7 @@ namespace Kinovea.Camera.Basler
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Camera configuration";
             this.gbProperties.ResumeLayout(false);
+            this.gbProperties.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -203,5 +217,6 @@ namespace Kinovea.Camera.Basler
         private System.Windows.Forms.Label lblColorSpace;
         private System.Windows.Forms.Label lblAuto;
         private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.CheckBox chkDebayering;
     }
 }

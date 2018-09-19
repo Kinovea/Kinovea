@@ -212,6 +212,7 @@ namespace Kinovea.Camera.Basler
                 if(form.SpecificChanged)
                 {
                     info.StreamFormat = form.SelectedStreamFormat.Symbol;
+                    info.Debayering = form.Debayering;
                     info.CameraProperties = form.CameraProperties;
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
@@ -292,10 +293,15 @@ namespace Kinovea.Camera.Basler
                 info = new SpecificInfo();
 
                 string streamFormat = "";
-
                 XmlNode xmlStreamFormat = doc.SelectSingleNode("/Basler/StreamFormat");
                 if (xmlStreamFormat != null)
                     streamFormat = xmlStreamFormat.InnerText;
+
+                bool debayering = false;
+                XmlNode xmlDebayering = doc.SelectSingleNode("/Basler/Debayering");
+                if (xmlDebayering != null)
+                    debayering = bool.Parse(xmlDebayering.InnerText);
+
 
                 Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
 
@@ -348,6 +354,10 @@ namespace Kinovea.Camera.Basler
             XmlElement xmlStreamFormat = doc.CreateElement("StreamFormat");
             xmlStreamFormat.InnerText = info.StreamFormat;
             xmlRoot.AppendChild(xmlStreamFormat);
+
+            XmlElement xmlDebayering = doc.CreateElement("Debayering");
+            xmlDebayering.InnerText = info.Debayering.ToString().ToLower();
+            xmlRoot.AppendChild(xmlDebayering);
 
             XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
 
