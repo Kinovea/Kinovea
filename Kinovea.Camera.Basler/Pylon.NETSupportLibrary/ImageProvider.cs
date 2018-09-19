@@ -5,9 +5,9 @@ using System.Threading;
 
 namespace PylonC.NETSupportLibrary
 {
-    /* The ImageProvider is responsible for opening and closing a device, it takes care of the grabbing and buffer handling, 
-     it notifies the user via events about state changes, and provides access to GenICam parameter nodes of the device. 
-     The grabbing is done in an internal thread. After an image is grabbed the image ready event is fired by the grab 
+    /* The ImageProvider is responsible for opening and closing a device, it takes care of the grabbing and buffer handling,
+     it notifies the user via events about state changes, and provides access to GenICam parameter nodes of the device.
+     The grabbing is done in an internal thread. After an image is grabbed the image ready event is fired by the grab
      thread. The image can be acquired using GetCurrentImage(). After processing of the image it can be released via ReleaseImage.
      The image is then queued for the next grab.  */
     public class ImageProvider
@@ -55,6 +55,7 @@ namespace PylonC.NETSupportLibrary
         protected List<GrabResult> m_grabbedBuffers; /* List of grab results already grabbed. */
         protected DeviceCallbackHandler m_callbackHandler; /* Handles callbacks from a device .*/
         protected string m_lastError = "";                 /* Holds the error information belonging to the last exception thrown. */
+        protected bool m_debayering = false;
 
         /* Creates the last error text from message and detailed text. */
         private string GetLastErrorText()
@@ -102,6 +103,11 @@ namespace PylonC.NETSupportLibrary
             get { return m_open; }
         }
 
+        public void SetDebayering(bool debayering)
+        {
+            m_debayering = debayering;
+        }
+
         /* Open using index. Before ImageProvider can be opened using the index, Pylon.EnumerateDevices() needs to be called. */
         public void Open(uint index)
         {
@@ -126,7 +132,7 @@ namespace PylonC.NETSupportLibrary
                 /* Try to close the stream grabber. */
                 try
                 {
-                   
+
                     Pylon.StreamGrabberClose(m_hGrabber);
                 }
                 catch (Exception e) { lastException = e; UpdateLastError(); }
@@ -135,7 +141,7 @@ namespace PylonC.NETSupportLibrary
             if (m_hDevice.IsValid)
             {
                 /* Try to deregister the removal callback. */
-                try 
+                try
                 {
                     if (m_hRemovalCallback.IsValid)
                     {
@@ -154,7 +160,7 @@ namespace PylonC.NETSupportLibrary
                     }
                 }
                 catch (Exception e) { lastException = e; UpdateLastError(); }
-                
+
                 /* Try to destroy the device. */
                 try
                 {
@@ -248,7 +254,7 @@ namespace PylonC.NETSupportLibrary
             return null; /* No image available. */
         }
 
-        /* After the ImageReady event has been received and the image was acquired by using GetCurrentImage, 
+        /* After the ImageReady event has been received and the image was acquired by using GetCurrentImage,
         the image must be removed from the grab result queue and added to the stream grabber queue for the next grabs. */
         public bool ReleaseImage()
         {
@@ -307,8 +313,8 @@ namespace PylonC.NETSupportLibrary
                 /* Register the callback function. */
                 m_hRemovalCallback = Pylon.DeviceRegisterRemovalCallback(m_hDevice, m_callbackHandler);
 
-                /* For GigE cameras, we recommend increasing the packet size for better 
-                   performance. When the network adapter supports jumbo frames, set the packet 
+                /* For GigE cameras, we recommend increasing the packet size for better
+                   performance. When the network adapter supports jumbo frames, set the packet
                    size to a value > 1500, e.g., to 8192. In this sample, we only set the packet size
                    to 1500. */
                 /* ... Check first to see if the GigE camera packet size parameter is supported and if it is writable. */
@@ -346,9 +352,9 @@ namespace PylonC.NETSupportLibrary
                     Pylon.DeviceFeatureFromString(m_hDevice, "TriggerMode", "Off");
                 }
 
-                /* Image grabbing is done using a stream grabber.  
-                  A device may be able to provide different streams. A separate stream grabber must 
-                  be used for each stream. In this sample, we create a stream grabber for the default 
+                /* Image grabbing is done using a stream grabber.
+                  A device may be able to provide different streams. A separate stream grabber must
+                  be used for each stream. In this sample, we create a stream grabber for the default
                   stream, i.e., the first stream ( index == 0 ).
                   */
 
@@ -408,7 +414,7 @@ namespace PylonC.NETSupportLibrary
                 images continuously. */
                 Pylon.DeviceFeatureFromString(m_hDevice, "AcquisitionMode", "Continuous");
             }
-        
+
             /* Clear the grab buffers to assure proper operation (because they may
              still be filled if the last grab has thrown an exception). */
             foreach (KeyValuePair<PYLON_STREAMBUFFER_HANDLE, PylonBuffer<Byte>> pair in m_buffers)
@@ -420,7 +426,7 @@ namespace PylonC.NETSupportLibrary
             /* Determine the required size of the grab buffer. */
             uint payloadSize = checked((uint)Pylon.DeviceGetIntegerFeature(m_hDevice, "PayloadSize"));
 
-            /* We must tell the stream grabber the number and size of the m_buffers 
+            /* We must tell the stream grabber the number and size of the m_buffers
                 we are using. */
             /* .. We will not use more than NUM_m_buffers for grabbing. */
             Pylon.StreamGrabberSetMaxNumBuffer(m_hGrabber, m_numberOfBuffersUsed);
@@ -428,7 +434,7 @@ namespace PylonC.NETSupportLibrary
             /* .. We will not use m_buffers bigger than payloadSize bytes. */
             Pylon.StreamGrabberSetMaxBufferSize(m_hGrabber, payloadSize);
 
-            /*  Allocate the resources required for grabbing. After this, critical parameters 
+            /*  Allocate the resources required for grabbing. After this, critical parameters
                 that impact the payload size must not be changed until FinishGrab() is called. */
             Pylon.StreamGrabberPrepareGrab(m_hGrabber);
 
@@ -445,9 +451,9 @@ namespace PylonC.NETSupportLibrary
                 m_buffers.Add(handle, buffer);
             }
 
-            /* Feed the m_buffers into the stream grabber's input queue. For each buffer, the API 
+            /* Feed the m_buffers into the stream grabber's input queue. For each buffer, the API
                allows passing in an integer as additional context information. This integer
-               will be returned unchanged when the grab is finished. In our example, we use the index of the 
+               will be returned unchanged when the grab is finished. In our example, we use the index of the
                buffer as context information. */
             foreach (KeyValuePair<PYLON_STREAMBUFFER_HANDLE, PylonBuffer<Byte>> pair in m_buffers)
             {
@@ -494,12 +500,12 @@ namespace PylonC.NETSupportLibrary
                     }
 
                     PylonGrabResult_t grabResult; /* Stores the result of a grab operation. */
-                    /* Since the wait operation was successful, the result of at least one grab 
+                    /* Since the wait operation was successful, the result of at least one grab
                        operation is available. Retrieve it. */
                     if (!Pylon.StreamGrabberRetrieveResult(m_hGrabber, out grabResult))
                     {
-                        /* Oops. No grab result available? We should never have reached this point. 
-                           Since the wait operation above returned without a timeout, a grab result 
+                        /* Oops. No grab result available? We should never have reached this point.
+                           Since the wait operation above returned without a timeout, a grab result
                            should be available. */
                         throw new Exception("Failed to retrieve a grab result.");
                     }
@@ -510,7 +516,7 @@ namespace PylonC.NETSupportLibrary
                         /* Add result to the ready list. */
                         EnqueueTakenImage(grabResult);
 
-                        /* Notify that an image has been added to the output queue. The receiver of the event can use GetCurrentImage() to acquire and process the image 
+                        /* Notify that an image has been added to the output queue. The receiver of the event can use GetCurrentImage() to acquire and process the image
                          and ReleaseImage() to remove the image from the queue and return it to the stream grabber.*/
                         OnImageReadyEvent();
 
@@ -522,8 +528,8 @@ namespace PylonC.NETSupportLibrary
                         }
                     } else if (grabResult.Status == EPylonGrabStatus.Failed)
                     {
-                        /* 
-                            Grabbing an image can fail if the used network hardware, i.e. network adapter, 
+                        /*
+                            Grabbing an image can fail if the used network hardware, i.e. network adapter,
                             switch or Ethernet cable, experiences performance problems.
                             Increase the Inter-Packet Delay to reduce the required bandwidth.
                             It is recommended to enable Jumbo Frames on the network adapter and switch.
@@ -534,7 +540,7 @@ namespace PylonC.NETSupportLibrary
                         throw new Exception(string.Format("A grab failure occurred. See the method ImageProvider::Grab for more information. The error code is {0:X08}.", grabResult.ErrorCode));
                     }
                 }
-                
+
                 /* Tear down everything needed for grabbing. */
                 CleanUpGrab();
             }
@@ -598,7 +604,7 @@ namespace PylonC.NETSupportLibrary
                 {
                     m_convertedBuffers = new Dictionary<PYLON_STREAMBUFFER_HANDLE,PylonBuffer<byte>>(); /* Create a new dictionary for the converted buffers. */
                     m_hConverter = Pylon.ImageFormatConverterCreate(); /* Create the converter. */
-                    m_converterOutputFormatIsColor = !Pylon.IsMono(grabResult.PixelType) || Pylon.IsBayer(grabResult.PixelType);
+                    m_converterOutputFormatIsColor = !Pylon.IsMono(grabResult.PixelType) || (Pylon.IsBayer(grabResult.PixelType) && m_debayering);
                 }
                 /* Reference to the buffer attached to the grab result handle. */
                 PylonBuffer<Byte> convertedBuffer = null;
@@ -673,7 +679,7 @@ namespace PylonC.NETSupportLibrary
             /* ... Release grabbing related resources. */
             Pylon.StreamGrabberFinishGrab(m_hGrabber);
 
-            /* After calling PylonStreamGrabberFinishGrab(), parameters that impact the payload size (e.g., 
+            /* After calling PylonStreamGrabberFinishGrab(), parameters that impact the payload size (e.g.,
             the AOI width and height parameters) are unlocked and can be modified again. */
         }
 
@@ -748,7 +754,7 @@ namespace PylonC.NETSupportLibrary
             }
         }
 
-        /* Notify that an image has been added to the output queue. The receiver of the event can use GetCurrentImage() to acquire and process the image 
+        /* Notify that an image has been added to the output queue. The receiver of the event can use GetCurrentImage() to acquire and process the image
          and ReleaseImage() to remove the image from the queue and return it to the stream grabber.*/
         protected void OnImageReadyEvent()
         {

@@ -711,6 +711,9 @@ namespace Kinovea.ScreenManager
         
         private void UpdateTitle()
         {
+            if (view == null)
+                return;
+
             view.UpdateTitle(cameraManager.GetSummaryAsText(cameraSummary), cameraSummary.Icon);
         }
         

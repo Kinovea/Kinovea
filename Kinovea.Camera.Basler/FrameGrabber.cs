@@ -114,14 +114,18 @@ namespace Kinovea.Camera.Basler
             int height = (int)Pylon.DeviceGetIntegerFeature(deviceHandle, "Height");
             string pixelFormat = Pylon.DeviceFeatureToString(deviceHandle, "PixelFormat");
 
-            // Note: the image provider will perform the Bayer conversion itself and only output two formats.
-            // - Y800 for anything monochrome.
-            // - RGB32 for anything color.
             EPylonPixelType pixelType = Pylon.PixelTypeFromString(pixelFormat);
             if (pixelType == EPylonPixelType.PixelType_Undefined)
                 return ImageDescriptor.Invalid;
 
-            bool monochrome = Pylon.IsMono(pixelType) && !Pylon.IsBayer(pixelType);
+            // Note: the image provider will perform the Bayer conversion itself and only output two formats.
+            // - Y800 for anything monochrome.
+            // - RGB32 for anything color.
+            imageProvider.SetDebayering(specific.Debayering);
+            bool monochrome = Pylon.IsMono(pixelType);
+            if (Pylon.IsBayer(pixelType) && specific.Debayering)
+                monochrome = false;
+
             ImageFormat format = monochrome ? format = ImageFormat.Y800 : ImageFormat.RGB32;
 
             int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
