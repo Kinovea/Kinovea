@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2018.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -20,19 +20,16 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    public enum ConstraintType
+    public class GenericPostureConstraintLockedInPlace : GenericPostureAbstractConstraint
     {
-        None,
-        LineSlide,
-        VerticalSlide,
-        HorizontalSlide,
-        DistanceToPoint,
-        RotationSteps,
-        PerpendicularSlide,
-        ParallelSlide,
-        LockedInPlace
+        public GenericPostureConstraintLockedInPlace()
+        {
+        }
     }
 }
+
+

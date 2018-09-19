@@ -150,6 +150,9 @@ namespace Kinovea.ScreenManager
                 case ConstraintType.ParallelSlide:
                     Constraint = new GenericPostureConstraintParallelSlide(r);
                     break;
+                case ConstraintType.LockedInPlace:
+                    Constraint = new GenericPostureConstraintLockedInPlace();
+                    break;
                 default:
                     string outerXml = r.ReadOuterXml();
                     log.DebugFormat("Unparsed content: {0}", outerXml);

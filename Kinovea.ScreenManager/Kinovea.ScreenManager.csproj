@@ -266,6 +266,7 @@
     <Compile Include="Metadata\Drawings\DrawingRectangle.cs" />
     <Compile Include="Metadata\Drawings\DrawingTestGrid.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolTestGrid.cs" />
+    <Compile Include="Metadata\Drawings\GenericPosture\Constraints\GenericPostureConstraintLockedInPlace.cs" />
     <Compile Include="Metadata\Drawings\Styling\Bicolor.cs" />
     <Compile Include="Metadata\Drawings\Styling\PenShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementPenShape.cs" />

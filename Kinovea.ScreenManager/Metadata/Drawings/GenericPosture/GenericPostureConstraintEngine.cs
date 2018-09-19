@@ -94,6 +94,8 @@ namespace Kinovea.ScreenManager
                     case ConstraintType.ParallelSlide:
                         MovePointHandleAlongParallel(posture, calibrationHelper, handle, point, constraint as GenericPostureConstraintParallelSlide);
                         break;
+                    case ConstraintType.LockedInPlace:
+                        break;
                 }
             }
             
@@ -171,6 +173,8 @@ namespace Kinovea.ScreenManager
                         break;
                     case ConstraintType.VerticalSlide:
                         MoveSegmentHandleAlongVertical(posture, handle, point);
+                        break;
+                    case ConstraintType.LockedInPlace:
                         break;
                 }
             }
