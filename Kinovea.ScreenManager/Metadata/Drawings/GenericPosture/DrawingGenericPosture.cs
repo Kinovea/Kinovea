@@ -633,11 +633,15 @@ namespace Kinovea.ScreenManager
                     debugLabel += string.Format("Value: {0:0.0} {1}", value, CalibrationHelper.GetAngleAbbreviation());
                     
                     SizeF debugLabelSize = canvas.MeasureString(debugLabel, debugFont);
-                    int debugLabelDistance = (int)debugOffset.X * 3;
+                    int debugLabelDistance = (int)debugOffset.X * 8;
                     PointF debugLabelPositionRelative = angleHelper.GetTextPosition(debugLabelDistance, debugLabelSize);
                     debugLabelPositionRelative = debugLabelPositionRelative.Scale((float)transformer.Scale);
                     PointF debugLabelPosition = new PointF(origin.X + debugLabelPositionRelative.X, origin.Y + debugLabelPositionRelative.Y);
-                    DrawDebugText(debugLabelPosition, debugOffset, debugLabel, canvas, opacity, transformer);
+                    
+                    RectangleF backRectangle = new RectangleF(debugLabelPosition, debugLabelSize);
+                    int roundingRadius = (int)(debugFont.Height * 0.25f);
+                    RoundedRectangle.Draw(canvas, backRectangle, debugBrush, roundingRadius, false, false, null);
+                    canvas.DrawString(debugLabel, debugFont, Brushes.White, backRectangle.Location);
                 }
             }
             
