@@ -38,6 +38,7 @@ namespace Kinovea.ScreenManager
         public int Leg2 { get; private set;}
         
         // Options defining the appearance of the angle on screen.
+        public int TextDistance { get; set; }
         public int Radius { get; set;}
         public bool Tenth { get; private set; }
         public Color Color { get; private set; }
@@ -57,6 +58,7 @@ namespace Kinovea.ScreenManager
             Name = "";
             Symbol = "";
 
+            TextDistance = 40;
             Radius = 40;
             Tenth = false;
             Color = Color.Transparent;
@@ -84,7 +86,10 @@ namespace Kinovea.ScreenManager
             if(r.MoveToAttribute("radius"))
                 Radius = r.ReadContentAsInt();
 
-            if(r.MoveToAttribute("tenth"))
+            if (r.MoveToAttribute("textDistance"))
+                TextDistance = r.ReadContentAsInt();
+
+            if (r.MoveToAttribute("tenth"))
                 Tenth = XmlHelper.ParseBoolean(r.ReadContentAsString());
                 
             if(r.MoveToAttribute("color"))

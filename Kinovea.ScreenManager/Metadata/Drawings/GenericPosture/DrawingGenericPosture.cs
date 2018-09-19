@@ -813,10 +813,8 @@ namespace Kinovea.ScreenManager
         }
         private void InitAngles()
         {
-            int textDistance = 40;
-
             for (int i = 0; i < genericPosture.Angles.Count; i++)
-                angles.Add(new AngleHelper(textDistance, genericPosture.Angles[i].Radius, genericPosture.Angles[i].Tenth, genericPosture.Angles[i].Symbol));
+                angles.Add(new AngleHelper(genericPosture.Angles[i].TextDistance, genericPosture.Angles[i].Radius, genericPosture.Angles[i].Tenth, genericPosture.Angles[i].Symbol));
         }
         private void UpdateAngles()
         {
