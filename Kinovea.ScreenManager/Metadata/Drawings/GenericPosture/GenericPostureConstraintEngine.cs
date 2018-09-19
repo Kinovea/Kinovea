@@ -333,8 +333,16 @@ namespace Kinovea.ScreenManager
             if(parent == leg1 || constraint.Step == 0)
                 return;
             
+            PointF candidate = point;
+            if (constraint.KeepDistance)
+            {
+                PointF leg2 = posture.Points[posture.Handles[handle].Reference];
+                float distance = GeometryHelper.GetDistance(parent, leg2);
+                candidate = GeometryHelper.GetPointAtDistance(parent, point, distance);
+            }
+            
             int constraintAngleSubdivisions = 360/constraint.Step;
-            posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetPointAtClosestRotationStep(parent, leg1, point, constraintAngleSubdivisions);
+            posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetPointAtClosestRotationStep(parent, leg1, candidate, constraintAngleSubdivisions);
         }
         private static void MovePointHandleAlongPerpendicular(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, PointF point, GenericPostureConstraintPerpendicularSlide constraint)
         {
