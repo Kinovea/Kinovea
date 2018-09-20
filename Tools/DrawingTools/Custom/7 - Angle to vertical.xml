@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
+  <Id>B0D88F59-FA46-4B8A-A2B3-F28A66FE2163</Id>
   <Name>AngleToVertical</Name>
   <DisplayName>DrawingName_AngleToVertical</DisplayName>
-  <Id>B0D88F59-FA46-4B8A-A2B3-F28A66FE2163</Id>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh
+    0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAChSURBVHjaYvz//z8DJYARmwHLa8MlgJ
+    QKEL8A4jvo8pHNK+FsJhwG+wHxYSAuJeQCJgLy/yg1gIFSA/6Ta4AQlLYl1wBxKK0DxBPIMeA6U
+    iDmA/FkcsNgJxD/AuIcXIYQMuAREPsD8XeoIdPIicYdQBwENSQT3SWEDGBEM+QLEB9BVsBCQpoB
+    GaIExK+JMeAUEFcC8QU08ddE5UZSAECAAQBFQCX0Qd5cdAAAAABJRU5ErkJggg==
+  </Icon>
+
+  <!-- Data -->
   <PointCount>4</PointCount>
+  <InitialConfiguration>
+    <Point>100;100</Point>
+    <Point>100;250</Point>
+    <Point>100;400</Point>
+    <Point>200;400</Point>
+  </InitialConfiguration>
   <Segments>
     <Segment point1="0" point2="2" style="Dash" width="2"/>
     <Segment point1="1" point2="3" name="" style="Solid" width="2"/>
@@ -12,6 +27,8 @@
   <Angles>
     <Angle origin="1" leg1="2" leg2="3" tenth="true"/>
   </Angles>
+
+  <!-- Interaction -->
   <Handles>
     <Handle type="Point" reference="0">
       <Constraint type="VerticalSlide"/>
@@ -29,14 +46,6 @@
     </Handle>
     <Handle type="Point" reference="3" trackable="true"/>
   </Handles>
+
   <Capabilities flipVertical="true"/>
-  <Icon>
-iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAChSURBVHjaYvz//z8DJYARmwHLa8MlgJQKEL8A4jvo8pHNK+FsJhwG+wHxYSAuJeQCJgLy/yg1gIFSA/6Ta4AQlLYl1wBxKK0DxBPIMeA6UiDmA/FkcsNgJxD/AuIcXIYQMuAREPsD8XeoIdPIicYdQBwENSQT3SWEDGBEM+QLEB9BVsBCQpoBGaIExK+JMeAUEFcC8QU08ddE5UZSAECAAQBFQCX0Qd5cdAAAAABJRU5ErkJggg==
-  </Icon>
-  <InitialConfiguration>
-    <Point>100;100</Point>
-    <Point>100;250</Point>
-    <Point>100;400</Point>
-    <Point>200;400</Point>
-  </InitialConfiguration>
 </KinoveaPostureTool>

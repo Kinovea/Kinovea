@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
+  <Id>954e9de2-f141-4b87-bcc2-4d87c362dcfa</Id>
   <Name>CSVL</Name>
   <DisplayName>DrawingName_CSVL</DisplayName>
-  <Id>954e9de2-f141-4b87-bcc2-4d87c362dcfa</Id>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAACmVlamVlaxaWmzbGy
+    zbGyuY2OzbGywZ2ezbGymVlamVlamVlamVlazbGymVlamVlazbGyrXV1ZfBw2AAAAEHRSTlMAZp
+    gt0u2rmYF+eEg8JBsYpFhAlgAAADhJREFUGNNjIB+wCDJjCqABZgq08DKBAKsgG4jiBgrwCICAo
+    KAQiOICCvAzQgAHiEAYxMnOR7anAMd5Acrb1R4XAAAAAElFTkSuQmCC
+  </Icon>
+
+  <!-- Data -->
   <PointCount>5</PointCount>
+  <InitialConfiguration>
+    <Point>100;400</Point>
+    <Point>200;400</Point>
+    <Point>300;400</Point>
+    <Point>200;100</Point>
+    <Point>200;450</Point>
+  </InitialConfiguration>
   <Segments>
     <Segment name="Intercrestal line" point1="0" point2="2" style="Solid" width="2"/>
     <Segment name="Central sacral vertical line" point1="4" point2="3" style="Dash" arrowEnd="true" width="2"/>
   </Segments>
+
+  <!-- Interaction -->
   <Handles>
     <Handle type="Point" reference="0">
       <Impact type="SegmentCenter">
@@ -35,16 +52,5 @@
       </Constraint>
     </Handle>
   </Handles>
-  <Icon>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUAAACmVlamVlaxaWmzbGyz
-bGyuY2OzbGywZ2ezbGymVlamVlamVlamVlazbGymVlamVlazbGyrXV1ZfBw2AAAAEHRSTlMAZpgt
-0u2rmYF+eEg8JBsYpFhAlgAAADhJREFUGNNjIB+wCDJjCqABZgq08DKBAKsgG4jiBgrwCICAoKAQ
-iOICCvAzQgAHiEAYxMnOR7anAMd5Acrb1R4XAAAAAElFTkSuQmCC
-  </Icon>
-  <InitialConfiguration>
-    <Point>100;400</Point>
-    <Point>200;400</Point>
-    <Point>300;400</Point>
-    <Point>200;100</Point>
-    <Point>200;450</Point>
-  </InitialConfiguration>
+  
 </KinoveaPostureTool>
