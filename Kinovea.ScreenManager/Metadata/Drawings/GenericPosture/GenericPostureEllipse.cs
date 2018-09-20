@@ -60,9 +60,6 @@ namespace Kinovea.ScreenManager
             if(r.MoveToAttribute("radius"))
                 Radius = r.ReadContentAsInt();
 
-            if(r.MoveToAttribute("name"))
-                name = r.ReadContentAsString();
-
             if(r.MoveToAttribute("style"))
                 Style = (SegmentLineStyle) Enum.Parse(typeof(SegmentLineStyle), r.ReadContentAsString());
             
