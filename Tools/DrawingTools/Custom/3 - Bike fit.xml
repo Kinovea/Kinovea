@@ -13,17 +13,16 @@
   </Icon>
 
   <!-- Data -->
-  <PointCount>8</PointCount>
-  <InitialConfiguration>
-    <Point>200;200</Point> <!-- tip of head -->
-    <Point>160;210</Point> <!-- shoulder -->
-    <Point>180;270</Point> <!-- elbow -->
-    <Point>210;330</Point> <!-- hand -->
-    <Point>50;260</Point> <!-- hip -->
-    <Point>110;300</Point> <!-- knee -->
-    <Point>40;420</Point> <!-- ankle or heel-->
-    <Point>60;450</Point> <!-- tip of foot -->
-  </InitialConfiguration>
+  <Points>
+    <Point name="tip of head" value="200;200" color="#dc322f" />
+    <Point name="shoulder" value="160;210" color="#b58900" />
+    <Point name="elbow" value="180;270" color="#dc322f" />
+    <Point name="hand" value="210;330" color="#dc322f"/>
+    <Point name="hip" value="50;260" color="#268bd2" />
+    <Point name="knee" value="110;300" color="#d33682" />
+    <Point name="ankle" value="40;420" color="#6c71c4" />
+    <Point name="tip of foot" value="60;450" color="#2aa198" />
+  </Points>
   <Segments>
     <Segment name="Head" point1="0" point2="1" style="Solid" width="2" color="#dc322f"/>
     <Segment name="Arm" point1="1" point2="2" style="Solid" width="2" color="#b58900"/>
@@ -36,20 +35,20 @@
   <Angles>
   	<!-- Angle directions for a bike looking to the right. -->
     <Angle name="arm/torso" origin="1" leg1="4" leg2="2" signed="true" ccw="true" supplementary="false" radius="30" color="#b58900"/>
-    <Angle name="knee"      origin="5" leg1="4" leg2="6" signed="true" ccw="true" supplementary="false" radius="40" color="#d33682"/>
-    <Angle name="hip"       origin="4" leg1="1" leg2="5" signed="true" ccw="false" supplementary="false" radius="30" color="#268bd2"/>
-    <Angle name="elbow"     origin="2" leg1="1" leg2="3" signed="true" ccw="false" supplementary="false" radius="20" color="#dc322f"/>
-    <Angle name="ankle"     origin="6" leg1="5" leg2="7" signed="true" ccw="false" supplementary="false" radius="20" color="#6c71c4"/>
+    <Angle name="knee" origin="5" leg1="4" leg2="6" signed="true" ccw="true" supplementary="false" radius="40" color="#d33682"/>
+    <Angle name="hip" origin="4" leg1="1" leg2="5" signed="true" ccw="false" supplementary="false" radius="30" color="#268bd2"/>
+    <Angle name="elbow" origin="2" leg1="1" leg2="3" signed="true" ccw="false" supplementary="false" radius="20" color="#dc322f"/>
+    <Angle name="ankle" origin="6" leg1="5" leg2="7" signed="true" ccw="false" supplementary="false" radius="20" color="#6c71c4"/>
   </Angles>
 
   <!-- Interaction -->
   <Handles>
-    <Handle type="Point" name="head" reference="0" trackable="true" color="#dc322f">
+    <Handle type="Point" name="head" reference="0" trackable="true">
       <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
         <DistanceToPoint point="1"/>
       </Constraint>
     </Handle>
-    <Handle type="Point" name="shoulder" reference="1" trackable="true" color="#b58900">
+    <Handle type="Point" name="shoulder" reference="1" trackable="true">
       <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
         <DistanceToPoint point="4"/>
       </Constraint>
@@ -59,7 +58,7 @@
 	      <KeepAngle origin="2" leg1="1" leg2="3"/>
       </Impacts>
     </Handle>	
-    <Handle type="Point" name="elbow" reference="2" trackable="true" color="#dc322f">
+    <Handle type="Point" name="elbow" reference="2" trackable="true">
       <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
         <DistanceToPoint point="1"/>
       </Constraint>
@@ -67,12 +66,12 @@
         <KeepAngle origin="2" leg1="1" leg2="3"/>
       </Impacts>
     </Handle>
-    <Handle type="Point" name="wrist" reference="3" trackable="true" color="#dc322f">
+    <Handle type="Point" name="wrist" reference="3" trackable="true">
       <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
         <DistanceToPoint point="2"/>
       </Constraint>
     </Handle>
-    <Handle type="Point" name="hip" reference="4" trackable="true" color="#268bd2">
+    <Handle type="Point" name="hip" reference="4" trackable="true">
       <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
         <DistanceToPoint point="1"/>
       </Constraint>
@@ -82,7 +81,7 @@
         <KeepAngle origin="6" leg1="5" leg2="7"/>
       </Impacts>
     </Handle>
-    <Handle type="Point" name="knee" reference="5" trackable="true" color="#d33682">
+    <Handle type="Point" name="knee" reference="5" trackable="true">
       <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
         <DistanceToPoint point="4"/>
       </Constraint>
@@ -91,7 +90,7 @@
         <KeepAngle origin="6" leg1="5" leg2="7"/>
       </Impacts>
     </Handle>
-    <Handle type="Point" name="ankle" reference="6" trackable="true" color="#6c71c4">
+    <Handle type="Point" name="ankle" reference="6" trackable="true">
       <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
         <DistanceToPoint point="5"/>
       </Constraint>
@@ -99,7 +98,7 @@
         <KeepAngle origin="6" leg1="5" leg2="7"/>
       </Impacts>
     </Handle>
-    <Handle type="Point" name="foot" reference="7" trackable="true" color="#2aa198">
+    <Handle type="Point" name="foot" reference="7" trackable="true">
       <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
         <DistanceToPoint point="6"/>
       </Constraint>

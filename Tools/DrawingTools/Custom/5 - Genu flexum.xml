@@ -6,20 +6,19 @@
   <DisplayName>DrawingName_Genu</DisplayName>
   
   <!-- Data -->
-  <PointCount>11</PointCount>
-  <InitialConfiguration>
-    <Point>100;100</Point>
-    <Point>150;100</Point>
-    <Point>160;120</Point>
-    <Point>125;130</Point>
-    <Point>90;120</Point>
-    <Point>90;170</Point><!-- 5 -->
-    <Point>90;220</Point>
-    <Point>70;230</Point>
-    <Point>160;170</Point><!-- 4 -->
-    <Point>160;220</Point>
-    <Point>180;230</Point>
-  </InitialConfiguration>
+  <Points>
+    <Point value="100;100" />
+    <Point value="150;100" />
+    <Point value="160;120" />
+    <Point value="125;130" />
+    <Point value="90;120" />
+    <Point value="90;170" />
+    <Point value="90;220" />
+    <Point value="70;230" />
+    <Point value="160;170" />
+    <Point value="160;220" />
+    <Point value="180;230" />
+  </Points>
   <Segments>
     <Segment point1="0" point2="1" style="Solid" width="2"/>
     <Segment point1="1" point2="2" style="Solid" width="2"/>

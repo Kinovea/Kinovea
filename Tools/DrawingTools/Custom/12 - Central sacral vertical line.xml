@@ -12,14 +12,13 @@
   </Icon>
 
   <!-- Data -->
-  <PointCount>5</PointCount>
-  <InitialConfiguration>
-    <Point>100;400</Point>
-    <Point>200;400</Point>
-    <Point>300;400</Point>
-    <Point>200;100</Point>
-    <Point>200;450</Point>
-  </InitialConfiguration>
+  <Points>
+    <Point value="100;400" />
+    <Point value="200;400" />
+    <Point value="300;400" />
+    <Point value="200;100" />
+    <Point value="200;450" />
+  </Points>
   <Segments>
     <Segment name="Intercrestal line" point1="0" point2="2" style="Solid" width="2"/>
     <Segment name="Central sacral vertical line" point1="4" point2="3" style="Dash" arrowEnd="true" width="2"/>
