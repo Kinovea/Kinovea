@@ -44,20 +44,24 @@ namespace Kinovea.ScreenManager
         public string DisplayName { get; private set;}
         public Bitmap Icon { get; private set;}
         
-        public List<PointF> Points { get; private set; }
+        public List<PointF> PointList { get; private set; }
+
         public List<GenericPosturePoint> Markers { get; private set; }
         public List<GenericPostureSegment> Segments { get; private set;}
         public List<GenericPostureCircle> Circles { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
+
         public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
+
         public List<GenericPostureDistance> Distances { get; private set;}
         public List<GenericPosturePosition> Positions { get; private set;}
         public List<GenericPostureComputedPoint> ComputedPoints { get; private set;}
+
         public GenericPostureCapabilities Capabilities { get; private set;}
         public Dictionary<string, bool> OptionGroups { get; private set;}
+
         public TrackingProfile CustomTrackingProfile { get; private set; }
-        
         public bool Trackable { get; private set;}
         public bool FromKVA { get; private set;}
         #endregion
@@ -77,7 +81,7 @@ namespace Kinovea.ScreenManager
             Icon = null;
             this.FromKVA = fromKVA;
             
-            Points = new List<PointF>();
+            PointList = new List<PointF>();
             Markers = new List<GenericPosturePoint>();
             Segments = new List<GenericPostureSegment>();
             Circles = new List<GenericPostureCircle>();
@@ -314,7 +318,7 @@ namespace Kinovea.ScreenManager
             r.ReadEndElement();
 
             foreach (var point in Markers)
-                Points.Add(point.Value);
+                PointList.Add(point.Value);
         }
         #endregion
 
@@ -338,7 +342,7 @@ namespace Kinovea.ScreenManager
             r.ReadEndElement();
 
             foreach (var point in Markers)
-                Points.Add(point.Value);
+                PointList.Add(point.Value);
         }
         private void ParseSegments(XmlReader r)
         {
@@ -588,25 +592,25 @@ namespace Kinovea.ScreenManager
             Dictionary<string, PointF> trackablePoints = new Dictionary<string, PointF>();
             
             foreach(int index in trackableIndices)
-                trackablePoints.Add(index.ToString(), Points[index]);
+                trackablePoints.Add(index.ToString(), PointList[index]);
             
             return trackablePoints;
         }
         public void SignalAllTrackablePointsMoved(EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
         {
             foreach(int index in trackableIndices)
-                trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), Points[index]));
+                trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), PointList[index]));
         }
         public void SignalTrackablePointMoved(int handleIndex, EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
         {
             int index = Handles[handleIndex].Reference;
-            trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), Points[index]));
+            trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), PointList[index]));
         }
         public void SetTrackablePointValue(string name, PointF value, CalibrationHelper calibrationHelper)
         {
             // Value coming from tracking.
             int pointIndex = int.Parse(name);
-            if(pointIndex >= Points.Count)
+            if(pointIndex >= PointList.Count)
                 throw new ArgumentException("This point is not bound.");
             
             int handleIndex = Handles.FindIndex((h) => h.Reference == pointIndex);
@@ -619,10 +623,10 @@ namespace Kinovea.ScreenManager
             RectangleF boundingBox = GetBoundingBox();
             PointF center = boundingBox.Center();
             
-            for(int i = 0; i<Points.Count; i++)
+            for(int i = 0; i<PointList.Count; i++)
             {
-                float x = center.X + (center.X - Points[i].X);
-                Points[i] = new PointF(x, Points[i].Y);
+                float x = center.X + (center.X - PointList[i].X);
+                PointList[i] = new PointF(x, PointList[i].Y);
             }
         }
         public void FlipVertical()
@@ -630,10 +634,10 @@ namespace Kinovea.ScreenManager
             RectangleF boundingBox = GetBoundingBox();
             PointF center = boundingBox.Center();
             
-            for(int i = 0; i<Points.Count; i++)
+            for(int i = 0; i<PointList.Count; i++)
             {
-                float y = center.Y + (center.Y - Points[i].Y);
-                Points[i] = new PointF(Points[i].X, y);
+                float y = center.Y + (center.Y - PointList[i].Y);
+                PointList[i] = new PointF(PointList[i].X, y);
             }
         }
         
@@ -644,7 +648,7 @@ namespace Kinovea.ScreenManager
             float top = float.MaxValue;
             float bottom = float.MinValue;
             
-            foreach(PointF p in Points)
+            foreach(PointF p in PointList)
             {
                 left = Math.Min(p.X, left);
                 right = Math.Max(p.X, right);
