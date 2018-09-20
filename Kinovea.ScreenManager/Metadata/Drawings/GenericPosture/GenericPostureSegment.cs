@@ -68,8 +68,11 @@ namespace Kinovea.ScreenManager
 
             if(r.MoveToAttribute("arrowBegin"))
                 ArrowBegin = XmlHelper.ParseBoolean(r.ReadContentAsString());
-            
-            if(r.MoveToAttribute("arrowEnd"))
+
+            if (r.MoveToAttribute("arrowStart"))
+                ArrowBegin = XmlHelper.ParseBoolean(r.ReadContentAsString());
+
+            if (r.MoveToAttribute("arrowEnd"))
                 ArrowEnd = XmlHelper.ParseBoolean(r.ReadContentAsString());
             
             if(r.MoveToAttribute("color"))
