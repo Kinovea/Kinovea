@@ -505,7 +505,7 @@ namespace Kinovea.ScreenManager
 
             return mnu;
         }
-        public string GetExtraDataOptionText(TrackExtraData data)
+        private string GetExtraDataOptionText(TrackExtraData data)
         {
             switch (data)
             {
@@ -516,7 +516,7 @@ namespace Kinovea.ScreenManager
 
             return "";
         }
-        public string GetExtraDataText()
+        private string GetExtraDataText()
         {
             if (trackExtraData == TrackExtraData.None)
                 return "";
