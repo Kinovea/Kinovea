@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
+  <Id>ef479716-77e3-4b00-82d4-e44882eb304f</Id>
   <Name>AngleToHorizontal</Name>
   <DisplayName>DrawingName_AngleToHorizontal</DisplayName>
-  <Id>ef479716-77e3-4b00-82d4-e44882eb304f</Id>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh
+    0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACjSURBVHjaYvz//z8DJYAR3QCXqhlEa9
+    7TlsHARKKFk4E4HFmAFAOmAXEOEM8BYlFSDQDZnAnE34E4FIhfk2LAZKjNIM1BQLyDFC9MgGr+h
+    U0zOBacK6fj05wP1eyPTTMIsEBpFSAuBeJ/UD4bEIdB+XuBOBCIA2CWQun1IENhBkgAcRoOl3ji
+    EL+PbMAdIE4nMU2cQvbCCyCeRZWkPAINAAgwAHrWMNef9ZSHAAAAAElFTkSuQmCC
+  </Icon>
+
+  <!-- Data -->
   <PointCount>4</PointCount>
+  <InitialConfiguration>
+    <Point>100;200</Point>
+    <Point>250;200</Point>
+    <Point>400;200</Point>
+    <Point>400;100</Point>
+  </InitialConfiguration>
   <Segments>
     <Segment point1="0" point2="2" style="Dash" width="2"/>
     <Segment point1="1" point2="3" name="" style="Solid" width="2"/>
@@ -12,6 +27,8 @@
   <Angles>
     <Angle origin="1" leg1="2" leg2="3" signed="true" ccw="true" supplementary="false" tenth="true"/>
   </Angles>
+
+  <!-- Interaction -->
   <Handles>
     <Handle type="Point" reference="0">
       <Constraint type="HorizontalSlide"/>
@@ -29,14 +46,6 @@
     </Handle>
     <Handle type="Point" reference="3" trackable="true"/>
   </Handles>
-  <Icon>
-iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACjSURBVHjaYvz//z8DJYAR3QCXqhlEa97TlsHARKKFk4E4HFmAFAOmAXEOEM8BYlFSDQDZnAnE34E4FIhfk2LAZKjNIM1BQLyDFC9MgGr+hU0zOBacK6fj05wP1eyPTTMIsEBpFSAuBeJ/UD4bEIdB+XuBOBCIA2CWQun1IENhBkgAcRoOl3jiEL+PbMAdIE4nMU2cQvbCCyCeRZWkPAINAAgwAHrWMNef9ZSHAAAAAElFTkSuQmCC
-  </Icon>
-  <InitialConfiguration>
-    <Point>100;200</Point>
-    <Point>250;200</Point>
-    <Point>400;200</Point>
-    <Point>400;100</Point>
-  </InitialConfiguration>
+  
   <Capabilities flipHorizontal="true"/>
 </KinoveaPostureTool>

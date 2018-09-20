@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
+  <Id>06bed28a-9e9f-45b2-bb50-125f5ed68cf0</Id>
   <Name>Genu</Name>
   <DisplayName>DrawingName_Genu</DisplayName>
-  <Id>06bed28a-9e9f-45b2-bb50-125f5ed68cf0</Id>
+  
+  <!-- Data -->
   <PointCount>11</PointCount>
+  <InitialConfiguration>
+    <Point>100;100</Point>
+    <Point>150;100</Point>
+    <Point>160;120</Point>
+    <Point>125;130</Point>
+    <Point>90;120</Point>
+    <Point>90;170</Point><!-- 5 -->
+    <Point>90;220</Point>
+    <Point>70;230</Point>
+    <Point>160;170</Point><!-- 4 -->
+    <Point>160;220</Point>
+    <Point>180;230</Point>
+  </InitialConfiguration>
   <Segments>
     <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
     <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
@@ -18,6 +33,8 @@
     <Segment point1="8" point2="9" name="" style="Solid" width="2"/>
     <Segment point1="9" point2="10" name="" style="Solid" width="2"/>
   </Segments>
+
+  <!-- Interaction -->
   <Handles>
     <!-- Left knee -->
     <Handle type="Point" reference="5">
@@ -72,17 +89,5 @@
   <HitZone>
     <Polygon points="0;1;2;3;4"/>
   </HitZone>
-  <InitialConfiguration>
-    <Point>100;100</Point>
-    <Point>150;100</Point>
-    <Point>160;120</Point>
-    <Point>125;130</Point>
-    <Point>90;120</Point>
-    <Point>90;170</Point><!-- 5 -->
-    <Point>90;220</Point>
-    <Point>70;230</Point>
-    <Point>160;170</Point><!-- 4 -->
-    <Point>160;220</Point>
-    <Point>180;230</Point>
-  </InitialConfiguration>
+  
 </KinoveaPostureTool>

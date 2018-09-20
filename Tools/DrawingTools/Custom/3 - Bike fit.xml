@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
+  <Id>02a52d37-4694-4b90-a6d4-58d2a399638c</Id>
   <Name>Bikefit</Name>
   <DisplayName>DrawingName_Bikefit</DisplayName>
-  <Id>02a52d37-4694-4b90-a6d4-58d2a399638c</Id>
+  <Icon>
+  iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXH
+  JZTwAAAEuSURBVHjaYvz//z8DJYAxJW01Meo0gfgaEH8CYlkoDQZMRFqkA6X5gFgZWYIYAxqBeBWU7QDE54k1IACIQQFUB8SLoWK30BWx4DFgGp
+  QOBOINQKwIxAeAWB2XC4SBWB/qTxB4BaXXA/FpIC4HYjUgjsXmgmIgNgfi50AsCcRz0VxjAsRHkdSCXLEWFB4sUL/KAHEiEH8FYm4gboO6BhlsA
+  +IVQLwH6p1KkEUsUCcqQTUzQOkOIM6D8t2Q0gIsMEEuvQ/EnbAw+IRmG8wwUODtBmIzIL6IpgZkyA8mJD8iAx8groHGAAi8BWJpLDElADJACoiT
+  gTgK6jdQKIcC8TwkhRuhYppoCew6LC9IQhWADHgCxAugtiIDUKBWg5wNxBwgzUBcz0hxbqTUAIAAAwDE1kDafieHrQAAAABJRU5ErkJggg==
+  </Icon>
+
+  <!-- Data -->
   <PointCount>8</PointCount>
+  <InitialConfiguration>
+    <Point>200;200</Point> <!-- tip of head -->
+    <Point>160;210</Point> <!-- shoulder -->
+    <Point>180;270</Point> <!-- elbow -->
+    <Point>210;330</Point> <!-- hand -->
+    <Point>50;260</Point> <!-- hip -->
+    <Point>110;300</Point> <!-- knee -->
+    <Point>40;420</Point> <!-- ankle or heel-->
+    <Point>60;450</Point> <!-- tip of foot -->
+  </InitialConfiguration>
   <Segments>
     <Segment point1="0" point2="1" name="Head" style="Solid" width="2" color="#dc322f"/>
     <Segment point1="1" point2="2" name="Arm" style="Solid" width="2" color="#b58900"/>
@@ -22,6 +41,8 @@
     <Angle name="elbow"     origin="2" leg1="1" leg2="3" signed="true" ccw="false" supplementary="false" radius="20" color="#dc322f"/>
     <Angle name="ankle"     origin="6" leg1="5" leg2="7" signed="true" ccw="false" supplementary="false" radius="20" color="#6c71c4"/>
   </Angles>
+
+  <!-- Interaction -->
   <Handles>
     <Handle type="Point" name="head" reference="0" trackable="true" color="#dc322f">
       <Constraint type="DistanceToPoint" optionGroup="Lock segments lengths">
@@ -84,17 +105,6 @@
       </Constraint>
   	</Handle>
   </Handles>
-  <InitialConfiguration>
-    <Point>200;200</Point> <!-- tip of head -->
-    <Point>160;210</Point> <!-- shoulder -->
-    <Point>180;270</Point> <!-- elbow -->
-    <Point>210;330</Point> <!-- hand -->
-    <Point>50;260</Point> <!-- hip -->
-    <Point>110;300</Point> <!-- knee -->
-    <Point>40;420</Point> <!-- ankle or heel-->
-    <Point>60;450</Point> <!-- tip of foot -->
-  </InitialConfiguration>
+  
   <Capabilities flipHorizontal="true"/>
-  <Icon>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEuSURBVHjaYvz//z8DJYAxJW01Meo0gfgaEH8CYlkoDQZMRFqkA6X5gFgZWYIYAxqBeBWU7QDE54k1IACIQQFUB8SLoWK30BWx4DFgGpQOBOINQKwIxAeAWB2XC4SBWB/qTxB4BaXXA/FpIC4HYjUgjsXmgmIgNgfi50AsCcRz0VxjAsRHkdSCXLEWFB4sUL/KAHEiEH8FYm4gboO6BhlsA+IVQLwH6p1KkEUsUCcqQTUzQOkOIM6D8t2Q0gIsMEEuvQ/EnbAw+IRmG8wwUODtBmIzIL6IpgZkyA8mJD8iAx8groHGAAi8BWJpLDElADJACoiTgTgK6jdQKIcC8TwkhRuhYppoCew6LC9IQhWADHgCxAugtiIDUKBWg5wNxBwgzUBcz0hxbqTUAIAAAwDE1kDafieHrQAAAABJRU5ErkJggg==
-  </Icon>
 </KinoveaPostureTool>

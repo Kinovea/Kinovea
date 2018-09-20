@@ -1,10 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
+  <Id>1d2241d6-ae9a-43c9-b6ef-c298e744a839</Id>
   <Name>Archery</Name>
   <DisplayName>DrawingName_Archery</DisplayName>
-  <Id>1d2241d6-ae9a-43c9-b6ef-c298e744a839</Id>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAG7SURBVDhPpZM7S0JhGMf9DC1NTi3tfYWGloZconAp
+    DLpQixYVXaTES1qJ1xITK0sd1DSlLLAW7wrSIC0RBRFU1FJRFDw97+t59WinFoc/55zn/J/fy3N5RX2d
+    VlEz+i9ZguBdTkZ8tgkdVAWcRIsiIjSNot5RIKAyxlp5XlEdAH9aWJJ80AP6hQhYNEegmgqCTOJkwE/0
+    tHOH1QAY7CXJ0i472A1xQEOdYqEczI37GeRFCHBPAOtLUZoY3M/DhjYDJmUati1ZiEeKcBwuwFi/m0FU
+    pCesBDFJlvU4IX5YgIi/ALrJJPgdZUiEb8C0mAOrOk3BbluCAa74ACkBTA97qcm5loEtfQke7j6oSulH
+    0MiTFBwN5BjglQ8YoICRCmBzBQGGGuAiWwEEPXkgveAa/cYHkBlXS/C5cjQh4LqE89gtmJV5WJ1N0T7s
+    2M8Y4JoPIL14JhDjcqxSqzkLOkWSgozzKTjw5Wl/eE00NAK62RgdxtPqCGOBAn1vGOPTrzFyAS9bJMXQ
+    Hh2pTR8H9UyIv0jf6OkQBHDBCTR8/bHKpG6x4Co3XJQW/Naisiiy/1EUuVy/Ll9TV5kAfwBCwAz3d0TO
+    FAAAAABJRU5ErkJggg==
+  </Icon>
+
+  <!-- Data -->
   <PointCount>7</PointCount>
+  <InitialConfiguration>
+    <Point>197;184</Point>
+    <Point>90;167</Point>
+    <Point>304;143</Point>
+    <Point>368;162</Point>
+    <Point>315;185</Point>
+    <Point>409;185</Point>
+    <Point>78;182</Point>
+  </InitialConfiguration>
   <Segments>
     <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
     <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
@@ -18,6 +41,8 @@
     <Angle origin="0" leg1="1" leg2="6" signed="true" ccw="true" supplementary="false" radius="30"/>
     <Angle origin="4" leg1="5" leg2="3" signed="true" ccw="true" supplementary="false" radius="30"/>
   </Angles>
+
+  <!-- Interaction -->
   <Handles>
     <Handle type="Point" reference="0">
       <Impacts>
@@ -49,25 +74,5 @@
   <HitZone>
     <Polygon points="0;1;2;3;4"/>
   </HitZone>
-  <Icon>
-    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
-    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAG7SURBVDhPpZM7S0JhGMf9DC1NTi3tfYWGloZconAp
-    DLpQixYVXaTES1qJ1xITK0sd1DSlLLAW7wrSIC0RBRFU1FJRFDw97+t59WinFoc/55zn/J/fy3N5RX2d
-    VlEz+i9ZguBdTkZ8tgkdVAWcRIsiIjSNot5RIKAyxlp5XlEdAH9aWJJ80AP6hQhYNEegmgqCTOJkwE/0
-    tHOH1QAY7CXJ0i472A1xQEOdYqEczI37GeRFCHBPAOtLUZoY3M/DhjYDJmUati1ZiEeKcBwuwFi/m0FU
-    pCesBDFJlvU4IX5YgIi/ALrJJPgdZUiEb8C0mAOrOk3BbluCAa74ACkBTA97qcm5loEtfQke7j6oSulH
-    0MiTFBwN5BjglQ8YoICRCmBzBQGGGuAiWwEEPXkgveAa/cYHkBlXS/C5cjQh4LqE89gtmJV5WJ1N0T7s
-    2M8Y4JoPIL14JhDjcqxSqzkLOkWSgozzKTjw5Wl/eE00NAK62RgdxtPqCGOBAn1vGOPTrzFyAS9bJMXQ
-    Hh2pTR8H9UyIv0jf6OkQBHDBCTR8/bHKpG6x4Co3XJQW/Naisiiy/1EUuVy/Ll9TV5kAfwBCwAz3d0TO
-    FAAAAABJRU5ErkJggg==
-  </Icon>
-  <InitialConfiguration>
-    <Point>197;184</Point>
-    <Point>90;167</Point>
-    <Point>304;143</Point>
-    <Point>368;162</Point>
-    <Point>315;185</Point>
-    <Point>409;185</Point>
-    <Point>78;182</Point>
-  </InitialConfiguration>
+  
 </KinoveaPostureTool>

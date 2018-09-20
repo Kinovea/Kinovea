@@ -1,15 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
+  <Id>5723BACC-91B0-4172-8EA0-0BF2A5A27EDA</Id>
   <Name>HumanModel</Name>
   <DisplayName>DrawingName_HumanModel</DisplayName>
-  <Id>5723BACC-91B0-4172-8EA0-0BF2A5A27EDA</Id>
-  <PointCount>20</PointCount>
-  
   <Icon>
-    R0lGODlhEAAQAIABAF+Wyf///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAQABAAAAIjjI+pBrDbnpyhWfcsi7Ay32EOpowfiYgfmKGSSsGT3G7UVAAAOw==
+    R0lGODlhEAAQAIABAF+Wyf///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAQABA
+    AAAIjjI+pBrDbnpyhWfcsi7Ay32EOpowfiYgfmKGSSsGT3G7UVAAAOw==
   </Icon>
 
+  <!-- Data -->
+  <PointCount>20</PointCount>
+  <InitialConfiguration>
+    <Point>185;80</Point>  <!-- Vertex -->
+    <Point>185;140</Point>  <!-- Chin -->
+    <Point>225;170</Point>  <!-- Left shoulder -->
+    <Point>230;250</Point>  <!-- Left elbow -->
+    <Point>240;310</Point>  <!-- Left wrist -->
+    <Point>255;315</Point>  <!-- Left hand -->
+    <Point>210;300</Point>  <!-- Left hip -->
+    <Point>210;415</Point>  <!-- Left knee -->
+    <Point>210;515</Point>  <!-- Left ankle -->
+    <Point>240;535</Point>  <!-- Left foot -->
+    <Point>205;530</Point>  <!-- Left heel -->
+    <Point>145;170</Point>  <!-- Right soulder -->
+    <Point>140;250</Point>  <!-- Right elbow -->
+    <Point>130;310</Point>  <!-- Right wrist -->
+    <Point>115;315</Point>  <!-- Right hand -->
+    <Point>160;300</Point>  <!-- Right hip -->
+    <Point>160;415</Point>  <!-- Right knee -->
+    <Point>160;515</Point>  <!-- Right ankle -->
+    <Point>130;535</Point>  <!-- Right foot -->
+    <Point>165;530</Point>  <!-- Right heel -->
+  </InitialConfiguration>
   <Segments>
     <Segment point1="0" point2="1" name="Head" style="Solid" width="2" color="#dc322f"/>
     <Segment point1="2" point2="3" name="Left arm" style="Solid" width="2" color="#cb4b16"/>
@@ -34,6 +57,7 @@
     <Segment point1="15" point2="6" name="Bottom trunk" style="Solid" width="2" color="#268bd2"/>
   </Segments>
 
+  <!-- Interaction -->
   <Handles>
     <Handle type="Point" reference="0" color="#dc322f"/>
     <Handle type="Point" reference="1" color="#dc322f"/>
@@ -96,7 +120,13 @@
     <Handle type="Point" reference="18" color="#d33682"/>
     <Handle type="Point" reference="19" color="#d33682"/>
   </Handles>
+  <HitZone>
+    <Polygon points="2;11;15;6"/> <!-- Dragging from inside the trunk moves the whole drawing. -->
+  </HitZone>
+  
+  <Capabilities flipHorizontal="true" flipVertical="true" />
 
+  <!-- Variables -->
   <Positions>
     <Position point="$0" color="#000000" symbol="G" optionGroup="Display coordinates of center of mass"/>
   </Positions>
@@ -167,35 +197,5 @@
       </ComputedPoint>
     </ComputedPoint> 
   </ComputedPoints>
-
-  <HitZone>
-    <Polygon points="2;11;15;6"/> <!-- Dragging from inside the trunk moves the whole drawing. -->
-  </HitZone>
-
-  <Capabilities flipHorizontal="true" flipVertical="true" />
-
-  <InitialConfiguration>
-    <Point>185;80</Point>  <!-- Vertex -->
-    <Point>185;140</Point>  <!-- Chin -->
-    <Point>225;170</Point>  <!-- Left shoulder -->
-    <Point>230;250</Point>  <!-- Left elbow -->
-    <Point>240;310</Point>  <!-- Left wrist -->
-    <Point>255;315</Point>  <!-- Left hand -->
-    <Point>210;300</Point>  <!-- Left hip -->
-    <Point>210;415</Point>  <!-- Left knee -->
-    <Point>210;515</Point>  <!-- Left ankle -->
-    <Point>240;535</Point>  <!-- Left foot -->
-    <Point>205;530</Point>  <!-- Left heel -->
-    <Point>145;170</Point>  <!-- Right soulder -->
-    <Point>140;250</Point>  <!-- Right elbow -->
-    <Point>130;310</Point>  <!-- Right wrist -->
-    <Point>115;315</Point>  <!-- Right hand -->
-    <Point>160;300</Point>  <!-- Right hip -->
-    <Point>160;415</Point>  <!-- Right knee -->
-    <Point>160;515</Point>  <!-- Right ankle -->
-    <Point>130;535</Point>  <!-- Right foot -->
-    <Point>165;530</Point>  <!-- Right heel -->
-  </InitialConfiguration>
-
 
 </KinoveaPostureTool>
