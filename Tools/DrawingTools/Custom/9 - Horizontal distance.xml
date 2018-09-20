@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
-  <FormatVersion>1.0</FormatVersion>
+  <FormatVersion>1.1</FormatVersion>
   <Id>a30ba939-0852-4dcc-85c7-52eeff080b39</Id>
   <Name>HorizontalDistance</Name>
   <DisplayName>DrawingName_DistanceHorizontal</DisplayName>

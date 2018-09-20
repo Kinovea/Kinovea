@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.Services;
+using System.Globalization;
 
 namespace Kinovea.ScreenManager
 {
@@ -124,8 +125,9 @@ namespace Kinovea.ScreenManager
             	    return;
                 
             	r.ReadStartElement();
-            	r.ReadElementContentAsString("FormatVersion", "");
-            	
+            	string formatVersion = r.ReadElementContentAsString("FormatVersion", "");
+                CheckFormatVersion(formatVersion);
+
             	while(r.NodeType == XmlNodeType.Element)
     			{
                     switch(r.Name)
@@ -166,9 +168,10 @@ namespace Kinovea.ScreenManager
             	    return;
                 
             	r.ReadStartElement();
-            	r.ReadElementContentAsString("FormatVersion", "");
-            	
-            	while(r.NodeType == XmlNodeType.Element)
+                string formatVersion = r.ReadElementContentAsString("FormatVersion", "");
+                CheckFormatVersion(formatVersion);
+
+                while (r.NodeType == XmlNodeType.Element)
     			{
                     switch(r.Name)
     				{
@@ -252,6 +255,19 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("An error occurred during the parsing of a custom tool.");
                 log.ErrorFormat(e.ToString());
             }
+        }
+        private void CheckFormatVersion(string version)
+        {
+            double format;
+            bool read = double.TryParse(version, NumberStyles.Any, CultureInfo.InvariantCulture, out format);
+            if (!read)
+            {
+                log.ErrorFormat("The format of the posture tool couldn't be read. {0}", version);
+                return;
+            }
+
+            // We don't restrict on format for now.
+            // But 1.0 will be deprecated in a future version.
         }
 
         #region Header

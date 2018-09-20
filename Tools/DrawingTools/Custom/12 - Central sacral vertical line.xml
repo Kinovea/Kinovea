@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
-  <FormatVersion>1.0</FormatVersion>
+  <FormatVersion>1.1</FormatVersion>
   <Id>954e9de2-f141-4b87-bcc2-4d87c362dcfa</Id>
   <Name>CSVL</Name>
   <DisplayName>DrawingName_CSVL</DisplayName>
