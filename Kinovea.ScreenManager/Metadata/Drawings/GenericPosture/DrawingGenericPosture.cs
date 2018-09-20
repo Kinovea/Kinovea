@@ -476,12 +476,20 @@ namespace Kinovea.ScreenManager
         private void menuFlipHorizontal_Click(object sender, EventArgs e)
         {
             genericPosture.FlipHorizontal();
+
+            foreach (var angle in genericPosture.Angles)
+                angle.CCW = !angle.CCW;
+
             SignalAllTrackablePointsMoved();
             InvalidateFromMenu(sender);
         }
         private void menuFlipVertical_Click(object sender, EventArgs e)
         {
             genericPosture.FlipVertical();
+
+            foreach (var angle in genericPosture.Angles)
+                angle.CCW = !angle.CCW;
+
             SignalAllTrackablePointsMoved();
             InvalidateFromMenu(sender);
         }

@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
 
         // Options defining the way to measure the actual value.
         public bool Signed { get; private set; }
-        public bool CCW { get; private set; }
+        public bool CCW { get; set; }
         public bool Supplementary { get; private set; }
         
         public string OptionGroup { get; private set;}
