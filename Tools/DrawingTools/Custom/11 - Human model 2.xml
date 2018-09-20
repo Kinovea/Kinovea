@@ -10,24 +10,23 @@
   </Icon>
 
   <!-- Data -->
-  <PointCount>15</PointCount>
-  <InitialConfiguration>
-    <Point>185;110</Point>  <!-- Vertex -->
-    <Point>185;170</Point>  <!-- Chin -->
-    <Point>230;250</Point>  <!-- Left elbow -->
-    <Point>240;310</Point>  <!-- Left wrist -->
-    <Point>255;315</Point>  <!-- Left hand -->
-    <Point>140;250</Point>  <!-- Right elbow -->
-    <Point>130;310</Point>  <!-- Right wrist -->
-    <Point>115;315</Point>  <!-- Right hand -->
-    <Point>185;300</Point>  <!-- hip -->
-    <Point>210;415</Point>  <!-- Left knee -->
-    <Point>210;515</Point>  <!-- Left ankle -->
-    <Point>240;535</Point>  <!-- Left foot -->
-    <Point>160;415</Point>  <!-- Right knee -->
-    <Point>160;515</Point>  <!-- Right ankle -->
-    <Point>130;535</Point>  <!-- Right foot -->
-  </InitialConfiguration>
+  <Points>
+    <Point name="Vertex" value="185;110" color="#dc322f" />
+    <Point name="Chin" value="185;170" color="#dc322f" />
+    <Point name="Left elbow" value="230;250" color="#cb4b16" />
+    <Point name="Left wrist" value="240;310" color="#cb4b16" />
+    <Point name="Left hand" value="255;315" color="#cb4b16" />
+    <Point name="Right elbow" value="140;250" color="#b58900" />
+    <Point name="Right wrist" value="130;310" color="#b58900" />
+    <Point name="Right hand" value="115;315" color="#b58900" />
+    <Point name="hip" value="185;300" color="#6c71c4" />
+    <Point name="Left knee" value="210;415" color="#6c71c4" />
+    <Point name="Left ankle" value="210;515" color="#6c71c4" />
+    <Point name="Left foot" value="240;535" color="#6c71c4" />
+    <Point name="Right knee" value="160;415" color="#d33682" />
+    <Point name="Right ankle" value="160;515" color="#d33682" />
+    <Point name="Right foot" value="130;535" color="#d33682" />
+  </Points>
   <Segments>
     <Segment name="Head" point1="0" point2="1" style="Solid" width="2" color="#dc322f"/>
     <Segment name="Left arm" point1="1" point2="2" style="Solid" width="2" color="#cb4b16"/>

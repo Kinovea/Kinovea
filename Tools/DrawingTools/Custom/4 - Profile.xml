@@ -14,15 +14,14 @@
   </Icon>
 
   <!-- Data -->
-  <PointCount>6</PointCount>
-  <InitialConfiguration>
-    <Point>80;80</Point>
-    <Point>80;140</Point>
-    <Point>100;180</Point>
-    <Point>80;220</Point>
-    <Point>100;230</Point>
-    <Point>80;70</Point>
-  </InitialConfiguration>
+  <Points>
+    <Point value="80;80" />
+    <Point value="80;140" />
+    <Point value="100;180" />
+    <Point value="80;220" />
+    <Point value="100;230" />
+    <Point value="80;70" />
+  </Points>
   <Segments>
     <Segment point1="0" point2="1" style="Solid" width="2"/>
     <Segment point1="1" point2="2" style="Solid" width="2"/>
