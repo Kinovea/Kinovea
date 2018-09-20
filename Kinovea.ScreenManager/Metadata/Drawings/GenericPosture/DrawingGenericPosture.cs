@@ -577,15 +577,15 @@ namespace Kinovea.ScreenManager
                 if(!HasActiveOption(handle.OptionGroup))
                     continue;
                     
-                if(handle.Type == HandleType.Point && handle.Reference >= 0 && handle.Reference < points.Count && handle.Reference < genericPosture.Markers.Count)
+                if(handle.Type == HandleType.Point && handle.Reference >= 0 && handle.Reference < points.Count && handle.Reference < genericPosture.Points.Count)
                 {
-                    GenericPosturePoint marker = genericPosture.Markers[handle.Reference];
-                    if (marker == null)
+                    GenericPosturePoint gpp = genericPosture.Points[handle.Reference];
+                    if (gpp == null)
                         continue;
 
                     brushHandle.Color = baseBrushHandleColor;
-                    if (marker.Color != Color.Transparent)
-                        brushHandle.Color = Color.FromArgb(alpha, marker.Color);
+                    if (gpp.Color != Color.Transparent)
+                        brushHandle.Color = Color.FromArgb(alpha, gpp.Color);
                     else if (handle.Color != Color.Transparent)
                         brushHandle.Color = Color.FromArgb(alpha, handle.Color);
 

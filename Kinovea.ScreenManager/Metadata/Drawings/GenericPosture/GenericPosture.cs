@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
         
         public List<PointF> PointList { get; private set; }
 
-        public List<GenericPosturePoint> Markers { get; private set; }
+        public List<GenericPosturePoint> Points { get; private set; }
         public List<GenericPostureSegment> Segments { get; private set;}
         public List<GenericPostureCircle> Circles { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
@@ -82,18 +82,23 @@ namespace Kinovea.ScreenManager
             this.FromKVA = fromKVA;
             
             PointList = new List<PointF>();
-            Markers = new List<GenericPosturePoint>();
+
+            Points = new List<GenericPosturePoint>();
             Segments = new List<GenericPostureSegment>();
             Circles = new List<GenericPostureCircle>();
-            Handles = new List<GenericPostureHandle>();
             Angles = new List<GenericPostureAngle>();
+
+            Handles = new List<GenericPostureHandle>();
+            HitZones = new List<GenericPostureAbstractHitZone>();
+
             Distances = new List<GenericPostureDistance>();
             Positions = new List<GenericPosturePosition>();
             ComputedPoints = new List<GenericPostureComputedPoint>();
-            HitZones = new List<GenericPostureAbstractHitZone>();
+
             Capabilities = GenericPostureCapabilities.None;
-            CustomTrackingProfile = new TrackingProfile();
             OptionGroups = new Dictionary<string, bool>();
+
+            CustomTrackingProfile = new TrackingProfile();
             
             if(string.IsNullOrEmpty(descriptionFile))
                 return;
@@ -306,7 +311,7 @@ namespace Kinovea.ScreenManager
                 if (r.Name == "Point")
                 {
                     PointF value = XmlHelper.ParsePointF(r.ReadElementContentAsString());
-                    Markers.Add(new GenericPosturePoint(value));
+                    Points.Add(new GenericPosturePoint(value));
                 }
                 else
                 {
@@ -317,7 +322,7 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
 
-            foreach (var point in Markers)
+            foreach (var point in Points)
                 PointList.Add(point.Value);
         }
         #endregion
@@ -330,7 +335,7 @@ namespace Kinovea.ScreenManager
             {
                 if (r.Name == "Point")
                 {
-                    Markers.Add(new GenericPosturePoint(r));
+                    Points.Add(new GenericPosturePoint(r));
                 }
                 else
                 {
@@ -341,7 +346,7 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
 
-            foreach (var point in Markers)
+            foreach (var point in Points)
                 PointList.Add(point.Value);
         }
         private void ParseSegments(XmlReader r)
