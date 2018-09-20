@@ -40,8 +40,6 @@ namespace Kinovea.ScreenManager
         public Color Color { get; private set; }
         public string OptionGroup { get; private set;}
         
-        private string name;
-        
         public GenericPostureSegment(XmlReader r)
         {
             //<Segment point1="0" point2="1" name="" style="Solid" width="1"/>
@@ -61,10 +59,7 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("point2"))
                 End = XmlHelper.ParsePointReference(r.ReadContentAsString());
-
-            if(r.MoveToAttribute("name"))
-                name = r.ReadContentAsString();
-
+            
             if(r.MoveToAttribute("style"))
                 Style = (SegmentLineStyle) Enum.Parse(typeof(SegmentLineStyle), r.ReadContentAsString());
             

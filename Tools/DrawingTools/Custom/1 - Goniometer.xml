@@ -15,13 +15,12 @@
   </Icon>
 
   <!-- Data -->
-  <PointCount>4</PointCount>
-  <InitialConfiguration>
-    <Point>100;100</Point>
-    <Point>150;100</Point>
-    <Point>200;100</Point>
-    <Point>180;70</Point>
-  </InitialConfiguration>
+  <Points>
+    <Point value="100;100" />
+    <Point value="150;100" />
+    <Point value="200;100" />
+    <Point value="180;70" />
+  </Points>
   <Segments>
     <Segment name="Stationary arm" point1="0" point2="1" style="Solid" width="4"/>
     <Segment name="Reference" point1="1" point2="2" style="Dash" width="2"/>
