@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.1</FormatVersion>
-  <Id>1d2241d6-ae9a-43c9-b6ef-c298e744a839</Id>
+  <Id>9697b2d6-116d-4c7e-bc14-3d4a287d2aed</Id>
   <Name>Archery</Name>
   <DisplayName>DrawingName_Archery</DisplayName>
   <Icon>
@@ -19,58 +19,61 @@
 
   <!-- Data -->
   <Points>
-    <Point value="197;184" />
-    <Point value="90;167" />
-    <Point value="304;143" />
-    <Point value="368;162" />
-    <Point value="315;185" />
-    <Point value="409;185" />
-    <Point value="78;182" />
+    <Point name="Arrow tip" value="400;100" />
+    <Point name="Draw hand" value="273;100" />
+    <Point name="Arrow line" value="22;100" />
+    <Point name="Draw elbow" value="123;150" />
+    <Point name="Draw shoulder" value="160;65" />
+    <Point name="Front shoulder" value="270;45" />
+    <Point name="Head center" value="215;55" />
   </Points>
   <Segments>
-    <Segment point1="0" point2="1" style="Solid" width="2"/>
-    <Segment point1="1" point2="2" style="Solid" width="2"/>
-    <Segment point1="2" point2="3" style="Solid" width="2"/>
-    <Segment point1="3" point2="4" style="Solid" width="2"/>
-    <Segment point1="0" point2="4" style="Solid" width="2"/>
-    <Segment point1="0" point2="6" style="Dash" width="2"/>
-    <Segment point1="4" point2="5" style="Dash" width="2"/>
+    <Segment name="Arrow" point1="0" point2="2" style="Dash" width="2" arrowBegin="true" />
+    <Segment name="Draw forearm" point1="1" point2="3" style="Solid" width="2"/>
+    <Segment name="Draw arm" point1="3" point2="4" style="Solid" width="2"/>
+    <Segment name="Shoulder line" point1="4" point2="5" style="Solid" width="2"/>
+    <Segment name="Front arm" point1="5" point2="0" style="Solid" width="2"/>
   </Segments>
   <Angles>
-    <Angle origin="0" leg1="1" leg2="6" signed="true" ccw="true" supplementary="false" radius="30"/>
-    <Angle origin="4" leg1="5" leg2="3" signed="true" ccw="true" supplementary="false" radius="30"/>
+    <Angle origin="1" leg1="2" leg2="3" signed="true" ccw="true" supplementary="false" radius="0"/>
   </Angles>
+  <Circles>
+    <Circle center="6" radius="20" style="Solid" width="2"/>
+  </Circles>
 
   <!-- Interaction -->
   <Handles>
     <Handle type="Point" reference="0">
-      <Impacts>
-        <Align pointToAlign="6" point1="0" point2="4"/>
-        <Align pointToAlign="5" point1="0" point2="4"/>
+    <Impacts>
+        <Align pointToAlign="2" point1="0" point2="1"/>
       </Impacts>
-    </Handle>    
-    <Handle type="Point" reference="1"/>
-    <Handle type="Point" reference="2"/>
-    <Handle type="Point" reference="3"/>
+    </Handle>
+    <Handle type="Point" reference="1">
+      <Impacts>
+        <Align pointToAlign="2" point1="0" point2="1"/>
+      </Impacts>
+    </Handle>
+    <Handle type="Point" reference="2" >
+      <Constraint type="LineSlide">
+        <LineSlide point1="0" point2="1" position="AfterSegment"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="3" />
     <Handle type="Point" reference="4">
       <Impacts>
-        <Align pointToAlign="6" point1="4" point2="0"/>
-        <Align pointToAlign="5" point1="4" point2="0"/>
+        <SegmentCenter pointToMove="6" point1="4" point2="5"/>
       </Impacts>
     </Handle>
     <Handle type="Point" reference="5">
-      <Constraint type="LineSlide">
-        <LineSlide point1="0" point2="4" position="AfterSegment"/>
-      </Constraint>
-    </Handle>
-    <Handle type="Point" reference="6">
-      <Constraint type="LineSlide">
-        <LineSlide point1="0" point2="4" position="BeforeSegment"/>
-      </Constraint>
+      <Impacts>
+        <SegmentCenter pointToMove="6" point1="4" point2="5"/>
+      </Impacts>
     </Handle>
   </Handles>
   <HitZone>
-    <Polygon points="0;1;2;3;4"/>
+    <Polygon points="0;1;3;4;5"/>
   </HitZone>
+
+  <Capabilities flipVertical="true" flipHorizontal="true" />
   
 </KinoveaPostureTool>
