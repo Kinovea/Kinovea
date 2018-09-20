@@ -30,7 +30,18 @@ namespace Kinovea.ScreenManager
     public interface IMeasurable
     {
         CalibrationHelper CalibrationHelper { get; set; }
+
+        /// <summary>
+        /// Injects the extra data mode right after drawing creation, so that new drawings 
+        /// use a similar setting than the last time the option was changed.
+        /// This should be ignored for reloaded drawings (undo delete, paste, load from file, etc.).
+        /// </summary>
         void InitializeMeasurableData(TrackExtraData trackExtraData);
+        
+        /// <summary>
+        /// An event that the drawing should raise when the extra data was changed.
+        /// This will be used to initialize new drawings with a similar setting.
+        /// </summary>
         event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged;
     }
 }
