@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
-  <FormatVersion>1.0</FormatVersion>
+  <FormatVersion>1.1</FormatVersion>
   <Id>ef479716-77e3-4b00-82d4-e44882eb304f</Id>
   <Name>AngleToHorizontal</Name>
   <DisplayName>DrawingName_AngleToHorizontal</DisplayName>

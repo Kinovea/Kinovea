@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
-  <FormatVersion>1.0</FormatVersion>
+  <FormatVersion>1.1</FormatVersion>
   <Id>06bed28a-9e9f-45b2-bb50-125f5ed68cf0</Id>
   <Name>Genu</Name>
   <DisplayName>DrawingName_Genu</DisplayName>
