@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
             get 
             { 
                 int hash = 0;
-                foreach(PointF p in genericPosture.Points)
+                foreach(PointF p in genericPosture.PointList)
                     hash ^= p.GetHashCode();
                 
                 hash ^= styleHelper.ContentHash;
@@ -195,7 +195,7 @@ namespace Kinovea.ScreenManager
             if (opacity <= 0)
                 return;
             
-            List<Point> points = transformer.Transform(genericPosture.Points);
+            List<Point> points = transformer.Transform(genericPosture.PointList);
             
             int alpha = (int)(opacity * 255);
             alpha = Math.Max(0, Math.Min(255, alpha));
@@ -246,7 +246,7 @@ namespace Kinovea.ScreenManager
                 switch(genericPosture.Handles[i].Type)
                 {
                     case HandleType.Point:
-                        if(reference < genericPosture.Points.Count && HitTester.HitTest(genericPosture.Points[reference], point, transformer))
+                        if(reference < genericPosture.PointList.Count && HitTester.HitTest(genericPosture.PointList[reference], point, transformer))
                             result = i+1;
                         break;
                     case HandleType.Segment:
@@ -277,14 +277,14 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
-            for(int i = 0;i<genericPosture.Points.Count;i++)
-                genericPosture.Points[i] = genericPosture.Points[i].Translate(dx, dy);
+            for(int i = 0;i<genericPosture.PointList.Count;i++)
+                genericPosture.PointList[i] = genericPosture.PointList[i].Translate(dx, dy);
             
             SignalAllTrackablePointsMoved();
         }
         public override PointF GetCopyPoint()
         {
-            return genericPosture.Points[0];
+            return genericPosture.PointList[0];
         }
         #endregion
 
@@ -359,14 +359,14 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
             
-            if(points.Count == genericPosture.Points.Count)
+            if(points.Count == genericPosture.PointList.Count)
             {
-                for(int i = 0; i<genericPosture.Points.Count; i++)
-                    genericPosture.Points[i] = points[i];
+                for(int i = 0; i<genericPosture.PointList.Count; i++)
+                    genericPosture.PointList[i] = points[i];
             }
             else
             {
-                log.ErrorFormat("Number of points do not match. Tool expects {0}, read:{1}", genericPosture.Points.Count, points.Count);
+                log.ErrorFormat("Number of points do not match. Tool expects {0}, read:{1}", genericPosture.PointList.Count, points.Count);
             }
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
@@ -379,7 +379,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeCore(filter))
             {
                 w.WriteStartElement("Positions");
-                foreach (PointF p in genericPosture.Points)
+                foreach (PointF p in genericPosture.PointList)
                     w.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
                 w.WriteEndElement();
             }
@@ -417,15 +417,15 @@ namespace Kinovea.ScreenManager
             float dx = 0;
             float dy = 0;
 
-            if (genericPosture.Points.Count > 0)
+            if (genericPosture.PointList.Count > 0)
             {
-                PointF scaled = genericPosture.Points[0].Scale(ratio, ratio);
+                PointF scaled = genericPosture.PointList[0].Scale(ratio, ratio);
                 dx = origin.X - scaled.X;
                 dy = origin.Y - scaled.Y;
             }
 
-            for (int i = 0; i < genericPosture.Points.Count; i++)
-                genericPosture.Points[i] = genericPosture.Points[i].Scale(ratio, ratio).Translate(dx, dy);
+            for (int i = 0; i < genericPosture.PointList.Count; i++)
+                genericPosture.PointList[i] = genericPosture.PointList[i].Scale(ratio, ratio).Translate(dx, dy);
             
             for(int i = 0; i < genericPosture.Circles.Count; i++)
                 genericPosture.Circles[i].Radius = (int)(genericPosture.Circles[i].Radius * ratio);
@@ -668,8 +668,8 @@ namespace Kinovea.ScreenManager
                 if(!HasActiveOption(distance.OptionGroup))
                     continue;
                 
-                PointF untransformedA = distance.Point1 >= 0 ? genericPosture.Points[distance.Point1] : GetUntransformedComputedPoint(distance.Point1);
-                PointF untransformedB = distance.Point2 >= 0 ? genericPosture.Points[distance.Point2] : GetUntransformedComputedPoint(distance.Point2);
+                PointF untransformedA = distance.Point1 >= 0 ? genericPosture.PointList[distance.Point1] : GetUntransformedComputedPoint(distance.Point1);
+                PointF untransformedB = distance.Point2 >= 0 ? genericPosture.PointList[distance.Point2] : GetUntransformedComputedPoint(distance.Point2);
                 string label = CalibrationHelper.GetLengthText(untransformedA, untransformedB, true, true);
                 
                 if(!string.IsNullOrEmpty(distance.Symbol))
@@ -691,7 +691,7 @@ namespace Kinovea.ScreenManager
                 if(!HasActiveOption(position.OptionGroup))
                     continue;
                 
-                PointF untransformedP = position.Point >= 0 ? genericPosture.Points[position.Point] : GetUntransformedComputedPoint(position.Point);
+                PointF untransformedP = position.Point >= 0 ? genericPosture.PointList[position.Point] : GetUntransformedComputedPoint(position.Point);
                 string label = CalibrationHelper.GetPointText(untransformedP, true, true, infosFading.ReferenceTimestamp);
                 
                 if(!string.IsNullOrEmpty(position.Symbol))
@@ -761,7 +761,7 @@ namespace Kinovea.ScreenManager
             PointF offset = new PointF(10, 10);
 
             // Points id.
-            for (int i = 0; i < genericPosture.Points.Count; i++)
+            for (int i = 0; i < genericPosture.PointList.Count; i++)
             {
                 string label = string.Format("P{0}", i);
                 PointF p = points[i];
@@ -836,9 +836,9 @@ namespace Kinovea.ScreenManager
         {
             for(int i = 0; i<angles.Count;i++)
             {
-                PointF origin = genericPosture.Points[genericPosture.Angles[i].Origin];
-                PointF leg1 = genericPosture.Points[genericPosture.Angles[i].Leg1];
-                PointF leg2 = genericPosture.Points[genericPosture.Angles[i].Leg2];
+                PointF origin = genericPosture.PointList[genericPosture.Angles[i].Origin];
+                PointF leg1 = genericPosture.PointList[genericPosture.Angles[i].Leg1];
+                PointF leg2 = genericPosture.PointList[genericPosture.Angles[i].Leg2];
 
                 bool signed = genericPosture.Angles[i].Signed;
                 bool ccw = genericPosture.Angles[i].CCW;
@@ -945,7 +945,7 @@ namespace Kinovea.ScreenManager
                     {
                         List<PointF> points = new List<PointF>();
                         foreach(int pointRef in hitPolygon.Points)
-                            points.Add(genericPosture.Points[pointRef]);
+                            points.Add(genericPosture.PointList[pointRef]);
     
                         path.AddPolygon(points.ToArray());
                         using (Region region = new Region(path))
@@ -961,8 +961,8 @@ namespace Kinovea.ScreenManager
         }
         private bool IsPointOnSegment(GenericPostureSegment segment, PointF point, IImageToViewportTransformer transformer)
         {
-            PointF start = segment.Start >= 0 ? genericPosture.Points[segment.Start] : GetUntransformedComputedPoint(segment.Start);
-            PointF end = segment.End >= 0 ? genericPosture.Points[segment.End] : GetUntransformedComputedPoint(segment.End);
+            PointF start = segment.Start >= 0 ? genericPosture.PointList[segment.Start] : GetUntransformedComputedPoint(segment.Start);
+            PointF end = segment.End >= 0 ? genericPosture.PointList[segment.End] : GetUntransformedComputedPoint(segment.End);
             
             if(start == end)
                 return false;
@@ -977,7 +977,7 @@ namespace Kinovea.ScreenManager
         {
             using(GraphicsPath path = new GraphicsPath())
             {
-                PointF center = circle.Center >= 0 ? genericPosture.Points[circle.Center] : GetUntransformedComputedPoint(circle.Center);
+                PointF center = circle.Center >= 0 ? genericPosture.PointList[circle.Center] : GetUntransformedComputedPoint(circle.Center);
                 path.AddEllipse(center.Box(circle.Radius));
                 return HitTester.HitTest(path, point, 0, true, transformer);
             }
@@ -986,7 +986,7 @@ namespace Kinovea.ScreenManager
         {
             using(GraphicsPath path = new GraphicsPath())
             {
-                PointF center = circle.Center >= 0 ? genericPosture.Points[circle.Center] : GetUntransformedComputedPoint(circle.Center);
+                PointF center = circle.Center >= 0 ? genericPosture.PointList[circle.Center] : GetUntransformedComputedPoint(circle.Center);
                 path.AddArc(center.Box(circle.Radius), 0, 360);
                 return HitTester.HitTest(path, point, circle.Width, false, transformer);
             }

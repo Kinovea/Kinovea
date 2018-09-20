@@ -49,8 +49,8 @@ namespace Kinovea.ScreenManager
         {
             PointF result = PointF.Empty;
             
-            if(reference >= 0 && reference < posture.Points.Count)
-                result = posture.Points[reference];
+            if(reference >= 0 && reference < posture.PointList.Count)
+                result = posture.PointList[reference];
             
             return result;
         }
