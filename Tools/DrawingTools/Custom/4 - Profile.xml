@@ -29,9 +29,9 @@
     <Segment point1="2" point2="3" style="Solid" width="2"/>
     <Segment point1="3" point2="4" style="Solid" width="2"/>
   </Segments>
-  <Ellipses>
-    <Ellipse center="5" radius="10" style="Solid" width="2"/>
-  </Ellipses>
+  <Circles>
+    <Circle center="5" radius="10" style="Solid" width="2"/>
+  </Circles>
 
   <!-- Interaction -->
   <Handles>

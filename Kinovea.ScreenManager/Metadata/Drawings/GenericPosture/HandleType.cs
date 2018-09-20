@@ -27,6 +27,7 @@ namespace Kinovea.ScreenManager
     {
         Point,
         Segment,
-        Ellipse
+        Ellipse,
+        Circle
     }
 }

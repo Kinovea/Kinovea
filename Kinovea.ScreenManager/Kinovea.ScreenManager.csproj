@@ -267,6 +267,7 @@
     <Compile Include="Metadata\Drawings\DrawingTestGrid.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolTestGrid.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\Constraints\GenericPostureConstraintLockedInPlace.cs" />
+    <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureCircle.cs" />
     <Compile Include="Metadata\Drawings\Styling\Bicolor.cs" />
     <Compile Include="Metadata\Drawings\Styling\PenShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementPenShape.cs" />
@@ -499,7 +500,6 @@
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureConstraintEngine.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePosition.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureDistance.cs" />
-    <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureEllipse.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureHandle.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureManager.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureSegment.cs" />

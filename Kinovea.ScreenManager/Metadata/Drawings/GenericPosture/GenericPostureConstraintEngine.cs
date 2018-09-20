@@ -44,7 +44,8 @@ namespace Kinovea.ScreenManager
                         MoveSegmentHandle(posture, calibrationHelper, handle, point);
                         break;
                     case HandleType.Ellipse:
-                        MoveEllipseHandle(posture, handle, point);
+                    case HandleType.Circle:
+                        MoveCircleHandle(posture, handle, point);
                         break;
                 }
             }
@@ -210,21 +211,21 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private static void MoveEllipseHandle(GenericPosture posture, int handle, PointF point)
+        private static void MoveCircleHandle(GenericPosture posture, int handle, PointF point)
         {
             // Constraints. (position of the point managed by this handle).
             GenericPostureAbstractConstraint constraint = posture.Handles[handle].Constraint;
             
             if(constraint == null)
             {
-                MoveEllipseHandleFreely(posture, handle, point);
+                MoveCircleHandleFreely(posture, handle, point);
             }
             else
             {
                 switch(constraint.Type)
                 {
                     case ConstraintType.None:
-                        MoveEllipseHandleFreely(posture, handle, point);
+                        MoveCircleHandleFreely(posture, handle, point);
                         break;
                 }
             }
@@ -240,12 +241,12 @@ namespace Kinovea.ScreenManager
             Vector v = new Vector(posture.Handles[handle].GrabPoint, point);
             TranslateSegmentHandle(posture, handle, v);
         }
-        private static void MoveEllipseHandleFreely(GenericPosture posture, int handle, PointF point)
+        private static void MoveCircleHandleFreely(GenericPosture posture, int handle, PointF point)
         {
-            PointF center = posture.Points[posture.Ellipses[posture.Handles[handle].Reference].Center];
+            PointF center = posture.Points[posture.Circles[posture.Handles[handle].Reference].Center];
             Vector v = new Vector(center, point);
             float radius = v.Norm();
-            posture.Ellipses[posture.Handles[handle].Reference].Radius = (int)radius;
+            posture.Circles[posture.Handles[handle].Reference].Radius = (int)radius;
         }
         private static void MovePointHandleAlongLine(GenericPosture posture, int handle, PointF point, GenericPostureConstraintLineSlide constraint)
         {

@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2018.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -28,55 +28,52 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class GenericPostureEllipse
+    public class GenericPostureCircle
     {
         public string Name { get; private set; }
-        public int Center { get; private set;}
-        public int Radius { get; set;}
-        public SegmentLineStyle Style { get; private set;}
-        public int Width { get; private set;}
+        public int Center { get; private set; }
+        public int Radius { get; set; }
+        public SegmentLineStyle Style { get; private set; }
+        public int Width { get; private set; }
         public Color Color { get; private set; }
-        public string OptionGroup { get; private set;}
-        
-        private string name;
-        
-        public GenericPostureEllipse(XmlReader r)
+        public string OptionGroup { get; private set; }
+
+        public GenericPostureCircle(XmlReader r)
         {
-            //<Ellipse center="6" radius="15" name="" style="Solid" width="2"/>
             Name = "";
             Width = 2;
             Style = SegmentLineStyle.Solid;
             Color = Color.Transparent;
             OptionGroup = "";
-            
+
             bool isEmpty = r.IsEmptyElement;
 
             if (r.MoveToAttribute("name"))
                 Name = r.ReadContentAsString();
 
-            if(r.MoveToAttribute("center"))
+            if (r.MoveToAttribute("center"))
                 Center = XmlHelper.ParsePointReference(r.ReadContentAsString());
-            
-            if(r.MoveToAttribute("radius"))
+
+            if (r.MoveToAttribute("radius"))
                 Radius = r.ReadContentAsInt();
 
-            if(r.MoveToAttribute("style"))
-                Style = (SegmentLineStyle) Enum.Parse(typeof(SegmentLineStyle), r.ReadContentAsString());
-            
-            if(r.MoveToAttribute("width"))
+            if (r.MoveToAttribute("style"))
+                Style = (SegmentLineStyle)Enum.Parse(typeof(SegmentLineStyle), r.ReadContentAsString());
+
+            if (r.MoveToAttribute("width"))
                 Width = r.ReadContentAsInt();
-                
-            if(r.MoveToAttribute("color"))
+
+            if (r.MoveToAttribute("color"))
                 Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
-            
-            if(r.MoveToAttribute("optionGroup"))
+
+            if (r.MoveToAttribute("optionGroup"))
                 OptionGroup = r.ReadContentAsString();
 
             r.ReadStartElement();
-            
-            if(isEmpty)
+
+            if (isEmpty)
                 return;
-            
+
             // Read sub elements.
             //r.ReadEndElement();
         }
