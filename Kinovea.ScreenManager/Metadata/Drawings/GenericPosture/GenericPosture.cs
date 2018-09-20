@@ -45,6 +45,7 @@ namespace Kinovea.ScreenManager
         public Bitmap Icon { get; private set;}
         
         public List<PointF> Points { get; private set; }
+        public List<GenericPosturePoint> Markers { get; private set; }
         public List<GenericPostureSegment> Segments { get; private set;}
         public List<GenericPostureCircle> Circles { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
@@ -77,6 +78,7 @@ namespace Kinovea.ScreenManager
             this.FromKVA = fromKVA;
             
             Points = new List<PointF>();
+            Markers = new List<GenericPosturePoint>();
             Segments = new List<GenericPostureSegment>();
             Circles = new List<GenericPostureCircle>();
             Handles = new List<GenericPostureHandle>();
@@ -190,11 +192,18 @@ namespace Kinovea.ScreenManager
                             break;
 
                         // Data section
+
+                        // Deprecated (1.0)
                         case "PointCount":
-                            ParsePointCount(r);
+                            // Ignored.
+                            r.ReadElementContentAsInt();
     						break;
                         case "InitialConfiguration":
                             ParseInitialConfiguration(r);
+                            break;
+
+                        case "Points":
+                            ParsePoints(r);
                             break;
                         case "Segments":
     						ParseSegments(r);
@@ -255,6 +264,8 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("An error occurred during the parsing of a custom tool.");
                 log.ErrorFormat(e.ToString());
             }
+
+            
         }
         private void CheckFormatVersion(string version)
         {
@@ -281,30 +292,17 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Data
-        private void ParsePointCount(XmlReader r)
-        {
-            int pointCount = r.ReadElementContentAsInt();
-            for(int i=0;i<pointCount;i++)
-                Points.Add(Point.Empty);
-        }
+        
+        #region Deprecated
         private void ParseInitialConfiguration(XmlReader r)
         {
             r.ReadStartElement();
-            int index = 0;
             while (r.NodeType == XmlNodeType.Element)
             {
                 if (r.Name == "Point")
                 {
-                    if (index < Points.Count)
-                    {
-                        Points[index] = XmlHelper.ParsePointF(r.ReadElementContentAsString());
-                        index++;
-                    }
-                    else
-                    {
-                        string outerXml = r.ReadOuterXml();
-                        log.DebugFormat("Unparsed point in initial configuration: {0}", outerXml);
-                    }
+                    PointF value = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                    Markers.Add(new GenericPosturePoint(value));
                 }
                 else
                 {
@@ -314,6 +312,33 @@ namespace Kinovea.ScreenManager
             }
 
             r.ReadEndElement();
+
+            foreach (var point in Markers)
+                Points.Add(point.Value);
+        }
+        #endregion
+
+        private void ParsePoints(XmlReader r)
+        {
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                if (r.Name == "Point")
+                {
+                    Markers.Add(new GenericPosturePoint(r));
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
+            }
+
+            r.ReadEndElement();
+
+            foreach (var point in Markers)
+                Points.Add(point.Value);
         }
         private void ParseSegments(XmlReader r)
         {

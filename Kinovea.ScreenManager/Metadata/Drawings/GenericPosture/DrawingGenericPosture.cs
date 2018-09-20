@@ -211,11 +211,12 @@ namespace Kinovea.ScreenManager
                 Color baseBrushHandleColor = brushHandle.Color;
                 Color baseBrushFillColor = brushFill.Color;
                 
-                DrawComputedPoints(penEdge, basePenEdgeColor, brushHandle, baseBrushHandleColor, alpha, opacity, canvas, transformer);
                 DrawSegments(penEdge, basePenEdgeColor, alpha, canvas, transformer, points);
                 DrawCircles(penEdge, basePenEdgeColor, alpha, canvas, transformer, points);
-                DrawHandles(brushHandle, baseBrushHandleColor, alpha, canvas, transformer, points);
                 DrawAngles(penEdge, basePenEdgeColor, brushFill, baseBrushFillColor, alpha, alphaBackground, opacity, canvas, transformer, points);
+                DrawPoints(brushHandle, baseBrushHandleColor, alpha, canvas, transformer, points);
+
+                DrawComputedPoints(penEdge, basePenEdgeColor, brushHandle, baseBrushHandleColor, alpha, opacity, canvas, transformer);
                 DrawDistances(brushFill, baseBrushFillColor, alphaBackground, opacity, canvas, transformer, points);
                 DrawPositions(brushFill, baseBrushFillColor, alphaBackground, opacity, canvas, transformer, points);
 
@@ -568,16 +569,26 @@ namespace Kinovea.ScreenManager
             
             penEdge.Color = basePenEdgeColor;
         }
-        private void DrawHandles(SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
+        private void DrawPoints(SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
+            // Points are by default invisible unless there is a handle on them.
             foreach(GenericPostureHandle handle in genericPosture.Handles)
             {
                 if(!HasActiveOption(handle.OptionGroup))
                     continue;
                     
-                if(handle.Type == HandleType.Point && handle.Reference >= 0 && handle.Reference < points.Count)
+                if(handle.Type == HandleType.Point && handle.Reference >= 0 && handle.Reference < points.Count && handle.Reference < genericPosture.Markers.Count)
                 {
-                    brushHandle.Color = handle.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, handle.Color);
+                    GenericPosturePoint marker = genericPosture.Markers[handle.Reference];
+                    if (marker == null)
+                        continue;
+
+                    brushHandle.Color = baseBrushHandleColor;
+                    if (marker.Color != Color.Transparent)
+                        brushHandle.Color = Color.FromArgb(alpha, marker.Color);
+                    else if (handle.Color != Color.Transparent)
+                        brushHandle.Color = Color.FromArgb(alpha, handle.Color);
+
                     canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
                 }
             }
