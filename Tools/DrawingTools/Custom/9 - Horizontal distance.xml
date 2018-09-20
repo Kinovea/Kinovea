@@ -32,23 +32,19 @@
       <Constraint type="VerticalSlide"/>
     </Handle>
     <Handle type="Point" reference="1" trackable="true">
-      <Impact type="HorizontalAlign">
+      <Impacts>
         <HorizontalAlign point="0"/>
-      </Impact>
-      <Impact type="HorizontalAlign">
         <HorizontalAlign point="2"/>
-      </Impact>
-      <Impact type="HorizontalAlign">
         <HorizontalAlign point="3"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="3">
       <Constraint type="VerticalSlide"/>
     </Handle>
     <Handle type="Point" reference="4" trackable="true">
-      <Impact type="VerticalAlign">
+      <Impacts>
         <VerticalAlign point="2"/>
-      </Impact>
+      </Impacts>
     </Handle>
   </Handles>
   

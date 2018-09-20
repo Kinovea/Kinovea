@@ -28,18 +28,18 @@
   <!-- Interaction -->
   <Handles>
     <Handle type="Point" reference="0">
-      <Impact type="SegmentCenter">
+      <Impacts>
         <SegmentCenter pointToMove="1" point1="0" point2="2"/>
         <KeepAngle origin="1" leg1="0" leg2="4"/>
         <KeepAngle origin="1" leg1="0" leg2="3"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="2">
-      <Impact type="SegmentCenter">
+      <Impacts>
         <SegmentCenter pointToMove="1" point1="0" point2="2"/>
         <KeepAngle origin="1" leg1="2" leg2="4"/>
         <KeepAngle origin="1" leg1="2" leg2="3"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="3">
       <Constraint type="LineSlide">
@@ -52,5 +52,5 @@
       </Constraint>
     </Handle>
   </Handles>
-  
+
 </KinoveaPostureTool>

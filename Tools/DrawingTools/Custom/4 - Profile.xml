@@ -24,13 +24,13 @@
     <Point>80;70</Point>
   </InitialConfiguration>
   <Segments>
-    <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
-    <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
-    <Segment point1="2" point2="3" name="" style="Solid" width="2"/>
-    <Segment point1="3" point2="4" name="" style="Solid" width="2"/>
+    <Segment point1="0" point2="1" style="Solid" width="2"/>
+    <Segment point1="1" point2="2" style="Solid" width="2"/>
+    <Segment point1="2" point2="3" style="Solid" width="2"/>
+    <Segment point1="3" point2="4" style="Solid" width="2"/>
   </Segments>
   <Ellipses>
-    <Ellipse center="5" radius="10" name="" style="Solid" width="2"/>
+    <Ellipse center="5" radius="10" style="Solid" width="2"/>
   </Ellipses>
 
   <!-- Interaction -->
@@ -39,33 +39,33 @@
       <Constraint type="DistanceToPoint">
         <DistanceToPoint point="1"/>
       </Constraint>
-      <Impact type="Pivot">
+      <Impacts>
         <Pivot pivot="1" impacted="5"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="1">
       <Constraint type="DistanceToPoint">
         <DistanceToPoint point="0"/>
       </Constraint>
-      <Impact type="Pivot">
+      <Impacts>
         <Pivot pivot="0" impacted="2;3;4"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="2">
       <Constraint type="DistanceToPoint">
         <DistanceToPoint point="1"/>
       </Constraint>
-      <Impact type="Pivot">
+      <Impacts>
         <Pivot pivot="1" impacted="3;4"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="3">
       <Constraint type="DistanceToPoint">
         <DistanceToPoint point="2"/>
       </Constraint>
-      <Impact type="Pivot">
+      <Impacts>
         <Pivot pivot="2" impacted="4"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="4">
       <Constraint type="DistanceToPoint">

@@ -26,14 +26,12 @@
     <Point>110;140</Point>
     <Point>150;140</Point>
   </InitialConfiguration>
-
   <Segments>
     <Segment name="" point1="0" point2="3" style="Solid" width="2"/>
     <Segment name="" point1="1" point2="4" style="Dash" width="2"/>
     <Segment name="" point1="2" point2="5" style="Solid" width="2"/>
     <Segment name="" point1="7" point2="8" style="Solid" width="2"/>
   </Segments>
-  
   <Ellipses>
     <Ellipse center="6" radius="10" name="" style="Solid" width="2"/>
   </Ellipses>
@@ -42,57 +40,45 @@
   <Handles>
     <Handle type="Point" reference="0">
       <Constraint type="VerticalSlide"/>
-      <Impact type="VerticalAlign">
+      <Impacts>
         <VerticalAlign point="1"/>
-      </Impact>
-      <Impact type="VerticalAlign">
         <VerticalAlign point="2"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="1">
       <Constraint type="VerticalSlide"/>
-      <Impact type="VerticalAlign">
+      <Impacts>
         <VerticalAlign point="0"/>
-      </Impact>
-      <Impact type="VerticalAlign">
         <VerticalAlign point="2"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="2">
       <Constraint type="VerticalSlide"/>
-      <Impact type="VerticalAlign">
+      <Impacts>
         <VerticalAlign point="0"/>
-      </Impact>
-      <Impact type="VerticalAlign">
         <VerticalAlign point="1"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="3">
       <Constraint type="VerticalSlide"/>
-      <Impact type="VerticalAlign">
+      <Impacts>
         <VerticalAlign point="4"/>
-      </Impact>
-      <Impact type="VerticalAlign">
         <VerticalAlign point="5"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="4">
       <Constraint type="VerticalSlide"/>
-      <Impact type="VerticalAlign">
+      <Impacts>
         <VerticalAlign point="3"/>
-      </Impact>
-      <Impact type="VerticalAlign">
         <VerticalAlign point="5"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="5">
       <Constraint type="VerticalSlide"/>
-      <Impact type="VerticalAlign">
+      <Impacts>
         <VerticalAlign point="3"/>
-      </Impact>
-      <Impact type="VerticalAlign">
         <VerticalAlign point="4"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="6">
       <Constraint type="LineSlide">
@@ -103,15 +89,15 @@
     <Handle type="Point" reference="8"/>
     <Handle type="Segment" reference="0">
       <Constraint type="HorizontalSlide"/>
-      <Impact type="HorizontalSymmetry">
+      <Impacts>
         <HorizontalSymmetry impacting="0" impacted="2" axis="1"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Segment" reference="2">
       <Constraint type="HorizontalSlide"/>
-      <Impact type="HorizontalSymmetry">
+      <Impacts>
         <HorizontalSymmetry impacting="2" impacted="0" axis="1"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Segment" reference="3"/>
     <Handle type="Ellipse" reference="0"/>

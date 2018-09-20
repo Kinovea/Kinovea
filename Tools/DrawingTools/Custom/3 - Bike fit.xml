@@ -25,13 +25,13 @@
     <Point>60;450</Point> <!-- tip of foot -->
   </InitialConfiguration>
   <Segments>
-    <Segment point1="0" point2="1" name="Head" style="Solid" width="2" color="#dc322f"/>
-    <Segment point1="1" point2="2" name="Arm" style="Solid" width="2" color="#b58900"/>
-    <Segment point1="2" point2="3" name="Forearm" style="Solid" width="2" color="#dc322f"/>
-    <Segment point1="1" point2="4" name="Torso" style="Solid" width="2" color="#268bd2"/>
-    <Segment point1="4" point2="5" name="Thigh" style="Solid" width="2" color="#d33682"/>
-    <Segment point1="5" point2="6" name="Leg" style="Solid" width="2" color="#6c71c4"/>
-    <Segment point1="6" point2="7" name="Foot" style="Solid" width="2" color="#2aa198"/>
+    <Segment name="Head" point1="0" point2="1" style="Solid" width="2" color="#dc322f"/>
+    <Segment name="Arm" point1="1" point2="2" style="Solid" width="2" color="#b58900"/>
+    <Segment name="Forearm" point1="2" point2="3" style="Solid" width="2" color="#dc322f"/>
+    <Segment name="Torso" point1="1" point2="4" style="Solid" width="2" color="#268bd2"/>
+    <Segment name="Thigh" point1="4" point2="5" style="Solid" width="2" color="#d33682"/>
+    <Segment name="Leg" point1="5" point2="6" style="Solid" width="2" color="#6c71c4"/>
+    <Segment name="Foot" point1="6" point2="7" style="Solid" width="2" color="#2aa198"/>
   </Segments>
   <Angles>
   	<!-- Angle directions for a bike looking to the right. -->

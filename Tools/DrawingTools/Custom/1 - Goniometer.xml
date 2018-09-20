@@ -33,15 +33,15 @@
 
   <!-- Interaction -->
   <Handles>
-    <Handle type="Point" name="knee" reference="0" trackable="true">
-      <Impact type="KeepAngle">
+    <Handle type="Point" reference="0" trackable="true">
+      <Impacts>
         <KeepAngle origin="1" leg1="0" leg2="2"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="1" trackable="true">
-      <Impact type="KeepAngle">
+      <Impacts>
         <KeepAngle origin="1" leg1="0" leg2="2"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="2">
       <Constraint type="RotationSteps">
