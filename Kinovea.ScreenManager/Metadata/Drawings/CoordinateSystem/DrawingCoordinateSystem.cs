@@ -117,10 +117,13 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem menuShowGrid = new ToolStripMenuItem();
         private ToolStripMenuItem menuShowGraduations = new ToolStripMenuItem();
         private ToolStripMenuItem menuHide = new ToolStripMenuItem();
-        
+
+        private bool trackingUpdate;
+
         private const int defaultBackgroundAlpha = 92;
         private const int gridAlpha = 128;
         private const int textMargin = 8;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
@@ -299,17 +302,25 @@ namespace Kinovea.ScreenManager
         }
         public void SetTrackablePointValue(string name, PointF value)
         {
-            if(!points.ContainsKey(name))
+            /// Called by the trackability manager after a Track() call.
+            /// The value of the trackable point should be updated inside the drawing so the 
+            /// drawing reflects the new coordinate.
+            if (!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
+
+            trackingUpdate = true;
             CalibrationHelper.SetOrigin(value);
+            trackingUpdate = false;
         }
         private void SignalTrackablePointMoved()
         {
+            // The trackable point has been moved through direct user interaction.
+            // Alert the trackability manager of the new value.
             if(TrackablePointMoved == null)
                 return;
-            
+
             TrackablePointMoved(this, new TrackablePointMovedEventArgs("0", points["0"]));
         }
         #endregion
@@ -391,8 +402,18 @@ namespace Kinovea.ScreenManager
         #region IMeasurable implementation
         public void UpdateOrigin()
         {
+            // The coordinate system origin was updated from the outside.
+            // Make sure the drawing reflects the new origin.
             if(CalibrationHelper != null)
+            {
                 points["0"] = CalibrationHelper.GetImagePoint(PointF.Empty);
+
+                // Also ensure the trackability manager is up to date.
+                // This is necessary to make sure it correctly imports the original value after KVA load.
+                // But avoid calling it if the new origin is because we are reading the tracking timeline.
+                if (!trackingUpdate)
+                    SignalTrackablePointMoved();
+            }
         }
         public void InitializeMeasurableData(TrackExtraData trackExtraData)
         {
