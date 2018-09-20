@@ -213,7 +213,7 @@ namespace Kinovea.ScreenManager
                 
                 DrawComputedPoints(penEdge, basePenEdgeColor, brushHandle, baseBrushHandleColor, alpha, opacity, canvas, transformer);
                 DrawSegments(penEdge, basePenEdgeColor, alpha, canvas, transformer, points);
-                DrawEllipses(penEdge, basePenEdgeColor, alpha, canvas, transformer, points);
+                DrawCircles(penEdge, basePenEdgeColor, alpha, canvas, transformer, points);
                 DrawHandles(brushHandle, baseBrushHandleColor, alpha, canvas, transformer, points);
                 DrawAngles(penEdge, basePenEdgeColor, brushFill, baseBrushFillColor, alpha, alphaBackground, opacity, canvas, transformer, points);
                 DrawDistances(brushFill, baseBrushFillColor, alphaBackground, opacity, canvas, transformer, points);
@@ -256,7 +256,8 @@ namespace Kinovea.ScreenManager
                         }
                         break;
                     case HandleType.Ellipse:
-                        if (reference < genericPosture.Ellipses.Count && IsPointOnEllipseArc(genericPosture.Ellipses[reference], point, transformer))
+                    case HandleType.Circle:
+                        if (reference < genericPosture.Circles.Count && IsPointOnArc(genericPosture.Circles[reference], point, transformer))
                             result = i+1;
                         break;
                 }
@@ -425,8 +426,8 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < genericPosture.Points.Count; i++)
                 genericPosture.Points[i] = genericPosture.Points[i].Scale(ratio, ratio).Translate(dx, dy);
             
-            for(int i = 0; i < genericPosture.Ellipses.Count; i++)
-                genericPosture.Ellipses[i].Radius = (int)(genericPosture.Ellipses[i].Radius * ratio);
+            for(int i = 0; i < genericPosture.Circles.Count; i++)
+                genericPosture.Circles[i].Radius = (int)(genericPosture.Circles[i].Radius * ratio);
             
             for(int i = 0; i<genericPosture.Angles.Count;i++)
                 genericPosture.Angles[i].Radius = (int)(genericPosture.Angles[i].Radius * ratio);
@@ -548,20 +549,20 @@ namespace Kinovea.ScreenManager
             penEdge.StartCap = LineCap.NoAnchor;
             penEdge.EndCap = LineCap.NoAnchor;
         }
-        private void DrawEllipses(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
+        private void DrawCircles(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
-            foreach(GenericPostureEllipse ellipse in genericPosture.Ellipses)
+            foreach(GenericPostureCircle circle in genericPosture.Circles)
             {
-                if(!HasActiveOption(ellipse.OptionGroup))
+                if(!HasActiveOption(circle.OptionGroup))
                     continue;
                     
-                penEdge.Width = ellipse.Width;
-                penEdge.DashStyle = Convert(ellipse.Style);
-                penEdge.Color = ellipse.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, ellipse.Color);
+                penEdge.Width = circle.Width;
+                penEdge.DashStyle = Convert(circle.Style);
+                penEdge.Color = circle.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, circle.Color);
                 
-                PointF center = ellipse.Center >= 0 ? points[ellipse.Center] : GetComputedPoint(ellipse.Center, transformer);
+                PointF center = circle.Center >= 0 ? points[circle.Center] : GetComputedPoint(circle.Center, transformer);
                 
-                int radius = transformer.Transform(ellipse.Radius);
+                int radius = transformer.Transform(circle.Radius);
                 canvas.DrawEllipse(penEdge, center.Box(radius));
             }
             
@@ -901,9 +902,9 @@ namespace Kinovea.ScreenManager
             if(hit)
                 return true;
             
-            foreach(GenericPostureEllipse ellipse in genericPosture.Ellipses)
+            foreach(GenericPostureCircle circle in genericPosture.Circles)
             {
-                hit = IsPointInsideEllipse(ellipse, point, transformer);
+                hit = IsPointInsideCircle(circle, point, transformer);
                 if(hit)
                     break;
             }
@@ -961,22 +962,22 @@ namespace Kinovea.ScreenManager
                 return HitTester.HitTest(path, point, segment.Width, false, transformer);
             }
         }
-        private bool IsPointInsideEllipse(GenericPostureEllipse ellipse, PointF point, IImageToViewportTransformer transformer)
+        private bool IsPointInsideCircle(GenericPostureCircle circle, PointF point, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {
-                PointF center = ellipse.Center >= 0 ? genericPosture.Points[ellipse.Center] : GetUntransformedComputedPoint(ellipse.Center);
-                path.AddEllipse(center.Box(ellipse.Radius));
+                PointF center = circle.Center >= 0 ? genericPosture.Points[circle.Center] : GetUntransformedComputedPoint(circle.Center);
+                path.AddEllipse(center.Box(circle.Radius));
                 return HitTester.HitTest(path, point, 0, true, transformer);
             }
         }
-        private bool IsPointOnEllipseArc(GenericPostureEllipse ellipse, PointF point, IImageToViewportTransformer transformer)
+        private bool IsPointOnArc(GenericPostureCircle circle, PointF point, IImageToViewportTransformer transformer)
         {
             using(GraphicsPath path = new GraphicsPath())
             {
-                PointF center = ellipse.Center >= 0 ? genericPosture.Points[ellipse.Center] : GetUntransformedComputedPoint(ellipse.Center);
-                path.AddArc(center.Box(ellipse.Radius), 0, 360);
-                return HitTester.HitTest(path, point, ellipse.Width, false, transformer);
+                PointF center = circle.Center >= 0 ? genericPosture.Points[circle.Center] : GetUntransformedComputedPoint(circle.Center);
+                path.AddArc(center.Box(circle.Radius), 0, 360);
+                return HitTester.HitTest(path, point, circle.Width, false, transformer);
             }
         }
         #endregion

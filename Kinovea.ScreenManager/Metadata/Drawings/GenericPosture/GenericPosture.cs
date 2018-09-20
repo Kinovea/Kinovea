@@ -45,16 +45,16 @@ namespace Kinovea.ScreenManager
         
         public List<PointF> Points { get; private set; }
         public List<GenericPostureSegment> Segments { get; private set;}
-        public List<GenericPostureEllipse> Ellipses { get; private set;}
+        public List<GenericPostureCircle> Circles { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
+        public List<GenericPostureHandle> Handles { get; private set; }
+        public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
         public List<GenericPostureDistance> Distances { get; private set;}
         public List<GenericPosturePosition> Positions { get; private set;}
-        public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureComputedPoint> ComputedPoints { get; private set;}
-        public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
-        public TrackingProfile CustomTrackingProfile { get; private set; }
         public GenericPostureCapabilities Capabilities { get; private set;}
         public Dictionary<string, bool> OptionGroups { get; private set;}
+        public TrackingProfile CustomTrackingProfile { get; private set; }
         
         public bool Trackable { get; private set;}
         public bool FromKVA { get; private set;}
@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
             
             Points = new List<PointF>();
             Segments = new List<GenericPostureSegment>();
-            Ellipses = new List<GenericPostureEllipse>();
+            Circles = new List<GenericPostureCircle>();
             Handles = new List<GenericPostureHandle>();
             Angles = new List<GenericPostureAngle>();
             Distances = new List<GenericPostureDistance>();
@@ -172,10 +172,7 @@ namespace Kinovea.ScreenManager
     			{
                     switch(r.Name)
     				{
-                        case "Icon":
-                             r.ReadOuterXml();
-                            break;
-
+                        // Header section
                         case "Id":
                             Id = new Guid(r.ReadElementContentAsString());
                             break;
@@ -185,45 +182,60 @@ namespace Kinovea.ScreenManager
                         case "DisplayName":
                             DisplayName = r.ReadElementContentAsString();
                             break;
+                        case "Icon":
+                             r.ReadOuterXml();
+                            break;
+
+                        // Data section
                         case "PointCount":
                             ParsePointCount(r);
     						break;
+                        case "InitialConfiguration":
+                            ParseInitialConfiguration(r);
+                            break;
                         case "Segments":
     						ParseSegments(r);
     						break;
     					case "Ellipses":
-    						ParseEllipses(r);
+                        case "Circles":
+    						ParseCircles(r);
     						break;
     					case "Angles":
     						ParseAngles(r);
     						break;
-    				    case "Distances":
+
+                        // Interaction section
+    					case "Handles":
+    						ParseHandles(r);
+    						break;
+                        case "HitZone":
+                            ParseHitZone(r);
+                            break;
+
+                        // Variables section
+                        case "Distances":
     						ParseDistances(r);
     						break;
     				    case "Positions":
     						ParsePositions(r);
     						break;
-    					case "Handles":
-    						ParseHandles(r);
-    						break;
                         case "ComputedPoints":
     						ParseComputedPoints(r);
     						break;
-                        case "HitZone":
-    						ParseHitZone(r);
-    						break;
-                        case "TrackingProfile":
-                            CustomTrackingProfile.ReadXml(r);
-                            break;
+
+                        // Menus
                         case "DefaultOptions":
     						ParseDefaultOptions(r);
     						break;
     		            case "Capabilities":
     						ParseCapabilities(r);
     						break;
-    					case "InitialConfiguration":
-    						ParseInitialConfiguration(r);
-    						break;
+                            
+                        // Extra
+                        case "TrackingProfile":
+                            CustomTrackingProfile.ReadXml(r);
+                            break;
+
                         default:
     						string unparsed = r.ReadOuterXml();
     						log.DebugFormat("Unparsed content in XML: {0}", unparsed);
@@ -241,17 +253,51 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat(e.ToString());
             }
         }
+
+        #region Header
         private void ParseIcon(XmlReader r)
         {
             string base64 = r.ReadElementContentAsString();
             byte[] bytes = Convert.FromBase64String(base64);
             Icon = (Bitmap)Image.FromStream(new MemoryStream(bytes));
         }
+
+        #endregion
+
+        #region Data
         private void ParsePointCount(XmlReader r)
         {
             int pointCount = r.ReadElementContentAsInt();
             for(int i=0;i<pointCount;i++)
                 Points.Add(Point.Empty);
+        }
+        private void ParseInitialConfiguration(XmlReader r)
+        {
+            r.ReadStartElement();
+            int index = 0;
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                if (r.Name == "Point")
+                {
+                    if (index < Points.Count)
+                    {
+                        Points[index] = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        index++;
+                    }
+                    else
+                    {
+                        string outerXml = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed point in initial configuration: {0}", outerXml);
+                    }
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content: {0}", outerXml);
+                }
+            }
+
+            r.ReadEndElement();
         }
         private void ParseSegments(XmlReader r)
         {
@@ -272,15 +318,15 @@ namespace Kinovea.ScreenManager
             
             r.ReadEndElement();
         }
-        private void ParseEllipses(XmlReader r)
+        private void ParseCircles(XmlReader r)
         {
             r.ReadStartElement();
             
             while(r.NodeType == XmlNodeType.Element)
             {
-                if(r.Name == "Ellipse")
+                if(r.Name == "Ellipse" || r.Name == "Circle")
                 {
-                    Ellipses.Add(new GenericPostureEllipse(r));
+                    Circles.Add(new GenericPostureCircle(r));
                 }
                 else
                 {
@@ -310,6 +356,50 @@ namespace Kinovea.ScreenManager
             
             r.ReadEndElement();
         }
+        #endregion
+
+        #region Interaction
+        private void ParseHandles(XmlReader r)
+        {
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                if (r.Name == "Handle")
+                {
+                    Handles.Add(new GenericPostureHandle(r));
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
+            }
+
+            r.ReadEndElement();
+        }
+        private void ParseHitZone(XmlReader r)
+        {
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                if (r.Name == "Polygon")
+                {
+                    HitZones.Add(new GenericPostureHitZonePolygon(r));
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
+            }
+
+            r.ReadEndElement();
+        }
+        #endregion
+
+        #region Variables
         private void ParseDistances(XmlReader r)
         {
             r.ReadStartElement();
@@ -348,32 +438,13 @@ namespace Kinovea.ScreenManager
             
             r.ReadEndElement();
         }
-        private void ParseHandles(XmlReader r)
-        {
-            r.ReadStartElement();
-            
-            while(r.NodeType == XmlNodeType.Element)
-            {
-                if(r.Name == "Handle")
-                {
-                    Handles.Add(new GenericPostureHandle(r));
-                }
-                else
-                {
-                    string outerXml = r.ReadOuterXml();
-                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
-                }
-            }
-            
-            r.ReadEndElement();
-        }
         private void ParseComputedPoints(XmlReader r)
         {
             r.ReadStartElement();
-            
-            while(r.NodeType == XmlNodeType.Element)
+
+            while (r.NodeType == XmlNodeType.Element)
             {
-                if(r.Name == "ComputedPoint")
+                if (r.Name == "ComputedPoint")
                 {
                     ComputedPoints.Add(new GenericPostureComputedPoint(r));
                 }
@@ -383,29 +454,12 @@ namespace Kinovea.ScreenManager
                     log.DebugFormat("Unparsed content in XML: {0}", outerXml);
                 }
             }
-            
-            r.ReadEndElement();
-        }
 
-        private void ParseHitZone(XmlReader r)
-        {
-            r.ReadStartElement();
-            
-            while(r.NodeType == XmlNodeType.Element)
-            {
-                if(r.Name == "Polygon")
-                {
-                    HitZones.Add(new GenericPostureHitZonePolygon(r));
-                }
-                else
-                {
-                    string outerXml = r.ReadOuterXml();
-                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
-                }
-            }
-            
             r.ReadEndElement();
         }
+        #endregion
+
+        #region Menus
         private void ParseDefaultOptions(XmlReader r)
         {
             r.ReadStartElement();
@@ -444,34 +498,6 @@ namespace Kinovea.ScreenManager
             
             r.ReadStartElement();
         }
-        private void ParseInitialConfiguration(XmlReader r)
-        {
-            r.ReadStartElement();
-            int index = 0;
-            while(r.NodeType == XmlNodeType.Element)
-            {
-                if(r.Name == "Point")
-                {
-                    if(index < Points.Count)
-                    {
-                        Points[index] = XmlHelper.ParsePointF(r.ReadElementContentAsString());
-                        index++;
-                    }
-                    else
-                    {
-                        string outerXml = r.ReadOuterXml();
-                        log.DebugFormat("Unparsed point in initial configuration: {0}", outerXml);
-                    }
-                }
-                else
-                {
-                    string outerXml = r.ReadOuterXml();
-                    log.DebugFormat("Unparsed content: {0}", outerXml);
-                }
-            }
-            
-            r.ReadEndElement();
-        }
         private void ImportOptionGroups()
         {
             foreach(GenericPostureSegment segment in Segments)
@@ -485,8 +511,8 @@ namespace Kinovea.ScreenManager
                     AddOption(handle.Constraint.OptionGroup);
             }
             
-            foreach(GenericPostureEllipse ellipse in Ellipses)
-                AddOption(ellipse.OptionGroup);
+            foreach(GenericPostureCircle circle in Circles)
+                AddOption(circle.OptionGroup);
                 
             foreach(GenericPostureAngle angle in Angles)
                 AddOption(angle.OptionGroup);
@@ -512,7 +538,10 @@ namespace Kinovea.ScreenManager
                OptionGroups.Add(option, false);
         }
         #endregion
-   
+
+        #endregion
+
+        #region Tracking support.
         public Dictionary<string, PointF> GetTrackablePoints()
         {
             Dictionary<string, PointF> trackablePoints = new Dictionary<string, PointF>();
@@ -522,19 +551,16 @@ namespace Kinovea.ScreenManager
             
             return trackablePoints;
         }
-        
         public void SignalAllTrackablePointsMoved(EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
         {
             foreach(int index in trackableIndices)
                 trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), Points[index]));
         }
-
         public void SignalTrackablePointMoved(int handleIndex, EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
         {
             int index = Handles[handleIndex].Reference;
             trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), Points[index]));
         }
-
         public void SetTrackablePointValue(string name, PointF value, CalibrationHelper calibrationHelper)
         {
             // Value coming from tracking.
@@ -545,7 +571,8 @@ namespace Kinovea.ScreenManager
             int handleIndex = Handles.FindIndex((h) => h.Reference == pointIndex);
             GenericPostureConstraintEngine.MoveHandle(this, calibrationHelper, handleIndex, value, Keys.None);
         }
-    
+        #endregion
+
         public void FlipHorizontal()
         {
             RectangleF boundingBox = GetBoundingBox();
@@ -557,7 +584,6 @@ namespace Kinovea.ScreenManager
                 Points[i] = new PointF(x, Points[i].Y);
             }
         }
-
         public void FlipVertical()
         {
             RectangleF boundingBox = GetBoundingBox();
