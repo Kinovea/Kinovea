@@ -45,14 +45,14 @@
     <Segment name="Right foot" point1="13" point2="14" style="Solid" width="2" color="#d33682"/>
   </Segments>
   <Angles>
-    <Angle name="Elbow angle left" origin="2" leg1="1" leg2="3" radius="25" color="#cb4b16" optionGroup="Display elbows angles"/> 
-    <Angle name="Elbow angle right" origin="5" leg1="1" leg2="6" radius="25" color="#b58900" optionGroup="Display elbows angles"/> 
-    <Angle origin="8" leg1="1" leg2="9" radius="30" color="#6c71c4" optionGroup="Display hips angles"/> 
-    <Angle origin="8" leg1="1" leg2="12" radius="30" color="#d33682" optionGroup="Display hips angles"/> 
-    <Angle origin="9" leg1="8" leg2="10" radius="40" color="#6c71c4" optionGroup="Display knee angles"/> 
-    <Angle origin="12" leg1="8" leg2="13" radius="40" color="#d33682" optionGroup="Display knee angles"/>
-    <Angle origin="10" leg1="9" leg2="11" radius="25" color="#6c71c4" optionGroup="Display ankle angles"/>
-    <Angle origin="13" leg1="12" leg2="14" radius="25" color="#d33682" optionGroup="Display ankle angles"/>
+    <Angle name="Elbow left" origin="2" leg1="1" leg2="3" signed="true" ccw="false" supplementary="false" radius="25" color="#cb4b16" optionGroup="Display elbows angles"/> 
+    <Angle name="Elbow right" origin="5" leg1="1" leg2="6" signed="true" ccw="true" supplementary="false" radius="25" color="#b58900" optionGroup="Display elbows angles"/> 
+    <Angle name="Hip left" origin="8" leg1="1" leg2="12" signed="true" ccw="true" supplementary="false" radius="30" color="#d33682" optionGroup="Display hips angles"/> 
+    <Angle name="Hip right" origin="8" leg1="1" leg2="9" signed="true" ccw="false" supplementary="false" radius="30" color="#6c71c4" optionGroup="Display hips angles"/> 
+    <Angle name="Knee left" origin="12" leg1="8" leg2="13" signed="true" ccw="false" supplementary="false" radius="40" color="#d33682" optionGroup="Display knee angles"/>
+    <Angle name="Knee right" origin="9" leg1="8" leg2="10" signed="true" ccw="true" supplementary="false" radius="40" color="#6c71c4" optionGroup="Display knee angles"/> 
+    <Angle name="Ankle left" origin="13" leg1="12" leg2="14" signed="true" ccw="false" supplementary="false" radius="25" color="#d33682" optionGroup="Display ankle angles"/>
+    <Angle name="Ankle right" origin="10" leg1="9" leg2="11" signed="true" ccw="true" supplementary="false" radius="25" color="#6c71c4" optionGroup="Display ankle angles"/>
   </Angles>
 
   <!-- Interaction -->

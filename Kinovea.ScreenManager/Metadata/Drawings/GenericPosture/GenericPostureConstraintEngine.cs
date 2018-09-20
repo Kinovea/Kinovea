@@ -262,14 +262,6 @@ namespace Kinovea.ScreenManager
         }
         private static void MovePointHandleAlongVertical(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, PointF point)
         {
-            /*PointF source = calibrationHelper.GetPoint(posture.Points[posture.Handles[handle].Reference]);
-            PointF target = calibrationHelper.GetPoint(point.ToPointF());
-        
-            PointF result = new PointF(source.X, target.Y);
-            PointF resultImage = calibrationHelper.GetImagePoint(result);
-            
-            posture.Points[posture.Handles[handle].Reference] = resultImage;*/
-            
             posture.Points[posture.Handles[handle].Reference] = new PointF(posture.Points[posture.Handles[handle].Reference].X, point.Y);
         }
         private static void MovePointHandleAlongHorizontal(GenericPosture posture, int handle, PointF point)

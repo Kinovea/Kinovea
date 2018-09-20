@@ -22,7 +22,7 @@
   </InitialConfiguration>
   <Segments>
     <Segment point1="0" point2="2" style="Dash" width="2"/>
-    <Segment point1="1" point2="3" name="" style="Solid" width="2"/>
+    <Segment point1="1" point2="3" style="Solid" width="2"/>
   </Segments>
   <Angles>
     <Angle origin="1" leg1="2" leg2="3" signed="true" ccw="true" supplementary="false" tenth="true"/>
@@ -34,12 +34,10 @@
       <Constraint type="HorizontalSlide"/>
     </Handle>
     <Handle type="Point" reference="1" trackable="true">
-      <Impact type="VerticalAlign">
+      <Impacts>
         <VerticalAlign point="0"/>
-      </Impact>
-      <Impact type="VerticalAlign">
         <VerticalAlign point="2"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <Handle type="Point" reference="2">
       <Constraint type="HorizontalSlide"/>

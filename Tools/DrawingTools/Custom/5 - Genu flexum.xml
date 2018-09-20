@@ -21,17 +21,17 @@
     <Point>180;230</Point>
   </InitialConfiguration>
   <Segments>
-    <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
-    <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
-    <Segment point1="2" point2="3" name="" style="Solid" width="2"/>
-    <Segment point1="3" point2="4" name="" style="Solid" width="2"/>
-    <Segment point1="4" point2="0" name="" style="Solid" width="2"/>
-    <Segment point1="4" point2="5" name="" style="Solid" width="2"/>
-    <Segment point1="5" point2="6" name="" style="Solid" width="2"/>
-    <Segment point1="6" point2="7" name="" style="Solid" width="2"/>
-    <Segment point1="2" point2="8" name="" style="Solid" width="2"/>
-    <Segment point1="8" point2="9" name="" style="Solid" width="2"/>
-    <Segment point1="9" point2="10" name="" style="Solid" width="2"/>
+    <Segment point1="0" point2="1" style="Solid" width="2"/>
+    <Segment point1="1" point2="2" style="Solid" width="2"/>
+    <Segment point1="2" point2="3" style="Solid" width="2"/>
+    <Segment point1="3" point2="4" style="Solid" width="2"/>
+    <Segment point1="4" point2="0" style="Solid" width="2"/>
+    <Segment point1="4" point2="5" style="Solid" width="2"/>
+    <Segment point1="5" point2="6" style="Solid" width="2"/>
+    <Segment point1="6" point2="7" style="Solid" width="2"/>
+    <Segment point1="2" point2="8" style="Solid" width="2"/>
+    <Segment point1="8" point2="9" style="Solid" width="2"/>
+    <Segment point1="9" point2="10" style="Solid" width="2"/>
   </Segments>
 
   <!-- Interaction -->
@@ -41,18 +41,18 @@
       <Constraint type="DistanceToPoint">
         <DistanceToPoint point="4"/>
       </Constraint>
-      <Impact type="Pivot">
+      <Impacts>
         <Pivot pivot="4" impacted="6;7"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <!-- Left ankle -->
     <Handle type="Point" reference="6">
       <Constraint type="DistanceToPoint">
         <DistanceToPoint point="5"/>
       </Constraint>
-      <Impact type="Pivot">
+      <Impacts>
         <Pivot pivot="5" impacted="7"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <!-- Left foot -->
     <Handle type="Point" reference="7">
@@ -66,18 +66,18 @@
       <Constraint type="DistanceToPoint">
         <DistanceToPoint point="2"/>
       </Constraint>
-      <Impact type="Pivot">
+      <Impacts>
         <Pivot pivot="2" impacted="9;10"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <!-- Right ankle -->
     <Handle type="Point" reference="9">
       <Constraint type="DistanceToPoint">
         <DistanceToPoint point="8"/>
       </Constraint>
-      <Impact type="Pivot">
+      <Impacts>
         <Pivot pivot="8" impacted="10"/>
-      </Impact>
+      </Impacts>
     </Handle>
     <!-- Right foot -->
     <Handle type="Point" reference="10">
