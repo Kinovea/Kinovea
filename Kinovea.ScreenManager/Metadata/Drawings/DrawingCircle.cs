@@ -110,6 +110,7 @@ namespace Kinovea.ScreenManager
         private PointF center;
         private int radius;
         private bool initializing = true;
+        private bool measureInitialized = false;
         private static readonly float crossSize = 15;
         private static readonly float crossRadius = crossSize / 2.0f;
         private MiniLabel miniLabel = new MiniLabel();
@@ -331,6 +332,7 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
             initializing = false;
+            measureInitialized = true;
             miniLabel.SetAttach(center, false);
             miniLabel.BackColor = styleHelper.Color;
         }
@@ -451,6 +453,10 @@ namespace Kinovea.ScreenManager
         #region IMeasurable implementation
         public void InitializeMeasurableData(TrackExtraData trackExtraData)
         {
+            if (measureInitialized)
+                return;
+
+            measureInitialized = true;
             if (trackExtraData == TrackExtraData.None || trackExtraData == TrackExtraData.Name)
                 this.trackExtraData = trackExtraData;
             else

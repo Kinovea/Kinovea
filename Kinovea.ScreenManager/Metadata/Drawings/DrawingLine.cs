@@ -111,7 +111,8 @@ namespace Kinovea.ScreenManager
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
         private bool tracking;
         private bool initializing = true;
-        
+        private bool measureInitialized;
+
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
@@ -359,6 +360,7 @@ namespace Kinovea.ScreenManager
             
             xmlReader.ReadEndElement();
             initializing = false;
+            measureInitialized = true;
             miniLabel.SetAttach(GetMiddlePoint(), false);
             miniLabel.BackColor = styleHelper.Color;
             SignalAllTrackablePointsMoved();
@@ -561,6 +563,10 @@ namespace Kinovea.ScreenManager
         #region IMeasurable implementation
         public void InitializeMeasurableData(TrackExtraData trackExtraData)
         {
+            if (measureInitialized)
+                return;
+
+            measureInitialized = true;
             if (trackExtraData == TrackExtraData.None || trackExtraData == TrackExtraData.Name)
                 this.trackExtraData = trackExtraData;
             else

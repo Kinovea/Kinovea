@@ -906,7 +906,7 @@ namespace Kinovea.ScreenManager
         private void AfterDrawingCreation(AbstractDrawing drawing)
         {
             // When passing here, it is possible that the drawing has already been initialized.
-            // (for example, when undeleting a drawing).
+            // (for example, for undo of delete, paste or reload from KVA).
 
             if (string.IsNullOrEmpty(drawing.Name))
                 SetDrawingName(drawing);
