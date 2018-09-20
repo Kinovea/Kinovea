@@ -952,7 +952,7 @@ namespace Kinovea.ScreenManager
             kvaImporting = true;
             StopAllTracking();
             UnselectAll();
-
+            
             memoCoordinateSystemId = drawingCoordinateSystem.Id;
         }
         public void AfterKVAImport()
@@ -1298,6 +1298,9 @@ namespace Kinovea.ScreenManager
         }
         private void AfterCalibrationChanged()
         {
+            if (drawingCoordinateSystem.CalibrationHelper == null)
+                drawingCoordinateSystem.CalibrationHelper = calibrationHelper;
+
             drawingCoordinateSystem.UpdateOrigin();
             calibrationChangedTemporizer.Call();
         }

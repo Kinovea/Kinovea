@@ -35,7 +35,14 @@ namespace Kinovea.ScreenManager
         
         Dictionary<string, PointF> GetTrackablePoints();
         void SetTracking(bool tracking);
+
+        /// <summary>
+        /// Called by the trackability manager after a Track() call.
+        /// The value of the trackable point should be updated inside the drawing so the 
+        /// drawing reflects the new coordinate.
+        /// </summary>
         void SetTrackablePointValue(string name, PointF value);
+        
         event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
     }
 }
