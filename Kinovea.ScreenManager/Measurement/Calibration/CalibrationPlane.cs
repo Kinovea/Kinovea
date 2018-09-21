@@ -156,6 +156,12 @@ namespace Kinovea.ScreenManager
 
         public void Update(QuadrilateralF quadImage)
         {
+            if (!initialized || size.IsEmpty)
+            {
+                valid = false;
+                return;
+            }
+
             this.quadImage = quadImage.Clone();
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
             valid = quadImage.IsConvex;
