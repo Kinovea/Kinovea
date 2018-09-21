@@ -64,7 +64,6 @@ namespace Kinovea.ScreenManager
         public event EventHandler ResetAsked;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
-        public event EventHandler<EventArgs<Bitmap>> SendImage;
         public event EventHandler<TimeEventArgs> KeyframeAdding;
         public event EventHandler<KeyframeEventArgs> KeyframeDeleting;
         public event EventHandler<DrawingEventArgs> DrawingAdding;
