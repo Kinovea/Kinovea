@@ -438,10 +438,10 @@ namespace Kinovea.ScreenManager
             {
                 case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
                 case TrackExtraData.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
-                case TrackExtraData.Center: return "Center"; // ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
-                case TrackExtraData.Radius: return "Radius";
-                case TrackExtraData.Diameter: return "Diameter";
-                case TrackExtraData.Circumference: return "Circumference";
+                case TrackExtraData.Center: return ScreenManagerLang.ExtraData_Center;
+                case TrackExtraData.Radius: return ScreenManagerLang.ExtraData_Radius;
+                case TrackExtraData.Diameter: return ScreenManagerLang.ExtraData_Diameter;
+                case TrackExtraData.Circumference: return ScreenManagerLang.ExtraData_Circumference;
             }
 
             return "";

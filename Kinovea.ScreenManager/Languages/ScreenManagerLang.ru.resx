@@ -160,6 +160,10 @@
    <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve"><value>Угловая скорость</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve"><value>Угловое ускорение</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve"><value>Центростремительное ускороение</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>Отслеживание</value></data>
    <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>Окно объекта:</value></data>
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Окно поиска:</value></data>

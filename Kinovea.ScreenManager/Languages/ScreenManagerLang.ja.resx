@@ -163,6 +163,10 @@
    
    
    
+   
+   
+   
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>セグメントの実際のサイズ:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>ライン較正</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>平面較正</value></data>
