@@ -160,6 +160,10 @@
    <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve"><value>Hoeksnelheid</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve"><value>Hoekversnelling</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve"><value>Middelpuntzoekende versnelling</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>Volgen</value></data>
    <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>Voorwerpscherm:</value></data>
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Zoekscherm:</value></data>

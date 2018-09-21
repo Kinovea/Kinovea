@@ -1555,6 +1555,42 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Center.
+        /// </summary>
+        public static string ExtraData_Center {
+            get {
+                return ResourceManager.GetString("ExtraData_Center", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Circumference.
+        /// </summary>
+        public static string ExtraData_Circumference {
+            get {
+                return ResourceManager.GetString("ExtraData_Circumference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diameter.
+        /// </summary>
+        public static string ExtraData_Diameter {
+            get {
+                return ResourceManager.GetString("ExtraData_Diameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radius.
+        /// </summary>
+        public static string ExtraData_Radius {
+            get {
+                return ResourceManager.GetString("ExtraData_Radius", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All supported files (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF.
         /// </summary>
         public static string FileFilter_ImportReference {

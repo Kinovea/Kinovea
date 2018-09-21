@@ -163,6 +163,10 @@
    
    
    
+   
+   
+   
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Reell størrelse på segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrere måling</value></data>
    

@@ -160,6 +160,10 @@
    <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve"><value>السرعة الزاوية</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve"><value>العجلة الزاوية</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve"><value>العجلة المركزية</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>التتبع</value></data>
    <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>اطار الهدف</value></data>
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>اطار البحث</value></data>

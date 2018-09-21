@@ -160,6 +160,10 @@
    <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve"><value>Angular velocity</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve"><value>Angular acceleration</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve"><value>Centripetal acceleration</value></data>
+   <data name="ExtraData_Center" xml:space="preserve"><value>Center</value></data>
+   <data name="ExtraData_Radius" xml:space="preserve"><value>Radius</value></data>
+   <data name="ExtraData_Diameter" xml:space="preserve"><value>Diameter</value></data>
+   <data name="ExtraData_Circumference" xml:space="preserve"><value>Circumference</value></data>
    <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>Tracking</value></data>
    <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>Object window:</value></data>
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Search window:</value></data>

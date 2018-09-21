@@ -163,6 +163,10 @@
    
    
    
+   
+   
+   
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Оригинална големина на сегментот:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Калибрација на линијата</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Калибрација на рамнината</value></data>
