@@ -43,7 +43,6 @@ namespace Kinovea.ScreenManager
         public event EventHandler PauseAsked;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
-        public event EventHandler<EventArgs<Bitmap>> SendImage;
         public event EventHandler ResetAsked;
         #endregion
 
@@ -301,7 +300,6 @@ namespace Kinovea.ScreenManager
             view.PauseAsked += View_PauseAsked;
             view.SelectionChanged += View_SelectionChanged;
             view.ImageChanged += View_ImageChanged;
-            view.SendImage += View_SendImage;
             view.ResetAsked += View_ResetAsked;
 
             // Requests for metadata modification coming from the view, these should push a memento on the history stack.
@@ -365,13 +363,7 @@ namespace Kinovea.ScreenManager
             if (ImageChanged != null)
                 ImageChanged(this, e);
         }
-
-        public void View_SendImage(object sender, EventArgs<Bitmap> e)
-        {
-            if (SendImage != null)
-                SendImage(this, e);
-        }
-
+        
         public void View_ResetAsked(object sender, EventArgs e)
         {
             if (ResetAsked != null)

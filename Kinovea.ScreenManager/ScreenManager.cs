@@ -640,20 +640,6 @@ namespace Kinovea.ScreenManager
                 dualPlayer.CommitLaunchSettings();
         }
         
-        private void Player_SendImage(object sender, EventArgs<Bitmap> e)
-        {
-            PlayerScreen player = sender as PlayerScreen;
-            if (player == null)
-                return;
-
-            // An image was sent from a screen to be added as an observational reference in the other screen.
-            // The image has been cloned and transformed in the caller screen.
-            foreach (PlayerScreen p in playerScreens)
-            {
-                if (p != player)
-                    p.AddImageDrawing(e.Value);
-            }
-        }
         private void Player_ResetAsked(object sender, EventArgs e)
         {
             // A screen was reset. (ex: a video was reloded in place).
@@ -2313,7 +2299,6 @@ namespace Kinovea.ScreenManager
         private void AddPlayerScreenEventHandlers(PlayerScreen player)
         {
             player.SelectionChanged += Player_SelectionChanged;
-            player.SendImage += Player_SendImage;
             player.ResetAsked += Player_ResetAsked;
         }
         private void RemoveScreenEventHandlers(AbstractScreen screen)
@@ -2328,7 +2313,6 @@ namespace Kinovea.ScreenManager
         private void RemovePlayerScreenEventHandlers(PlayerScreen player)
         {
             player.SelectionChanged -= Player_SelectionChanged;
-            player.SendImage -= Player_SendImage;
             player.ResetAsked -= Player_ResetAsked;
         }
         
