@@ -1439,9 +1439,18 @@ namespace Kinovea.ScreenManager
 
             // TODO: unhook event handlers ?
             mnuMeasurement.DropDownItems.Clear();
-
-            foreach (TrackExtraData trackExtraData in Enum.GetValues(typeof(TrackExtraData)))
-                mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(trackExtraData));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.None));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Name));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Position));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.TotalDistance));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.TotalHorizontalDisplacement));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.TotalVerticalDisplacement));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Speed));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.HorizontalVelocity));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.VerticalVelocity));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Acceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.HorizontalAcceleration));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.VerticalAcceleration));
         }
         private ToolStripMenuItem GetMeasurementMenu(TrackExtraData data)
         {

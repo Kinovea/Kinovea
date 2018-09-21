@@ -113,8 +113,18 @@ namespace Kinovea.ScreenManager
         private void InitExtraDataCombo()
         {
             // Combo must be filled in the order of the enum.
-            foreach (TrackExtraData trackExtraData in Enum.GetValues(typeof(TrackExtraData)))
-                cmbExtraData.Items.Add(track.GetExtraDataOptionText(trackExtraData));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.None));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Name));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Position));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.TotalDistance));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.TotalHorizontalDisplacement));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.TotalVerticalDisplacement));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Speed));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.HorizontalVelocity));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.VerticalVelocity));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Acceleration));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.HorizontalAcceleration));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.VerticalAcceleration));
         }
         private void InitMarkerCombo()
         {
