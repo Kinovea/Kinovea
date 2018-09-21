@@ -124,8 +124,9 @@ namespace Kinovea.ScreenManager
         private InfosFading infosFading;
         private CalibrationHelper calibrationHelper;
         private Ellipse ellipseInImage;
-
-
+        private PointF radiusLeftInImage;
+        private PointF radiusRightInImage;
+        
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -181,8 +182,13 @@ namespace Kinovea.ScreenManager
                 if (styleHelper.PenShape == PenShape.Dash)
                     p.DashStyle = DashStyle.Dash;
 
+                // The center of the original circle is still the correct center even in perspective.
+                PointF circleCenter = transformer.Transform(center);
+                DrawCenter(canvas, p, circleCenter.ToPoint());
+
                 if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
                 {
+                    // Draw the circle in perspective.
                     PointF ellipseCenter = transformer.Transform(ellipseInImage.Center);
                     float semiMinorAxis = transformer.Transform((int)ellipseInImage.SemiMinorAxis);
                     float semiMajorAxis = transformer.Transform((int)ellipseInImage.SemiMajorAxis);
@@ -192,22 +198,33 @@ namespace Kinovea.ScreenManager
                     
                     canvas.TranslateTransform(ellipse.Center.X, ellipse.Center.Y);
                     canvas.RotateTransform(angle);
+
                     canvas.DrawEllipse(p, rect);
+                    
                     canvas.RotateTransform(-angle);
                     canvas.TranslateTransform(-ellipse.Center.X, -ellipse.Center.Y);
-
-                    DrawCenter(canvas, p, ellipseCenter.ToPoint());
                 }
                 else
                 {
                     Rectangle boundingBox = transformer.Transform(center.Box(radius));
                     canvas.DrawEllipse(p, boundingBox);
-
-                    DrawCenter(canvas, p, boundingBox.Center());
                 }
 
                 if (trackExtraData != TrackExtraData.None)
                 {
+                    // Draw lines from the center to the periphery of the circle to show the radius or diameter.
+                    if (trackExtraData == TrackExtraData.Radius)
+                    {
+                        PointF radiusRight = transformer.Transform(radiusRightInImage);
+                        canvas.DrawLine(p, circleCenter, radiusRight);
+                    }
+                    else if (trackExtraData == TrackExtraData.Diameter)
+                    {
+                        PointF radiusLeft = transformer.Transform(radiusLeftInImage);
+                        PointF radiusRight = transformer.Transform(radiusRightInImage);
+                        canvas.DrawLine(p, radiusLeft, radiusRight);
+                    }
+
                     string text = GetExtraDataText(infosFading.ReferenceTimestamp);
                     miniLabel.SetText(text);
                     miniLabel.Draw(canvas, transformer, opacityFactor);
@@ -217,11 +234,13 @@ namespace Kinovea.ScreenManager
         private void DrawCenter(Graphics canvas, Pen pen, Point center)
         {
             // Precision center.
+            float memoPenWidth = pen.Width;
             pen.Width = 1.0f;
             pen.DashStyle = DashStyle.Solid;
             Point c = center;
             canvas.DrawLine(pen, center.X - crossRadius, center.Y, center.X + crossRadius, center.Y);
             canvas.DrawLine(pen, center.X, center.Y - crossRadius, center.X, center.Y + crossRadius);
+            pen.Width = memoPenWidth;
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
@@ -233,15 +252,12 @@ namespace Kinovea.ScreenManager
                 radius = (int)Math.Sqrt((shiftX * shiftX) + (shiftY * shiftY));
                 radius = Math.Max(radius, 10);
 
-                if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
-                {
-                    ellipseInImage = CalibrationHelper.GetEllipseFromCircle(center, radius);
-                    miniLabel.SetAttach(ellipseInImage.Center, true);
-                }
+                UpdateEllipseInImage();
             }
             else if (handleNumber == 2)
             {
                 miniLabel.SetLabel(point);
+                UpdateEllipseInImage();
             }
         }
         public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
@@ -250,19 +266,13 @@ namespace Kinovea.ScreenManager
             if (CalibrationHelper == null)
                 return;
 
-            if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
-            {
-                ellipseInImage = CalibrationHelper.GetEllipseFromCircle(center, radius);
-                miniLabel.SetAttach(ellipseInImage.Center, true);
-            }
-            else
-            {
-                miniLabel.SetAttach(center, true);
-            }
+            UpdateEllipseInImage();
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             // Convention: miss = -1, object = 0, handle = n.
+            // We do not need a special case to hit the radius or diameter line as they are inside the circle and 
+            // don't have special handling compared to just moving the whole thing.
             double opacity = infosFading.GetOpacityFactor(currentTimestamp);
             if (opacity <= 0)
                 return -1;
@@ -399,7 +409,10 @@ namespace Kinovea.ScreenManager
             mnuMeasurement.DropDownItems.Clear();
             mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.None));
             mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Name));
-            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Position));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Center));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Radius));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Diameter));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Circumference));
         }
         private ToolStripMenuItem GetMeasurementMenu(TrackExtraData data)
         {
@@ -410,6 +423,7 @@ namespace Kinovea.ScreenManager
             mnu.Click += (s, e) =>
             {
                 trackExtraData = data;
+                ResetAttachPoint();
                 InvalidateFromMenu(s);
 
                 if(ShowMeasurableInfoChanged != null)
@@ -424,7 +438,10 @@ namespace Kinovea.ScreenManager
             {
                 case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
                 case TrackExtraData.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
-                case TrackExtraData.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
+                case TrackExtraData.Center: return "Center"; // ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
+                case TrackExtraData.Radius: return "Radius";
+                case TrackExtraData.Diameter: return "Diameter";
+                case TrackExtraData.Circumference: return "Circumference";
             }
 
             return "";
@@ -437,12 +454,21 @@ namespace Kinovea.ScreenManager
             string displayText = "###";
             switch (trackExtraData)
             {
-                case TrackExtraData.Name:
-                    displayText = name;
+                case TrackExtraData.Center:
+                    displayText = CalibrationHelper.GetPointText(center, true, true, referencTimestamp);
                     break;
-                case TrackExtraData.Position:
+                case TrackExtraData.Radius:
+                    displayText = CalibrationHelper.GetLengthText(center, radiusRightInImage, true, true);
+                    break;
+                case TrackExtraData.Diameter:
+                    displayText = CalibrationHelper.GetLengthText(radiusLeftInImage, radiusRightInImage, true, true);
+                    break;
+                case TrackExtraData.Circumference:
+                    displayText = CalibrationHelper.GetCircumferenceText(center, radiusRightInImage, true, true);
+                    break;
+                case TrackExtraData.Name:
                 default:
-                    displayText = CalibrationHelper.GetPointText(new PointF(center.X, center.Y), true, true, referencTimestamp);
+                    displayText = name;
                     break;
             }
 
@@ -453,22 +479,58 @@ namespace Kinovea.ScreenManager
         #region IMeasurable implementation
         public void InitializeMeasurableData(TrackExtraData trackExtraData)
         {
+            // This is called when the drawing is added and a previous drawing had its measurement option switched on.
+            // We try to retain a similar measurement option.
             if (measureInitialized)
                 return;
 
             measureInitialized = true;
-            if (trackExtraData == TrackExtraData.None || trackExtraData == TrackExtraData.Name)
+            
+            // If the option is supported, we just use it, otherwise we use the center.
+            if (trackExtraData == TrackExtraData.None || 
+                trackExtraData == TrackExtraData.Name || 
+                trackExtraData == TrackExtraData.Center || 
+                trackExtraData == TrackExtraData.Radius || 
+                trackExtraData == TrackExtraData.Diameter || 
+                trackExtraData == TrackExtraData.Circumference)
                 this.trackExtraData = trackExtraData;
             else
-                this.trackExtraData = TrackExtraData.Position;
+                this.trackExtraData = TrackExtraData.Center;
+
+            ResetAttachPoint();
         }
         public void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
+            UpdateEllipseInImage();
+        }
+        private void UpdateEllipseInImage()
+        {
+            // Takes the circle in image space and figure out the corresponding ellipse in image space.
+            // Also get the left and right points along the horizontal diameter, also in image space, 
+            // these are used to show measurements and attach the minilabel.
+            // This should be called any time the center or circumference change.
             if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
             {
-                ellipseInImage = CalibrationHelper.GetEllipseFromCircle(center, radius);
-                miniLabel.SetAttach(ellipseInImage.Center, true);
+                ellipseInImage = CalibrationHelper.GetEllipseFromCircle(center, radius, out radiusLeftInImage, out radiusRightInImage);
             }
+            else
+            {
+                radiusLeftInImage = new PointF(center.X - radius, center.Y);
+                radiusRightInImage = new PointF(center.X + radius, center.Y);
+            }
+
+            ResetAttachPoint();
+        }
+        private void ResetAttachPoint()
+        {
+            if (trackExtraData == TrackExtraData.Name || 
+                trackExtraData == TrackExtraData.Center ||
+                trackExtraData == TrackExtraData.Diameter)
+                miniLabel.SetAttach(center, true);
+            else if (trackExtraData == TrackExtraData.Radius)
+                miniLabel.SetAttach(GeometryHelper.GetMiddlePoint(center, radiusRightInImage), true);
+            else if (trackExtraData == TrackExtraData.Circumference)
+                miniLabel.SetAttach(radiusRightInImage, true);
         }
         #endregion
 

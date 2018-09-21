@@ -563,11 +563,17 @@ namespace Kinovea.ScreenManager
         #region IMeasurable implementation
         public void InitializeMeasurableData(TrackExtraData trackExtraData)
         {
+            // This is called when the drawing is added and a previous drawing had its measurement option switched on.
+            // We try to retain a similar measurement option.
             if (measureInitialized)
                 return;
 
             measureInitialized = true;
-            if (trackExtraData == TrackExtraData.None || trackExtraData == TrackExtraData.Name)
+
+            // If the option is supported, we just use it, otherwise we use the length.
+            if (trackExtraData == TrackExtraData.None || 
+                trackExtraData == TrackExtraData.Name ||
+                trackExtraData == TrackExtraData.TotalDistance)
                 this.trackExtraData = trackExtraData;
             else
                 this.trackExtraData = TrackExtraData.TotalDistance;

@@ -22,5 +22,11 @@ namespace Kinovea.ScreenManager
         Acceleration,
         HorizontalAcceleration,
         VerticalAcceleration,
+
+        // Circle specific
+        Center,
+        Radius,
+        Diameter,
+        Circumference,
     }
 }

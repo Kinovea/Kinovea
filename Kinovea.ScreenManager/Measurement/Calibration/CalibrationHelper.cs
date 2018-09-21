@@ -395,6 +395,23 @@ namespace Kinovea.ScreenManager
             return text;
         }
 
+        /// <summary>
+        /// Takes the image space coordinates of the center of the circle and the image space coordinates of the point on the circle 
+        /// that is along the X-axis in world space.
+        /// Returns the circumference in world units.
+        /// </summary>
+        public string GetCircumferenceText(PointF p1, PointF p2, bool precise, bool abbreviation)
+        {
+            float length = GeometryHelper.GetDistance(GetPoint(p1), GetPoint(p2));
+            string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
+            string text = String.Format(valueTemplate, 2 * Math.PI * length);
+
+            if (abbreviation)
+                text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
+
+            return text;
+        }
+
         public string GetLengthAbbreviation()
         {
             return UnitHelper.LengthAbbreviation(lengthUnit);
@@ -478,9 +495,15 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Takes a circle in image space and returns a cooresponding ellipse in image space.
+        /// This is an ill posed problem. The center is respected but the radius could be taken 
+        /// anywhere around the circle in image space, and that yields different radii in world space.
+        /// We use the point along the X axis as the radius.
         /// </summary>
-        public Ellipse GetEllipseFromCircle(PointF center, float radius)
+        public Ellipse GetEllipseFromCircle(PointF center, float radius, out PointF radiusLeftInImage, out PointF radiusRightInImage)
         {
+            radiusLeftInImage = new PointF(center.X - radius, center.Y);
+            radiusRightInImage = new PointF(center.X + radius, center.Y);
+
             if (calibratorType == CalibratorType.Line)
                 return new Ellipse(center, radius, radius, 0);
 
@@ -488,8 +511,13 @@ namespace Kinovea.ScreenManager
             PointF centerInWorld = GetPoint(center);
 
             // Estimate the radius in world space.
-            // Assumes reference direction to be X-axis in image space for radius conversion.
+            // Get scalar will assumes reference direction to be X-axis in image space.
             float radiusInWorld = GetScalar(radius);
+
+            // Get the intersection points of a horizontal diameter.
+            // This is used to draw a line from the center to the outline of the ellipse in perspective.
+            radiusLeftInImage = GetImagePoint(centerInWorld.Translate(-radiusInWorld, 0));
+            radiusRightInImage = GetImagePoint(centerInWorld.Translate(radiusInWorld, 0));
 
             // Get the square enclosing the circle for mapping.
             PointF a = GetImagePoint(centerInWorld.Translate(-radiusInWorld, -radiusInWorld));
