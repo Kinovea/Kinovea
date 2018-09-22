@@ -82,10 +82,7 @@
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Reproducció</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Teclat</value></data>
    
-   <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Sincronització</value></data>
-   <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Fotograma de la càmera</value></data>
-   <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Freqüència fixa</value></data>
-   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Freqüència (fps)</value></data>
+   
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Esquerra</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Dreta</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Arrel:</value></data>
@@ -202,6 +199,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deumilèssimes d'hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Marques de temps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classic + Número de fotogrames</value></data>
+   
    
    
    

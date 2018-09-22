@@ -164,6 +164,7 @@
    
    
    
+   
    <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>Seguiment</value></data>
    <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>Finestra de l'objecte:</value></data>
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Finestra de cerca:</value></data>

@@ -90,9 +90,6 @@
    
    
    
-   
-   
-   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Billedformat:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videoformat:</value></data>
    
@@ -202,6 +199,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>10/1000 time</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tidsstempler</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassisk + Billednumre</value></data>
+   
    
    
    

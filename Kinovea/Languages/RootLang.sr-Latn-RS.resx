@@ -90,9 +90,6 @@
    
    
    
-   
-   
-   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Grafički format:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Video format:</value></data>
    
@@ -202,6 +199,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deset stotinki sata</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Vremenske oznake </value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasični + brojevi okvira </value></data>
+   
    
    
    

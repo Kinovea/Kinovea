@@ -1582,6 +1582,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Length.
+        /// </summary>
+        public static string ExtraData_Length {
+            get {
+                return ResourceManager.GetString("ExtraData_Length", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Radius.
         /// </summary>
         public static string ExtraData_Radius {

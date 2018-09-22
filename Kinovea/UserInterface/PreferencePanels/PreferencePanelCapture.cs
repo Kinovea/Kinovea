@@ -121,7 +121,7 @@ namespace Kinovea.Root
             int videoFormat = (int)capturePathConfiguration.VideoFormat;
             cmbVideoFormat.SelectedIndex = ((int)videoFormat < cmbVideoFormat.Items.Count) ? (int)videoFormat : 0;
 
-            lblFramerate.Text = "Display framerate (fps):"; // RootLang.dlgPreferences_Capture_lblForcedFramerate;
+            lblFramerate.Text = RootLang.dlgPreferences_Capture_lblForcedFramerate;
             tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
         }
 

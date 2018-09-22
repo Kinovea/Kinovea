@@ -82,10 +82,7 @@
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>اعادة العرض</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>لوحة المفاتيح</value></data>
    
-   <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>تزامن العرض</value></data>
-   <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>تردد الكاميرا</value></data>
-   <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>معدل التردد القسري</value></data>
-   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>التردد (كادر/ثانية)</value></data>
+   
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>شمال</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>يمين</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>الاساسي :</value></data>
@@ -202,6 +199,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>عشرة آلاف في الساعة</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>الطوابع الزمنية</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>كلاسيكي + عدد الكادرات</value></data>
+   
    
    
    

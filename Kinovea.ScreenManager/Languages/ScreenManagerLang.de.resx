@@ -167,6 +167,7 @@
    
    
    
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Tatsächliche Länge der Strecke</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Messung kalibrieren</value></data>
    

@@ -133,15 +133,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display synchronization.
-        /// </summary>
-        public static string dlgPreferences_Capture_DisplaySynchronization {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_DisplaySynchronization", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to File:.
         /// </summary>
         public static string dlgPreferences_Capture_File {
@@ -160,7 +151,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Framerate (fps):.
+        ///   Looks up a localized string similar to Display framerate (fps):.
         /// </summary>
         public static string dlgPreferences_Capture_lblForcedFramerate {
             get {
@@ -291,24 +282,6 @@ namespace Kinovea.Root.Languages {
         public static string dlgPreferences_Capture_PatternYear {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_PatternYear", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Camera frame.
-        /// </summary>
-        public static string dlgPreferences_Capture_radioCameraFrameSignal {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_radioCameraFrameSignal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Forced framerate.
-        /// </summary>
-        public static string dlgPreferences_Capture_radioForcedFramerate {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Capture_radioForcedFramerate", resourceCulture);
             }
         }
         

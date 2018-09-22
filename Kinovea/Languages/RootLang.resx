@@ -82,10 +82,7 @@
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Playback</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Keyboard</value></data>
    <data name="dlgPreferences_Drawings_chkAllowMultipleInstances" xml:space="preserve"><value>Allow multiple instances of Kinovea</value></data>
-   <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Display synchronization</value></data>
-   <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Camera frame</value></data>
-   <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Forced framerate</value></data>
-   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Framerate (fps):</value></data>
+   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Display framerate (fps):</value></data>
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Left</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Right</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Root:</value></data>
@@ -202,6 +199,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Ten thousandth of an hour</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classic + Frame numbers</value></data>
+   
    
    
    
