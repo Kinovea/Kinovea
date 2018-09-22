@@ -40,6 +40,7 @@ namespace Kinovea.ScreenManager
         private Rectangle displayRectangle; // Position and size of the region of the viewport where we draw the image.
         private ImageManipulator manipulator = new ImageManipulator();
         private ZoomHelper zoomHelper = new ZoomHelper();
+        private bool mirrored = false;
         private List<EmbeddedButton> resizers = new List<EmbeddedButton>();
         private static Bitmap resizerBitmap = Properties.Resources.resizer;
         private static int resizerOffset = resizerBitmap.Width / 2;
@@ -69,6 +70,11 @@ namespace Kinovea.ScreenManager
             ForceZoomValue();
         }
         
+        public void SetMirrored(bool value)
+        {
+            mirrored = value;
+        }
+
         public void IncreaseZoom()
         {
             zoomHelper.Increase();
@@ -121,12 +127,20 @@ namespace Kinovea.ScreenManager
         {
             try
             {
-                if(displayRectangle.Size == controller.Bitmap.Size)
-                    canvas.DrawImageUnscaled(controller.Bitmap, displayRectangle.Location);
+                if (!mirrored)
+                {
+                    if (displayRectangle.Size == controller.Bitmap.Size)
+                        canvas.DrawImageUnscaled(controller.Bitmap, displayRectangle.Location);
+                    else
+                        canvas.DrawImage(controller.Bitmap, displayRectangle);
+                }
                 else
-                    canvas.DrawImage(controller.Bitmap, displayRectangle);
+                {
+                    Rectangle rDst = new Rectangle(displayRectangle.Right, displayRectangle.Top, -displayRectangle.Width, displayRectangle.Height);
+                    canvas.DrawImage(controller.Bitmap, rDst);
+                }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 log.ErrorFormat(e.Message);
             }
