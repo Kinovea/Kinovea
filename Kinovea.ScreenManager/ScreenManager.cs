@@ -970,7 +970,7 @@ namespace Kinovea.ScreenManager
                     ConfigureVideoFilterMenus(null);
 
                     // Tools
-                    mnuSVGTools.Enabled = hasSvgFiles;
+                    mnuSVGTools.Enabled = false;
                     mnuTestGrid.Enabled = true;
                     mnuTestGrid.Checked = captureScreen.TestGridVisible;
                     mnuCoordinateAxis.Enabled = false;
