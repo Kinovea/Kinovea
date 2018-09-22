@@ -49,14 +49,22 @@ namespace Kinovea.Root
         #endregion
 
         #region Constructor
-        public KinoveaMainWindow(RootKernel rootKernel)
+        public KinoveaMainWindow(RootKernel rootKernel, bool firstInstance)
         {
             log.Debug("Create main UI window.");
 
             this.rootKernel = rootKernel;
             InitializeComponent();
-            
-            this.Text = " Kinovea";
+
+            string title = " Kinovea";
+            if (!firstInstance)
+            {
+                // Add random characters at the end of the window title so it can be identified by automation scripts.
+                string id = Guid.NewGuid().ToString().Substring(0, 4);
+                title += " [" + id + "]";
+            }
+
+            this.Text = title;
             supervisorView = new SupervisorUserInterface(rootKernel);
             this.Controls.Add(supervisorView);
             supervisorView.Dock = DockStyle.Fill;
