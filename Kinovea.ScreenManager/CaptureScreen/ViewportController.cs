@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
     /// The viewport is the piece of UI that contains the image and the drawings, and manages the main user interaction with them.
     /// (The drawings should be able to go outside the image).
     /// </summary>
-    public class ViewportController
+    public class ViewportController : IDrawingHostView
     {
         #region Events
         public event EventHandler DisplayRectangleUpdated;
@@ -163,12 +163,12 @@ namespace Kinovea.ScreenManager
             return metadataManipulator.OnMouseLeftMove(mouse, modifiers, imageLocation, imageZoom);
         }
         
-        public void OnMouseUp()
+        public void OnMouseUp(Point mouse, Keys modifiers, Point imageLocation, float imageZoom)
         {
             if(metadataManipulator == null)
                 return;
 
-            metadataManipulator.OnMouseUp(bitmap);
+            metadataManipulator.OnMouseUp(bitmap, mouse, modifiers, imageLocation, imageZoom);
             Refresh();
         }
         
@@ -190,7 +190,21 @@ namespace Kinovea.ScreenManager
             
             return metadataManipulator.GetCursor(imageZoom);
         }
-        
+
+        #region IDrawingHostView
+        public void DoInvalidate()
+        {
+            Refresh();
+        }
+        public void InitializeEndFromMenu(bool cancelLastPoint)
+        {
+            if (metadataManipulator == null)
+                return;
+
+            metadataManipulator.InitializeEndFromMenu(cancelLastPoint);
+        }
+        #endregion
+
         #region Private methods
         private void InitializeContextMenu()
         {
@@ -239,19 +253,42 @@ namespace Kinovea.ScreenManager
                 popMenu.Items.Add(mnuConfigureOpacity);
             
             popMenu.Items.Add(new ToolStripSeparator());
-            
-            bool hasExtraMenu = (drawing.ContextMenu != null && drawing.ContextMenu.Count > 0);
-            if(hasExtraMenu)
-            {
-                foreach(ToolStripMenuItem tsmi in drawing.ContextMenu)
-                    popMenu.Items.Add(tsmi);
-                
+
+            bool hasExtraMenus = AddDrawingCustomMenus(drawing, popMenu.Items);
+            if (hasExtraMenus)
                 popMenu.Items.Add(new ToolStripSeparator());
-            }
 
             // TODO: Add copy and paste menu here.
-            
+
             popMenu.Items.Add(mnuDeleteDrawing);
+        }
+        private bool AddDrawingCustomMenus(AbstractDrawing drawing, ToolStripItemCollection menuItems)
+        {
+            bool hasExtraMenu = (drawing.ContextMenu != null && drawing.ContextMenu.Count > 0);
+            if (!hasExtraMenu)
+                return false;
+
+            foreach (ToolStripItem tsmi in drawing.ContextMenu)
+            {
+                ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
+                
+                // Inject a dependency on this screen into the drawing.
+                tsmi.Tag = this;
+
+                // Also inject for all the sub menus.
+                if (menuItem != null && menuItem.DropDownItems.Count > 0)
+                {
+                    foreach (ToolStripItem subMenu in menuItem.DropDownItems)
+                        subMenu.Tag = this;
+                }
+
+                if (tsmi.MergeIndex >= 0)
+                    menuItems.Insert(tsmi.MergeIndex, tsmi);
+                else
+                    menuItems.Add(tsmi);
+            }
+
+            return true;
         }
         private void LabelAdded(object sender, DrawingEventArgs e)
         {

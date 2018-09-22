@@ -232,6 +232,7 @@
     <Compile Include="FilePatterns\Filenamer.cs" />
     <Compile Include="FilePatterns\FilePatternContexts.cs" />
     <Compile Include="FilePatterns\FilePatternSymbols.cs" />
+    <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />
     <Compile Include="Measurement\Geometry\AngleOptions.cs" />
     <Compile Include="Measurement\Geometry\Circle.cs" />
     <Compile Include="Measurement\Kinematics\AngularKinematics.cs" />

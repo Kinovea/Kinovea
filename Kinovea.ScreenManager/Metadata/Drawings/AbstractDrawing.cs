@@ -160,14 +160,14 @@ namespace Kinovea.ScreenManager
         #region Concrete methods
         public static void InvalidateFromMenu(object sender)
         {
-            // The screen hook was injected inside menus during AddDrawingCustomMenus in PlayerScreenUserInterface.
+            // The screen hook was injected inside menus during AddDrawingCustomMenus in PlayerScreenUserInterface and for capture ViewportController.
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
             if (tsmi == null)
                 return;
             
-            PlayerScreenUserInterface psui = tsmi.Tag as PlayerScreenUserInterface;
-            if (psui != null)
-                psui.DoInvalidate();
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            if (host != null)
+                host.DoInvalidate();
         }
 
         public static void InvalidateFromTextbox(object sender)
@@ -176,21 +176,20 @@ namespace Kinovea.ScreenManager
             if (tb == null)
                 return;
 
-            PlayerScreenUserInterface psui = tb.Tag as PlayerScreenUserInterface;
-            if (psui != null)
-                psui.DoInvalidate();
+            IDrawingHostView host = tb.Tag as IDrawingHostView;
+            if (host != null)
+                host.DoInvalidate();
         }
 
         public static void InitializeEndFromMenu(object sender, bool cancelLastPoint)
         {
-            // The screen hook was injected inside menus during AddDrawingCustomMenus in PlayerScreenUserInterface.
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
             if (tsmi == null)
                 return;
-            
-            PlayerScreenUserInterface psui = tsmi.Tag as PlayerScreenUserInterface;
-            if (psui != null)
-                psui.InitializeEndFromMenu(cancelLastPoint);
+
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            if (host != null)
+                host.InitializeEndFromMenu(cancelLastPoint);
         }
 
         public void AfterCopy()

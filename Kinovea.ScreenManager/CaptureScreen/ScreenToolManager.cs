@@ -57,6 +57,10 @@ namespace Kinovea.ScreenManager
         {
             activeTool = tool ?? handTool;
         }
+        public void AfterFrameChanged()
+        {
+            activeTool = activeTool.KeepToolFrameChanged ? activeTool : handTool;
+        }
         public void AfterToolUse()
         {
             activeTool = activeTool.KeepTool ? activeTool : handTool;

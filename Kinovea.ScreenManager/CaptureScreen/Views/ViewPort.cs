@@ -150,10 +150,10 @@ namespace Kinovea.ScreenManager
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            
-            if(e.Button == MouseButtons.Left)
+
+            if (e.Button == MouseButtons.Left)
                 OnMouseLeftDown(e);
-            else if(e.Button == MouseButtons.Right)
+            else if (e.Button == MouseButtons.Right)
                 OnMouseRightDown(e);
         }
         
@@ -177,19 +177,13 @@ namespace Kinovea.ScreenManager
             
             if(controller.Bitmap == null)
                 return;
-                
-            controller.OnMouseUp();
+
+            controller.OnMouseUp(e.Location, ModifierKeys, displayRectangle.Location, zoomHelper.Value);
             manipulator.End();
             ForceZoomValue();
             controller.UpdateDisplayRectangle(displayRectangle);
             Cursor = controller.GetCursor(zoomHelper.Value);
-            
         }
-        
-        /*protected override void OnMouseClick(MouseEventArgs e)
-        {
-            base.OnMouseClick(e);
-        }*/
         
         protected override void OnDoubleClick(EventArgs e)
         {
