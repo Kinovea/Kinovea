@@ -54,7 +54,8 @@ namespace Kinovea.Root
             Software.Initialize(assembly.GetName().Version);
             Software.SanityCheckDirectories();
             PreferencesManager.Initialize();
-            if (!PreferencesManager.GeneralPreferences.AllowMultipleInstances && !Program.FirstInstance)
+            bool firstInstance = Program.FirstInstance;
+            if (!PreferencesManager.GeneralPreferences.AllowMultipleInstances && !firstInstance)
                 return;
 
             Software.LogInfo();
@@ -68,7 +69,7 @@ namespace Kinovea.Root
             splashForm.Show();
             splashForm.Update();
             
-            RootKernel kernel = new RootKernel();
+            RootKernel kernel = new RootKernel(firstInstance);
             kernel.Prepare();
             
             log.Debug("Closing splash screen.");

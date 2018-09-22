@@ -98,7 +98,7 @@ namespace Kinovea.Root
         #endregion
 
         #region Constructor
-        public RootKernel()
+        public RootKernel(bool firstInstance)
         {
             CommandLineArgumentManager.Instance.ParseArguments(Environment.GetCommandLineArgs());
             
@@ -107,7 +107,7 @@ namespace Kinovea.Root
             ToolManager.LoadTools();
 
             BuildSubTree();
-            mainWindow = new KinoveaMainWindow(this);
+            mainWindow = new KinoveaMainWindow(this, firstInstance);
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
             NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
             NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
