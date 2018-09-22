@@ -121,39 +121,25 @@ namespace Kinovea.ScreenManager
             return handled;
         }
         
-        public void OnMouseUp(Bitmap bitmap)
+        public void OnMouseUp(Bitmap bitmap, Point mouse, Keys modifiers, Point imageLocation, float imageZoom)
         {
             // TODO: Handle magnifier.
             // TODO: Memorize the action we just finished to enable undo.
             // TODO: keep tool or change tool.
             // m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
-            
-            if(screenToolManager.IsUsingHandTool)
+
+            if (screenToolManager.IsUsingHandTool)
             {
                 screenToolManager.HandTool.OnMouseUp();
+                metadata.AllDrawingTextToNormalMode();
                 metadata.UpdateTrackPoint(bitmap);
-                // On Poke.
-                // magnifier on mouse up.
-                
-                // If we were resizing an SVG drawing, trigger a render.
-                // TODO: this is currently triggered on every mouse up, not only on resize !
-                /*int selectedFrame = m_FrameServer.Metadata.SelectedDrawingFrame;
-                int selectedDrawing = m_FrameServer.Metadata.SelectedDrawing;
-                if(selectedFrame != -1 && selectedDrawing  != -1)
-                {
-                    DrawingSVG d = m_FrameServer.Metadata.Keyframes[selectedFrame].Drawings[selectedDrawing] as DrawingSVG;
-                    if(d != null)
-                    {
-                        d.ResizeFinished();
-                    }
-                }*/
             }
-            else
-            {
-                // todo: save tool addition as a command.
-                screenToolManager.AfterToolUse();
-                // todo: start deselection timer.
-            }
+            
+            ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
+            PointF imagePoint = transformer.Untransform(mouse);
+            metadata.InitializeCommit(null, imagePoint);
+
+            screenToolManager.AfterToolUse();
         }
         
         public bool HitTest(Point mouse, Point imageLocation, float imageZoom)
@@ -216,6 +202,11 @@ namespace Kinovea.ScreenManager
             screenToolManager.SetActiveTool(null);
         }
         
+        public void InitializeEndFromMenu(bool cancelLastPoint)
+        {
+            metadata.InitializeEnd(cancelLastPoint);
+        }
+
         private void CreateNewDrawing(PointF imagePoint, ImageToViewportTransformer transformer)
         {
             int keyframeIndex = 0;

@@ -44,7 +44,7 @@ using System.Globalization;
 
 namespace Kinovea.ScreenManager
 {
-    public partial class PlayerScreenUserInterface : KinoveaControl
+    public partial class PlayerScreenUserInterface : KinoveaControl, IDrawingHostView
     {
         #region Enums
         private enum PlayingMode
