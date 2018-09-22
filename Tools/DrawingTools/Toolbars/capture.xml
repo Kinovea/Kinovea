@@ -3,7 +3,6 @@
   <FormatVersion>1.0</FormatVersion>
   <Name>Capture</Name>
   <Id>9BBB68D8-85B1-4477-86D6-A16C955F57BA</Id>
-  <entry name="Label" />
   <entry name="Pencil" />
   <entry name="HumanModel">
     <subentry name="HumanModel2" />
@@ -13,8 +12,10 @@
     <subentry name="Profile" />
     <subentry name="Genu" />
     <subentry name="Posture" />
+    <subentry name="CSVL" />
   </entry>
   <entry name="Line">
+    <subentry name="Rectangle" />
     <subentry name="Circle" />
   </entry>
   <entry name="Arrow">
