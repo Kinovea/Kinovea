@@ -273,7 +273,8 @@ namespace Kinovea.ScreenManager
         private Guid id = Guid.NewGuid();
         private TimeCodeBuilder timecodeBuilder;
         private bool kvaImporting;
-        
+        private bool captureKVA;
+
         // Folders
         private string fullPath;
         private string tempFolder;
@@ -815,6 +816,10 @@ namespace Kinovea.ScreenManager
 
         public void PostSetupCapture()
         {
+            captureKVA = true;
+            trackabilityManager.Initialize(imageSize);
+            calibrationHelper.Initialize(imageSize, GetCalibrationOrigin);
+
             for (int i = 0; i < totalStaticExtraDrawings; i++)
                 AfterDrawingCreation(extraDrawings[i]);
         }
@@ -1315,6 +1320,9 @@ namespace Kinovea.ScreenManager
         }
         private PointF GetCalibrationOrigin(long time)
         {
+            if (captureKVA)
+                return imageSize.Center();
+            
             // When using CalibrationLine and a tracked coordinate system, 
             // this function retrieves the coordinates origin based on the specified time.
             return trackabilityManager.GetLocation(drawingCoordinateSystem, "0", time);
