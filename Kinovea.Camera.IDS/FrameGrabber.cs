@@ -26,8 +26,8 @@ using Kinovea.Services;
 using Kinovea.Pipeline;
 using System.Diagnostics;
 using Kinovea.Video;
+using Kinovea.Base;
 using System.IO;
-//using System.Drawing.Imaging;
 
 namespace Kinovea.Camera.IDS
 {

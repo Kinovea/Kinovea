@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Diagnostics;
 using AForge.Video;
 using Kinovea.Services;
+using Kinovea.Base;
 using Kinovea.Pipeline;
 
 namespace Kinovea.Camera.HTTP

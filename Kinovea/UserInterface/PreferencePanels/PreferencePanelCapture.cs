@@ -56,7 +56,6 @@ namespace Kinovea.Root
         private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Capture_General, PreferenceTab.Capture_Memory, PreferenceTab.Capture_Recording, PreferenceTab.Capture_ImageNaming, PreferenceTab.Capture_VideoNaming};
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
-        private bool useCameraSignalSynchronization;
         private double displaySynchronizationFramerate;
         private CaptureRecordingMode recordingMode;
         private int memoryBuffer;
@@ -90,7 +89,6 @@ namespace Kinovea.Root
         private void ImportPreferences()
         {
             capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
-            useCameraSignalSynchronization = PreferencesManager.CapturePreferences.UseCameraSignalSynchronization;
             displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
@@ -123,12 +121,7 @@ namespace Kinovea.Root
             int videoFormat = (int)capturePathConfiguration.VideoFormat;
             cmbVideoFormat.SelectedIndex = ((int)videoFormat < cmbVideoFormat.Items.Count) ? (int)videoFormat : 0;
 
-            grpDSS.Text = RootLang.dlgPreferences_Capture_DisplaySynchronization;
-            rbCameraFrameSignal.Text = RootLang.dlgPreferences_Capture_radioCameraFrameSignal;
-            rbForcedFramerate.Text = RootLang.dlgPreferences_Capture_radioForcedFramerate;
-            lblFramerate.Text = RootLang.dlgPreferences_Capture_lblForcedFramerate;
-            rbCameraFrameSignal.Checked = useCameraSignalSynchronization;
-            rbForcedFramerate.Checked = !useCameraSignalSynchronization;
+            lblFramerate.Text = "Display framerate (fps):"; // RootLang.dlgPreferences_Capture_lblForcedFramerate;
             tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
         }
 
@@ -247,13 +240,6 @@ namespace Kinovea.Root
         {
             capturePathConfiguration.VideoFormat = (KinoveaVideoFormat)cmbVideoFormat.SelectedIndex;
         }
-        private void radioDSS_CheckedChanged(object sender, EventArgs e)
-        {
-            useCameraSignalSynchronization = rbCameraFrameSignal.Checked;
-
-            lblFramerate.Enabled = !useCameraSignalSynchronization;
-            tbFramerate.Enabled = !useCameraSignalSynchronization;
-        }
         private void tbFramerate_TextChanged(object sender, EventArgs e)
         {
             // Parse in current culture.
@@ -364,7 +350,6 @@ namespace Kinovea.Root
         public void CommitChanges()
         {
             PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
-            PreferencesManager.CapturePreferences.UseCameraSignalSynchronization = useCameraSignalSynchronization;
             PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate = displaySynchronizationFramerate;
             PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
             PreferencesManager.CapturePreferences.RecordingMode = recordingMode;

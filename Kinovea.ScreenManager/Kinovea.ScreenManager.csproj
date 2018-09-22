@@ -1198,7 +1198,7 @@
       <Name>Kinovea.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kinovea.Video.FFMpeg\PlayerServer\PlayerServer.vcxproj">
-      <Project>{F80DBE6D-D394-4811-B5E6-7528F849C71A}</Project>
+      <Project>{f80dbe6d-d394-4811-b5e6-7528f849c71a}</Project>
       <Name>Kinovea.Video.FFMpeg</Name>
     </ProjectReference>
     <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">

@@ -26,6 +26,7 @@ using Kinovea.Services;
 using Kinovea.Pipeline;
 using System.Diagnostics;
 using Kinovea.Video;
+using Kinovea.Base;
 
 namespace Kinovea.Camera.FrameGenerator
 {
