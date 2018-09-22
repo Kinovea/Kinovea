@@ -759,7 +759,7 @@ namespace Kinovea.Tests.Metadata
 
         private void WriteDrawingStylePenSize(XmlTextWriter w, string key)
         {
-            int size = StyleElementPenSize.Options[random.Next(StyleElementPenSize.Options.Length)];
+            int size = StyleElementPenSize.options[random.Next(StyleElementPenSize.options.Count)];
 
             w.WriteStartElement("PenSize");
             w.WriteAttributeString("Key", key);
@@ -769,7 +769,7 @@ namespace Kinovea.Tests.Metadata
 
         private void WriteDrawingStyleArrows(XmlTextWriter w, string key)
         {
-            LineEnding value = StyleElementLineEnding.Options[random.Next(StyleElementLineEnding.Options.Length)];
+            LineEnding value = StyleElementLineEnding.options[random.Next(StyleElementLineEnding.options.Count)];
             StyleElementLineEnding style = new StyleElementLineEnding(value);
 
             w.WriteStartElement("Arrows");
