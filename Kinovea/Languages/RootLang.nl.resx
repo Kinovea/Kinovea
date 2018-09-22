@@ -82,10 +82,7 @@
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Afspelen</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Toetsenbord</value></data>
    
-   <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Synchronisatie van de weergave</value></data>
-   <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Camera beeld</value></data>
-   <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Geforceerde framerate</value></data>
-   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Framerate (fps)</value></data>
+   
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Links</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Rechts</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Root :</value></data>
@@ -202,6 +199,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een uur</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tijdsstempel</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassiek + Beeldnummers</value></data>
+   
    
    
    

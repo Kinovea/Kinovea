@@ -90,9 +90,6 @@
    
    
    
-   
-   
-   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Formato da Imagem:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Formato do Video:</value></data>
    
@@ -202,6 +199,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dez milésimos de uma hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Contador de Tempo</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clássico + Número de Quadros</value></data>
+   
    
    
    

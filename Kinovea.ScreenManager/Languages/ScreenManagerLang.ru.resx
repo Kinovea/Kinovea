@@ -164,6 +164,7 @@
    
    
    
+   
    <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>Отслеживание</value></data>
    <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>Окно объекта:</value></data>
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Окно поиска:</value></data>

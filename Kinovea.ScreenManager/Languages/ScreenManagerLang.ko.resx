@@ -167,6 +167,7 @@
    
    
    
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>분절의 실제 크기:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>자를 측정함</value></data>
    

@@ -82,10 +82,7 @@
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Воспроизвести</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Клавиатура</value></data>
    <data name="dlgPreferences_Drawings_chkAllowMultipleInstances" xml:space="preserve"><value>Позволить множественную установку Kinovea</value></data>
-   <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Синхронизация </value></data>
-   <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Кадр камеры</value></data>
-   <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Фиксированная частота кадров</value></data>
-   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Частота кадров (кадров в секунду)</value></data>
+   
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Левое</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Правое</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Корневая директория:</value></data>
@@ -202,6 +199,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десятитысячные часа</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Информация по времени</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Классический формат +номера кадров</value></data>
+   
    
    
    

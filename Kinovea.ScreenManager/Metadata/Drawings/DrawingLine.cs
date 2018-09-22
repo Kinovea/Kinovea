@@ -513,7 +513,7 @@ namespace Kinovea.ScreenManager
             {
                 case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
                 case TrackExtraData.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
-                case TrackExtraData.TotalDistance: return "Length"; //ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
+                case TrackExtraData.TotalDistance: return ScreenManagerLang.ExtraData_Length;
             }
 
             return "";

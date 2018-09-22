@@ -123,9 +123,6 @@
    
    
    
-   
-   
-   
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Przejdź do trybu Analizy</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Liczba plików w historii :</value></data>
    
@@ -201,6 +198,7 @@
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Setne części minuty</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dziesięcio-tysięczne części godziny</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
+   
    
    
    

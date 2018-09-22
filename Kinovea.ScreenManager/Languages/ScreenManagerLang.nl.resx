@@ -164,6 +164,7 @@
    
    
    
+   
    <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>Volgen</value></data>
    <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>Voorwerpscherm:</value></data>
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Zoekscherm:</value></data>

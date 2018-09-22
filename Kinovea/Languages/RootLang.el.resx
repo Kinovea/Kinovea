@@ -90,9 +90,6 @@
    
    
    
-   
-   
-   
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Μορφή εικονας:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Μορφή βίντεο:</value></data>
    
@@ -202,6 +199,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Δεκάδες Χιλιοστά της ώρας</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Χρονικά Σημάδια</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Κλασσικό + Αριθμητικά πλαίσια</value></data>
+   
    
    
    

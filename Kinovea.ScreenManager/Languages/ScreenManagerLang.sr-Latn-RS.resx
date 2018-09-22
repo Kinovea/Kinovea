@@ -167,6 +167,7 @@
    
    
    
+   
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Realna veličina segmenta:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Linija kalabracije</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Ravna kalabracija</value></data>

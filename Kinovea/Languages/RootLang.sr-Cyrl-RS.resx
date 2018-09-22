@@ -82,10 +82,7 @@
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Репродуковање</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Тастатура</value></data>
    
-   <data name="dlgPreferences_Capture_DisplaySynchronization" xml:space="preserve"><value>Синхронизација приказа</value></data>
-   <data name="dlgPreferences_Capture_radioCameraFrameSignal" xml:space="preserve"><value>Број слика у секунди камере</value></data>
-   <data name="dlgPreferences_Capture_radioForcedFramerate" xml:space="preserve"><value>Форсиран број слика у секунди</value></data>
-   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Број слика у секунди (fps):</value></data>
+   
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Лево</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Десно</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Root:</value></data>
@@ -202,6 +199,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет стотинки сата</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Временске ознаке </value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Класични + број слика секунди</value></data>
+   
    
    
    
