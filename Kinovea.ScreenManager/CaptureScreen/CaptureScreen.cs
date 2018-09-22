@@ -98,6 +98,24 @@ namespace Kinovea.ScreenManager
             get { return ImageRotation.Rotate0; }
             set { }
         }
+        public override bool Mirrored
+        {
+            get
+            {
+                return metadata.Mirrored;
+            }
+
+            set
+            {
+                // Note: mirroring works at the end frame for perfs reasons.
+                // This means that if the quadrants view is active, the most recent will be on the right.
+                // The alternative is to redraw the mirrored image before pushing it to the delay buffer, 
+                // but that seems to be too taxing as it currently runs on the UI thread.
+                metadata.Mirrored = value;
+                viewportController.SetMirrored(value);
+                viewportController.Refresh();
+            }
+        }
         public bool TestGridVisible
         {
             get { return metadata.TestGridVisible; }
@@ -816,7 +834,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             delayer.Push(fresh);
-
+            
             if (imageProcessor.Active)
                 imageProcessor.Update(fresh);
 

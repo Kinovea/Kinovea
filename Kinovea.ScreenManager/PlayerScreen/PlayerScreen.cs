@@ -106,6 +106,15 @@ namespace Kinovea.ScreenManager
                 view.ReferenceImageSizeChanged();
             }
         }
+        public override bool Mirrored
+        {
+            get { return frameServer.Metadata.Mirrored; }
+            set
+            {
+                frameServer.Metadata.Mirrored = value;
+                RefreshImage();
+            }
+        }
 
         public FrameServerPlayer FrameServer
         {
@@ -243,16 +252,6 @@ namespace Kinovea.ScreenManager
                 if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
                     view.UpdateWorkingZone(true);
                 
-                RefreshImage();
-            }
-        }
-        
-        public bool Mirrored
-        {
-            get { return frameServer.Metadata.Mirrored; }
-            set
-            {
-                frameServer.Metadata.Mirrored = value;
                 RefreshImage();
             }
         }

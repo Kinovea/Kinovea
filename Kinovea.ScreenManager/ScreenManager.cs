@@ -959,9 +959,9 @@ namespace Kinovea.ScreenManager
 
                     // Image
                     mnuDeinterlace.Enabled = false;
-                    mnuMirror.Enabled = false;
+                    mnuMirror.Enabled = true;
                     mnuDeinterlace.Checked = false;
-                    mnuMirror.Checked = false;
+                    mnuMirror.Checked = captureScreen.Mirrored;
                     ConfigureImageFormatMenus(captureScreen);
                     ConfigureImageRotationMenus(captureScreen);
                     
@@ -1209,7 +1209,12 @@ namespace Kinovea.ScreenManager
                !screen.Full ||
               !(screen is PlayerScreen))
             {
+                // Note: we could at least support 180 rotation in Capture by doing a flip on both axes.
                 mnuRotation.Enabled = false;
+                mnuRotation0.Enabled = false;
+                mnuRotation90.Enabled = false;
+                mnuRotation180.Enabled = false;
+                mnuRotation270.Enabled = false;
                 return;
             }
 
@@ -2009,12 +2014,11 @@ namespace Kinovea.ScreenManager
         }
         private void mnuMirrorOnClick(object sender, EventArgs e)
         {
-            PlayerScreen player = activeScreen as PlayerScreen;
-            if(player != null)
-            {
-                mnuMirror.Checked = !mnuMirror.Checked;
-                player.Mirrored = mnuMirror.Checked;
-            }
+            if (activeScreen == null)
+                return;
+
+            mnuMirror.Checked = !mnuMirror.Checked;
+            activeScreen.Mirrored = mnuMirror.Checked;
         }
         private void mnuImportImage_OnClick(object sender, EventArgs e)
         {
