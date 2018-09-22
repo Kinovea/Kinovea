@@ -20,6 +20,16 @@ namespace Kinovea.ScreenManager
             get { return filename; }
         }
 
+        public double EncodingRate
+        {
+            get { return writer.EncodingRate; }
+        }
+
+        public double WritingRate
+        {
+            get { return writer.WritingRate; }
+        }
+
         private ImageDescriptor imageDescriptor;
         private MJPEGWriter writer;
         private string filename;
@@ -45,14 +55,15 @@ namespace Kinovea.ScreenManager
             info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
 
             string formatString = FilenameHelper.GetFormatStringCapture();
-            
+
             // If the capture happens at more than 100fps, set the video itself to be at 30fps.
             // This avoids erratic playback because the player can't cope with the framerate, drawback: prevents review in real time.
             // FIXME: fix the player so that it can playback high speed video in real time.
+            double fileInterval = interval;
             if (interval < 10)
-                interval = 1000.0/30;
+                fileInterval = 1000.0/30;
 
-            SaveResult result = writer.OpenSavingContext(filename, info, formatString, interval);
+            SaveResult result = writer.OpenSavingContext(filename, info, formatString, interval, fileInterval);
 
             return result;
         }

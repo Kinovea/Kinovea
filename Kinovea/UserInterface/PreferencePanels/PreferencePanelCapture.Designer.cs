@@ -52,11 +52,8 @@ namespace Kinovea.Root
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.cmbVideoFormat = new System.Windows.Forms.ComboBox();
             this.lblVideoFormat = new System.Windows.Forms.Label();
-            this.grpDSS = new System.Windows.Forms.GroupBox();
             this.lblFramerate = new System.Windows.Forms.Label();
             this.tbFramerate = new System.Windows.Forms.TextBox();
-            this.rbForcedFramerate = new System.Windows.Forms.RadioButton();
-            this.rbCameraFrameSignal = new System.Windows.Forms.RadioButton();
             this.cmbImageFormat = new System.Windows.Forms.ComboBox();
             this.lblImageFormat = new System.Windows.Forms.Label();
             this.tabMemory = new System.Windows.Forms.TabPage();
@@ -110,7 +107,6 @@ namespace Kinovea.Root
             this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
             this.tabSubPages.SuspendLayout();
             this.tabGeneral.SuspendLayout();
-            this.grpDSS.SuspendLayout();
             this.tabMemory.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
             this.tabRecording.SuspendLayout();
@@ -139,9 +135,10 @@ namespace Kinovea.Root
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.lblFramerate);
+            this.tabGeneral.Controls.Add(this.tbFramerate);
             this.tabGeneral.Controls.Add(this.cmbVideoFormat);
             this.tabGeneral.Controls.Add(this.lblVideoFormat);
-            this.tabGeneral.Controls.Add(this.grpDSS);
             this.tabGeneral.Controls.Add(this.cmbImageFormat);
             this.tabGeneral.Controls.Add(this.lblImageFormat);
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
@@ -170,59 +167,22 @@ namespace Kinovea.Root
             this.lblVideoFormat.TabIndex = 40;
             this.lblVideoFormat.Text = "Video format :";
             // 
-            // grpDSS
-            // 
-            this.grpDSS.Controls.Add(this.lblFramerate);
-            this.grpDSS.Controls.Add(this.tbFramerate);
-            this.grpDSS.Controls.Add(this.rbForcedFramerate);
-            this.grpDSS.Controls.Add(this.rbCameraFrameSignal);
-            this.grpDSS.Location = new System.Drawing.Point(18, 89);
-            this.grpDSS.Name = "grpDSS";
-            this.grpDSS.Size = new System.Drawing.Size(386, 102);
-            this.grpDSS.TabIndex = 39;
-            this.grpDSS.TabStop = false;
-            this.grpDSS.Text = "Display synchronization strategy";
-            // 
             // lblFramerate
             // 
             this.lblFramerate.AutoSize = true;
-            this.lblFramerate.Location = new System.Drawing.Point(52, 73);
+            this.lblFramerate.Location = new System.Drawing.Point(15, 99);
             this.lblFramerate.Name = "lblFramerate";
-            this.lblFramerate.Size = new System.Drawing.Size(83, 13);
+            this.lblFramerate.Size = new System.Drawing.Size(117, 13);
             this.lblFramerate.TabIndex = 41;
-            this.lblFramerate.Text = "Framerate (fps) :";
+            this.lblFramerate.Text = "Display framerate (fps) :";
             // 
             // tbFramerate
             // 
-            this.tbFramerate.Location = new System.Drawing.Point(157, 70);
+            this.tbFramerate.Location = new System.Drawing.Point(170, 96);
             this.tbFramerate.Name = "tbFramerate";
             this.tbFramerate.Size = new System.Drawing.Size(61, 20);
             this.tbFramerate.TabIndex = 40;
             this.tbFramerate.TextChanged += new System.EventHandler(this.tbFramerate_TextChanged);
-            // 
-            // rbForcedFramerate
-            // 
-            this.rbForcedFramerate.AutoSize = true;
-            this.rbForcedFramerate.Location = new System.Drawing.Point(16, 49);
-            this.rbForcedFramerate.Name = "rbForcedFramerate";
-            this.rbForcedFramerate.Size = new System.Drawing.Size(105, 17);
-            this.rbForcedFramerate.TabIndex = 39;
-            this.rbForcedFramerate.TabStop = true;
-            this.rbForcedFramerate.Text = "Forced framerate";
-            this.rbForcedFramerate.UseVisualStyleBackColor = true;
-            this.rbForcedFramerate.CheckedChanged += new System.EventHandler(this.radioDSS_CheckedChanged);
-            // 
-            // rbCameraFrameSignal
-            // 
-            this.rbCameraFrameSignal.AutoSize = true;
-            this.rbCameraFrameSignal.Location = new System.Drawing.Point(16, 26);
-            this.rbCameraFrameSignal.Name = "rbCameraFrameSignal";
-            this.rbCameraFrameSignal.Size = new System.Drawing.Size(120, 17);
-            this.rbCameraFrameSignal.TabIndex = 38;
-            this.rbCameraFrameSignal.TabStop = true;
-            this.rbCameraFrameSignal.Text = "Camera frame signal";
-            this.rbCameraFrameSignal.UseVisualStyleBackColor = true;
-            this.rbCameraFrameSignal.CheckedChanged += new System.EventHandler(this.radioDSS_CheckedChanged);
             // 
             // cmbImageFormat
             // 
@@ -810,8 +770,7 @@ namespace Kinovea.Root
             this.Size = new System.Drawing.Size(432, 236);
             this.tabSubPages.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
-            this.grpDSS.ResumeLayout(false);
-            this.grpDSS.PerformLayout();
+            this.tabGeneral.PerformLayout();
             this.tabMemory.ResumeLayout(false);
             this.tabMemory.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).EndInit();
@@ -839,11 +798,8 @@ namespace Kinovea.Root
 		private System.Windows.Forms.TabControl tabSubPages;
 		private System.Windows.Forms.TabPage tabGeneral;
 		private System.Windows.Forms.TabPage tabImageNaming;
-        private System.Windows.Forms.GroupBox grpDSS;
         private System.Windows.Forms.Label lblFramerate;
         private System.Windows.Forms.TextBox tbFramerate;
-        private System.Windows.Forms.RadioButton rbForcedFramerate;
-        private System.Windows.Forms.RadioButton rbCameraFrameSignal;
         private System.Windows.Forms.ComboBox cmbVideoFormat;
         private System.Windows.Forms.Label lblVideoFormat;
         private System.Windows.Forms.GroupBox grpRightImage;

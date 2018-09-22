@@ -41,11 +41,6 @@ namespace Kinovea.Services
             set { capturePathConfiguration = value; }
         }
 
-        public bool UseCameraSignalSynchronization
-        {
-            get { return useCameraSignalSynchronization; }
-            set { useCameraSignalSynchronization = value; }
-        }
         public double DisplaySynchronizationFramerate
         {
             get { return displaySynchronizationFramerate; }
@@ -72,14 +67,18 @@ namespace Kinovea.Services
             get { return delayCompositeConfiguration; }
             set { delayCompositeConfiguration = value; }
         }
+        public bool VerboseStats
+        {
+            get { return verboseStats; }
+            set { verboseStats = value; }
+        }
         #endregion
-        
+
         #region Members
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
-        private bool useCameraSignalSynchronization = false;
         private double displaySynchronizationFramerate = 25.0;
         private CaptureRecordingMode recordingMode = CaptureRecordingMode.Camera;
-        
+        private bool verboseStats = false;
         private int memoryBuffer = 768;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
         private DelayCompositeConfiguration delayCompositeConfiguration = new DelayCompositeConfiguration();
@@ -106,11 +105,11 @@ namespace Kinovea.Services
             capturePathConfiguration.WriteXml(writer);
             writer.WriteEndElement();
 
-            writer.WriteElementString("UseCameraSignalSynchronization", useCameraSignalSynchronization ? "true" : "false");
             string dsf = displaySynchronizationFramerate.ToString("0.000", CultureInfo.InvariantCulture);
             writer.WriteElementString("DisplaySynchronizationFramerate", dsf);
             writer.WriteElementString("CaptureRecordingMode", recordingMode.ToString());
-            
+            writer.WriteElementString("VerboseStats", verboseStats ? "true" : "false");
+
             writer.WriteElementString("MemoryBuffer", memoryBuffer.ToString());
             
             if(cameraBlurbs.Count > 0)
@@ -143,15 +142,15 @@ namespace Kinovea.Services
                     case "CapturePathConfiguration":
                         capturePathConfiguration.ReadXml(reader);
                         break;
-                    case "UseCameraSignalSynchronization":
-                        useCameraSignalSynchronization = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
                     case "DisplaySynchronizationFramerate":
                         string str = reader.ReadElementContentAsString();
                         displaySynchronizationFramerate = double.Parse(str, CultureInfo.InvariantCulture);
                         break;
                     case "CaptureRecordingMode":
                         recordingMode = (CaptureRecordingMode)Enum.Parse(typeof(CaptureRecordingMode), reader.ReadElementContentAsString());
+                        break;
+                    case "VerboseStats":
+                        verboseStats = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "MemoryBuffer":
                         memoryBuffer = reader.ReadElementContentAsInt();

@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using Kinovea.Services;
 using Kinovea.Pipeline;
 using Kinovea.Video;
+using Kinovea.Base;
 using System.Diagnostics;
 using System.Globalization;
 

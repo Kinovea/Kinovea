@@ -32,6 +32,10 @@ using namespace Kinovea::Video::FFMpeg;
 MJPEGWriter::MJPEGWriter()
 {
     av_register_all();
+    m_encodingRateAverager = gcnew Averager(0.02);
+    m_writingRateAverager = gcnew Averager(0.02);
+    m_swEncodingRate = gcnew Stopwatch();
+    m_swWritingRate = gcnew Stopwatch();
 }
 MJPEGWriter::~MJPEGWriter()
 {
@@ -44,7 +48,7 @@ MJPEGWriter::!MJPEGWriter()
 /// MJPEGWriter::OpenSavingContext
 /// Open a saving context and configure it with default parameters.
 ///</summary>
-SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, String^ _formatString, double _fFramesInterval)
+SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, String^ _formatString, double _fFramesInterval, double _fFileFramesInterval)
 {
     //---------------------------------------------------------------------------------------------------
     // Set the saving context up.
@@ -53,6 +57,10 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
     //---------------------------------------------------------------------------------------------------
 
     SaveResult result = SaveResult::Success;
+    m_encodingRateAverager->Reset();
+    m_writingRateAverager->Reset();
+    m_frame = 0;
+    budget = _fFramesInterval;
 
     if (m_SavingContext != nullptr) 
         delete m_SavingContext;
@@ -70,8 +78,8 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
     if(_info.PixelAspectRatio > 0)
         m_SavingContext->fPixelAspectRatio = _info.PixelAspectRatio;
 
-    if(_fFramesInterval > 0) 
-        m_SavingContext->fFramesInterval = _fFramesInterval;
+    if(_fFileFramesInterval > 0) 
+        m_SavingContext->fFramesInterval = _fFileFramesInterval;
     
     m_SavingContext->iBitrate = (int)ComputeBitrate(m_SavingContext->outputSize, m_SavingContext->fFramesInterval);
     
@@ -231,6 +239,10 @@ SaveResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
     log->Debug("Closing the saving context.");
 
     SaveResult result = SaveResult::Success;
+    m_encodingRateAverager->Reset();
+    m_writingRateAverager->Reset();
+    m_swEncodingRate->Stop();
+    m_swWritingRate->Stop();
 
     if(_bEncodingSuccess)
     {
@@ -285,7 +297,6 @@ SaveResult MJPEGWriter::SaveFrame(ImageFormat format, array<System::Byte>^ buffe
     case ImageFormat::JPEG:
         saved = EncodeAndWriteVideoFrameJPEG(m_SavingContext, buffer, length);
         break;
-
     }
 
     if(!saved)
@@ -570,12 +581,28 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, a
             break;
         }
 
-        // Actual encode.
+        // Actual encoding step.
+        m_frame++;
+        
+        Int64 then = m_swEncodingRate->ElapsedMilliseconds;
         int jpegSize = avcodec_encode_video(_SavingContext->pOutputCodecContext, pJpegBuffer, jpegBufferSize, pYUV420Frame);
-
+        Int64 now = m_swEncodingRate->ElapsedMilliseconds;
+        encodingDurationAccumulator += (now - then);
+        
+        if (m_frame % 100 == 0)
+        {
+            log->DebugFormat("Frame #{0}. Encoding: ~{1:0.000} ms. Budget:{2:0.000} ms.",
+                m_frame, (float)encodingDurationAccumulator / 100.0f, budget);
+            encodingDurationAccumulator = 0;
+        }
+        
         if (jpegSize > 0)
+        {
+            ComputeEncodingRate(length);
             WriteFrame(jpegSize, _SavingContext, pJpegBuffer, true);
-
+            ComputeWritingRate(jpegSize);
+        }
+        
         written = true;
     }
     while(false);
@@ -665,11 +692,26 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
             break;
         }
 
-        // Actual encode.
+        // Actual encoding step.
+        m_frame++;
+        Int64 then = m_swEncodingRate->ElapsedMilliseconds;
         int jpegSize = avcodec_encode_video(_SavingContext->pOutputCodecContext, pJpegBuffer, jpegBufferSize, pYUV420Frame);
+        Int64 now = m_swEncodingRate->ElapsedMilliseconds;
+        encodingDurationAccumulator += (now - then);
+        
+        if (m_frame % 100 == 0)
+        {
+            log->DebugFormat("Frame #{0}. Encoding: ~{1:0.000} ms. Budget:{2:0.000} ms.",
+                m_frame, (float)encodingDurationAccumulator / 100.0f, budget);
+            encodingDurationAccumulator = 0;
+        }
 
         if (jpegSize > 0)
+        {
+            ComputeEncodingRate(length);
             WriteFrame(jpegSize, _SavingContext, pJpegBuffer, true);
+            ComputeWritingRate(jpegSize);
+        }
 
         written = true;
     }
@@ -778,11 +820,26 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
             break;
         }
 
-        // Actual encode.
+        // Actual encoding step.
+        m_frame++;
+        Int64 then = m_swEncodingRate->ElapsedMilliseconds;
         int jpegSize = avcodec_encode_video(_SavingContext->pOutputCodecContext, pJpegBuffer, jpegBufferSize, pYuvFrame);
+        Int64 now = m_swEncodingRate->ElapsedMilliseconds;
+        encodingDurationAccumulator += (now - then);
+        
+        if (m_frame % 100 == 0)
+        {
+            log->DebugFormat("Frame #{0}. Encoding: ~{1:0.000} ms. Budget:{2:0.000} ms.",
+                m_frame, (float)encodingDurationAccumulator / 100.0f, budget);
+            encodingDurationAccumulator = 0;
+        }
 
         if (jpegSize > 0)
+        {
+            ComputeEncodingRate(length);
             WriteFrame(jpegSize, _SavingContext, pJpegBuffer, true);
+            ComputeWritingRate(jpegSize);
+        }
         
         av_free(pJpegBuffer);
 
@@ -811,8 +868,10 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, ar
     
     do
     {     
+        ComputeEncodingRate(length);
         pin_ptr<uint8_t> pOutputVideoBuffer = &managedBuffer[0];
         WriteFrame(length, _SavingContext, pOutputVideoBuffer, true);
+        ComputeWritingRate(length);
         pOutputVideoBuffer = nullptr;
         bWritten = true;
     }
@@ -848,6 +907,22 @@ bool MJPEGWriter::WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, u
     fs->Close();*/
     
     return true;
+}
+
+void MJPEGWriter::ComputeEncodingRate(Int64 bytes)
+{
+    double rate = ((double)bytes / megabyte) / m_swEncodingRate->Elapsed.TotalSeconds;
+    m_encodingRateAverager->Post(rate);
+    m_swEncodingRate->Reset();
+    m_swEncodingRate->Start();
+}
+
+void MJPEGWriter::ComputeWritingRate(int bytes)
+{
+    double rate = ((double)bytes / megabyte) / m_swWritingRate->Elapsed.TotalSeconds;
+    m_writingRateAverager->Post(rate);
+    m_swWritingRate->Reset();
+    m_swWritingRate->Start();
 }
 
 void MJPEGWriter::LogError(String^ context, int error)

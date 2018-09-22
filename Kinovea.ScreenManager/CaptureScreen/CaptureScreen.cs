@@ -36,6 +36,7 @@ using Kinovea.Pipeline.Consumers;
 using System.Threading;
 using System.Diagnostics;
 using Kinovea.Video.FFMpeg;
+using System.Text;
 
 namespace Kinovea.ScreenManager
 {
@@ -541,23 +542,27 @@ namespace Kinovea.ScreenManager
 
             nonGrabbingInteractionTimer.Enabled = false;
 
-            if (!PreferencesManager.CapturePreferences.UseCameraSignalSynchronization)
-            {
-                double framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
-                if (framerate == 0)
-                    framerate = 25;
+            double framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
+            if (framerate == 0)
+                framerate = 25;
 
-                grabTimer.Interval = (int)(1000.0 / framerate);
-                grabTimer.Enabled = true;
-            }
+            grabTimer.Interval = (int)(1000.0 / framerate);
+            grabTimer.Enabled = true;
 
             cameraGrabber.GrabbingStatusChanged += Grabber_GrabbingStatusChanged;
             cameraGrabber.Start();
 
             UpdateTitle();
             cameraConnected = true;
-        }
 
+            log.DebugFormat("Connected to camera.");
+            log.DebugFormat("Image: {0}, {1}x{2}px, top-down:{3}, nominal framerate:{4}.",
+                imageDescriptor.Format, imageDescriptor.Width, imageDescriptor.Height, imageDescriptor.TopDown, cameraGrabber.Framerate);
+
+            log.DebugFormat("Display synchronization framerate: {0}.", PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate);
+            log.DebugFormat("Delay compositor mode: {0}.", PreferencesManager.CapturePreferences.DelayCompositeConfiguration.CompositeType);
+        }
+        
         private void cameraManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             // This handler is only hit during connection workflow when the connection preparation failed due to insufficient configuration information.
@@ -673,12 +678,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             UpdateStats();
-
-            if (PreferencesManager.CapturePreferences.UseCameraSignalSynchronization)
-            {
-                GrabFrame();
-                viewportController.Refresh();
-            }
         }
 
         #endregion
@@ -722,16 +721,25 @@ namespace Kinovea.ScreenManager
             if (pipelineManager.Frequency == 0)
                 return;
 
+            StringBuilder sb = new StringBuilder();
+
             if (prepareFailed && imageDescriptor != null)
-            {
-                view.UpdateInfo(string.Format("Signal: {0}×{1} @ {2:0.00} fps. Bandwidth: {3:0.00} MB/s. Drops: {4}.",
-                    imageDescriptor.Width, imageDescriptor.Height, pipelineManager.Frequency, cameraGrabber.LiveDataRate, pipelineManager.Drops));
-            }
+                sb.AppendFormat("Signal: {0}×{1} @ {2:0.00} fps.", imageDescriptor.Width, imageDescriptor.Height, pipelineManager.Frequency);
             else
+                sb.AppendFormat("Signal: {0:0.00} fps.", pipelineManager.Frequency);
+
+            sb.AppendFormat(" Bandwidth: {0:0.00} MB/s.", cameraGrabber.LiveDataRate);
+
+            if (recording && recordingMode == CaptureRecordingMode.Camera && PreferencesManager.CapturePreferences.VerboseStats)
             {
-                view.UpdateInfo(string.Format("Signal: {0:0.00} fps. Bandwidth: {1:0.00} MB/s. Drops: {2}.",
-                    pipelineManager.Frequency, cameraGrabber.LiveDataRate, pipelineManager.Drops));
+                sb.AppendFormat(" Enc BW: {0:0.00} MB/s.", consumerRecord.EncodingRate);
+                sb.AppendFormat(" Write BW: {0:0.00} MB/s.", consumerRecord.WritingRate);
             }
+
+            sb.AppendFormat(" Drops: {0}.", pipelineManager.Drops);
+            
+            view.UpdateInfo(sb.ToString());
+            
 
             if (delayCompositeType == DelayCompositeType.SlowMotion)
             {
@@ -739,7 +747,6 @@ namespace Kinovea.ScreenManager
                 if (dcsm != null)
                     view.UpdateSlomoCountdown(AgeToSeconds(dcsm.GetCountdown()));
             }
-
         }
 
         private void ChangeAspectRatio(ImageAspectRatio aspectRatio)
@@ -785,9 +792,6 @@ namespace Kinovea.ScreenManager
         
         private void grabTimer_Tick(object sender, EventArgs e)
         {
-            if (PreferencesManager.CapturePreferences.UseCameraSignalSynchronization)
-                return;
-
             GrabFrame();
             viewportController.Refresh();
         }
@@ -1086,12 +1090,19 @@ namespace Kinovea.ScreenManager
                 recordingThumbnail.Dispose();
                 recordingThumbnail = null;
             }
-            
-            double interval = cameraGrabber.Framerate > 0 ? 1000.0 / cameraGrabber.Framerate : 40;
+
+            log.DebugFormat("Starting recording.");
+            log.DebugFormat("Recording mode: {0}", PreferencesManager.CapturePreferences.RecordingMode);
+            log.DebugFormat("Nominal framerate: {0}, Received framerate: {1}, Display framerate: {2}.", 
+                cameraGrabber.Framerate, pipelineManager.Frequency, PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate);
             
             SaveResult result;
             if (recordingMode == CaptureRecordingMode.Camera)
             {
+                double framerate = cameraGrabber.Framerate;
+                if (framerate == 0)
+                    framerate = 25;
+                double interval = 1000.0 / cameraGrabber.Framerate;
                 result = pipelineManager.StartRecord(path, interval);
             }
             else
@@ -1102,8 +1113,15 @@ namespace Kinovea.ScreenManager
                 string formatString = FilenameHelper.GetFormatStringCapture();
 
                 // We have 3 possible framerates: the configured camera framerate, the measured camera framerate and the display framerate.
-                double measuredInterval = 1000 / pipelineManager.Frequency;
-                result = videoFileWriter.OpenSavingContext(path, info, formatString, measuredInterval);
+                // Since we now force the usage of a separate timer for frame grabbing and pushing to the delay buffer, 
+                // the frames in the delay buffer are roughly at the forced framerate.
+                //double measuredInterval = 1000 / pipelineManager.Frequency;
+                double framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
+                if (framerate == 0)
+                    framerate = 25;
+                //framerate = Math.Min(framerate, pipelineManager.Frequency);
+                double interval = 1000.0 / framerate;
+                result = videoFileWriter.OpenSavingContext(path, info, formatString, interval);
             }
 
             recording = result == SaveResult.Success;
@@ -1125,6 +1143,8 @@ namespace Kinovea.ScreenManager
         {
             if(!cameraLoaded || !recording)
                return;
+
+            log.DebugFormat("Stopping recording.");
 
             if (recordingMode == CaptureRecordingMode.Camera && !consumerRecord.Active)
                 return;
@@ -1278,9 +1298,6 @@ namespace Kinovea.ScreenManager
         {
             if(pipelineManager.Frequency == 0)
                 return 0;
-
-            if (PreferencesManager.CapturePreferences.UseCameraSignalSynchronization)
-                return age / pipelineManager.Frequency;
 
             double framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
             if (framerate == 0)

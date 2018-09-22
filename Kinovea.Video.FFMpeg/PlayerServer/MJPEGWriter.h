@@ -45,6 +45,7 @@ using namespace System::Text;
 using namespace System::Threading;
 using namespace System::Windows::Forms;
 using namespace Kinovea::Video;
+using namespace Kinovea::Base;
 
 namespace Kinovea { namespace Video { namespace FFMpeg
 {
@@ -59,10 +60,22 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
     // Public Methods
     public:
-        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval);
+        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval, double _fFileFramesInterval);
         SaveResult CloseSavingContext(bool _bEncodingSuccess);
         SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
-    
+
+        property double EncodingRate {
+            double get() {
+                return	m_encodingRateAverager->Average;
+            }
+        }
+        
+        property double WritingRate {
+            double get() {
+                return	m_writingRateAverager->Average;
+            }
+        }
+
     // Private Methods
     private:
         double ComputeBitrate(Size outputSize, double frameInterval);
@@ -78,10 +91,21 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         void SanityCheck(AVFormatContext* s);
         void LogError(String^ context, int ffmpegError);
         static int GreatestCommonDenominator(int a, int b);
+
+        void ComputeEncodingRate(Int64 length);
+        void ComputeWritingRate(int length);
     
     // Members
     private :
-        static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
+        Averager^ m_encodingRateAverager;
+        Averager^ m_writingRateAverager;
         SavingContext^ m_SavingContext;
+        Stopwatch^ m_swEncodingRate;
+        Stopwatch^ m_swWritingRate;
+        int m_frame;
+        Int64 encodingDurationAccumulator;
+        double budget;
+        static const double megabyte = 1024 * 1024;
+        static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
     };
 }}}
