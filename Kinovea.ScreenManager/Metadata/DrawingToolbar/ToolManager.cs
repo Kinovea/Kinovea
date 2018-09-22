@@ -185,16 +185,22 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private static string GetToolName(AbstractDrawing drawing)
         {
-            // FIXME: this is broken at the moment.
-            // All the line-derived tools (arrow, squiggly arrow, line, etc.) are created by a tool
-            // that has DrawingLine as its target class.
-            // This means when we come here with a drawing of this class, we don't know how to find the 
-            // actual tool that generated it. As it stands we are always going to stop on the first match: Arrow.
-            
+            //------------------------------------------------------------
+            // This is used as part of the "set style as default" feature.
+            //
+            // This requires some specific code to handle "style variants".
+            // Style variants are for example the tools Line, Arrow, Squiggly line, Squiggly arrow.
+            // These are all implemented by the same Drawing class.
+            // The style can be changed on the fly, so you can start with a Line object and set it to have arrows, or vice versa.
+            // When someone does "set style as default" on an object that has arrows, they mostly likely want to change the style of arrows.
+            // For example if we add a line, change it to have an arrow and pass that file to someone else, 
+            // when they click that arrow and do set style as default they can't expect that it will change the tool preset for bare lines.
+            //------------------------------------------------------------
+
             if (drawing == null)
                 return null;
 
-            // For external custom tools the drawing retains the tool identifier.
+            // Generic posture: the drawing object retains the tool identifier.
             if (drawing is DrawingGenericPosture)
             {
                 Guid toolId = ((DrawingGenericPosture)drawing).ToolId;
@@ -208,19 +214,34 @@ namespace Kinovea.ScreenManager
                 return null;
             }
 
+            // For tools that have style variants, we handle them separately and try to best-guess 
+            // the most appropriate tool to change to avoid surprises.
+            if (drawing.GetType() == typeof(DrawingLine))
+            {
+                return GetLineStyleVariant(drawing as DrawingLine);
+            }
+            else if (drawing.GetType() == typeof(DrawingPolyline))
+            {
+                return GetPolyLineStyleVariant(drawing as DrawingPolyline);
+            }
+            else if (drawing.GetType() == typeof(DrawingPlane))
+            {
+                return GetPlaneStyleVariant(drawing as DrawingPlane);
+            }
+
+            // For others we match with the tool that instanciate that kind of drawings.
             foreach (var tool in tools.Values)
             {
                 // For external standard tools, we check via the class of drawing they instanciate.
                 if (tool is DrawingTool)
                 {
-                    if (((DrawingTool)tool).DrawingType == drawing.GetType())
-                    {
+                    if (drawing.GetType() == ((DrawingTool)tool).DrawingType)
                         return tool.Name;
-                    }
                 }
                 else
                 {
                     // For internal standard tool, we have to check types one by one.
+                    // The ones that are not listed here (auto numbers, spotlight, etc.) aren't supported.
                     if (drawing is DrawingCoordinateSystem)
                     {
                         return "CoordinateSystem";
@@ -232,8 +253,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            // TODO: handle style of sub drawings of multi drawings like autonumbers.
-            // At this point we don't recognize the drawing type.
+            // At this point we don't recognize the drawing type or it's not supported for set style as default.
             return null;
         }
 
@@ -273,6 +293,89 @@ namespace Kinovea.ScreenManager
                 if (tool != null && !tools.ContainsKey(tool.Name))
                     tools.Add(tool.Name, tool);
             }
+        }
+
+        private static string GetLineStyleVariant(DrawingLine drawing)
+        {
+            // Style variants of DrawingLine: line, arrow, arrow dash, arrow squiggly.
+            if (!drawing.DrawingStyle.Elements.ContainsKey("arrows") || !drawing.DrawingStyle.Elements.ContainsKey("line shape"))
+                return "Line";
+
+            StyleElementLineEnding elementLineEnding = drawing.DrawingStyle.Elements["arrows"] as StyleElementLineEnding;
+            StyleElementLineShape elementLineShape = drawing.DrawingStyle.Elements["line shape"] as StyleElementLineShape;
+            if (elementLineEnding == null || elementLineShape == null)
+                return "Line";
+
+            LineEnding valueLineEnding = (LineEnding)elementLineEnding.Value;
+            LineShape valueLineShape = (LineShape)elementLineShape.Value;
+
+            if (valueLineEnding == LineEnding.None)
+            {
+                return "Line";
+            }
+            else
+            {
+                switch (valueLineShape)
+                {
+                    case LineShape.Solid: return "Arrow";
+                    case LineShape.Dash: return "ArrowDash";
+                    case LineShape.Squiggle: return "ArrowSquiggly";
+                    default: return "Line";
+                }
+            }
+        }
+
+        private static string GetPolyLineStyleVariant(DrawingPolyline drawing)
+        {
+            // Style variants of DrawingPolyline: polyline, curve, arrow curve, arrow polyline, arrow polyline dash, arrow polyline squiggly.
+            if (!drawing.DrawingStyle.Elements.ContainsKey("arrows") || !drawing.DrawingStyle.Elements.ContainsKey("line shape") || !drawing.DrawingStyle.Elements.ContainsKey("curved"))
+                return "Polyline";
+
+            StyleElementLineEnding elementLineEnding = drawing.DrawingStyle.Elements["arrows"] as StyleElementLineEnding;
+            StyleElementLineShape elementLineShape = drawing.DrawingStyle.Elements["line shape"] as StyleElementLineShape;
+            StyleElementToggle elementCurved = drawing.DrawingStyle.Elements["curved"] as StyleElementToggle;
+            if (elementLineEnding == null || elementLineShape == null || elementCurved == null)
+                return "Polyline";
+
+            LineEnding valueLineEnding = (LineEnding)elementLineEnding.Value;
+            LineShape valueLineShape = (LineShape)elementLineShape.Value;
+            bool valueCurved = (bool)elementCurved.Value;
+
+            if (valueLineEnding == LineEnding.None)
+            {
+                if (!valueCurved)
+                    return "Polyline";
+                else
+                    return "Curve";
+            }
+            else
+            {
+                switch (valueLineShape)
+                {
+                    case LineShape.Solid: return "ArrowPolyline";
+                    case LineShape.Dash: return "ArrowPolylineDash";
+                    case LineShape.Squiggle: return "ArrowPolylineSquiggly";
+                    default: return "Polyline";
+                }
+            }
+        }
+
+        private static string GetPlaneStyleVariant(DrawingPlane drawing)
+        {
+            // Style variants of DrawingPlane: Plane, Grid.
+            if (!drawing.DrawingStyle.Elements.ContainsKey("perspective"))
+                return "Plane";
+
+            StyleElementToggle elementPerspective = drawing.DrawingStyle.Elements["perspective"] as StyleElementToggle;
+            if (elementPerspective == null)
+                return "Plane";
+
+            bool valuePerspective = (bool)elementPerspective.Value;
+
+            if (valuePerspective)
+                return "Plane";
+            else
+                return "Grid";
         }
 
         #endregion
