@@ -82,7 +82,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         ".3gp;.asf;.avi;.dv;.flv;.f4v;\
         .m1v;.m2p;.m2t;.m2ts;.mts;.m2v;.m4v;.ts;.ts1;.ts2;.avr;\
         .mkv;.mod;.mov;.moov;.mpg;.mpeg;.tod;.mxf;\
-        .mp4;.mpv;.ogg;.ogm;.ogv;.qt;.rm;.swf;.vob;.webm;.wmv;\
+        .mp4;.mpv;.ogg;.ogm;.ogv;.qt;.rm;.swf;.vob;.webm;.wmv;.y4m;\
         *"
     )]
     public ref class VideoReaderFFMpeg : VideoReader
