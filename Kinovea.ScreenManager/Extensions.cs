@@ -188,6 +188,26 @@ namespace Kinovea.ScreenManager
 
             return result;
         }
+
+        /// <summary>
+        /// Pick a member of the list that is either exactly the candidate or the next value above the candidate.
+        /// </summary>
+        public static int PickAmong(this List<int> a, int candidate)
+        {
+            if (a.IndexOf(candidate) >= 0)
+                return candidate;
+
+            // Take the first official option after the input value.
+            foreach (int value in a)
+            {
+                if (candidate > value)
+                    continue;
+
+                return value;
+            }
+
+            return a[a.Count - 1];
+        }
         
     }
 }

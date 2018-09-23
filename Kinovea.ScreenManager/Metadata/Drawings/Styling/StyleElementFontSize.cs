@@ -75,7 +75,7 @@ namespace Kinovea.ScreenManager
 
         public StyleElementFontSize(int initialValue)
         {
-            value = options.IndexOf(initialValue) >= 0 ? initialValue : defaultValue;
+            value = options.PickAmong(initialValue);
         }
         public StyleElementFontSize(XmlReader xmlReader)
         {
@@ -126,7 +126,7 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("An error happened while parsing XML for Font size. {0}", s);
             }
 
-            this.value = options.IndexOf(value) >= 0 ? value : defaultValue;
+            this.value = options.PickAmong(value);
             reader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter xmlWriter)

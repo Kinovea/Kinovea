@@ -75,7 +75,7 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public StyleElementLineSize(int initialValue)
         {
-            value = options.IndexOf(initialValue) >= 0 ? initialValue : defaultValue;
+            value = options.PickAmong(initialValue);
         }
         public StyleElementLineSize(XmlReader xmlReader)
         {
@@ -127,7 +127,7 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat("An error happened while parsing XML for Line size. {0}", s);
             }
 
-            this.value = options.IndexOf(value) >= 0 ? value : defaultValue;
+            this.value = options.PickAmong(value);
             xmlReader.ReadEndElement();
         }
         public override void WriteXml(XmlWriter xmlWriter)
