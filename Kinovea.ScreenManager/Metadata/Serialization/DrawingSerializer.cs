@@ -123,6 +123,9 @@ namespace Kinovea.ScreenManager
 
         public static void Serialize(XmlWriter w, IKvaSerializable drawing, SerializationFilter filter)
         {
+            if (drawing.Id == Guid.Empty)
+                return;
+
             // The XML name for this drawing should be stored in its [XMLType] C# attribute.
             Type t = drawing.GetType();
             object[] attributes = t.GetCustomAttributes(typeof(XmlTypeAttribute), false);
@@ -142,6 +145,12 @@ namespace Kinovea.ScreenManager
         public static AbstractDrawing Deserialize(XmlReader r, PointF scaling, TimestampMapper timestampMapper, Metadata metadata)
         {
             AbstractDrawing drawing = null;
+
+            if (r.IsEmptyElement)
+            {
+                r.ReadStartElement();
+                return null;
+            }
 
             // Find the right class to instanciate.
             // The class must derive from AbstractDrawing and have the corresponding [XmlType] C# attribute.
