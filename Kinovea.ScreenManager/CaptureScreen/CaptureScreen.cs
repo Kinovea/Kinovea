@@ -747,13 +747,7 @@ namespace Kinovea.ScreenManager
                 sb.AppendFormat("Signal: {0:0.00} fps.", pipelineManager.Frequency);
 
             sb.AppendFormat(" Bandwidth: {0:0.00} MB/s.", cameraGrabber.LiveDataRate);
-
-            if (recording && recordingMode == CaptureRecordingMode.Camera && PreferencesManager.CapturePreferences.VerboseStats)
-            {
-                sb.AppendFormat(" Enc BW: {0:0.00} MB/s.", consumerRecord.EncodingRate);
-                sb.AppendFormat(" Write BW: {0:0.00} MB/s.", consumerRecord.WritingRate);
-            }
-
+            
             sb.AppendFormat(" Drops: {0}.", pipelineManager.Drops);
             
             view.UpdateInfo(sb.ToString());

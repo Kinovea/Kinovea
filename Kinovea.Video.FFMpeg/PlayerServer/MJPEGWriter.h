@@ -64,18 +64,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         SaveResult CloseSavingContext(bool _bEncodingSuccess);
         SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
 
-        property double EncodingRate {
-            double get() {
-                return	m_encodingRateAverager->Average;
-            }
-        }
-        
-        property double WritingRate {
-            double get() {
-                return	m_writingRateAverager->Average;
-            }
-        }
-
     // Private Methods
     private:
         double ComputeBitrate(Size outputSize, double frameInterval);
@@ -92,19 +80,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         void LogError(String^ context, int ffmpegError);
         static int GreatestCommonDenominator(int a, int b);
 
-        void ComputeEncodingRate(Int64 length);
-        void ComputeWritingRate(int length);
-    
     // Members
     private :
-        Averager^ m_encodingRateAverager;
-        Averager^ m_writingRateAverager;
         SavingContext^ m_SavingContext;
-        Stopwatch^ m_swEncodingRate;
-        Stopwatch^ m_swWritingRate;
+        Stopwatch^ m_swEncoding;
         int m_frame;
-        Int64 encodingDurationAccumulator;
-        double budget;
+        Int64 m_encodingDurationAccumulator;
+        double m_budget;
         static const double megabyte = 1024 * 1024;
         static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
     };
