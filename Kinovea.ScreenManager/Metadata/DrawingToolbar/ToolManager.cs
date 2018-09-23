@@ -183,7 +183,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Try to find the tool that generates this kind of drawings.
         /// </summary>
-        private static string GetToolName(AbstractDrawing drawing)
+        public static string GetToolName(AbstractDrawing drawing)
         {
             //------------------------------------------------------------
             // This is used as part of the "set style as default" feature.

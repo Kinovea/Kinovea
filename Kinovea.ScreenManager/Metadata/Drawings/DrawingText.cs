@@ -119,7 +119,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, DrawingStyle stylePreset)
+        public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset = null)
         {
             text = "";
             background.Rectangle = new RectangleF(p, SizeF.Empty);
@@ -128,12 +128,11 @@ namespace Kinovea.ScreenManager
             
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
+            if (preset == null)
+                preset = ToolManager.GetStylePreset("Label");
 
-            if (stylePreset != null)
-            {
-                style = stylePreset.Clone();
-                BindStyle();
-            }
+            style = preset.Clone();
+            BindStyle();
             
             infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
             editing = false;
@@ -406,6 +405,7 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
+            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Label"));
             style.Bind(styleHelper, "Bicolor", "back color");
             style.Bind(styleHelper, "Font", "font size");
         }

@@ -123,9 +123,6 @@ namespace Kinovea.ScreenManager
             points["0"] = origin;
             points["1"] = origin;
 
-            styleHelper.Color = Color.DarkSlateGray;
-            styleHelper.LineSize = 1;
-
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Polyline");
             
@@ -302,6 +299,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+
             xmlReader.ReadEndElement();
             initializing = false;
 
@@ -476,6 +474,7 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
+            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Polyline"));
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "line size");
             style.Bind(styleHelper, "LineShape", "line shape");

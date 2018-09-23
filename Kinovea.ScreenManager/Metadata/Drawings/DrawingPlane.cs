@@ -507,6 +507,7 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void BindStyle()
         {
+            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Plane"));
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "GridDivisions", "divisions");
             style.Bind(styleHelper, "Perspective", "perspective");

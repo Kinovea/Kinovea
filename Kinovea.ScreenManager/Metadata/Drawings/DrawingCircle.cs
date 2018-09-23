@@ -537,6 +537,7 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
+            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Circle"));
             style.Bind(styleHelper, "Color", "color");
             style.Bind(styleHelper, "LineSize", "pen size");
             style.Bind(styleHelper, "PenShape", "pen shape");

@@ -209,5 +209,21 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
+        
+        /// <summary>
+        /// Make sure that all options from the preset are in the passed style with matching names. 
+        /// This is used to import old KVA with missing keys or keys that have since changed name.
+        /// In this case we push the default value of the tool.
+        /// We generally don't try to match the tool variant in these case, the important thing is that the 
+        /// style elements are correct so we can at least change them later.
+        /// </summary>
+        public static void SanityCheck(DrawingStyle input, DrawingStyle preset)
+        {
+            foreach (string key in preset.Elements.Keys)
+            {
+                if (!input.Elements.ContainsKey(key))
+                    input.Elements.Add(key, preset.Elements[key].Clone());
+            }
+        }
     }
 }

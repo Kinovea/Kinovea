@@ -70,9 +70,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public StyleElementToggle(bool initialValue)
+        public StyleElementToggle(bool initialValue, StyleToggleVariant variant)
         {
-            value = initialValue;
+            this.value = initialValue;
+            this.variant = variant;
+            UpdateVariant(variant);
         }
         public StyleElementToggle(XmlReader xmlReader)
         {
@@ -91,7 +93,7 @@ namespace Kinovea.ScreenManager
         }
         public override AbstractStyleElement Clone()
         {
-            StyleElementToggle clone = new StyleElementToggle(value);
+            StyleElementToggle clone = new StyleElementToggle(value, variant);
             clone.icon = icon;
             clone.displayName = displayName;
             clone.variant = variant;

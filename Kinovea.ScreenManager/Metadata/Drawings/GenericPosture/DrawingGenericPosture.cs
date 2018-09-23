@@ -866,7 +866,7 @@ namespace Kinovea.ScreenManager
         }
         private void BindStyle()
         {
-          style.Bind(styleHelper, "Bicolor", "line color");
+            style.Bind(styleHelper, "Bicolor", "line color");
         }
         
         private bool HasActiveOption(string option)
