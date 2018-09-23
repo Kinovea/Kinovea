@@ -20,16 +20,6 @@ namespace Kinovea.ScreenManager
             get { return filename; }
         }
 
-        public double EncodingRate
-        {
-            get { return writer.EncodingRate; }
-        }
-
-        public double WritingRate
-        {
-            get { return writer.WritingRate; }
-        }
-
         private ImageDescriptor imageDescriptor;
         private MJPEGWriter writer;
         private string filename;
