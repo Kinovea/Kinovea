@@ -483,6 +483,7 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
+            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Chrono"));
             style.Bind(styleHelper, "Bicolor", "color");
             style.Bind(styleHelper, "Font", "font size");    
         }

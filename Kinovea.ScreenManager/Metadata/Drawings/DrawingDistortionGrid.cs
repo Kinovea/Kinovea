@@ -349,6 +349,7 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void BindStyle()
         {
+            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("DistortionGrid"));
             style.Bind(styleHelper, "Color", "color");
         }
 

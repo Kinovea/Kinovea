@@ -423,6 +423,7 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
+            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("CrossMark"));
             style.Bind(styleHelper, "Color", "back color");
         }
 

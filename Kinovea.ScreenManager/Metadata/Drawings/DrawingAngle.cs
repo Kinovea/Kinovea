@@ -455,6 +455,7 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void BindStyle()
         {
+            DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Angle"));
             style.Bind(styleHelper, "Bicolor", "line color");
         }
         private void ComputeValues(IImageToViewportTransformer transformer)
