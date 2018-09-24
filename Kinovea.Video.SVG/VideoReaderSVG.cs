@@ -130,9 +130,10 @@ namespace Kinovea.Video.SVG
         public override void BeforeFrameEnumeration() { }
         public override void AfterFrameEnumeration() { }
 
-        public override void ChangeDecodingSize(Size size)
+        public override bool ChangeDecodingSize(Size size)
         {
             decodingSize = size;
+            return true;
         }
         #endregion
 

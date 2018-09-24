@@ -42,17 +42,17 @@ namespace Kinovea.ScreenManager
         {
             get { return stretchFactor; }
         }
-        public Size DecodingSize
+        public Size PreferredDecodingSize
         {
-            get { return decodingSize; }
+            get { return preferredDecodingSize; }
         }
         public bool MayDrawUnscaled
         {
             get { return mayDrawUnscaled; }
         }
-        public double RenderingZoomFactor
+        public double PreferredDecodingScale
         {
-            get { return renderingZoomFactor; }
+            get { return preferredDecodingScale; }
         }
         #endregion
 
@@ -61,9 +61,9 @@ namespace Kinovea.ScreenManager
         private Point renderingLocation;          // Location of the drawing surface relatively to the viewport container.
         private double stretchFactor = 1.0;       // Asked stretch factor. May be updated during the computation if it's too large to fit.
                                                   // This is the factor applied to the reference size in order to make it fit in the drawing surface.
-        private Size decodingSize;                // Size at which we will ask the VideoReader to provide its frames, before rotation. (Not necessarily honored by the reader).
+        private Size preferredDecodingSize;                // Size at which we will ask the VideoReader to provide its frames, before rotation. (Not necessarily honored by the reader).
         private bool mayDrawUnscaled;
-        private double renderingZoomFactor = 1.0; // Factor to apply to the reference zoom window to get the final window in images received by the reader. Also see below.
+        private double preferredDecodingScale = 1.0;       // Factor to apply to the reference zoom window to get the final window in images received by the reader. Also see comment in Manipulate().
 
         // Reference data.
         private VideoReader reader;
@@ -88,14 +88,16 @@ namespace Kinovea.ScreenManager
 
             ComputeDecodingSize(sideway, _containerSize, _zoomFactor, _enableCustomDecodingSize, _scalable);
 
-            // Rendering zoom factor
+            // Decoding scale
+            //
             // Used to find the final zoom window in the received images.
-            // It is the factor to apply to the zoom window in the reference image.
+            // It is the factor to apply to the zoom window in the reference image to get the zoom window in the decoded images.
+            //
             // Subtle: this is not the same as rendering size / reference size, because when there is zoom and stretch we can 
             // decide to decode at a bigger size than the rendering size in order to get a better picture, as long as it stays under 
-            // the original image size. Thus we need to use the actual decoding size, and we need to compare it to the 
-            // unrotated reference size, aka aspect ratio size, since the decoding size is before rotation.
-            renderingZoomFactor = (double)decodingSize.Width / reader.Info.AspectRatioSize.Width;
+            // the original image size. Thus we need to use the actual decoding size.
+            // We compare it to the unrotated reference size, aka aspect ratio size, since the decoding size is before rotation.
+            preferredDecodingScale = (double)preferredDecodingSize.Width / reader.Info.AspectRatioSize.Width;
         }
 
         /// <summary>
@@ -146,7 +148,7 @@ namespace Kinovea.ScreenManager
 
             if (!_enableCustomDecodingSize)
             {
-                decodingSize = aspectRatioSize;
+                preferredDecodingSize = aspectRatioSize;
                 mayDrawUnscaled = false;
             }
             else
@@ -157,7 +159,7 @@ namespace Kinovea.ScreenManager
                 // for example when we zoom into a video that is too big for the viewport.
                 if (_zoomFactor == 1.0)
                 {
-                    decodingSize = unrotatedRenderingSize;
+                    preferredDecodingSize = unrotatedRenderingSize;
                     mayDrawUnscaled = !sideway;
                 }
                 else
@@ -173,12 +175,12 @@ namespace Kinovea.ScreenManager
                     if (!_scalable && !zoomDecodingSizeRotated.FitsIn(_containerSize) && !zoomDecodingSize.FitsIn(aspectRatioSize))
                     {
                         // The max allowed decoding size is somewhat arbitrary, we could also use _containerSize at right ratio.
-                        decodingSize = aspectRatioSize;
+                        preferredDecodingSize = aspectRatioSize;
                         mayDrawUnscaled = false;
                     }
                     else
                     {
-                        decodingSize = zoomDecodingSize;
+                        preferredDecodingSize = zoomDecodingSize;
                         mayDrawUnscaled = !sideway;
                     }
                 }
