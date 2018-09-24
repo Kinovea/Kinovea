@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>ファイル {0} は既に存在します。\n置き換えますか？</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>無効なファイル名</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>ファイル名に無効な文字列が含まれています。\nファイル名には以下の文字列は使用できません。:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - スライドショーを生成できません</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>スライドショーはビデオフォーマットで保存された一連のキーイメージです。\nスライドショーを生成する前にキーイメージを追加してください。</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - 停止したビデオを生成できません。</value></data>

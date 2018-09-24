@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>El archivo {0} ya existe.\n¿Desea reemplazarlo ?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nombre de archivo no válido</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>El nombre del archivo contiene caracteres no válidos.\n El nombre del archivo no puede contener los siguientes caracteres:\n \ / : * ? “ &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Creaciòn de la presentación de diapositivas imposible.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Un Pase de Diapositivas es una sucesión de imágenes clave guardas en un vídeo.\nAñada alguna imagen clave antes de generar el Pase de Diapositivas</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Imposible crear el vídeo</value></data>

@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Die Datei {0} existiert bereits.\nWollen Sie sie überschreiben?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Fehler im Dateinamen</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Der Dateiname enthält ungültige Zeichen.\n Folgende Zeichen sind nicht erlaubt:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Diashow kann nicht erstellt werden.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Eine Diashow ist eine Sequenz von Schlüsselbildern als Videoformat gespeichert.\n Bitte erst Schlüsselbilder auswählen und dann die Diashow erstellen.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Video kann nicht erstellt werden.</value></data>

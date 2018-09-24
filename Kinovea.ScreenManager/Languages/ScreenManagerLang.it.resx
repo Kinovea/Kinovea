@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Il file {0} esiste gia'.\nVuoi sostituirlo?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nome file non valido</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Il nome file contiene caratteri non validi.\n Un nome file non puo' contenere alcuno dei caratteri seguenti:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Impossibile creare la videopresentazione.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Una videopresentazione e' una sequenza di Immagini Chiave salvate in formato Video.\n Occorre aggiungere qualche Immagine Chiave PRIMA di generare la videopresentazione.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Impossibile creare il video richiesto</value></data>

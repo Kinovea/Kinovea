@@ -235,6 +235,8 @@
    
    
    
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – kan ikke lage slideshow</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Et slidehow er en sekvens nøkkelbilder som er lagret I et videoformat.\n Vennligst legg til nøkkelbilder før du genererer slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Kan ikke lage video</value></data>

@@ -203,11 +203,24 @@ namespace Kinovea.Services
         /// Creates a missing directory before we write the file into it.
         /// Input is the whole file path.
         /// </summary>
-        public static void CreateDirectory(string filepath)
+        public static bool CreateDirectory(string filepath)
         {
             string directory = Path.GetDirectoryName(filepath);
-            if (!Directory.Exists(directory))
+            if (Directory.Exists(directory))
+                return true;
+
+            try
+            { 
                 Directory.CreateDirectory(directory);
+
+                return Directory.Exists(directory);
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Capture directory could not be created at {0}. Error: {1}", directory, e.Message);
+            }
+
+            return false;
         }
 
         public static void DeleteOrphanFiles()

@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>O arquivo {0} já existe.\nDeseja substitui-lo?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nome de arquivo inválido</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>O nome do arquivo não pode conter nenhum dos seguintes caracteres:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Não pode criar Apresentação de Slides.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Uma Apresentação de Slides é uma sequência de Quadros de Imagens salvos num formato de vídeo.\n Por favor, adicione alguns Quadros antes de gerar o Slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Nao pode criar video pausado.</value></data>

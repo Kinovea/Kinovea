@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Tiedosto {0}on jo olemassa.\nHaluatko korvata sen?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Tiedoston nimi ei kelpaa</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Tiedoston nimi sisältää kelpaamattomia symboleja.\n Tiedoston nimi ei voi sisältää seuraavia symboleja:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Ei voi luoda diaesitystä</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Diaesitys on avainkuvien sarja tallennettuna videomuotoon.\n Lisää avainkuvia luodaksesi diaesityksen.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Tauotetun videon luonti ei onnistu</value></data>
