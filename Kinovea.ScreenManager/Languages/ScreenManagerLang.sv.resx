@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Filen {0} finns redan.\nSkriv över?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Ogiltigt filnamn</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Filnamnet innehåller ogiltiga tecken.\n Kan ej innehålla följande tecken:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Kan inte skapa bildspel.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Bildspel är en sekvens av nyckelbilder  som sparats i videoformat.\n Lägg till nyckelbilder innan bildspel skapas.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Kan inte skapa pausad video</value></data>

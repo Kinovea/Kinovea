@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Datoteka {0} već postoji.\nDa li želite da je zamenite?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Ime datoteke nije odgovarajuće</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Ime datoteke sadrži neodgovarajuće znakove.\nIme datoteke ne može da sadrži bilo koji od sledećih znakova :\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Nije moguće napraviti projekciju slajdova.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Projekcija slajdova je niz ključnih slika sačuvanih u video formatu.\n Molimo dodajte neke ključne slike pre generisanja projekcije slajdova .</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Nije moguće zaustaviti video</value></data>

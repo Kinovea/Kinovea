@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>L'arxiu {0} ja existeix.\n Voleu reemplaçar-lo?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nom d'arxiu invàlid</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>El nom d'arxiu contè caràcters invàlids.\ Un nom d'arxiu no pot contenir cap dels següents caràcters:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – No s'ha pogut crear la presentació</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Una presentació és una seqüència de fotogrames clau desats en format de vídeo.\n Si us plau afegeix alguns fotogrames clau abans de generar la presentació.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – No s'ha pogut crear el vídeo.</value></data>

@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Dokumentas {0} jau yra.\nNorite pakeisti?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Neteisingas dokumento pavadinimas</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Dokumento pavadinimas turi simbolius.\n Dokumento pavadinime negalima naudoti sekančius simbolius:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - negaliu sukurti demonstracijos.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Demonstracija vyksta paveikslėlių žymių seka .\n Prašau pridėti paveikslėlių žymes prieš naudojant demonstracija.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - negaliu atvaizduoti sustabdyto video</value></data>

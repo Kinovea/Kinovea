@@ -802,7 +802,13 @@ namespace Kinovea.ScreenManager
                 
             MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
-        
+        public static void AlertDirectoryNotCreated()
+        {
+            string msgTitle = ScreenManagerLang.Error_Capture_DirectoryNotCreated_Title;
+            string msgText = ScreenManagerLang.Error_Capture_DirectoryNotCreated_Text.Replace("\\n", "\n");
+
+            MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
         #endregion
         
         #region Menu organization

@@ -968,7 +968,8 @@ namespace Kinovea.ScreenManager
 
             string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context);
             
-            FilesystemHelper.CreateDirectory(path);
+            if (!DirectoryExistsCheck(path))
+                return;
 
             if(!FilePathSanityCheck(path))
                 return;
@@ -1026,6 +1027,20 @@ namespace Kinovea.ScreenManager
             return context;
         }
 
+        private bool DirectoryExistsCheck(string path)
+        {
+            if (cameraGrabber == null)
+                return false;
+            
+            if (!FilesystemHelper.CreateDirectory(path))
+            {
+                ScreenManagerKernel.AlertDirectoryNotCreated();
+                return false;
+            }
+
+            return true;
+        }
+
         private bool FilePathSanityCheck(string path)
         {
             if(cameraGrabber == null)
@@ -1042,9 +1057,12 @@ namespace Kinovea.ScreenManager
 
         private bool OverwriteCheck(string path)
         {
+            if (cameraGrabber == null)
+                return false;
+
             if (!File.Exists(path))
                 return true;
-
+            
             string msgTitle = ScreenManagerLang.Error_Capture_FileExists_Title;
             string msgText = String.Format(ScreenManagerLang.Error_Capture_FileExists_Text, path).Replace("\\n", "\n");
 
@@ -1086,8 +1104,9 @@ namespace Kinovea.ScreenManager
 
             string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context);
 
-            FilesystemHelper.CreateDirectory(path);
-
+            if (!DirectoryExistsCheck(path))
+                return;
+            
             if (!FilePathSanityCheck(path))
                 return;
 

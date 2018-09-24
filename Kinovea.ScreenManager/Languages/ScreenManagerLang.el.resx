@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Το αρχείο {0} ήδη υπάρχει.\nΘέλετε να το αντικαταστήσετε?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Άκυρο όνομα αρχείου</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Το όνομα του αρχείου περιέχει άκυρους χαρακτήρες.\n Ένα όνομα δεν μπορεί να περιέχει τους παρακάτω χαρακτήρες:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Αδύνατη η δημιουργία Προβολής Διαφανειών</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Μια Προβολή Διαφανειών είναι μια ακολουθία Βασικών Εικόνων αποθηκευμένες σε μορφή video.\n Παρακαλούμε προσθέστε μερικές Βασικές Εικόνες πριν δημιουργήσετε την Προβολή Διαφανειών </value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Αδύνατη η δημιουργία Video με παύση</value></data>

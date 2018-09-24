@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>الملف {0} موجود بالفعل. \n هل تريد استبداله؟</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>اسم الملف غير صالح</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>اسم الملف يحتوي على أحرف غير صالحة. \n لا يمكن أن يحتوي اسم الملف على أي من الأحرف التالية: \n \ /: *؟ "&lt;&gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>كينوفيا - غير قادر علي إنشاء عرض للشرائح. </value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>عرض الشرائح هو سلسلة من الصور الرئيسية محفوظة في شكل شريط فيديو. \n الرجاء إضافة بعض الصور الرئيسية قبل إنشاء عرض الشرائح.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>كينوفيا - غير قادر علي إنشاء فيديو مؤقت.</value></data>

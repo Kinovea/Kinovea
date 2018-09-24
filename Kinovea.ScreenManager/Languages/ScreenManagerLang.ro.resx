@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Fişierul {0} există deja.\nDoriţi să-l înlocuiţi?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nume fişier invalid</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Numele fişierului conţine caractere invalide.\n Numele fişierului trebuie să nu conţină niciunul din următoarele caractere:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Crearea secvenţelor de cadre este imposibilă.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>O Secvenţă de cadre reprezintă o serie de cadre cheie salvată în format video.\n Vă rugăm să adăugaţi câteva cadre cheie înainte de a genera Secvenţa de imagini.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Fisierul video este imposibil de creat</value></data>

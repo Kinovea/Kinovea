@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Soubor {0} již existuje.\nChcete jej nahradit?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Neplatné jméno souboru</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Název souboru obsahuje neplatné znaky.\n Jméno souboru nesmí obsahovat žádný z těchto znaků:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - nemůže vytvořit Slideshow.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Slideshow je sekvence klíčových pozic uložených ve video formátu\n Přidejte klíčové pozice před vytvořením Slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - nemůže vytvořit video s pauzami.</value></data>

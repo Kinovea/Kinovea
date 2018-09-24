@@ -1465,6 +1465,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The capture directory could not be created.\nCheck that it points to a valid storage location..
+        /// </summary>
+        public static string Error_Capture_DirectoryNotCreated_Text {
+            get {
+                return ResourceManager.GetString("Error_Capture_DirectoryNotCreated_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory not created.
+        /// </summary>
+        public static string Error_Capture_DirectoryNotCreated_Title {
+            get {
+                return ResourceManager.GetString("Error_Capture_DirectoryNotCreated_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file {0} already exists.\nDo you want to replace it?.
         /// </summary>
         public static string Error_Capture_FileExists_Text {

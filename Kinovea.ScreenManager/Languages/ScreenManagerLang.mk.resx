@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Датотеката {0} веќе постои. \n Дали сакаш да ја замениш?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Невалидно име на датотеката</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Името на датотеката содржи невалидни карактери. \n Името на датотеката не може да содржи некои од следниве карактери: \n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Киновеа – не може да креира слајдшоу</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Слајдшоу е секвенца од клучни слиии зачувани во видео формат. \n Ве молам додадете некои клучни слики пред да генерирате слајдшоу.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Киновеа – не може да креира паузирано видео</value></data>

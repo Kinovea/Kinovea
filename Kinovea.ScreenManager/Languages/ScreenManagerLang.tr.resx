@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Dosya {0} zaten mevcut.\nDeğiştirmek istiyor musunuz?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Geçersiz dosya ismi</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Dosya ismi geçersiz karakterler içeriyor.\n Dosya ismi şu karakterlerden herhangi birini içeremez:\n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Slayt gösterisi yaratılamıyor.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Slayt gösterisi, video formatı olarak kaydedilen bir Anahtar İmaj sekansıdır.\n Lütfen slayt gösterimini yaratmadan önce bir miktar Anahtar İmaj ekleyin.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Duraklatılmış video yaratılamıyor.</value></data>

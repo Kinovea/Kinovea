@@ -235,6 +235,8 @@
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>파일 {0}이 존재함.\n대체할까요?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>잘못된 파일명.</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>파일명에 잘못된 문자가 있음. 파일명에는 다음의 문자가 있으면 안됨: \n \ / : * ? " &lt; &gt;</value></data>
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - 슬라이드 쇼를 만들 수 없음.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>슬라이드 쇼는 비디오 형식(format)으로 저장된 '키 이미지'임.\n슬라이드 쇼를 만들기 전에 몇 개의 '키 이미지'를 만드세요.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – 멈춤 비디오를 만들 수 없음</value></data>
