@@ -33,67 +33,85 @@ namespace Kinovea.ScreenManager
     /// - stretching, image may be stretched or squeezed relative to the original.
     /// - zooming, the actual view may be a sub window of the original image.
     /// 
-    /// TODO: replace all these special cases with matrix maths.
-    /// TODO: merge with ImageToViewportTransformer.
+
     /// 
     /// The class will keep track of the current changes relatively to the 
     /// reference image size and provide conversion routines.
     /// The reference image size is the original image size adjusted for aspect ratio and rotation.
     /// 
     /// All drawings coordinates are kept in the system of the reference size.
-    /// For actually drawing them on screen we ask the transformation. 
+    /// For actually drawing them on screen we ask the transformation here. 
+    /// The image itself is decoded at a custom size that can be smaller than the reference size.
+    /// The rendering surface also has its own size that can be changed by user stretching.
     /// 
     /// The image aspect ratio is never altered. Skew is not supported.
+    /// TODO: replace all these special cases with matrix maths.
+    /// TODO: merge with ImageToViewportTransformer.
     /// </summary>
     public class ImageTransform : IImageToViewportTransformer
     {
         #region Properties
         /// <summary>
-        /// The total scale at which to render the image. Combines stretching and zooming.
+        /// The total scale used to transform coordinates in the reference size into coordinates in the rendering size.
+        /// This does not take into account the decoding size and should not be used to render the image itself.
         /// </summary>
         public double Scale
         {
             get { return stretch * zoom; }
         }
+
         /// <summary>
-        /// The stretching to apply to the image due to container manipulation. Does not take zoom into account.
+        /// The scale factor solely due to user stretching the rendering surface. 
+        /// Goes from reference size to rendering surface size.
+        /// Does not take decoding size into account.
         /// </summary>
         public double Stretch
         {
             get { return stretch; }
             set { stretch = value; }
         }
+
         /// <summary>
-        /// The zoom factor to apply to the image.
+        /// The zoom factor applied to the image due to user zooming in/out.
+        /// Goes from reference size to zoom window size.
+        /// Does not take decoding size into account.
         /// </summary>
         public double Zoom
         {
             get { return zoom; }
             set { zoom = value; }
         }
+
+        /// <summary>
+        /// Whether we are currently zooming or not.
+        /// </summary>
         public bool Zooming
         {
             get { return zoom > 1.0f;}
         }
+
         /// <summary>
-        /// Location of the zoom window.
+        /// The location of the zoom window inside the reference image.
+        /// Does not take decoding size into account.
         /// </summary>
-        public Point Location
-        {
-            get { return directZoomWindow.Location;}
-        }
         public Rectangle ZoomWindow
         {
             get { return directZoomWindow;}
         }
+
+
+        /// <summary>
+        /// The location of the zoom window inside the decoded image.
+        /// </summary>
         public Rectangle RenderingZoomWindow
         {
             get { return renderingZoomWindow; }
         }
-        public bool FreeMove
+        
+        public bool AllowOutOfScreen
         {
-            get { return freeMove; }
-            set { freeMove = value; }
+            get { return allowOutOfScreen; }
+            set { allowOutOfScreen = value; }
         }
         public ImageTransform Identity
         {
@@ -103,30 +121,40 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private Size referenceSize;			
-        private double stretch = 1.0;		// factor to go from decoding size to viewport size.
+
+        // Variables used to transform coordinates in the reference size into coordinates in the final rendering surface.
+        // These should only be used by drawings and cursors. Not by the image itself because the image is not necessarily decoded at the reference size.
+        private Size referenceSize;
+        private double stretch = 1.0;
         private double zoom = 1.0;
         private Rectangle directZoomWindow;
-        private Rectangle renderingZoomWindow;
+
+        // Variables used by the paint routine to render the image on the rendering surface.
         private double renderingZoomFactor = 1.0;
-        private bool freeMove;				// Whether we allow the image to be moved out of screen bounds.
+        private Rectangle renderingZoomWindow;
+
+        private bool allowOutOfScreen;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
         public ImageTransform() : this(new Size(1,1)){}
-        public ImageTransform(Size _size)
+        public ImageTransform(Size referenceSize)
         {
-            referenceSize = _size;
+            this.referenceSize = referenceSize;
+            stretch = 1.0;
+            zoom = 1.0;
             directZoomWindow = new Rectangle(0, 0, referenceSize.Width, referenceSize.Height);
+
+            renderingZoomFactor = 1.0;
             renderingZoomWindow = directZoomWindow;
         }
         #endregion
 
         #region System manipulation
-        public void SetReferenceSize(Size _size)
+        public void SetReferenceSize(Size referenceSize)
         {
-            referenceSize = _size;
+            this.referenceSize = referenceSize;
         }
         public void Reset()
         {
@@ -141,15 +169,14 @@ namespace Kinovea.ScreenManager
             directZoomWindow = new Rectangle(0, 0, referenceSize.Width, referenceSize.Height);
             UpdateRenderingZoomWindow();
         }
-        public void RelocateZoomWindow()
+        public void UpdateZoomWindow()
         {
-            RelocateZoomWindow(new Point(directZoomWindow.Left + (directZoomWindow.Width/2), directZoomWindow.Top + (directZoomWindow.Height/2)));
+            UpdateZoomWindow(directZoomWindow.Center());
         }
-        public void RelocateZoomWindow(Point center)
+        public void UpdateZoomWindow(Point center)
         {
-            // Recreate the zoom window coordinates, given a new zoom factor, keeping the window center.
-            // This used when increasing and decreasing the zoom factor,
-            // to automatically adjust the viewing window.
+            // Recreate the zoom window coordinates, after the zoom factor was changed externally, keeping the window center.
+            // Used when increasing and decreasing the zoom factor.
             Size newSize = new Size((int)(referenceSize.Width / zoom), (int)(referenceSize.Height / zoom));
             int left = center.X - (newSize.Width / 2);
             int top = center.Y - (newSize.Height / 2);
@@ -169,7 +196,7 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Set the factor used to compute the zoom window in the received images.
-        /// This should be related to the decoding size vs (unrotated) reference size.
+        /// This relates the decoding size to the (unrotated) reference size.
         /// </summary>
         public void SetRenderingZoomFactor(double zoomFactor)
         {
@@ -187,7 +214,7 @@ namespace Kinovea.ScreenManager
         {
             // Prevent the zoom window to move outside the rendering window.
             
-            if(freeMove)
+            if(allowOutOfScreen)
                 return new Point(left, top);
 
             int newLeft = Math.Min(Math.Max(0, left), containerSize.Width - zoomWindow.Width);

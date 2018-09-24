@@ -209,7 +209,7 @@ namespace Kinovea.ScreenManager
             {
                 m_bSyncMerge = value;
                 
-                m_FrameServer.ImageTransform.FreeMove = m_bSyncMerge;
+                m_FrameServer.ImageTransform.AllowOutOfScreen = m_bSyncMerge;
                 
                 if(!m_bSyncMerge && m_SyncMergeImage != null)
                 {
@@ -3074,7 +3074,7 @@ namespace Kinovea.ScreenManager
                         {
                             // Magnifier is not being moved or is invisible, try drawings through pointer tool.
                             // (including chronos, tracks and grids)
-                            bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.Location, ModifierKeys);
+                            bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.ZoomWindow.Location, ModifierKeys);
 
                             if (!bMovingObject)
                             {
@@ -3107,7 +3107,7 @@ namespace Kinovea.ScreenManager
                 // This allow to zoom and pan while having an active tool.
                 if (!m_bIsCurrentlyPlaying)
                 {
-                    bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.Location, ModifierKeys);
+                    bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.ImageTransform.ZoomWindow.Location, ModifierKeys);
                     if (!bMovingObject)
                     {
                         // Move the whole image.
@@ -4462,7 +4462,7 @@ namespace Kinovea.ScreenManager
             // Use position and magnification to Direct Zoom.
             // Go to direct zoom, at magnifier zoom factor, centered on same point as magnifier.
             m_FrameServer.ImageTransform.Zoom = m_FrameServer.Metadata.Magnifier.MagnificationFactor;
-            m_FrameServer.ImageTransform.RelocateZoomWindow(m_FrameServer.Metadata.Magnifier.Center);
+            m_FrameServer.ImageTransform.UpdateZoomWindow(m_FrameServer.Metadata.Magnifier.Center);
             DisableMagnifier();
             ToastZoom();
             
@@ -4507,7 +4507,7 @@ namespace Kinovea.ScreenManager
         {
             m_FrameServer.ImageTransform.ReinitZoom();
             
-            m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.Location);
+            m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.ZoomWindow.Location);
             if(_toast)
                 ToastZoom();
             ReportForSyncMerge();
@@ -4531,8 +4531,8 @@ namespace Kinovea.ScreenManager
         }
         private void AfterZoomChange()
         {
-            m_FrameServer.ImageTransform.RelocateZoomWindow();
-            m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.Location);
+            m_FrameServer.ImageTransform.UpdateZoomWindow();
+            m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.ZoomWindow.Location);
             ToastZoom();
             UpdateCursor();
             ReportForSyncMerge();
