@@ -99,13 +99,25 @@ namespace Kinovea.ScreenManager
             get { return directZoomWindow;}
         }
 
+        /// <summary>
+        /// The factor between the decoded image and the reference image.
+        /// </summary>
+        public double DecodingScale
+        {
+            get { return decodingScale; }
+            set
+            {
+                decodingScale = value;
+                UpdateZoomWindowInDecodedImage();
+            }
+        }
 
         /// <summary>
         /// The location of the zoom window inside the decoded image.
         /// </summary>
-        public Rectangle RenderingZoomWindow
+        public Rectangle ZoomWindowInDecodedImage
         {
-            get { return renderingZoomWindow; }
+            get { return zoomWindowInDecodedImage; }
         }
         
         public bool AllowOutOfScreen
@@ -130,8 +142,8 @@ namespace Kinovea.ScreenManager
         private Rectangle directZoomWindow;
 
         // Variables used by the paint routine to render the image on the rendering surface.
-        private double renderingZoomFactor = 1.0;
-        private Rectangle renderingZoomWindow;
+        private double decodingScale = 1.0;
+        private Rectangle zoomWindowInDecodedImage;
 
         private bool allowOutOfScreen;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -146,8 +158,8 @@ namespace Kinovea.ScreenManager
             zoom = 1.0;
             directZoomWindow = new Rectangle(0, 0, referenceSize.Width, referenceSize.Height);
 
-            renderingZoomFactor = 1.0;
-            renderingZoomWindow = directZoomWindow;
+            decodingScale = 1.0;
+            zoomWindowInDecodedImage = directZoomWindow;
         }
         #endregion
 
@@ -161,13 +173,13 @@ namespace Kinovea.ScreenManager
             stretch = 1.0f;
             zoom = 1.0f;
             directZoomWindow = new Rectangle(0, 0, referenceSize.Width, referenceSize.Height);
-            UpdateRenderingZoomWindow();
+            UpdateZoomWindowInDecodedImage();
         }
         public void ReinitZoom()
         {
             zoom = 1.0f;
             directZoomWindow = new Rectangle(0, 0, referenceSize.Width, referenceSize.Height);
-            UpdateRenderingZoomWindow();
+            UpdateZoomWindowInDecodedImage();
         }
         public void UpdateZoomWindow()
         {
@@ -184,31 +196,19 @@ namespace Kinovea.ScreenManager
             Point newLocation = ConfineZoomWindow(left, top, newSize, referenceSize);
 
             directZoomWindow = new Rectangle(newLocation, newSize);
-            UpdateRenderingZoomWindow();
+            UpdateZoomWindowInDecodedImage();
         }
         public void MoveZoomWindow(double dx, double dy)
         {
             // Move the zoom window keeping the same zoom factor.
             Point newLocation = ConfineZoomWindow((int)(directZoomWindow.Left - dx), (int)(directZoomWindow.Top - dy), directZoomWindow.Size, referenceSize);
             directZoomWindow = new Rectangle(newLocation.X, newLocation.Y, directZoomWindow.Width, directZoomWindow.Height);
-            UpdateRenderingZoomWindow();
+            UpdateZoomWindowInDecodedImage();
         }
 
-        /// <summary>
-        /// Set the factor used to compute the zoom window in the received images.
-        /// This relates the decoding size to the (unrotated) reference size.
-        /// </summary>
-        public void SetRenderingZoomFactor(double zoomFactor)
+        private void UpdateZoomWindowInDecodedImage()
         {
-            renderingZoomFactor = zoomFactor;
-            UpdateRenderingZoomWindow();
-        }
-        private void UpdateRenderingZoomWindow()
-        {
-            renderingZoomWindow = directZoomWindow.Scale(renderingZoomFactor, renderingZoomFactor);
-
-            //log.DebugFormat("UpdateRenderingZoomWindow: stretch:{0:0.00}, zoom:{1:0.00}, renderingZoomFactor:{2:0.00}, directZoomWindow:{3}, renderingZoomWindow:{4}", 
-            //    stretch, zoom, renderingZoomFactor, directZoomWindow, renderingZoomWindow);
+            zoomWindowInDecodedImage = directZoomWindow.Scale(decodingScale, decodingScale);
         }
         private Point ConfineZoomWindow(int left, int top, Size zoomWindow, Size containerSize)
         {

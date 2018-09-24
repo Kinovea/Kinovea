@@ -2157,11 +2157,14 @@ namespace Kinovea.ScreenManager
 
             if(_finished)
             {
-                // Update the decoding size. (May clear and restart the prebuffering).
+                // Update the decoding size. 
+                // This may clear and restart the prebuffering. 
+                // It may not be honored by the video reader.
                 if(m_FrameServer.VideoReader.CanChangeDecodingSize)
                 {
-                    m_FrameServer.VideoReader.ChangeDecodingSize(m_viewportManipulator.DecodingSize);
-                    m_FrameServer.ImageTransform.SetRenderingZoomFactor(m_viewportManipulator.RenderingZoomFactor);
+                    bool changed = m_FrameServer.VideoReader.ChangeDecodingSize(m_viewportManipulator.PreferredDecodingSize);
+                    if (changed)
+                        m_FrameServer.ImageTransform.DecodingScale = m_viewportManipulator.PreferredDecodingScale;
                 }
                 m_FrameServer.Metadata.ResizeFinished();
                 RefreshImage();
@@ -3323,11 +3326,13 @@ namespace Kinovea.ScreenManager
             //g.SmoothingMode = SmoothingMode.None;
             
             m_TimeWatcher.LogTime("Before DrawImage");
-            
-            if(m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
+
+            if (m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
             {
                 // Source image should be at the right size, unless it has been temporarily disabled.
-                if (_transform.RenderingZoomWindow.Size.CloseTo(_renderingSize) && !m_FrameServer.Metadata.Mirrored)
+                // This is an optimization where the video reader is asked to decode images that might be smaller than the original size, 
+                // in order to match the rendering size.
+                if (_transform.ZoomWindowInDecodedImage.Size.CloseTo(_renderingSize) && !m_FrameServer.Metadata.Mirrored)
                 {
                     if (!_transform.Zooming)
                     {
@@ -3336,8 +3341,8 @@ namespace Kinovea.ScreenManager
                     }
                     else
                     {
-                        int left = -_transform.RenderingZoomWindow.Left;
-                        int top = -_transform.RenderingZoomWindow.Top;
+                        int left = -_transform.ZoomWindowInDecodedImage.Left;
+                        int top = -_transform.ZoomWindowInDecodedImage.Top;
                         g.DrawImageUnscaled(_sourceImage, left, top);
                         //log.DebugFormat("draw unscaled with zoom.");
                     }
@@ -3346,20 +3351,20 @@ namespace Kinovea.ScreenManager
                 {
                     // Image was decoded at customized size, but can't be rendered unscaled.
                     Rectangle rDst;
-                    if(m_FrameServer.Metadata.Mirrored)
+                    if (m_FrameServer.Metadata.Mirrored)
                         rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
                     else
                         rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
-                    
+
                     // TODO: integrate the mirror flag into the ImageTransform.
 
-                    g.DrawImage(_sourceImage, rDst, _transform.RenderingZoomWindow, GraphicsUnit.Pixel);
+                    g.DrawImage(_sourceImage, rDst, _transform.ZoomWindowInDecodedImage, GraphicsUnit.Pixel);
                     //log.DebugFormat("draw scaled at custom decoding size.");
                 }
             }
             else
             {
-                if (!_transform.Zooming && !m_FrameServer.Metadata.Mirrored && _transform.Stretch == 1.0f)
+                if (!_transform.Zooming && !m_FrameServer.Metadata.Mirrored && _transform.Stretch == 1.0f && _transform.DecodingScale == 1.0)
                 {
                     // This allow to draw unscaled while tracking or caching for example, provided we are rendering at original size.
                     g.DrawImageUnscaled(_sourceImage, 0, 0);
@@ -3373,7 +3378,7 @@ namespace Kinovea.ScreenManager
                     else
                         rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
                     
-                    g.DrawImage(_sourceImage, rDst, _transform.RenderingZoomWindow, GraphicsUnit.Pixel);
+                    g.DrawImage(_sourceImage, rDst, _transform.ZoomWindowInDecodedImage, GraphicsUnit.Pixel);
                     //log.DebugFormat("drawing scaled.");
                 }
             }
@@ -4615,7 +4620,7 @@ namespace Kinovea.ScreenManager
                 rDst = new Rectangle(0, 0, copySize.Width, copySize.Height);
             
             if(m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
-                g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.ImageTransform.RenderingZoomWindow, GraphicsUnit.Pixel);
+                g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.ImageTransform.ZoomWindowInDecodedImage, GraphicsUnit.Pixel);
             else
                 g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.ImageTransform.ZoomWindow, GraphicsUnit.Pixel);
                 
