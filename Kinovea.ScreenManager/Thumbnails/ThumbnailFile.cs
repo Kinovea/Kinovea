@@ -147,7 +147,7 @@ namespace Kinovea.ScreenManager
                 mnuLaunch, 
                 mnuSep, 
                 mnuOpenInExplorer,
-                mnuRename, 
+                //mnuRename, 
                 new ToolStripSeparator(),
                 mnuDelete
             });
