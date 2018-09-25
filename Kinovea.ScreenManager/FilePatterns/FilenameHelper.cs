@@ -72,13 +72,27 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Retrieves a string suitable for FFMpeg av_guess_format function in the context of capture.
         /// </summary>
-        public static string GetFormatStringCapture()
+        public static string GetFormatStringCapture(bool uncompressed)
         {
-            switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.VideoFormat)
+            if (uncompressed)
             {
-                case KinoveaVideoFormat.MKV: return "matroska";
-                case KinoveaVideoFormat.AVI: return "avi";
-                default: return "mp4";
+                switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.UncompressedVideoFormat)
+                {
+                    case KinoveaUncompressedVideoFormat.MKV: return "matroska";
+                    case KinoveaUncompressedVideoFormat.AVI: return "avi";
+                    case KinoveaUncompressedVideoFormat.Y4M:
+                    default: return "yuv4mpegpipe";
+                }
+            }
+            else
+            {
+                switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.VideoFormat)
+                {
+                    case KinoveaVideoFormat.MKV: return "matroska";
+                    case KinoveaVideoFormat.AVI: return "avi";
+                    case KinoveaVideoFormat.MP4:
+                    default: return "mp4";
+                }
             }
         }
     }

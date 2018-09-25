@@ -51,6 +51,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		double fFramesInterval;				
 		int iBitrate;				
 		Size outputSize;
+        bool uncompressed;
+        bool useWrappedAVPicture;
 
 		// Control
 		bool bEncoderOpened;
@@ -62,6 +64,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 			iBitrate = 25000000;			// Default bitrate : 25 Mb/s. (DV)
 			fPixelAspectRatio = 1.0;		// Default aspect : square pixels.
 			outputSize = Size(720, 576);
+            uncompressed = false;
+            useWrappedAVPicture = false;
 		}
 	};
 }}}
