@@ -25,6 +25,7 @@ namespace Kinovea.Services
 
         public KinoveaImageFormat ImageFormat { get; set; }
         public KinoveaVideoFormat VideoFormat { get; set; }
+        public KinoveaUncompressedVideoFormat UncompressedVideoFormat { get; set; }
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -50,6 +51,7 @@ namespace Kinovea.Services
 
             ImageFormat = KinoveaImageFormat.JPG;
             VideoFormat = KinoveaVideoFormat.MP4;
+            UncompressedVideoFormat = KinoveaUncompressedVideoFormat.Y4M;
         }
 
         public void ReadXml(XmlReader r)
@@ -102,6 +104,9 @@ namespace Kinovea.Services
                     case "VideoFormat":
                         VideoFormat = (KinoveaVideoFormat)Enum.Parse(typeof(KinoveaVideoFormat), r.ReadElementContentAsString());
                         break;
+                    case "UncompressedVideoFormat":
+                        UncompressedVideoFormat = (KinoveaUncompressedVideoFormat)Enum.Parse(typeof(KinoveaUncompressedVideoFormat), r.ReadElementContentAsString());
+                        break;
                     default:
                         string outerXml = r.ReadOuterXml();
                         log.DebugFormat("Unparsed content in XML: {0}", outerXml);
@@ -129,6 +134,7 @@ namespace Kinovea.Services
 
             w.WriteElementString("ImageFormat", ImageFormat.ToString());
             w.WriteElementString("VideoFormat", VideoFormat.ToString());
+            w.WriteElementString("UncompressedVideoFormat", UncompressedVideoFormat.ToString());
         }
 
         public CapturePathConfiguration Clone()
@@ -149,6 +155,7 @@ namespace Kinovea.Services
             cloned.RightVideoFile = this.RightVideoFile;
             cloned.ImageFormat = this.ImageFormat;
             cloned.VideoFormat = this.VideoFormat;
+            cloned.UncompressedVideoFormat = this.UncompressedVideoFormat;
 
             return cloned;
         }

@@ -50,10 +50,10 @@ namespace Kinovea.Root
 		{
             this.tabSubPages = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
-            this.cmbVideoFormat = new System.Windows.Forms.ComboBox();
-            this.lblVideoFormat = new System.Windows.Forms.Label();
             this.lblFramerate = new System.Windows.Forms.Label();
             this.tbFramerate = new System.Windows.Forms.TextBox();
+            this.cmbVideoFormat = new System.Windows.Forms.ComboBox();
+            this.lblVideoFormat = new System.Windows.Forms.Label();
             this.cmbImageFormat = new System.Windows.Forms.ComboBox();
             this.lblImageFormat = new System.Windows.Forms.Label();
             this.tabMemory = new System.Windows.Forms.TabPage();
@@ -105,6 +105,9 @@ namespace Kinovea.Root
             this.tbLeftVideoSubdir = new System.Windows.Forms.TextBox();
             this.lblLeftVideoRoot = new System.Windows.Forms.Label();
             this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
+            this.chkUncompressedVideo = new System.Windows.Forms.CheckBox();
+            this.cmbUncompressedVideoFormat = new System.Windows.Forms.ComboBox();
+            this.lblUncompressedVideoFormat = new System.Windows.Forms.Label();
             this.tabSubPages.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabMemory.SuspendLayout();
@@ -135,6 +138,8 @@ namespace Kinovea.Root
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.cmbUncompressedVideoFormat);
+            this.tabGeneral.Controls.Add(this.lblUncompressedVideoFormat);
             this.tabGeneral.Controls.Add(this.lblFramerate);
             this.tabGeneral.Controls.Add(this.tbFramerate);
             this.tabGeneral.Controls.Add(this.cmbVideoFormat);
@@ -149,11 +154,28 @@ namespace Kinovea.Root
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
             // 
+            // lblFramerate
+            // 
+            this.lblFramerate.AutoSize = true;
+            this.lblFramerate.Location = new System.Drawing.Point(15, 130);
+            this.lblFramerate.Name = "lblFramerate";
+            this.lblFramerate.Size = new System.Drawing.Size(117, 13);
+            this.lblFramerate.TabIndex = 41;
+            this.lblFramerate.Text = "Display framerate (fps) :";
+            // 
+            // tbFramerate
+            // 
+            this.tbFramerate.Location = new System.Drawing.Point(205, 127);
+            this.tbFramerate.Name = "tbFramerate";
+            this.tbFramerate.Size = new System.Drawing.Size(61, 20);
+            this.tbFramerate.TabIndex = 40;
+            this.tbFramerate.TextChanged += new System.EventHandler(this.tbFramerate_TextChanged);
+            // 
             // cmbVideoFormat
             // 
             this.cmbVideoFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbVideoFormat.FormattingEnabled = true;
-            this.cmbVideoFormat.Location = new System.Drawing.Point(170, 48);
+            this.cmbVideoFormat.Location = new System.Drawing.Point(205, 48);
             this.cmbVideoFormat.Name = "cmbVideoFormat";
             this.cmbVideoFormat.Size = new System.Drawing.Size(52, 21);
             this.cmbVideoFormat.TabIndex = 41;
@@ -167,28 +189,11 @@ namespace Kinovea.Root
             this.lblVideoFormat.TabIndex = 40;
             this.lblVideoFormat.Text = "Video format :";
             // 
-            // lblFramerate
-            // 
-            this.lblFramerate.AutoSize = true;
-            this.lblFramerate.Location = new System.Drawing.Point(15, 99);
-            this.lblFramerate.Name = "lblFramerate";
-            this.lblFramerate.Size = new System.Drawing.Size(117, 13);
-            this.lblFramerate.TabIndex = 41;
-            this.lblFramerate.Text = "Display framerate (fps) :";
-            // 
-            // tbFramerate
-            // 
-            this.tbFramerate.Location = new System.Drawing.Point(170, 96);
-            this.tbFramerate.Name = "tbFramerate";
-            this.tbFramerate.Size = new System.Drawing.Size(61, 20);
-            this.tbFramerate.TabIndex = 40;
-            this.tbFramerate.TextChanged += new System.EventHandler(this.tbFramerate_TextChanged);
-            // 
             // cmbImageFormat
             // 
             this.cmbImageFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbImageFormat.FormattingEnabled = true;
-            this.cmbImageFormat.Location = new System.Drawing.Point(170, 21);
+            this.cmbImageFormat.Location = new System.Drawing.Point(205, 21);
             this.cmbImageFormat.Name = "cmbImageFormat";
             this.cmbImageFormat.Size = new System.Drawing.Size(52, 21);
             this.cmbImageFormat.TabIndex = 5;
@@ -248,11 +253,12 @@ namespace Kinovea.Root
             // 
             // grpRecordingMode
             // 
+            this.grpRecordingMode.Controls.Add(this.chkUncompressedVideo);
             this.grpRecordingMode.Controls.Add(this.rbRecordingDisplay);
             this.grpRecordingMode.Controls.Add(this.rbRecordingCamera);
             this.grpRecordingMode.Location = new System.Drawing.Point(15, 19);
             this.grpRecordingMode.Name = "grpRecordingMode";
-            this.grpRecordingMode.Size = new System.Drawing.Size(386, 81);
+            this.grpRecordingMode.Size = new System.Drawing.Size(386, 124);
             this.grpRecordingMode.TabIndex = 40;
             this.grpRecordingMode.TabStop = false;
             this.grpRecordingMode.Text = "Recording mode";
@@ -260,7 +266,7 @@ namespace Kinovea.Root
             // rbRecordingDisplay
             // 
             this.rbRecordingDisplay.AutoSize = true;
-            this.rbRecordingDisplay.Location = new System.Drawing.Point(16, 47);
+            this.rbRecordingDisplay.Location = new System.Drawing.Point(16, 28);
             this.rbRecordingDisplay.Name = "rbRecordingDisplay";
             this.rbRecordingDisplay.Size = new System.Drawing.Size(229, 17);
             this.rbRecordingDisplay.TabIndex = 39;
@@ -272,7 +278,7 @@ namespace Kinovea.Root
             // rbRecordingCamera
             // 
             this.rbRecordingCamera.AutoSize = true;
-            this.rbRecordingCamera.Location = new System.Drawing.Point(16, 24);
+            this.rbRecordingCamera.Location = new System.Drawing.Point(16, 60);
             this.rbRecordingCamera.Name = "rbRecordingCamera";
             this.rbRecordingCamera.Size = new System.Drawing.Size(229, 17);
             this.rbRecordingCamera.TabIndex = 38;
@@ -761,6 +767,35 @@ namespace Kinovea.Root
             this.tbLeftVideoRoot.Size = new System.Drawing.Size(230, 20);
             this.tbLeftVideoRoot.TabIndex = 40;
             // 
+            // chkUncompressedVideo
+            // 
+            this.chkUncompressedVideo.AutoSize = true;
+            this.chkUncompressedVideo.Location = new System.Drawing.Point(46, 88);
+            this.chkUncompressedVideo.Name = "chkUncompressedVideo";
+            this.chkUncompressedVideo.Size = new System.Drawing.Size(152, 17);
+            this.chkUncompressedVideo.TabIndex = 40;
+            this.chkUncompressedVideo.Text = "Save uncompressed video";
+            this.chkUncompressedVideo.UseVisualStyleBackColor = true;
+            this.chkUncompressedVideo.CheckedChanged += new System.EventHandler(this.chkUncompressedVideo_CheckedChanged);
+            // 
+            // cmbUncompressedVideoFormat
+            // 
+            this.cmbUncompressedVideoFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbUncompressedVideoFormat.FormattingEnabled = true;
+            this.cmbUncompressedVideoFormat.Location = new System.Drawing.Point(205, 76);
+            this.cmbUncompressedVideoFormat.Name = "cmbUncompressedVideoFormat";
+            this.cmbUncompressedVideoFormat.Size = new System.Drawing.Size(52, 21);
+            this.cmbUncompressedVideoFormat.TabIndex = 43;
+            this.cmbUncompressedVideoFormat.SelectedIndexChanged += new System.EventHandler(this.cmbUncompressedVideoFormat_SelectedIndexChanged);
+            // 
+            // lblUncompressedVideoFormat
+            // 
+            this.lblUncompressedVideoFormat.Location = new System.Drawing.Point(15, 79);
+            this.lblUncompressedVideoFormat.Name = "lblUncompressedVideoFormat";
+            this.lblUncompressedVideoFormat.Size = new System.Drawing.Size(149, 18);
+            this.lblUncompressedVideoFormat.TabIndex = 42;
+            this.lblUncompressedVideoFormat.Text = "Uncompressed video format :";
+            // 
             // PreferencePanelCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -847,5 +882,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.GroupBox grpRecordingMode;
         private System.Windows.Forms.RadioButton rbRecordingDisplay;
         private System.Windows.Forms.RadioButton rbRecordingCamera;
-	}
+        private System.Windows.Forms.CheckBox chkUncompressedVideo;
+        private System.Windows.Forms.ComboBox cmbUncompressedVideoFormat;
+        private System.Windows.Forms.Label lblUncompressedVideoFormat;
+    }
 }
