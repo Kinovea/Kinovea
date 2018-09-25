@@ -48,6 +48,9 @@ namespace Kinovea.Video.Bitmap
                 bitmap = new SystemBitmap(init);
                 if(bitmap != null)
                     res = OpenVideoResult.Success;
+
+                // Force input to be 96 dpi like GDI+ so we don't have any surprises when calling Graphics.DrawImageUnscaled().
+                bitmap.SetResolution(96, 96);
             }
             catch(Exception e)
             {
