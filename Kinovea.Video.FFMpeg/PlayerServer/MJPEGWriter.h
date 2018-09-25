@@ -60,7 +60,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
     // Public Methods
     public:
-        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval, double _fFileFramesInterval);
+        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval);
         SaveResult CloseSavingContext(bool _bEncodingSuccess);
         SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
 
@@ -75,7 +75,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
         bool EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
 
-        bool WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
+        bool WriteBuffer(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
+        bool WriteAVPicture(int _iEncodedSize, SavingContext^ _SavingContext, AVPicture* _pOutputAVFrame);
         void SanityCheck(AVFormatContext* s);
         void LogError(String^ context, int ffmpegError);
         static int GreatestCommonDenominator(int a, int b);
