@@ -78,10 +78,9 @@ namespace Kinovea.ScreenManager
             {
                 switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.UncompressedVideoFormat)
                 {
-                    case KinoveaUncompressedVideoFormat.MKV: return "matroska";
                     case KinoveaUncompressedVideoFormat.AVI: return "avi";
-                    case KinoveaUncompressedVideoFormat.Y4M:
-                    default: return "yuv4mpegpipe";
+                    case KinoveaUncompressedVideoFormat.MKV: 
+                    default: return "matroska";
                 }
             }
             else

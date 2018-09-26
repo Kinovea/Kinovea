@@ -7,7 +7,6 @@ namespace Kinovea.Services
 {
     public enum KinoveaUncompressedVideoFormat
     {
-        Y4M,
         MKV,
         AVI
     }

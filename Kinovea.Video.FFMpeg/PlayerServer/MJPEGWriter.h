@@ -76,7 +76,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
 
         bool WriteBuffer(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
-        bool WriteAVPicture(int _iEncodedSize, SavingContext^ _SavingContext, AVPicture* _pOutputAVFrame);
         void SanityCheck(AVFormatContext* s);
         void LogError(String^ context, int ffmpegError);
         void LogStats();

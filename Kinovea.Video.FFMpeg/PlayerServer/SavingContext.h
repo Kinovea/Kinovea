@@ -53,7 +53,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		int iBitrate;				
 		Size outputSize;
         bool uncompressed;
-        bool useWrappedAVPicture;
 
 		// Control
 		bool bEncoderOpened;
@@ -66,7 +65,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 			fPixelAspectRatio = 1.0;		// Default aspect : square pixels.
 			outputSize = Size(720, 576);
             uncompressed = false;
-            useWrappedAVPicture = false;
 		}
 	};
 }}}

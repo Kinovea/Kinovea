@@ -94,8 +94,6 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
             break;
         }
 
-        m_SavingContext->useWrappedAVPicture = _formatString == "yuv4mpegpipe";
-
         Marshal::FreeHGlobal(safe_cast<IntPtr>(pFormatString));
         m_SavingContext->pOutputFormat = format;
 
@@ -608,17 +606,9 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, a
             break;
 
         if (_SavingContext->uncompressed)
-        {
-            // The Y4M muxer doesn't take the buffer directly, but wants an AVPicture*.
-            if (_SavingContext->useWrappedAVPicture)
-                WriteAVPicture(encodedSize, _SavingContext, (AVPicture*)pYUV420Frame);
-            else
-                WriteBuffer(encodedSize, _SavingContext, pYUV420Buffer, true);
-        }
+            WriteBuffer(encodedSize, _SavingContext, pYUV420Buffer, true);
         else
-        {
             WriteBuffer(encodedSize, _SavingContext, pJpegBuffer, true);
-        }
         
         written = true;
     }
@@ -714,17 +704,9 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
             break;
 
         if (_SavingContext->uncompressed)
-        {
-            // The Y4M muxer doesn't take the buffer directly, but wants an AVPicture*.
-            if (_SavingContext->useWrappedAVPicture)
-                WriteAVPicture(encodedSize, _SavingContext, (AVPicture*)pYUV420Frame);
-            else
-                WriteBuffer(encodedSize, _SavingContext, pYUV420Buffer, true);
-        }
+            WriteBuffer(encodedSize, _SavingContext, pYUV420Buffer, true);
         else
-        {
             WriteBuffer(encodedSize, _SavingContext, pJpegBuffer, true);
-        }
 
         written = true;
     }
@@ -897,25 +879,6 @@ bool MJPEGWriter::WriteBuffer(int _iEncodedSize, SavingContext^ _SavingContext, 
     fs->Write(managedBuffer, 0, _iEncodedSize);
     fs->Close();*/
     
-    return true;
-}
-
-bool MJPEGWriter::WriteAVPicture(int _iEncodedSize, SavingContext^ _SavingContext, AVPicture* _pOutputAVFrame)
-{
-    // This is currently only used in the case of uncompressed frames muxed to Y4M.
-    // For some reason this muxer takes AVFrames instead of the raw buffer.
-    AVPacket OutputPacket;
-    av_init_packet(&OutputPacket);
-
-    OutputPacket.stream_index = _SavingContext->pOutputVideoStream->index;
-    OutputPacket.flags |= AV_PKT_FLAG_KEY;
-    OutputPacket.data = (uint8_t*)_pOutputAVFrame;
-    OutputPacket.size = _iEncodedSize;
-    OutputPacket.pts = 0;
-
-    // Commit the packet to the file.
-    av_write_frame(_SavingContext->pOutputFormatContext, &OutputPacket);
-
     return true;
 }
 
