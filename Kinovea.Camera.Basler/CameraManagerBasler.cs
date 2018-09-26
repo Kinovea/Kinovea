@@ -125,7 +125,6 @@ namespace Kinovea.Camera.Basler
                     found.Add(cache[identifier]);
                     continue;
                 }
-                
 
                 string alias = device.Name;
                 Bitmap icon = null;
@@ -146,7 +145,9 @@ namespace Kinovea.Camera.Basler
                         displayRectangle = blurb.DisplayRectangle;
                         if(!string.IsNullOrEmpty(blurb.AspectRatio))
                             aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
-                        
+
+                        // Restore saved parameters.
+                        specific = SpecificInfoDeserialize(blurb.Specific);
                         break;
                     }
                 }
@@ -340,6 +341,7 @@ namespace Kinovea.Camera.Basler
                 }
 
                 info.StreamFormat = streamFormat;
+                info.Debayering = debayering;
                 info.CameraProperties = cameraProperties;
             }
             catch(Exception e)
