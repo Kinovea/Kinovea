@@ -55,7 +55,7 @@ namespace Kinovea.ScreenManager
             if (interval < 10)
                 fileInterval = 1000.0/30;
 
-            SaveResult result = writer.OpenSavingContext(filename, info, formatString, uncompressed, interval, fileInterval);
+            SaveResult result = writer.OpenSavingContext(filename, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval);
 
             return result;
         }
