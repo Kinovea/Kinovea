@@ -124,7 +124,6 @@ namespace Kinovea.Root
             cmbVideoFormat.SelectedIndex = ((int)videoFormat < cmbVideoFormat.Items.Count) ? (int)videoFormat : 0;
 
             lblUncompressedVideoFormat.Text = "Uncompressed video format:"; //RootLang.dlgPreferences_Capture_lblVideoFormat;
-            cmbUncompressedVideoFormat.Items.Add("Y4M");
             cmbUncompressedVideoFormat.Items.Add("MKV");
             cmbUncompressedVideoFormat.Items.Add("AVI");
             int uncompressedVideoFormat = (int)capturePathConfiguration.UncompressedVideoFormat;

@@ -90,9 +90,9 @@ namespace Kinovea.ScreenManager
             {
                 switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.UncompressedVideoFormat)
                 {
-                    case KinoveaUncompressedVideoFormat.MKV: return ".mkv";
                     case KinoveaUncompressedVideoFormat.AVI: return ".avi";
-                    default: return ".y4m";
+                    case KinoveaUncompressedVideoFormat.MKV: 
+                    default: return ".mkv";
                 }
             }
             else
@@ -101,6 +101,7 @@ namespace Kinovea.ScreenManager
                 {
                     case KinoveaVideoFormat.MKV: return ".mkv";
                     case KinoveaVideoFormat.AVI: return ".avi";
+                    case KinoveaVideoFormat.MP4:
                     default: return ".mp4";
                 }
             }

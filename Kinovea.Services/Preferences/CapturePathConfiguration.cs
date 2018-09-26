@@ -51,7 +51,7 @@ namespace Kinovea.Services
 
             ImageFormat = KinoveaImageFormat.JPG;
             VideoFormat = KinoveaVideoFormat.MP4;
-            UncompressedVideoFormat = KinoveaUncompressedVideoFormat.Y4M;
+            UncompressedVideoFormat = KinoveaUncompressedVideoFormat.MKV;
         }
 
         public void ReadXml(XmlReader r)
