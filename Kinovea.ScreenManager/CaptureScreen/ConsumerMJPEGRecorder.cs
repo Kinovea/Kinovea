@@ -5,6 +5,7 @@ using System;
 using Kinovea.Video;
 using Kinovea.Video.FFMpeg;
 using System.Drawing;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -44,7 +45,8 @@ namespace Kinovea.ScreenManager
             VideoInfo info = new VideoInfo();
             info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
 
-            string formatString = FilenameHelper.GetFormatStringCapture();
+            bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != ImageFormat.JPEG;
+            string formatString = FilenameHelper.GetFormatStringCapture(uncompressed);
 
             // If the capture happens at more than 100fps, set the video itself to be at 30fps.
             // This avoids erratic playback because the player can't cope with the framerate, drawback: prevents review in real time.
@@ -53,7 +55,7 @@ namespace Kinovea.ScreenManager
             if (interval < 10)
                 fileInterval = 1000.0/30;
 
-            SaveResult result = writer.OpenSavingContext(filename, info, formatString, interval, fileInterval);
+            SaveResult result = writer.OpenSavingContext(filename, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval);
 
             return result;
         }
