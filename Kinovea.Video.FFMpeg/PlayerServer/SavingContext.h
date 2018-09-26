@@ -40,6 +40,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		AVStream* pOutputVideoStream;			// Ouput stream for frames.
 		AVStream* pOutputDataStream;			// Output stream for meta data.
 		AVFrame* pInputFrame;					// The current incoming frame.
+        SwsContext* pScalingContext;            // The scaling context for the RGB -> YUV color conversion.
 		
 		double fPixelAspectRatio;				// Used to adapt pixel aspect ratio.
 		bool bInputWasMpeg2;					
