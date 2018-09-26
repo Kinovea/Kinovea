@@ -772,6 +772,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
 
         // Unfortunately the MJPEG encoder doesn't know how to work directly with Y800/GRAY8 images.
         // Instead of directly pushing the buffer to the AVFrame we need to use an intermediate YUV420p frame.
+        // Even in the uncompressed context, the muxers don't really accept Y800 frames, either they crash or the output is unreadable.
 
         // Prepare the color space converted frame.
         if ((pYUV420Frame = av_frame_alloc()) == nullptr) 
@@ -881,8 +882,8 @@ bool MJPEGWriter::WriteBuffer(int _iEncodedSize, SavingContext^ _SavingContext, 
 
     OutputPacket.stream_index = _SavingContext->pOutputVideoStream->index;
     OutputPacket.flags |= AV_PKT_FLAG_KEY;
-    OutputPacket.data= _pOutputVideoBuffer;
-    OutputPacket.size= _iEncodedSize;
+    OutputPacket.data = _pOutputVideoBuffer;
+    OutputPacket.size = _iEncodedSize;
     OutputPacket.pts = 0;
 
     // Commit the packet to the file.
@@ -932,7 +933,7 @@ void MJPEGWriter::LogStats()
         return;
     
     log->DebugFormat("Frame #{0}. Encoding: ~{1:0.000} ms. Budget:{2:0.000} ms.",
-        m_frame, (float)m_encodingDurationAccumulator / 100.0f, m_budget);
+        m_frame, (float)m_encodingDurationAccumulator / 100, m_budget);
 
     m_encodingDurationAccumulator = 0;
 }
