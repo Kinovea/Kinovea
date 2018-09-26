@@ -138,7 +138,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         m_SavingContext->pOutputVideoStream->id = m_SavingContext->pOutputFormatContext->nb_streams - 1;
 
         // 6. Configure encoder.
-        if(!SetupEncoder(m_SavingContext))
+        if(!SetupEncoder(m_SavingContext, _imageFormat))
         {
             result = SaveResult::EncoderParametersNotSet;
             log->Error("Encoder parameters not set");
@@ -371,7 +371,7 @@ bool MJPEGWriter::SetupMuxer(SavingContext^ _SavingContext)
 /// MJPEGWriter::SetupEncoder
 /// Configure the codec with default parameters.
 ///</summary>
-bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext)
+bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext, ImageFormat _imageFormat)
 {
     //----------------------------------------
     // Parameters for encoding.
@@ -436,8 +436,11 @@ bool MJPEGWriter::SetupEncoder(SavingContext^ _SavingContext)
     //_SavingContext->pOutputCodecContext->max_b_frames			= 0;								
 
     // Pixel format
-    // src:ffmpeg.
-    _SavingContext->pOutputCodecContext->pix_fmt = AV_PIX_FMT_YUV420P; 	
+    if (_SavingContext->uncompressed && _imageFormat == ImageFormat::Y800)
+        _SavingContext->pOutputCodecContext->pix_fmt = AV_PIX_FMT_GRAY8;
+    else
+        _SavingContext->pOutputCodecContext->pix_fmt = AV_PIX_FMT_YUV420P; 	
+    
 
     
     // Frame rate emulation. If not zero, the lower layer (i.e. format handler) has to read frames at native frame rate.
@@ -757,10 +760,23 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
         m_frame++;
         Int64 then = m_swEncoding->ElapsedMilliseconds;
 
+        pin_ptr<uint8_t> pInputBuffer = &managedBuffer[0];
+
+        if (_SavingContext->uncompressed)
+        {
+            // Special shortcut for uncompressed Y800. 
+            // FIXME: if top-down, memcpy line by line.
+            pYUV420Buffer = (uint8_t*)av_malloc(length);
+            memcpy(pYUV420Buffer, pInputBuffer, length);
+            m_encodingDurationAccumulator += (m_swEncoding->ElapsedMilliseconds - then);
+
+            WriteBuffer(length, _SavingContext, pYUV420Buffer, true);
+            written = true;
+            break;
+        }
+
         int width = _SavingContext->outputSize.Width;
         int height = _SavingContext->outputSize.Height;
-        
-        pin_ptr<uint8_t> pInputBuffer = &managedBuffer[0];
         avpicture_fill((AVPicture*)_SavingContext->pInputFrame, pInputBuffer, AV_PIX_FMT_GRAY8, width, height);
         
         // Alter planes and stride to vertically flip image during conversion.
@@ -769,11 +785,10 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
           _SavingContext->pInputFrame->data[0] += _SavingContext->pInputFrame->linesize[0] * (height - 1);
           _SavingContext->pInputFrame->linesize[0] = -_SavingContext->pInputFrame->linesize[0];
         }
-
+        
         // Unfortunately the MJPEG encoder doesn't know how to work directly with Y800/GRAY8 images.
         // Instead of directly pushing the buffer to the AVFrame we need to use an intermediate YUV420p frame.
-        // Even in the uncompressed context, the muxers don't really accept Y800 frames, either they crash or the output is unreadable.
-
+        
         // Prepare the color space converted frame.
         if ((pYUV420Frame = av_frame_alloc()) == nullptr) 
         {
@@ -788,51 +803,36 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
             log->Error("YUV frame buffer not allocated");
             break;
         }
-        
-        avpicture_fill((AVPicture*)pYUV420Frame, pYUV420Buffer, AV_PIX_FMT_YUV420P, width, height);
 
+        avpicture_fill((AVPicture*)pYUV420Frame, pYUV420Buffer, AV_PIX_FMT_YUV420P, width, height);
+        
         // Perform the color space conversion.
         if (sws_scale(_SavingContext->pScalingContext, _SavingContext->pInputFrame->data, _SavingContext->pInputFrame->linesize, 0, height, pYUV420Frame->data, pYUV420Frame->linesize) < 0)
         {
             log->Error("Color conversion failed");
             break;
         }
-
+        
         int encodedSize = yuvBufferSize;
-        if (!_SavingContext->uncompressed)
+        // Allocated JPEG frame buffer. 
+        // Assumes uncompressed size is always smaller than compressed. (Not technically true).
+        int jpegBufferSize = yuvBufferSize;
+        pJpegBuffer = (uint8_t*)av_malloc(jpegBufferSize);
+        if (pJpegBuffer == nullptr) 
         {
-            // Allocated JPEG frame buffer. 
-            // Assumes uncompressed size is always smaller than compressed. (Not technically true).
-            int jpegBufferSize = yuvBufferSize;
-            pJpegBuffer = (uint8_t*)av_malloc(jpegBufferSize);
-            if (pJpegBuffer == nullptr) 
-            {
-                log->Error("output video buffer not allocated");
-                break;
-            }
-
-            // Actual encoding step.
-            encodedSize = avcodec_encode_video(_SavingContext->pOutputCodecContext, pJpegBuffer, jpegBufferSize, pYUV420Frame);
+            log->Error("output video buffer not allocated");
+            break;
         }
 
+        // Actual encoding step.
+        encodedSize = avcodec_encode_video(_SavingContext->pOutputCodecContext, pJpegBuffer, jpegBufferSize, pYUV420Frame);
+        
         m_encodingDurationAccumulator += (m_swEncoding->ElapsedMilliseconds - then);
 
         if (encodedSize <= 0)
             break;
 
-        if (_SavingContext->uncompressed)
-        {
-            // The Y4M muxer doesn't take the buffer directly, but wants an AVPicture*.
-            if (_SavingContext->useWrappedAVPicture)
-                WriteAVPicture(encodedSize, _SavingContext, (AVPicture*)pYUV420Frame);
-            else
-                WriteBuffer(encodedSize, _SavingContext, pYUV420Buffer, true);
-        }
-        else
-        {
-            WriteBuffer(encodedSize, _SavingContext, pJpegBuffer, true);
-        }
-        
+        WriteBuffer(encodedSize, _SavingContext, pJpegBuffer, true);
         written = true;
     }
     while(false);

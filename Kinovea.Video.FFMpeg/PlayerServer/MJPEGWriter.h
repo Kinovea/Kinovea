@@ -68,7 +68,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     private:
         double ComputeBitrate(Size outputSize, double frameInterval);
         bool SetupMuxer(SavingContext^ _SavingContext);
-        bool SetupEncoder(SavingContext^ _SavingContext);
+        bool SetupEncoder(SavingContext^ _SavingContext, ImageFormat _imageFormat);
         
         bool EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
         bool EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
