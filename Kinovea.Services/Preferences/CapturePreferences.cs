@@ -72,12 +72,18 @@ namespace Kinovea.Services
             get { return verboseStats; }
             set { verboseStats = value; }
         }
+        public bool SaveUncompressedVideo
+        {
+            get { return saveUncompressedVideo; }
+            set { saveUncompressedVideo = value; }
+        }
         #endregion
 
         #region Members
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private double displaySynchronizationFramerate = 25.0;
         private CaptureRecordingMode recordingMode = CaptureRecordingMode.Camera;
+        private bool saveUncompressedVideo;
         private bool verboseStats = false;
         private int memoryBuffer = 768;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
@@ -109,6 +115,7 @@ namespace Kinovea.Services
             writer.WriteElementString("DisplaySynchronizationFramerate", dsf);
             writer.WriteElementString("CaptureRecordingMode", recordingMode.ToString());
             writer.WriteElementString("VerboseStats", verboseStats ? "true" : "false");
+            writer.WriteElementString("SaveUncompressedVideo", saveUncompressedVideo ? "true" : "false");
 
             writer.WriteElementString("MemoryBuffer", memoryBuffer.ToString());
             
@@ -148,6 +155,9 @@ namespace Kinovea.Services
                         break;
                     case "CaptureRecordingMode":
                         recordingMode = (CaptureRecordingMode)Enum.Parse(typeof(CaptureRecordingMode), reader.ReadElementContentAsString());
+                        break;
+                    case "SaveUncompressedVideo":
+                        saveUncompressedVideo = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "VerboseStats":
                         verboseStats = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());

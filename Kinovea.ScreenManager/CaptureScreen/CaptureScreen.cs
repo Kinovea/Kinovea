@@ -1098,7 +1098,8 @@ namespace Kinovea.ScreenManager
             }
             
             string filenameWithoutExtension = view.CurrentVideoFilename;
-            string extension = Filenamer.GetVideoFileExtension();
+            bool uncompressed = recordingMode == CaptureRecordingMode.Camera && PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Video.ImageFormat.JPEG;
+            string extension = Filenamer.GetVideoFileExtension(uncompressed);
 
             Dictionary<FilePatternContexts, string> context = BuildCaptureContext();
 
@@ -1141,7 +1142,7 @@ namespace Kinovea.ScreenManager
                 // In RecordingMode.Display we use a simple VideoFileWriter that will push the displayed bitmap to a file.
                 VideoInfo info = new VideoInfo();
                 info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
-                string formatString = FilenameHelper.GetFormatStringCapture();
+                string formatString = FilenameHelper.GetFormatStringCapture(false);
 
                 // We have 3 possible framerates: the configured camera framerate, the measured camera framerate and the display framerate.
                 // Since we now force the usage of a separate timer for frame grabbing and pushing to the delay buffer, 
