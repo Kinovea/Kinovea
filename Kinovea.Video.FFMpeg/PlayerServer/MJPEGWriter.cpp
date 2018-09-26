@@ -55,7 +55,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
 
     SaveResult result = SaveResult::Success;
     m_frame = 0;
-    m_budget = _fFramesInterval;
+    log->DebugFormat("Frame budget: {0:0.000} ms.", _fFramesInterval);
     m_swEncoding->Start();
 
     if (m_SavingContext != nullptr) 
@@ -932,8 +932,8 @@ void MJPEGWriter::LogStats()
     if (m_frame % 100 != 0)
         return;
     
-    log->DebugFormat("Frame #{0}. Encoding: ~{1:0.000} ms. Budget:{2:0.000} ms.",
-        m_frame, (float)m_encodingDurationAccumulator / 100, m_budget);
+    log->DebugFormat("Frame #{0}. Conversion/Encoding: ~{1:0.000} ms.",
+        m_frame, (float)m_encodingDurationAccumulator / 100);
 
     m_encodingDurationAccumulator = 0;
 }
