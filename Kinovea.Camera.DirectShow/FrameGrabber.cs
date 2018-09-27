@@ -50,6 +50,8 @@ namespace Kinovea.Camera.DirectShow
         {
             get 
             {
+                // Note: this will most likely return the highest option on the combo.
+                // If the user selected a lower option the resulting video will be too fast.
                 if (device.VideoResolution != null)
                     return device.VideoResolution.AverageFrameRate;
                 else
