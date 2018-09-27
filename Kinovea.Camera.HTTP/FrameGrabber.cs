@@ -46,7 +46,7 @@ namespace Kinovea.Camera.HTTP
         }
         public float Framerate
         {
-            get { return 30; }
+            get { return 0; }
         }
         public double LiveDataRate
         {
