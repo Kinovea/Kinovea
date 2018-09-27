@@ -191,7 +191,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         // 12. Prepare the color conversion context.
         // Preallocating the context gains 0.5ms.
         // Using nearest neighbor instead of bilinear gains about 1.5ms on a 1600x1200 frame.
-        int srcFormat = AV_PIX_FMT_BGRA;
+        AVPixelFormat srcFormat = AV_PIX_FMT_BGRA;
         if (_imageFormat == ImageFormat::RGB24)
             srcFormat = AV_PIX_FMT_BGR24;
         else if (_imageFormat == ImageFormat::Y800)
@@ -200,7 +200,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
         int flags = SWS_POINT;
         
         SwsContext* scalingContext = sws_getContext(
-            m_SavingContext->outputSize.Width, m_SavingContext->outputSize.Height, AV_PIX_FMT_BGRA,
+            m_SavingContext->outputSize.Width, m_SavingContext->outputSize.Height, srcFormat,
             m_SavingContext->outputSize.Width, m_SavingContext->outputSize.Height, AV_PIX_FMT_YUV420P, flags,
             NULL, NULL, NULL);
 
