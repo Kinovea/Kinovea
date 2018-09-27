@@ -94,7 +94,7 @@ namespace Kinovea.Camera.IDS
             firstOpen = false;
 
             ImageFormat format = IDSHelper.GetImageFormat(camera);
-
+            
             // FIXME: Force a supported format if the current one is unsuitable.
             if (format == ImageFormat.None)
                 return ImageDescriptor.Invalid;
@@ -108,6 +108,8 @@ namespace Kinovea.Camera.IDS
             buffer = new byte[bufferSize];
             
             bool topDown = true;
+
+            resultingFramerate = IDSHelper.GetFramerate(camera);
 
             return new ImageDescriptor(format, rect.Width, rect.Height, topDown, bufferSize);
         }
