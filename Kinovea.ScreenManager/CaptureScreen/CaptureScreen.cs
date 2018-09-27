@@ -1132,8 +1132,14 @@ namespace Kinovea.ScreenManager
             {
                 double framerate = cameraGrabber.Framerate;
                 if (framerate == 0)
-                    framerate = 25;
-                double interval = 1000.0 / cameraGrabber.Framerate;
+                {
+                    framerate = pipelineManager.Frequency;
+
+                    if (framerate == 0)
+                        framerate = 25;
+                }
+
+                double interval = 1000.0 / framerate;
                 result = pipelineManager.StartRecord(path, interval);
             }
             else
