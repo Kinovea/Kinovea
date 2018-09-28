@@ -122,12 +122,13 @@ namespace Kinovea.Camera.Basler
             // Note: the image provider will perform the Bayer conversion itself and only output two formats.
             // - Y800 for anything monochrome.
             // - RGB32 for anything color.
-            imageProvider.SetDebayering(specific.Debayering);
-            bool monochrome = Pylon.IsMono(pixelType);
-            if (Pylon.IsBayer(pixelType) && specific.Debayering)
-                monochrome = false;
+            imageProvider.SetDebayering(specific.Bayer8Conversion);
 
-            ImageFormat format = monochrome ? format = ImageFormat.Y800 : ImageFormat.RGB32;
+            bool isBayer = Pylon.IsBayer(pixelType);
+            bool isBayer8 = PylonHelper.IsBayer8(pixelType);
+            bool bayerColor = (isBayer && !isBayer8) || (isBayer8 && specific.Bayer8Conversion == Bayer8Conversion.Color);
+            bool color = !Pylon.IsMono(pixelType) || bayerColor;
+            ImageFormat format = color ? ImageFormat.RGB32 : ImageFormat.Y800;
 
             int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
             bool topDown = true;
