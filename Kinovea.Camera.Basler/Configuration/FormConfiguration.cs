@@ -131,6 +131,7 @@ namespace Kinovea.Camera.Basler
 
         private void PopulateStreamFormat()
         {
+            lblColorSpace.Text = "Stream format:";
             bool readable = Pylon.DeviceFeatureIsReadable(deviceHandle, "PixelFormat");
             if (!readable)
             {
@@ -160,6 +161,7 @@ namespace Kinovea.Camera.Basler
 
         private void PopulateBayerConversion()
         {
+            lblBayerConversion.Text = "Bayer format conversion:";
             cmbBayer8Conversion.Items.Add("Raw");
             cmbBayer8Conversion.Items.Add("Mono");
             cmbBayer8Conversion.Items.Add("Color");

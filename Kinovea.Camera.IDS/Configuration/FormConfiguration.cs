@@ -144,6 +144,7 @@ namespace Kinovea.Camera.IDS
 
         private void PopulateStreamFormat()
         {
+            lblColorSpace.Text = "Stream format:";
             // Get the intersection of camera and Kinovea supported formats.
             List<IDSEnum> streamFormats = IDSHelper.GetSupportedStreamFormats(camera, deviceId);
 
