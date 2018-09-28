@@ -483,6 +483,8 @@ namespace Kinovea.ScreenManager
             // Configure the interface according to he video and try to read first frame.
             // Called from CommandLoadMovie when VideoFile.Load() is successful.
             //---------------------------------------------------------------------------
+            log.DebugFormat("Post load process.");
+
             ShowNextFrame(-1, true);
             UpdatePositionUI();
 
@@ -499,7 +501,9 @@ namespace Kinovea.ScreenManager
                 log.Error(String.Format("First frame loaded but negative timestamp ({0}) - aborting", m_iCurrentPosition));
                 return -2;
             }
-            
+
+            log.DebugFormat("First frame loaded.");
+
             //---------------------------------------------------------------------------------------
             // First frame loaded.
             //
@@ -510,7 +514,7 @@ namespace Kinovea.ScreenManager
             // We fix what we can with the help of data read from the first frame or 
             // from the analysis mode switch if successful.
             //---------------------------------------------------------------------------------------
-            
+
             DoInvalidate();
 
             m_iStartingPosition = m_iCurrentPosition;
@@ -525,7 +529,7 @@ namespace Kinovea.ScreenManager
             // Update the control.
             // FIXME - already done in ImportSelectionToMemory ?
             SetupPrimarySelectionPanel();
-            
+
             // Other various infos.
             m_FrameServer.SetupMetadata(true);
             m_FrameServer.Metadata.FullPath = m_FrameServer.VideoReader.FilePath;
@@ -572,7 +576,8 @@ namespace Kinovea.ScreenManager
                 m_FrameServer.Metadata.CleanupHash();
             
             m_FrameServer.Metadata.StartAutosave();
-            
+
+            log.DebugFormat("End of post load process, waiting for idle.");
             Application.Idle += PostLoad_Idle;
             
             return 0;
@@ -1126,10 +1131,10 @@ namespace Kinovea.ScreenManager
             Application.Idle -= PostLoad_Idle;
             m_Constructed = true;
 
-            if(!m_FrameServer.Loaded)
+            log.DebugFormat("Post load idle event.");
+
+            if (!m_FrameServer.Loaded)
                 return;
-            
-            log.DebugFormat("Post load event.");
             
             // This would be a good time to start the prebuffering if supported.
             // The UpdateWorkingZone call may try to go full cache if possible.
