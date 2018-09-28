@@ -83,6 +83,16 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap bggr {
+            get {
+                object obj = ResourceManager.GetObject("bggr", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap bin_empty {
             get {
                 object obj = ResourceManager.GetObject("bin_empty", resourceCulture);
@@ -623,6 +633,26 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap gbrg {
+            get {
+                object obj = ResourceManager.GetObject("gbrg", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap grbg {
+            get {
+                object obj = ResourceManager.GetObject("grbg", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap grid2 {
             get {
                 object obj = ResourceManager.GetObject("grid2", resourceCulture);
@@ -946,6 +976,16 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap revert {
             get {
                 object obj = ResourceManager.GetObject("revert", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rggb {
+            get {
+                object obj = ResourceManager.GetObject("rggb", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
