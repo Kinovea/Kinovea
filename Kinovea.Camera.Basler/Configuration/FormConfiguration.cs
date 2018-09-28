@@ -56,11 +56,11 @@ namespace Kinovea.Camera.Basler
             get { return selectedStreamFormat; }
         }
 
-        public bool Debayering
+        public Bayer8Conversion Bayer8Conversion
         {
-            get { return debayering; }
+            get { return bayer8Conversion; }
         }
-
+        
         public Dictionary<string, CameraProperty> CameraProperties
         {
             get { return cameraProperties; }
@@ -71,7 +71,7 @@ namespace Kinovea.Camera.Basler
         private bool iconChanged;
         private bool specificChanged;
         private GenApiEnum selectedStreamFormat;
-        private bool debayering;
+        private Bayer8Conversion bayer8Conversion;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -97,6 +97,8 @@ namespace Kinovea.Camera.Basler
             if (cameraProperties.Count != specific.CameraProperties.Count)
                 specificChanged = true;
 
+            bayer8Conversion = specific.Bayer8Conversion;
+
             Populate(specific);
         }
         
@@ -104,7 +106,8 @@ namespace Kinovea.Camera.Basler
         {
             try
             {
-                PopulateStreamFormat(specific);
+                PopulateStreamFormat();
+                PopulateBayerConversion();
                 PopulateCameraControls();
             }
             catch
@@ -126,7 +129,7 @@ namespace Kinovea.Camera.Basler
             fip.Dispose();
         }
 
-        private void PopulateStreamFormat(SpecificInfo specific)
+        private void PopulateStreamFormat()
         {
             bool readable = Pylon.DeviceFeatureIsReadable(deviceHandle, "PixelFormat");
             if (!readable)
@@ -153,10 +156,24 @@ namespace Kinovea.Camera.Basler
                     cmbFormat.SelectedIndex = cmbFormat.Items.Count - 1;
                 }
             }
+        }
 
-            debayering = specific.Debayering;
-            chkDebayering.Enabled = cmbFormat.Enabled;
-            chkDebayering.Checked = debayering;
+        private void PopulateBayerConversion()
+        {
+            cmbBayer8Conversion.Items.Add("Raw");
+            cmbBayer8Conversion.Items.Add("Mono");
+            cmbBayer8Conversion.Items.Add("Color");
+            cmbBayer8Conversion.SelectedIndex = (int)bayer8Conversion;
+            
+            SetBayerComboVisibility();
+        }
+
+        private void SetBayerComboVisibility()
+        {
+            EPylonPixelType pixelType = Pylon.PixelTypeFromString(selectedStreamFormat.Symbol);
+            bool isBayer8 = PylonHelper.IsBayer8(pixelType);
+            cmbBayer8Conversion.Enabled = isBayer8;
+            lblBayerConversion.Enabled = isBayer8;
         }
 
         private void PopulateCameraControls()
@@ -227,11 +244,20 @@ namespace Kinovea.Camera.Basler
 
             selectedStreamFormat = selected;
             specificChanged = true;
+
+            SetBayerComboVisibility();
         }
 
-        private void chkDebayering_CheckedChanged(object sender, EventArgs e)
+        private void cmbBayerConversion_SelectedIndexChanged(object sender, EventArgs e)
         {
-            debayering = chkDebayering.Checked;
+            EPylonPixelType pixelType = Pylon.PixelTypeFromString(selectedStreamFormat.Symbol);
+            bool isBayer8 = PylonHelper.IsBayer8(pixelType);
+
+            Bayer8Conversion selected = (Bayer8Conversion)cmbBayer8Conversion.SelectedIndex;
+            if (selected == bayer8Conversion)
+                return;
+
+            bayer8Conversion = (Bayer8Conversion)cmbBayer8Conversion.SelectedIndex;
             specificChanged = true;
         }
     }

@@ -49,7 +49,8 @@ namespace Kinovea.Camera.Basler
         private void InitializeComponent()
         {
             this.gbProperties = new System.Windows.Forms.GroupBox();
-            this.chkDebayering = new System.Windows.Forms.CheckBox();
+            this.cmbBayer8Conversion = new System.Windows.Forms.ComboBox();
+            this.lblBayerConversion = new System.Windows.Forms.Label();
             this.lblAuto = new System.Windows.Forms.Label();
             this.cmbFormat = new System.Windows.Forms.ComboBox();
             this.lblColorSpace = new System.Windows.Forms.Label();
@@ -67,7 +68,8 @@ namespace Kinovea.Camera.Basler
             this.gbProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbProperties.Controls.Add(this.chkDebayering);
+            this.gbProperties.Controls.Add(this.cmbBayer8Conversion);
+            this.gbProperties.Controls.Add(this.lblBayerConversion);
             this.gbProperties.Controls.Add(this.lblAuto);
             this.gbProperties.Controls.Add(this.cmbFormat);
             this.gbProperties.Controls.Add(this.lblColorSpace);
@@ -77,16 +79,29 @@ namespace Kinovea.Camera.Basler
             this.gbProperties.TabIndex = 84;
             this.gbProperties.TabStop = false;
             // 
-            // chkDebayering
+            // cmbBayer8Conversion
             // 
-            this.chkDebayering.AutoSize = true;
-            this.chkDebayering.Location = new System.Drawing.Point(24, 70);
-            this.chkDebayering.Name = "chkDebayering";
-            this.chkDebayering.Size = new System.Drawing.Size(158, 17);
-            this.chkDebayering.TabIndex = 102;
-            this.chkDebayering.Text = "Convert raw formats to color";
-            this.chkDebayering.UseVisualStyleBackColor = true;
-            this.chkDebayering.CheckedChanged += new System.EventHandler(this.chkDebayering_CheckedChanged);
+            this.cmbBayer8Conversion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbBayer8Conversion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBayer8Conversion.FormattingEnabled = true;
+            this.cmbBayer8Conversion.Location = new System.Drawing.Point(214, 62);
+            this.cmbBayer8Conversion.Name = "cmbBayer8Conversion";
+            this.cmbBayer8Conversion.Size = new System.Drawing.Size(144, 21);
+            this.cmbBayer8Conversion.TabIndex = 103;
+            this.cmbBayer8Conversion.SelectedIndexChanged += new System.EventHandler(this.cmbBayerConversion_SelectedIndexChanged);
+            // 
+            // lblBayerConversion
+            // 
+            this.lblBayerConversion.BackColor = System.Drawing.Color.Transparent;
+            this.lblBayerConversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBayerConversion.ForeColor = System.Drawing.Color.Black;
+            this.lblBayerConversion.Location = new System.Drawing.Point(21, 62);
+            this.lblBayerConversion.Name = "lblBayerConversion";
+            this.lblBayerConversion.Size = new System.Drawing.Size(187, 23);
+            this.lblBayerConversion.TabIndex = 102;
+            this.lblBayerConversion.Text = "Bayer format conversion:";
+            this.lblBayerConversion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblAuto
             // 
@@ -202,7 +217,6 @@ namespace Kinovea.Camera.Basler
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Camera configuration";
             this.gbProperties.ResumeLayout(false);
-            this.gbProperties.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -217,6 +231,7 @@ namespace Kinovea.Camera.Basler
         private System.Windows.Forms.Label lblColorSpace;
         private System.Windows.Forms.Label lblAuto;
         private System.Windows.Forms.Button btnApply;
-        private System.Windows.Forms.CheckBox chkDebayering;
+        private System.Windows.Forms.ComboBox cmbBayer8Conversion;
+        private System.Windows.Forms.Label lblBayerConversion;
     }
 }

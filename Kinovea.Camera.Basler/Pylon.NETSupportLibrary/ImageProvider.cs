@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using PylonC.NET;
 using System.Threading;
+using Kinovea.Camera.Basler;
 
 namespace PylonC.NETSupportLibrary
 {
@@ -55,7 +56,7 @@ namespace PylonC.NETSupportLibrary
         protected List<GrabResult> m_grabbedBuffers; /* List of grab results already grabbed. */
         protected DeviceCallbackHandler m_callbackHandler; /* Handles callbacks from a device .*/
         protected string m_lastError = "";                 /* Holds the error information belonging to the last exception thrown. */
-        protected bool m_debayering = false;
+        protected Bayer8Conversion m_bayer8Conversion = Bayer8Conversion.Color;
 
         /* Creates the last error text from message and detailed text. */
         private string GetLastErrorText()
@@ -103,9 +104,9 @@ namespace PylonC.NETSupportLibrary
             get { return m_open; }
         }
 
-        public void SetDebayering(bool debayering)
+        public void SetDebayering(Bayer8Conversion bayer8Conversion)
         {
-            m_debayering = debayering;
+            m_bayer8Conversion = bayer8Conversion;
         }
 
         /* Open using index. Before ImageProvider can be opened using the index, Pylon.EnumerateDevices() needs to be called. */
@@ -592,8 +593,12 @@ namespace PylonC.NETSupportLibrary
             GrabResult newGrabResultInternal = new GrabResult();
             newGrabResultInternal.Handle = grabResult.hBuffer; /* Add the handle to requeue the buffer in the stream grabber queue. */
 
-            /* If already in output format add the image data. */
-            if (grabResult.PixelType == EPylonPixelType.PixelType_Mono8 || grabResult.PixelType == EPylonPixelType.PixelType_RGBA8packed)
+            bool isBayer8 = PylonHelper.IsBayer8(grabResult.PixelType);
+            if (isBayer8 && m_bayer8Conversion == Bayer8Conversion.Raw)
+            {
+                newGrabResultInternal.ImageData = new Image(grabResult.SizeX, grabResult.SizeY, buffer.Array, grabResult.PixelType == EPylonPixelType.PixelType_RGBA8packed);
+            }
+            else if (grabResult.PixelType == EPylonPixelType.PixelType_Mono8 || grabResult.PixelType == EPylonPixelType.PixelType_RGBA8packed)
             {
                 newGrabResultInternal.ImageData = new Image(grabResult.SizeX, grabResult.SizeY, buffer.Array, grabResult.PixelType == EPylonPixelType.PixelType_RGBA8packed);
             }
@@ -604,7 +609,12 @@ namespace PylonC.NETSupportLibrary
                 {
                     m_convertedBuffers = new Dictionary<PYLON_STREAMBUFFER_HANDLE,PylonBuffer<byte>>(); /* Create a new dictionary for the converted buffers. */
                     m_hConverter = Pylon.ImageFormatConverterCreate(); /* Create the converter. */
-                    m_converterOutputFormatIsColor = !Pylon.IsMono(grabResult.PixelType) || (Pylon.IsBayer(grabResult.PixelType) && m_debayering);
+
+                    // We force all non 8-bit Bayer formats to color.
+                    // For Bayer 8, user may choose Raw, Mono or Color.
+                    bool isBayer = Pylon.IsBayer(grabResult.PixelType);
+                    bool bayerColor = (isBayer && !isBayer8) || (isBayer8 && m_bayer8Conversion == Bayer8Conversion.Color);
+                    m_converterOutputFormatIsColor = !Pylon.IsMono(grabResult.PixelType) || bayerColor;
                 }
                 /* Reference to the buffer attached to the grab result handle. */
                 PylonBuffer<Byte> convertedBuffer = null;

@@ -37,7 +37,7 @@ namespace Kinovea.Camera.Basler
 
         public Dictionary<string, CameraProperty> CameraProperties { get; set; }
         public string StreamFormat { get; set; }
-        public bool Debayering { get; set; }
+        public Bayer8Conversion Bayer8Conversion { get; set; }
 
         public SpecificInfo()
         {
