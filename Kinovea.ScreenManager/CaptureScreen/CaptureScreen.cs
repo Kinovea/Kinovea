@@ -98,6 +98,11 @@ namespace Kinovea.ScreenManager
             get { return ImageRotation.Rotate0; }
             set { }
         }
+        public override Demosaicing Demosaicing
+        {
+            get { return Demosaicing.None; }
+            set { }
+        }
         public override bool Mirrored
         {
             get

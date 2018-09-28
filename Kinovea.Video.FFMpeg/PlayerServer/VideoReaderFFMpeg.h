@@ -152,6 +152,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual String^ ReadMetadata() override;
         virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
         virtual bool ChangeImageRotation(ImageRotation rotation) override;
+        virtual bool ChangeDemosaicing(Demosaicing demosaicing) override;
         virtual bool ChangeDeinterlace(bool _deint) override;
         virtual bool ChangeDecodingSize(Size _size) override;
         virtual void DisableCustomDecodingSize() override;

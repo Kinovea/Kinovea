@@ -40,6 +40,7 @@ namespace Kinovea.Video
         CanChangeDecodingSize = 256,
         CanScaleIndefinitely = 512,
         CanChangeImageRotation = 1024,
+        CanChangeDemosaicing = 2048
     }
     
     /// <summary>
@@ -68,7 +69,16 @@ namespace Kinovea.Video
         Rotate180,
         Rotate270
     }
-    
+
+    public enum Demosaicing
+    {
+        None,
+        RGGB,
+        BGGR,
+        GRBG,
+        GBRG
+    }
+
     public enum OpenVideoResult
     {
         Success,

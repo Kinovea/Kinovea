@@ -110,7 +110,7 @@ namespace Kinovea.ScreenManager
             videoReader = VideoTypeManager.GetVideoReader(extension);
             if(videoReader != null)
             {
-                videoReader.Options = new VideoOptions(PreferencesManager.PlayerPreferences.AspectRatio, ImageRotation.Rotate0, PreferencesManager.PlayerPreferences.DeinterlaceByDefault);
+                videoReader.Options = new VideoOptions(PreferencesManager.PlayerPreferences.AspectRatio, ImageRotation.Rotate0, Demosaicing.None, PreferencesManager.PlayerPreferences.DeinterlaceByDefault);
                 return videoReader.Open(filePath);
             }
             else
