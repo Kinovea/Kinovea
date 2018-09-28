@@ -63,5 +63,13 @@ namespace Kinovea.Camera.IDS
 
             return result;
         }
+
+        public static void Delete(string identifier)
+        {
+            string filename = GetProfileFilename(identifier);
+
+            if (File.Exists(filename))
+                File.Delete(filename);
+        }
     }
 }
