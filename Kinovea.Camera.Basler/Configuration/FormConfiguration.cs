@@ -128,6 +128,8 @@ namespace Kinovea.Camera.Basler
 
         private void PopulateStreamFormat(SpecificInfo specific)
         {
+            lblColorSpace.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
+
             bool readable = Pylon.DeviceFeatureIsReadable(deviceHandle, "PixelFormat");
             if (!readable)
             {
@@ -155,6 +157,7 @@ namespace Kinovea.Camera.Basler
             }
 
             debayering = specific.Debayering;
+            chkDebayering.Text = CameraLang.FormConfiguration_Properties_Debayering;
             chkDebayering.Enabled = cmbFormat.Enabled;
             chkDebayering.Checked = debayering;
         }
