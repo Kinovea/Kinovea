@@ -67,6 +67,13 @@ namespace Kinovea.Camera.Basler
         private bool grabbing;
         private bool firstOpen = true;
         private float resultingFramerate = 0;
+        private bool photofinish = false;
+        private ImageDescriptor pfImageDescriptor;
+        private byte[] pfBuffer;
+        private int pfHeightThreshold = 16;
+        private int pfHeight = 1000;
+        private int pfConsolidationRows = 2;
+        private int pfRow = 0;
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
@@ -130,9 +137,22 @@ namespace Kinovea.Camera.Basler
             bool color = !Pylon.IsMono(pixelType) || bayerColor;
             ImageFormat format = color ? ImageFormat.RGB32 : ImageFormat.Y800;
 
+            photofinish = height <= pfHeightThreshold;
+            if (photofinish)
+            {
+                // Photofinish: We will consolidate n rows of each incoming frame into the final frame.
+                height = pfHeight;
+                resultingFramerate = (resultingFramerate * pfConsolidationRows) / height;
+                int pfBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
+                pfImageDescriptor = new ImageDescriptor(format, width, height, true, pfBufferSize);
+
+                pfBuffer = new byte[pfBufferSize];
+                pfRow = 0;
+            }
+
             int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
             bool topDown = true;
-
+            
             return new ImageDescriptor(format, width, height, topDown, bufferSize);
         }
 
@@ -306,13 +326,39 @@ namespace Kinovea.Camera.Basler
             ImageProvider.Image pylonImage = imageProvider.GetLatestImage();
             if (pylonImage == null)
                 return;
+            
+            if (photofinish)
+            {
+                // Consolidate the sub-frame.
+                // Format is guaranteed to be either Y800 or RGB32.
+                if (pfImageDescriptor.Format == ImageFormat.Y800)
+                    Buffer.BlockCopy(pylonImage.Buffer, 0, pfBuffer, pfRow * pfImageDescriptor.Width, pfImageDescriptor.Width * pfConsolidationRows);
+                else
+                    Buffer.BlockCopy(pylonImage.Buffer, 0, pfBuffer, pfRow * pfImageDescriptor.Width * 4, pfImageDescriptor.Width * 4 * pfConsolidationRows);
+                
+                imageProvider.ReleaseImage();
+                pfRow += pfConsolidationRows;
 
-            ComputeDataRate(pylonImage.Buffer.Length);
+                if (pfRow >= pfHeight)
+                {
+                    pfRow = 0;
+                    // We don't bother clearing up the existing buffer. Last frame of video may have some leftovers from the penultimate one.
+                    
+                    ComputeDataRate(pfBuffer.Length);
 
-            if (FrameProduced != null)
-                FrameProduced(this, new FrameProducedEventArgs(pylonImage.Buffer, pylonImage.Buffer.Length));
+                    if (FrameProduced != null)
+                        FrameProduced(this, new FrameProducedEventArgs(pfBuffer, pfBuffer.Length));
+                }
+            }
+            else
+            {
+                ComputeDataRate(pylonImage.Buffer.Length);
 
-            imageProvider.ReleaseImage();
+                if (FrameProduced != null)
+                    FrameProduced(this, new FrameProducedEventArgs(pylonImage.Buffer, pylonImage.Buffer.Length));
+
+                imageProvider.ReleaseImage();
+            }
         }
 
         private void imageProvider_GrabErrorEvent(Exception grabException, string additionalErrorMessage)
