@@ -1177,81 +1177,35 @@ namespace Kinovea.ScreenManager
         private void ConfigureImageFormatMenus(AbstractScreen screen)
         {
             // Set the enable and check prop of the image formats menu according of current screen state.
-            if(screen == null || 
-               !screen.Full ||
-              (screen is PlayerScreen && !((PlayerScreen)screen).FrameServer.VideoReader.CanChangeAspectRatio))
-            {
-                mnuFormat.Enabled = false;
+            bool canChangeAspectRatio = screen != null && screen.Full && screen is PlayerScreen && ((PlayerScreen)screen).FrameServer.VideoReader.CanChangeAspectRatio;
+            mnuFormat.Enabled = canChangeAspectRatio;
+            mnuFormatAuto.Enabled = canChangeAspectRatio;
+            mnuFormatForce43.Enabled = canChangeAspectRatio;
+            mnuFormatForce169.Enabled = canChangeAspectRatio;
+
+            if (!canChangeAspectRatio)
                 return;
-            }
-            
-            mnuFormat.Enabled = true;
-            mnuFormatAuto.Enabled = true;
-            mnuFormatForce43.Enabled = true;
-            mnuFormatForce169.Enabled = true;
-            
-            // Reset all checks before setting the right one.
-            mnuFormatAuto.Checked = false;
-            mnuFormatForce43.Checked = false;
-            mnuFormatForce169.Checked = false;
-        
-            switch(screen.AspectRatio)
-            {
-                case ImageAspectRatio.Force43:
-                    mnuFormatForce43.Checked = true;
-                    break;
-                case ImageAspectRatio.Force169:
-                    mnuFormatForce169.Checked = true;
-                    break;
-                case ImageAspectRatio.Auto:
-                default:
-                    mnuFormatAuto.Checked = true;
-                    break;
-            }
+
+            mnuFormatAuto.Checked = screen.AspectRatio == ImageAspectRatio.Auto;
+            mnuFormatForce43.Checked = screen.AspectRatio == ImageAspectRatio.Force43;
+            mnuFormatForce169.Checked = screen.AspectRatio == ImageAspectRatio.Force169;
         }
         private void ConfigureImageRotationMenus(AbstractScreen screen)
         {
-            if (screen == null ||
-               !screen.Full ||
-              !(screen is PlayerScreen))
-            {
-                // Note: we could at least support 180 rotation in Capture by doing a flip on both axes.
-                mnuRotation.Enabled = false;
-                mnuRotation0.Enabled = false;
-                mnuRotation90.Enabled = false;
-                mnuRotation180.Enabled = false;
-                mnuRotation270.Enabled = false;
+            bool canChangeImageRotation = screen != null && screen.Full && screen is PlayerScreen && ((PlayerScreen)screen).FrameServer.VideoReader.CanChangeImageRotation;
+            mnuRotation.Enabled = canChangeImageRotation;
+            mnuRotation0.Enabled = canChangeImageRotation;
+            mnuRotation90.Enabled = canChangeImageRotation;
+            mnuRotation180.Enabled = canChangeImageRotation;
+            mnuRotation270.Enabled = canChangeImageRotation;
+
+            if (!canChangeImageRotation)
                 return;
-            }
 
-            mnuRotation.Enabled = true;
-            mnuRotation0.Enabled = true;
-            mnuRotation90.Enabled = true;
-            mnuRotation180.Enabled = true;
-            mnuRotation270.Enabled = true;
-
-            // Reset all checks before setting the right one.
-            mnuRotation0.Checked = false;
-            mnuRotation90.Checked = false;
-            mnuRotation180.Checked = false;
-            mnuRotation270.Checked = false;
-            
-            switch (screen.ImageRotation)
-            {
-                case ImageRotation.Rotate90:
-                    mnuRotation90.Checked = true;
-                    break;
-                case ImageRotation.Rotate180:
-                    mnuRotation180.Checked = true;
-                    break;
-                case ImageRotation.Rotate270:
-                    mnuRotation270.Checked = true;
-                    break;
-                case ImageRotation.Rotate0:
-                default:
-                    mnuRotation0.Checked = true;
-                    break;
-            }
+            mnuRotation0.Checked = screen.ImageRotation == ImageRotation.Rotate0;
+            mnuRotation90.Checked = screen.ImageRotation == ImageRotation.Rotate90;
+            mnuRotation180.Checked = screen.ImageRotation == ImageRotation.Rotate180;
+            mnuRotation270.Checked = screen.ImageRotation == ImageRotation.Rotate270;
         }
         private void OnSVGFilesChanged(object source, FileSystemEventArgs e)
         {
