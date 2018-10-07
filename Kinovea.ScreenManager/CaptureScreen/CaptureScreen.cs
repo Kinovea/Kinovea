@@ -1146,7 +1146,10 @@ namespace Kinovea.ScreenManager
             {
                 // In RecordingMode.Display we use a simple VideoFileWriter that will push the displayed bitmap to a file.
                 VideoInfo info = new VideoInfo();
+
                 info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
+                info.ReferenceSize = info.OriginalSize;
+                info.AspectRatioSize = info.OriginalSize;
                 string formatString = FilenameHelper.GetFormatStringCapture();
 
                 // We have 3 possible framerates: the configured camera framerate, the measured camera framerate and the display framerate.
