@@ -567,7 +567,7 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, a
         sws_freeContext(scalingContext);
 
         // Allocated JPEG frame buffer. 
-        // Assumes uncompressed size is always smaller than compressed. (Not technically true).
+        // Assumes compressed size is always smaller than uncompressed. (Not technically true).
         int jpegBufferSize = yuvBufferSize;
         pJpegBuffer = (uint8_t*)av_malloc(jpegBufferSize);
 
