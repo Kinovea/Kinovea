@@ -93,7 +93,12 @@ namespace Kinovea.ScreenManager
         public Size ImageSize
         {
             get { return imageSize; }
-            set { imageSize = value; }
+            set
+            {
+                imageSize = value;
+                trackabilityManager.Initialize(imageSize);
+                calibrationHelper.Initialize(imageSize, GetCalibrationOrigin);
+            }
         }
         public ImageTransform ImageTransform
         {
