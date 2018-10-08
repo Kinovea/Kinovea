@@ -7,7 +7,7 @@ namespace Kinovea.ScreenManager
 {
     public interface IDrawingHostView
     {
-        void DoInvalidate();
+        void InvalidateFromMenu();
         void InitializeEndFromMenu(bool cancelLastPoint);
     }
 }
