@@ -938,6 +938,7 @@ namespace Kinovea.ScreenManager
                     mnuSVGTools.Enabled = hasSvgFiles;
                     mnuTestGrid.Enabled = false;
                     mnuCoordinateAxis.Enabled = true;
+                    mnuCoordinateAxis.Checked = player.FrameServer.Metadata.DrawingCoordinateSystem.Visible;
                     mnuCameraCalibration.Enabled = true;
                     mnuTrajectoryAnalysis.Enabled = true;
                     mnuScatterDiagram.Enabled = true;
@@ -1031,6 +1032,7 @@ namespace Kinovea.ScreenManager
                 mnuTestGrid.Enabled = false;
                 mnuTestGrid.Checked = false;
                 mnuCoordinateAxis.Enabled = false;
+                mnuCoordinateAxis.Checked = false;
                 mnuCameraCalibration.Enabled = false;
                 mnuTrajectoryAnalysis.Enabled = false;
                 mnuScatterDiagram.Enabled = false;
@@ -2021,7 +2023,9 @@ namespace Kinovea.ScreenManager
             if (ps == null)
                 return;
 
-            ps.ShowCoordinateSystem();
+            mnuCoordinateAxis.Checked = !mnuCoordinateAxis.Checked;
+            ps.FrameServer.Metadata.DrawingCoordinateSystem.Visible = mnuCoordinateAxis.Checked;
+            ps.RefreshImage();
         }
 
         private void mnuTestGrid_OnClick(object sender, EventArgs e)

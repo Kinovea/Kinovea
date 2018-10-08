@@ -3482,6 +3482,13 @@ namespace Kinovea.ScreenManager
             // Invalidate is asynchronous and several Invalidate calls will be grouped together. (Only one repaint will be done).
             pbSurfaceScreen.Invalidate();
         }
+        public void InvalidateFromMenu()
+        {
+            if (SetAsActiveScreen != null)
+                SetAsActiveScreen(this, EventArgs.Empty);
+
+            DoInvalidate();
+        }
         public void InitializeEndFromMenu(bool cancelLastPoint)
         {
             m_FrameServer.Metadata.InitializeEnd(cancelLastPoint);
