@@ -67,13 +67,13 @@ namespace Kinovea.Camera.Basler
         private bool grabbing;
         private bool firstOpen = true;
         private float resultingFramerate = 0;
-        private bool photofinish = false;
+        private bool photofinishEnabled = false;
         private ImageDescriptor pfImageDescriptor;
+        private int pfThresholdHeight;
+        private int pfConsolidationHeight;
+        private int pfOutputHeight;
         private byte[] pfBuffer;
-        private int pfHeightThreshold = 16;
-        private int pfHeight = 1000;
-        private int pfConsolidationRows = 2;
-        private int pfRow = 0;
+        private int pfRow;
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
@@ -137,12 +137,22 @@ namespace Kinovea.Camera.Basler
             bool color = !Pylon.IsMono(pixelType) || bayerColor;
             ImageFormat format = color ? ImageFormat.RGB32 : ImageFormat.Y800;
 
-            photofinish = height <= pfHeightThreshold;
-            if (photofinish)
+            pfThresholdHeight = PreferencesManager.CapturePreferences.PhotofinishConfiguration.ThresholdHeight;
+            photofinishEnabled = height <= pfThresholdHeight;
+            if (photofinishEnabled)
             {
-                // Photofinish: We will consolidate n rows of each incoming frame into the final frame.
-                height = pfHeight;
-                resultingFramerate = (resultingFramerate * pfConsolidationRows) / height;
+                // Constraints:
+                // -The number of consolidated rows has to be lower than the height threshold, otherwise we won't have enough source material to copy.
+                // -The output height has to be a multiple of the number of consolidated rows, otherwise there will be a hole at the bottom of the output. 
+                pfConsolidationHeight = PreferencesManager.CapturePreferences.PhotofinishConfiguration.ConsolidationHeight;
+                pfConsolidationHeight = Math.Min(pfConsolidationHeight, pfThresholdHeight);
+
+                pfOutputHeight = PreferencesManager.CapturePreferences.PhotofinishConfiguration.OutputHeight;
+                pfOutputHeight = pfOutputHeight - (pfOutputHeight % pfConsolidationHeight);
+
+                // Prepare buffer for output images.
+                height = pfOutputHeight;
+                resultingFramerate = (resultingFramerate * pfConsolidationHeight) / height;
                 int pfBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
                 pfImageDescriptor = new ImageDescriptor(format, width, height, true, pfBufferSize);
 
@@ -327,19 +337,19 @@ namespace Kinovea.Camera.Basler
             if (pylonImage == null)
                 return;
             
-            if (photofinish)
+            if (photofinishEnabled)
             {
                 // Consolidate the sub-frame.
                 // Format is guaranteed to be either Y800 or RGB32.
                 if (pfImageDescriptor.Format == ImageFormat.Y800)
-                    Buffer.BlockCopy(pylonImage.Buffer, 0, pfBuffer, pfRow * pfImageDescriptor.Width, pfImageDescriptor.Width * pfConsolidationRows);
+                    Buffer.BlockCopy(pylonImage.Buffer, 0, pfBuffer, pfRow * pfImageDescriptor.Width, pfImageDescriptor.Width * pfConsolidationHeight);
                 else
-                    Buffer.BlockCopy(pylonImage.Buffer, 0, pfBuffer, pfRow * pfImageDescriptor.Width * 4, pfImageDescriptor.Width * 4 * pfConsolidationRows);
+                    Buffer.BlockCopy(pylonImage.Buffer, 0, pfBuffer, pfRow * pfImageDescriptor.Width * 4, pfImageDescriptor.Width * 4 * pfConsolidationHeight);
                 
                 imageProvider.ReleaseImage();
-                pfRow += pfConsolidationRows;
+                pfRow += pfConsolidationHeight;
 
-                if (pfRow >= pfHeight)
+                if (pfRow >= pfOutputHeight)
                 {
                     pfRow = 0;
                     // We don't bother clearing up the existing buffer. Last frame of video may have some leftovers from the penultimate one.
