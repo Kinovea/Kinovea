@@ -14,18 +14,24 @@ namespace Kinovea.ScreenManager
     public class DelaySubframeVariable : IDelaySubframe
     {
         /// <summary>
-        /// The location and size of the subframe into the composite.
+        /// Location and size of the rectangle to extract from the frame.
         /// </summary>
-        public Rectangle Bounds { get; private set; }
+        public Rectangle Source { get; set; }
+
+        /// <summary>
+        /// The location and size of destination rectangle in the composite.
+        /// </summary>
+        public Rectangle Destination { get; set; }
 
         private float refreshRate;
         private int totalFrames;
         private int startPosition;
         private int cycleDuration;
 
-        public DelaySubframeVariable(Rectangle bounds, float refreshRate, int totalFrames, int startPosition, int cycleDuration)
+        public DelaySubframeVariable(Rectangle source, Rectangle destination, float refreshRate, int totalFrames, int startPosition, int cycleDuration)
         {
-            this.Bounds = bounds;
+            this.Source = source;
+            this.Destination = destination;
             this.refreshRate = refreshRate;
             this.totalFrames = totalFrames;
             this.startPosition = startPosition;
