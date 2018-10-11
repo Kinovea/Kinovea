@@ -15,6 +15,8 @@ namespace Kinovea.Services
         public int ThresholdHeight { get; set; }
         public int ConsolidationHeight { get; set; }
         public int OutputHeight { get; set; }
+        public bool Waterfall { get; set; }
+        public int WaterfallFlushHeight { get; set; }
         private static PhotofinishConfiguration defaultConfiguration;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -23,6 +25,8 @@ namespace Kinovea.Services
             ThresholdHeight = 16;
             ConsolidationHeight = 2;
             OutputHeight = 1000;
+            Waterfall = true;
+            WaterfallFlushHeight = 100;
         }
 
         static PhotofinishConfiguration()
@@ -52,6 +56,12 @@ namespace Kinovea.Services
                     case "OutputHeight":
                         OutputHeight = int.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
                         break;
+                    case "Waterfall":
+                        Waterfall = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
+                        break;
+                    case "WaterfallFlushHeight":
+                        WaterfallFlushHeight = int.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        break;
                     default:
                         string outerXml = r.ReadOuterXml();
                         log.DebugFormat("Unparsed content in XML: {0}", outerXml);
@@ -67,6 +77,8 @@ namespace Kinovea.Services
             w.WriteElementString("ThresholdHeight", ThresholdHeight.ToString());
             w.WriteElementString("ConsolidationHeight", ConsolidationHeight.ToString());
             w.WriteElementString("OutputHeight", OutputHeight.ToString());
+            w.WriteElementString("Waterfall", Waterfall ? "true" : "false");
+            w.WriteElementString("WaterfallFlushHeight", WaterfallFlushHeight.ToString());
         }
     }
 }
