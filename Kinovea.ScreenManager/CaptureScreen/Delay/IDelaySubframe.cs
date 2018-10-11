@@ -9,9 +9,14 @@ namespace Kinovea.ScreenManager
     public interface IDelaySubframe
     {
         /// <summary>
-        /// The location and size of the subframe into the composite.
+        /// Location and size of the rectangle to extract from the frame.
         /// </summary>
-        Rectangle Bounds { get; }
+        Rectangle Source { get; set; }
+
+        /// <summary>
+        /// The location and size of destination rectangle in the composite.
+        /// </summary>
+        Rectangle Destination { get; set; }
     }
 }
 

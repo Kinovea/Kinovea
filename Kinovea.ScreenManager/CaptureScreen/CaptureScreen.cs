@@ -568,7 +568,7 @@ namespace Kinovea.ScreenManager
             double framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
             if (framerate == 0)
                 framerate = 25;
-
+            
             grabTimer.Interval = (int)(1000.0 / framerate);
             grabTimer.Enabled = true;
 
@@ -831,7 +831,7 @@ namespace Kinovea.ScreenManager
 
             if (fresh == null)
                 return;
-
+            
             delayer.Push(fresh);
             
             if (imageProcessor.Active)
@@ -1153,6 +1153,8 @@ namespace Kinovea.ScreenManager
                 // In RecordingMode.Display we use a simple VideoFileWriter that will push the displayed bitmap to a file.
                 VideoInfo info = new VideoInfo();
                 info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
+                info.ReferenceSize = info.OriginalSize;
+                info.AspectRatioSize = info.OriginalSize;
                 string formatString = FilenameHelper.GetFormatStringCapture(false);
 
                 // We have 3 possible framerates: the configured camera framerate, the measured camera framerate and the display framerate.
@@ -1291,9 +1293,10 @@ namespace Kinovea.ScreenManager
             availableMemory -= (imageDescriptor.BufferSize * 8);
             
             delayer.AllocateBuffers(imageDescriptor, availableMemory);
-            delayCompositer.AllocateBuffers(imageDescriptor);
+            delayCompositer.Allocate(imageDescriptor);
             UpdateDelayMaxAge();
         }
+
         private void DelayChanged(double age)
         {
             this.delay = (int)Math.Round(age);
@@ -1319,7 +1322,7 @@ namespace Kinovea.ScreenManager
 
             dcsm.UpdateRefreshRate(rate);
         }
-
+        
         private void ForceDelaySynchronization()
         {
             if (delayCompositeType == DelayCompositeType.SlowMotion)

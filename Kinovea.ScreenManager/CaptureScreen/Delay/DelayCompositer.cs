@@ -39,9 +39,9 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Attempt to preallocate the circular buffer for as many images as possible that fits in available memory.
+        /// Allocate the output image.
         /// </summary>
-        public bool AllocateBuffers(ImageDescriptor imageDescriptor)
+        public bool Allocate(ImageDescriptor imageDescriptor)
         {
             if (composite == null)
                 throw new InvalidOperationException();
@@ -131,7 +131,7 @@ namespace Kinovea.ScreenManager
                     continue;
 
                 Bitmap subframeImage = delayer.Get(subframeAge);
-                g.DrawImage(subframeImage, subframe.Bounds);
+                g.DrawImage(subframeImage, subframe.Destination, subframe.Source, GraphicsUnit.Pixel);
             }
             
             return image;
