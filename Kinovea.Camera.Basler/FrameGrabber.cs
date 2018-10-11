@@ -72,8 +72,13 @@ namespace Kinovea.Camera.Basler
         private int pfThresholdHeight;
         private int pfConsolidationHeight;
         private int pfOutputHeight;
-        private byte[] pfBuffer;
+        private int pfWaterfallFlushHeight;
+        private bool pfWaterfallEnabled;
+        private byte[] pfBufferCurrent;
+        private byte[] pfBufferOld;
+        private byte[] pfBufferOutput;
         private int pfRow;
+        private int pfSection;
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
@@ -150,13 +155,30 @@ namespace Kinovea.Camera.Basler
                 pfOutputHeight = PreferencesManager.CapturePreferences.PhotofinishConfiguration.OutputHeight;
                 pfOutputHeight = pfOutputHeight - (pfOutputHeight % pfConsolidationHeight);
 
+                pfWaterfallEnabled = PreferencesManager.CapturePreferences.PhotofinishConfiguration.Waterfall;
+                if (pfWaterfallEnabled)
+                {
+                    pfWaterfallFlushHeight = PreferencesManager.CapturePreferences.PhotofinishConfiguration.WaterfallFlushHeight;
+
+                    bool isWaterfallFlushHeightValid =
+                        pfWaterfallFlushHeight >= pfConsolidationHeight &&
+                        pfWaterfallFlushHeight <= pfOutputHeight &&
+                        (pfOutputHeight % pfWaterfallFlushHeight == 0) &&
+                        (pfWaterfallFlushHeight % pfConsolidationHeight == 0);
+
+                    if (!isWaterfallFlushHeightValid)
+                        pfWaterfallFlushHeight = pfOutputHeight;
+                }
+                
                 // Prepare buffer for output images.
                 height = pfOutputHeight;
                 resultingFramerate = (resultingFramerate * pfConsolidationHeight) / height;
                 int pfBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
                 pfImageDescriptor = new ImageDescriptor(format, width, height, true, pfBufferSize);
 
-                pfBuffer = new byte[pfBufferSize];
+                pfBufferCurrent = new byte[pfBufferSize];
+                pfBufferOld = new byte[pfBufferSize];
+                pfBufferOutput = new byte[pfBufferSize];
                 pfRow = 0;
             }
 
@@ -339,25 +361,58 @@ namespace Kinovea.Camera.Basler
             
             if (photofinishEnabled)
             {
-                // Consolidate the sub-frame.
-                // Format is guaranteed to be either Y800 or RGB32.
-                if (pfImageDescriptor.Format == ImageFormat.Y800)
-                    Buffer.BlockCopy(pylonImage.Buffer, 0, pfBuffer, pfRow * pfImageDescriptor.Width, pfImageDescriptor.Width * pfConsolidationHeight);
-                else
-                    Buffer.BlockCopy(pylonImage.Buffer, 0, pfBuffer, pfRow * pfImageDescriptor.Width * 4, pfImageDescriptor.Width * 4 * pfConsolidationHeight);
+                int bytesPerPixel = pfImageDescriptor.Format == ImageFormat.Y800 ? 1 : 4;
+                int stride = pfImageDescriptor.Width * bytesPerPixel;
+
+                // Consolidate the current sub-frame.
+                Buffer.BlockCopy(pylonImage.Buffer, 0, pfBufferCurrent, pfRow * pfImageDescriptor.Width * bytesPerPixel, pfImageDescriptor.Width * bytesPerPixel * pfConsolidationHeight);
                 
                 imageProvider.ReleaseImage();
                 pfRow += pfConsolidationHeight;
-
-                if (pfRow >= pfOutputHeight)
+                
+                if (pfWaterfallEnabled && (pfRow % pfWaterfallFlushHeight == 0))
                 {
-                    pfRow = 0;
-                    // We don't bother clearing up the existing buffer. Last frame of video may have some leftovers from the penultimate one.
+                    // Flush the current and old image to output in sliding window mode.
+                    // "section" is at 0 after we grabbed the first section of rows.
+                    int totalSections = pfOutputHeight / pfWaterfallFlushHeight;
                     
-                    ComputeDataRate(pfBuffer.Length);
+                    // Rows are always added to the bottom, so here we continue this pattern.
+                    // The current image is copied at the bottom, and the old image is copied at the top.
+                    int bufferCurrentSource = 0;
+                    int bufferCurrentLength = (pfSection + 1) * pfWaterfallFlushHeight * stride;
+                    int bufferCurrentDestination = (totalSections - (pfSection + 1)) * pfWaterfallFlushHeight * stride;
+                    int bufferOldSource = bufferCurrentLength;
+                    int bufferOldLength = bufferCurrentDestination;
+                    int bufferOldDestination = 0;
 
+                    Buffer.BlockCopy(pfBufferCurrent, bufferCurrentSource, pfBufferOutput, bufferCurrentDestination, bufferCurrentLength);
+                    Buffer.BlockCopy(pfBufferOld, bufferOldSource, pfBufferOutput, bufferOldDestination, bufferOldLength);
+
+                    pfSection = (pfSection + 1) % totalSections;
+                    
+                    ComputeDataRate(pfBufferOutput.Length);
+                    
                     if (FrameProduced != null)
-                        FrameProduced(this, new FrameProducedEventArgs(pfBuffer, pfBuffer.Length));
+                        FrameProduced(this, new FrameProducedEventArgs(pfBufferOutput, pfBufferOutput.Length));
+                }
+                
+                if (pfRow >= pfOutputHeight)
+                { 
+                    pfRow = 0;
+                    pfSection = 0;
+                    
+                    if (!pfWaterfallEnabled)
+                    {
+                        ComputeDataRate(pfBufferOutput.Length);
+
+                        if (FrameProduced != null)
+                            FrameProduced(this, new FrameProducedEventArgs(pfBufferCurrent, pfBufferCurrent.Length));
+                    }
+                    
+                    // Swap buffers.
+                    byte[] pfBufferTemp = pfBufferOld;
+                    pfBufferOld = pfBufferCurrent;
+                    pfBufferCurrent = pfBufferOld;
                 }
             }
             else
