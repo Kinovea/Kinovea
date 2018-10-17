@@ -28,6 +28,13 @@ namespace Kinovea.Camera
                 this.Enabled = false;
         }
 
+        public override void Repopulate(CameraProperty property)
+        {
+            this.property = property;
+            if (property.Supported)
+                Populate();
+        }
+
         private void Populate()
         {
             cbAuto.Enabled = property.CanBeAutomatic;

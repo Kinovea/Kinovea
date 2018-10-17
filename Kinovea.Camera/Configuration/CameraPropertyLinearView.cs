@@ -26,6 +26,13 @@ namespace Kinovea.Camera
                 Populate();
         }
 
+        public override void Repopulate(CameraProperty property)
+        {
+            this.property = property;
+            if (property.Supported)
+                Populate();
+        }
+
         private void Populate()
         {
             // FIXME: doesn't play well with non integer values.

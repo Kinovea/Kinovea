@@ -67,6 +67,7 @@ namespace Kinovea.Camera.IDS
         private long deviceId;
         private IDSEnum selectedStreamFormat;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
+        private Dictionary<string, AbstractCameraPropertyView> propertiesControls = new Dictionary<string, AbstractCameraPropertyView>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FormConfiguration(CameraSummary summary)
@@ -145,6 +146,7 @@ namespace Kinovea.Camera.IDS
         private void PopulateStreamFormat()
         {
             lblColorSpace.Text = "Stream format:";
+
             // Get the intersection of camera and Kinovea supported formats.
             List<IDSEnum> streamFormats = IDSHelper.GetSupportedStreamFormats(camera, deviceId);
 
@@ -172,9 +174,10 @@ namespace Kinovea.Camera.IDS
 
             AddCameraProperty("width", CameraLang.FormConfiguration_Properties_ImageWidth, defaultValueMapper, top);
             AddCameraProperty("height", CameraLang.FormConfiguration_Properties_ImageHeight, defaultValueMapper, top + 30);
-            AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, defaultValueMapper, top + 60);
-            AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro, defaultValueMapper, top + 90);
-            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, defaultValueMapper, top + 120);
+            AddCameraProperty("pixelclock", "Pixel clock (MHz):", defaultValueMapper, top + 60);
+            AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, defaultValueMapper, top + 90);
+            AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro, defaultValueMapper, top + 120);
+            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, defaultValueMapper, top + 150);
         }
 
         private void AddCameraProperty(string key, string text, Func<int, string> valueMapper, int top)
@@ -207,6 +210,21 @@ namespace Kinovea.Camera.IDS
             control.Left = 20;
             control.Top = top;
             gbProperties.Controls.Add(control);
+            propertiesControls.Add(key, control);
+        }
+
+        private void ReloadProperty(string key)
+        {
+            if (!propertiesControls.ContainsKey(key) || !cameraProperties.ContainsKey(key))
+                return;
+
+            // Reload the property in case the range or current value changed.
+            CameraProperty prop = CameraPropertyManager.Read(camera, deviceId, key);
+            if (prop == null)
+                return;
+
+            cameraProperties[key] = prop;
+            propertiesControls[key].Repopulate(prop);
         }
 
         private void cpvCameraControl_ValueChanged(object sender, EventArgs e)
@@ -219,9 +237,26 @@ namespace Kinovea.Camera.IDS
             if (string.IsNullOrEmpty(key) || !cameraProperties.ContainsKey(key))
                 return;
 
-            CameraProperty property = control.Property;
-            CameraPropertyManager.Write(camera, deviceId, cameraProperties[key]);
+            CameraPropertyManager.Write(camera, deviceId, control.Property);
 
+            // Dependencies:
+            // - Pixel clock changes the range and current value of framerate.
+            // - Framerate changes the range and current value of exposure.
+            if (key == "height")
+            {
+                ReloadProperty("framerate");
+                ReloadProperty("exposure");
+            }
+            else if (key == "pixelclock")
+            {
+                ReloadProperty("framerate");
+                ReloadProperty("exposure");
+            }
+            else if (key == "framerate")
+            {
+                ReloadProperty("exposure");
+            }
+            
             specificChanged = true;
         }
         
