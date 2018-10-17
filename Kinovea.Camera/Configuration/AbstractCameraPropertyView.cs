@@ -16,11 +16,14 @@ namespace Kinovea.Camera
         }
 
         protected CameraProperty property;
-
+        
         protected void RaiseValueChanged()
         {
             if (ValueChanged != null)
                 ValueChanged(this, EventArgs.Empty);
         }
+
+        public abstract void Repopulate(CameraProperty property);
+
     }
 }
