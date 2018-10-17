@@ -172,7 +172,12 @@ namespace Kinovea.Camera.Basler
                 
                 // Prepare buffer for output images.
                 height = pfOutputHeight;
-                resultingFramerate = (resultingFramerate * pfConsolidationHeight) / height;
+                float rowsPerSecond = resultingFramerate * pfConsolidationHeight;
+                if (pfWaterfallEnabled)
+                    resultingFramerate = rowsPerSecond / pfWaterfallFlushHeight;
+                else
+                    resultingFramerate = rowsPerSecond / pfOutputHeight;
+                
                 int pfBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
                 pfImageDescriptor = new ImageDescriptor(format, width, height, true, pfBufferSize);
 
@@ -378,6 +383,7 @@ namespace Kinovea.Camera.Basler
                     
                     // Rows are always added to the bottom, so here we continue this pattern.
                     // The current image is copied at the bottom, and the old image is copied at the top.
+                    // We just need to figure out which portion of each image to copy.
                     int bufferCurrentSource = 0;
                     int bufferCurrentLength = (pfSection + 1) * pfWaterfallFlushHeight * stride;
                     int bufferCurrentDestination = (totalSections - (pfSection + 1)) * pfWaterfallFlushHeight * stride;
