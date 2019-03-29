@@ -67,18 +67,7 @@ namespace Kinovea.Camera.Basler
         private bool grabbing;
         private bool firstOpen = true;
         private float resultingFramerate = 0;
-        private bool photofinishEnabled = false;
-        private ImageDescriptor pfImageDescriptor;
-        private int pfThresholdHeight;
-        private int pfConsolidationHeight;
-        private int pfOutputHeight;
-        private int pfWaterfallFlushHeight;
-        private bool pfWaterfallEnabled;
-        private byte[] pfBufferCurrent;
-        private byte[] pfBufferOld;
-        private byte[] pfBufferOutput;
-        private int pfRow;
-        private int pfSection;
+        private Finishline finishline = new Finishline();
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
@@ -142,49 +131,11 @@ namespace Kinovea.Camera.Basler
             bool color = !Pylon.IsMono(pixelType) || bayerColor;
             ImageFormat format = color ? ImageFormat.RGB32 : ImageFormat.Y800;
 
-            pfThresholdHeight = PreferencesManager.CapturePreferences.PhotofinishConfiguration.ThresholdHeight;
-            photofinishEnabled = height <= pfThresholdHeight;
-            if (photofinishEnabled)
+            finishline.Prepare(width, height, format, resultingFramerate);
+            if (finishline.Enabled)
             {
-                // Constraints:
-                // -The number of consolidated rows has to be lower than the height threshold, otherwise we won't have enough source material to copy.
-                // -The output height has to be a multiple of the number of consolidated rows, otherwise there will be a hole at the bottom of the output. 
-                pfConsolidationHeight = PreferencesManager.CapturePreferences.PhotofinishConfiguration.ConsolidationHeight;
-                pfConsolidationHeight = Math.Min(pfConsolidationHeight, pfThresholdHeight);
-
-                pfOutputHeight = PreferencesManager.CapturePreferences.PhotofinishConfiguration.OutputHeight;
-                pfOutputHeight = pfOutputHeight - (pfOutputHeight % pfConsolidationHeight);
-
-                pfWaterfallEnabled = PreferencesManager.CapturePreferences.PhotofinishConfiguration.Waterfall;
-                if (pfWaterfallEnabled)
-                {
-                    pfWaterfallFlushHeight = PreferencesManager.CapturePreferences.PhotofinishConfiguration.WaterfallFlushHeight;
-
-                    bool isWaterfallFlushHeightValid =
-                        pfWaterfallFlushHeight >= pfConsolidationHeight &&
-                        pfWaterfallFlushHeight <= pfOutputHeight &&
-                        (pfOutputHeight % pfWaterfallFlushHeight == 0) &&
-                        (pfWaterfallFlushHeight % pfConsolidationHeight == 0);
-
-                    if (!isWaterfallFlushHeightValid)
-                        pfWaterfallFlushHeight = pfOutputHeight;
-                }
-                
-                // Prepare buffer for output images.
-                height = pfOutputHeight;
-                float rowsPerSecond = resultingFramerate * pfConsolidationHeight;
-                if (pfWaterfallEnabled)
-                    resultingFramerate = rowsPerSecond / pfWaterfallFlushHeight;
-                else
-                    resultingFramerate = rowsPerSecond / pfOutputHeight;
-                
-                int pfBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
-                pfImageDescriptor = new ImageDescriptor(format, width, height, true, pfBufferSize);
-
-                pfBufferCurrent = new byte[pfBufferSize];
-                pfBufferOld = new byte[pfBufferSize];
-                pfBufferOutput = new byte[pfBufferSize];
-                pfRow = 0;
+                height = finishline.Height;
+                resultingFramerate = finishline.ResultingFramerate;
             }
 
             int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
@@ -364,61 +315,17 @@ namespace Kinovea.Camera.Basler
             if (pylonImage == null)
                 return;
             
-            if (photofinishEnabled)
+            if (finishline.Enabled)
             {
-                int bytesPerPixel = pfImageDescriptor.Format == ImageFormat.Y800 ? 1 : 4;
-                int stride = pfImageDescriptor.Width * bytesPerPixel;
-
-                // Consolidate the current sub-frame.
-                Buffer.BlockCopy(pylonImage.Buffer, 0, pfBufferCurrent, pfRow * pfImageDescriptor.Width * bytesPerPixel, pfImageDescriptor.Width * bytesPerPixel * pfConsolidationHeight);
-                
+                bool flush = finishline.Consolidate(pylonImage.Buffer);
                 imageProvider.ReleaseImage();
-                pfRow += pfConsolidationHeight;
-                
-                if (pfWaterfallEnabled && (pfRow % pfWaterfallFlushHeight == 0))
+
+                if (flush)
                 {
-                    // Flush the current and old image to output in sliding window mode.
-                    // "section" is at 0 after we grabbed the first section of rows.
-                    int totalSections = pfOutputHeight / pfWaterfallFlushHeight;
-                    
-                    // Rows are always added to the bottom, so here we continue this pattern.
-                    // The current image is copied at the bottom, and the old image is copied at the top.
-                    // We just need to figure out which portion of each image to copy.
-                    int bufferCurrentSource = 0;
-                    int bufferCurrentLength = (pfSection + 1) * pfWaterfallFlushHeight * stride;
-                    int bufferCurrentDestination = (totalSections - (pfSection + 1)) * pfWaterfallFlushHeight * stride;
-                    int bufferOldSource = bufferCurrentLength;
-                    int bufferOldLength = bufferCurrentDestination;
-                    int bufferOldDestination = 0;
+                    ComputeDataRate(finishline.BufferOutput.Length);
 
-                    Buffer.BlockCopy(pfBufferCurrent, bufferCurrentSource, pfBufferOutput, bufferCurrentDestination, bufferCurrentLength);
-                    Buffer.BlockCopy(pfBufferOld, bufferOldSource, pfBufferOutput, bufferOldDestination, bufferOldLength);
-
-                    pfSection = (pfSection + 1) % totalSections;
-                    
-                    ComputeDataRate(pfBufferOutput.Length);
-                    
                     if (FrameProduced != null)
-                        FrameProduced(this, new FrameProducedEventArgs(pfBufferOutput, pfBufferOutput.Length));
-                }
-                
-                if (pfRow >= pfOutputHeight)
-                { 
-                    pfRow = 0;
-                    pfSection = 0;
-                    
-                    if (!pfWaterfallEnabled)
-                    {
-                        ComputeDataRate(pfBufferOutput.Length);
-
-                        if (FrameProduced != null)
-                            FrameProduced(this, new FrameProducedEventArgs(pfBufferCurrent, pfBufferCurrent.Length));
-                    }
-                    
-                    // Swap buffers.
-                    byte[] pfBufferTemp = pfBufferOld;
-                    pfBufferOld = pfBufferCurrent;
-                    pfBufferCurrent = pfBufferOld;
+                        FrameProduced(this, new FrameProducedEventArgs(finishline.BufferOutput, finishline.BufferOutput.Length));
                 }
             }
             else
