@@ -64,11 +64,12 @@ namespace Kinovea.Camera.IDS
         private bool grabbing;
         private bool firstOpen = true;
         private float resultingFramerate = 0;
+        private Finishline finishline = new Finishline();
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
-        private int bufferSize = 0;
-        private byte[] buffer;
+        private int incomingBufferSize = 0;
+        private byte[] incomingBuffer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
@@ -101,17 +102,26 @@ namespace Kinovea.Camera.IDS
 
             // FIXME: RGB24 should allocate buffers aligned to 4 bytes.
             // It is usually the case because none of the UI let the user choose a non aligned width.
-
             Rectangle rect;
             camera.Size.AOI.Get(out rect);
-            bufferSize = ImageFormatHelper.ComputeBufferSize(rect.Width, rect.Height, format);
-            buffer = new byte[bufferSize];
-            
-            bool topDown = true;
+            incomingBufferSize = ImageFormatHelper.ComputeBufferSize(rect.Width, rect.Height, format);
+            incomingBuffer = new byte[incomingBufferSize];
 
             resultingFramerate = IDSHelper.GetFramerate(camera);
+            int width = rect.Width;
+            int height = rect.Height;
 
-            return new ImageDescriptor(format, rect.Width, rect.Height, topDown, bufferSize);
+            finishline.Prepare(width, height, format, resultingFramerate);
+            if (finishline.Enabled)
+            {
+                height = finishline.Height;
+                resultingFramerate = finishline.ResultingFramerate;
+            }
+            
+            int outgoingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
+            bool topDown = true;
+            
+            return new ImageDescriptor(format, width, height, topDown, outgoingBufferSize);
         }
 
         /// <summary>
@@ -292,17 +302,31 @@ namespace Kinovea.Camera.IDS
             System.IntPtr ptrSrc;
             camera.Memory.ToIntPtr(memId, out ptrSrc);
 
-            fixed (byte* p = buffer)
+            fixed (byte* p = incomingBuffer)
             {
                 IntPtr ptrDst = (IntPtr)p;
                 camera.Memory.CopyImageMem(ptrSrc, memId, ptrDst);
             }
 
-            ComputeDataRate(bufferSize);
+            if (finishline.Enabled)
+            {
+                bool flush = finishline.Consolidate(incomingBuffer);
+                if (flush)
+                {
+                    ComputeDataRate(finishline.BufferOutput.Length);
 
-            if (FrameProduced != null)
-                FrameProduced(this, new FrameProducedEventArgs(buffer, bufferSize));
+                    if (FrameProduced != null)
+                        FrameProduced(this, new FrameProducedEventArgs(finishline.BufferOutput, finishline.BufferOutput.Length));
+                }
+            }
+            else
+            {
+                ComputeDataRate(incomingBufferSize);
 
+                if (FrameProduced != null)
+                    FrameProduced(this, new FrameProducedEventArgs(incomingBuffer, incomingBufferSize));
+            }
+            
             camera.Memory.Unlock(memId);
         }
 
