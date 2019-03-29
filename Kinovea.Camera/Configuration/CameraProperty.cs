@@ -30,13 +30,16 @@ namespace Kinovea.Camera
         /// </summary>
         public CameraPropertyType Type { get; set; }
 
+        /// <summary>
+        /// The range a value can take.
+        /// </summary>
         public string Minimum { get; set; }
         public string Maximum { get; set; }
         public string Step { get; set; }
         public bool CanBeAutomatic { get; set; }
 
         /// <summary>
-        /// The preferred user interface representation for the property.
+        /// The preferred user interface representation for the property (Widget).
         /// </summary>
         public CameraPropertyRepresentation Representation { get; set; }
 

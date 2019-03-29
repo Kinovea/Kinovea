@@ -117,6 +117,7 @@
     <Compile Include="Configuration\CameraPropertyLogarithmicView.Designer.cs">
       <DependentUpon>CameraPropertyLogarithmicView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\AbstractControlDescriptionProvider`2.cs" />
     <Compile Include="Events\CameraThumbnailProducedEventArgs.cs" />
     <Compile Include="Events\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Events\CamerasDiscoveredEventArgs.cs" />
