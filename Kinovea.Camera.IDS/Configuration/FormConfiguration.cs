@@ -170,17 +170,16 @@ namespace Kinovea.Camera.IDS
         private void PopulateCameraControls()
         {
             int top = lblAuto.Bottom;
-            Func<int, string> defaultValueMapper = (value) => value.ToString();
-
-            AddCameraProperty("width", CameraLang.FormConfiguration_Properties_ImageWidth, defaultValueMapper, top);
-            AddCameraProperty("height", CameraLang.FormConfiguration_Properties_ImageHeight, defaultValueMapper, top + 30);
-            AddCameraProperty("pixelclock", "Pixel clock (MHz):", defaultValueMapper, top + 60);
-            AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, defaultValueMapper, top + 90);
-            AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro, defaultValueMapper, top + 120);
-            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, defaultValueMapper, top + 150);
+            
+            AddCameraProperty("width", CameraLang.FormConfiguration_Properties_ImageWidth, top);
+            AddCameraProperty("height", CameraLang.FormConfiguration_Properties_ImageHeight, top + 30);
+            AddCameraProperty("pixelclock", "Pixel clock (MHz):", top + 60);
+            AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, top + 90);
+            AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro, top + 120);
+            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, top + 150);
         }
 
-        private void AddCameraProperty(string key, string text, Func<int, string> valueMapper, int top)
+        private void AddCameraProperty(string key, string text, int top)
         {
             if (!cameraProperties.ContainsKey(key))
                 return;
@@ -192,10 +191,10 @@ namespace Kinovea.Camera.IDS
             switch (property.Representation)
             {
                 case CameraPropertyRepresentation.LinearSlider:
-                    control = new CameraPropertyLinearView(property, text, valueMapper);
+                    control = new CameraPropertyLinearView(property, text, null);
                     break;
                 case CameraPropertyRepresentation.LogarithmicSlider:
-                    control = new CameraPropertyLogarithmicView(property, text, valueMapper);
+                    control = new CameraPropertyLogarithmicView(property, text, null);
                     break;
 
                 default:
