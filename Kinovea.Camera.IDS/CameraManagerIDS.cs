@@ -159,6 +159,8 @@ namespace Kinovea.Camera.IDS
         {
             if(cache.ContainsKey(summary.Identifier))
                 cache.Remove(summary.Identifier);
+
+            ProfileHelper.Delete(summary.Identifier);
         }
 
         public override void GetSingleImage(CameraSummary summary)
