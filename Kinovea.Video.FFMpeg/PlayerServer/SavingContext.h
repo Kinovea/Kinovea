@@ -40,6 +40,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		AVStream* pOutputVideoStream;			// Ouput stream for frames.
 		AVStream* pOutputDataStream;			// Output stream for meta data.
 		AVFrame* pInputFrame;					// The current incoming frame.
+        SwsContext* pScalingContext;            // The scaling context for the RGB -> YUV color conversion.
 		
 		double fPixelAspectRatio;				// Used to adapt pixel aspect ratio.
 		bool bInputWasMpeg2;					
@@ -51,6 +52,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		double fFramesInterval;				
 		int iBitrate;				
 		Size outputSize;
+        bool uncompressed;
 
 		// Control
 		bool bEncoderOpened;
@@ -62,6 +64,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 			iBitrate = 25000000;			// Default bitrate : 25 Mb/s. (DV)
 			fPixelAspectRatio = 1.0;		// Default aspect : square pixels.
 			outputSize = Size(720, 576);
+            uncompressed = false;
 		}
 	};
 }}}

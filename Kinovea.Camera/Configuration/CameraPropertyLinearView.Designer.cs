@@ -32,7 +32,9 @@
             this.lblValue = new System.Windows.Forms.Label();
             this.tbValue = new System.Windows.Forms.TrackBar();
             this.lblName = new System.Windows.Forms.Label();
+            this.nud = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.tbValue)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud)).BeginInit();
             this.SuspendLayout();
             // 
             // cbAuto
@@ -51,7 +53,7 @@
             this.lblValue.BackColor = System.Drawing.Color.Transparent;
             this.lblValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblValue.ForeColor = System.Drawing.Color.Black;
-            this.lblValue.Location = new System.Drawing.Point(129, 7);
+            this.lblValue.Location = new System.Drawing.Point(109, 8);
             this.lblValue.Name = "lblValue";
             this.lblValue.Size = new System.Drawing.Size(13, 13);
             this.lblValue.TabIndex = 106;
@@ -60,8 +62,8 @@
             // 
             // tbValue
             // 
-            this.tbValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbValue.LargeChange = 1;
             this.tbValue.Location = new System.Drawing.Point(184, 5);
             this.tbValue.Name = "tbValue";
@@ -82,17 +84,32 @@
             this.lblName.Text = "Name:";
             this.lblName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // CameraPropertyView
+            // nud
+            // 
+            this.nud.Location = new System.Drawing.Point(128, 5);
+            this.nud.Name = "nud";
+            this.nud.Size = new System.Drawing.Size(50, 20);
+            this.nud.TabIndex = 108;
+            this.nud.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nud.ValueChanged += new System.EventHandler(this.nud_ValueChanged);
+            // 
+            // CameraPropertyLinearView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.nud);
             this.Controls.Add(this.cbAuto);
             this.Controls.Add(this.lblValue);
             this.Controls.Add(this.tbValue);
             this.Controls.Add(this.lblName);
-            this.Name = "CameraPropertyView";
+            this.Name = "CameraPropertyLinearView";
             this.Size = new System.Drawing.Size(400, 32);
             ((System.ComponentModel.ISupportInitialize)(this.tbValue)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -104,5 +121,6 @@
         private System.Windows.Forms.Label lblValue;
         private System.Windows.Forms.TrackBar tbValue;
         private System.Windows.Forms.Label lblName;
+        private System.Windows.Forms.NumericUpDown nud;
     }
 }

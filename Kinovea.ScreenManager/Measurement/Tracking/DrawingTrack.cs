@@ -1261,7 +1261,7 @@ namespace Kinovea.ScreenManager
                     tp.ReadXml(xmlReader);
                     
                     // Time is stored in absolute timestamps.
-                    AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T, true));
+                    AbstractTrackPoint adapted = tracker.CreateOrphanTrackPoint(tp.Point.Scale(scale.X, scale.Y), timestampMapper(tp.T, false));
 
                     positions.Add(adapted);
                 }

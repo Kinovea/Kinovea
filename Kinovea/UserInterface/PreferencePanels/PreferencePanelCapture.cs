@@ -58,6 +58,7 @@ namespace Kinovea.Root
         private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
         private double displaySynchronizationFramerate;
         private CaptureRecordingMode recordingMode;
+        private bool saveUncompressedVideo;
         private int memoryBuffer;
         private FilenameHelper filenameHelper = new FilenameHelper();
         private FormPatterns formPatterns;
@@ -91,6 +92,7 @@ namespace Kinovea.Root
             capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
             displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
+            saveUncompressedVideo = PreferencesManager.CapturePreferences.SaveUncompressedVideo;
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
         }
         private void InitPage()
@@ -120,6 +122,12 @@ namespace Kinovea.Root
             cmbVideoFormat.Items.Add("AVI");
             int videoFormat = (int)capturePathConfiguration.VideoFormat;
             cmbVideoFormat.SelectedIndex = ((int)videoFormat < cmbVideoFormat.Items.Count) ? (int)videoFormat : 0;
+
+            lblUncompressedVideoFormat.Text = "Uncompressed video format:"; //RootLang.dlgPreferences_Capture_lblVideoFormat;
+            cmbUncompressedVideoFormat.Items.Add("MKV");
+            cmbUncompressedVideoFormat.Items.Add("AVI");
+            int uncompressedVideoFormat = (int)capturePathConfiguration.UncompressedVideoFormat;
+            cmbUncompressedVideoFormat.SelectedIndex = ((int)uncompressedVideoFormat < cmbUncompressedVideoFormat.Items.Count) ? (int)uncompressedVideoFormat : 0;
 
             lblFramerate.Text = RootLang.dlgPreferences_Capture_lblForcedFramerate;
             tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
@@ -153,8 +161,11 @@ namespace Kinovea.Root
             grpRecordingMode.Text = RootLang.dlgPreferences_Capture_RecordingMode;
             rbRecordingCamera.Text = RootLang.dlgPreferences_Capture_RecordingMode_Camera;
             rbRecordingDisplay.Text = RootLang.dlgPreferences_Capture_RecordingMode_Display;
+            chkUncompressedVideo.Text = "Record without compression"; 
+
             rbRecordingCamera.Checked = recordingMode == CaptureRecordingMode.Camera;
             rbRecordingDisplay.Checked = recordingMode != CaptureRecordingMode.Camera;
+            chkUncompressedVideo.Checked = saveUncompressedVideo;
         }
 
         private void InitPageImageNaming()
@@ -239,6 +250,10 @@ namespace Kinovea.Root
         private void cmbVideoFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
             capturePathConfiguration.VideoFormat = (KinoveaVideoFormat)cmbVideoFormat.SelectedIndex;
+        }
+        private void cmbUncompressedVideoFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            capturePathConfiguration.UncompressedVideoFormat = (KinoveaUncompressedVideoFormat)cmbUncompressedVideoFormat.SelectedIndex;
         }
         private void tbFramerate_TextChanged(object sender, EventArgs e)
         {
@@ -343,6 +358,11 @@ namespace Kinovea.Root
         private void radioRecordingMode_CheckedChanged(object sender, EventArgs e)
         {
             recordingMode = rbRecordingCamera.Checked ? CaptureRecordingMode.Camera : CaptureRecordingMode.Display;
+            chkUncompressedVideo.Enabled = recordingMode == CaptureRecordingMode.Camera;
+        }
+        private void chkUncompressedVideo_CheckedChanged(object sender, EventArgs e)
+        {
+            saveUncompressedVideo = chkUncompressedVideo.Checked;
         }
         #endregion
         #endregion
@@ -353,6 +373,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate = displaySynchronizationFramerate;
             PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
             PreferencesManager.CapturePreferences.RecordingMode = recordingMode;
+            PreferencesManager.CapturePreferences.SaveUncompressedVideo = saveUncompressedVideo;
         }
 
         private void btnMacroReference_Click(object sender, EventArgs e)

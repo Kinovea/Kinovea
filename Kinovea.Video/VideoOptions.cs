@@ -26,17 +26,19 @@ namespace Kinovea.Video
     {
         public ImageAspectRatio ImageAspectRatio { get; set; }
         public ImageRotation ImageRotation { get; set; }
+        public Demosaicing Demosaicing { get; set; }
         public bool Deinterlace { get; set; }
 
-        public VideoOptions(ImageAspectRatio aspect, ImageRotation rotation, bool deint)
+        public VideoOptions(ImageAspectRatio aspect, ImageRotation rotation, Demosaicing demosaicing, bool deinterlace)
         {
             ImageAspectRatio = aspect;
             ImageRotation = rotation;
-            Deinterlace = deint;
+            Demosaicing = demosaicing;
+            Deinterlace = deinterlace;
         }
         
         public static VideoOptions Default {
-            get { return new VideoOptions(ImageAspectRatio.Auto, ImageRotation.Rotate0, false);}
+            get { return new VideoOptions(ImageAspectRatio.Auto, ImageRotation.Rotate0, Demosaicing.None, false);}
         }
     }
 }

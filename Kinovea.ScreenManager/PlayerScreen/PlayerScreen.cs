@@ -106,6 +106,26 @@ namespace Kinovea.ScreenManager
                 view.ReferenceImageSizeChanged();
             }
         }
+        public override Demosaicing Demosaicing
+        {
+            get
+            {
+                return frameServer.VideoReader.Options.Demosaicing;
+            }
+
+            set
+            {
+                if (!frameServer.VideoReader.CanChangeDemosaicing)
+                    return;
+
+                bool uncached = frameServer.VideoReader.ChangeDemosaicing(value);
+
+                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                    view.UpdateWorkingZone(true);
+
+                RefreshImage();
+            }
+        }
         public override bool Mirrored
         {
             get { return frameServer.Metadata.Mirrored; }

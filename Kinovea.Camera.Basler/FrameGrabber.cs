@@ -67,6 +67,7 @@ namespace Kinovea.Camera.Basler
         private bool grabbing;
         private bool firstOpen = true;
         private float resultingFramerate = 0;
+        private Finishline finishline = new Finishline();
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
@@ -122,16 +123,24 @@ namespace Kinovea.Camera.Basler
             // Note: the image provider will perform the Bayer conversion itself and only output two formats.
             // - Y800 for anything monochrome.
             // - RGB32 for anything color.
-            imageProvider.SetDebayering(specific.Debayering);
-            bool monochrome = Pylon.IsMono(pixelType);
-            if (Pylon.IsBayer(pixelType) && specific.Debayering)
-                monochrome = false;
+            imageProvider.SetDebayering(specific.Bayer8Conversion);
 
-            ImageFormat format = monochrome ? format = ImageFormat.Y800 : ImageFormat.RGB32;
+            bool isBayer = Pylon.IsBayer(pixelType);
+            bool isBayer8 = PylonHelper.IsBayer8(pixelType);
+            bool bayerColor = (isBayer && !isBayer8) || (isBayer8 && specific.Bayer8Conversion == Bayer8Conversion.Color);
+            bool color = !Pylon.IsMono(pixelType) || bayerColor;
+            ImageFormat format = color ? ImageFormat.RGB32 : ImageFormat.Y800;
+
+            finishline.Prepare(width, height, format, resultingFramerate);
+            if (finishline.Enabled)
+            {
+                height = finishline.Height;
+                resultingFramerate = finishline.ResultingFramerate;
+            }
 
             int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
             bool topDown = true;
-
+            
             return new ImageDescriptor(format, width, height, topDown, bufferSize);
         }
 
@@ -305,13 +314,29 @@ namespace Kinovea.Camera.Basler
             ImageProvider.Image pylonImage = imageProvider.GetLatestImage();
             if (pylonImage == null)
                 return;
+            
+            if (finishline.Enabled)
+            {
+                bool flush = finishline.Consolidate(pylonImage.Buffer);
+                imageProvider.ReleaseImage();
 
-            ComputeDataRate(pylonImage.Buffer.Length);
+                if (flush)
+                {
+                    ComputeDataRate(finishline.BufferOutput.Length);
 
-            if (FrameProduced != null)
-                FrameProduced(this, new FrameProducedEventArgs(pylonImage.Buffer, pylonImage.Buffer.Length));
+                    if (FrameProduced != null)
+                        FrameProduced(this, new FrameProducedEventArgs(finishline.BufferOutput, finishline.BufferOutput.Length));
+                }
+            }
+            else
+            {
+                ComputeDataRate(pylonImage.Buffer.Length);
 
-            imageProvider.ReleaseImage();
+                if (FrameProduced != null)
+                    FrameProduced(this, new FrameProducedEventArgs(pylonImage.Buffer, pylonImage.Buffer.Length));
+
+                imageProvider.ReleaseImage();
+            }
         }
 
         private void imageProvider_GrabErrorEvent(Exception grabException, string additionalErrorMessage)

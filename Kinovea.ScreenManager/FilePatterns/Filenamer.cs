@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -83,13 +84,26 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public static string GetVideoFileExtension()
+        public static string GetVideoFileExtension(bool uncompressed)
         {
-            switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.VideoFormat)
+            if (uncompressed)
             {
-                case KinoveaVideoFormat.MKV: return ".mkv";
-                case KinoveaVideoFormat.AVI: return ".avi";
-                default: return ".mp4";
+                switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.UncompressedVideoFormat)
+                {
+                    case KinoveaUncompressedVideoFormat.AVI: return ".avi";
+                    case KinoveaUncompressedVideoFormat.MKV: 
+                    default: return ".mkv";
+                }
+            }
+            else
+            {
+                switch (PreferencesManager.CapturePreferences.CapturePathConfiguration.VideoFormat)
+                {
+                    case KinoveaVideoFormat.MKV: return ".mkv";
+                    case KinoveaVideoFormat.AVI: return ".avi";
+                    case KinoveaVideoFormat.MP4:
+                    default: return ".mp4";
+                }
             }
         }
 

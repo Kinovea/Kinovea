@@ -158,5 +158,13 @@ namespace Kinovea.Camera.Basler
                 // Silent catch.
             }
         }
+
+        public static bool IsBayer8(EPylonPixelType pixelType)
+        {
+            return pixelType == EPylonPixelType.PixelType_BayerBG8 ||
+                   pixelType == EPylonPixelType.PixelType_BayerGB8 ||
+                   pixelType == EPylonPixelType.PixelType_BayerGR8 ||
+                   pixelType == EPylonPixelType.PixelType_BayerRG8;
+        }
     }
 }

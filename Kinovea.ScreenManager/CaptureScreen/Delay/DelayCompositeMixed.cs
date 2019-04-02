@@ -76,14 +76,15 @@ namespace Kinovea.ScreenManager
             currentPosition = 0;
             int sidecount = Math.Max(1, (int)Math.Ceiling(Math.Sqrt(count)));
 
+            Rectangle source = new Rectangle(0, 0, imageDescriptor.Width, imageDescriptor.Height);
             Size size = new Size(imageDescriptor.Width / sidecount, imageDescriptor.Height / sidecount);
+            Rectangle destination = new Rectangle(0, 0, size.Width, size.Height);
 
-            Rectangle bounds = new Rectangle(0, 0, size.Width, size.Height);
-            DelaySubframeConstant subframe0 = new DelaySubframeConstant(bounds, 0);
+            DelaySubframeConstant subframe0 = new DelaySubframeConstant(source, destination, 0);
             subframes.Add(subframe0);
 
-            bounds = new Rectangle(size.Width, 0, size.Width, size.Height);
-            DelaySubframeConstant subframe1 = new DelaySubframeConstant(bounds, totalFrames);
+            destination = new Rectangle(size.Width, 0, size.Width, size.Height);
+            DelaySubframeConstant subframe1 = new DelaySubframeConstant(source, destination, totalFrames);
             subframes.Add(subframe1);
 
             // Slow motion.
@@ -93,13 +94,13 @@ namespace Kinovea.ScreenManager
 
             int startPosition = 0;
 
-            bounds = new Rectangle(0, size.Height, size.Width, size.Height);
-            DelaySubframeVariable subframe2 = new DelaySubframeVariable(bounds, refreshRate, totalFrames, startPosition, cycleDuration);
+            destination = new Rectangle(0, size.Height, size.Width, size.Height);
+            DelaySubframeVariable subframe2 = new DelaySubframeVariable(source, destination, refreshRate, totalFrames, startPosition, cycleDuration);
             subframes.Add(subframe2);
 
-            bounds = new Rectangle(size.Width, size.Height, size.Width, size.Height);
+            destination = new Rectangle(size.Width, size.Height, size.Width, size.Height);
             startPosition += shift;
-            DelaySubframeVariable subframe3 = new DelaySubframeVariable(bounds, refreshRate, totalFrames, startPosition, cycleDuration);
+            DelaySubframeVariable subframe3 = new DelaySubframeVariable(source, destination, refreshRate, totalFrames, startPosition, cycleDuration);
             subframes.Add(subframe3);
         }
     }

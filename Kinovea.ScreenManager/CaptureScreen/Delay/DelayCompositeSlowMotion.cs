@@ -94,9 +94,10 @@ namespace Kinovea.ScreenManager
             refreshRate = Math.Min(refreshRate, 1.0f);
             int cycleDuration = (int)Math.Round(totalFrames * refreshRate);
             int startPosition = 0;
-
-            Rectangle bounds = new Rectangle(0, 0, imageDescriptor.Width, imageDescriptor.Height);
-            DelaySubframeVariable subframe = new DelaySubframeVariable(bounds, refreshRate, totalFrames, startPosition, cycleDuration);
+            
+            Rectangle source = new Rectangle(0, 0, imageDescriptor.Width, imageDescriptor.Height);
+            Rectangle destination = new Rectangle(0, 0, imageDescriptor.Width, imageDescriptor.Height);
+            DelaySubframeVariable subframe = new DelaySubframeVariable(source, destination, refreshRate, totalFrames, startPosition, cycleDuration);
             subframes.Add(subframe);
         }
     }

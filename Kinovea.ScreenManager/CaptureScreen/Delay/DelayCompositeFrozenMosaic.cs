@@ -76,6 +76,7 @@ namespace Kinovea.ScreenManager
 
             int sidecount = Math.Max(1, (int)Math.Ceiling(Math.Sqrt(count)));
 
+            Rectangle source = new Rectangle(0, 0, imageDescriptor.Width, imageDescriptor.Height);
             Size size = new Size(imageDescriptor.Width / sidecount, imageDescriptor.Height / sidecount);
 
             for (int i = 0; i < sidecount; i++)
@@ -86,11 +87,9 @@ namespace Kinovea.ScreenManager
                     if (index > count - 1)
                         continue;
 
-                    Rectangle bounds = new Rectangle(j * size.Width, i * size.Height, size.Width, size.Height);
-                    
+                    Rectangle destination = new Rectangle(j * size.Width, i * size.Height, size.Width, size.Height);
                     int age = start + ((count - 1 - index) * interval);
-
-                    DelaySubframeConstant subframe = new DelaySubframeConstant(bounds, age);
+                    DelaySubframeConstant subframe = new DelaySubframeConstant(source, destination, age);
                     subframes.Add(subframe);
                 }
             }

@@ -1309,6 +1309,18 @@
   <ItemGroup>
     <None Include="Resources\rectangle.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rggb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bggr.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gbrg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\grbg.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

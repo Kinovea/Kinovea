@@ -92,6 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bayer8Conversion.cs" />
     <Compile Include="CameraManagerBasler.cs" />
     <Compile Include="Configuration\CameraPropertyManager.cs" />
     <Compile Include="Configuration\FormConfiguration.cs">

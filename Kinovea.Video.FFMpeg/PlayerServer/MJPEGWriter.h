@@ -60,7 +60,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
     // Public Methods
     public:
-        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, double _fFramesInterval, double _fFileFramesInterval);
+        SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, String^ _formatString, ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval);
         SaveResult CloseSavingContext(bool _bEncodingSuccess);
         SaveResult SaveFrame(ImageFormat format, array<System::Byte>^ buffer, Int64 length, bool topDown);
 
@@ -68,16 +68,17 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     private:
         double ComputeBitrate(Size outputSize, double frameInterval);
         bool SetupMuxer(SavingContext^ _SavingContext);
-        bool SetupEncoder(SavingContext^ _SavingContext);
+        bool SetupEncoder(SavingContext^ _SavingContext, ImageFormat _imageFormat);
         
         bool EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
         bool EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
         bool EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length, bool topDown);
         bool EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, array<System::Byte>^ managedBuffer, Int64 length);
 
-        bool WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
+        bool WriteBuffer(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
         void SanityCheck(AVFormatContext* s);
         void LogError(String^ context, int ffmpegError);
+        void LogStats();
         static int GreatestCommonDenominator(int a, int b);
 
     // Members
@@ -86,7 +87,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         Stopwatch^ m_swEncoding;
         int m_frame;
         Int64 m_encodingDurationAccumulator;
-        double m_budget;
         static const double megabyte = 1024 * 1024;
         static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
     };

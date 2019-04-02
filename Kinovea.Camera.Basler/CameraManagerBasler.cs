@@ -221,7 +221,7 @@ namespace Kinovea.Camera.Basler
                 if(form.SpecificChanged)
                 {
                     info.StreamFormat = form.SelectedStreamFormat.Symbol;
-                    info.Debayering = form.Debayering;
+                    info.Bayer8Conversion = form.Bayer8Conversion;
                     info.CameraProperties = form.CameraProperties;
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
@@ -306,12 +306,11 @@ namespace Kinovea.Camera.Basler
                 if (xmlStreamFormat != null)
                     streamFormat = xmlStreamFormat.InnerText;
 
-                bool debayering = false;
-                XmlNode xmlDebayering = doc.SelectSingleNode("/Basler/Debayering");
-                if (xmlDebayering != null)
-                    debayering = bool.Parse(xmlDebayering.InnerText);
-
-
+                Bayer8Conversion bayer8Conversion = Bayer8Conversion.Color;
+                XmlNode xmlBayer8Conversion = doc.SelectSingleNode("/Basler/Bayer8Conversion");
+                if (xmlBayer8Conversion != null)
+                    bayer8Conversion = (Bayer8Conversion)Enum.Parse(typeof(Bayer8Conversion), xmlBayer8Conversion.InnerText);
+                
                 Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
 
                 XmlNodeList props = doc.SelectNodes("/Basler/CameraProperties/CameraProperty");
@@ -341,7 +340,7 @@ namespace Kinovea.Camera.Basler
                 }
 
                 info.StreamFormat = streamFormat;
-                info.Debayering = debayering;
+                info.Bayer8Conversion = bayer8Conversion;
                 info.CameraProperties = cameraProperties;
             }
             catch(Exception e)
@@ -365,10 +364,10 @@ namespace Kinovea.Camera.Basler
             xmlStreamFormat.InnerText = info.StreamFormat;
             xmlRoot.AppendChild(xmlStreamFormat);
 
-            XmlElement xmlDebayering = doc.CreateElement("Debayering");
-            xmlDebayering.InnerText = info.Debayering.ToString().ToLower();
-            xmlRoot.AppendChild(xmlDebayering);
-
+            XmlElement xmlBayer8Conversion = doc.CreateElement("Bayer8Conversion");
+            xmlBayer8Conversion.InnerText = info.Bayer8Conversion.ToString().ToLower();
+            xmlRoot.AppendChild(xmlBayer8Conversion);
+            
             XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
 
             foreach (KeyValuePair<string, CameraProperty> pair in info.CameraProperties)

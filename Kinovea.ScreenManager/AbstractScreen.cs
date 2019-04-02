@@ -100,6 +100,11 @@ namespace Kinovea.ScreenManager
             get;
             set;
         }
+        public abstract Demosaicing Demosaicing
+        {
+            get;
+            set;
+        }
         public abstract bool Mirrored
         {
             get;

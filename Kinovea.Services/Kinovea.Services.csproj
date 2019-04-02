@@ -204,6 +204,8 @@
     <Compile Include="Preferences\DelayCompositeType.cs" />
     <Compile Include="Preferences\FileProperty.cs" />
     <Compile Include="Preferences\FilePropertyVisibility.cs" />
+    <Compile Include="Preferences\KinoveaUncompressedVideoFormat.cs" />
+    <Compile Include="Preferences\PhotofinishConfiguration.cs" />
     <Compile Include="PreferenceTab.cs" />
     <Compile Include="Preferences\TrackerParameterUnit.cs" />
     <Compile Include="Preferences\TrackingProfile.cs" />
