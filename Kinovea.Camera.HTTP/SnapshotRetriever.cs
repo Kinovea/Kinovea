@@ -61,9 +61,9 @@ namespace Kinovea.Camera.HTTP
                 url = manager.BuildURL(specific);
             
             if(specific.Format == "MJPEG")
-                device = new CameraHTTPClientMJPEG(url);
+                device = new CameraHTTPClientMJPEG(url, specific.User, specific.Password);
             else if(specific.Format == "JPEG")
-                device = new CameraHTTPClientJPEG(url);
+                device = new CameraHTTPClientJPEG(url, specific.User, specific.Password);
         }
 
         /// <summary>
