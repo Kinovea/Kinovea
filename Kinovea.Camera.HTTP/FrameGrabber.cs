@@ -81,10 +81,11 @@ namespace Kinovea.Camera.HTTP
 
             string url = manager.BuildURL(specific);
             this.format = specific.Format;
+            
             if (format == "MJPEG")
-                device = new CameraHTTPClientMJPEG(url);
+                device = new CameraHTTPClientMJPEG(url, specific.User, specific.Password);
             else if (format == "JPEG")
-                device = new CameraHTTPClientJPEG(url);
+                device = new CameraHTTPClientJPEG(url, specific.User, specific.Password);
         }
 
         /// <summary>

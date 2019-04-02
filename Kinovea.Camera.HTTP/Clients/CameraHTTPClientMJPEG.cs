@@ -20,9 +20,15 @@ namespace Kinovea.Camera.HTTP
 
         private MJPEGStream client;
 
-        public CameraHTTPClientMJPEG(string url)
+        public CameraHTTPClientMJPEG(string url, string login, string password)
         {
             client = new MJPEGStream(url);
+            if (!string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(password))
+            {
+                client.Login = login;
+                client.Password = password;
+            }
+            
             client.NewFrameBuffer += client_NewFrameBuffer;
             client.NewFrame += client_NewFrame;
             client.VideoSourceError += client_VideoSourceError;
