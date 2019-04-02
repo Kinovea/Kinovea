@@ -235,12 +235,16 @@ namespace Kinovea.ScreenManager
         {
             // Precision center.
             float memoPenWidth = pen.Width;
+            DashStyle memoPenDash = pen.DashStyle;
+
             pen.Width = 1.0f;
             pen.DashStyle = DashStyle.Solid;
             Point c = center;
             canvas.DrawLine(pen, center.X - crossRadius, center.Y, center.X + crossRadius, center.Y);
             canvas.DrawLine(pen, center.X, center.Y - crossRadius, center.X, center.Y + crossRadius);
+
             pen.Width = memoPenWidth;
+            pen.DashStyle = memoPenDash;
         }
         public override void MoveHandle(PointF point, int handleNumber, Keys modifiers)
         {
