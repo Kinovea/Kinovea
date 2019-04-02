@@ -7,7 +7,9 @@
     This stylesheet formats a .kva 1.5 file to .kva 2.0 file.
     You shouldn't have to use it manually, it is processed by Kinovea to read pre 0.8.16 files.
     
+    2019-04-02 - Update to calibration, lines, tracks.
     2011-08-06 - Initial converter. Styles are not converted.
+
     TODO: Convert time of track points from relative to absolute.
 -->
 
@@ -17,8 +19,6 @@
     <FormatVersion>2.0</FormatVersion>
     <Producer>Kinovea XSLT Converter (1.5 to 2.0)</Producer>
     <xsl:copy-of select="KinoveaVideoAnalysis/OriginalFilename"/>
-    
-    <!-- <FullPath> -->
 
     <xsl:if test="KinoveaVideoAnalysis/GlobalTitle">
         <xsl:copy-of select="KinoveaVideoAnalysis/GlobalTitle"/>
@@ -26,34 +26,10 @@
     <xsl:copy-of select="KinoveaVideoAnalysis/ImageSize"/>
     <xsl:copy-of select="KinoveaVideoAnalysis/AverageTimeStampsPerFrame"/>
     
-    <!-- <CaptureFramerate>29.97002997003</CaptureFramerate> -->
-    <!-- <UserFramerate>29.97002997003</UserFramerate>  -->
-    
     <xsl:copy-of select="KinoveaVideoAnalysis/FirstTimeStamp"/>
     <xsl:copy-of select="KinoveaVideoAnalysis/SelectionStart"/>
     
-    <!-- <xsl:if test="KinoveaVideoAnalysis/DuplicationFactor">
-        <xsl:copy-of select="KinoveaVideoAnalysis/DuplicationFactor"/>
-    </xsl:if> -->
-    
-    <!--xsl:if test="KinoveaVideoAnalysis/CalibrationHelp">
-        <xsl:copy-of select="KinoveaVideoAnalysis/CalibrationHelp"/>
-    </xsl:if-->
-
-    <Calibration>
-        <!-- Only line calibration was supported. -->
-        <CalibrationLine>
-            <Origin><xsl:value-of select="KinoveaVideoAnalysis/CalibrationHelp/CoordinatesOrigin"/></Origin>
-            <Scale><xsl:value-of select="KinoveaVideoAnalysis/CalibrationHelp/PixelToUnit"/></Scale>
-        </CalibrationLine>
-        <Unit>
-            <xsl:attribute name="Abbreviation">
-                <xsl:value-of select="KinoveaVideoAnalysis/CalibrationHelp/LengthUnit/@UserUnitLength"/>
-            </xsl:attribute>
-            <xsl:value-of select="KinoveaVideoAnalysis/CalibrationHelp/LengthUnit"/>
-        </Unit>
-    </Calibration>
-    
+    <xsl:apply-templates select="//CalibrationHelp"/>
     <xsl:apply-templates select="//Keyframes"/>
     <xsl:apply-templates select="//Chronos"/>
     <xsl:apply-templates select="//Tracks"/>
@@ -61,6 +37,32 @@
     <Trackability />
 </KinoveaVideoAnalysis>
 
+</xsl:template>
+
+<xsl:template match="CalibrationHelp">
+    <Calibration>
+        <!-- Only line calibration was supported. -->
+        <CalibrationLine>
+            <xsl:if test="not(CoordinatesOrigin='-1;-1')">
+                <Origin><xsl:value-of select="CoordinatesOrigin"/></Origin>
+            </xsl:if>
+            <Scale><xsl:value-of select="PixelToUnit"/></Scale>
+        </CalibrationLine>
+        <Unit>
+            <xsl:attribute name="Abbreviation">
+                <xsl:value-of select="LengthUnit/@UserUnitLength"/>
+            </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="LengthUnit='0'">Centimeters</xsl:when>
+                <xsl:when test="LengthUnit='1'">Meters</xsl:when>
+                <xsl:when test="LengthUnit='2'">Inches</xsl:when>
+                <xsl:when test="LengthUnit='3'">Feet</xsl:when>
+                <xsl:when test="LengthUnit='4'">Yards</xsl:when>
+                <xsl:when test="LengthUnit='5'">Pixels</xsl:when>
+                <xsl:otherwise>Pixels</xsl:otherwise>
+            </xsl:choose>
+        </Unit>
+    </Calibration>
 </xsl:template>
 
 <xsl:template match="Keyframes">
@@ -152,18 +154,46 @@
 </xsl:template>
 
 <xsl:template name="DrawingLine2D">
-    <xsl:element name="Line">
-        <xsl:element name="Start"><xsl:value-of select="m_StartPoint"/></xsl:element>
-        <xsl:element name="End"><xsl:value-of select="m_EndPoint"/></xsl:element>
-        <xsl:element name="MeasureVisible"><xsl:value-of select="MeasureIsVisible"/></xsl:element>
-        <!-- FIXME: Convert style -->
-        <xsl:if test="InfosFading">
-            <xsl:copy-of select="InfosFading"/>
-        </xsl:if>
-        <xsl:if test="Measure">
-            <xsl:copy-of select="Measure"/>
-        </xsl:if>
-    </xsl:element>
+    <Line>
+        <Start><xsl:value-of select="m_StartPoint"/></Start>
+        <End><xsl:value-of select="m_EndPoint"/></End>
+
+        <ExtraData>
+            <xsl:choose>
+                <xsl:when test="MeasureIsVisible='True'">TotalDistance</xsl:when>
+                <xsl:otherwise>None</xsl:otherwise>
+            </xsl:choose>
+        </ExtraData>
+        <MeasureLabel>
+            <!-- Fake space position to avoid it being invisible. -->
+            <SpacePosition><xsl:value-of select="m_StartPoint"/></SpacePosition>
+            <TimePosition>0</TimePosition>
+        </MeasureLabel>
+        
+        <DrawingStyle>
+            <Color Key="color">
+                <Value><xsl:value-of select="LineStyle/ColorRGB"/></Value>
+            </Color>
+            <LineSize Key="line size">
+                <Value><xsl:value-of select="LineStyle/Size"/></Value>
+            </LineSize>
+            <LineShape Key="line shape">
+                <Value>Solid</Value>
+            </LineShape>
+            <Arrows Key="arrows">
+                <Value>
+                    <xsl:choose>
+                        <xsl:when test="LineStyle/LineShape='Simple'">None</xsl:when>
+                        <xsl:when test="LineStyle/LineShape='EndArrow'">EndArrow</xsl:when>
+                        <xsl:when test="LineStyle/LineShape='DoubleArrow'">DoubleArrow</xsl:when>
+                        <xsl:otherwise>None</xsl:otherwise>
+                    </xsl:choose>
+                </Value>
+            </Arrows>
+        </DrawingStyle>
+        <xsl:copy-of select="InfosFading"/>
+        <xsl:copy-of select="Measure"/>
+    </Line>
 </xsl:template>
 
 <xsl:template name="DrawingPencil">
