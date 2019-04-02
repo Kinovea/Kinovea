@@ -17,23 +17,48 @@
     <FormatVersion>2.0</FormatVersion>
     <Producer>Kinovea XSLT Converter (1.5 to 2.0)</Producer>
     <xsl:copy-of select="KinoveaVideoAnalysis/OriginalFilename"/>
+    
+    <!-- <FullPath> -->
+
     <xsl:if test="KinoveaVideoAnalysis/GlobalTitle">
         <xsl:copy-of select="KinoveaVideoAnalysis/GlobalTitle"/>
     </xsl:if>
     <xsl:copy-of select="KinoveaVideoAnalysis/ImageSize"/>
     <xsl:copy-of select="KinoveaVideoAnalysis/AverageTimeStampsPerFrame"/>
+    
+    <!-- <CaptureFramerate>29.97002997003</CaptureFramerate> -->
+    <!-- <UserFramerate>29.97002997003</UserFramerate>  -->
+    
     <xsl:copy-of select="KinoveaVideoAnalysis/FirstTimeStamp"/>
     <xsl:copy-of select="KinoveaVideoAnalysis/SelectionStart"/>
-    <xsl:if test="KinoveaVideoAnalysis/DuplicationFactor">
+    
+    <!-- <xsl:if test="KinoveaVideoAnalysis/DuplicationFactor">
         <xsl:copy-of select="KinoveaVideoAnalysis/DuplicationFactor"/>
-    </xsl:if>
-    <xsl:if test="KinoveaVideoAnalysis/CalibrationHelp">
+    </xsl:if> -->
+    
+    <!--xsl:if test="KinoveaVideoAnalysis/CalibrationHelp">
         <xsl:copy-of select="KinoveaVideoAnalysis/CalibrationHelp"/>
-    </xsl:if>
+    </xsl:if-->
+
+    <Calibration>
+        <!-- Only line calibration was supported. -->
+        <CalibrationLine>
+            <Origin><xsl:value-of select="KinoveaVideoAnalysis/CalibrationHelp/CoordinatesOrigin"/></Origin>
+            <Scale><xsl:value-of select="KinoveaVideoAnalysis/CalibrationHelp/PixelToUnit"/></Scale>
+        </CalibrationLine>
+        <Unit>
+            <xsl:attribute name="Abbreviation">
+                <xsl:value-of select="KinoveaVideoAnalysis/CalibrationHelp/LengthUnit/@UserUnitLength"/>
+            </xsl:attribute>
+            <xsl:value-of select="KinoveaVideoAnalysis/CalibrationHelp/LengthUnit"/>
+        </Unit>
+    </Calibration>
     
     <xsl:apply-templates select="//Keyframes"/>
     <xsl:apply-templates select="//Chronos"/>
     <xsl:apply-templates select="//Tracks"/>
+
+    <Trackability />
 </KinoveaVideoAnalysis>
 
 </xsl:template>
@@ -170,6 +195,9 @@
     <Tracks>
     <xsl:for-each select="Track">
         <Track>
+            <xsl:attribute name="name">
+                <xsl:value-of select="Label/Text"/>
+            </xsl:attribute>
             <xsl:copy-of select="TimePosition"/>
             <xsl:if test="Mode">
                 <xsl:copy-of select="Mode"/>
@@ -191,6 +219,30 @@
                     </xsl:element>
                 </xsl:for-each>
             </xsl:element>
+
+            <xsl:element name="MainLabel">
+                <xsl:attribute name="Text">
+                    <xsl:value-of select="Label/Text"/>
+                </xsl:attribute>
+                <xsl:element name="SpacePosition">
+                    <xsl:value-of select="MainLabel/KeyframeLabel/SpacePosition"/>
+                </xsl:element>
+                <xsl:element name="TimePosition">
+                    <xsl:value-of select="MainLabel/KeyframeLabel/TimePosition"/>
+                </xsl:element>
+            </xsl:element>
+
+            <DrawingStyle>
+                <Color Key="color">
+                    <Value><xsl:value-of select="TrackLine/LineStyle/ColorRGB"/></Value>
+                </Color>
+                <LineSize Key="line size">
+                    <Value><xsl:value-of select="TrackLine/LineStyle/Size"/></Value>
+                </LineSize>
+                <TrackShape Key="track shape">
+                    <Value>Solid;false</Value>
+                </TrackShape>
+            </DrawingStyle>
         </Track>
     </xsl:for-each>
     </Tracks>
