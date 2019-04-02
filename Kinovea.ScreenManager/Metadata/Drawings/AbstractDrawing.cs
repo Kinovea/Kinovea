@@ -167,7 +167,7 @@ namespace Kinovea.ScreenManager
             
             IDrawingHostView host = tsmi.Tag as IDrawingHostView;
             if (host != null)
-                host.DoInvalidate();
+                host.InvalidateFromMenu();
         }
 
         public static void InvalidateFromTextbox(object sender)
@@ -178,7 +178,7 @@ namespace Kinovea.ScreenManager
 
             IDrawingHostView host = tb.Tag as IDrawingHostView;
             if (host != null)
-                host.DoInvalidate();
+                host.InvalidateFromMenu();
         }
 
         public static void InitializeEndFromMenu(object sender, bool cancelLastPoint)

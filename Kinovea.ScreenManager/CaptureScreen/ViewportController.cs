@@ -201,6 +201,10 @@ namespace Kinovea.ScreenManager
         {
             Refresh();
         }
+        public void InvalidateFromMenu()
+        {
+            DoInvalidate();
+        }
         public void InitializeEndFromMenu(bool cancelLastPoint)
         {
             if (metadataManipulator == null)

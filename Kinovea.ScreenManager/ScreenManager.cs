@@ -965,6 +965,7 @@ namespace Kinovea.ScreenManager
                     mnuSVGTools.Enabled = hasSvgFiles;
                     mnuTestGrid.Enabled = false;
                     mnuCoordinateAxis.Enabled = true;
+                    mnuCoordinateAxis.Checked = player.FrameServer.Metadata.DrawingCoordinateSystem.Visible;
                     mnuCameraCalibration.Enabled = true;
                     mnuTrajectoryAnalysis.Enabled = true;
                     mnuScatterDiagram.Enabled = true;
@@ -1060,6 +1061,7 @@ namespace Kinovea.ScreenManager
                 mnuTestGrid.Enabled = false;
                 mnuTestGrid.Checked = false;
                 mnuCoordinateAxis.Enabled = false;
+                mnuCoordinateAxis.Checked = false;
                 mnuCameraCalibration.Enabled = false;
                 mnuTrajectoryAnalysis.Enabled = false;
                 mnuScatterDiagram.Enabled = false;
@@ -1214,6 +1216,8 @@ namespace Kinovea.ScreenManager
 
             if (!canChangeAspectRatio)
                 return;
+
+            if (!canChangeAspectRatio)
             
             // Reset all checks before setting the right one.
             mnuFormatAuto.Checked = screen.AspectRatio == ImageAspectRatio.Auto;
@@ -1248,6 +1252,13 @@ namespace Kinovea.ScreenManager
             mnuRotation180.Enabled = canChangeImageRotation;
             mnuRotation270.Enabled = canChangeImageRotation;
 
+            if (!canChangeImageRotation)
+                return;
+
+            mnuRotation0.Checked = screen.ImageRotation == ImageRotation.Rotate0;
+            mnuRotation90.Checked = screen.ImageRotation == ImageRotation.Rotate90;
+            mnuRotation180.Checked = screen.ImageRotation == ImageRotation.Rotate180;
+            mnuRotation270.Checked = screen.ImageRotation == ImageRotation.Rotate270;
             if (!canChangeImageRotation)
                 return;
             
@@ -2110,7 +2121,9 @@ namespace Kinovea.ScreenManager
             if (ps == null)
                 return;
 
-            ps.ShowCoordinateSystem();
+            mnuCoordinateAxis.Checked = !mnuCoordinateAxis.Checked;
+            ps.FrameServer.Metadata.DrawingCoordinateSystem.Visible = mnuCoordinateAxis.Checked;
+            ps.RefreshImage();
         }
 
         private void mnuTestGrid_OnClick(object sender, EventArgs e)

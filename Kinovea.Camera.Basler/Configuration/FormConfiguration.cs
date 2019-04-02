@@ -131,7 +131,8 @@ namespace Kinovea.Camera.Basler
 
         private void PopulateStreamFormat()
         {
-            lblColorSpace.Text = "Stream format:";
+            lblColorSpace.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
+
             bool readable = Pylon.DeviceFeatureIsReadable(deviceHandle, "PixelFormat");
             if (!readable)
             {

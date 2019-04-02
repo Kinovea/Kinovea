@@ -585,93 +585,73 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
 ///</summary>
 bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bitmap^ _InputBitmap)
 {
-    bool bWritten = false;
-    bool bInputFrameAllocated = false;
-    bool bOutputFrameAllocated = false;
-    bool bBitmapLocked = false;
+    bool written = false;
+    bool isBitmapLocked = false;
     
-    AVFrame* pInputFrame;
-    uint8_t* pInputFrameBuffer;
-    AVFrame* pOutputFrame;
-    uint8_t* pOutputFrameBuffer;
-    System::Drawing::Imaging::BitmapData^ InputDataBitmap;
-    enum AVPixelFormat pixelFormatFFmpeg;
+    AVFrame* pInputFrame = nullptr;
+    AVFrame* pYUV420Frame = nullptr;
+    uint8_t* pYUV420Buffer = nullptr;
+    uint8_t* pOutputBuffer = nullptr;
+    System::Drawing::Imaging::BitmapData^ bitmapData;
+    AVPixelFormat pixelFormatInput;
 
     if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format32bppPArgb)
-        pixelFormatFFmpeg = AV_PIX_FMT_BGRA;
+        pixelFormatInput = AV_PIX_FMT_BGRA;
     else if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format24bppRgb)
-        pixelFormatFFmpeg = AV_PIX_FMT_BGR24;
+        pixelFormatInput = AV_PIX_FMT_BGR24;
     else if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format8bppIndexed)
-        pixelFormatFFmpeg = PIX_FMT_BGR8;
+        pixelFormatInput = PIX_FMT_BGR8; // AV_PIX_FMT_GRAY8 ?
     
     do
     {
-        // Allocate the input frame that we will fill up with the bitmap.
+        int inWidth = _InputBitmap->Width;
+        int inHeight = _InputBitmap->Height;
+        int outWidth = _SavingContext->outputSize.Width;
+        int outHeight = _SavingContext->outputSize.Height;
+
+        // Allocate the input frame that will wrap the bitmap content.
         if ((pInputFrame = av_frame_alloc()) == nullptr) 
         {
             log->Error("input frame not allocated");
             break;
-        }	
-        
-        // Allocate the buffer holding actual frame data.
-        int iSizeInputFrameBuffer = avpicture_get_size(pixelFormatFFmpeg, _InputBitmap->Width, _InputBitmap->Height);
-        pInputFrameBuffer = (uint8_t*)av_malloc(iSizeInputFrameBuffer);
-        if (pInputFrameBuffer == nullptr) 
-        {
-            log->Error("input frame buffer not allocated");
-            av_free(pInputFrame);
-            break;
         }
-
-        bInputFrameAllocated = true;
         
-        // Setting up various pointers between the buffers.
-        avpicture_fill((AVPicture *)pInputFrame, pInputFrameBuffer, pixelFormatFFmpeg, _InputBitmap->Width, _InputBitmap->Height);
+        // Associate the Bitmap data to the AVFrame
+        Rectangle rect = Rectangle(0, 0, inWidth, inHeight);
+        bitmapData = _InputBitmap->LockBits(rect, Imaging::ImageLockMode::ReadOnly, _InputBitmap->PixelFormat);
+        isBitmapLocked = true;
         
-        // Associate the Bitmap to the AVFrame
-        Rectangle rect = Rectangle(0, 0, _InputBitmap->Width, _InputBitmap->Height);
-        InputDataBitmap = _InputBitmap->LockBits(rect, Imaging::ImageLockMode::ReadOnly, _InputBitmap->PixelFormat);
-        bBitmapLocked = true;
-        // todo : pin_ptr ?
-        uint8_t* data = (uint8_t*)InputDataBitmap->Scan0.ToPointer();
-        pInputFrame->data[0] = data;
-        pInputFrame->linesize[0] = InputDataBitmap->Stride;
-            
-
-        //------------------------------------------------------------------------------------------
-        // -> At that point, pInputFrame holds a non compressed bitmap, at the .NET PIX_FMT (BGRA)
+        pin_ptr<uint8_t> pRGBBuffer = (uint8_t*)bitmapData->Scan0.ToPointer();
+        avpicture_fill((AVPicture *)pInputFrame, pRGBBuffer, pixelFormatInput, inWidth, inHeight);
+        
+        // -> At that point, pInputFrame holds a non compressed bitmap in the input pixel format (ex: RGB24).
         // This bitmap is still at the decoding size.
-        //------------------------------------------------------------------------------------------
 
-        // f. L'objet frame receptacle de sortie.
-        if ((pOutputFrame = av_frame_alloc()) == nullptr) 
+        // Prepare the resized / color space converted frame.
+        if ((pYUV420Frame = av_frame_alloc()) == nullptr) 
         {
             log->Error("output frame not allocated");
             break;
         }
-        
-        // g. Le poids d'une image selon le PIX_FMT de sortie et la taille donnée. 
-        int iSizeOutputFrameBuffer = avpicture_get_size(_SavingContext->pOutputCodecContext->pix_fmt, _SavingContext->outputSize.Width, _SavingContext->outputSize.Height);
-        
-        // h. Allouer le buffer contenant les données réelles de la frame.
-        pOutputFrameBuffer = (uint8_t*)av_malloc(iSizeOutputFrameBuffer);
-        if (pOutputFrameBuffer == nullptr) 
+         
+        int yuvBufferSize = avpicture_get_size(AV_PIX_FMT_YUV420P, outWidth, outHeight);
+        pYUV420Buffer = (uint8_t*)av_malloc(yuvBufferSize);
+
+        if (pYUV420Buffer == nullptr) 
         {
-            log->Error("output frame buffer not allocated");
-            av_free(pOutputFrame);
+            log->Error("YUV frame buffer not allocated");
             break;
         }
 
-        bOutputFrameAllocated = true;
-
-        // i. Mise en place de pointeurs internes reliant certaines adresses à d'autres.
-        avpicture_fill((AVPicture *)pOutputFrame, pOutputFrameBuffer, _SavingContext->pOutputCodecContext->pix_fmt, _SavingContext->outputSize.Width, _SavingContext->outputSize.Height);
+        avpicture_fill((AVPicture *)pYUV420Frame, pYUV420Buffer, AV_PIX_FMT_YUV420P, outWidth, outHeight);
         
-        // j. Nouveau scaling context
-        SwsContext* scalingContext = sws_getContext(_InputBitmap->Width, _InputBitmap->Height, pixelFormatFFmpeg, _SavingContext->outputSize.Width, _SavingContext->outputSize.Height, _SavingContext->pOutputCodecContext->pix_fmt, SWS_BICUBIC, NULL, NULL, NULL); 
+        // Perform the color space conversion and resizing.
+        SwsContext* scalingContext = sws_getContext(
+            inWidth, inHeight, pixelFormatInput, 
+            outWidth, outHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC,
+            NULL, NULL, NULL);
 
-        // k. Convertir l'image de son format de pixels d'origine vers le format de pixels de sortie.
-        if (sws_scale(scalingContext, pInputFrame->data, pInputFrame->linesize, 0, _InputBitmap->Height, pOutputFrame->data, pOutputFrame->linesize) < 0) 
+        if (sws_scale(scalingContext, pInputFrame->data, pInputFrame->linesize, 0, inHeight, pYUV420Frame->data, pYUV420Frame->linesize) < 0) 
         {
             log->Error("scaling failed");
             sws_freeContext(scalingContext);
@@ -680,59 +660,54 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
 
         sws_freeContext(scalingContext);
 
-
-        //------------------------------------------------------------------------------------------
-        // -> Ici, pOutputFrame contient une bitmap non compressée, au nouveau PIX_FMT. (=> YUV420P)
-        //------------------------------------------------------------------------------------------
-
-
-        // f. allouer le buffer pour les données de la frame après compression. ( -> valeur tirée de ffmpeg.c)
-        int iSizeOutputVideoBuffer = 4 *  _SavingContext->outputSize.Width *  _SavingContext->outputSize.Height;		
-        uint8_t* pOutputVideoBuffer = (uint8_t*)av_malloc(iSizeOutputVideoBuffer);
-        if (pOutputVideoBuffer == nullptr) 
+        // Allocate encoded frame buffer.
+        // Assumes compressed size is always smaller than uncompressed. (Not technically true).
+        int encodedBufferSize = outWidth * outHeight * 4;
+        pOutputBuffer = (uint8_t*)av_malloc(encodedBufferSize);
+        
+        if (pOutputBuffer == nullptr) 
         {
             log->Error("output video buffer not allocated");
             break;
         }
         
-        // g. encodage vidéo.
-        // AccessViolationException ? => problème de memalign. Recompiler libavc avec le bon gcc.
-        int iEncodedSize = avcodec_encode_video(_SavingContext->pOutputCodecContext, pOutputVideoBuffer, iSizeOutputVideoBuffer, pOutputFrame);
+        // Actual encoding step.
+        // AccessViolationException ? => memalign issue, requires recompiling libavc with the correct gcc.
+        int encodedSize = avcodec_encode_video(_SavingContext->pOutputCodecContext, pOutputBuffer, encodedBufferSize, pYUV420Frame);
         
-        // Ecriture du packet vidéo dans le fichier (Force Keyframe)
-        if(!WriteFrame(iEncodedSize, _SavingContext, pOutputVideoBuffer, true ))
-        {
-            log->Error("problem while writing frame to file");
+        // Write the video packet in the output.
+        if (encodedSize > 0)
+        {   
+            if (!WriteFrame(encodedSize, _SavingContext, pOutputBuffer, true))
+            {
+                log->Error("problem while writing frame to file");
+                break;
+            }
+            
+            written = true;
         }
-        
-        av_free(pOutputVideoBuffer);
-
-        bWritten = true;
     }
     while(false);
 
-    // Cleanup
-    if(bInputFrameAllocated)
-    {
-        av_free(pInputFrameBuffer);
+    if (pOutputBuffer)
+        av_free(pOutputBuffer);
+
+    if (pInputFrame != nullptr)
         av_free(pInputFrame);
-    }
 
-    if(bBitmapLocked)
-    {
-        _InputBitmap->UnlockBits(InputDataBitmap);
-    }
+    if(isBitmapLocked)
+        _InputBitmap->UnlockBits(bitmapData);
 
-    if(bOutputFrameAllocated)
-    {
-        av_free(pOutputFrameBuffer);
-        av_free(pOutputFrame);
-    }
+    if (pYUV420Frame != nullptr)
+        av_free(pYUV420Frame);
+
+    if (pYUV420Buffer != nullptr)
+        av_free(pYUV420Buffer);
 
     // (Temporary) fix to OOM error that sometimes happen with very large image size.
     GC::Collect();
 
-    return bWritten;
+    return written;
 }
 
 ///<summary>

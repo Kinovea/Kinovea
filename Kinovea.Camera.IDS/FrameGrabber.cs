@@ -120,6 +120,8 @@ namespace Kinovea.Camera.IDS
             
             int outgoingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
             bool topDown = true;
+
+            resultingFramerate = IDSHelper.GetFramerate(camera);
             
             return new ImageDescriptor(format, width, height, topDown, outgoingBufferSize);
         }

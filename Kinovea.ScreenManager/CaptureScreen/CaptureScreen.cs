@@ -1152,6 +1152,7 @@ namespace Kinovea.ScreenManager
             {
                 // In RecordingMode.Display we use a simple VideoFileWriter that will push the displayed bitmap to a file.
                 VideoInfo info = new VideoInfo();
+
                 info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
                 info.ReferenceSize = info.OriginalSize;
                 info.AspectRatioSize = info.OriginalSize;
