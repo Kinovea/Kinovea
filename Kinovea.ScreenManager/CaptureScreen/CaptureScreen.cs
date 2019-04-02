@@ -98,6 +98,11 @@ namespace Kinovea.ScreenManager
             get { return ImageRotation.Rotate0; }
             set { }
         }
+        public override Demosaicing Demosaicing
+        {
+            get { return Demosaicing.None; }
+            set { }
+        }
         public override bool Mirrored
         {
             get
@@ -563,7 +568,7 @@ namespace Kinovea.ScreenManager
             double framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
             if (framerate == 0)
                 framerate = 25;
-
+            
             grabTimer.Interval = (int)(1000.0 / framerate);
             grabTimer.Enabled = true;
 
@@ -826,7 +831,7 @@ namespace Kinovea.ScreenManager
 
             if (fresh == null)
                 return;
-
+            
             delayer.Push(fresh);
             
             if (imageProcessor.Active)
@@ -1098,7 +1103,8 @@ namespace Kinovea.ScreenManager
             }
             
             string filenameWithoutExtension = view.CurrentVideoFilename;
-            string extension = Filenamer.GetVideoFileExtension();
+            bool uncompressed = recordingMode == CaptureRecordingMode.Camera && PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Video.ImageFormat.JPEG;
+            string extension = Filenamer.GetVideoFileExtension(uncompressed);
 
             Dictionary<FilePatternContexts, string> context = BuildCaptureContext();
 
@@ -1150,7 +1156,7 @@ namespace Kinovea.ScreenManager
                 info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
                 info.ReferenceSize = info.OriginalSize;
                 info.AspectRatioSize = info.OriginalSize;
-                string formatString = FilenameHelper.GetFormatStringCapture();
+                string formatString = FilenameHelper.GetFormatStringCapture(false);
 
                 // We have 3 possible framerates: the configured camera framerate, the measured camera framerate and the display framerate.
                 // Since we now force the usage of a separate timer for frame grabbing and pushing to the delay buffer, 
@@ -1288,9 +1294,10 @@ namespace Kinovea.ScreenManager
             availableMemory -= (imageDescriptor.BufferSize * 8);
             
             delayer.AllocateBuffers(imageDescriptor, availableMemory);
-            delayCompositer.AllocateBuffers(imageDescriptor);
+            delayCompositer.Allocate(imageDescriptor);
             UpdateDelayMaxAge();
         }
+
         private void DelayChanged(double age)
         {
             this.delay = (int)Math.Round(age);
@@ -1316,7 +1323,7 @@ namespace Kinovea.ScreenManager
 
             dcsm.UpdateRefreshRate(rate);
         }
-
+        
         private void ForceDelaySynchronization()
         {
             if (delayCompositeType == DelayCompositeType.SlowMotion)

@@ -311,8 +311,8 @@ namespace Kinovea.Camera.DirectShow
             else if (cameraProperties.ContainsKey("exposure"))
                 AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_Exposure, VendorHelper.GetValueMapper(identifier, "exposure"), top);
 
-            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, VendorHelper.GetValueMapper(identifier, "gain"), top + 30);
-            AddCameraProperty("focus", CameraLang.FormConfiguration_Properties_Focus, VendorHelper.GetValueMapper(identifier, "focus"), top + 60);
+            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, null, top + 30);
+            AddCameraProperty("focus", CameraLang.FormConfiguration_Properties_Focus, null, top + 60);
         }
 
         private void AddCameraProperty(string key, string text, Func<int, string> valueMapper, int top)

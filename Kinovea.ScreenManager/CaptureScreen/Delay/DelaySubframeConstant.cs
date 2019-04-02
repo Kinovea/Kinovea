@@ -12,18 +12,24 @@ namespace Kinovea.ScreenManager
     public class DelaySubframeConstant : IDelaySubframe
     {
         /// <summary>
-        /// The location and size of the subframe into the composite.
+        /// Location and size of the rectangle to extract from the frame.
         /// </summary>
-        public Rectangle Bounds { get; private set; }
+        public Rectangle Source { get; set; }
+
+        /// <summary>
+        /// The location and size of destination rectangle in the composite.
+        /// </summary>
+        public Rectangle Destination { get; set; }
 
         /// <summary>
         /// The constant age of the subframe.
         /// </summary>
         public int Age { get; private set; }
 
-        public DelaySubframeConstant(Rectangle bounds, int age)
+        public DelaySubframeConstant(Rectangle source, Rectangle destination, int age)
         {
-            this.Bounds = bounds;
+            this.Source = source;
+            this.Destination = destination;
             this.Age = age;
         }
     }

@@ -68,8 +68,15 @@ namespace Kinovea.Camera.IDS
         {
             string filename = GetProfileFilename(identifier);
 
-            if (File.Exists(filename))
-                File.Delete(filename);
+            try
+            {
+                if (File.Exists(filename))
+                    File.Delete(filename);
+            }
+            catch (Exception e)
+            {
+                log.Error(string.Format("Error while deleting camera parameter set at {0}.", filename), e);
+            }
         }
     }
 }

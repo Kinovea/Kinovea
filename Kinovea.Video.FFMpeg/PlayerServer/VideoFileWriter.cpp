@@ -711,7 +711,7 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
 }
 
 ///<summary>
-/// VideoFileWriter::WriteFrame
+/// VideoFileWriter::WriteBuffer
 /// Commit a single frame in the video file.
 ///</summary>
 bool VideoFileWriter::WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool bForceKeyframe)

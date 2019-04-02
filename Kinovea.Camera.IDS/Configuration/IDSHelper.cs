@@ -30,6 +30,7 @@ namespace Kinovea.Camera.IDS
             // Hard coded list of known good formats.
             // TODO: support JPG for the XS model.
             List<IDSEnum> list = new List<IDSEnum>();
+            list.Add(new IDSEnum((int)uEye.Defines.ColorMode.SensorRaw8, "Raw 8"));
             list.Add(new IDSEnum((int)uEye.Defines.ColorMode.Mono8, "Mono 8"));
             list.Add(new IDSEnum((int)uEye.Defines.ColorMode.BGR8Packed, "RGB 24"));
             list.Add(new IDSEnum((int)uEye.Defines.ColorMode.BGRA8Packed, "RGB 32"));
@@ -85,6 +86,7 @@ namespace Kinovea.Camera.IDS
                     format = ImageFormat.RGB32;
                     break;
                 case uEye.Defines.ColorMode.Mono8:
+                case uEye.Defines.ColorMode.SensorRaw8:
                     format = ImageFormat.Y800;
                     break;
                 case uEye.Defines.ColorMode.RGB8Packed:

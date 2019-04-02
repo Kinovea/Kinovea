@@ -67,10 +67,20 @@ namespace Kinovea.Services
             get { return delayCompositeConfiguration; }
             set { delayCompositeConfiguration = value; }
         }
+        public PhotofinishConfiguration PhotofinishConfiguration
+        {
+            get { return photofinishConfiguration; }
+            set { photofinishConfiguration = value; }
+        }
         public bool VerboseStats
         {
             get { return verboseStats; }
             set { verboseStats = value; }
+        }
+        public bool SaveUncompressedVideo
+        {
+            get { return saveUncompressedVideo; }
+            set { saveUncompressedVideo = value; }
         }
         #endregion
 
@@ -78,10 +88,12 @@ namespace Kinovea.Services
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private double displaySynchronizationFramerate = 25.0;
         private CaptureRecordingMode recordingMode = CaptureRecordingMode.Camera;
+        private bool saveUncompressedVideo;
         private bool verboseStats = false;
         private int memoryBuffer = 768;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
         private DelayCompositeConfiguration delayCompositeConfiguration = new DelayCompositeConfiguration();
+        private PhotofinishConfiguration photofinishConfiguration = new PhotofinishConfiguration();
         #endregion
         
         public void AddCamera(CameraBlurb blurb)
@@ -109,6 +121,7 @@ namespace Kinovea.Services
             writer.WriteElementString("DisplaySynchronizationFramerate", dsf);
             writer.WriteElementString("CaptureRecordingMode", recordingMode.ToString());
             writer.WriteElementString("VerboseStats", verboseStats ? "true" : "false");
+            writer.WriteElementString("SaveUncompressedVideo", saveUncompressedVideo ? "true" : "false");
 
             writer.WriteElementString("MemoryBuffer", memoryBuffer.ToString());
             
@@ -128,6 +141,10 @@ namespace Kinovea.Services
 
             writer.WriteStartElement("DelayCompositeConfiguration");
             delayCompositeConfiguration.WriteXml(writer);
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("PhotofinishConfiguration");
+            photofinishConfiguration.WriteXml(writer);
             writer.WriteEndElement();
         }
         
@@ -149,6 +166,9 @@ namespace Kinovea.Services
                     case "CaptureRecordingMode":
                         recordingMode = (CaptureRecordingMode)Enum.Parse(typeof(CaptureRecordingMode), reader.ReadElementContentAsString());
                         break;
+                    case "SaveUncompressedVideo":
+                        saveUncompressedVideo = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
                     case "VerboseStats":
                         verboseStats = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
@@ -160,6 +180,9 @@ namespace Kinovea.Services
                         break;
                     case "DelayCompositeConfiguration":
                         delayCompositeConfiguration.ReadXml(reader);
+                        break;
+                    case "PhotofinishConfiguration":
+                        photofinishConfiguration.ReadXml(reader);
                         break;
                     default:
                         reader.ReadOuterXml();

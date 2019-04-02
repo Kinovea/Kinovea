@@ -7,7 +7,9 @@
     This stylesheet formats a .kva 1.5 file to .kva 2.0 file.
     You shouldn't have to use it manually, it is processed by Kinovea to read pre 0.8.16 files.
     
+    2019-04-02 - Update to calibration, tracks and drawings for 0.8.27 flavor.
     2011-08-06 - Initial converter. Styles are not converted.
+
     TODO: Convert time of track points from relative to absolute.
 -->
 
@@ -17,25 +19,50 @@
     <FormatVersion>2.0</FormatVersion>
     <Producer>Kinovea XSLT Converter (1.5 to 2.0)</Producer>
     <xsl:copy-of select="KinoveaVideoAnalysis/OriginalFilename"/>
+
     <xsl:if test="KinoveaVideoAnalysis/GlobalTitle">
         <xsl:copy-of select="KinoveaVideoAnalysis/GlobalTitle"/>
     </xsl:if>
     <xsl:copy-of select="KinoveaVideoAnalysis/ImageSize"/>
     <xsl:copy-of select="KinoveaVideoAnalysis/AverageTimeStampsPerFrame"/>
+    
     <xsl:copy-of select="KinoveaVideoAnalysis/FirstTimeStamp"/>
     <xsl:copy-of select="KinoveaVideoAnalysis/SelectionStart"/>
-    <xsl:if test="KinoveaVideoAnalysis/DuplicationFactor">
-        <xsl:copy-of select="KinoveaVideoAnalysis/DuplicationFactor"/>
-    </xsl:if>
-    <xsl:if test="KinoveaVideoAnalysis/CalibrationHelp">
-        <xsl:copy-of select="KinoveaVideoAnalysis/CalibrationHelp"/>
-    </xsl:if>
     
+    <xsl:apply-templates select="//CalibrationHelp"/>
     <xsl:apply-templates select="//Keyframes"/>
     <xsl:apply-templates select="//Chronos"/>
     <xsl:apply-templates select="//Tracks"/>
+
+    <Trackability />
 </KinoveaVideoAnalysis>
 
+</xsl:template>
+
+<xsl:template match="CalibrationHelp">
+    <Calibration>
+        <!-- Only line calibration was supported. -->
+        <CalibrationLine>
+            <xsl:if test="not(CoordinatesOrigin='-1;-1')">
+                <Origin><xsl:value-of select="CoordinatesOrigin"/></Origin>
+            </xsl:if>
+            <Scale><xsl:value-of select="PixelToUnit"/></Scale>
+        </CalibrationLine>
+        <Unit>
+            <xsl:attribute name="Abbreviation">
+                <xsl:value-of select="LengthUnit/@UserUnitLength"/>
+            </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="LengthUnit='0'">Centimeters</xsl:when>
+                <xsl:when test="LengthUnit='1'">Meters</xsl:when>
+                <xsl:when test="LengthUnit='2'">Inches</xsl:when>
+                <xsl:when test="LengthUnit='3'">Feet</xsl:when>
+                <xsl:when test="LengthUnit='4'">Yards</xsl:when>
+                <xsl:when test="LengthUnit='5'">Pixels</xsl:when>
+                <xsl:otherwise>Pixels</xsl:otherwise>
+            </xsl:choose>
+        </Unit>
+    </Calibration>
 </xsl:template>
 
 <xsl:template match="Keyframes">
@@ -91,13 +118,16 @@
         <xsl:copy-of select="PointO"/>
         <xsl:copy-of select="PointA"/>
         <xsl:copy-of select="PointB"/>
-        <!-- FIXME: Convert style -->
-        <xsl:if test="InfosFading">
-            <xsl:copy-of select="InfosFading"/>
-        </xsl:if>
-        <xsl:if test="Measure">
-            <xsl:copy-of select="Measure"/>
-        </xsl:if>
+        <Signed>false</Signed>
+        <CCW>true</CCW>
+        <Supplementary>false</Supplementary>
+        <DrawingStyle>
+            <Color Key="line color">
+                <Value><xsl:value-of select="TextDecoration/BackColor"/></Value>
+            </Color>
+        </DrawingStyle>
+        <xsl:copy-of select="InfosFading"/>
+        <xsl:copy-of select="Measure"/>
     </xsl:element>
 </xsl:template>
 
@@ -105,60 +135,129 @@
     <xsl:element name="Circle">
         <xsl:copy-of select="Origin"/>
         <xsl:copy-of select="Radius"/>
-        <!-- FIXME: Convert style -->
-        <xsl:if test="InfosFading">
-            <xsl:copy-of select="InfosFading"/>
-        </xsl:if>
+        <ExtraData>None</ExtraData>
+        <MeasureLabel>
+            <SpacePosition><xsl:value-of select="Origin"/></SpacePosition>
+            <TimePosition>0</TimePosition>
+        </MeasureLabel>
+        <DrawingStyle>
+            <Color Key="color">
+                <Value><xsl:value-of select="LineStyle/ColorRGB"/></Value>
+            </Color>
+            <PenSize Key="pen size">
+                <Value><xsl:value-of select="LineStyle/Size"/></Value>
+            </PenSize>
+            <PenShape Key="pen shape">
+                <Value>Solid</Value>
+            </PenShape>
+        </DrawingStyle>
+        <xsl:copy-of select="InfosFading"/>
     </xsl:element>
 </xsl:template>
 
 <xsl:template name="DrawingCross2D">
     <xsl:element name="CrossMark">
         <xsl:copy-of select="CenterPoint"/>
-        <xsl:copy-of select="CoordinatesVisible"/>
-        <!-- FIXME: Convert style -->
-        <xsl:if test="InfosFading">
-            <xsl:copy-of select="InfosFading"/>
-        </xsl:if>
-        <xsl:if test="Coordinates">
-            <xsl:copy-of select="Coordinates"/>
-        </xsl:if>
+        <ExtraData>
+            <xsl:choose>
+                <xsl:when test="CoordinatesVisible='True'">Position</xsl:when>
+                <xsl:otherwise>None</xsl:otherwise>
+            </xsl:choose>
+        </ExtraData>
+        <MeasureLabel>
+            <!-- Fake space position to avoid it being invisible. -->
+            <SpacePosition><xsl:value-of select="CenterPoint"/></SpacePosition>
+            <TimePosition>0</TimePosition>
+        </MeasureLabel>
+        <DrawingStyle>
+            <Color Key="back color">
+                <Value><xsl:value-of select="LineStyle/ColorRGB"/></Value>
+            </Color>
+        </DrawingStyle>
+        <xsl:copy-of select="InfosFading"/>
+        <xsl:copy-of select="Coordinates"/>
     </xsl:element>
 </xsl:template>
 
 <xsl:template name="DrawingLine2D">
-    <xsl:element name="Line">
-        <xsl:element name="Start"><xsl:value-of select="m_StartPoint"/></xsl:element>
-        <xsl:element name="End"><xsl:value-of select="m_EndPoint"/></xsl:element>
-        <xsl:element name="MeasureVisible"><xsl:value-of select="MeasureIsVisible"/></xsl:element>
-        <!-- FIXME: Convert style -->
-        <xsl:if test="InfosFading">
-            <xsl:copy-of select="InfosFading"/>
-        </xsl:if>
-        <xsl:if test="Measure">
-            <xsl:copy-of select="Measure"/>
-        </xsl:if>
-    </xsl:element>
+    <Line>
+        <Start><xsl:value-of select="m_StartPoint"/></Start>
+        <End><xsl:value-of select="m_EndPoint"/></End>
+
+        <ExtraData>
+            <xsl:choose>
+                <xsl:when test="MeasureIsVisible='True'">TotalDistance</xsl:when>
+                <xsl:otherwise>None</xsl:otherwise>
+            </xsl:choose>
+        </ExtraData>
+        <MeasureLabel>
+            <!-- Fake space position to avoid it being invisible. -->
+            <SpacePosition><xsl:value-of select="m_StartPoint"/></SpacePosition>
+            <TimePosition>0</TimePosition>
+        </MeasureLabel>
+        
+        <DrawingStyle>
+            <Color Key="color">
+                <Value><xsl:value-of select="LineStyle/ColorRGB"/></Value>
+            </Color>
+            <LineSize Key="line size">
+                <Value><xsl:value-of select="LineStyle/Size"/></Value>
+            </LineSize>
+            <LineShape Key="line shape">
+                <Value>Solid</Value>
+            </LineShape>
+            <Arrows Key="arrows">
+                <Value>
+                    <xsl:choose>
+                        <xsl:when test="LineStyle/LineShape='Simple'">None</xsl:when>
+                        <xsl:when test="LineStyle/LineShape='EndArrow'">EndArrow</xsl:when>
+                        <xsl:when test="LineStyle/LineShape='DoubleArrow'">DoubleArrow</xsl:when>
+                        <xsl:otherwise>None</xsl:otherwise>
+                    </xsl:choose>
+                </Value>
+            </Arrows>
+        </DrawingStyle>
+        <xsl:copy-of select="InfosFading"/>
+        <xsl:copy-of select="Measure"/>
+    </Line>
 </xsl:template>
 
 <xsl:template name="DrawingPencil">
     <xsl:element name="Pencil">
         <xsl:copy-of select="PointList"/>
-        <!-- FIXME: Convert style -->
-        <xsl:if test="InfosFading">
-            <xsl:copy-of select="InfosFading"/>
-        </xsl:if>
+        <DrawingStyle>
+            <Color Key="color">
+                <Value><xsl:value-of select="LineStyle/ColorRGB"/></Value>                
+            </Color>
+            <PenSize Key="pen size">
+                <Value><xsl:value-of select="LineStyle/Size"/></Value>
+            </PenSize>
+            <PenShape Key="pen shape">
+                <Value>Solid</Value>
+            </PenShape>
+        </DrawingStyle>
+        <xsl:copy-of select="InfosFading"/>
     </xsl:element>
 </xsl:template>
 
 <xsl:template name="DrawingText">
     <xsl:element name="Label">
+        <xsl:attribute name="name">
+            <xsl:value-of select="Text"/>
+        </xsl:attribute>
         <xsl:copy-of select="Text"/>
         <xsl:copy-of select="Position"/>
-        <!-- FIXME: Convert style -->
-        <xsl:if test="InfosFading">
-            <xsl:copy-of select="InfosFading"/>
-        </xsl:if>
+        <ArrowVisible>false</ArrowVisible>
+        <ArrowEnd><xsl:value-of select="Position"/></ArrowEnd>
+        <DrawingStyle>
+            <Color Key="back color">
+              <Value><xsl:value-of select="TextDecoration/BackColor"/></Value>
+            </Color>
+            <FontSize Key="font size">
+              <Value><xsl:value-of select="TextDecoration/FontSize"/></Value>
+            </FontSize>
+          </DrawingStyle>
+        <xsl:copy-of select="InfosFading"/>
     </xsl:element>
 </xsl:template>
 
@@ -170,6 +269,9 @@
     <Tracks>
     <xsl:for-each select="Track">
         <Track>
+            <xsl:attribute name="name">
+                <xsl:value-of select="Label/Text"/>
+            </xsl:attribute>
             <xsl:copy-of select="TimePosition"/>
             <xsl:if test="Mode">
                 <xsl:copy-of select="Mode"/>
@@ -191,6 +293,30 @@
                     </xsl:element>
                 </xsl:for-each>
             </xsl:element>
+
+            <xsl:element name="MainLabel">
+                <xsl:attribute name="Text">
+                    <xsl:value-of select="Label/Text"/>
+                </xsl:attribute>
+                <xsl:element name="SpacePosition">
+                    <xsl:value-of select="MainLabel/KeyframeLabel/SpacePosition"/>
+                </xsl:element>
+                <xsl:element name="TimePosition">
+                    <xsl:value-of select="MainLabel/KeyframeLabel/TimePosition"/>
+                </xsl:element>
+            </xsl:element>
+
+            <DrawingStyle>
+                <Color Key="color">
+                    <Value><xsl:value-of select="TrackLine/LineStyle/ColorRGB"/></Value>
+                </Color>
+                <LineSize Key="line size">
+                    <Value><xsl:value-of select="TrackLine/LineStyle/Size"/></Value>
+                </LineSize>
+                <TrackShape Key="track shape">
+                    <Value>Solid;false</Value>
+                </TrackShape>
+            </DrawingStyle>
         </Track>
     </xsl:for-each>
     </Tracks>

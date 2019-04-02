@@ -101,6 +101,10 @@ namespace Kinovea.Video
         {
             get { return (Flags & VideoCapabilities.CanChangeImageRotation) != 0; }
         }
+        public bool CanChangeDemosaicing
+        {
+            get { return (Flags & VideoCapabilities.CanChangeDemosaicing) != 0; }
+        }
         public bool CanChangeDeinterlacing {
             get { return (Flags & VideoCapabilities.CanChangeDeinterlacing) != 0; }
         }
@@ -227,6 +231,15 @@ namespace Kinovea.Video
         /// </summary>
         /// <returns>returns true if the cache has been invalidated by the operation</returns>
         public virtual bool ChangeImageRotation(ImageRotation rotation)
+        {
+            // Does nothing by default. Override to implement.
+            return false;
+        }
+        /// <summary>
+        /// Force a specific demosaicing pattern.
+        /// </summary>
+        /// <returns>returns true if the cache has been invalidated by the operation</returns>
+        public virtual bool ChangeDemosaicing(Demosaicing demosaicing)
         {
             // Does nothing by default. Override to implement.
             return false;

@@ -46,6 +46,7 @@
     <Copy SourceFiles="..\Refs\OpenCV\2.4.10\$(Platform)\cvextern.dll" DestinationFolder="$(TargetDir)\$(Platform)"/>
     <Copy SourceFiles="..\Refs\OpenCV\2.4.10\$(Platform)\opencv_core2410.dll" DestinationFolder="$(TargetDir)\$(Platform)"/>
     <Copy SourceFiles="..\Refs\OpenCV\2.4.10\$(Platform)\opencv_calib3d2410.dll" DestinationFolder="$(TargetDir)\$(Platform)"/>
+    <Copy SourceFiles="..\Refs\OpenCV\2.4.10\$(Platform)\opencv_flann2410.dll" DestinationFolder="$(TargetDir)\$(Platform)"/>
     <Copy SourceFiles="..\Refs\OpenCV\2.4.10\$(Platform)\opencv_features2d2410.dll" DestinationFolder="$(TargetDir)\$(Platform)"/>
     <Copy SourceFiles="..\Refs\OpenCV\2.4.10\$(Platform)\opencv_imgproc2410.dll" DestinationFolder="$(TargetDir)\$(Platform)"/>
     <Copy SourceFiles="..\Refs\OpenCV\2.4.10\$(Platform)\OpenCL.dll" DestinationFolder="$(TargetDir)\$(Platform)"/>
