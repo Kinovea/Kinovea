@@ -1061,8 +1061,16 @@ namespace Kinovea.FileBrowser
             if (folder == null || folder.Path.StartsWith("::"))
                 return;
 
-            fileWatcher.Path = folder.Path;
-            fileWatcher.EnableRaisingEvents = true;
+            try
+            {
+                fileWatcher.Path = folder.Path;
+                fileWatcher.EnableRaisingEvents = true;
+            }
+            catch
+            {
+                // This happens with archive files, considered directories by Windows.
+                log.ErrorFormat("Error while adding path to file watcher. {0}", folder.Path);
+            }
         }
         
         private void fileWatcher_Renamed(object sender, RenamedEventArgs e)
