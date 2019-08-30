@@ -1259,13 +1259,6 @@ namespace Kinovea.ScreenManager
             mnuRotation90.Checked = screen.ImageRotation == ImageRotation.Rotate90;
             mnuRotation180.Checked = screen.ImageRotation == ImageRotation.Rotate180;
             mnuRotation270.Checked = screen.ImageRotation == ImageRotation.Rotate270;
-            if (!canChangeImageRotation)
-                return;
-            
-            mnuRotation0.Checked = screen.ImageRotation == ImageRotation.Rotate0;
-            mnuRotation90.Checked = screen.ImageRotation == ImageRotation.Rotate90;
-            mnuRotation180.Checked = screen.ImageRotation == ImageRotation.Rotate180;
-            mnuRotation270.Checked = screen.ImageRotation == ImageRotation.Rotate270;
         }
         private void OnSVGFilesChanged(object source, FileSystemEventArgs e)
         {
