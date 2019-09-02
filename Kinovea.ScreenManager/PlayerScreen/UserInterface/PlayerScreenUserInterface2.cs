@@ -3355,15 +3355,20 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     // Image was decoded at customized size, but can't be rendered unscaled.
+                    // TODO: integrate the mirror flag into the ImageTransform.
                     Rectangle rDst;
                     if (m_FrameServer.Metadata.Mirrored)
                         rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
                     else
                         rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
 
-                    // TODO: integrate the mirror flag into the ImageTransform.
+                    Rectangle rSrc;
+                    if (_transform.Zooming)
+                        rSrc = _transform.ZoomWindowInDecodedImage;
+                    else
+                        rSrc = new Rectangle(0, 0, _sourceImage.Width, _sourceImage.Height);
 
-                    g.DrawImage(_sourceImage, rDst, _transform.ZoomWindowInDecodedImage, GraphicsUnit.Pixel);
+                    g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
                     //log.DebugFormat("draw scaled at custom decoding size.");
                 }
             }
@@ -3382,8 +3387,14 @@ namespace Kinovea.ScreenManager
                         rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
                     else
                         rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
-                    
-                    g.DrawImage(_sourceImage, rDst, _transform.ZoomWindowInDecodedImage, GraphicsUnit.Pixel);
+
+                    Rectangle rSrc;
+                    if (_transform.Zooming)
+                        rSrc = _transform.ZoomWindowInDecodedImage;
+                    else
+                        rSrc = new Rectangle(0, 0, _sourceImage.Width, _sourceImage.Height);
+
+                    g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
                     //log.DebugFormat("drawing scaled.");
                 }
             }
