@@ -392,9 +392,9 @@ Public Enum SHGNLI
      CharSet:=CharSet.Auto)> _
      Public Structure WIN32_FIND_DATA
         Public dwFileAttributes As Integer
-        Public ftCreationTime As FILETIME
-        Public ftLastAccessTime As FILETIME
-        Public ftLastWriteTime As FILETIME
+        Public ftCreationTime As ComTypes.FILETIME
+        Public ftLastAccessTime As ComTypes.FILETIME
+        Public ftLastWriteTime As ComTypes.FILETIME
         Public nFileSizeHigh As Integer
         Public nFileSizeLow As Integer
         Public dwReserved0 As Integer

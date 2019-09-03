@@ -1071,8 +1071,8 @@ XIT:    'On any kind of exit, free the allocated memory
                                         SHGFI.ATTR_SPECIFIED
                 Dim dwAttr As Integer = 0
                 Dim H As IntPtr = SHGetFileInfo(m_Pidl, dwAttr, shfi, cbFileInfo, dwflag)
-                If H.ToInt32 <> NOERROR AndAlso H.ToInt32 <> 1 Then
-                    Marshal.ThrowExceptionForHR(H.ToInt32)
+                If H.ToInt32 <> NOERROR AndAlso H.ToInt64 <> 1 Then
+                    Marshal.ThrowExceptionForHR(H.ToInt64)
                 End If
                 m_IsReadOnly = CBool(shfi.dwAttributes And SFGAO.RDONLY)
                 'If m_IsReadOnly Then Debug.WriteLine("IsReadOnly -- " & m_Path)
@@ -1141,8 +1141,8 @@ XIT:    'On any kind of exit, free the allocated memory
     ''' always works on systems prior to XP.
     ''' NOTE: if ancestor and current reference the same Item, both
     ''' methods return True</Summary>
-    Public Shared Function IsAncestorOf(ByVal ancestor As CShItem, _
-                                        ByVal current As CShItem, _
+    Public Shared Function IsAncestorOf(ByVal ancestor As CShItem,
+                                        ByVal current As CShItem,
                                         Optional ByVal fParent As Boolean = False) _
                                         As Boolean
         Return IsAncestorOf(ancestor.PIDL, current.PIDL, fParent)
@@ -1151,8 +1151,8 @@ XIT:    'On any kind of exit, free the allocated memory
     ''' returns True if Ancestor is an ancestor of the child.
     ''' if fParent is True, then only return True if Ancestor is the immediate
     ''' parent of the Child</Summary>
-    Public Shared Function IsAncestorOf(ByVal AncestorPidl As IntPtr, _
-                                        ByVal ChildPidl As IntPtr, _
+    Public Shared Function IsAncestorOf(ByVal AncestorPidl As IntPtr,
+                                        ByVal ChildPidl As IntPtr,
                                         Optional ByVal fParent As Boolean = False) _
                                         As Boolean
         If Is2KOrAbove() Then
@@ -1181,8 +1181,8 @@ XIT:    'On any kind of exit, free the allocated memory
     '''   Starting Directory and each sub-directory of this directory and
     '''   each sub-dir of each sub-dir ....
     '''</Summary>
-    Public Delegate Function WalkAllCallBack(ByVal info As CShItem, _
-                                             ByVal UserLevel As Integer, _
+    Public Delegate Function WalkAllCallBack(ByVal info As CShItem,
+                                             ByVal UserLevel As Integer,
                                              ByVal Tag As Integer) _
                                              As Boolean
     '''<Summary>
@@ -1197,9 +1197,9 @@ XIT:    'On any kind of exit, free the allocated memory
     ''' <param name="UserLevel"></param>
     ''' <param name="Tag"></param>
     '''
-    Public Shared Function AllFolderWalk(ByVal cStart As CShItem, _
-                                          ByVal cback As WalkAllCallBack, _
-                                          ByVal UserLevel As Integer, _
+    Public Shared Function AllFolderWalk(ByVal cStart As CShItem,
+                                          ByVal cback As WalkAllCallBack,
+                                          ByVal UserLevel As Integer,
                                           ByVal Tag As Integer) _
                                           As Boolean
         If Not IsNothing(cStart) AndAlso cStart.IsFolder Then
@@ -1400,11 +1400,11 @@ NXTOLD:                 Next
                         If compList.Count > 0 Then
                             RefreshDirectories = True
                             For Each iptr In compList   'these are relative PIDLs
-                            	Try
-									m_Directories.Add(New CShItem(m_Folder, iptr, Me))                            	
-                            	Catch ex As Exception
-        							Debug.WriteLine("Cannot convert the item to folder.")
-    							End Try
+                                Try
+                                    m_Directories.Add(New CShItem(m_Folder, iptr, Me))
+                                Catch ex As Exception
+                                    Debug.WriteLine("Cannot convert the item to folder.")
+                                End Try
                             Next
                         End If
                         If RefreshDirectories Then 'something added or removed, resort
@@ -1511,7 +1511,7 @@ NXTOLD:                 Next
                     '  non-folders if folders are not wanted
                     If Not CBool(flags And SHCONTF.FOLDERS) Then 'don't want folders. see if this is one
                         Dim attrFlag As SFGAO
-                        attrFlag = attrFlag Or SFGAO.FOLDER Or _
+                        attrFlag = attrFlag Or SFGAO.FOLDER Or
                                                 SFGAO.STREAM
                         'Note: for GetAttributesOf, we must provide an array, in all cases with 1 element
                         Dim aPidl(0) As IntPtr
@@ -1522,7 +1522,7 @@ NXTOLD:                 Next
                                 GoTo SKIPONE
                             End If
                         Else         'XP or above
-                            If CBool(attrFlag And SFGAO.FOLDER) AndAlso _
+                            If CBool(attrFlag And SFGAO.FOLDER) AndAlso
                                Not CBool(attrFlag And SFGAO.STREAM) Then
                                 GoTo SKIPONE
                             End If
@@ -1531,11 +1531,11 @@ NXTOLD:                 Next
                     If IntPtrOnly Then   'just relative pidls for fast look, no CShITem overhead
                         rVal.Add(PIDLClone(item))   'caller must free
                     Else
-                    	Try
-                        	rVal.Add(New CShItem(m_Folder, item, Me))
-                    	Catch ex As Exception
-        					Debug.WriteLine("Cannot convert the item to folder.")
-    					End Try
+                        Try
+                            rVal.Add(New CShItem(m_Folder, item, Me))
+                        Catch ex As Exception
+                            Debug.WriteLine("Cannot convert the item to folder.")
+                        End Try
                     End If
 SKIPONE:            Marshal.FreeCoTaskMem(item) 'if New kept it, it kept a copy
                     item = IntPtr.Zero
@@ -1655,7 +1655,7 @@ HRError:  'not ready disks will return the following error
                 i += b
                 b = Marshal.ReadByte(pidl, i) + (Marshal.ReadByte(pidl, i + 1) * 256)
             Loop
-            Return New IntPtr(pidl.ToInt32 + prev)
+            Return New IntPtr(pidl.ToInt64 + prev)
         Else : Return IntPtr.Zero
         End If
     End Function
@@ -1667,7 +1667,7 @@ HRError:  'not ready disks will return the following error
         Dim curB As Integer
         Dim offSet As Integer = 0
         Do While curB < lim
-            Dim thisPtr As IntPtr = New IntPtr(pidl.ToInt32 + curB)
+            Dim thisPtr As IntPtr = New IntPtr(pidl.ToInt64 + curB)
             offSet = Marshal.ReadByte(thisPtr) + (Marshal.ReadByte(thisPtr, 1) * 256)
             PIDLs(i) = Marshal.AllocCoTaskMem(offSet + 2)
             Dim b(offSet + 1) As Byte

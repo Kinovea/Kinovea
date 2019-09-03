@@ -1,20 +1,31 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Basic Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ExpTreeLib", "ExpTreeLib.vbproj", "{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Debug|x64.ActiveCfg = Debug|x64
+		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Debug|x64.Build.0 = Debug|x64
 		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Release|x64.ActiveCfg = Release|x64
+		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FDFD56F3-CC49-4D1C-ACB9-63CE100C3E1B}
 	EndGlobalSection
 EndGlobal

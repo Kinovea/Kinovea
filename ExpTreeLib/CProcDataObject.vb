@@ -403,7 +403,7 @@ Public Class CProcDataObject
         Dim pidlLen As Integer
         Dim pidlobjs(nrItems) As Object
         For i = 0 To nrItems
-            Dim ipt As New IntPtr(ptr.ToInt32 + offsets(i))
+            Dim ipt As New IntPtr(ptr.ToInt64 + offsets(i))
             Dim cp As New cPidl(ipt)
             pidlobjs(i) = cp.PidlBytes
             pidlLen += CType(pidlobjs(i), Byte()).Length
