@@ -34,9 +34,6 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.Xsl;
 using System.Linq;
-
-using ICSharpCode.SharpZipLib.Checksums;
-using ICSharpCode.SharpZipLib.Zip;
 using Kinovea.Services;
 using Kinovea.Video;
 

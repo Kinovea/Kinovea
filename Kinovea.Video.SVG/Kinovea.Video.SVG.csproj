@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kinovea.Video.SVG</RootNamespace>
     <AssemblyName>Kinovea.Video.SVG</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -29,6 +30,7 @@
     <CodeAnalysisRuleDirectories>;c:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\Kinovea\bin\x86\Release\</OutputPath>
@@ -46,6 +48,7 @@
     <CodeAnalysisRuleDirectories>;c:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -62,6 +65,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;c:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\Kinovea\bin\x64\Release\</OutputPath>
@@ -79,28 +83,36 @@
     <CodeAnalysisRuleDirectories>;c:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\Refs\Log4Net\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorBindings, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorBindings.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorBindings.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorCss, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorCss.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorCss.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorDom, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorDom.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorDom.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorObjectModel, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorObjectModel.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorObjectModel.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorRenderingEngine, Version=0.3.1.32115, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorRenderingEngine.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorRenderingEngine.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorUtil, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorUtil.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorUtil.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

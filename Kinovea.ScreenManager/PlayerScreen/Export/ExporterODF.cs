@@ -25,7 +25,6 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.Xsl;
 
-using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace Kinovea.ScreenManager

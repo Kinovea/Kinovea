@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -11,7 +11,7 @@
     <RootNamespace>Kinovea.ScreenManager</RootNamespace>
     <AssemblyName>Kinovea.ScreenManager</AssemblyName>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
@@ -48,6 +48,7 @@
     <DebugSymbols>true</DebugSymbols>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -57,6 +58,7 @@
     <ErrorReport>prompt</ErrorReport>
     <DebugSymbols>false</DebugSymbols>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Optimize>False</Optimize>
@@ -83,6 +85,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -103,6 +106,7 @@
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -120,6 +124,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugExternals|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -139,6 +144,7 @@
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
@@ -158,41 +164,45 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\OpenCV\2.4.10\Emgu.Util.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\Refs\SharpZipLib\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\Log4Net\log4net.dll</HintPath>
+      <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Iridium">
       <HintPath>..\Refs\Math.Net\MathNet.Iridium.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot, Version=2014.1.1.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+    <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.WindowsForms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.WindowsForms.1.0.0\lib\net45\OxyPlot.WindowsForms.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorBindings, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\OxyPlot\OxyPlot.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorBindings.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.WindowsForms, Version=2014.1.1.1, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
+    <Reference Include="SharpVectorCss, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\OxyPlot\OxyPlot.WindowsForms.dll</HintPath>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorCss.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorBindings">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorBindings.dll</HintPath>
+    <Reference Include="SharpVectorDom, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorDom.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorCss">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorCss.dll</HintPath>
+    <Reference Include="SharpVectorObjectModel, Version=0.3.1.31092, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorObjectModel.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorDom">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorDom.dll</HintPath>
+    <Reference Include="SharpVectorRenderingEngine, Version=0.3.1.32115, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorRenderingEngine.dll</HintPath>
     </Reference>
-    <Reference Include="SharpVectorObjectModel">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorObjectModel.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorRenderingEngine">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorRenderingEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpVectorUtil">
-      <HintPath>..\Refs\SharpVectorGraphics\SharpVectorUtil.dll</HintPath>
+    <Reference Include="SharpVectorUtil, Version=0.3.1.31091, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SharpVectorGraphics\Net4.8\SharpVectorUtil.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -1099,6 +1109,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\clipboard-block.png" />
   </ItemGroup>
   <ItemGroup>

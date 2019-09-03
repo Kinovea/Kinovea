@@ -55,7 +55,12 @@ namespace Kinovea.ScreenManager
         public void CopyGraph(int width, int height)
         {
             Backup();
-            Bitmap bmp = PngExporter.ExportToBitmap(plot.Model, width, height, Brushes.White);
+            PngExporter pngExporter = new PngExporter();
+            pngExporter.Width = width;
+            pngExporter.Height = height;
+            pngExporter.Resolution = 72;
+            pngExporter.Background = OxyPlot.OxyColors.White;
+            Bitmap bmp = pngExporter.ExportToBitmap(plot.Model);
             Clipboard.SetImage(bmp);
             bmp.Dispose();
             Restore();
