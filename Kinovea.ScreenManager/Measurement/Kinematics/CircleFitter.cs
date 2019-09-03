@@ -38,8 +38,8 @@ namespace Kinovea.ScreenManager
             // http://jsxgraph.uni-bayreuth.de/wiki/index.php/Least-squares_circle_fitting
 
             int rows = traj.Length;
-            Matrix m = new Matrix(rows, 3);
-            Matrix v = new Matrix(rows, 1);
+            Matrix<double> m = Matrix<double>.Build.Dense(rows, 3);
+            Matrix<double> v = Matrix<double>.Build.Dense(rows, 1);
 
             for (int i = 0; i < rows; i++)
             {
@@ -52,11 +52,10 @@ namespace Kinovea.ScreenManager
 
             try
             {
-                Matrix mt = m.Clone();
-                mt.Transpose();
-                Matrix b = mt.Multiply(m);
-                Matrix c = mt.Multiply(v);
-                Matrix z = b.Solve(c);
+                Matrix<double> mt = m.Clone().Transpose();
+                Matrix<double> b = mt.Multiply(m);
+                Matrix<double> c = mt.Multiply(v);
+                Matrix<double> z = b.Solve(c);
 
                 PointF center = new PointF((float)(z[0, 0] * 0.5), (float)(z[1, 0] * 0.5));
                 double radius = Math.Sqrt(z[2, 0] + (center.X * center.X) + (center.Y * center.Y));
