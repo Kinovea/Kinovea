@@ -371,3 +371,6 @@ MigrationBackup/
 .ionide/
 
 /Localization/Contrib/*
+/Installer/Kinovea-*
+/Installer/OtherFiles/Changelog*
+/Installer/OtherFiles/HelpVideos/*.avi

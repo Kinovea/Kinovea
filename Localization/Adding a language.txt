@@ -7,7 +7,7 @@
 5. Add entry in Service > LanguageManager (Initialize and new static property.)
 6. Add entry in credits window (Kinovea > UserInterface > FormAbout.cs).
 7. Test
-8. hg add files. (Add on main directory + "<code>.resx" in filter box). => 4 files. 
+8. hg add files. (Add on main directory + "<code>.resx" in filter box). => 5 files. 
     -> If there are other languages modified, there is the issue of cell merging. All cells in a language column should have a Cell Format > Font > language selected.
 
 ------------------
