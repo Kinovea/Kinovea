@@ -138,6 +138,10 @@ namespace Kinovea.Services
         {
             get { return Languages["ar"]; }
         }
+        public static string Farsi
+        {
+            get { return Languages["fa"]; }
+        }
         #endregion
 
         private static Dictionary<string, string> languages = null;
@@ -157,6 +161,7 @@ namespace Kinovea.Services
             languages.Add("el", "Ελληνικά");
             languages.Add("en", "English");
             languages.Add("es", "Español");
+            languages.Add("fa", "فارسی");
             languages.Add("fr", "Français");
             languages.Add("ko", "한국어");
             languages.Add("it", "Italiano");

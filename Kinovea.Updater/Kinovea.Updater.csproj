@@ -188,6 +188,7 @@
     <EmbeddedResource Include="Languages\UpdaterLang.cs.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.da.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.el.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.fa.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.fi.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.ja.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.ko.resx" />
