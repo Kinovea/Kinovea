@@ -41,32 +41,16 @@ namespace Kinovea.ScreenManager
             this.metadata = metadata;
             metadata.BeforeKVAImport();
 
-            string kva = MetadataConverter.Convert(source, isFile);
-
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
-            settings.IgnoreWhitespace = true;
-            settings.CloseInput = true;
-
-            XmlReader reader = null;
-
-            try
+            string extension = Path.GetExtension(source).ToLower();
+            if (extension == ".kva" || extension == ".xml")
             {
-                reader = isFile ? XmlReader.Create(kva, settings) : XmlReader.Create(new StringReader(kva), settings);
-                Load(reader);
+                ImportKVA(source, isFile);
             }
-            catch (Exception e)
+            else if (extension == ".srt")
             {
-                log.Error("An error happened during the parsing of the KVA metadata");
-                log.Error(e);
+                MetadataImporterSRT.Import(metadata, source, isFile);
             }
-            finally
-            {
-                if (reader != null)
-                    reader.Close();
-            }
-
+            
             metadata.AfterKVAImport();
         }
         public string SaveToString(Metadata metadata)
@@ -127,10 +111,12 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Extract the referenced video file from the given KVA file.
+        /// Used in the context of crash recovery.
+        /// </summary>
         public static string ExtractFullPath(string source)
         {
-            // Extract the referenced video file from the given KVA file.
-            // Used in the context of crash recovery.
             string kva = MetadataConverter.Convert(source, true);
 
             XmlDocument doc = new XmlDocument();
@@ -140,7 +126,52 @@ namespace Kinovea.ScreenManager
             return pathNode != null ? pathNode.InnerText : null;
         }
 
+        /// <summary>
+        /// Determines if a given file can be imported as metadata.
+        /// </summary>
+        public static bool IsMetadataFile(string path)
+        {
+            return SupportedFileFormats().Contains(Path.GetExtension(path).ToLower());
+        }
+
+        /// <summary>
+        /// List of supported metadata file extensions by order of preference.
+        /// </summary>
+        public static List<string> SupportedFileFormats()
+        {
+            return new List<string>() { ".kva", ".srt", ".xml" };
+        }
+
+
         #region load
+        private void ImportKVA(string source, bool isFile)
+        {
+            string kva = MetadataConverter.Convert(source, isFile);
+
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreComments = true;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreWhitespace = true;
+            settings.CloseInput = true;
+
+            XmlReader reader = null;
+
+            try
+            {
+                reader = isFile ? XmlReader.Create(kva, settings) : XmlReader.Create(new StringReader(kva), settings);
+                Load(reader);
+            }
+            catch (Exception e)
+            {
+                log.Error("An error happened during the parsing of the KVA metadata");
+                log.Error(e);
+            }
+            finally
+            {
+                if (reader != null)
+                    reader.Close();
+            }
+        }
         private void Load(XmlReader r)
         {
             // Note: the order of tags is somewhat important.

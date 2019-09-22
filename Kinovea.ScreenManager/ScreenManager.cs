@@ -1447,7 +1447,12 @@ namespace Kinovea.ScreenManager
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
             openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = ScreenManagerLang.FileFilter_KVA;
+            //openFileDialog.Filter = ScreenManagerLang.FileFilter_KVA;
+            string filterAllAnalysis = "All supported formats (*.kva, *.xml, *.srt)|*.kva;*.srt;*.xml";
+            string filterKVA = "Kinovea Video Analysis (*.kva)|*.kva";
+            string filterSRT = "Subtitles (*.srt)|*.srt";
+            string totalFilter = string.Join("|", new string[] { filterAllAnalysis, filterKVA, filterSRT});
+            openFileDialog.Filter = totalFilter;
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
                 return;
@@ -2193,7 +2198,7 @@ namespace Kinovea.ScreenManager
             if(!File.Exists(path))
                 return;
 
-            if (Path.GetExtension(path).ToLower() == ".kva" && targetScreen >= 0)
+            if (MetadataSerializer.IsMetadataFile(path) && targetScreen >= 0)
             {
                 // Special case of loading a KVA file on top of a loaded video.
                 AbstractScreen screen = GetScreenAt(targetScreen);

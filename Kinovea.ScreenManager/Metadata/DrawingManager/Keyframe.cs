@@ -122,6 +122,16 @@ namespace Kinovea.ScreenManager
             this.timecode = timecode;
             this.metadata = metadata;
         }
+        public Keyframe(Guid id, long position, string title, string timecode, string comments, List<AbstractDrawing> drawings, Metadata metadata)
+        {
+            this.id = id;
+            this.position = position;
+            this.title = title;
+            this.timecode = timecode;
+            this.comments = comments;
+            this.drawings = drawings;
+            this.metadata = metadata;
+        }
         public Keyframe(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
             : this(0, "", metadata)
         {

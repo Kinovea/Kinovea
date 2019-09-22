@@ -559,8 +559,11 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                string kvaFile = Path.Combine(Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath), Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + ".kva");
-                LookForLinkedAnalysis(kvaFile);
+                foreach (string extension in MetadataSerializer.SupportedFileFormats())
+                {
+                    string candidate = Path.Combine(Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath), Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + extension);
+                    LookForLinkedAnalysis(candidate);
+                }
 
                 string startupFile = Path.Combine(Software.SettingsDirectory, "playback.kva");
                 LookForLinkedAnalysis(startupFile);

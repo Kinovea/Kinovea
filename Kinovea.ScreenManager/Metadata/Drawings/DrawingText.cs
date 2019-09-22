@@ -158,6 +158,12 @@ namespace Kinovea.ScreenManager
             mnuShowArrow.Click += new EventHandler(mnuShowArrow_Click);
             mnuShowArrow.Image = Properties.Drawings.arrow;
         }
+        public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, string text)
+            : this(p, timestamp, averageTimeStampsPerFrame, ToolManager.GetStylePreset("Label"))
+        {
+            this.text = TextHelper.FixMissingCarriageReturns(text);
+            UpdateLabelRectangle();
+        }
         public DrawingText(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Label"))
         {

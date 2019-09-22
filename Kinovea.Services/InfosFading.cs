@@ -24,43 +24,87 @@ using System.Xml;
 namespace Kinovea.Services
 {
     /// <summary>
-    /// This class encapsulate fading / persistence infos and utilities.
-    /// It is used by all drawings to delegate the computing of the opacity factor.
-    /// Each drawing instance has its own InfosFading with its own set of internal values. 
+    /// This class encapsulate onion-skinning / opacity ramping utilities.
+    /// It is used by all drawings to delegate the computing of their opacity at any given frame.
+    /// 
+    /// We support more options than traditional onion-skinning:
+    /// 1. The configuration is per-drawing (each has its own InfosFading object), even if most of the time the global value from preferences is used.
+    /// 2. Option to stay fully opaque throughout the entire video.
+    /// 3. Option to stay fully opaque for a number of frames.
+    /// When considering opacity from a given frame, we treat the start and end of the opaque section as if the drawing was at these frames.
+    /// 
+    /// TODO: Currently there is no support for changing color based on whether the drawing is in the future or the past.
     /// </summary>
     public class InfosFading
     {
         #region Properties
+
+        /// <summary>
+        /// Whether the ramping of opacity before and after the opaque duration is enabled.
+        /// </summary>
         public bool Enabled
         {
             get { return enabled; }
             set { enabled = value; }
         }
+
+        /// <summary>
+        /// Whether this drawing fading/duration mode has been customized by the user.
+        /// </summary>
         public bool UseDefault
         {
             get { return useDefault; }
             set { useDefault = value; }
         }
+
+        /// <summary>
+        /// Whether this drawing should be opaque during the entire video.
+        /// </summary>
         public bool AlwaysVisible
         {
             get { return alwaysVisible; }
             set { alwaysVisible = value; }
         }
+
+        /// <summary>
+        /// How many frames are used to ramp up and down opacity around the opaque section.
+        /// </summary>
         public int FadingFrames
         {
             get { return fadingFrames; }
             set { fadingFrames = value; }
         }
+
+        /// <summary>
+        /// How many frames are fully opaque.
+        /// </summary>
+        public int OpaqueFrames
+        {
+            get { return opaqueFrames; }
+            set { opaqueFrames = value; }
+        }
+
+        /// <summary>
+        /// The timestamp the drawing is attached to, and first fully opaque frame.
+        /// </summary>
         public long ReferenceTimestamp
         {
             get { return referenceTimestamp; }
             set { referenceTimestamp = value; }
         }
+
+        /// <summary>
+        /// The average timestamp per frame for the video.
+        /// </summary>
         public long AverageTimeStampsPerFrame
         {
             get { return averageTimeStampsPerFrame; }
             set { averageTimeStampsPerFrame = value; }
         }
+
+        /// <summary>
+        /// Defines the highest possible opacity.
+        /// </summary>
         public float MasterFactor
         {
             get { return masterFactor; }
@@ -74,6 +118,7 @@ namespace Kinovea.Services
                 hash ^= useDefault.GetHashCode();
                 hash ^= alwaysVisible.GetHashCode();
                 hash ^= fadingFrames.GetHashCode();
+                hash ^= opaqueFrames.GetHashCode();
                 hash ^= referenceTimestamp.GetHashCode();
                 hash ^= masterFactor.GetHashCode();
                 return hash;
@@ -86,6 +131,7 @@ namespace Kinovea.Services
         private bool useDefault;
         private bool alwaysVisible;
         private int fadingFrames;
+        private int opaqueFrames = 1;
         private long referenceTimestamp;
         private long averageTimeStampsPerFrame;
         private float masterFactor = 1.0f;
@@ -101,6 +147,7 @@ namespace Kinovea.Services
             useDefault = true;
             alwaysVisible = false;
             fadingFrames = 20;
+            opaqueFrames = 1;
             referenceTimestamp = 0;
             averageTimeStampsPerFrame = 0;
             masterFactor = 1.0f;
@@ -128,6 +175,7 @@ namespace Kinovea.Services
             this.UseDefault = origin.UseDefault;
             this.AlwaysVisible = origin.AlwaysVisible;
             this.FadingFrames = origin.FadingFrames;
+            this.OpaqueFrames = origin.OpaqueFrames;
             this.ReferenceTimestamp = origin.ReferenceTimestamp;
             this.AverageTimeStampsPerFrame = origin.AverageTimeStampsPerFrame;
             this.MasterFactor = origin.MasterFactor;
@@ -136,6 +184,7 @@ namespace Kinovea.Services
         {
             w.WriteElementString("Enabled", enabled.ToString().ToLower());
             w.WriteElementString("Frames", fadingFrames.ToString());
+            w.WriteElementString("OpaqueFrames", opaqueFrames.ToString());
             w.WriteElementString("AlwaysVisible", alwaysVisible.ToString().ToLower());
             w.WriteElementString("UseDefault", useDefault.ToString().ToLower());
         }
@@ -152,6 +201,9 @@ namespace Kinovea.Services
                         break;
                     case "Frames":
                         fadingFrames = xmlReader.ReadElementContentAsInt();
+                        break;
+                    case "OpaqueFrames":
+                        opaqueFrames = xmlReader.ReadElementContentAsInt();
                         break;
                     case "UseDefault":
                         useDefault = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
@@ -174,29 +226,17 @@ namespace Kinovea.Services
 
         public double GetOpacityFactor(long timestamp)
         {
-            double opacity = 0.0f;
-
-            if (!enabled)
-            {
-                opacity = timestamp == referenceTimestamp ? 1.0f : 0.0f;
-            }
-            else if (useDefault)
+            if (useDefault)
             {
                 InfosFading info = PreferencesManager.PlayerPreferences.DefaultFading;
-                opacity = info.AlwaysVisible ? 1.0f : ComputeOpacityFactor(referenceTimestamp, timestamp, info.FadingFrames);
-            }
-            else if (alwaysVisible)
-            {
-                opacity = 1.0f;
+                return ComputeOpacityFactor(referenceTimestamp, timestamp, info.alwaysVisible, info.opaqueFrames, info.fadingFrames, info.MasterFactor);
             }
             else
             {
-                opacity = ComputeOpacityFactor(referenceTimestamp, timestamp, fadingFrames);
+                return ComputeOpacityFactor(referenceTimestamp, timestamp, alwaysVisible, opaqueFrames, fadingFrames, masterFactor);
             }
-
-            return opacity * masterFactor;
         }
-        
+
         public bool IsVisible(long referenceTimestamp, long testTimestamp, int visibleFrames)
         {
             return ComputeOpacityFactor(referenceTimestamp, testTimestamp, (long)visibleFrames) > 0;
@@ -207,6 +247,31 @@ namespace Kinovea.Services
             long distanceTimestamps = Math.Abs(testTimestamp - referenceTimestamp);
             long fadingTimestamps = fadingFrames * averageTimeStampsPerFrame;
             return distanceTimestamps > fadingTimestamps ? 0.0f : 1.0f - ((double)distanceTimestamps / (double)fadingTimestamps);
+        }
+
+        private double ComputeOpacityFactor(long referenceTimestamp, long testTimestamp, bool alwaysVisible, long opaqueFrames, long fadingFrames, float masterFactor)
+        {
+            if (alwaysVisible)
+                return 1.0f * masterFactor;
+
+            long opaqueTimestamps = ((opaqueFrames-1) * averageTimeStampsPerFrame);
+            long opaqueStart = referenceTimestamp;
+            long opaqueEnd = opaqueStart + opaqueTimestamps;
+
+            if ((testTimestamp >= opaqueStart) && (testTimestamp <= opaqueEnd))
+                return 1.0f * masterFactor;
+
+            long distanceTimestamps;
+            if (testTimestamp < opaqueStart)
+                distanceTimestamps = opaqueStart - testTimestamp;
+            else
+                distanceTimestamps = testTimestamp - opaqueEnd;
+
+            long fadingTimestamps = fadingFrames * averageTimeStampsPerFrame;
+            float factor = 1.0f - ((float)distanceTimestamps / (float)fadingTimestamps);
+            factor = Math.Max(0, factor);
+
+            return factor * masterFactor;
         }
     }
 }
