@@ -2691,7 +2691,8 @@ namespace Kinovea.ScreenManager
                 if (!m_FrameServer.Metadata.DrawingInitializing)
                 {
                     AddKeyframe();
-                    CreateNewDrawing(m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex));
+                    if (m_iActiveKeyFrameIndex >= 0)
+                        CreateNewDrawing(m_FrameServer.Metadata.GetKeyframeId(m_iActiveKeyFrameIndex));
                 }
             }
         }
