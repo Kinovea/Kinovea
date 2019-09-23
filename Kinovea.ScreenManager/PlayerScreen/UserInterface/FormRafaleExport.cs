@@ -21,9 +21,9 @@ namespace Kinovea.ScreenManager
         private string fullPath;
         private int totalFrames;
         private int maxDecimationFrames;
-        private int decimationFrames;
         private double frameInterval;
-        private int defaultDecimationFrames = 10;
+        private const int defaultDecimationFrames = 10;
+        private int decimationFrames = defaultDecimationFrames;
         private int limitDecimationFrames = 500;
         private List<int> values = new List<int>();
         #endregion
@@ -78,6 +78,8 @@ namespace Kinovea.ScreenManager
             trkDecimate.Minimum = 0;
             trkDecimate.Maximum = values.Count - 1;
             trkDecimate.Value = indexOfDefault;
+
+            decimationFrames = values[indexOfDefault];
         }
 
         private void trkDecimate_ValueChanged(object sender, EventArgs e)
