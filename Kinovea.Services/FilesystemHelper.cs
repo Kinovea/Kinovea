@@ -22,6 +22,7 @@ using System;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Kinovea.Services
 {
@@ -245,6 +246,57 @@ namespace Kinovea.Services
                 DeleteDirectoryContent(entry);
                 Directory.Delete(entry);
             }
+        }
+
+        /// <summary>
+        /// Returns the filename with a sequence pattern in it, or null if the passed file is not part of an image sequence.
+        /// This generates a file pattern suitable for ffmpeg, for example: "image%04d.jpg".
+        /// The criteria is that there are at least 3 other files following the one passed in parameter.
+        /// </summary>
+        public static string GetSequenceFilename(string path)
+        {
+            int sequenceThreshold = 3;
+
+            string directory = Path.GetDirectoryName(path);
+            string filename = Path.GetFileNameWithoutExtension(path);
+            string extension = Path.GetExtension(path);
+
+            // Only do this for images.
+            List<string> imageExtensions = new List<string>() { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp" };
+            if (!imageExtensions.Contains(extension))
+                return null;
+
+            Regex r = new Regex(@"\d+");
+            MatchCollection mc = r.Matches(filename);
+
+            if (mc.Count == 0)
+                return null;
+
+            // We did find some numbers, check if there are other files following the sequence of the last matched number.
+            Match m = mc[mc.Count - 1];
+            int digits = m.Value.Length;
+            int value;
+            bool parsed = int.TryParse(m.Value, out value);
+            if (!parsed)
+                return null;
+
+            // Build the next filenames in the sequence and look for the corresponding files.
+            // We need this to be somewhat similar to what ffmpeg will do, we don't want 
+            // false positives where we report a sequence and ffmpeg can't find the files.
+            for (int i = 0; i < sequenceThreshold; i++)
+            {
+                value++;
+                string token = value.ToString().PadLeft(digits, '0');
+                string nextFilename = r.Replace(filename, token, 1, m.Index);
+                string nextPath = Path.Combine(directory, nextFilename + extension);
+                if (!File.Exists(nextPath))
+                    return null;
+            }
+
+            // Build the final file pattern.
+            string patternToken = string.Format("%0{0}d", digits);
+            string patternFilename = r.Replace(filename, patternToken, 1, m.Index);
+            return patternFilename + extension;
         }
     }
 }

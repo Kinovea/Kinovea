@@ -105,9 +105,18 @@ namespace Kinovea.ScreenManager
         #region Public
         public OpenVideoResult Load(string filePath)
         {
-            // Instanciate appropriate video reader class depending on extension.
-            string extension = Path.GetExtension(filePath);
-            videoReader = VideoTypeManager.GetVideoReader(extension);
+            // Instanciate appropriate video reader class.
+            string sequenceFilename = FilesystemHelper.GetSequenceFilename(filePath);
+            if (!string.IsNullOrEmpty(sequenceFilename))
+            {
+                videoReader = VideoTypeManager.GetImageSequenceReader();
+                filePath = Path.Combine(Path.GetDirectoryName(filePath), sequenceFilename);
+            }
+            else
+            {
+                videoReader = VideoTypeManager.GetVideoReader(Path.GetExtension(filePath));
+            }
+
             if(videoReader != null)
             {
                 videoReader.Options = new VideoOptions(PreferencesManager.PlayerPreferences.AspectRatio, ImageRotation.Rotate0, Demosaicing.None, PreferencesManager.PlayerPreferences.DeinterlaceByDefault);

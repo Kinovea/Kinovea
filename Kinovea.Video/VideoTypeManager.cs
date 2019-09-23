@@ -109,6 +109,23 @@ namespace Kinovea.Video
             
             return reader;
         }
+
+        public static VideoReader GetImageSequenceReader()
+        {
+            // Ask specifically for the FFMpeg video reader.
+            VideoReader reader = null;
+            Type readerType;
+            bool found = m_VideoReaders.TryGetValue("*", out readerType);
+
+            if (found)
+            {
+                ConstructorInfo ci = readerType.GetConstructor(System.Type.EmptyTypes);
+                if (ci != null)
+                    reader = (VideoReader)Activator.CreateInstance(readerType, null);
+            }
+
+            return reader;
+        }
         
         public static bool IsSupported(string _extension)
         {
