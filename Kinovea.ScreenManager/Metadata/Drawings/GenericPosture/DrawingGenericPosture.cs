@@ -89,7 +89,7 @@ namespace Kinovea.ScreenManager
                 // Rebuild the menu each time to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 
-                if(genericPosture.OptionGroups.Count > 0)
+                if(genericPosture.HasNonHiddenOptions)
                 {
                     menuOptions.Text = ScreenManagerLang.Generic_Options;
                     contextMenu.Add(menuOptions);
@@ -178,6 +178,7 @@ namespace Kinovea.ScreenManager
             menuFlipVertical.Click += menuFlipVertical_Click;
             menuFlipVertical.Image = Properties.Drawings.flipvertical;
         }
+        
         public DrawingGenericPosture(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(Guid.Empty, PointF.Empty, null, 0, 0, null)
         {
@@ -236,7 +237,7 @@ namespace Kinovea.ScreenManager
                 if(result >= 0)
                     break;
                 
-                if(!HasActiveOption(genericPosture.Handles[i].OptionGroup))
+                if(!IsActive(genericPosture.Handles[i].OptionGroup))
                     continue;
             
                 int reference = genericPosture.Handles[i].Reference;
@@ -501,7 +502,7 @@ namespace Kinovea.ScreenManager
             
             foreach(GenericPostureComputedPoint computedPoint in genericPosture.ComputedPoints)
             {
-                if(!HasActiveOption(computedPoint.OptionGroup))
+                if(!IsActive(computedPoint.OptionGroup))
                     continue;
                     
                 PointF p = computedPoint.ComputeLocation(genericPosture);
@@ -530,7 +531,7 @@ namespace Kinovea.ScreenManager
         {
             foreach(GenericPostureSegment segment in genericPosture.Segments)
             {
-                if(!HasActiveOption(segment.OptionGroup))
+                if(!IsActive(segment.OptionGroup))
                     continue;
                     
                 penEdge.Width = segment.Width;
@@ -562,7 +563,7 @@ namespace Kinovea.ScreenManager
         {
             foreach(GenericPostureCircle circle in genericPosture.Circles)
             {
-                if(!HasActiveOption(circle.OptionGroup))
+                if(!IsActive(circle.OptionGroup))
                     continue;
                     
                 penEdge.Width = circle.Width;
@@ -582,7 +583,7 @@ namespace Kinovea.ScreenManager
             // Points are by default invisible unless there is a handle on them.
             foreach(GenericPostureHandle handle in genericPosture.Handles)
             {
-                if(!HasActiveOption(handle.OptionGroup))
+                if(!IsActive(handle.OptionGroup))
                     continue;
                     
                 if(handle.Type == HandleType.Point && handle.Reference >= 0 && handle.Reference < points.Count && handle.Reference < genericPosture.Points.Count)
@@ -612,7 +613,7 @@ namespace Kinovea.ScreenManager
             
             for(int i = 0; i<angles.Count; i++)
             {
-                if(!HasActiveOption(genericPosture.Angles[i].OptionGroup))
+                if(!IsActive(genericPosture.Angles[i].OptionGroup))
                     continue;
                 
                 AngleHelper angleHelper = angles[i];
@@ -673,7 +674,7 @@ namespace Kinovea.ScreenManager
         {
             foreach(GenericPostureDistance distance in genericPosture.Distances)
             {
-                if(!HasActiveOption(distance.OptionGroup))
+                if(!IsActive(distance.OptionGroup))
                     continue;
                 
                 PointF untransformedA = distance.Point1 >= 0 ? genericPosture.PointList[distance.Point1] : GetUntransformedComputedPoint(distance.Point1);
@@ -696,7 +697,7 @@ namespace Kinovea.ScreenManager
         {
             foreach(GenericPosturePosition position in genericPosture.Positions)
             {
-                if(!HasActiveOption(position.OptionGroup))
+                if(!IsActive(position.OptionGroup))
                     continue;
                 
                 PointF untransformedP = position.Point >= 0 ? genericPosture.PointList[position.Point] : GetUntransformedComputedPoint(position.Point);
@@ -814,19 +815,22 @@ namespace Kinovea.ScreenManager
         private void InitOptionMenus()
         {
             // Options
-            if(genericPosture == null || genericPosture.OptionGroups == null || genericPosture.OptionGroups.Count == 0)
+            if(genericPosture == null || genericPosture.Options == null || genericPosture.Options.Count == 0)
                 return;
             
-            foreach(string option in genericPosture.OptionGroups.Keys)
+            foreach(GenericPostureOption option in genericPosture.Options.Values)
             {
+                if (option.Hidden)
+                    continue;
+
                 ToolStripMenuItem menu = new ToolStripMenuItem();
-                menu.Text = option;
-                menu.Checked = genericPosture.OptionGroups[option];
-                
-                string closureOption = option;
+                menu.Text = option.Label;
+                menu.Checked = option.Value;
+
+                string closureOption = option.Key;
                 menu.Click += (s, e) => {
-                    genericPosture.OptionGroups[closureOption] = !genericPosture.OptionGroups[closureOption];
-                    menu.Checked = genericPosture.OptionGroups[closureOption];
+                    genericPosture.Options[closureOption].Value = !genericPosture.Options[closureOption].Value;
+                    menu.Checked = genericPosture.Options[closureOption].Value;
                     InvalidateFromMenu(s);
                 };
                 
@@ -869,12 +873,12 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Bicolor", "line color");
         }
         
-        private bool HasActiveOption(string option)
+        private bool IsActive(string key)
         {
-            if(string.IsNullOrEmpty(option))
+            if(string.IsNullOrEmpty(key) || !genericPosture.Options.ContainsKey(key))
                 return true;
             
-            return genericPosture.OptionGroups[option];
+            return genericPosture.Options[key].Value;
         }
         private PointF GetComputedPoint(int index, IImageToViewportTransformer transformer)
         {

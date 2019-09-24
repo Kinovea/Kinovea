@@ -59,7 +59,8 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureComputedPoint> ComputedPoints { get; private set;}
 
         public GenericPostureCapabilities Capabilities { get; private set;}
-        public Dictionary<string, bool> OptionGroups { get; private set;}
+        public Dictionary<string, GenericPostureOption> Options { get; private set; }
+        public bool HasNonHiddenOptions { get; private set; }
 
         public TrackingProfile CustomTrackingProfile { get; private set; }
         public bool Trackable { get; private set;}
@@ -68,7 +69,6 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private List<int> trackableIndices = new List<int>();
-        private List<string> defaultOptions = new List<string>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
             ComputedPoints = new List<GenericPostureComputedPoint>();
 
             Capabilities = GenericPostureCapabilities.None;
-            OptionGroups = new Dictionary<string, bool>();
+            Options = new Dictionary<string, GenericPostureOption>();
 
             CustomTrackingProfile = new TrackingProfile();
             
@@ -245,9 +245,9 @@ namespace Kinovea.ScreenManager
     						break;
 
                         // Menus
-                        case "DefaultOptions":
-    						ParseDefaultOptions(r);
-    						break;
+                        case "Options":
+                            ParseOptions(r);
+                            break;
     		            case "Capabilities":
     						ParseCapabilities(r);
     						break;
@@ -266,15 +266,13 @@ namespace Kinovea.ScreenManager
                 
                 r.ReadEndElement();
                 
-                ImportOptionGroups();
+                ConsolidateOptions();
             }
             catch(Exception e)
             {
                 log.ErrorFormat("An error occurred during the parsing of a custom tool.");
                 log.ErrorFormat(e.ToString());
             }
-
-            
         }
         private void CheckFormatVersion(string version)
         {
@@ -510,15 +508,17 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Menus
-        private void ParseDefaultOptions(XmlReader r)
+        private void ParseOptions(XmlReader r)
         {
             r.ReadStartElement();
-            
-            while(r.NodeType == XmlNodeType.Element)
+
+            while (r.NodeType == XmlNodeType.Element)
             {
-                if(r.Name == "OptionGroup")
+                if (r.Name == "Option")
                 {
-                    defaultOptions.Add(r.ReadElementContentAsString());
+                    GenericPostureOption option = new GenericPostureOption(r);
+                    if (!Options.ContainsKey(option.Key))
+                        Options.Add(option.Key, option);
                 }
                 else
                 {
@@ -526,9 +526,10 @@ namespace Kinovea.ScreenManager
                     log.DebugFormat("Unparsed content in XML: {0}", outerXml);
                 }
             }
-            
+
             r.ReadEndElement();
         }
+
         private void ParseCapabilities(XmlReader r)
         {
             // Note: must be an empty tag.
@@ -548,7 +549,13 @@ namespace Kinovea.ScreenManager
             
             r.ReadStartElement();
         }
-        private void ImportOptionGroups()
+
+        /// <summary>
+        /// Look for extra options that are declared directly at the object level.
+        /// This is mostly a remnant of the older format where the options were only declared like this.
+        /// The new format has an Options node with a proper list.
+        /// </summary>
+        private void ConsolidateOptions()
         {
             foreach(GenericPostureSegment segment in Segments)
                 AddOption(segment.OptionGroup);
@@ -575,17 +582,24 @@ namespace Kinovea.ScreenManager
             
             foreach(GenericPostureComputedPoint computedPoint in ComputedPoints)
                 AddOption(computedPoint.OptionGroup);
-            
-            foreach(string defaultOption in defaultOptions)
-            {
-                if(OptionGroups.ContainsKey(defaultOption))
-                    OptionGroups[defaultOption] = true;
-            }
+
+            HasNonHiddenOptions = Options.Values.Any(o => !o.Hidden);
         }
-        private void AddOption(string option)
+
+        /// <summary>
+        /// Check if an option listed at the object level is already known and add it otherwise.
+        /// </summary>
+        private void AddOption(string key)
         {
-            if(!string.IsNullOrEmpty(option) && !OptionGroups.ContainsKey(option))
-               OptionGroups.Add(option, false);
+            if (string.IsNullOrEmpty(key))
+                return;
+
+            bool known = Options.Values.Any(o => o.Label == key || o.Key == key);
+            if (!known)
+            {
+                GenericPostureOption option = new GenericPostureOption(key, key, false, false);
+                Options.Add(key, option);
+            }
         }
         #endregion
 

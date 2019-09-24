@@ -62,8 +62,7 @@ namespace Kinovea.ScreenManager
             PointF old = posture.PointList[posture.Handles[handle].Reference];
             PrepareImpacts(posture, handle);
             
-            if(constraint == null || 
-               (!string.IsNullOrEmpty(constraint.OptionGroup) && !posture.OptionGroups[constraint.OptionGroup]))
+            if (!IsActive(constraint, posture))
             {
                 MovePointHandleFreely(posture, handle, point);
             }
@@ -157,8 +156,8 @@ namespace Kinovea.ScreenManager
         
             // Constraints. (position of the point managed by this handle).
             GenericPostureAbstractConstraint constraint = posture.Handles[handle].Constraint;
-            
-            if(constraint == null)
+
+            if (!IsActive(constraint, posture))
             {
                 MoveSegmentHandleFreely(posture, handle, point);
             }
@@ -215,8 +214,8 @@ namespace Kinovea.ScreenManager
         {
             // Constraints. (position of the point managed by this handle).
             GenericPostureAbstractConstraint constraint = posture.Handles[handle].Constraint;
-            
-            if(constraint == null)
+
+            if (!IsActive(constraint, posture))
             {
                 MoveCircleHandleFreely(posture, handle, point);
             }
@@ -549,5 +548,15 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        private static bool IsActive(GenericPostureAbstractConstraint constraint, GenericPosture posture)
+        {
+            if (constraint == null)
+                return false;
+
+            if (string.IsNullOrEmpty(constraint.OptionGroup) || !posture.Options.ContainsKey(constraint.OptionGroup))
+                return false;
+
+            return posture.Options[constraint.OptionGroup].Value;
+        }
     }
 }
