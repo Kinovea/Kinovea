@@ -157,13 +157,13 @@ namespace Kinovea.ScreenManager
             float top = metadata.ImageSize.Height * 0.75f;
             PointF location = new PointF(200, top);
 
-            DrawingText label = new DrawingText(location, startTs, metadata.AverageTimeStampsPerFrame, content);
-            label.InfosFading.UseDefault = false;
-            label.InfosFading.ReferenceTimestamp = position;
-            label.InfosFading.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerFrame;
-            label.InfosFading.AlwaysVisible = false;
-            label.InfosFading.OpaqueFrames = (int)((endTs - startTs) / (float)metadata.AverageTimeStampsPerFrame);
-            label.InfosFading.FadingFrames = 10;
+            DrawingText drawing = new DrawingText(location, startTs, metadata.AverageTimeStampsPerFrame, content);
+            drawing.InfosFading.UseDefault = false;
+            drawing.InfosFading.ReferenceTimestamp = position;
+            drawing.InfosFading.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerFrame;
+            drawing.InfosFading.AlwaysVisible = false;
+            drawing.InfosFading.OpaqueFrames = (int)((endTs - startTs) / (float)metadata.AverageTimeStampsPerFrame);
+            drawing.InfosFading.FadingFrames = 10;
 
             // FIXME: there seems to be an issue with style element .Value modification.
             //StyleElementFontSize styleElement = label.DrawingStyle.Elements["font size"] as StyleElementFontSize;
@@ -173,7 +173,7 @@ namespace Kinovea.ScreenManager
             //    label.DrawingStyle.RaiseValueChanged();
             //}
 
-            drawings.Add(label);
+            drawings.Add(drawing);
             Keyframe keyframe = new Keyframe(id, position, title, timecode, comments, drawings, metadata);
 
             metadata.MergeInsertKeyframe(keyframe);

@@ -50,7 +50,11 @@ namespace Kinovea.ScreenManager
             {
                 MetadataImporterSRT.Import(metadata, source, isFile);
             }
-            
+            else if (source.EndsWith("_keypoints.json"))
+            {
+                MetadataImporterOpenPose.Import(metadata, source, isFile);
+            }
+
             metadata.AfterKVAImport();
         }
         public string SaveToString(Metadata metadata)
@@ -139,7 +143,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static List<string> SupportedFileFormats()
         {
-            return new List<string>() { ".kva", ".srt", ".xml" };
+            return new List<string>() { ".kva", ".srt", ".xml", ".json" };
         }
 
 

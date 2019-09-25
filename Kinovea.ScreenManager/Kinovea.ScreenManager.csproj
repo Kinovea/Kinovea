@@ -174,6 +174,10 @@
     <Reference Include="MathNet.Numerics, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.4.8.1\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
     </Reference>
@@ -369,7 +373,10 @@
     <Compile Include="Metadata\Drawings\Styling\LineShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementLineShape.cs" />
     <Compile Include="Metadata\Drawings\Styling\TrackShape.cs" />
-    <Compile Include="Metadata\Serialization\MetadataImporterSRT.cs" />
+    <Compile Include="Metadata\Importers\OpenPose\OpenPoseFrame.cs" />
+    <Compile Include="Metadata\Importers\OpenPose\OpenPosePerson.cs" />
+    <Compile Include="Metadata\Importers\OpenPose\MetadataImporterOpenPose.cs" />
+    <Compile Include="Metadata\Importers\SRT\MetadataImporterSRT.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="Measurement\Geometry\ClipResult.cs" />

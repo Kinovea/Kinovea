@@ -11,6 +11,9 @@ using System.IO;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Converts older files to the latest KVA spec.
+    /// </summary>
     public class MetadataConverter
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

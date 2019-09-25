@@ -38,59 +38,87 @@
     <Point name="RHeel" value="158;596" color="#009999" />
   </Points>
   <Segments>
-    <Segment name="Neck" point1="0" point2="1" style="Solid" width="4" color="#FF0033"/>
-    <Segment name="RClavicle" point1="1" point2="2" style="Solid" width="4" color="#FF0F00"/>
-    <Segment name="RArm" point1="2" point2="3" style="Solid" width="4" color="#E16200"/>
-    <Segment name="RForearm" point1="3" point2="4" style="Solid" width="4" color="#B4B400"/>
-    <Segment name="LClavicle" point1="1" point2="5" style="Solid" width="4" color="#4BCA00"/>
-    <Segment name="LArm" point1="5" point2="6" style="Solid" width="4" color="#00E100"/>
-    <Segment name="LForearm" point1="6" point2="7" style="Solid" width="4" color="#00F900"/>
-    <Segment name="Trunk" point1="1" point2="8" style="Solid" width="4" color="#FF0000"/>
-    <Segment name="RHip" point1="8" point2="9" style="Solid" width="4" color="#00F000"/>
-    <Segment name="RThigh" point1="9" point2="10" style="Solid" width="4" color="#00E767"/>
-    <Segment name="RLowerLeg" point1="10" point2="11" style="Solid" width="4" color="#00DEDE"/>
-    <Segment name="LHip" point1="8" point2="12" style="Solid" width="4" color="#008BFF"/>
-    <Segment name="LThigh" point1="12" point2="13" style="Solid" width="4" color="#0039FF"/>
-    <Segment name="LLowerLeg" point1="13" point2="14" style="Solid" width="4" color="#0000FF"/>
-    <Segment name="RFoot" point1="11" point2="22" style="Solid" width="4" color="#00DEDE"/>
-    <Segment name="RHeel" point1="11" point2="24" style="Solid" width="4" color="#00DEDE"/>
-    <Segment name="RToes" point1="22" point2="23" style="Solid" width="4" color="#00DEDE"/>
-    <Segment name="LFoot" point1="14" point2="19" style="Solid" width="4" color="#0000FF"/>
-    <Segment name="LHeel" point1="14" point2="21" style="Solid" width="4" color="#0000FF"/>
-    <Segment name="LToes" point1="19" point2="20" style="Solid" width="4" color="#0000FF"/>
-    <Segment name="REye" point1="0" point2="15" style="Solid" width="4" color="#FF00A9"/>
-    <Segment name="REar" point1="15" point2="17" style="Solid" width="4" color="#FF00FF"/>
-    <Segment name="LEye" point1="0" point2="16" style="Solid" width="4" color="#B900FF"/>
-    <Segment name="LEar" point1="16" point2="18" style="Solid" width="4" color="#5000FF"/>
+    <Segment name="Neck" point1="0" point2="1" style="Solid" width="4" color="#FF0033" optionGroup="showNose|showNeck" />
+    <Segment name="RClavicle" point1="1" point2="2" style="Solid" width="4" color="#FF0F00" optionGroup="showNeck|showRShoulder" />
+    <Segment name="RArm" point1="2" point2="3" style="Solid" width="4" color="#E16200" optionGroup="showRShoulder|showRElbow" />
+    <Segment name="RForearm" point1="3" point2="4" style="Solid" width="4" color="#B4B400" optionGroup="showRElbow|showRWrist" />
+    <Segment name="LClavicle" point1="1" point2="5" style="Solid" width="4" color="#4BCA00" optionGroup="showNeck|showLShoulder" />
+    <Segment name="LArm" point1="5" point2="6" style="Solid" width="4" color="#00E100" optionGroup="showLShoulder|showLElbow" />
+    <Segment name="LForearm" point1="6" point2="7" style="Solid" width="4" color="#00F900" optionGroup="showLElbow|showLWrist" />
+    <Segment name="Trunk" point1="1" point2="8" style="Solid" width="4" color="#FF0000" optionGroup="showNeck|showMidHip" />
+    <Segment name="RHip" point1="8" point2="9" style="Solid" width="4" color="#00F000" optionGroup="showMidHip|showRHip" />
+    <Segment name="RThigh" point1="9" point2="10" style="Solid" width="4" color="#00E767" optionGroup="showRHip|showRKnee" />
+    <Segment name="RLowerLeg" point1="10" point2="11" style="Solid" width="4" color="#00DEDE" optionGroup="showRKnee|showRAnkle" />
+    <Segment name="LHip" point1="8" point2="12" style="Solid" width="4" color="#008BFF" optionGroup="showMidHip|showLHip" />
+    <Segment name="LThigh" point1="12" point2="13" style="Solid" width="4" color="#0039FF" optionGroup="showLHip|showLKnee" />
+    <Segment name="LLowerLeg" point1="13" point2="14" style="Solid" width="4" color="#0000FF" optionGroup="showLKnee|showLAnkle" />
+    <Segment name="RFoot" point1="11" point2="22" style="Solid" width="4" color="#00DEDE" optionGroup="showRAnkle|showRBigToe" />
+    <Segment name="RHeel" point1="11" point2="24" style="Solid" width="4" color="#00DEDE" optionGroup="showRAnkle|showRHeel" />
+    <Segment name="RToes" point1="22" point2="23" style="Solid" width="4" color="#00DEDE" optionGroup="showRBigToe|showRSmallToe" />
+    <Segment name="LFoot" point1="14" point2="19" style="Solid" width="4" color="#0000FF" optionGroup="showLAnkle|showLBigToe" />
+    <Segment name="LHeel" point1="14" point2="21" style="Solid" width="4" color="#0000FF" optionGroup="showLAnkle|showLHeel" />
+    <Segment name="LToes" point1="19" point2="20" style="Solid" width="4" color="#0000FF" optionGroup="showLBigToe|showLSmallToe" />
+    <Segment name="REye" point1="0" point2="15" style="Solid" width="4" color="#FF00A9" optionGroup="showNose|showREye" />
+    <Segment name="REar" point1="15" point2="17" style="Solid" width="4" color="#FF00FF" optionGroup="showREye|showREar" />
+    <Segment name="LEye" point1="0" point2="16" style="Solid" width="4" color="#B900FF" optionGroup="showNose|showLEye" />
+    <Segment name="LEar" point1="16" point2="18" style="Solid" width="4" color="#5000FF" optionGroup="showLEye|showLEar" />
   </Segments>
 
   <!-- Interaction -->
   <Handles>
-    <Handle type="Point" name="Nose" reference="0" color="#990033" trackable="true" />
-    <Handle type="Point" name="Neck" reference="1" color="#B30200" trackable="true" />
-    <Handle type="Point" name="RShoulder" reference="2" color="#993300" trackable="true" />
-    <Handle type="Point" name="RElbow" reference="3" color="#996600" trackable="true" />
-    <Handle type="Point" name="RWrist" reference="4" color="#999900" trackable="true" />
-    <Handle type="Point" name="LShoulder" reference="5" color="#669900" trackable="true" />
-    <Handle type="Point" name="LElbow" reference="6" color="#339900" trackable="true" />
-    <Handle type="Point" name="LWrist" reference="7" color="#009900" trackable="true" />
-    <Handle type="Point" name="MidHip" reference="8" color="#990000" trackable="true" />
-    <Handle type="Point" name="RHip" reference="9" color="#009933" trackable="true" />
-    <Handle type="Point" name="RKnee" reference="10" color="#009966" trackable="true" />
-    <Handle type="Point" name="RAnkle" reference="11" color="#009999" trackable="true" />
-    <Handle type="Point" name="LHip" reference="12" color="#006699" trackable="true" />
-    <Handle type="Point" name="LKnee" reference="13" color="#003399" trackable="true" />
-    <Handle type="Point" name="LAnkle" reference="14" color="#000099" trackable="true" />
-    <Handle type="Point" name="REye" reference="15" color="#990066" trackable="true" />
-    <Handle type="Point" name="LEye" reference="16" color="#660099" trackable="true" />
-    <Handle type="Point" name="REar" reference="17" color="#990099" trackable="true" />
-    <Handle type="Point" name="LEar" reference="18" color="#330099" trackable="true" />
-    <Handle type="Point" name="LBigToe" reference="19" color="#000099" trackable="true" />
-    <Handle type="Point" name="LSmallToe" reference="20" color="#000099" trackable="true" />
-    <Handle type="Point" name="LHeel" reference="21" color="#000099" trackable="true" />
-    <Handle type="Point" name="RBigToe" reference="22" color="#009999" trackable="true" />
-    <Handle type="Point" name="RSmallToe" reference="23" color="#009999" trackable="true" />
-    <Handle type="Point" name="RHeel" reference="24" color="#009999" trackable="true" />
+    <Handle type="Point" name="Nose" reference="0" color="#990033" trackable="true" optionGroup="showNose" />
+    <Handle type="Point" name="Neck" reference="1" color="#B30200" trackable="true" optionGroup="showNeck" />
+    <Handle type="Point" name="RShoulder" reference="2" color="#993300" trackable="true" optionGroup="showRShoulder" />
+    <Handle type="Point" name="RElbow" reference="3" color="#996600" trackable="true" optionGroup="showRElbow" />
+    <Handle type="Point" name="RWrist" reference="4" color="#999900" trackable="true" optionGroup="showRWrist" />
+    <Handle type="Point" name="LShoulder" reference="5" color="#669900" trackable="true" optionGroup="showLShoulder" />
+    <Handle type="Point" name="LElbow" reference="6" color="#339900" trackable="true" optionGroup="showLElbow" />
+    <Handle type="Point" name="LWrist" reference="7" color="#009900" trackable="true" optionGroup="showLWrist" />
+    <Handle type="Point" name="MidHip" reference="8" color="#990000" trackable="true" optionGroup="showMidHip" />
+    <Handle type="Point" name="RHip" reference="9" color="#009933" trackable="true" optionGroup="showRHip" />
+    <Handle type="Point" name="RKnee" reference="10" color="#009966" trackable="true" optionGroup="showRKnee" />
+    <Handle type="Point" name="RAnkle" reference="11" color="#009999" trackable="true" optionGroup="showRAnkle" />
+    <Handle type="Point" name="LHip" reference="12" color="#006699" trackable="true" optionGroup="showLHip" />
+    <Handle type="Point" name="LKnee" reference="13" color="#003399" trackable="true" optionGroup="showLKnee" />
+    <Handle type="Point" name="LAnkle" reference="14" color="#000099" trackable="true" optionGroup="showLAnkle" />
+    <Handle type="Point" name="REye" reference="15" color="#990066" trackable="true" optionGroup="showREye" />
+    <Handle type="Point" name="LEye" reference="16" color="#660099" trackable="true" optionGroup="showLEye" />
+    <Handle type="Point" name="REar" reference="17" color="#990099" trackable="true" optionGroup="showREar" />
+    <Handle type="Point" name="LEar" reference="18" color="#330099" trackable="true" optionGroup="showLEar" />
+    <Handle type="Point" name="LBigToe" reference="19" color="#000099" trackable="true" optionGroup="showLBigToe" />
+    <Handle type="Point" name="LSmallToe" reference="20" color="#000099" trackable="true" optionGroup="showLSmallToe" />
+    <Handle type="Point" name="LHeel" reference="21" color="#000099" trackable="true" optionGroup="showLHeel" />
+    <Handle type="Point" name="RBigToe" reference="22" color="#009999" trackable="true" optionGroup="showRBigToe" />
+    <Handle type="Point" name="RSmallToe" reference="23" color="#009999" trackable="true" optionGroup="showRSmallToe" />
+    <Handle type="Point" name="RHeel" reference="24" color="#009999" trackable="true" optionGroup="showRHeel" />
   </Handles>
+
+  <Options>
+    <Option key="showNose" label="Show Nose" default="false" hidden="true" />
+    <Option key="showNeck" label="Show Neck" default="false" hidden="true"/>
+    <Option key="showRShoulder" label="show RShoulder" default="false" hidden="true" />
+    <Option key="showRElbow" label="show RElbow" default="false" hidden="true" />
+    <Option key="showRWrist" label="show RWrist" default="false" hidden="true" />
+    <Option key="showLShoulder" label="show LShoulder" default="false" hidden="true" />
+    <Option key="showLElbow" label="show LElbow" default="false" hidden="true" />
+    <Option key="showLWrist" label="show LWrist" default="false" hidden="true" />
+    <Option key="showMidHip" label="show MidHip" default="false" hidden="true" />
+    <Option key="showRHip" label="show RHip" default="false" hidden="true" />
+    <Option key="showRKnee" label="show RKnee" default="false" hidden="true" />
+    <Option key="showRAnkle" label="show RAnkle" default="false" hidden="true" />
+    <Option key="showLHip" label="show LHip" default="false" hidden="true" />
+    <Option key="showLKnee" label="show LKnee" default="false" hidden="true" />
+    <Option key="showLAnkle" label="show LAnkle" default="false" hidden="true" />
+    <Option key="showREye" label="show REye" default="false" hidden="true" />
+    <Option key="showLEye" label="show LEye" default="false" hidden="true" />
+    <Option key="showREar" label="show REar" default="false" hidden="true" />
+    <Option key="showLEar" label="show LEar" default="false" hidden="true" />
+    <Option key="showLBigToe" label="show LBigToe" default="false" hidden="true" />
+    <Option key="showLSmallToe" label="show LSmallToe" default="false" hidden="true" />
+    <Option key="showLHeel" label="show LHeel" default="false" hidden="true" />
+    <Option key="showRBigToe" label="show RBigToe" default="false" hidden="true" />
+    <Option key="showRSmallToe" label="show RSmallToe" default="false" hidden="true" />
+    <Option key="showRHeel" label="show RHeel" default="false" hidden="true" />
+  </Options>
 
 </KinoveaPostureTool>

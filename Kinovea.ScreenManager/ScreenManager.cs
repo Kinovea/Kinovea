@@ -1451,7 +1451,8 @@ namespace Kinovea.ScreenManager
             string filterAllAnalysis = "All supported formats (*.kva, *.xml, *.srt)|*.kva;*.srt;*.xml";
             string filterKVA = "Kinovea Video Analysis (*.kva)|*.kva";
             string filterSRT = "Subtitles (*.srt)|*.srt";
-            string totalFilter = string.Join("|", new string[] { filterAllAnalysis, filterKVA, filterSRT});
+            string filterOpenPose = "OpenPose (*.json)|*.json";
+            string totalFilter = string.Join("|", new string[] { filterAllAnalysis, filterKVA, filterSRT, filterOpenPose});
             openFileDialog.Filter = totalFilter;
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
