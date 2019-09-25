@@ -533,7 +533,7 @@ namespace Kinovea.ScreenManager
             {
                 if(!IsActive(segment.OptionGroup))
                     continue;
-                    
+    
                 penEdge.Width = segment.Width;
                 penEdge.DashStyle = Convert(segment.Style);
                 penEdge.Color = segment.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, segment.Color);
@@ -873,12 +873,29 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Bicolor", "line color");
         }
         
-        private bool IsActive(string key)
+        private bool IsActive(string value)
         {
-            if(string.IsNullOrEmpty(key) || !genericPosture.Options.ContainsKey(key))
+            if (string.IsNullOrEmpty(value))
                 return true;
-            
-            return genericPosture.Options[key].Value;
+
+            string[] keys = value.Split(new char[] { '|' });
+
+            // We only implement the "AND" logic at the moment:
+            // in case of multiple options on the object, they all need to be active for the object to be active.
+            bool active = true;
+            foreach (string key in keys)
+            {
+                if (!genericPosture.Options.ContainsKey(key))
+                    continue;
+
+                if (!genericPosture.Options[key].Value)
+                {
+                    active = false;
+                    break;
+                }
+            }
+
+            return active;
         }
         private PointF GetComputedPoint(int index, IImageToViewportTransformer transformer)
         {

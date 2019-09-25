@@ -553,10 +553,28 @@ namespace Kinovea.ScreenManager
             if (constraint == null)
                 return false;
 
-            if (string.IsNullOrEmpty(constraint.OptionGroup) || !posture.Options.ContainsKey(constraint.OptionGroup))
-                return false;
+            string value = constraint.OptionGroup;
+            if (string.IsNullOrEmpty(value))
+                return true;
 
-            return posture.Options[constraint.OptionGroup].Value;
+            string[] keys = value.Split(new char[] { '|' });
+
+            // We only implement the "AND" logic at the moment:
+            // in case of multiple options on the object, they all need to be active for the object to be active.
+            bool active = true;
+            foreach (string key in keys)
+            {
+                if (!posture.Options.ContainsKey(key))
+                    continue;
+
+                if (!posture.Options[key].Value)
+                {
+                    active = false;
+                    break;
+                }
+            }
+
+            return active;
         }
     }
 }

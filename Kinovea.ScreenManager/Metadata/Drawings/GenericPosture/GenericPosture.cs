@@ -60,6 +60,7 @@ namespace Kinovea.ScreenManager
 
         public GenericPostureCapabilities Capabilities { get; private set;}
         public Dictionary<string, GenericPostureOption> Options { get; private set; }
+
         public bool HasNonHiddenOptions { get; private set; }
 
         public TrackingProfile CustomTrackingProfile { get; private set; }
@@ -589,16 +590,20 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Check if an option listed at the object level is already known and add it otherwise.
         /// </summary>
-        private void AddOption(string key)
+        private void AddOption(string value)
         {
-            if (string.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(value))
                 return;
 
-            bool known = Options.Values.Any(o => o.Label == key || o.Key == key);
-            if (!known)
+            string[] keys = value.Split(new char[] { '|' });
+            foreach (string key in keys)
             {
-                GenericPostureOption option = new GenericPostureOption(key, key, false, false);
-                Options.Add(key, option);
+                bool known = Options.Values.Any(o => o.Label == key || o.Key == key);
+                if (!known)
+                {
+                    GenericPostureOption option = new GenericPostureOption(key, key, false, false);
+                    Options.Add(key, option);
+                }
             }
         }
         #endregion

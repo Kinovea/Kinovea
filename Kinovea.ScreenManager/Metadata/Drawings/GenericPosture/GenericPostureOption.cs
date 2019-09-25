@@ -10,7 +10,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Options are flags that enable/disable visibility of objects or usage of constraints/impacts.
-    /// Each object can declare being bound to an option.
+    /// Each object can declare being bound to one or more options, separated by '|'.
     /// The options are exposed as entries in the context menu of the tool and the user can toggle them.
     /// </summary>
     public class GenericPostureOption
