@@ -61,6 +61,9 @@ namespace Kinovea.ScreenManager
                 Close();
             }
 
+            if (!Directory.Exists(path))
+                return;
+
             watcher = new FileSystemWatcher(path);
 
             watcher.NotifyFilter = NotifyFilters.Size | NotifyFilters.LastWrite;
@@ -94,6 +97,7 @@ namespace Kinovea.ScreenManager
             watcher.Changed -= watcher_Changed;
             watcher.Created -= watcher_Changed;
             watcher.Dispose();
+            watcher = null;
         }
 
         private void LoadVideo(string path)
@@ -104,6 +108,13 @@ namespace Kinovea.ScreenManager
             // Load the video in the player.
             // We send the actual file name in path, at this point the player doesn't need to know this is coming from a watched directory.
             LoaderVideo.LoadVideo(player, path, screenDescription);
+            
+            if (player.FrameServer.Loaded)
+            {
+                NotificationCenter.RaiseFileOpened(null, path);
+                PreferencesManager.FileExplorerPreferences.AddRecentFile(path);
+                PreferencesManager.Save();
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using Kinovea.Services;
 using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
+using System.IO;
 
 namespace Kinovea.ScreenManager
 {
@@ -78,7 +79,19 @@ namespace Kinovea.ScreenManager
                 if (playerScreen.FrameServer.Loaded)
                 {
                     NotificationCenter.RaiseFileOpened(null, path);
-                    PreferencesManager.FileExplorerPreferences.AddRecentFile(path);
+
+                    if (screenDescription != null && screenDescription.IsReplayWatcher)
+                    {
+                        // At this point we have lost the actual file that was loaded. The path here still contaiins the special '*' to indicate the watched folder.
+                        // The actual file is the latest file in the folder this was computed right before loading.
+                        string actualPath = FilesystemHelper.GetMostRecentFile(Path.GetDirectoryName(path));
+                        PreferencesManager.FileExplorerPreferences.AddRecentFile(actualPath);
+                    }
+                    else
+                    {
+                        PreferencesManager.FileExplorerPreferences.AddRecentFile(path);
+                    }
+
                     PreferencesManager.Save();
                 }
 
