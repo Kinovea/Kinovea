@@ -112,12 +112,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="film_save" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
@@ -274,7 +274,7 @@
         RK5CYII=
 </value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="flatsync3c" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\flatsync3c.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1239,18 +1239,15 @@
   </data>
   <data name="explorer_video" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJTSURBVDhPpZJfSJpRGMYjCBQU9MIu8kIvVChFE/wD
-        lsw/mIpKfyCFKaGbMh2fmW3QGBtL2O0uhgQbYzFcl6PLaG4jmNUG1vwKS3MznW03a2MX2z7Ki+/dG6MI
-        P7vaxQOH95zfwznPczoA4L90tkgmk8VEIvErHo9Xzx84r7GxsV2Px3PsdDpLp7OzTYSPCIJ4EovFwOfz
-        tRXC4HA4Hlit1h2GAcKA8I9IJNIksl+pm6+/U5PLh1R06ZDazM9S30qzlN1ub1oslg2j0YhIi0E0Gt1C
-        +H4oFCrqVu5BbK0KU28Brq0AvMgvwnE9CmazeXdwcJDQ6/UkwyAcDteCwWAuEAiQttVhUGRdEHxThitZ
-        gMhLgLuvPsLAwMC2TqfLqdXqGsMA4QrCGXxrIZAfhtslH1zfssDEuykYWV6CS4t5QJhEOKNQKCoMA7/f
-        X0Q4hUlvzjemYeHgDjw7uAVz9asw9/kypBvj0N/fT8rl8pRMJisyDLxeb2N0dJTELNo2cKK+vj5KKpWS
-        YrG4wTBAuOh2u1OY9Mbk+hHMvAeYXgMgVgEK5Udw+OUxSCSSDwinhEIh8wYul6syNDSUwaQLF7UgEonI
-        np6eTHd3NzMDm81WM5lMOUz6whYQ3hYIBDk+n89sAWESYQKT3rmoBYRLCBNcLpf5DwwGA2i12nVM+s/T
-        2iT9vD5Dz9dv0OnqBJ3eH6cf7o/QPB7vN4fDWWCz2Yi0GGg0mqZKpQqhSdsGToRPABaLNdzV1fWTYaBU
-        Ksu9vb1NTHrjdNYqhPcQhs7Ozk//ZtDxF37tYA1lRn2OAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAGtSURBVDhPlVJNLwNRFJ3/YmGnPkpSdPq1sZX4LewJglbbmcpYWvlIBCHYiLSrio/OzGsiURpN
+        aSQ0SCyEao/7nqm2jOIkJzOZue/cc+95Epv3PxgxNzhNzXcj/Rf8IMoXQCmDk3A3dKUXxpwMNh9Yt0qa
+        Q1f6gBcGPO58COGSWBAiVklz6Co5eE6gsD2IwykHjqYdOA52khMX0ppHiKQ172rdmMviYBXGnBelwgKy
+        SwPAa5bcZOh5DrxlcTDdmeI1TOmpjRlyIhV1CTGm+TckUwvgbHEI5atR4G4CuB0DiuO43hpEMBgSZJEO
+        cplC5X6bGpB4iRohL0SkZMRnchEj5oWh9MMgdZP2okddRWrexWlGnMDTLsq5EcFKbhioZGjMPjFia7WQ
+        k3e03tuIAqbaT51XaNFh4IH4GCIHjJraLNoSaMDeZO+mrso0O1GRqbMsDidm3PtWSQ12ApRU3iAX3HJy
+        1n1Kn6qOW/j/BtgJpBXagX0Ka1ZJDVzgK1m4/ecUbPC50CrNSFfTFH6FqfLr/scU7EDbjvN7oiseSsFT
+        n0LcKvkVfNvfRpMkqeUdBnCdERi+hokAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="save_paused_video" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
