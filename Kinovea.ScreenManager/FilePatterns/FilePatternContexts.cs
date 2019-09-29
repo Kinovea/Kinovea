@@ -19,6 +19,8 @@ namespace Kinovea.ScreenManager
         
         CameraAlias,
         ConfiguredFramerate,
-        ReceivedFramerate
+        ReceivedFramerate,
+
+        Escape
     }
 }

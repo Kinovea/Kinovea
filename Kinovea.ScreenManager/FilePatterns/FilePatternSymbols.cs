@@ -25,7 +25,8 @@ namespace Kinovea.ScreenManager
 
                 { FilePatternContexts.CameraAlias, "%camalias" },
                 { FilePatternContexts.ConfiguredFramerate, "%camfps" },
-                { FilePatternContexts.ReceivedFramerate, "%recvfps" }
+                { FilePatternContexts.ReceivedFramerate, "%recvfps" },
+                { FilePatternContexts.Escape, "%%" }
             };
 
         }

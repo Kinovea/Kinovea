@@ -1029,6 +1029,8 @@ namespace Kinovea.ScreenManager
             context[FilePatternContexts.ConfiguredFramerate] = string.Format("{0:0.00}", cameraGrabber.Framerate); 
             context[FilePatternContexts.ReceivedFramerate] = string.Format("{0:0.00}", pipelineManager.Frequency);
 
+            context[FilePatternContexts.Escape] = "";
+
             return context;
         }
 
