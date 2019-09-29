@@ -266,24 +266,24 @@ namespace Kinovea.ScreenManager
             mnuCloseFile.Image = Properties.Resources.film_close3;
             mnuCloseFile.Enabled = false;
             mnuCloseFile.Click += new EventHandler(mnuCloseFileOnClick);
-            mnuCloseFile.MergeIndex = 2;
+            mnuCloseFile.MergeIndex = 3;
             mnuCloseFile.MergeAction = MergeAction.Insert;
 
             mnuCloseFile2.Image = Properties.Resources.film_close3;
             mnuCloseFile2.Enabled = false;
             mnuCloseFile2.Visible = false;
             mnuCloseFile2.Click += new EventHandler(mnuCloseFile2OnClick);
-            mnuCloseFile2.MergeIndex = 3;
+            mnuCloseFile2.MergeIndex = 4;
             mnuCloseFile2.MergeAction = MergeAction.Insert;
 
             mnuSave.Image = Properties.Resources.filesave;
             mnuSave.Click += new EventHandler(mnuSaveOnClick);
             mnuSave.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S;
-            mnuSave.MergeIndex = 5;
+            mnuSave.MergeIndex = 6;
             mnuSave.MergeAction = MergeAction.Insert;
 
             mnuExportSpreadsheet.Image = Properties.Resources.table;
-            mnuExportSpreadsheet.MergeIndex = 6;
+            mnuExportSpreadsheet.MergeIndex = 7;
             mnuExportSpreadsheet.MergeAction = MergeAction.Insert;
             mnuExportODF.Image = Properties.Resources.file_ods;
             mnuExportODF.Click += new EventHandler(mnuExportODF_OnClick);
@@ -299,7 +299,7 @@ namespace Kinovea.ScreenManager
             // Load Analysis
             mnuLoadAnalysis.Image = Properties.Resources.file_kva2;
             mnuLoadAnalysis.Click += new EventHandler(mnuLoadAnalysisOnClick);
-            mnuLoadAnalysis.MergeIndex = 7;
+            mnuLoadAnalysis.MergeIndex = 8;
             mnuLoadAnalysis.MergeAction = MergeAction.Insert;
 
             ToolStripItem[] subFile = new ToolStripItem[] { mnuCloseFile, mnuCloseFile2, mnuSave, mnuExportSpreadsheet, mnuLoadAnalysis };

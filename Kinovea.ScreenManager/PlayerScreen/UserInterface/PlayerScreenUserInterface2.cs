@@ -127,6 +127,11 @@ namespace Kinovea.ScreenManager
                 UpdateSpeedLabel();
             }
         }
+        public ScreenDescriptionPlayback LaunchDescription
+        {
+            get { return m_LaunchDescription; }
+            set { m_LaunchDescription = value;}
+        }
         public bool Synched
         {
             //get { return m_bSynched; }
@@ -458,10 +463,6 @@ namespace Kinovea.ScreenManager
                 thumbnail.Dispose();
             }
         }
-        public void SetLaunchDescription(ScreenDescriptionPlayback description)
-        {
-            m_LaunchDescription = description;
-        }
         public void EnableDisableActions(bool _bEnable)
         {
             // Called back after a load error.
@@ -548,16 +549,16 @@ namespace Kinovea.ScreenManager
             bool recoveredMetadata = false;
             if (m_LaunchDescription != null)
             {
+                // Starting the file watcher for .IsReplayWatcher is done in PlayerScreen.
+                // Starting the video for .Play is done later at first Idle.
                 if (m_LaunchDescription.Id != Guid.Empty)
-                {
-                    m_FrameServer.Metadata.Recover(m_LaunchDescription.Id);
-                    recoveredMetadata = true;
-                }
+                    recoveredMetadata = m_FrameServer.Metadata.Recover(m_LaunchDescription.Id);
 
                 if (m_LaunchDescription.SpeedPercentage != (slowMotion * 100))
                     slowMotion = m_LaunchDescription.SpeedPercentage / 100.0;
             }
-            else
+
+            if (!recoveredMetadata)
             {
                 foreach (string extension in MetadataSerializer.SupportedFileFormats())
                 {
@@ -569,6 +570,7 @@ namespace Kinovea.ScreenManager
                 LookForLinkedAnalysis(startupFile);
             }
 
+            
             UpdateTimebase();
             UpdateFilenameLabel();
 
@@ -1142,12 +1144,21 @@ namespace Kinovea.ScreenManager
             // This would be a good time to start the prebuffering if supported.
             // The UpdateWorkingZone call may try to go full cache if possible.
             m_FrameServer.VideoReader.PostLoad();
-            UpdateWorkingZone(true);
+
+            if (m_LaunchDescription != null && m_LaunchDescription.IsReplayWatcher)
+                UpdateWorkingZone(false);
+            else
+                UpdateWorkingZone(true);
+
             UpdateFramesMarkers();
-            
             ShowHideRenderingSurface(true);
-            
             ResizeUpdate(true);
+
+            if (m_LaunchDescription != null && m_LaunchDescription.Autoplay)
+            {
+                buttonPlay.Image = Resources.flatpause3b;
+                StartMultimediaTimer(GetPlaybackFrameInterval());
+            }
         }
         #endregion
 

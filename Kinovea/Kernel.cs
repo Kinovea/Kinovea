@@ -39,6 +39,7 @@ using Kinovea.Updater;
 using Kinovea.Video;
 using Kinovea.Camera;
 using System.Drawing;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Kinovea.Root
 {
@@ -60,6 +61,7 @@ namespace Kinovea.Root
         #region Menus
         private ToolStripMenuItem mnuFile = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenFile = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenReplayWatcher = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHistory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHistoryReset = new ToolStripMenuItem();
         private ToolStripMenuItem mnuQuit = new ToolStripMenuItem();
@@ -247,7 +249,11 @@ namespace Kinovea.Root
             mnuFile.MergeAction = MergeAction.Append;
             mnuOpenFile.Image = Properties.Resources.folder;
             mnuOpenFile.ShortcutKeys = Keys.Control | Keys.O;
-            mnuOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
+            mnuOpenFile.Click += mnuOpenFileOnClick;
+
+            mnuOpenReplayWatcher.Image = Properties.Resources.folder_magnify;
+            mnuOpenReplayWatcher.Click += mnuOpenReplayWatcherOnClick;
+
             mnuHistory.Image = Properties.Resources.time;
             
             NotificationCenter.RaiseRecentFilesChanged(this);
@@ -258,7 +264,8 @@ namespace Kinovea.Root
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
 
             mnuFile.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuOpenFile, 
+                mnuOpenFile,
+                mnuOpenReplayWatcher,
                 mnuHistory, 
                 new ToolStripSeparator(),
                 // -> Here will be plugged the other file menus (save, export)
@@ -392,6 +399,7 @@ namespace Kinovea.Root
         {
             mnuFile.Text = RootLang.mnuFile;
             mnuOpenFile.Text = RootLang.mnuOpenFile;
+            mnuOpenReplayWatcher.Text = "Open replay folder...";
             mnuHistory.Text = RootLang.mnuHistory;
             mnuHistoryReset.Text = RootLang.mnuHistoryReset;
             mnuQuit.Text = RootLang.Generic_Quit;
@@ -439,6 +447,34 @@ namespace Kinovea.Root
             if (filePath.Length > 0)
                 OpenFileFromPath(filePath);
         }
+        private void mnuOpenReplayWatcherOnClick(object sender, EventArgs e)
+        {
+            NotificationCenter.RaiseStopPlayback(this);
+
+            // Ask for a folder location.
+            // TODO: default to the last used capture directory if it still exists.
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            dialog.IsFolderPicker = true;
+            string path = null;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                path = dialog.FileName;
+
+            if (path == null || !Directory.Exists(path))
+                return;
+
+            path = Path.Combine(path, "*");
+
+            ScreenDescriptionPlayback screenDescription = new ScreenDescriptionPlayback();
+            screenDescription.FullPath = path;
+            screenDescription.IsReplayWatcher = true;
+            screenDescription.Autoplay = true;
+            screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
+            LoaderVideo.LoadVideoInScreen(screenManager, path, screenDescription);
+
+            screenManager.OrganizeScreens();
+        }
+
         private void mnuHistoryResetOnClick(object sender, EventArgs e)
         {
             PreferencesManager.FileExplorerPreferences.ResetRecentFiles();

@@ -22,6 +22,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -101,8 +102,13 @@ namespace Kinovea.Services
                     // TODO: check coherence.
                     ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
                     sdp.FullPath = CommandLineArgumentParser.GetParamValue("-file");
-                    int speed = int.Parse(CommandLineArgumentParser.GetParamValue("-speed"));
-                    speed = Math.Max(Math.Min(200, speed), 1);
+                    string strSpeed = CommandLineArgumentParser.GetParamValue("-speed");
+                    double speed;
+                    bool read = double.TryParse(strSpeed, NumberStyles.Any, CultureInfo.InvariantCulture, out speed);
+                    if (read)
+                        speed = Math.Max(Math.Min(200, speed), 1);
+                    else
+                        speed = 100;
                     sdp.SpeedPercentage = speed;
                     sdp.Stretch = CommandLineArgumentParser.IsSwitchOn("-stretch");
                     

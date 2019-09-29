@@ -37,6 +37,7 @@ namespace Kinovea.Video
         #endregion
         
         #region Members
+        // Maps extensions to video readers types.
         private static Dictionary<string, Type> m_VideoReaders = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -89,12 +90,11 @@ namespace Kinovea.Video
         /// <summary>
         /// Instanciate a video reader that supports the target extension.
         /// </summary>
-        /// <param name="_extension"></param>
-        public static VideoReader GetVideoReader(string _extension)
+        public static VideoReader GetVideoReader(string extension)
         {
             VideoReader reader = null;
             Type readerType;
-            bool found = m_VideoReaders.TryGetValue(_extension, out readerType);
+            bool found = m_VideoReaders.TryGetValue(extension, out readerType);
             
             // The FFMpeg plugin will support the wildcard as a fallback mechanism.
             if(!found)
@@ -127,9 +127,12 @@ namespace Kinovea.Video
             return reader;
         }
         
-        public static bool IsSupported(string _extension)
+        /// <summary>
+        /// Return true if the extension is supported at all in any reader we loaded.
+        /// </summary>
+        public static bool IsSupported(string extension)
         {
-            return m_VideoReaders.ContainsKey(_extension);
+            return m_VideoReaders.ContainsKey(extension);
         }
         
         public static void LoadVideo(string path, int target)

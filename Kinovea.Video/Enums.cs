@@ -90,7 +90,8 @@ namespace Kinovea.Video
         CodecNotFound,
         CodecNotOpened,
         CodecNotSupported,
-        Cancelled
+        Cancelled,
+        EmptyWatcher,
     }
     
     public enum SaveResult

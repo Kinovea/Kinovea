@@ -16,12 +16,12 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, int targetScreen)
+        public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, int targetScreen, ScreenDescriptionPlayback screenDescription = null)
         {
             if (targetScreen < 0)
-                LoadUnspecified(manager, path, null);
+                LoadUnspecified(manager, path, screenDescription);
             else
-                LoadInSpecificTarget(manager, targetScreen, path, null);
+                LoadInSpecificTarget(manager, targetScreen, path, screenDescription);
         }
 
         public static void LoadVideoInScreen(ScreenManagerKernel manager, string path, ScreenDescriptionPlayback screenDescription)
@@ -92,8 +92,11 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Actually loads the video into the chosen screen.
         /// </summary>
-        private static void LoadVideo(PlayerScreen player, string path, ScreenDescriptionPlayback screenDescription)
+        public static void LoadVideo(PlayerScreen player, string path, ScreenDescriptionPlayback screenDescription)
         {
+            // In the case of replay watcher this will only be called the first time, to setup the screen.
+            // Subsequent video loads will be done directly by the replay watcher.
+
             log.DebugFormat("Loading video {0}.", path);
             
             NotificationCenter.RaiseStopPlayback(null);
@@ -101,8 +104,7 @@ namespace Kinovea.ScreenManager
             if (player.FrameServer.Loaded)
                 player.view.ResetToEmptyState();
 
-            if (screenDescription != null)
-                player.view.SetLaunchDescription(screenDescription);
+            player.view.LaunchDescription = screenDescription;
 
             OpenVideoResult res = player.FrameServer.Load(path);
             player.Id = Guid.NewGuid();
@@ -152,6 +154,12 @@ namespace Kinovea.ScreenManager
                     {
                         break;
                     }
+                case OpenVideoResult.EmptyWatcher:
+                    {
+                        player.view.EnableDisableActions(false);
+                        player.StartReplayWatcher(player.view.LaunchDescription);
+                        break;
+                    }
                 default:
                     {
                         DisplayErrorAndDisable(player, ScreenManagerLang.LoadMovie_UnkownError);
@@ -166,6 +174,16 @@ namespace Kinovea.ScreenManager
             // Try to load first frame and other initializations.
             int postLoadResult = player.view.PostLoadProcess();
             player.AfterLoad();
+
+            // Note: player.StartReplayWatcher will update the launch descriptor with the current value of the speed slider.
+            // This is to support carrying over user defined speed when swapping with the latest video.
+            // In the case of the initial load, we need to wait until here to call this function so the view has had time
+            // to update the slider with the value set in the descriptor (when using a special default replay speed).
+            // Otherwise we would always pick the default value from the view.
+            if (player.view.LaunchDescription != null && player.view.LaunchDescription.IsReplayWatcher)
+                player.StartReplayWatcher(player.view.LaunchDescription);
+            else
+                player.StopReplayWatcher();
 
             switch (postLoadResult)
             {

@@ -30,11 +30,43 @@ namespace Kinovea.Services
             get { return ScreenType.Playback; }
         }
         
+        /// <summary>
+        /// Guid of the player screen into which this description should be reloaded.
+        /// This is used to re-identify the autosave.kva after video load and restore metadata.
+        /// </summary>
         public Guid Id { get; set; }
+
+        /// <summary>
+        /// Full path to the video file to load.
+        /// </summary>
         public string FullPath { get; set; }
-        public int SpeedPercentage { get; set; }
+
+        /// <summary>
+        /// Whether the video should start playing immediately after load.
+        /// </summary>
+        public bool Autoplay { get; set; }
+
+        /// <summary>
+        /// Speed at which to set the speed slider, whether the video is auto-play or not.
+        /// </summary>
+        public double SpeedPercentage { get; set; }
+
+        /// <summary>
+        /// Time origin of the video, used for synchronizing two videos.
+        /// </summary>
         public long LocalSyncTime { get; set; }
+
+        /// <summary>
+        /// Whether the video should be stretched to fill the player screen estate.
+        /// </summary>
         public bool Stretch { get; set; }
+
+        /// <summary>
+        /// Whether this screen is monitoring new files and loading them automatically.
+        /// </summary>
+        public bool IsReplayWatcher { get; set; } 
+
+        
         public DateTime RecoveryLastSave { get; set; }
         
         public ScreenDescriptionPlayback()

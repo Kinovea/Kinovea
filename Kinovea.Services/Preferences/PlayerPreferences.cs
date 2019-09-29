@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Xml;
 
 using Kinovea.Video;
@@ -148,6 +149,11 @@ namespace Kinovea.Services
             get { return enableCustomToolsDebugMode; }
             set { enableCustomToolsDebugMode = value; }
         }
+        public float DefaultReplaySpeed
+        {
+            get { return defaultReplaySpeed; }
+            set { defaultReplaySpeed = value; }
+        }
         #endregion
 
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -174,6 +180,7 @@ namespace Kinovea.Services
         private TrackingProfile trackingProfile = new TrackingProfile();
         private bool enableFiltering = true;
         private bool enableCustomToolsDebugMode = false;
+        private float defaultReplaySpeed = 100;
         
         public void AddRecentColor(Color _color)
         {
@@ -228,6 +235,8 @@ namespace Kinovea.Services
 
             writer.WriteElementString("EnableFiltering", enableFiltering ? "true" : "false");
             writer.WriteElementString("EnableCustomToolsDebugMode", enableCustomToolsDebugMode ? "true" : "false");
+
+            writer.WriteElementString("DefaultReplaySpeed", defaultReplaySpeed.ToString("0", CultureInfo.InvariantCulture));
         }
         
         public void ReadXML(XmlReader reader)
@@ -309,6 +318,10 @@ namespace Kinovea.Services
                         break;
                     case "EnableCustomToolsDebugMode":
                         enableCustomToolsDebugMode = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "DefaultReplaySpeed":
+                        string str = reader.ReadElementContentAsString();
+                        defaultReplaySpeed = float.Parse(str, CultureInfo.InvariantCulture);
                         break;
                     default:
                         reader.ReadOuterXml();

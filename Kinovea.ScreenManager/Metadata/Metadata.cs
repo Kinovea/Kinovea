@@ -982,16 +982,20 @@ namespace Kinovea.ScreenManager
             CleanupHash();
             DeleteAutosaveFile();
         }
-        public void Recover(Guid id)
+        public bool Recover(Guid id)
         {
             DeleteTempDirectory();
             SetupTempDirectory(id);
             string autosaveFile = Path.Combine(tempFolder, "autosave.kva");
+            bool recovered = false;
             if (File.Exists(autosaveFile))
             {
                 MetadataSerializer s = new MetadataSerializer();
                 s.Load(this, autosaveFile, true);
+                recovered = true;
             }
+
+            return recovered;
         }
 
         public List<List<PointF>> GetCameraCalibrationPoints()

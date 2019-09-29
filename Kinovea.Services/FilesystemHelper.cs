@@ -23,6 +23,8 @@ using System.IO;
 using Microsoft.VisualBasic.FileIO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
+using Kinovea.Video;
 
 namespace Kinovea.Services
 {
@@ -177,19 +179,31 @@ namespace Kinovea.Services
         public static bool CanWrite(string filename)
         {
             // This may suffer from a race condition but should be fine as we mainly use this to test overwriting the file Open in Kinovea itself.
-
             if (!File.Exists(filename))
                 return true;
 
+            return !IsFileLocked(filename, FileAccess.Write);
+        }
+
+        public static bool CanRead(string filename)
+        {
+            if (!File.Exists(filename))
+                return false;
+
+            return !IsFileLocked(filename, FileAccess.Read);
+        }
+
+        private static bool IsFileLocked(string filename, FileAccess fileAccess)
+        {
             Stream s = null;
 
             try
             {
-                s = new FileStream(filename, FileMode.Open, FileAccess.Write, FileShare.None);
+                s = new FileStream(filename, FileMode.Open, fileAccess, FileShare.None);
             }
             catch
             {
-                return false;
+                return true;
             }
             finally
             {
@@ -197,7 +211,7 @@ namespace Kinovea.Services
                     s.Close();
             }
 
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -297,6 +311,35 @@ namespace Kinovea.Services
             string patternToken = string.Format("%0{0}d", digits);
             string patternFilename = r.Replace(filename, patternToken, 1, m.Index);
             return patternFilename + extension;
+        }
+
+        /// <summary>
+        /// Return true if this path is a special path used to detect replay watcher mode.
+        /// </summary>
+        public static bool IsReplayWatcher(string path)
+        {
+            // We simply detect if the file has a filter pattern.
+            return Path.GetFileNameWithoutExtension(path).Contains("*");
+        }
+
+        /// <summary>
+        /// Look for the most recent supported video file in the folder.
+        /// </summary>
+        public static string GetMostRecentFile(string path)
+        {
+            var directory = new DirectoryInfo(path);
+            if (directory == null)
+                return null;
+
+            FileInfo latest = directory.GetFiles()
+                .Where(f => VideoTypeManager.IsSupported(f.Extension))
+                .OrderByDescending(f => f.LastWriteTime)
+                .FirstOrDefault();
+
+            if (latest == null)
+                return null;
+            
+            return latest.FullName;
         }
     }
 }

@@ -292,6 +292,8 @@ namespace Kinovea.ScreenManager
         private FrameServerPlayer frameServer;
         private bool synched;
         private int index;
+        private ReplayWatcher replayWatcher;
+        
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -301,6 +303,7 @@ namespace Kinovea.ScreenManager
             log.Debug("Constructing a PlayerScreen.");
             historyStack = new HistoryStack();
             frameServer = new FrameServerPlayer(historyStack);
+            replayWatcher = new ReplayWatcher(this);
             view = new PlayerScreenUserInterface(frameServer, drawingToolbarPresenter);
             
             BindCommands();
@@ -456,6 +459,7 @@ namespace Kinovea.ScreenManager
         public override void AfterClose()
         {
             frameServer.Metadata.Close();
+            replayWatcher.Close();
             
             if(!frameServer.Loaded)
                 return;
@@ -704,6 +708,16 @@ namespace Kinovea.ScreenManager
         public void AfterLoad()
         {
             OnActivated(EventArgs.Empty);
+        }
+
+        public void StartReplayWatcher(ScreenDescriptionPlayback sdp)
+        {
+            replayWatcher.Start(sdp);
+        }
+
+        public void StopReplayWatcher()
+        {
+            replayWatcher.Close();
         }
 
         /// <summary>
