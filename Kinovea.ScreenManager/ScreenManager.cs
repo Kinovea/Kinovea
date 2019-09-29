@@ -2196,21 +2196,33 @@ namespace Kinovea.ScreenManager
         
         private void DoLoadMovieInScreen(string path, int targetScreen)
         {
-            if(!File.Exists(path))
-                return;
-
-            if (MetadataSerializer.IsMetadataFile(path) && targetScreen >= 0)
+            if (FilesystemHelper.IsReplayWatcher(path))
             {
-                // Special case of loading a KVA file on top of a loaded video.
-                AbstractScreen screen = GetScreenAt(targetScreen);
-                if (screen == null || !screen.Full)
-                    return;
-
-                screen.LoadKVA(path);
+                ScreenDescriptionPlayback screenDescription = new ScreenDescriptionPlayback();
+                screenDescription.FullPath = path;
+                screenDescription.IsReplayWatcher = true;
+                screenDescription.Autoplay = true;
+                screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
+                LoaderVideo.LoadVideoInScreen(this, path, screenDescription);
             }
             else
             {
-                LoaderVideo.LoadVideoInScreen(this, path, targetScreen);
+                if (!File.Exists(path))
+                    return;
+
+                if (MetadataSerializer.IsMetadataFile(path) && targetScreen >= 0)
+                {
+                    // Special case of loading a KVA file on top of a loaded video.
+                    AbstractScreen screen = GetScreenAt(targetScreen);
+                    if (screen == null || !screen.Full)
+                        return;
+
+                    screen.LoadKVA(path);
+                }
+                else
+                {
+                    LoaderVideo.LoadVideoInScreen(this, path, targetScreen);
+                }
             }
         }
         

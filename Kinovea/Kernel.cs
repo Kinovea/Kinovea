@@ -399,7 +399,7 @@ namespace Kinovea.Root
         {
             mnuFile.Text = RootLang.mnuFile;
             mnuOpenFile.Text = RootLang.mnuOpenFile;
-            mnuOpenReplayWatcher.Text = "Open replay folder...";
+            mnuOpenReplayWatcher.Text = "Open replay folder observer...";
             mnuHistory.Text = RootLang.mnuHistory;
             mnuHistoryReset.Text = RootLang.mnuHistoryReset;
             mnuQuit.Text = RootLang.Generic_Quit;

@@ -143,6 +143,16 @@ namespace Kinovea.FileBrowser.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap folder_magnify {
+            get {
+                object obj = ResourceManager.GetObject("folder_magnify", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SpeedTrkIncrease2 {
             get {
                 object obj = ResourceManager.GetObject("SpeedTrkIncrease2", resourceCulture);

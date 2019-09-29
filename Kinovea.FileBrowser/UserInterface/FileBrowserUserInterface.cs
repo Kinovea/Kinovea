@@ -64,6 +64,7 @@ namespace Kinovea.FileBrowser
         #region Menu
         private ContextMenuStrip popMenuFolders = new ContextMenuStrip();
         private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenAsReplayWatcher = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuFiles = new ContextMenuStrip();
@@ -125,13 +126,17 @@ namespace Kinovea.FileBrowser
             mnuAddToShortcuts.Image = Properties.Resources.folder_add;
             mnuAddToShortcuts.Click += new EventHandler(mnuAddToShortcuts_Click);
             mnuAddToShortcuts.Visible = false;
-            
+
+            mnuOpenAsReplayWatcher.Image = Properties.Resources.folder_magnify;
+            mnuOpenAsReplayWatcher.Click += new EventHandler(mnuOpenAsReplayWatcher_Click);
+            mnuOpenAsReplayWatcher.Visible = true;
+
             // Delete selected shortcut
             mnuDeleteShortcut.Image = Properties.Resources.folder_delete;
             mnuDeleteShortcut.Click += new EventHandler(mnuDeleteShortcut_Click);
             mnuDeleteShortcut.Visible = false;
             
-            popMenuFolders.Items.AddRange(new ToolStripItem[] { mnuAddToShortcuts, mnuDeleteShortcut});
+            popMenuFolders.Items.AddRange(new ToolStripItem[] { mnuAddToShortcuts, mnuOpenAsReplayWatcher, mnuDeleteShortcut });
             
             // The context menus will be configured on a per event basis.
             etShortcuts.ContextMenuStrip = popMenuFolders;
@@ -302,6 +307,7 @@ namespace Kinovea.FileBrowser
 
             // Menus
             mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
+            mnuOpenAsReplayWatcher.Text = "Open as replay folder observer";
             mnuDeleteShortcut.Text = FileBrowserLang.mnuDeleteShortcut;
             mnuLaunch.Text = FileBrowserLang.Generic_Open;
             mnuLocate.Text = FileBrowserLang.mnuVideoLocate;
@@ -503,7 +509,9 @@ namespace Kinovea.FileBrowser
                 return;
             
             mnuDeleteShortcut.Visible = false;
-            mnuAddToShortcuts.Visible = etExplorer.IsOnSelectedItem(e.Location) && !currentExptreeItem.Path.StartsWith("::");
+            bool valid = etExplorer.IsOnSelectedItem(e.Location) && !currentExptreeItem.Path.StartsWith("::");
+            mnuAddToShortcuts.Visible = valid;
+            mnuOpenAsReplayWatcher.Visible = valid;
         }
         #endregion
         
@@ -606,12 +614,14 @@ namespace Kinovea.FileBrowser
             {
                 mnuDeleteShortcut.Visible = false;	
                 mnuAddToShortcuts.Visible = false;
+                mnuOpenAsReplayWatcher.Visible = false;
                 return;
             }
             
             bool known = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(currentShortcutItem.Path);
             mnuAddToShortcuts.Visible = !known;
             mnuDeleteShortcut.Visible = known;
+            mnuOpenAsReplayWatcher.Visible = true;
         }
         #endregion
         
@@ -996,6 +1006,15 @@ namespace Kinovea.FileBrowser
             PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
             PreferencesManager.Save();
             ReloadShortcuts();
+        }
+        private void mnuOpenAsReplayWatcher_Click(object sender, EventArgs e)
+        {
+            CShItem item = activeTab == ActiveFileBrowserTab.Explorer ? currentExptreeItem : currentShortcutItem;
+            if (item == null || item.Path.StartsWith("::"))
+                return;
+
+            string path = Path.Combine(item.Path, "*");
+            VideoTypeManager.LoadVideo(path, -1);
         }
         private void mnuDeleteShortcut_Click(object sender, EventArgs e)
         {
