@@ -1060,12 +1060,17 @@ namespace Kinovea.ScreenManager
             return true;
         }
 
+        /// <summary>
+        /// Check if the file can be written safely or overwrite is explicitly ignored anyway.
+        /// If not, raises an confirmation dialog.
+        /// Returns true if the file can be written.
+        /// </summary>
         private bool OverwriteCheck(string path)
         {
             if (cameraGrabber == null)
                 return false;
 
-            if (!File.Exists(path))
+            if (PreferencesManager.CapturePreferences.IgnoreOverwrite || !File.Exists(path))
                 return true;
             
             string msgTitle = ScreenManagerLang.Error_Capture_FileExists_Title;

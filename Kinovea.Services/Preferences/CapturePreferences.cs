@@ -82,6 +82,11 @@ namespace Kinovea.Services
             get { return saveUncompressedVideo; }
             set { saveUncompressedVideo = value; }
         }
+        public bool IgnoreOverwrite
+        {
+            get { return ignoreOverwrite; }
+            set { ignoreOverwrite = value; }
+        }
         #endregion
 
         #region Members
@@ -91,6 +96,7 @@ namespace Kinovea.Services
         private bool saveUncompressedVideo;
         private bool verboseStats = false;
         private int memoryBuffer = 768;
+        private bool ignoreOverwrite = false;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
         private DelayCompositeConfiguration delayCompositeConfiguration = new DelayCompositeConfiguration();
         private PhotofinishConfiguration photofinishConfiguration = new PhotofinishConfiguration();
@@ -122,6 +128,7 @@ namespace Kinovea.Services
             writer.WriteElementString("CaptureRecordingMode", recordingMode.ToString());
             writer.WriteElementString("VerboseStats", verboseStats ? "true" : "false");
             writer.WriteElementString("SaveUncompressedVideo", saveUncompressedVideo ? "true" : "false");
+            writer.WriteElementString("IgnoreOverwriteWarning", ignoreOverwrite ? "true" : "false");
 
             writer.WriteElementString("MemoryBuffer", memoryBuffer.ToString());
             
@@ -168,6 +175,9 @@ namespace Kinovea.Services
                         break;
                     case "SaveUncompressedVideo":
                         saveUncompressedVideo = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "IgnoreOverwriteWarning":
+                        ignoreOverwrite = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "VerboseStats":
                         verboseStats = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());

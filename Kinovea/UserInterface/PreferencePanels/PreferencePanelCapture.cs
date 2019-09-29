@@ -63,6 +63,7 @@ namespace Kinovea.Root
         private FilenameHelper filenameHelper = new FilenameHelper();
         private FormPatterns formPatterns;
         private bool formPatternsVisible;
+        private bool ignoreOverwriteWarning;
         #endregion
         
         #region Construction & Initialization
@@ -94,6 +95,7 @@ namespace Kinovea.Root
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             saveUncompressedVideo = PreferencesManager.CapturePreferences.SaveUncompressedVideo;
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
+            ignoreOverwriteWarning = PreferencesManager.CapturePreferences.IgnoreOverwrite;
         }
         private void InitPage()
         {
@@ -102,6 +104,8 @@ namespace Kinovea.Root
             InitPageRecording();
             InitPageImageNaming();
             InitPageVideoNaming();
+            InitPageAutomation();
+
             InitNamingTextBoxes();
         }
 
@@ -210,6 +214,13 @@ namespace Kinovea.Root
             tbRightVideoRoot.Text = capturePathConfiguration.RightVideoRoot;
             tbRightVideoSubdir.Text = capturePathConfiguration.RightVideoSubdir;
             tbRightVideoFile.Text = capturePathConfiguration.RightVideoFile;
+        }
+
+        private void InitPageAutomation()
+        {
+            tabAutomation.Text = "Automation";
+            chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
+            chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
         }
 
         private void InitNamingTextBoxes()
@@ -365,6 +376,13 @@ namespace Kinovea.Root
             saveUncompressedVideo = chkUncompressedVideo.Checked;
         }
         #endregion
+
+        #region Tab Automation
+        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
+        {
+            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
+        }
+        #endregion
         #endregion
 
         public void CommitChanges()
@@ -374,6 +392,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
             PreferencesManager.CapturePreferences.RecordingMode = recordingMode;
             PreferencesManager.CapturePreferences.SaveUncompressedVideo = saveUncompressedVideo;
+            PreferencesManager.CapturePreferences.IgnoreOverwrite = ignoreOverwriteWarning;
         }
 
         private void btnMacroReference_Click(object sender, EventArgs e)
