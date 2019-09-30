@@ -170,7 +170,7 @@ namespace Kinovea.ScreenManager
                 case OpenVideoResult.EmptyWatcher:
                     {
                         player.view.EnableDisableActions(false);
-                        player.StartReplayWatcher(player.view.LaunchDescription);
+                        player.StartReplayWatcher(player.view.LaunchDescription, null);
                         break;
                     }
                 default:
@@ -194,9 +194,15 @@ namespace Kinovea.ScreenManager
             // to update the slider with the value set in the descriptor (when using a special default replay speed).
             // Otherwise we would always pick the default value from the view.
             if (player.view.LaunchDescription != null && player.view.LaunchDescription.IsReplayWatcher)
-                player.StartReplayWatcher(player.view.LaunchDescription);
+            {
+                player.StartReplayWatcher(player.view.LaunchDescription, player.FilePath);
+            }
             else
+            {
                 player.StopReplayWatcher();
+            }
+
+            
 
             switch (postLoadResult)
             {

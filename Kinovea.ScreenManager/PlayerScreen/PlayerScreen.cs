@@ -710,9 +710,9 @@ namespace Kinovea.ScreenManager
             OnActivated(EventArgs.Empty);
         }
 
-        public void StartReplayWatcher(ScreenDescriptionPlayback sdp)
+        public void StartReplayWatcher(ScreenDescriptionPlayback sdp, string path)
         {
-            replayWatcher.Start(sdp);
+            replayWatcher.Start(sdp, path);
         }
 
         public void StopReplayWatcher()

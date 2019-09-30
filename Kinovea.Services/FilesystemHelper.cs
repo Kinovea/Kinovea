@@ -182,7 +182,7 @@ namespace Kinovea.Services
             if (!File.Exists(filename))
                 return true;
 
-            return !IsFileLocked(filename, FileAccess.Write);
+            return !IsFileLocked(filename, FileAccess.Write, FileShare.None);
         }
 
         public static bool CanRead(string filename)
@@ -190,16 +190,16 @@ namespace Kinovea.Services
             if (!File.Exists(filename))
                 return false;
 
-            return !IsFileLocked(filename, FileAccess.Read);
+            return !IsFileLocked(filename, FileAccess.Read, FileShare.None);
         }
 
-        private static bool IsFileLocked(string filename, FileAccess fileAccess)
+        private static bool IsFileLocked(string filename, FileAccess fileAccess, FileShare fileShare)
         {
             Stream s = null;
 
             try
             {
-                s = new FileStream(filename, FileMode.Open, fileAccess, FileShare.None);
+                s = new FileStream(filename, FileMode.Open, fileAccess, fileShare);
             }
             catch
             {

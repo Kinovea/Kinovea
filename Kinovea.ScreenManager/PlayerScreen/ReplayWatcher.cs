@@ -17,8 +17,11 @@ namespace Kinovea.ScreenManager
     {
         private PlayerScreen player;
         private ScreenDescriptionPlayback screenDescription;
+        private string currentFile;
         private FileSystemWatcher watcher;
         private Control dummy = new Control();
+        private int overwriteEventCount;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public ReplayWatcher(PlayerScreen player)
         {
@@ -43,30 +46,31 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public void Start(ScreenDescriptionPlayback sdp)
+        public void Start(ScreenDescriptionPlayback sdp, string currentFile)
         {
             // We'll pass here upon initialization and also everytime the player is reloaded with a video.
             // Verifiy the file watcher is on the right directory.
-
             double oldSpeed = screenDescription == null ? 0 : screenDescription.SpeedPercentage;
             this.screenDescription = sdp;
+            this.currentFile = currentFile;
 
-            string path = Path.GetDirectoryName(sdp.FullPath);
+            string watchedDir = Path.GetDirectoryName(sdp.FullPath);
 
             if (watcher != null)
             {
-                if (watcher.Path == path && oldSpeed == screenDescription.SpeedPercentage)
+                if (watcher.Path == watchedDir && oldSpeed == screenDescription.SpeedPercentage)
                     return;
 
                 Close();
             }
 
-            if (!Directory.Exists(path))
+            if (!Directory.Exists(watchedDir))
                 return;
 
-            watcher = new FileSystemWatcher(path);
+            watcher = new FileSystemWatcher(watchedDir);
 
-            watcher.NotifyFilter = NotifyFilters.Size | NotifyFilters.LastWrite;
+            overwriteEventCount = 0;
+            watcher.NotifyFilter = NotifyFilters.LastWrite;
             watcher.Filter = "*.*";
             watcher.IncludeSubdirectories = false;
             watcher.Changed += watcher_Changed;
@@ -78,14 +82,29 @@ namespace Kinovea.ScreenManager
         {
             if (!VideoTypeManager.IsSupported(Path.GetExtension(e.FullPath)))
                 return;
-            
-            if (FilesystemHelper.CanRead(e.FullPath))
+
+            if (e.FullPath == currentFile)
             {
-                if (dummy.InvokeRequired)
+                // In this case we can't use the normal heuristic of trying to get exclusive access on the file,
+                // because the player screen itself already has the file opened.
+
+                // First of all we need to stop the player from playing the file as it's reading frames from disk (no caching).
+                dummy.BeginInvoke((Action)delegate { player.StopPlaying(); });
+                
+                // We normally receive only two events. One at start and one on close.
+                overwriteEventCount++;
+                if (overwriteEventCount >= 2)
+                {
+                    overwriteEventCount = 0;
                     dummy.BeginInvoke((Action)delegate { LoadVideo(e.FullPath); });
-                else
-                    LoadVideo(e.FullPath);
+                }
             }
+            else
+            {
+                if (FilesystemHelper.CanRead(e.FullPath))
+                    dummy.BeginInvoke((Action)delegate { LoadVideo(e.FullPath); });
+            }
+            
         }
 
         public void Close()
