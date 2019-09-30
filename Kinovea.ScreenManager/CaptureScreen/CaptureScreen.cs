@@ -177,6 +177,7 @@ namespace Kinovea.ScreenManager
         private DateTime recordingStart;
         private CaptureRecordingMode recordingMode;
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
+        private Stopwatch stopwatchRecording = new Stopwatch();
 
         private OIPRollingShutterCalibration imageProcessor = new OIPRollingShutterCalibration();
 
@@ -855,6 +856,16 @@ namespace Kinovea.ScreenManager
 
             if (recording && recordingMode == CaptureRecordingMode.Display)
                 videoFileWriter.SaveFrame(delayed);
+
+            if (recording)
+            {
+                // Test if recording duration threshold is passed.
+                float recordingSeconds = stopwatchRecording.ElapsedMilliseconds / 1000;
+                if (PreferencesManager.CapturePreferences.RecordingSeconds > 0 && recordingSeconds >= PreferencesManager.CapturePreferences.RecordingSeconds)
+                {
+                    StopRecording();
+                }
+            }
         }
 
         private void ViewportController_DisplayRectangleUpdated(object sender, EventArgs e)
@@ -1191,7 +1202,8 @@ namespace Kinovea.ScreenManager
             if(recording)
             {
                 recordingStart = DateTime.Now;
-                                
+                stopwatchRecording.Restart();
+                
                 view.UpdateRecordingStatus(recording);
                 view.Toast(ScreenManagerLang.Toast_StartRecord, 1000);
 

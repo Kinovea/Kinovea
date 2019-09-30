@@ -110,6 +110,8 @@ namespace Kinovea.Root
       this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
       this.tabAutomation = new System.Windows.Forms.TabPage();
       this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
+      this.lblRecordingTime = new System.Windows.Forms.Label();
+      this.tbRecordingTime = new System.Windows.Forms.TextBox();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
@@ -802,6 +804,8 @@ namespace Kinovea.Root
       // 
       // tabAutomation
       // 
+      this.tabAutomation.Controls.Add(this.lblRecordingTime);
+      this.tabAutomation.Controls.Add(this.tbRecordingTime);
       this.tabAutomation.Controls.Add(this.chkIgnoreOverwriteWarning);
       this.tabAutomation.Location = new System.Drawing.Point(4, 22);
       this.tabAutomation.Name = "tabAutomation";
@@ -820,6 +824,23 @@ namespace Kinovea.Root
       this.chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
       this.chkIgnoreOverwriteWarning.UseVisualStyleBackColor = true;
       this.chkIgnoreOverwriteWarning.CheckedChanged += new System.EventHandler(this.chkIgnoreOverwriteWarning_CheckedChanged);
+      // 
+      // lblRecordingTime
+      // 
+      this.lblRecordingTime.AutoSize = true;
+      this.lblRecordingTime.Location = new System.Drawing.Point(19, 53);
+      this.lblRecordingTime.Name = "lblRecordingTime";
+      this.lblRecordingTime.Size = new System.Drawing.Size(98, 13);
+      this.lblRecordingTime.TabIndex = 43;
+      this.lblRecordingTime.Text = "Recording time (s) :";
+      // 
+      // tbRecordingTime
+      // 
+      this.tbRecordingTime.Location = new System.Drawing.Point(209, 50);
+      this.tbRecordingTime.Name = "tbRecordingTime";
+      this.tbRecordingTime.Size = new System.Drawing.Size(61, 20);
+      this.tbRecordingTime.TabIndex = 42;
+      this.tbRecordingTime.TextChanged += new System.EventHandler(this.tbRecordingTime_TextChanged);
       // 
       // PreferencePanelCapture
       // 
@@ -914,5 +935,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblUncompressedVideoFormat;
         private System.Windows.Forms.TabPage tabAutomation;
         private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
+        private System.Windows.Forms.Label lblRecordingTime;
+        private System.Windows.Forms.TextBox tbRecordingTime;
     }
 }

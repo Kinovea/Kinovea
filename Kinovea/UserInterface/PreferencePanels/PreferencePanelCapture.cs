@@ -64,8 +64,9 @@ namespace Kinovea.Root
         private FormPatterns formPatterns;
         private bool formPatternsVisible;
         private bool ignoreOverwriteWarning;
+        private float recordingSeconds;
         #endregion
-        
+
         #region Construction & Initialization
         public PreferencePanelCapture()
         {
@@ -96,6 +97,7 @@ namespace Kinovea.Root
             saveUncompressedVideo = PreferencesManager.CapturePreferences.SaveUncompressedVideo;
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
             ignoreOverwriteWarning = PreferencesManager.CapturePreferences.IgnoreOverwrite;
+            recordingSeconds = PreferencesManager.CapturePreferences.RecordingSeconds;
         }
         private void InitPage()
         {
@@ -221,6 +223,8 @@ namespace Kinovea.Root
             tabAutomation.Text = "Automation";
             chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
             chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
+            lblRecordingTime.Text = "Recording time (s)";
+            tbRecordingTime.Text = string.Format("{0:0.###}", recordingSeconds);
         }
 
         private void InitNamingTextBoxes()
@@ -382,6 +386,14 @@ namespace Kinovea.Root
         {
             ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
         }
+        private void tbRecordingTime_TextChanged(object sender, EventArgs e)
+        {
+            // Parse in current culture.
+            float value;
+            bool parsed = float.TryParse(tbRecordingTime.Text, out value);
+            if (parsed)
+                recordingSeconds = value;
+        }
         #endregion
         #endregion
 
@@ -393,6 +405,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.RecordingMode = recordingMode;
             PreferencesManager.CapturePreferences.SaveUncompressedVideo = saveUncompressedVideo;
             PreferencesManager.CapturePreferences.IgnoreOverwrite = ignoreOverwriteWarning;
+            PreferencesManager.CapturePreferences.RecordingSeconds = recordingSeconds;
         }
 
         private void btnMacroReference_Click(object sender, EventArgs e)
