@@ -46,6 +46,11 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class CaptureScreen : AbstractScreen
     {
+        #region Events
+        public event EventHandler RecordingStarted;
+        public event EventHandler RecordingStopped;
+        #endregion
+
         #region Properties
         public override Guid Id
         {
@@ -142,6 +147,10 @@ namespace Kinovea.ScreenManager
         {
             get { return synched; }
             set { synched = value; }
+        }
+        public bool Recording
+        {
+            get { return recording; }
         }
         #endregion
         
@@ -1185,6 +1194,9 @@ namespace Kinovea.ScreenManager
                                 
                 view.UpdateRecordingStatus(recording);
                 view.Toast(ScreenManagerLang.Toast_StartRecord, 1000);
+
+                if (RecordingStarted != null)
+                    RecordingStarted(this, EventArgs.Empty);
             }
             else
             {
@@ -1243,6 +1255,9 @@ namespace Kinovea.ScreenManager
             view.UpdateNextVideoFilename(next);
 
             view.UpdateRecordingStatus(recording);
+
+            if (RecordingStopped != null)
+                RecordingStopped(this, EventArgs.Empty);
         }
 
         private CaptureHistoryEntry CreateHistoryEntry(string filename)

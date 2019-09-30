@@ -58,6 +58,18 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region Screens event handlers
+        private void Screen_RecordingStarted(object sender, EventArgs e)
+        {
+            view.UpdateRecordingStatus(true);
+        }
+        private void Screen_RecordingStopped(object sender, EventArgs e)
+        {
+            if (screens.All(s => !s.Recording))
+                view.UpdateRecordingStatus(false);
+        }
+        #endregion
+
         #region Entering/Exiting dual capture management
         private void Enter(List<AbstractScreen> screenList)
         {
@@ -92,11 +104,13 @@ namespace Kinovea.ScreenManager
         }
         private void AddEventHandlers(CaptureScreen screen)
         {
-            
+            screen.RecordingStarted += Screen_RecordingStarted;
+            screen.RecordingStopped += Screen_RecordingStopped;
         }
         private void RemoveEventHandlers(CaptureScreen screen)
         {
-            
+            screen.RecordingStarted -= Screen_RecordingStarted;
+            screen.RecordingStopped -= Screen_RecordingStopped;
         }
         #endregion
 

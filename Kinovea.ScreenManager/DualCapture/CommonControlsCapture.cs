@@ -71,6 +71,12 @@ namespace Kinovea.ScreenManager
             // ToolTips
         }
 
+        public void UpdateRecordingStatus(bool status)
+        {
+            recording = status;
+            RefreshRecordingButton();
+        }
+
         #region Commands
 
         protected override bool ExecuteCommand(int cmd)
