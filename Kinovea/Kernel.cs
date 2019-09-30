@@ -451,10 +451,19 @@ namespace Kinovea.Root
         {
             NotificationCenter.RaiseStopPlayback(this);
 
-            // Ask for a folder location.
-            // TODO: default to the last used capture directory if it still exists.
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string lastReplayFolder = PreferencesManager.FileExplorerPreferences.LastReplayFolder;
+            if (!string.IsNullOrEmpty(lastReplayFolder))
+            {
+                lastReplayFolder = Path.GetDirectoryName(lastReplayFolder);
+                if (Directory.Exists(lastReplayFolder))
+                    dialog.InitialDirectory = lastReplayFolder;
+            }
+            else
+            {
+                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            }
+
             dialog.IsFolderPicker = true;
             string path = null;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)

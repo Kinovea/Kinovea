@@ -86,6 +86,7 @@ namespace Kinovea.ScreenManager
                         // The actual file is the latest file in the folder this was computed right before loading.
                         string actualPath = FilesystemHelper.GetMostRecentFile(Path.GetDirectoryName(path));
                         PreferencesManager.FileExplorerPreferences.AddRecentFile(actualPath);
+                        PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
                     }
                     else
                     {
@@ -171,6 +172,8 @@ namespace Kinovea.ScreenManager
                     {
                         player.view.EnableDisableActions(false);
                         player.StartReplayWatcher(player.view.LaunchDescription, null);
+                        PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
+                        PreferencesManager.Save();
                         break;
                     }
                 default:

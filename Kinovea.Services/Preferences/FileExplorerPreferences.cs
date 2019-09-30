@@ -89,6 +89,11 @@ namespace Kinovea.Services
         {
             get { return filePropertyVisibility; }
         }
+        public string LastReplayFolder
+        {
+            get { return lastReplayFolder; }
+            set { lastReplayFolder = value; }
+        }
 
         private List<string> recentFiles = new List<string>();
         private int maxRecentFiles = 5;
@@ -99,6 +104,7 @@ namespace Kinovea.Services
         private ActiveFileBrowserTab activeTab = ActiveFileBrowserTab.Explorer;
         private string lastBrowsedDirectory;
         private FilePropertyVisibility filePropertyVisibility = new FilePropertyVisibility();
+        private string lastReplayFolder;
         
         public void AddRecentFile(string file)
         {
@@ -183,8 +189,10 @@ namespace Kinovea.Services
             writer.WriteStartElement("FilePropertyVisibility");
             filePropertyVisibility.WriteXML(writer);
             writer.WriteEndElement();
+
+            writer.WriteElementString("LastReplayFolder", lastReplayFolder);
         }
-        
+
         public void ReadXML(XmlReader reader)
         {
             reader.ReadStartElement();
@@ -216,6 +224,9 @@ namespace Kinovea.Services
                         break;
                     case "FilePropertyVisibility":
                         filePropertyVisibility = FilePropertyVisibility.FromXML(reader);
+                        break;
+                    case "LastReplayFolder":
+                        lastReplayFolder = reader.ReadElementContentAsString();
                         break;
                     default:
                         reader.ReadOuterXml();
