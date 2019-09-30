@@ -107,6 +107,10 @@ namespace Kinovea.ScreenManager
         
         public void AddFile(CapturedFile capturedFile)
         {
+            bool known = capturedFiles.Any(c => c.Filename == capturedFile.Filename);
+            if (known)
+                return;
+
             this.capturedFiles.Add(capturedFile);
             
             CapturedFileView view = new CapturedFileView(capturedFile);
