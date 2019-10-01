@@ -109,9 +109,12 @@ namespace Kinovea.Root
       this.lblLeftVideoRoot = new System.Windows.Forms.Label();
       this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
       this.tabAutomation = new System.Windows.Forms.TabPage();
-      this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
       this.lblRecordingTime = new System.Windows.Forms.Label();
       this.tbRecordingTime = new System.Windows.Forms.TextBox();
+      this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
+      this.chkEnableAudioTrigger = new System.Windows.Forms.CheckBox();
+      this.lblAudioTriggerThreshold = new System.Windows.Forms.Label();
+      this.tbAudioTriggerThreshold = new System.Windows.Forms.TextBox();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
@@ -804,6 +807,9 @@ namespace Kinovea.Root
       // 
       // tabAutomation
       // 
+      this.tabAutomation.Controls.Add(this.lblAudioTriggerThreshold);
+      this.tabAutomation.Controls.Add(this.tbAudioTriggerThreshold);
+      this.tabAutomation.Controls.Add(this.chkEnableAudioTrigger);
       this.tabAutomation.Controls.Add(this.lblRecordingTime);
       this.tabAutomation.Controls.Add(this.tbRecordingTime);
       this.tabAutomation.Controls.Add(this.chkIgnoreOverwriteWarning);
@@ -814,21 +820,10 @@ namespace Kinovea.Root
       this.tabAutomation.Text = "Automation";
       this.tabAutomation.UseVisualStyleBackColor = true;
       // 
-      // chkIgnoreOverwriteWarning
-      // 
-      this.chkIgnoreOverwriteWarning.AutoSize = true;
-      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(22, 19);
-      this.chkIgnoreOverwriteWarning.Name = "chkIgnoreOverwriteWarning";
-      this.chkIgnoreOverwriteWarning.Size = new System.Drawing.Size(142, 17);
-      this.chkIgnoreOverwriteWarning.TabIndex = 41;
-      this.chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
-      this.chkIgnoreOverwriteWarning.UseVisualStyleBackColor = true;
-      this.chkIgnoreOverwriteWarning.CheckedChanged += new System.EventHandler(this.chkIgnoreOverwriteWarning_CheckedChanged);
-      // 
       // lblRecordingTime
       // 
       this.lblRecordingTime.AutoSize = true;
-      this.lblRecordingTime.Location = new System.Drawing.Point(19, 53);
+      this.lblRecordingTime.Location = new System.Drawing.Point(19, 112);
       this.lblRecordingTime.Name = "lblRecordingTime";
       this.lblRecordingTime.Size = new System.Drawing.Size(98, 13);
       this.lblRecordingTime.TabIndex = 43;
@@ -836,11 +831,50 @@ namespace Kinovea.Root
       // 
       // tbRecordingTime
       // 
-      this.tbRecordingTime.Location = new System.Drawing.Point(209, 50);
+      this.tbRecordingTime.Location = new System.Drawing.Point(209, 109);
       this.tbRecordingTime.Name = "tbRecordingTime";
       this.tbRecordingTime.Size = new System.Drawing.Size(61, 20);
       this.tbRecordingTime.TabIndex = 42;
       this.tbRecordingTime.TextChanged += new System.EventHandler(this.tbRecordingTime_TextChanged);
+      // 
+      // chkIgnoreOverwriteWarning
+      // 
+      this.chkIgnoreOverwriteWarning.AutoSize = true;
+      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(22, 146);
+      this.chkIgnoreOverwriteWarning.Name = "chkIgnoreOverwriteWarning";
+      this.chkIgnoreOverwriteWarning.Size = new System.Drawing.Size(142, 17);
+      this.chkIgnoreOverwriteWarning.TabIndex = 41;
+      this.chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
+      this.chkIgnoreOverwriteWarning.UseVisualStyleBackColor = true;
+      this.chkIgnoreOverwriteWarning.CheckedChanged += new System.EventHandler(this.chkIgnoreOverwriteWarning_CheckedChanged);
+      // 
+      // chkEnableAudioTrigger
+      // 
+      this.chkEnableAudioTrigger.AutoSize = true;
+      this.chkEnableAudioTrigger.Location = new System.Drawing.Point(22, 36);
+      this.chkEnableAudioTrigger.Name = "chkEnableAudioTrigger";
+      this.chkEnableAudioTrigger.Size = new System.Drawing.Size(120, 17);
+      this.chkEnableAudioTrigger.TabIndex = 44;
+      this.chkEnableAudioTrigger.Text = "Enable audio trigger";
+      this.chkEnableAudioTrigger.UseVisualStyleBackColor = true;
+      this.chkEnableAudioTrigger.CheckedChanged += new System.EventHandler(this.chkEnableAudioTrigger_CheckedChanged);
+      // 
+      // lblAudioTriggerThreshold
+      // 
+      this.lblAudioTriggerThreshold.AutoSize = true;
+      this.lblAudioTriggerThreshold.Location = new System.Drawing.Point(19, 69);
+      this.lblAudioTriggerThreshold.Name = "lblAudioTriggerThreshold";
+      this.lblAudioTriggerThreshold.Size = new System.Drawing.Size(115, 13);
+      this.lblAudioTriggerThreshold.TabIndex = 46;
+      this.lblAudioTriggerThreshold.Text = "Audio trigger threshold:";
+      // 
+      // tbAudioTriggerThreshold
+      // 
+      this.tbAudioTriggerThreshold.Location = new System.Drawing.Point(209, 66);
+      this.tbAudioTriggerThreshold.Name = "tbAudioTriggerThreshold";
+      this.tbAudioTriggerThreshold.Size = new System.Drawing.Size(61, 20);
+      this.tbAudioTriggerThreshold.TabIndex = 45;
+      this.tbAudioTriggerThreshold.TextChanged += new System.EventHandler(this.tbAudioTriggerThreshold_TextChanged);
       // 
       // PreferencePanelCapture
       // 
@@ -937,5 +971,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
         private System.Windows.Forms.Label lblRecordingTime;
         private System.Windows.Forms.TextBox tbRecordingTime;
+        private System.Windows.Forms.Label lblAudioTriggerThreshold;
+        private System.Windows.Forms.TextBox tbAudioTriggerThreshold;
+        private System.Windows.Forms.CheckBox chkEnableAudioTrigger;
     }
 }

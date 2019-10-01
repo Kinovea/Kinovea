@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
         private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
         private int dualLaunchSettingsPendingCountdown;
+        private AudioInputLevelMonitor audioInputLevelMonitor = new AudioInputLevelMonitor();
         
         // Video Filters
         private bool hasSvgFiles;
@@ -163,7 +164,10 @@ namespace Kinovea.ScreenManager
 
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
-            
+
+            audioInputLevelMonitor.ThresholdPassed += AudioLevelMonitor_ThresholdPassed;
+            audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
+
             InitializeVideoFilters();
             InitializeGuideWatcher();
 
@@ -610,7 +614,10 @@ namespace Kinovea.ScreenManager
         {
             foreach (AbstractScreen screen in screenList)
                 screen.PreferencesUpdated();
-                
+
+            audioInputLevelMonitor.Enable(PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger);
+            audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
+
             RefreshUICulture();
         }
         #endregion
@@ -765,6 +772,8 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < screenList.Count; i++)
                 screenList[i].Identify(i);
+
+            audioInputLevelMonitor.Enable(captureScreens.Count() > 0);
         }
 
         public void UpdateStatusBar()
@@ -2281,6 +2290,11 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        private void AudioLevelMonitor_ThresholdPassed(object source, EventArgs e)
+        {
+            foreach (CaptureScreen screen in captureScreens)
+                screen.AudioInputThresholdPassed();
+        }
         #endregion
 
         #region Screen organization

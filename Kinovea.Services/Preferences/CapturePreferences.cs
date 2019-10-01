@@ -82,15 +82,10 @@ namespace Kinovea.Services
             get { return saveUncompressedVideo; }
             set { saveUncompressedVideo = value; }
         }
-        public bool IgnoreOverwrite
+        public CaptureAutomationConfiguration CaptureAutomationConfiguration
         {
-            get { return ignoreOverwrite; }
-            set { ignoreOverwrite = value; }
-        }
-        public float RecordingSeconds
-        {
-            get { return recordingSeconds; }
-            set { recordingSeconds = value; }
+            get { return captureAutomationConfiguration; }
+            set { captureAutomationConfiguration = value; }
         }
         #endregion
 
@@ -101,11 +96,10 @@ namespace Kinovea.Services
         private bool saveUncompressedVideo;
         private bool verboseStats = false;
         private int memoryBuffer = 768;
-        private bool ignoreOverwrite = false;
-        private float recordingSeconds = 0;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
         private DelayCompositeConfiguration delayCompositeConfiguration = new DelayCompositeConfiguration();
         private PhotofinishConfiguration photofinishConfiguration = new PhotofinishConfiguration();
+        private CaptureAutomationConfiguration captureAutomationConfiguration = new CaptureAutomationConfiguration();
         #endregion
         
         public void AddCamera(CameraBlurb blurb)
@@ -134,9 +128,7 @@ namespace Kinovea.Services
             writer.WriteElementString("CaptureRecordingMode", recordingMode.ToString());
             writer.WriteElementString("VerboseStats", verboseStats ? "true" : "false");
             writer.WriteElementString("SaveUncompressedVideo", saveUncompressedVideo ? "true" : "false");
-            writer.WriteElementString("IgnoreOverwriteWarning", ignoreOverwrite ? "true" : "false");
-            writer.WriteElementString("RecordingSeconds", recordingSeconds.ToString("0.000", CultureInfo.InvariantCulture));
-
+            
             writer.WriteElementString("MemoryBuffer", memoryBuffer.ToString());
             
             if(cameraBlurbs.Count > 0)
@@ -160,8 +152,12 @@ namespace Kinovea.Services
             writer.WriteStartElement("PhotofinishConfiguration");
             photofinishConfiguration.WriteXml(writer);
             writer.WriteEndElement();
+
+            writer.WriteStartElement("CaptureAutomationConfiguration");
+            captureAutomationConfiguration.WriteXml(writer);
+            writer.WriteEndElement();
         }
-        
+
         public void ReadXML(XmlReader reader)
         {
             reader.ReadStartElement();
@@ -183,9 +179,6 @@ namespace Kinovea.Services
                     case "SaveUncompressedVideo":
                         saveUncompressedVideo = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
-                    case "IgnoreOverwriteWarning":
-                        ignoreOverwrite = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
-                        break;
                     case "VerboseStats":
                         verboseStats = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
@@ -201,9 +194,8 @@ namespace Kinovea.Services
                     case "PhotofinishConfiguration":
                         photofinishConfiguration.ReadXml(reader);
                         break;
-                    case "RecordingSeconds":
-                        string strRecordingSeconds = reader.ReadElementContentAsString();
-                        recordingSeconds = float.Parse(strRecordingSeconds, CultureInfo.InvariantCulture);
+                    case "CaptureAutomationConfiguration":
+                        captureAutomationConfiguration.ReadXml(reader);
                         break;
                     default:
                         reader.ReadOuterXml();

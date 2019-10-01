@@ -63,8 +63,10 @@ namespace Kinovea.Root
         private FilenameHelper filenameHelper = new FilenameHelper();
         private FormPatterns formPatterns;
         private bool formPatternsVisible;
-        private bool ignoreOverwriteWarning;
+        private bool enableAudioTrigger;
+        private float audioTriggerThreshold;
         private float recordingSeconds;
+        private bool ignoreOverwriteWarning;
         #endregion
 
         #region Construction & Initialization
@@ -96,8 +98,11 @@ namespace Kinovea.Root
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             saveUncompressedVideo = PreferencesManager.CapturePreferences.SaveUncompressedVideo;
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
-            ignoreOverwriteWarning = PreferencesManager.CapturePreferences.IgnoreOverwrite;
-            recordingSeconds = PreferencesManager.CapturePreferences.RecordingSeconds;
+
+            enableAudioTrigger = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
+            audioTriggerThreshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
+            recordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
+            ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
         }
         private void InitPage()
         {
@@ -221,10 +226,16 @@ namespace Kinovea.Root
         private void InitPageAutomation()
         {
             tabAutomation.Text = "Automation";
-            chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
-            chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
+            chkEnableAudioTrigger.Text = "Enable audio trigger";
+            chkEnableAudioTrigger.Checked = enableAudioTrigger;
+            lblAudioTriggerThreshold.Text = "Audio trigger threshold";
+
+            tbAudioTriggerThreshold.Text = string.Format("{0}", audioTriggerThreshold * 100);
+
             lblRecordingTime.Text = "Recording time (s)";
             tbRecordingTime.Text = string.Format("{0:0.###}", recordingSeconds);
+            chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
+            chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
         }
 
         private void InitNamingTextBoxes()
@@ -382,9 +393,17 @@ namespace Kinovea.Root
         #endregion
 
         #region Tab Automation
-        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
+        private void chkEnableAudioTrigger_CheckedChanged(object sender, EventArgs e)
         {
-            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
+            enableAudioTrigger = chkEnableAudioTrigger.Checked;
+        }
+        private void tbAudioTriggerThreshold_TextChanged(object sender, EventArgs e)
+        {
+            // Parse in current culture.
+            float value;
+            bool parsed = float.TryParse(tbAudioTriggerThreshold.Text, out value);
+            if (parsed)
+                audioTriggerThreshold = value / 100;
         }
         private void tbRecordingTime_TextChanged(object sender, EventArgs e)
         {
@@ -393,6 +412,10 @@ namespace Kinovea.Root
             bool parsed = float.TryParse(tbRecordingTime.Text, out value);
             if (parsed)
                 recordingSeconds = value;
+        }
+        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
+        {
+            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
         }
         #endregion
         #endregion
@@ -404,8 +427,10 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
             PreferencesManager.CapturePreferences.RecordingMode = recordingMode;
             PreferencesManager.CapturePreferences.SaveUncompressedVideo = saveUncompressedVideo;
-            PreferencesManager.CapturePreferences.IgnoreOverwrite = ignoreOverwriteWarning;
-            PreferencesManager.CapturePreferences.RecordingSeconds = recordingSeconds;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger = enableAudioTrigger;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold = audioTriggerThreshold;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds = recordingSeconds;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;
         }
 
         private void btnMacroReference_Click(object sender, EventArgs e)

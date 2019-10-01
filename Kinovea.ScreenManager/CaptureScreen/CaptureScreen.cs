@@ -286,6 +286,12 @@ namespace Kinovea.ScreenManager
             MakeSnapshot();
         }
 
+        public void AudioInputThresholdPassed()
+        {
+            if (!recording)
+                ToggleRecording();
+        }
+
         #region AbstractScreen Implementation
         public override void DisplayAsActiveScreen(bool active)
         {
@@ -861,7 +867,8 @@ namespace Kinovea.ScreenManager
             {
                 // Test if recording duration threshold is passed.
                 float recordingSeconds = stopwatchRecording.ElapsedMilliseconds / 1000;
-                if (PreferencesManager.CapturePreferences.RecordingSeconds > 0 && recordingSeconds >= PreferencesManager.CapturePreferences.RecordingSeconds)
+                if (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds > 0 && 
+                    recordingSeconds >= PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds)
                 {
                     StopRecording();
                 }
@@ -1092,7 +1099,7 @@ namespace Kinovea.ScreenManager
             if (cameraGrabber == null)
                 return false;
 
-            if (PreferencesManager.CapturePreferences.IgnoreOverwrite || !File.Exists(path))
+            if (PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite || !File.Exists(path))
                 return true;
             
             string msgTitle = ScreenManagerLang.Error_Capture_FileExists_Title;
