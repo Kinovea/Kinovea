@@ -75,9 +75,15 @@ namespace Kinovea.Root
             ImportPreferences();
             InitPage();
         }
+
         public void OpenTab(PreferenceTab tab)
         {
         }
+
+        public void Close()
+        {
+        }
+
         private void ImportPreferences()
         {
             uiCultureName = LanguageManager.GetCurrentCultureName();

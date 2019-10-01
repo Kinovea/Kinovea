@@ -54,6 +54,10 @@ namespace Kinovea.Root
         {
         }
 
+        public void Close()
+        {
+        }
+
         private void ImportPreferences()
         {
             hotkeys = HotkeySettingsManager.Hotkeys;

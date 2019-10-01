@@ -84,6 +84,7 @@ namespace Kinovea.Root
             ImportPreferences();
             InitPage();
         }
+
         public void OpenTab(PreferenceTab tab)
         {
             int index = tabs.IndexOf(tab);
@@ -92,6 +93,11 @@ namespace Kinovea.Root
 
             tabSubPages.SelectedIndex = index;
         }
+
+        public void Close()
+        {
+        }
+
         private void ImportPreferences()
         {
             deinterlaceByDefault = PreferencesManager.PlayerPreferences.DeinterlaceByDefault;

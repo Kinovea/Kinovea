@@ -15,12 +15,27 @@ namespace Kinovea.ScreenManager
     public class AudioInputLevelMonitor : IDisposable
     {
         public event EventHandler ThresholdPassed;
+        public event EventHandler<float> LevelChanged;
 
+        public bool Enabled
+        {
+            get { return enabled; }
+            set
+            {
+                enabled = value;
+                if (!enabled && started)
+                    Stop();
+            }
+        }
         public float Threshold { get; set; } = 0.9f;
-
+        
         private bool enabled;
         private WaveInEvent waveIn = null;
         private bool started;
+        private string currentDeviceId;
+        private bool changeDeviceAsked;
+        private string nextDeviceId;
+
         private Control dummy = new Control();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -42,31 +57,52 @@ namespace Kinovea.ScreenManager
         {
             if (disposing)
             {
-                Stop();
-                dummy.Dispose();
+                waveIn.StopRecording();
                 waveIn.DataAvailable -= WaveIn_DataAvailable;
                 waveIn.RecordingStopped -= WaveIn_RecordingStopped;
                 waveIn.Dispose();
+                dummy.Dispose();
             }
         }
         #endregion
 
-        public void Enable(bool value)
+        public static List<AudioInputDevice> GetDevices()
         {
-            enabled = value;
-            if (started && !enabled)
-                Stop();
-            else if (!started && enabled)
+            List<AudioInputDevice> devices = new List<AudioInputDevice>();
+            int waveInDevices = WaveIn.DeviceCount;
+            for (int i = 0; i < waveInDevices; i++)
+                devices.Add(new AudioInputDevice(WaveIn.GetCapabilities(i)));
 
-                Start();
+            return devices;
         }
-        public void Start()
+
+        public void Start(string id)
         {
-            if (started)
+#if DEBUG
+            if (!Enabled)
+              throw new InvalidProgramException();
+#endif
+
+            if (!string.IsNullOrEmpty(id) && id == currentDeviceId)
                 return;
+
+            if (started)
+            {
+                // We must wait until the recorder is fully closed before restarting it.
+                changeDeviceAsked = true;
+                nextDeviceId = id;
+                Stop();
+                return;
+            }
+
+            changeDeviceAsked = false;
+            nextDeviceId = null;
 
             if (WaveIn.DeviceCount == 0)
+            {
+                log.DebugFormat("Audio input level monitor failed to start, no input device available.");
                 return;
+            }
 
             if (waveIn == null)
             {
@@ -76,11 +112,28 @@ namespace Kinovea.ScreenManager
                 waveIn.RecordingStopped += WaveIn_RecordingStopped;
             }
 
-            waveIn.DeviceNumber = 0;
+            int deviceNumber = 0;
+            if (!string.IsNullOrEmpty(id))
+            {
+                int waveInDevices = WaveIn.DeviceCount;
+                for (int i = 0; i < waveInDevices; i++)
+                {
+                    WaveInCapabilities caps = WaveIn.GetCapabilities(i);
+                    if (caps.ProductGuid.ToString() == id)
+                    {
+                        deviceNumber = i;
+                        break;
+                    }
+                }
+            }
+
+            waveIn.DeviceNumber = deviceNumber;
             started = true;
             waveIn.StartRecording();
 
             WaveInCapabilities deviceInfo = WaveIn.GetCapabilities(waveIn.DeviceNumber);
+            currentDeviceId = deviceInfo.ProductGuid.ToString();
+
             log.DebugFormat("Audio input level monitor started: {0}", deviceInfo.ProductName);
         }
 
@@ -89,7 +142,6 @@ namespace Kinovea.ScreenManager
             if (!started)
                 return;
 
-            started = false;
             waveIn.StopRecording();
             log.DebugFormat("Audio input level monitor stopped.");
         }
@@ -97,7 +149,7 @@ namespace Kinovea.ScreenManager
         private void WaveIn_RecordingStopped(object sender, StoppedEventArgs e)
         {
             started = false;
-
+            
             if (e.Exception != null)
             {
                 log.ErrorFormat("Audio input level monitor stopped unexpectedly. {0}", e.Exception.Message);
@@ -106,13 +158,26 @@ namespace Kinovea.ScreenManager
                 waveIn.Dispose();
                 waveIn = null;
 
-                Start();
+                dummy.BeginInvoke((Action)delegate {
+                    Start(currentDeviceId);
+                });
+            }
+
+            currentDeviceId = null;
+
+            if (changeDeviceAsked && !string.IsNullOrEmpty(nextDeviceId) && nextDeviceId != Guid.Empty.ToString())
+            {
+                // This happens when we want to switch from one device to another.
+                // Now that we know the recording has properly stopped, we can restart it on the new device.
+                dummy.BeginInvoke((Action)delegate {
+                    Start(nextDeviceId);
+                });
             }
         }
 
         private void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
-            if (!enabled || !started)
+            if (!Enabled || !started)
                 return;
 
             // Measure the peak level over the period and send an event if above threshold.
@@ -136,16 +201,24 @@ namespace Kinovea.ScreenManager
 
             //log.DebugFormat("Audio input level: {0:0.000}.", max);
 
+            if (LevelChanged != null)
+            {
+                dummy.BeginInvoke((Action)delegate {
+                    LevelChanged(this, max);
+                });
+            }
+
             if (max < Threshold)
                 return;
 
             log.DebugFormat("Audio input level above threshold: {0:0.000}.", max);
 
-            dummy.BeginInvoke((Action)delegate
+            if (ThresholdPassed != null)
             {
-                if (ThresholdPassed != null)
+                dummy.BeginInvoke((Action)delegate {
                     ThresholdPassed(this, EventArgs.Empty);
-            });
+                });
+            }
         }
     }
 }

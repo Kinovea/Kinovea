@@ -31,6 +31,7 @@ using Kinovea.Services;
 using System.Collections.Generic;
 using Microsoft.VisualBasic.Devices;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Globalization;
 
 namespace Kinovea.Root
 {
@@ -68,6 +69,10 @@ namespace Kinovea.Root
         private float audioTriggerThreshold;
         private float recordingSeconds;
         private bool ignoreOverwriteWarning;
+        private string audioInputDevice;
+        private int audioTriggerHits = 0;
+        private List<AudioInputDevice> audioInputDevices;
+        private AudioInputLevelMonitor inputMonitor = new AudioInputLevelMonitor();
         #endregion
 
         #region Construction & Initialization
@@ -80,6 +85,7 @@ namespace Kinovea.Root
             icon = Resources.pref_capture;
             
             ImportPreferences();
+            InitInputMonitor();
             InitPage();
         }
 
@@ -92,6 +98,12 @@ namespace Kinovea.Root
             tabSubPages.SelectedIndex = index;
         }
 
+        public void Close()
+        {
+            inputMonitor.Stop();
+            inputMonitor.Dispose();
+        }
+
         private void ImportPreferences()
         {
             capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
@@ -99,12 +111,20 @@ namespace Kinovea.Root
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             saveUncompressedVideo = PreferencesManager.CapturePreferences.SaveUncompressedVideo;
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
-
             enableAudioTrigger = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
+            audioInputDevice = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
             audioTriggerThreshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
             recordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
             ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
         }
+        private void InitInputMonitor()
+        {
+            inputMonitor.Enabled = true;
+            inputMonitor.Threshold = audioTriggerThreshold;
+            inputMonitor.LevelChanged += InputMonitor_LevelChanged;
+            inputMonitor.ThresholdPassed += InputMonitor_ThresholdPassed;
+        }
+
         private void InitPage()
         {
             InitPageGeneral();
@@ -228,8 +248,25 @@ namespace Kinovea.Root
         {
             tabAutomation.Text = "Automation";
             chkEnableAudioTrigger.Text = "Enable audio trigger";
-            chkEnableAudioTrigger.Checked = enableAudioTrigger;
-            lblAudioTriggerThreshold.Text = "Audio trigger threshold";
+            lblInputDevice.Text = "Input device";
+            audioInputDevices = AudioInputLevelMonitor.GetDevices();
+            if (audioInputDevices.Count > 0)
+            {
+                int preferredIndex = -1;
+                for (int i = 0; i < audioInputDevices.Count; i++)
+                {
+                    cmbInputDevice.Items.Add(audioInputDevices[i]);
+                    if (Guid.Equals(audioInputDevices[i].WaveInCapabilities.ProductGuid, new Guid(audioInputDevice)))
+                        preferredIndex = i;
+                }
+
+                if (preferredIndex >= 0)
+                    cmbInputDevice.SelectedIndex = preferredIndex;
+                else
+                    cmbInputDevice.SelectedIndex = 0;
+            }
+
+            lblAudioTriggerThreshold.Text = "Trigger threshold (%)";
 
             tbAudioTriggerThreshold.Text = string.Format("{0}", audioTriggerThreshold * 100);
 
@@ -237,6 +274,9 @@ namespace Kinovea.Root
             tbRecordingTime.Text = string.Format("{0:0.###}", recordingSeconds);
             chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
             chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
+
+            chkEnableAudioTrigger.Checked = enableAudioTrigger;
+            EnableDisableAudioTrigger();
         }
 
         private void InitNamingTextBoxes()
@@ -396,6 +436,25 @@ namespace Kinovea.Root
         private void chkEnableAudioTrigger_CheckedChanged(object sender, EventArgs e)
         {
             enableAudioTrigger = chkEnableAudioTrigger.Checked;
+            EnableDisableAudioTrigger();
+            audioTriggerHits = 0;
+            UpdateHits();
+        }
+        private void cmbInputDevice_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AudioInputDevice selected = cmbInputDevice.SelectedItem as AudioInputDevice;
+            if (selected != null)
+            {
+                audioInputDevice = selected.WaveInCapabilities.ProductGuid.ToString();
+                inputMonitor.Start(audioInputDevice);
+            }
+            else
+            {
+                inputMonitor.Stop();
+            }
+
+            audioTriggerHits = 0;
+            UpdateHits();
         }
         private void tbAudioTriggerThreshold_TextChanged(object sender, EventArgs e)
         {
@@ -404,6 +463,10 @@ namespace Kinovea.Root
             bool parsed = float.TryParse(tbAudioTriggerThreshold.Text, out value);
             if (parsed)
                 audioTriggerThreshold = value / 100;
+
+            inputMonitor.Threshold = audioTriggerThreshold;
+            audioTriggerHits = 0;
+            UpdateHits();
         }
         private void tbRecordingTime_TextChanged(object sender, EventArgs e)
         {
@@ -420,6 +483,43 @@ namespace Kinovea.Root
         #endregion
         #endregion
 
+        #region Audio monitor event handlers
+        private void InputMonitor_ThresholdPassed(object sender, EventArgs e)
+        {
+            audioTriggerHits++;
+            UpdateHits();
+        }
+
+        private void InputMonitor_LevelChanged(object sender, float e)
+        {
+            int level = (int)(e * 100);
+            lblLevel.Text = level.ToString();
+        }
+
+        private void InputMonitor_RecordingStopped(object sender, EventArgs e)
+        {
+            // This happens when we want to switch from one device to another.
+            // Now that we know the recording has properly stopped, we can restart it on the new device.
+            if (!string.IsNullOrEmpty(audioInputDevice) && audioInputDevice != Guid.Empty.ToString())
+                inputMonitor.Start(audioInputDevice);
+        }
+        #endregion
+        private void EnableDisableAudioTrigger()
+        {
+            bool enabled = enableAudioTrigger && audioInputDevices != null && audioInputDevices.Count > 0;
+
+            lblInputDevice.Enabled = enabled;
+            lblAudioTriggerHits.Enabled = enabled;
+            cmbInputDevice.Enabled = enabled;
+            lblAudioTriggerThreshold.Enabled = enabled;
+            tbAudioTriggerThreshold.Enabled = enabled;
+        }
+
+        private void UpdateHits()
+        {
+            lblAudioTriggerHits.Text = audioTriggerHits.ToString();
+        }
+
         public void CommitChanges()
         {
             PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
@@ -428,6 +528,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.RecordingMode = recordingMode;
             PreferencesManager.CapturePreferences.SaveUncompressedVideo = saveUncompressedVideo;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger = enableAudioTrigger;
+            PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice = audioInputDevice;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold = audioTriggerThreshold;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds = recordingSeconds;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;

@@ -165,8 +165,9 @@ namespace Kinovea.ScreenManager
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
 
-            audioInputLevelMonitor.ThresholdPassed += AudioLevelMonitor_ThresholdPassed;
+            audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
+            audioInputLevelMonitor.ThresholdPassed += AudioLevelMonitor_ThresholdPassed;
 
             InitializeVideoFilters();
             InitializeGuideWatcher();
@@ -615,8 +616,15 @@ namespace Kinovea.ScreenManager
             foreach (AbstractScreen screen in screenList)
                 screen.PreferencesUpdated();
 
-            audioInputLevelMonitor.Enable(PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger);
+            audioInputLevelMonitor.Enabled = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputLevelMonitor.Threshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
+
+            // We may have changed the preferred audio input device.
+            if (captureScreens.Count() > 0 && audioInputLevelMonitor.Enabled)
+            {
+                string id = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
+                audioInputLevelMonitor.Start(id);
+            }
 
             RefreshUICulture();
         }
@@ -773,7 +781,15 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < screenList.Count; i++)
                 screenList[i].Identify(i);
 
-            audioInputLevelMonitor.Enable(captureScreens.Count() > 0);
+            if (captureScreens.Count() > 0 && audioInputLevelMonitor.Enabled)
+            {
+                string id = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
+                audioInputLevelMonitor.Start(id);
+            }
+            else
+            {
+                audioInputLevelMonitor.Stop();
+            }
         }
 
         public void UpdateStatusBar()

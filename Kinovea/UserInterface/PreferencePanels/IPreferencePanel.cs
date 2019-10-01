@@ -46,5 +46,7 @@ namespace Kinovea.Root
 
         void OpenTab(PreferenceTab tab);
         void CommitChanges();
+
+        void Close();
     }
 }

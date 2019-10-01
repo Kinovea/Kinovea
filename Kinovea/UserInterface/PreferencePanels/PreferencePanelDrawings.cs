@@ -85,6 +85,10 @@ namespace Kinovea.Root
             tabSubPages.SelectedIndex = index;
         }
 
+        public void Close()
+        {
+        }
+
         private void ImportPreferences()
         {
             drawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;

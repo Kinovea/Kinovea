@@ -266,6 +266,7 @@
   <ItemGroup>
     <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
+    <Compile Include="AudioInputDevice.cs" />
     <Compile Include="AudioInputLevelMonitor.cs" />
     <Compile Include="CaptureScreen\ConsumerDisplay.cs" />
     <Compile Include="CaptureScreen\ConsumerMJPEGRecorder.cs" />

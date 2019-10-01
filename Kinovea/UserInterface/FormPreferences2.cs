@@ -121,13 +121,19 @@ namespace Kinovea.Root
         {
             // Ask each page to commit its changes to the PreferencesManager.
             foreach(IPreferencePanel page in pages)
+            {
                 page.CommitChanges();
+                page.Close();
+            }
             
             PreferencesManager.Save();
+
             Close();
         }
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            foreach (IPreferencePanel page in pages)
+                page.Close();
             PreferencesManager.Save();
             Close();
         }

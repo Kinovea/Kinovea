@@ -13,6 +13,8 @@ namespace Kinovea.Services
     public class CaptureAutomationConfiguration
     {
         public bool EnableAudioTrigger { get; set; }
+
+        public string AudioInputDevice { get; set; }
         public float AudioTriggerThreshold { get; set; }
         public float RecordingSeconds { get; set; }
         public bool IgnoreOverwrite { get; set; }
@@ -23,6 +25,7 @@ namespace Kinovea.Services
         public CaptureAutomationConfiguration()
         {
             EnableAudioTrigger = false;
+            AudioInputDevice = Guid.Empty.ToString();
             AudioTriggerThreshold = 0.9f;
             RecordingSeconds = 0;
             IgnoreOverwrite = false;
@@ -49,6 +52,9 @@ namespace Kinovea.Services
                     case "EnableAudioTrigger":
                         EnableAudioTrigger = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
+                    case "AudioInputDevice":
+                        AudioInputDevice = r.ReadElementContentAsString();
+                        break;
                     case "AudioTriggerThreshold":
                         string strAudioTreshold = r.ReadElementContentAsString();
                         AudioTriggerThreshold = float.Parse(strAudioTreshold, CultureInfo.InvariantCulture);
@@ -73,6 +79,7 @@ namespace Kinovea.Services
         public void WriteXml(XmlWriter w)
         {
             w.WriteElementString("EnableAudioTrigger", EnableAudioTrigger ? "true" : "false");
+            w.WriteElementString("AudioInputDevice", AudioInputDevice);
             w.WriteElementString("AudioTriggerThreshold", AudioTriggerThreshold.ToString("0.000", CultureInfo.InvariantCulture));
             w.WriteElementString("RecordingSeconds", RecordingSeconds.ToString("0.000", CultureInfo.InvariantCulture));
             w.WriteElementString("IgnoreOverwriteWarning", IgnoreOverwrite ? "true" : "false");
