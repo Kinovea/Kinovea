@@ -94,20 +94,16 @@ namespace Kinovea.Updater
 
             // Download the update configuration file from the webserver.
             HelpIndex hiRemote = new HelpIndex(Software.RemoteHelpIndex);
-            
             if (!hiRemote.LoadSuccess)
             {
                 MessageBox.Show(UpdaterLang.Updater_InternetError, UpdaterLang.Updater_Title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             
-            // Check if we are up to date.
-            bool testUpdate = false;
             ThreePartsVersion currentVersion = new ThreePartsVersion(Software.Version);
-            if (hiRemote.AppInfos.Version > currentVersion || testUpdate)
+            if (hiRemote.AppInfos.Version > currentVersion)
             {
                 // We are not up to date, display the full dialog.
-                // The dialog is responsible for displaying the download success msg box.
                 UpdateDialog2 ud = new UpdateDialog2(hiRemote);
                 ud.ShowDialog();
                 ud.Dispose();
