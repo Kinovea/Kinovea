@@ -349,7 +349,7 @@ namespace Kinovea.Root
             };
 
             mnuWebsite.Image = Properties.Resources.website;
-            mnuWebsite.Click += (s,e) => Process.Start("http://www.kinovea.org");
+            mnuWebsite.Click += (s,e) => Process.Start("https://www.kinovea.org");
             mnuAbout.Image = Properties.Resources.information;
             mnuAbout.Click += new EventHandler(mnuAbout_OnClick);
 

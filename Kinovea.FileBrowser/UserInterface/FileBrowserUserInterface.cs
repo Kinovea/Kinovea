@@ -37,6 +37,7 @@ using Kinovea.Services;
 using Kinovea.Video;
 using System.Drawing;
 using System.Globalization;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Kinovea.FileBrowser
 {
@@ -542,15 +543,12 @@ namespace Kinovea.FileBrowser
         }
         private void AddShortcut()
         {
-            // Launch the OpenFolder common dialog.
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            
-            fbd.ShowNewFolderButton = true;
-            fbd.RootFolder = Environment.SpecialFolder.Desktop;
-
-            if (fbd.ShowDialog() == DialogResult.OK && fbd.SelectedPath.Length > 0)
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
             {
-                ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(fbd.SelectedPath), fbd.SelectedPath);
+                ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(dialog.FileName), dialog.FileName);
                 PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
                 PreferencesManager.Save();
                 ReloadShortcuts();
@@ -981,14 +979,12 @@ namespace Kinovea.FileBrowser
 
         private void btnImportHistory_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-
-            fbd.ShowNewFolderButton = false;
-            fbd.RootFolder = Environment.SpecialFolder.Desktop;
-
-            if (fbd.ShowDialog() == DialogResult.OK && fbd.SelectedPath.Length > 0)
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
             {
-                CaptureHistory.ImportDirectory(fbd.SelectedPath);
+                CaptureHistory.ImportDirectory(dialog.FileName);
                 ReloadCaptureHistory(true);
             }
         }

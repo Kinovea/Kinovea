@@ -30,6 +30,7 @@ using Kinovea.ScreenManager;
 using Kinovea.Services;
 using System.Collections.Generic;
 using Microsoft.VisualBasic.Devices;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Kinovea.Root
 {
@@ -354,19 +355,18 @@ namespace Kinovea.Root
 
             TextBox tb = namingTextBoxes[captureVariable];
 
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            folderBrowserDialog.Description = "";
-            folderBrowserDialog.ShowNewFolderButton = true;
-            folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
-
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
             if (Directory.Exists(tb.Text))
-                folderBrowserDialog.SelectedPath = tb.Text;
+                dialog.InitialDirectory = tb.Text;
+            else
+                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                tb.Text = folderBrowserDialog.SelectedPath;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                tb.Text = dialog.FileName;
         }
         #endregion
-        
+
         #region Tab Memory
         private void trkMemoryBuffer_ValueChanged(object sender, EventArgs e)
         {
