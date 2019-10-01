@@ -19,7 +19,7 @@ namespace Kinovea.ScreenManager
         public float Threshold { get; set; } = 0.9f;
 
         private bool enabled;
-        private WaveInEvent waveIn = new WaveInEvent();
+        private WaveInEvent waveIn = null;
         private bool started;
         private Control dummy = new Control();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -27,10 +27,6 @@ namespace Kinovea.ScreenManager
         #region Construction & disposal
         public AudioInputLevelMonitor()
         {
-            waveIn.WaveFormat = new WaveFormat(22050, 1);
-            waveIn.DataAvailable += WaveIn_DataAvailable;
-            waveIn.RecordingStopped += WaveIn_RecordingStopped;
-
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
         }
         public void Dispose()
@@ -66,17 +62,33 @@ namespace Kinovea.ScreenManager
         }
         public void Start()
         {
-            // TODO: check if we have a device.
-            // TODO: check if waveIn was disposed due to an error.
+            if (started)
+                return;
+
+            if (WaveIn.DeviceCount == 0)
+                return;
+
+            if (waveIn == null)
+            {
+                waveIn = new WaveInEvent();
+                waveIn.WaveFormat = new WaveFormat(22050, 1);
+                waveIn.DataAvailable += WaveIn_DataAvailable;
+                waveIn.RecordingStopped += WaveIn_RecordingStopped;
+            }
 
             waveIn.DeviceNumber = 0;
             started = true;
             waveIn.StartRecording();
-            log.DebugFormat("Audio input level monitor started.");
+
+            WaveInCapabilities deviceInfo = WaveIn.GetCapabilities(waveIn.DeviceNumber);
+            log.DebugFormat("Audio input level monitor started: {0}", deviceInfo.ProductName);
         }
 
         public void Stop()
         {
+            if (!started)
+                return;
+
             started = false;
             waveIn.StopRecording();
             log.DebugFormat("Audio input level monitor stopped.");
@@ -84,10 +96,17 @@ namespace Kinovea.ScreenManager
 
         private void WaveIn_RecordingStopped(object sender, StoppedEventArgs e)
         {
+            started = false;
+
             if (e.Exception != null)
             {
                 log.ErrorFormat("Audio input level monitor stopped unexpectedly. {0}", e.Exception.Message);
+                waveIn.DataAvailable -= WaveIn_DataAvailable;
+                waveIn.RecordingStopped -= WaveIn_RecordingStopped;
                 waveIn.Dispose();
+                waveIn = null;
+
+                Start();
             }
         }
 
