@@ -101,5 +101,12 @@ namespace Kinovea.Services
             if (PreferenceTabAsked != null)
                 PreferenceTabAsked(sender, new PreferenceTabEventArgs(tab));
         }
+
+        public static EventHandler PreferencesOpened;
+        public static void RaisePreferencesOpened(object sender)
+        {
+            if (PreferencesOpened != null)
+                PreferencesOpened(sender, EventArgs.Empty);
+        }
     }
 }

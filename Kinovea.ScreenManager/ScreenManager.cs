@@ -173,6 +173,7 @@ namespace Kinovea.ScreenManager
             InitializeGuideWatcher();
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
+            NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
 
             playerScreens = screenList.Where(s => s is PlayerScreen).Select(s => s as PlayerScreen);
             captureScreens = screenList.Where(s => s is CaptureScreen).Select(s => s as CaptureScreen);
@@ -2310,6 +2311,10 @@ namespace Kinovea.ScreenManager
         {
             foreach (CaptureScreen screen in captureScreens)
                 screen.AudioInputThresholdPassed();
+        }
+        private void NotificationCenter_PreferencesOpened(object source, EventArgs e)
+        {
+            audioInputLevelMonitor.Enabled = false;
         }
         #endregion
 

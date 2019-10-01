@@ -47,6 +47,8 @@ namespace Kinovea.Root
         #region Construction and Initialization
         public FormPreferences2()
         {
+            NotificationCenter.RaisePreferencesOpened(this);
+
             Init();
 
             int initPage = PreferencesManager.GeneralPreferences.PreferencePage;
