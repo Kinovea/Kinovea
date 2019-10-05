@@ -234,7 +234,6 @@ namespace Kinovea.ScreenManager
         public void RecoverCrash()
         {
             // Import recovered screens into launch settings.
-
             try
             {
                 List<ScreenDescriptionPlayback> recoverables = RecoveryManager.GetRecoverables();
@@ -2284,10 +2283,19 @@ namespace Kinovea.ScreenManager
             int reloaded = 0;
             foreach (IScreenDescription screenDescription in LaunchSettingsManager.ScreenDescriptions)
             {
-                if (screenDescription is ScreenDescriptionPlayback)
+                if (screenDescription is ScreenDescriptionCapture)
+                {
+                    AddCaptureScreen();
+                    
+                    // TODO: load camera in camera screen. Currently not supported. It's hard to already re-identify the 
+                    // camera at this point, as the normal camera discovery mechanism is asynchronous.
+                    //ScreenDescriptionCapture sdc = screenDescription as ScreenDescriptionCapture;
+                    //LoaderCamera.LoadCameraInScreen(this, sdc.CameraIdentifier, sdc);
+                    reloaded++;
+                }
+                else if (screenDescription is ScreenDescriptionPlayback)
                 {
                     AddPlayerScreen();
-
                     ScreenDescriptionPlayback sdp = screenDescription as ScreenDescriptionPlayback;
                     LoaderVideo.LoadVideoInScreen(this, sdp.FullPath, sdp);
                     reloaded++;

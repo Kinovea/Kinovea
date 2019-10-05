@@ -29,5 +29,11 @@ namespace Kinovea.Services
         {
             get { return ScreenType.Capture; }
         }
+
+
+        /// <summary>
+        /// The identifier of the camera to load.
+        /// </summary>
+        public string CameraIdentifier { get; set; }
     }
 }
