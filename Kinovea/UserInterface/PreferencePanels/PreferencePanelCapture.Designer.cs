@@ -321,7 +321,7 @@ namespace Kinovea.Root
       // rbRecordingDisplay
       // 
       this.rbRecordingDisplay.AutoSize = true;
-      this.rbRecordingDisplay.Location = new System.Drawing.Point(16, 28);
+      this.rbRecordingDisplay.Location = new System.Drawing.Point(20, 57);
       this.rbRecordingDisplay.Name = "rbRecordingDisplay";
       this.rbRecordingDisplay.Size = new System.Drawing.Size(229, 17);
       this.rbRecordingDisplay.TabIndex = 39;
@@ -333,7 +333,7 @@ namespace Kinovea.Root
       // rbRecordingCamera
       // 
       this.rbRecordingCamera.AutoSize = true;
-      this.rbRecordingCamera.Location = new System.Drawing.Point(16, 60);
+      this.rbRecordingCamera.Location = new System.Drawing.Point(20, 25);
       this.rbRecordingCamera.Name = "rbRecordingCamera";
       this.rbRecordingCamera.Size = new System.Drawing.Size(229, 17);
       this.rbRecordingCamera.TabIndex = 38;

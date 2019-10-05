@@ -203,8 +203,10 @@ namespace Kinovea.Root
             tabRecording.Text = RootLang.dlgPreferences_Capture_Recording;
 
             grpRecordingMode.Text = RootLang.dlgPreferences_Capture_RecordingMode;
-            rbRecordingCamera.Text = RootLang.dlgPreferences_Capture_RecordingMode_Camera;
-            rbRecordingDisplay.Text = RootLang.dlgPreferences_Capture_RecordingMode_Display;
+            //rbRecordingDisplay.Text = RootLang.dlgPreferences_Capture_RecordingMode_Display;
+            //rbRecordingCamera.Text = RootLang.dlgPreferences_Capture_RecordingMode_Camera;
+            rbRecordingDisplay.Text = "Delayed: record delayed frames."; 
+            rbRecordingCamera.Text = "Camera: record real time frames.";
             chkUncompressedVideo.Text = "Record without compression"; 
 
             rbRecordingCamera.Checked = recordingMode == CaptureRecordingMode.Camera;
@@ -283,7 +285,7 @@ namespace Kinovea.Root
             vumeter.Threshold = audioTriggerThreshold;
             vumeter.DecibelRange = decibelRange;
 
-            lblRecordingTime.Text = "Recording duration (s):";
+            lblRecordingTime.Text = "Stop recording by duration (s):";
             tbRecordingTime.Text = string.Format("{0:0.###}", recordingSeconds);
             
             chkEnableAudioTrigger.Checked = enableAudioTrigger;
