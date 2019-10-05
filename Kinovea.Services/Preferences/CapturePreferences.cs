@@ -87,6 +87,16 @@ namespace Kinovea.Services
             get { return captureAutomationConfiguration; }
             set { captureAutomationConfiguration = value; }
         }
+        public float HighspeedRecordingFramerateThreshold
+        {
+            get { return highspeedRecordingFramerateThreshold; }
+            set { highspeedRecordingFramerateThreshold = value; }
+        }
+        public float HighspeedRecordingFramerateOutput
+        {
+            get { return highspeedRecordingFramerateOutput; }
+            set { highspeedRecordingFramerateOutput = value; }
+        }
         #endregion
 
         #region Members
@@ -100,6 +110,8 @@ namespace Kinovea.Services
         private DelayCompositeConfiguration delayCompositeConfiguration = new DelayCompositeConfiguration();
         private PhotofinishConfiguration photofinishConfiguration = new PhotofinishConfiguration();
         private CaptureAutomationConfiguration captureAutomationConfiguration = new CaptureAutomationConfiguration();
+        private float highspeedRecordingFramerateThreshold = 100;
+        private float highspeedRecordingFramerateOutput = 30;
         #endregion
         
         public void AddCamera(CameraBlurb blurb)
@@ -156,6 +168,11 @@ namespace Kinovea.Services
             writer.WriteStartElement("CaptureAutomationConfiguration");
             captureAutomationConfiguration.WriteXml(writer);
             writer.WriteEndElement();
+
+            string hrft = highspeedRecordingFramerateThreshold.ToString("0.000", CultureInfo.InvariantCulture);
+            string hrfo = highspeedRecordingFramerateOutput.ToString("0.000", CultureInfo.InvariantCulture);
+            writer.WriteElementString("HighspeedRecordingFramerateThreshold", hrft);
+            writer.WriteElementString("HighspeedRecordingFramerateOutput", hrfo);
         }
 
         public void ReadXML(XmlReader reader)
@@ -196,6 +213,14 @@ namespace Kinovea.Services
                         break;
                     case "CaptureAutomationConfiguration":
                         captureAutomationConfiguration.ReadXml(reader);
+                        break;
+                    case "HighspeedRecordingFramerateThreshold":
+                        string hrft = reader.ReadElementContentAsString();
+                        highspeedRecordingFramerateThreshold = float.Parse(hrft, CultureInfo.InvariantCulture);
+                        break;
+                    case "HighspeedRecordingFramerateOutput":
+                        string hrfo = reader.ReadElementContentAsString();
+                        highspeedRecordingFramerateOutput = float.Parse(hrfo, CultureInfo.InvariantCulture);
                         break;
                     default:
                         reader.ReadOuterXml();

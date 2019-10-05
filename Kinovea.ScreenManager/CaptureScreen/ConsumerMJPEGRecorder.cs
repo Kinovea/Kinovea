@@ -61,10 +61,12 @@ namespace Kinovea.ScreenManager
 
             // If the capture happens at more than 100fps, set the video itself to be at 30fps.
             // This avoids erratic playback because the player can't cope with the framerate, drawback: prevents review in real time.
-            // FIXME: fix the player so that it can playback high speed video in real time.
+            double hrft = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateThreshold;
+            double hrfo = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput;
+            double fps = 1000.0 / interval;
             double fileInterval = interval;
-            if (interval < 10)
-                fileInterval = 1000.0/30;
+            if (fps >= hrft)
+                fileInterval = 1000.0 / hrfo;
 
             SaveResult result = writer.OpenSavingContext(filename, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval);
 
