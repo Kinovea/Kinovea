@@ -112,7 +112,7 @@ namespace Kinovea.Camera
                 throw new InvalidOperationException();
 
             bool flush = false;
-            int bytesPerPixel = imageDescriptor.Format == ImageFormat.Y800 ? 1 : 4;
+            int bytesPerPixel = ImageFormatHelper.BytesPerPixel(imageDescriptor.Format);
             int stride = imageDescriptor.Width * bytesPerPixel;
 
             // Consolidate the current sub-frame.
