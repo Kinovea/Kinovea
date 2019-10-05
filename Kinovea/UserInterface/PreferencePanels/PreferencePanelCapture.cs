@@ -73,6 +73,8 @@ namespace Kinovea.Root
         private int audioTriggerHits = 0;
         private List<AudioInputDevice> audioInputDevices;
         private AudioInputLevelMonitor inputMonitor = new AudioInputLevelMonitor();
+        private int thresholdFactor;
+        private int decibelRange;
         #endregion
 
         #region Construction & Initialization
@@ -83,7 +85,14 @@ namespace Kinovea.Root
             
             description = RootLang.dlgPreferences_tabCapture;
             icon = Resources.pref_capture;
-            
+
+            // The audio amplitude is coming as [0..1] and is remapped to a logarithmic vumeter.
+            // The value we show to the user has an arbitrary unit.
+            // Since we use a decibel range of 60, it maps to a power ratio of 1000:1 between the highest and lowest amplitude,
+            // thus quantizing this to 1000 steps seems as good as anything else.
+            decibelRange = 60;
+            thresholdFactor = (int)Math.Pow(10, 60 / 20);
+
             ImportPreferences();
             InitInputMonitor();
             InitPage();
@@ -248,7 +257,7 @@ namespace Kinovea.Root
         {
             tabAutomation.Text = "Automation";
             chkEnableAudioTrigger.Text = "Enable audio trigger";
-            lblInputDevice.Text = "Input device";
+            lblInputDevice.Text = "Input device:";
             audioInputDevices = AudioInputLevelMonitor.GetDevices();
             if (audioInputDevices.Count > 0)
             {
@@ -266,11 +275,12 @@ namespace Kinovea.Root
                     cmbInputDevice.SelectedIndex = 0;
             }
 
-            lblAudioTriggerThreshold.Text = "Trigger threshold (%)";
+            lblAudioTriggerThreshold.Text = "Trigger threshold:";
+            tbAudioTriggerThreshold.Text = string.Format("{0}", audioTriggerThreshold * thresholdFactor);
+            vumeter.Threshold = audioTriggerThreshold;
+            vumeter.DecibelRange = decibelRange;
 
-            tbAudioTriggerThreshold.Text = string.Format("{0}", audioTriggerThreshold * 100);
-
-            lblRecordingTime.Text = "Recording time (s)";
+            lblRecordingTime.Text = "Recording time (s):";
             tbRecordingTime.Text = string.Format("{0:0.###}", recordingSeconds);
             chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
             chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
@@ -424,7 +434,6 @@ namespace Kinovea.Root
         private void radioRecordingMode_CheckedChanged(object sender, EventArgs e)
         {
             recordingMode = rbRecordingCamera.Checked ? CaptureRecordingMode.Camera : CaptureRecordingMode.Display;
-            chkUncompressedVideo.Enabled = recordingMode == CaptureRecordingMode.Camera;
         }
         private void chkUncompressedVideo_CheckedChanged(object sender, EventArgs e)
         {
@@ -459,12 +468,20 @@ namespace Kinovea.Root
         private void tbAudioTriggerThreshold_TextChanged(object sender, EventArgs e)
         {
             // Parse in current culture.
-            float value;
-            bool parsed = float.TryParse(tbAudioTriggerThreshold.Text, out value);
-            if (parsed)
-                audioTriggerThreshold = value / 100;
+            //float value;
+            //bool parsed = float.TryParse(tbAudioTriggerThreshold.Text, out value);
+            //if (parsed)
+            //    audioTriggerThreshold = value / 100;
 
+            //inputMonitor.Threshold = audioTriggerThreshold;
+            //audioTriggerHits = 0;
+            //UpdateHits();
+        }
+        private void Vumeter_ThresholdChanged(object sender, EventArgs e)
+        {
+            audioTriggerThreshold = vumeter.Threshold;
             inputMonitor.Threshold = audioTriggerThreshold;
+            tbAudioTriggerThreshold.Text = string.Format("{0}", (int)(audioTriggerThreshold * thresholdFactor));
             audioTriggerHits = 0;
             UpdateHits();
         }
@@ -494,15 +511,9 @@ namespace Kinovea.Root
         {
             int level = (int)(e * 100);
             lblLevel.Text = level.ToString();
+            vumeter.Amplitude = e;
         }
 
-        private void InputMonitor_RecordingStopped(object sender, EventArgs e)
-        {
-            // This happens when we want to switch from one device to another.
-            // Now that we know the recording has properly stopped, we can restart it on the new device.
-            if (!string.IsNullOrEmpty(audioInputDevice) && audioInputDevice != Guid.Empty.ToString())
-                inputMonitor.Start(audioInputDevice);
-        }
         #endregion
         private void EnableDisableAudioTrigger()
         {
@@ -513,6 +524,12 @@ namespace Kinovea.Root
             cmbInputDevice.Enabled = enabled;
             lblAudioTriggerThreshold.Enabled = enabled;
             tbAudioTriggerThreshold.Enabled = enabled;
+            vumeter.Enabled = enabled;
+
+            if (!enabled)
+                inputMonitor.Stop();
+            else
+                inputMonitor.Start(audioInputDevice);
         }
 
         private void UpdateHits()

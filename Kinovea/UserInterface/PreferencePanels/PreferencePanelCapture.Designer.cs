@@ -62,8 +62,8 @@ namespace Kinovea.Root
       this.lblMemoryBuffer = new System.Windows.Forms.Label();
       this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
       this.tabRecording = new System.Windows.Forms.TabPage();
-      this.grpRecordingMode = new System.Windows.Forms.GroupBox();
       this.chkUncompressedVideo = new System.Windows.Forms.CheckBox();
+      this.grpRecordingMode = new System.Windows.Forms.GroupBox();
       this.rbRecordingDisplay = new System.Windows.Forms.RadioButton();
       this.rbRecordingCamera = new System.Windows.Forms.RadioButton();
       this.tabImageNaming = new System.Windows.Forms.TabPage();
@@ -109,6 +109,7 @@ namespace Kinovea.Root
       this.lblLeftVideoRoot = new System.Windows.Forms.Label();
       this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
       this.tabAutomation = new System.Windows.Forms.TabPage();
+      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
       this.lblLevel = new System.Windows.Forms.Label();
       this.lblAudioTriggerHits = new System.Windows.Forms.Label();
       this.cmbInputDevice = new System.Windows.Forms.ComboBox();
@@ -198,7 +199,7 @@ namespace Kinovea.Root
       // 
       this.tbFramerate.Location = new System.Drawing.Point(205, 127);
       this.tbFramerate.Name = "tbFramerate";
-      this.tbFramerate.Size = new System.Drawing.Size(61, 20);
+      this.tbFramerate.Size = new System.Drawing.Size(30, 20);
       this.tbFramerate.TabIndex = 40;
       this.tbFramerate.TextChanged += new System.EventHandler(this.tbFramerate_TextChanged);
       // 
@@ -273,6 +274,7 @@ namespace Kinovea.Root
       // 
       // tabRecording
       // 
+      this.tabRecording.Controls.Add(this.chkUncompressedVideo);
       this.tabRecording.Controls.Add(this.grpRecordingMode);
       this.tabRecording.Location = new System.Drawing.Point(4, 22);
       this.tabRecording.Name = "tabRecording";
@@ -282,28 +284,27 @@ namespace Kinovea.Root
       this.tabRecording.Text = "Recording";
       this.tabRecording.UseVisualStyleBackColor = true;
       // 
-      // grpRecordingMode
-      // 
-      this.grpRecordingMode.Controls.Add(this.chkUncompressedVideo);
-      this.grpRecordingMode.Controls.Add(this.rbRecordingDisplay);
-      this.grpRecordingMode.Controls.Add(this.rbRecordingCamera);
-      this.grpRecordingMode.Location = new System.Drawing.Point(15, 19);
-      this.grpRecordingMode.Name = "grpRecordingMode";
-      this.grpRecordingMode.Size = new System.Drawing.Size(386, 124);
-      this.grpRecordingMode.TabIndex = 40;
-      this.grpRecordingMode.TabStop = false;
-      this.grpRecordingMode.Text = "Recording mode";
-      // 
       // chkUncompressedVideo
       // 
       this.chkUncompressedVideo.AutoSize = true;
-      this.chkUncompressedVideo.Location = new System.Drawing.Point(46, 88);
+      this.chkUncompressedVideo.Location = new System.Drawing.Point(15, 133);
       this.chkUncompressedVideo.Name = "chkUncompressedVideo";
       this.chkUncompressedVideo.Size = new System.Drawing.Size(152, 17);
       this.chkUncompressedVideo.TabIndex = 40;
       this.chkUncompressedVideo.Text = "Save uncompressed video";
       this.chkUncompressedVideo.UseVisualStyleBackColor = true;
       this.chkUncompressedVideo.CheckedChanged += new System.EventHandler(this.chkUncompressedVideo_CheckedChanged);
+      // 
+      // grpRecordingMode
+      // 
+      this.grpRecordingMode.Controls.Add(this.rbRecordingDisplay);
+      this.grpRecordingMode.Controls.Add(this.rbRecordingCamera);
+      this.grpRecordingMode.Location = new System.Drawing.Point(15, 19);
+      this.grpRecordingMode.Name = "grpRecordingMode";
+      this.grpRecordingMode.Size = new System.Drawing.Size(386, 93);
+      this.grpRecordingMode.TabIndex = 40;
+      this.grpRecordingMode.TabStop = false;
+      this.grpRecordingMode.Text = "Recording mode";
       // 
       // rbRecordingDisplay
       // 
@@ -811,6 +812,7 @@ namespace Kinovea.Root
       // 
       // tabAutomation
       // 
+      this.tabAutomation.Controls.Add(this.vumeter);
       this.tabAutomation.Controls.Add(this.lblLevel);
       this.tabAutomation.Controls.Add(this.lblAudioTriggerHits);
       this.tabAutomation.Controls.Add(this.cmbInputDevice);
@@ -828,21 +830,36 @@ namespace Kinovea.Root
       this.tabAutomation.Text = "Automation";
       this.tabAutomation.UseVisualStyleBackColor = true;
       // 
+      // vumeter
+      // 
+      this.vumeter.Amplitude = 0F;
+      this.vumeter.BackColor = System.Drawing.Color.White;
+      this.vumeter.DecibelRange = 60F;
+      this.vumeter.Location = new System.Drawing.Point(190, 80);
+      this.vumeter.Name = "vumeter";
+      this.vumeter.Size = new System.Drawing.Size(185, 21);
+      this.vumeter.TabIndex = 51;
+      this.vumeter.Text = "volumeMeterThreshold1";
+      this.vumeter.Threshold = 0.8F;
+      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
+      // 
       // lblLevel
       // 
       this.lblLevel.AutoSize = true;
-      this.lblLevel.Location = new System.Drawing.Point(258, 88);
+      this.lblLevel.Location = new System.Drawing.Point(387, 22);
       this.lblLevel.Name = "lblLevel";
       this.lblLevel.Size = new System.Drawing.Size(13, 13);
       this.lblLevel.TabIndex = 50;
       this.lblLevel.Text = "0";
+      this.lblLevel.Visible = false;
       // 
       // lblAudioTriggerHits
       // 
       this.lblAudioTriggerHits.AutoSize = true;
-      this.lblAudioTriggerHits.Location = new System.Drawing.Point(387, 88);
+      this.lblAudioTriggerHits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblAudioTriggerHits.Location = new System.Drawing.Point(384, 82);
       this.lblAudioTriggerHits.Name = "lblAudioTriggerHits";
-      this.lblAudioTriggerHits.Size = new System.Drawing.Size(13, 13);
+      this.lblAudioTriggerHits.Size = new System.Drawing.Size(15, 16);
       this.lblAudioTriggerHits.TabIndex = 49;
       this.lblAudioTriggerHits.Text = "0";
       // 
@@ -876,10 +893,11 @@ namespace Kinovea.Root
       // 
       // tbAudioTriggerThreshold
       // 
-      this.tbAudioTriggerThreshold.Location = new System.Drawing.Point(190, 81);
+      this.tbAudioTriggerThreshold.Location = new System.Drawing.Point(336, 19);
       this.tbAudioTriggerThreshold.Name = "tbAudioTriggerThreshold";
-      this.tbAudioTriggerThreshold.Size = new System.Drawing.Size(28, 20);
+      this.tbAudioTriggerThreshold.Size = new System.Drawing.Size(39, 20);
       this.tbAudioTriggerThreshold.TabIndex = 45;
+      this.tbAudioTriggerThreshold.Visible = false;
       this.tbAudioTriggerThreshold.TextChanged += new System.EventHandler(this.tbAudioTriggerThreshold_TextChanged);
       // 
       // chkEnableAudioTrigger
@@ -935,6 +953,7 @@ namespace Kinovea.Root
       this.tabMemory.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).EndInit();
       this.tabRecording.ResumeLayout(false);
+      this.tabRecording.PerformLayout();
       this.grpRecordingMode.ResumeLayout(false);
       this.grpRecordingMode.PerformLayout();
       this.tabImageNaming.ResumeLayout(false);
@@ -1013,7 +1032,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.ComboBox cmbUncompressedVideoFormat;
         private System.Windows.Forms.Label lblUncompressedVideoFormat;
         private System.Windows.Forms.TabPage tabAutomation;
-        private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
         private System.Windows.Forms.Label lblRecordingTime;
         private System.Windows.Forms.TextBox tbRecordingTime;
         private System.Windows.Forms.Label lblAudioTriggerThreshold;
@@ -1023,5 +1041,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblInputDevice;
         private System.Windows.Forms.Label lblAudioTriggerHits;
         private System.Windows.Forms.Label lblLevel;
+        private Services.VolumeMeterThreshold vumeter;
+        private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
     }
 }
