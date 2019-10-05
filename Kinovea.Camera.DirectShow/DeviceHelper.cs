@@ -23,7 +23,10 @@ namespace Kinovea.Camera.DirectShow
             int attempts = 0;
 
             while (device.IsRunning && attempts < maxAttempts)
+            {
                 Thread.Sleep(50);
+                attempts++;
+            }
 
             if (device.IsRunning)
             {
