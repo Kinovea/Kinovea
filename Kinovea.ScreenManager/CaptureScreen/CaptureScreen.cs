@@ -1203,7 +1203,7 @@ namespace Kinovea.ScreenManager
             }
             
             string filenameWithoutExtension = view.CurrentVideoFilename;
-            bool uncompressed = recordingMode == CaptureRecordingMode.Camera && PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Video.ImageFormat.JPEG;
+            bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Video.ImageFormat.JPEG;
             string extension = Filenamer.GetVideoFileExtension(uncompressed);
 
             Dictionary<FilePatternContexts, string> context = BuildCaptureContext();
