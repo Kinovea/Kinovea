@@ -89,10 +89,21 @@ namespace Kinovea.Camera
         public abstract ICaptureSource CreateCaptureSource(CameraSummary summary);
         
         /// <summary>
-        /// Launch a dialog to configure the device. Returns true if the configuration has changed.
+        /// Launch a dialog to configure the device. 
+        /// Returns true if the camera needs to be disconnected/reconnected to take the new parameters into account.
         /// </summary>
         public abstract bool Configure(CameraSummary summary);
-        
+
+        /// <summary>
+        /// Launch a dialog to configure the device. Returns true if the configuration has changed.
+        /// This method can be overriden by managers that require disconnecting/reconnecting during the operation.
+        /// Default behavior is to call Configure(summary).
+        /// </summary>
+        public virtual bool Configure(CameraSummary summary, Action disconnect, Action reconnect)
+        {
+            return Configure(summary);
+        }
+
         /// <summary>
         /// Returns a small non-translatable text to be displayed in the header line above the image.
         /// </summary>
@@ -116,5 +127,6 @@ namespace Kinovea.Camera
             PreferencesManager.CapturePreferences.AddCamera(BlurbFromSummary(summary));
             PreferencesManager.Save();
         }
+
     }
 }

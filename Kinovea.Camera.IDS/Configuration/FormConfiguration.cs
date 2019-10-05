@@ -68,12 +68,16 @@ namespace Kinovea.Camera.IDS
         private IDSEnum selectedStreamFormat;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private Dictionary<string, AbstractCameraPropertyView> propertiesControls = new Dictionary<string, AbstractCameraPropertyView>();
+        private Action disconnect;
+        private Action connect;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public FormConfiguration(CameraSummary summary)
+        public FormConfiguration(CameraSummary summary, Action disconnect, Action connect)
         {
             this.summary = summary;
-            
+            this.disconnect = disconnect;
+            this.connect = connect;
+
             InitializeComponent();
             tbAlias.AutoSize = false;
             tbAlias.Height = 20;
@@ -99,26 +103,11 @@ namespace Kinovea.Camera.IDS
             Populate();
         }
 
-        private bool InitializeDeviceId(string identifier)
-        {
-            bool found = false;
-            uEye.Types.CameraInformation[] devices;
-            uEye.Info.Camera.GetCameraList(out devices);
-            foreach (uEye.Types.CameraInformation device in devices)
-            {
-                if (device.SerialNumber != identifier)
-                    continue;
-                
-                deviceId = device.DeviceID;
-                found = true;
-                break;
-            }
-
-            return found;
-        }
-        
         private void Populate()
         {
+            btnReconnect.Text = "Reconnect";
+            btnReconnect.Enabled = false;
+
             try
             {
                 PopulateStreamFormat();
@@ -237,14 +226,16 @@ namespace Kinovea.Camera.IDS
                 return;
 
             CameraPropertyManager.Write(camera, deviceId, control.Property);
-
+            
             // Dependencies:
             // - Pixel clock changes the range and current value of framerate.
             // - Framerate changes the range and current value of exposure.
-            if (key == "height")
+            if (key == "height" || key == "width")
             {
                 ReloadProperty("framerate");
                 ReloadProperty("exposure");
+
+                btnReconnect.Enabled = true;
             }
             else if (key == "pixelclock")
             {
@@ -267,6 +258,33 @@ namespace Kinovea.Camera.IDS
 
             selectedStreamFormat = selected;
             specificChanged = true;
+            btnReconnect.Enabled = true;
+        }
+
+        private void BtnReconnect_Click(object sender, EventArgs e)
+        {
+            // Changing the image size will trigger a memory re-allocation inside uEye, 
+            // and we'll stop receiving the frame events which is causing all kinds of problems.
+            // We can't just wait until we get out of this form because the framerate range depends on image size.
+            // We also can't simply disconnect when user is changing size, because then we no longer have access to exposure and framerate.
+            // Force a full connection cycle to reload the camera on the new settings.
+            // This may reallocate the delay buffer.
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if (info == null)
+                return;
+
+            info.StreamFormat = this.SelectedStreamFormat.Value;
+            info.CameraProperties = this.CameraProperties;
+            summary.UpdateDisplayRectangle(Rectangle.Empty);
+            CameraTypeManager.UpdatedCameraSummary(summary);
+
+            disconnect();
+            connect();
+
+            ReloadProperty("framerate");
+            ReloadProperty("exposure");
+
+            btnReconnect.Enabled = false;
         }
     }
 }

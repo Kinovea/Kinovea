@@ -171,7 +171,7 @@ namespace Kinovea.Camera.IDS
 
             try
             {
-                camera.Acquisition.Freeze();
+                camera.Acquisition.Stop();
             }
             catch (Exception e)
             {

@@ -190,12 +190,17 @@ namespace Kinovea.Camera.IDS
         
         public override bool Configure(CameraSummary summary)
         {
+            throw new NotImplementedException();
+        }
+
+        public override bool Configure(CameraSummary summary, Action disconnect, Action connect)
+        {
             bool needsReconnection = false;
             SpecificInfo info = summary.Specific as SpecificInfo;
             if (info == null)
                 return false;
 
-            FormConfiguration form = new FormConfiguration(summary);
+            FormConfiguration form = new FormConfiguration(summary, disconnect, connect);
             if(form.ShowDialog() == DialogResult.OK)
             {
                 if(form.AliasChanged)

@@ -695,7 +695,7 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded || cameraManager == null)
                 return;
 
-            bool needsReconnect = cameraManager.Configure(cameraSummary);
+            bool needsReconnect = cameraManager.Configure(cameraSummary, Disconnect, Connect);
 
             if (needsReconnect)
             {
