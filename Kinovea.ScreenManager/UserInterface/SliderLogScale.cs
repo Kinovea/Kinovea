@@ -88,7 +88,8 @@ namespace Kinovea.ScreenManager
         public SliderLogScale()
         {
             this.Cursor = Cursors.Hand;
-            
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
+
             ComponentResourceManager resources = new ComponentResourceManager(typeof(SliderLogScale));
             cursor = (Bitmap)resources.GetObject("cursor");
             gutterLeft = (Bitmap)resources.GetObject("gutter_left");
