@@ -2345,20 +2345,42 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Looks for a camera screen or a non-loaded player screen.
+        /// Looks for an empty screen to load something into.
+        /// Returns the index of the first empty screen of the preferred type, 
+        /// if not found, the index of the first empty screen of the other type, 
+        /// if not found, returns -1.
         /// </summary>
-        public int FindEmptyScreen()
+        public int FindEmptyScreen(Type preferredType)
         {
             AbstractScreen screen0 = GetScreenAt(0);
-            if (!screen0.Full)
-                return 0;
-
             AbstractScreen screen1 = GetScreenAt(1);
-            if (!screen1.Full)
-                return 1;
 
-            return -1;
+            List<AbstractScreen> list = new List<AbstractScreen>();
+            if (screen0 != null && !screen0.Full)
+                list.Add(screen0);
+            else
+                list.Add(null);
+
+            if (screen1 != null && !screen1.Full)
+                list.Add(screen1);
+            else
+                list.Add(null);
+
+            int nonPreferredIndex = -1;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i] == null)
+                    continue;
+
+                if (list[i].GetType() == preferredType)
+                    return i;
+
+                nonPreferredIndex = i;
+            }
+
+            return nonPreferredIndex;
         }
+
         /// <summary>
         /// Asks the user for confirmation on replacing the current content.
         /// Check if we are overloading on a non-empty screen and propose to save data.
