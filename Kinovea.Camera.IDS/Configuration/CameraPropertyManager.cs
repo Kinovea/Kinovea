@@ -53,16 +53,12 @@ namespace Kinovea.Camera.IDS
             if (!property.Supported || string.IsNullOrEmpty(property.Identifier))
                 return;
 
+            // Only write non critical properties: properties that don't change image size.
+
             try
             {
                 switch (property.Identifier)
                 {
-                    case "width":
-                        WriteWidth(camera, property);
-                        break;
-                    case "height":
-                        WriteHeight(camera, property);
-                        break;
                     case "pixelclock":
                         WritePixelClock(camera, property);
                         break;
@@ -74,6 +70,10 @@ namespace Kinovea.Camera.IDS
                         break;
                     case "gain":
                         WriteGain(camera, property);
+                        break;
+                    case "width":
+                    case "height":
+                        // Do nothing. These properties must be changed from WriteCriticalProperties below.
                         break;
                     default:
                         log.ErrorFormat("IDS uEye property not supported: {0}", property.Identifier);
