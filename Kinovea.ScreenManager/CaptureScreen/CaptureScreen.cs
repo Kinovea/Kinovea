@@ -1037,7 +1037,11 @@ namespace Kinovea.ScreenManager
         
         private void MakeSnapshot()
         {
-            if (!cameraLoaded || consumerDisplay.Bitmap == null)
+            if (!cameraLoaded)
+                return;
+
+            Bitmap bitmap = recordingMode == CaptureRecordingMode.Display ? delayCompositer.Get(delay) : consumerDisplay.Bitmap;
+            if (bitmap == null)
                 return;
 
             string root;
@@ -1070,7 +1074,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             //Actual save.
-            Bitmap outputImage = BitmapHelper.Copy(consumerDisplay.Bitmap);
+            Bitmap outputImage = BitmapHelper.Copy(bitmap);
             if(outputImage == null)
                 return;
             
