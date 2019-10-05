@@ -29,5 +29,13 @@ namespace Kinovea.Pipeline
             this.TopDown = topDown;
             this.BufferSize = bufferSize;
         }
+
+        public static bool Compatible(ImageDescriptor a, ImageDescriptor b)
+        {
+            if (a == null || b == null || a == invalid || b == invalid)
+                return false;
+
+            return a.Format == b.Format && a.Width == b.Width && a.Height == b.Height && a.TopDown == b.TopDown && a.BufferSize == b.BufferSize;
+        }
     }
 }

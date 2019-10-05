@@ -169,5 +169,19 @@ namespace Kinovea.Video
 
             bitmap.UnlockBits(bmpData);
         }
+
+        /// <summary>
+        /// Copies the whole bitmap into the frame buffer.
+        /// The source bitmap is expected to be the same size as the frame buffer.
+        /// </summary>
+        public static void CopyBitmapToBuffer(Bitmap bitmap, byte[] buffer)
+        {
+            Rectangle bmpRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            BitmapData bmpData = bitmap.LockBits(bmpRectangle, ImageLockMode.ReadOnly, bitmap.PixelFormat);
+
+            Marshal.Copy(bmpData.Scan0, buffer, 0, bmpData.Stride * bitmap.Height);
+
+            bitmap.UnlockBits(bmpData);
+        }
     }
 }

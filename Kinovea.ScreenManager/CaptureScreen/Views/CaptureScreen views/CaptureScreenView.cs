@@ -188,10 +188,10 @@ namespace Kinovea.ScreenManager
             this.delayFrames = delayFrames;
             UpdateDelayLabel();
         }
-        public void UpdateDelayMaxAge(double delay)
+        public void UpdateDelayMaxAge(double maxAge)
         {
             // If the delayer was not allocated, fake a number so that we have a slider stuck at the 0th image.
-            sldrDelay.Maximum = delay == 0 ? 0.9 : delay;
+            sldrDelay.Maximum = maxAge == 0 ? 0.9 : maxAge;
         }
         public void UpdateSlomoRefreshRate(float refreshRate)
         {

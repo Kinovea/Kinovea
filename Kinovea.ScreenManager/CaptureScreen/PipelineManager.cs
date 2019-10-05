@@ -30,8 +30,8 @@ namespace Kinovea.ScreenManager
         private bool connected;
         private FramePipeline pipeline;
         private IFrameProducer producer;
-        private ConsumerDisplay consumerDisplay;
         private ConsumerMJPEGRecorder consumerRecord;
+        private ConsumerDelayer consumerDelayer;
         private List<IFrameConsumer> consumers = new List<IFrameConsumer>();
 
         public void Connect(ImageDescriptor imageDescriptor, IFrameProducer producer, ConsumerDisplay consumerDisplay, ConsumerMJPEGRecorder consumerRecord)
@@ -40,8 +40,8 @@ namespace Kinovea.ScreenManager
             // But only the display thread (actually the UI main thread) should be "active".
             // The producer thread is not started yet, it will be started outside the pipeline manager.
             this.producer = producer;
-            this.consumerDisplay = consumerDisplay;
             this.consumerRecord = consumerRecord;
+            this.consumerDelayer = null;
 
             consumerDisplay.SetImageDescriptor(imageDescriptor);
             consumerRecord.SetImageDescriptor(imageDescriptor);
@@ -50,6 +50,28 @@ namespace Kinovea.ScreenManager
             consumers.Add(consumerDisplay as IFrameConsumer);
             consumers.Add(consumerRecord as IFrameConsumer);
 
+            CreatePipeline(imageDescriptor);
+        }
+
+        public void Connect(ImageDescriptor imageDescriptor, IFrameProducer producer, ConsumerDisplay consumerDisplay, ConsumerDelayer consumerDelayer)
+        {
+            // Same as above but for the recording mode "delay" case.
+            this.producer = producer;
+            this.consumerRecord = null;
+            this.consumerDelayer = consumerDelayer;
+
+            consumerDisplay.SetImageDescriptor(imageDescriptor);
+            consumerDelayer.SetImageDescriptor(imageDescriptor);
+
+            consumers.Clear();
+            consumers.Add(consumerDisplay as IFrameConsumer);
+            consumers.Add(consumerDelayer as IFrameConsumer);
+
+            CreatePipeline(imageDescriptor);
+        }
+
+        private void CreatePipeline(ImageDescriptor imageDescriptor)
+        {
             int buffers = 8;
 
             pipeline = new FramePipeline(producer, consumers, buffers, imageDescriptor.BufferSize);
@@ -73,20 +95,40 @@ namespace Kinovea.ScreenManager
             connected = false;
         }
 
-        public SaveResult StartRecord(string filepath, double interval)
+        public SaveResult StartRecord(string filepath, double interval, int age)
         {
+            if (consumerRecord == null && consumerDelayer == null)
+                throw new InvalidProgramException();
+
             pipeline.ResetDrops();
-            
-            SaveResult result = consumerRecord.Prepare(filepath, interval);
-            if (result == SaveResult.Success)
-                consumerRecord.Activate();
+            SaveResult result;
+            if (consumerRecord != null)
+            {
+                result = consumerRecord.StartRecord(filepath, interval);
+                if (result == SaveResult.Success)
+                    consumerRecord.Activate();
+            }
+            else
+            {
+                result = consumerDelayer.StartRecord(filepath, interval, age);
+            }
 
             return result;
         }
 
         public void StopRecord()
         {
-            consumerRecord.Deactivate();
+            if (consumerRecord == null && consumerDelayer == null)
+                throw new InvalidProgramException();
+
+            if (consumerRecord != null)
+            {
+                consumerRecord.Deactivate();
+            }
+            else
+            {
+                consumerDelayer.StopRecord();
+            }
         }
 
         private void producer_FrameProduced(object sender, FrameProducedEventArgs e)

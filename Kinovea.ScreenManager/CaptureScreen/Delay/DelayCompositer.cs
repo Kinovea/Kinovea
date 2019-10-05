@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
                 this.imageDescriptor = imageDescriptor;
 
                 currentPosition = 0;
-                composite.UpdateSubframes(imageDescriptor, delayer.Capacity);
+                composite.UpdateSubframes(imageDescriptor, delayer.SafeCapacity);
 
                 // Better do the GC now to push everything to gen2 and LOH rather than taking a hit later during normal streaming operations.
                 GC.Collect(2);
@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
         {
             this.composite = composite;
             currentPosition = 0;
-            composite.UpdateSubframes(imageDescriptor, delayer.Capacity);
+            composite.UpdateSubframes(imageDescriptor, delayer.SafeCapacity);
         }
         
         public Bitmap Get(int age)

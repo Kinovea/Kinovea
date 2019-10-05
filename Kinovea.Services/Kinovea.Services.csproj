@@ -297,6 +297,12 @@
     <Compile Include="Preferences\TimecodeType.cs" />
     <Compile Include="ThreePartsVersion.cs" />
     <Compile Include="TimeHelper.cs" />
+    <Compile Include="WinForms\VolumeMeterThreshold.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForms\VolumeMeterThreshold.Designer.cs">
+      <DependentUpon>VolumeMeterThreshold.cs</DependentUpon>
+    </Compile>
     <Compile Include="XmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>

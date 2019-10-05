@@ -10,7 +10,8 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// ConsumerMJPEGRecorder. Save samples to an MJPEG file (in MP4 container).
+    /// ConsumerMJPEGRecorder. 
+    /// Saves samples to file.
     /// The recorder is format agnostic, the format is simply passed along to the writer.
     /// The writer will decide if resampling and encoding are needed.
     /// </summary>
@@ -21,8 +22,14 @@ namespace Kinovea.ScreenManager
             get { return filename; }
         }
 
+        public bool Recording
+        {
+            get { return recording; }
+        }
+
         private ImageDescriptor imageDescriptor;
         private MJPEGWriter writer;
+        private bool recording;
         private string filename;
         
         public void SetImageDescriptor(ImageDescriptor imageDescriptor)
@@ -30,8 +37,12 @@ namespace Kinovea.ScreenManager
             this.imageDescriptor = imageDescriptor;
         }
 
-        public SaveResult Prepare(string filename, double interval)
+        public SaveResult StartRecord(string filename, double interval)
         {
+            //-----------------------
+            // Runs on the UI thread.
+            //-----------------------
+
             if (imageDescriptor == null)
                 throw new NotSupportedException("ImageDescriptor must be set before prepare.");
 
@@ -57,14 +68,21 @@ namespace Kinovea.ScreenManager
 
             SaveResult result = writer.OpenSavingContext(filename, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval);
 
+            recording = true;
+
             return result;
         }
 
         protected override void AfterDeactivate()
         {
-            writer.CloseSavingContext(true);
-            writer.Dispose();
-            writer = null;
+            if (recording)
+            {
+                writer.CloseSavingContext(true);
+                writer.Dispose();
+                writer = null;
+
+                recording = false;
+            }
 
             base.AfterDeactivate();
         }
