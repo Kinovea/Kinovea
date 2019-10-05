@@ -26,6 +26,7 @@ namespace Kinovea.Services
         Capture_Recording,
         Capture_ImageNaming,
         Capture_VideoNaming,
+        Capture_Automation,
 
         Keyboard_General
     }

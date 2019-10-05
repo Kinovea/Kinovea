@@ -55,7 +55,7 @@ namespace Kinovea.Root
         #region Members
         private string description;
         private Bitmap icon;
-        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Capture_General, PreferenceTab.Capture_Memory, PreferenceTab.Capture_Recording, PreferenceTab.Capture_ImageNaming, PreferenceTab.Capture_VideoNaming};
+        private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Capture_General, PreferenceTab.Capture_Memory, PreferenceTab.Capture_Recording, PreferenceTab.Capture_ImageNaming, PreferenceTab.Capture_VideoNaming, PreferenceTab.Capture_Automation};
         private CapturePathConfiguration capturePathConfiguration = new CapturePathConfiguration();
         private Dictionary<CaptureVariable, TextBox> namingTextBoxes = new Dictionary<CaptureVariable, TextBox>();
         private double displaySynchronizationFramerate;
@@ -283,7 +283,7 @@ namespace Kinovea.Root
             vumeter.Threshold = audioTriggerThreshold;
             vumeter.DecibelRange = decibelRange;
 
-            lblRecordingTime.Text = "Recording time (s):";
+            lblRecordingTime.Text = "Recording duration (s):";
             tbRecordingTime.Text = string.Format("{0:0.###}", recordingSeconds);
             
             chkEnableAudioTrigger.Checked = enableAudioTrigger;

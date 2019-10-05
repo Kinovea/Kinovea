@@ -250,7 +250,7 @@
     <Compile Include="Preferences\FilePropertyVisibility.cs" />
     <Compile Include="Preferences\KinoveaUncompressedVideoFormat.cs" />
     <Compile Include="Preferences\PhotofinishConfiguration.cs" />
-    <Compile Include="PreferenceTab.cs" />
+    <Compile Include="Preferences\PreferenceTab.cs" />
     <Compile Include="Preferences\TrackerParameterUnit.cs" />
     <Compile Include="Preferences\TrackingProfile.cs" />
     <Compile Include="TimestampMapper.cs" />

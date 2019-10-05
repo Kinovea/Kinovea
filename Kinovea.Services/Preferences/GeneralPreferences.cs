@@ -55,7 +55,7 @@ namespace Kinovea.Services
             get { return preferencePage; }
             set { preferencePage = value; }
         }
-        
+
         private string uiCultureName;
         private bool explorerVisible = true;
         private int explorerSplitterDistance = 250;
