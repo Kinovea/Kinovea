@@ -116,8 +116,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="uEyeDotNet">
-      <HintPath>..\Refs\IDS\4.81\uEyeDotNet.dll</HintPath>
+    <Reference Include="uEyeDotNet, Version=1.6.4.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\IDS\4.92.3\uEyeDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
