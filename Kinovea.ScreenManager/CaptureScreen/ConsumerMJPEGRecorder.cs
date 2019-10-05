@@ -31,6 +31,13 @@ namespace Kinovea.ScreenManager
         private MJPEGWriter writer;
         private bool recording;
         private string filename;
+        private string shortId;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public ConsumerMJPEGRecorder(string shortId)
+        {
+            this.shortId = shortId;
+        }
         
         public void SetImageDescriptor(ImageDescriptor imageDescriptor)
         {
@@ -66,7 +73,12 @@ namespace Kinovea.ScreenManager
             double fps = 1000.0 / interval;
             double fileInterval = interval;
             if (fps >= hrft)
+            {
                 fileInterval = 1000.0 / hrfo;
+                log.DebugFormat("High speed recording detected, {0:0.###} fps. Forcing output framerate to {1:0.###} fps.", fps, hrfo);
+            }
+
+            log.DebugFormat("Frame budget for writer [{0}]: {1:0.000} ms.", shortId, interval);
 
             SaveResult result = writer.OpenSavingContext(filename, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval);
 

@@ -45,8 +45,13 @@ namespace Kinovea.ScreenManager
         private bool recording;
         private string filename;
         private bool stopRecordAsked;
-
+        private string shortId;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public ConsumerDelayer(string shortId)
+        {
+            this.shortId = shortId;
+        }
 
         /// <summary>
         /// Set the image descriptor for the incoming frames.
@@ -134,7 +139,12 @@ namespace Kinovea.ScreenManager
             double fps = 1000.0 / interval;
             double fileInterval = interval;
             if (fps >= hrft)
+            {
                 fileInterval = 1000.0 / hrfo;
+                log.DebugFormat("High speed recording detected, {0:0.###} fps. Forcing output framerate to {1:0.###} fps.", fps, hrfo);
+            }
+
+            log.DebugFormat("Frame budget for writer [{0}]: {1:0.000} ms.", shortId, interval);
 
             SaveResult result = writer.OpenSavingContext(filename, info, formatString, delayerImageDescriptor.Format, uncompressed, interval, fileInterval);
 
@@ -181,7 +191,7 @@ namespace Kinovea.ScreenManager
             }
 
             // We don't move back this call to the UI thread.
-            // The recorder will be extracting frames from the delayer on that very same thread, 
+            // During recording we extract frames from the delayer on that very same thread, 
             // and for the display it's not critical that the images be broken. (less critical than switching context each frame).
             // As this mode is tailored for delay scenario, in all likelihood the display is not going to be reading the frame we are writing to.
             bool pushed = delayer.Push(bitmap);

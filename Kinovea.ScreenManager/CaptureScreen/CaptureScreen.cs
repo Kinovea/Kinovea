@@ -207,6 +207,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Timer nonGrabbingInteractionTimer = new System.Windows.Forms.Timer();
 
         private HistoryStack historyStack = new HistoryStack();
+        private string shortId;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -255,6 +256,8 @@ namespace Kinovea.ScreenManager
             displayTimer.Tick += displayTimer_Tick;
             
             pipelineManager.FrameSignaled += pipelineManager_FrameSignaled;
+
+            shortId = this.id.ToString().Substring(0, 4);
         }
 
         #region Public methods
@@ -583,9 +586,9 @@ namespace Kinovea.ScreenManager
                 // Start consumer thread for recording mode "camera". 
                 // This is used to pull frames from the pipeline and push them directly to disk.
                 // It will be dormant until recording is started but it has the same lifetime as the pipeline.
-                consumerRecord = new ConsumerMJPEGRecorder();
+                consumerRecord = new ConsumerMJPEGRecorder(shortId);
                 recorderThread = new Thread(consumerRecord.Run) { IsBackground = true };
-                recorderThread.Name = consumerRecord.GetType().Name;
+                recorderThread.Name = consumerRecord.GetType().Name + "-" + shortId;
                 recorderThread.Start();
 
                 pipelineManager.Connect(imageDescriptor, cameraGrabber, consumerDisplay, consumerRecord);
@@ -595,9 +598,9 @@ namespace Kinovea.ScreenManager
                 // Start consumer thread for recording mode "delay".
                 // This is used to pull frames from the pipeline and push them in the delayer, 
                 // and then pull frames from the delayer and write them to disk.
-                consumerDelayer = new ConsumerDelayer();
+                consumerDelayer = new ConsumerDelayer(shortId);
                 recorderThread = new Thread(consumerDelayer.Run) { IsBackground = true };
-                recorderThread.Name = consumerDelayer.GetType().Name;
+                recorderThread.Name = consumerDelayer.GetType().Name + "-" + shortId;
                 recorderThread.Start();
 
                 pipelineManager.Connect(imageDescriptor, cameraGrabber, consumerDisplay, consumerDelayer);
@@ -624,11 +627,10 @@ namespace Kinovea.ScreenManager
             cameraConnected = true;
 
             log.DebugFormat("Connected to camera.");
-            log.DebugFormat("Image: {0}, {1}x{2}px, top-down:{3}, nominal framerate:{4}.",
+            log.DebugFormat("Image: {0}, {1}x{2}px, top-down:{3}, nominal framerate:{4:0.###} fps.",
                 imageDescriptor.Format, imageDescriptor.Width, imageDescriptor.Height, imageDescriptor.TopDown, cameraGrabber.Framerate);
 
-            log.DebugFormat("Recording mode: {0}.", PreferencesManager.CapturePreferences.RecordingMode);
-            log.DebugFormat("Display synchronization framerate: {0}.", PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate);
+            log.DebugFormat("Display synchronization framerate: {0:0.###} fps.", PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate);
             log.DebugFormat("Delay compositor mode: {0}.", PreferencesManager.CapturePreferences.DelayCompositeConfiguration.CompositeType);
         }
         
@@ -1231,9 +1233,9 @@ namespace Kinovea.ScreenManager
                 recordingThumbnail = null;
             }
 
-            log.DebugFormat("Starting recording.");
-            log.DebugFormat("Recording mode: {0}", PreferencesManager.CapturePreferences.RecordingMode);
-            log.DebugFormat("Nominal framerate: {0}, Received framerate: {1}, Display framerate: {2}.", 
+            log.DebugFormat("Starting recording. Recording mode: {0}, Compression: {1}.", 
+                PreferencesManager.CapturePreferences.RecordingMode, !PreferencesManager.CapturePreferences.SaveUncompressedVideo);
+            log.DebugFormat("Nominal framerate: {0:0.###} fps, Received framerate: {1:0.###} fps, Display framerate: {2:0.###} fps.", 
                 cameraGrabber.Framerate, pipelineManager.Frequency, PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate);
             
             SaveResult result;
@@ -1399,7 +1401,6 @@ namespace Kinovea.ScreenManager
                     attempts++;
                 }
 
-                // FIXME: when going to camera settings and increasing size, we can't seem to deactivate or kill the thread.
                 if (consumerDelayer.Active)
                 {
                     log.ErrorFormat("Failure to deactivate consumer delayer before memory re-allocation.");
