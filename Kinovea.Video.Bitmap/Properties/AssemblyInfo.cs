@@ -8,7 +8,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Kinovea")]
 [assembly: AssemblyProduct("Kinovea")]
-[assembly: AssemblyCopyright("Copyright © 2006-2018 - Joan Charmant and contributors.")]
+[assembly: AssemblyCopyright("Copyright © 2006-2019 - Joan Charmant and contributors.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("1.0.0")]
