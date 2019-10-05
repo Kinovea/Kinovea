@@ -172,6 +172,9 @@ namespace Kinovea.Root
 
             lblFramerate.Text = RootLang.dlgPreferences_Capture_lblForcedFramerate;
             tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
+
+            chkIgnoreOverwriteWarning.Text = "Ignore file overwrite warning";
+            chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
         }
 
         private void InitPageMemory()
@@ -282,9 +285,7 @@ namespace Kinovea.Root
 
             lblRecordingTime.Text = "Recording time (s):";
             tbRecordingTime.Text = string.Format("{0:0.###}", recordingSeconds);
-            chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
-            chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
-
+            
             chkEnableAudioTrigger.Checked = enableAudioTrigger;
             EnableDisableAudioTrigger();
         }
@@ -340,8 +341,12 @@ namespace Kinovea.Root
             if (parsed)
                 displaySynchronizationFramerate = value;
         }
+        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
+        {
+            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
+        }
         #endregion
-        
+
         #region Tabs naming
         private void tbNamingVariable_TextChanged(object sender, EventArgs e)
         {
@@ -492,10 +497,6 @@ namespace Kinovea.Root
             bool parsed = float.TryParse(tbRecordingTime.Text, out value);
             if (parsed)
                 recordingSeconds = value;
-        }
-        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
-        {
-            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
         }
         #endregion
         #endregion
