@@ -57,10 +57,14 @@ namespace Kinovea.ScreenManager
         {
             if (disposing)
             {
-                waveIn.StopRecording();
-                waveIn.DataAvailable -= WaveIn_DataAvailable;
-                waveIn.RecordingStopped -= WaveIn_RecordingStopped;
-                waveIn.Dispose();
+                if (waveIn != null)
+                {
+                    waveIn.StopRecording();
+                    waveIn.DataAvailable -= WaveIn_DataAvailable;
+                    waveIn.RecordingStopped -= WaveIn_RecordingStopped;
+                    waveIn.Dispose();
+                }
+
                 dummy.Dispose();
             }
         }
