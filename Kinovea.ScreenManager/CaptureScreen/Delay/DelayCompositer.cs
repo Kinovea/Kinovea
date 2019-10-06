@@ -131,6 +131,9 @@ namespace Kinovea.ScreenManager
                     continue;
 
                 Bitmap subframeImage = delayer.Get(subframeAge);
+                if (subframeImage == null)
+                    continue;
+
                 g.DrawImage(subframeImage, subframe.Destination, subframe.Source, GraphicsUnit.Pixel);
             }
             
