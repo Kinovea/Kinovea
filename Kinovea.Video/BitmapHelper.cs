@@ -11,6 +11,8 @@ namespace Kinovea.Video
 {
     public static class BitmapHelper
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// Allocate a new bitmap and copy the passed bitmap into it.
         /// </summary>
@@ -29,13 +31,22 @@ namespace Kinovea.Video
         /// </summary>
         public unsafe static void Copy(Bitmap src, Bitmap dst, Rectangle rect)
         {
-            BitmapData srcData = src.LockBits(rect, ImageLockMode.ReadOnly, src.PixelFormat);
-            BitmapData dstData = dst.LockBits(rect, ImageLockMode.WriteOnly, dst.PixelFormat);
+            try
+            {
+                BitmapData srcData = src.LockBits(rect, ImageLockMode.ReadOnly, src.PixelFormat);
+                BitmapData dstData = dst.LockBits(rect, ImageLockMode.WriteOnly, dst.PixelFormat);
 
-            NativeMethods.memcpy(dstData.Scan0.ToPointer(), srcData.Scan0.ToPointer(), srcData.Height * srcData.Stride);
+                NativeMethods.memcpy(dstData.Scan0.ToPointer(), srcData.Scan0.ToPointer(), srcData.Height * srcData.Stride);
 
-            dst.UnlockBits(dstData);
-            src.UnlockBits(srcData);
+                dst.UnlockBits(dstData);
+                src.UnlockBits(srcData);
+            }
+            catch
+            {
+                log.ErrorFormat("Error while copying bitmaps.");
+            }
+
+            return;
         }
 
         /// <summary>
