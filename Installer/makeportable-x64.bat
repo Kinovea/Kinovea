@@ -1,1 +1,1 @@
-makensis /DPORTABLE /DREBUILD /DX64 kinovea.nsi
+makensis /DPORTABLE /DREBUILD /DX64 kinovea.nsi > build-portable-x64.txt

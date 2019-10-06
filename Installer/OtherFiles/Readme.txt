@@ -1,5 +1,5 @@
 
-Kinovea 0.8.27 - October 2018.
+Kinovea 0.9.1 - TBD.
 
 Kinovea is an open source solution for capturing, studying and annotating videos.
 Use it for sport coaching, performance analysis, podiatrics, animation commenting, ergonomics engineering and more...
@@ -36,7 +36,7 @@ Communication channels:
 Changelog:
 ----------
 
-0.8.28 - TBD.
+0.9.1 - TBD.
     Added - Farsi locale.
     Added - Capture automation: audio trigger.
     Added - Capture automation: stop recording by time.

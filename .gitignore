@@ -13,6 +13,8 @@ Installer/*.exe
 Installer/OtherFiles/Manuals/*.chm
 Installer/build.log
 Installer/Kinovea.Portable*/*
+Installer/Kinovea-*
+Installer/build-*.txt
 
 *.bak
 
@@ -371,7 +373,6 @@ MigrationBackup/
 .ionide/
 
 /Localization/Contrib/*
-/Installer/Kinovea-*
 /Installer/OtherFiles/Changelog*
 /Installer/OtherFiles/HelpVideos/*.avi
 /Kinovea.Camera/Languages/CameraLang.resources
