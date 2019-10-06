@@ -94,31 +94,31 @@
   </Handles>
 
   <Options>
-    <Option key="showNose" label="Show Nose" default="false" hidden="true" />
-    <Option key="showNeck" label="Show Neck" default="false" hidden="true"/>
-    <Option key="showRShoulder" label="show RShoulder" default="false" hidden="true" />
-    <Option key="showRElbow" label="show RElbow" default="false" hidden="true" />
-    <Option key="showRWrist" label="show RWrist" default="false" hidden="true" />
-    <Option key="showLShoulder" label="show LShoulder" default="false" hidden="true" />
-    <Option key="showLElbow" label="show LElbow" default="false" hidden="true" />
-    <Option key="showLWrist" label="show LWrist" default="false" hidden="true" />
-    <Option key="showMidHip" label="show MidHip" default="false" hidden="true" />
-    <Option key="showRHip" label="show RHip" default="false" hidden="true" />
-    <Option key="showRKnee" label="show RKnee" default="false" hidden="true" />
-    <Option key="showRAnkle" label="show RAnkle" default="false" hidden="true" />
-    <Option key="showLHip" label="show LHip" default="false" hidden="true" />
-    <Option key="showLKnee" label="show LKnee" default="false" hidden="true" />
-    <Option key="showLAnkle" label="show LAnkle" default="false" hidden="true" />
-    <Option key="showREye" label="show REye" default="false" hidden="true" />
-    <Option key="showLEye" label="show LEye" default="false" hidden="true" />
-    <Option key="showREar" label="show REar" default="false" hidden="true" />
-    <Option key="showLEar" label="show LEar" default="false" hidden="true" />
-    <Option key="showLBigToe" label="show LBigToe" default="false" hidden="true" />
-    <Option key="showLSmallToe" label="show LSmallToe" default="false" hidden="true" />
-    <Option key="showLHeel" label="show LHeel" default="false" hidden="true" />
-    <Option key="showRBigToe" label="show RBigToe" default="false" hidden="true" />
-    <Option key="showRSmallToe" label="show RSmallToe" default="false" hidden="true" />
-    <Option key="showRHeel" label="show RHeel" default="false" hidden="true" />
+    <Option key="showNose" label="Show Nose" default="true" hidden="true" />
+    <Option key="showNeck" label="Show Neck" default="true" hidden="true"/>
+    <Option key="showRShoulder" label="show RShoulder" default="true" hidden="true" />
+    <Option key="showRElbow" label="show RElbow" default="true" hidden="true" />
+    <Option key="showRWrist" label="show RWrist" default="true" hidden="true" />
+    <Option key="showLShoulder" label="show LShoulder" default="true" hidden="true" />
+    <Option key="showLElbow" label="show LElbow" default="true" hidden="true" />
+    <Option key="showLWrist" label="show LWrist" default="true" hidden="true" />
+    <Option key="showMidHip" label="show MidHip" default="true" hidden="true" />
+    <Option key="showRHip" label="show RHip" default="true" hidden="true" />
+    <Option key="showRKnee" label="show RKnee" default="true" hidden="true" />
+    <Option key="showRAnkle" label="show RAnkle" default="true" hidden="true" />
+    <Option key="showLHip" label="show LHip" default="true" hidden="true" />
+    <Option key="showLKnee" label="show LKnee" default="true" hidden="true" />
+    <Option key="showLAnkle" label="show LAnkle" default="true" hidden="true" />
+    <Option key="showREye" label="show REye" default="true" hidden="true" />
+    <Option key="showLEye" label="show LEye" default="true" hidden="true" />
+    <Option key="showREar" label="show REar" default="true" hidden="true" />
+    <Option key="showLEar" label="show LEar" default="true" hidden="true" />
+    <Option key="showLBigToe" label="show LBigToe" default="true" hidden="true" />
+    <Option key="showLSmallToe" label="show LSmallToe" default="true" hidden="true" />
+    <Option key="showLHeel" label="show LHeel" default="true" hidden="true" />
+    <Option key="showRBigToe" label="show RBigToe" default="true" hidden="true" />
+    <Option key="showRSmallToe" label="show RSmallToe" default="true" hidden="true" />
+    <Option key="showRHeel" label="show RHeel" default="true" hidden="true" />
   </Options>
 
 </KinoveaPostureTool>
