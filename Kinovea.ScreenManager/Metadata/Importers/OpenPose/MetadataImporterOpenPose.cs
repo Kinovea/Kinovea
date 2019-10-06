@@ -133,6 +133,7 @@ namespace Kinovea.ScreenManager
             ParsePosture(posture, person);
 
             DrawingGenericPosture drawing = new DrawingGenericPosture(tool.ToolId, PointF.Empty, posture, timestamp, metadata.AverageTimeStampsPerFrame, ToolManager.GetStylePreset(toolName));
+            drawing.Name = "OpenPose";
 
             // Disable onion skinning.
             drawing.InfosFading.UseDefault = false;

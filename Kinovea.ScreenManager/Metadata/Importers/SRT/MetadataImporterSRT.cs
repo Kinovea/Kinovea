@@ -158,6 +158,8 @@ namespace Kinovea.ScreenManager
             PointF location = new PointF(200, top);
 
             DrawingText drawing = new DrawingText(location, startTs, metadata.AverageTimeStampsPerFrame, content);
+            drawing.Name = "Subtitle";
+
             drawing.InfosFading.UseDefault = false;
             drawing.InfosFading.ReferenceTimestamp = position;
             drawing.InfosFading.AverageTimeStampsPerFrame = metadata.AverageTimeStampsPerFrame;

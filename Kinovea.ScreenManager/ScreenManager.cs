@@ -1473,7 +1473,7 @@ namespace Kinovea.ScreenManager
             openFileDialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
             openFileDialog.RestoreDirectory = true;
             //openFileDialog.Filter = ScreenManagerLang.FileFilter_KVA;
-            string filterAllAnalysis = "All supported formats (*.kva, *.xml, *.srt)|*.kva;*.srt;*.xml";
+            string filterAllAnalysis = "All supported formats (*.kva, *.srt, *.json, *.xml)|*.kva;*.srt;*.json;*.xml";
             string filterKVA = "Kinovea Video Analysis (*.kva)|*.kva";
             string filterSRT = "Subtitles (*.srt)|*.srt";
             string filterOpenPose = "OpenPose (*.json)|*.json";
@@ -2243,6 +2243,7 @@ namespace Kinovea.ScreenManager
                         return;
 
                     screen.LoadKVA(path);
+                    screen.RefreshImage();
                 }
                 else
                 {
