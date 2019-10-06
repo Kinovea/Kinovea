@@ -44,7 +44,6 @@ namespace Kinovea.Camera.FrameGenerator
         private byte[] currentFrameBuffer;
         private long generatedFrames;
         private ManualResetEvent cancellationEvent = null;
-        private int cancellationTestInterval = 100;
         private Stopwatch stopwatch = new Stopwatch();
         private double frameIntervalMilliseconds;
         private double dueTime;

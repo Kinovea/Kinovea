@@ -10,7 +10,7 @@ using namespace System::Resources;
 [assembly:AssemblyConfigurationAttribute("")];
 [assembly:AssemblyCompanyAttribute("Kinovea")];
 [assembly:AssemblyProductAttribute("Kinovea")];
-[assembly:AssemblyCopyrightAttribute("Copyright © 2006-2016 Joan Charmant")];
+[assembly:AssemblyCopyrightAttribute("Copyright © 2006-2019 Joan Charmant")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 [assembly: ComVisible(false)]
@@ -19,4 +19,3 @@ using namespace System::Resources;
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
 [assembly:CLSCompliantAttribute(true)];
-[assembly:SecurityPermission(SecurityAction::RequestMinimum, UnmanagedCode = true)];

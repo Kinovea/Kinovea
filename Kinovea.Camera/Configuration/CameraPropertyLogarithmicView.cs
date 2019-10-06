@@ -14,7 +14,7 @@ namespace Kinovea.Camera
 
         public CameraPropertyLogarithmicView(CameraProperty property, string localizationToken, Func<int, string> valueMapper)
         {
-            this.property = property;
+            this.prop = property;
             this.localizationToken = localizationToken;
             bool useDefaultMapper = valueMapper == null;
             this.valueMapper = useDefaultMapper ? defaultValueMapper : valueMapper;
@@ -36,24 +36,24 @@ namespace Kinovea.Camera
 
         public override void Repopulate(CameraProperty property)
         {
-            this.property = property;
+            this.prop = property;
             if (property.Supported)
                 Populate();
         }
 
         private void Populate()
         {
-            cbAuto.Enabled = property.CanBeAutomatic;
+            cbAuto.Enabled = prop.CanBeAutomatic;
 
-            double min = double.Parse(property.Minimum, CultureInfo.InvariantCulture);
-            double max = double.Parse(property.Maximum, CultureInfo.InvariantCulture);
+            double min = double.Parse(prop.Minimum, CultureInfo.InvariantCulture);
+            double max = double.Parse(prop.Maximum, CultureInfo.InvariantCulture);
             int minValue = (int)Math.Max(1, min);
             int maxValue = (int)max;
             int sliderMin = 1;
             int sliderMax = 10000;
             logMapper = new LogarithmicMapper(minValue, maxValue, sliderMin, sliderMax);
 
-            double value = double.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+            double value = double.Parse(prop.CurrentValue, CultureInfo.InvariantCulture);
             int sliderValue = logMapper.Map((int)value);
 
             updatingValue = true;
@@ -63,7 +63,7 @@ namespace Kinovea.Camera
             tbValue.Minimum = sliderMin;
             tbValue.Maximum = sliderMax;
             tbValue.Value = sliderValue;
-            cbAuto.Checked = property.Automatic;
+            cbAuto.Checked = prop.Automatic;
             updatingValue = false;
 
             lblValue.Text = valueMapper((int)value);
@@ -77,13 +77,13 @@ namespace Kinovea.Camera
             int numericValue = logMapper.Unmap(tbValue.Value);
             string strValue = numericValue.ToString(CultureInfo.InvariantCulture);
 
-            property.CurrentValue = strValue;
+            prop.CurrentValue = strValue;
             lblValue.Text = valueMapper(numericValue);
 
-            property.Automatic = false;
+            prop.Automatic = false;
             
             updatingValue = true;
-            cbAuto.Checked = property.Automatic;
+            cbAuto.Checked = prop.Automatic;
             nud.Value = numericValue;
             updatingValue = false;
 
@@ -98,13 +98,13 @@ namespace Kinovea.Camera
             int numericValue = (int)nud.Value;
             string strValue = numericValue.ToString(CultureInfo.InvariantCulture);
 
-            property.CurrentValue = strValue;
+            prop.CurrentValue = strValue;
             lblValue.Text = valueMapper(numericValue);
 
-            property.Automatic = false;
+            prop.Automatic = false;
 
             updatingValue = true;
-            cbAuto.Checked = property.Automatic;
+            cbAuto.Checked = prop.Automatic;
             tbValue.Value = logMapper.Map(numericValue);
             updatingValue = false;
 
@@ -116,7 +116,7 @@ namespace Kinovea.Camera
             if (updatingValue)
                 return;
 
-            property.Automatic = cbAuto.Checked;
+            prop.Automatic = cbAuto.Checked;
 
             RaiseValueChanged();
         }

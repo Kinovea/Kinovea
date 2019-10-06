@@ -14,10 +14,10 @@ namespace Kinovea.Camera
 
         public CameraProperty Property
         {
-            get { return property; }
+            get { return prop; }
         }
 
-        protected CameraProperty property;
+        protected CameraProperty prop;
         
         protected void RaiseValueChanged()
         {

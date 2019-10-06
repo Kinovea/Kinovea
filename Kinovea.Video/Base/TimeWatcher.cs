@@ -48,7 +48,7 @@ namespace Kinovea.Base
         /// <summary>
         /// Clear the list of recorded times and restart the stopwatch.
         /// </summary>
-        public void Restart()
+        new public void Restart()
         {
             m_Timings.Clear();
             Stop();
