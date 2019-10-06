@@ -52,14 +52,14 @@ namespace Kinovea.Root
             
             Assembly assembly = Assembly.GetExecutingAssembly();
             Software.Initialize(assembly.GetName().Version);
+            Software.LogInfo();
+
             Software.SanityCheckDirectories();
             PreferencesManager.Initialize();
             bool firstInstance = Program.FirstInstance;
             if (!PreferencesManager.GeneralPreferences.AllowMultipleInstances && !firstInstance)
                 return;
 
-            Software.LogInfo();
-                
             log.Debug("Application level initialisations.");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
