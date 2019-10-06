@@ -53,7 +53,7 @@
 
     <!--  Because the PylonC.NET is added to the GAC by the Pylon installer, when we build the Basler module in VS the 
       	  PylonC.NET.dll is not added to the output build. -->
-	<Copy SourceFiles="..\Refs\Basler\Pylon5\PylonC.Net\PylonC.NET.dll" DestinationFolder="$(TargetDir)"/>
+	<Copy SourceFiles="..\Refs\Basler\Pylon-6.0\PylonC.Net\PylonC.NET.dll" DestinationFolder="$(TargetDir)"/>
 
   </Target>
 
