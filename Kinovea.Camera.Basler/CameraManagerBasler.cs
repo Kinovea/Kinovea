@@ -83,7 +83,6 @@ namespace Kinovea.Camera.Basler
             bool result = false;
             try
             {
-                
                 Pylon.Initialize();
                 result = true;
             }

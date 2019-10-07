@@ -85,6 +85,8 @@ namespace Kinovea.Camera.IDS
             tbAlias.Text = summary.Alias;
             lblSystemName.Text = summary.Name;
             btnIcon.BackgroundImage = summary.Icon;
+            btnReconnect.Text = "Reconnect";
+            btnReconnect.Enabled = false;
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
             if (specific == null || specific.Camera == null || !specific.Camera.IsOpened)
@@ -105,9 +107,6 @@ namespace Kinovea.Camera.IDS
 
         private void Populate()
         {
-            btnReconnect.Text = "Reconnect";
-            btnReconnect.Enabled = false;
-
             try
             {
                 PopulateStreamFormat();
@@ -263,6 +262,12 @@ namespace Kinovea.Camera.IDS
 
         private void BtnReconnect_Click(object sender, EventArgs e)
         {
+            if (SelectedStreamFormat == null)
+            {
+                // This happens when we load the config window and the camera isn't connected.
+                return;
+            }
+
             // Changing the image size will trigger a memory re-allocation inside uEye, 
             // and we'll stop receiving the frame events which is causing all kinds of problems.
             // We can't just wait until we get out of this form because the framerate range depends on image size.

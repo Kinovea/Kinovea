@@ -72,9 +72,11 @@ namespace Kinovea.Camera.IDS
             bool result = false;
             try
             {
-                Version version;
-                uEye.Info.System.GetApiVersion(out version);
-                log.DebugFormat("IDS uEye Camera subsystem: {0}", version.ToString());
+                Version apiVersion;
+                uEye.Info.System.GetApiVersion(out apiVersion);
+                Version wrapperVersion;
+                uEye.Info.System.GetNetVersion(out wrapperVersion);
+                log.DebugFormat("IDS uEye API version: {0}, .NET wrapper version: {1}.", apiVersion.ToString(), wrapperVersion.ToString());
                 result = true;
             }
             catch (Exception e)
