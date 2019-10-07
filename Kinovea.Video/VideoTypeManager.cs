@@ -151,9 +151,9 @@ namespace Kinovea.Video
                 Assembly pluginAssembly = Assembly.LoadFrom(_filename);
                 _list.Add(pluginAssembly);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                log.ErrorFormat("Could not load assembly {0} for file types plugin", _filename);
+                log.ErrorFormat("Could not load assembly {0} for file types plugin. {1}", _filename, e.Message);
             }
         }
         private static void RegisterExtensions(string[] _extensions, Type _readerType)

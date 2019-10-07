@@ -167,9 +167,9 @@ namespace Kinovea.Camera
                 Assembly pluginAssembly = Assembly.LoadFrom(filename);
                 list.Add(pluginAssembly);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                log.ErrorFormat("Could not load assembly {0} for camera types plugin", filename);
+                log.ErrorFormat("Could not load assembly {0} for camera types plugin. {1}", filename, e.Message);
             }
         }
         
