@@ -57,6 +57,7 @@ namespace Kinovea.Root
         private Bitmap icon;
         private List<PreferenceTab> tabs = new List<PreferenceTab> { PreferenceTab.Player_General, PreferenceTab.Player_Units, PreferenceTab.Player_Memory };
         private bool deinterlaceByDefault;
+        private bool detectImageSequences;
         private bool interactiveFrameTracker;
         private TimecodeFormat timecodeFormat;
         private ImageAspectRatio imageAspectRatio;
@@ -101,6 +102,7 @@ namespace Kinovea.Root
         private void ImportPreferences()
         {
             deinterlaceByDefault = PreferencesManager.PlayerPreferences.DeinterlaceByDefault;
+            detectImageSequences = PreferencesManager.PlayerPreferences.DetectImageSequences;
             interactiveFrameTracker = PreferencesManager.PlayerPreferences.InteractiveFrameTracker;
             timecodeFormat = PreferencesManager.PlayerPreferences.TimecodeFormat;
             imageAspectRatio = PreferencesManager.PlayerPreferences.AspectRatio;       
@@ -128,6 +130,7 @@ namespace Kinovea.Root
         {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDeinterlace.Text = RootLang.dlgPreferences_Player_DeinterlaceByDefault;
+            chkDetectImageSequences.Text = "Detect image sequences";
             chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
             chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
 
@@ -188,6 +191,7 @@ namespace Kinovea.Root
 
             // Fill in initial values.            
             chkDeinterlace.Checked = deinterlaceByDefault;
+            chkDetectImageSequences.Checked = detectImageSequences;
             chkLockSpeeds.Checked = syncLockSpeeds;
             chkInteractiveTracker.Checked = interactiveFrameTracker;
             SelectCurrentUnits();
@@ -243,6 +247,10 @@ namespace Kinovea.Root
         private void ChkDeinterlaceCheckedChanged(object sender, EventArgs e)
         {
             deinterlaceByDefault = chkDeinterlace.Checked;
+        }
+        private void ChkDetectImageSequencesCheckedChanged(object sender, EventArgs e)
+        {
+            detectImageSequences = chkDetectImageSequences.Checked;
         }
         private void ChkLockSpeedsCheckedChanged(object sender, EventArgs e)
         {
@@ -303,6 +311,7 @@ namespace Kinovea.Root
         public void CommitChanges()
         {
             PreferencesManager.PlayerPreferences.DeinterlaceByDefault = deinterlaceByDefault;
+            PreferencesManager.PlayerPreferences.DetectImageSequences = detectImageSequences;
             PreferencesManager.PlayerPreferences.SyncLockSpeed = syncLockSpeeds;
             PreferencesManager.PlayerPreferences.InteractiveFrameTracker = interactiveFrameTracker;
             PreferencesManager.PlayerPreferences.TimecodeFormat = timecodeFormat;

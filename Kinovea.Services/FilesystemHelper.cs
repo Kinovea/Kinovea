@@ -269,6 +269,9 @@ namespace Kinovea.Services
         /// </summary>
         public static string GetSequenceFilename(string path)
         {
+            if (!PreferencesManager.PlayerPreferences.DetectImageSequences)
+                return null;
+
             int sequenceThreshold = 3;
 
             string directory = Path.GetDirectoryName(path);

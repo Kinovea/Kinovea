@@ -154,6 +154,11 @@ namespace Kinovea.Services
             get { return defaultReplaySpeed; }
             set { defaultReplaySpeed = value; }
         }
+        public bool DetectImageSequences
+        {
+            get { return detectImageSequences; }
+            set { detectImageSequences = value; }
+        }
         #endregion
 
         private TimecodeFormat timecodeFormat = TimecodeFormat.ClassicTime;
@@ -181,6 +186,7 @@ namespace Kinovea.Services
         private bool enableFiltering = true;
         private bool enableCustomToolsDebugMode = false;
         private float defaultReplaySpeed = 100;
+        private bool detectImageSequences = true;
         
         public void AddRecentColor(Color _color)
         {
@@ -235,8 +241,8 @@ namespace Kinovea.Services
 
             writer.WriteElementString("EnableFiltering", enableFiltering ? "true" : "false");
             writer.WriteElementString("EnableCustomToolsDebugMode", enableCustomToolsDebugMode ? "true" : "false");
-
             writer.WriteElementString("DefaultReplaySpeed", defaultReplaySpeed.ToString("0", CultureInfo.InvariantCulture));
+            writer.WriteElementString("DetectImageSequences", detectImageSequences ? "true" : "false");
         }
         
         public void ReadXML(XmlReader reader)
@@ -322,6 +328,9 @@ namespace Kinovea.Services
                     case "DefaultReplaySpeed":
                         string str = reader.ReadElementContentAsString();
                         defaultReplaySpeed = float.Parse(str, CultureInfo.InvariantCulture);
+                        break;
+                    case "DetectImageSequences":
+                        detectImageSequences = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     default:
                         reader.ReadOuterXml();
