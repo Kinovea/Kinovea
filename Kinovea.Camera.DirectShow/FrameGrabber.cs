@@ -211,7 +211,7 @@ namespace Kinovea.Camera.DirectShow
 
             device.SetMediaTypeAndFramerate(info.MediaTypeIndex, info.SelectedFramerate);
 
-            log.DebugFormat("Device set to saved configuration: Index:{0}. ({1}×{2} @ {3:0.###} fps ({4})).", 
+            log.DebugFormat("Device set to saved configuration: Index:{0}. ({1}x{2} @ {3:0.###} fps ({4})).", 
                 info.MediaTypeIndex, match.FrameSize.Width, match.FrameSize.Height, info.SelectedFramerate, match.Compression);
 
             // Reload camera properties in case the firmware "forgot" them.

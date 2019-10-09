@@ -81,7 +81,7 @@ namespace Kinovea.Camera.IDS
             }
             catch (Exception e)
             {
-                log.DebugFormat("IDS uEye Camera subsystem not available. {0}", e.ToString());
+                log.DebugFormat("IDS uEye Camera subsystem not available. {0}", e.Message);
             }
 
             return result;

@@ -88,7 +88,7 @@ namespace Kinovea.Camera.Basler
             }
             catch (Exception e)
             {
-                log.DebugFormat("Basler Camera subsystem not available. {0}", e.ToString());
+                log.DebugFormat("Basler Camera subsystem not available. {0}", e.Message);
             }
 
             return result;
