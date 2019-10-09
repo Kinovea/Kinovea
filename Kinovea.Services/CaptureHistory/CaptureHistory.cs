@@ -44,35 +44,49 @@ namespace Kinovea.Services
 
         public static void AddEntry(CaptureHistoryEntry entry)
         {
+            log.DebugFormat("Writing entry to Capture history.", entry.CaptureFile);
             string session = string.Format("{0:yyyyMMdd}.xml", entry.Start);
             string sessionFile = Path.Combine(directory, session);
-            
+
             if (!sessions.ContainsKey(sessionFile))
             {
                 List<CaptureHistoryEntry> entries = new List<CaptureHistoryEntry>();
 
                 if (!File.Exists(sessionFile))
-                    File.Create(sessionFile).Close();
+                {
+                    log.DebugFormat("Creating session file {0}.", session);
+                    try
+                    {
+                        File.Create(sessionFile).Close();
+                    }
+                    catch(Exception e)
+                    {
+                        log.ErrorFormat("Error while trying to create the session file. {0}", e.Message);
+                    }
+                }
                 else
+                {
                     entries = ImportEntries(sessionFile);
+                }
 
                 sessions.Add(sessionFile, entries);
             }
 
-            bool known = false;
-            foreach (CaptureHistoryEntry existingEntry in sessions[sessionFile])
+            int indexOf = -1;
+            for (int i = 0; i < sessions[sessionFile].Count; i++)
             {
-                if (entry.CaptureFile != existingEntry.CaptureFile)
+                if (entry.CaptureFile != sessions[sessionFile][i].CaptureFile)
                     continue;
-    
-                known = true;
+
+                indexOf = i;
                 break;
             }
 
-            if (known)
-                return;
+            if (indexOf >= 0)
+                sessions[sessionFile][indexOf] = entry;
+            else
+                sessions[sessionFile].Add(entry);
 
-            sessions[sessionFile].Add(entry);
             ExportEntries(sessionFile);
         }
 
@@ -226,29 +240,37 @@ namespace Kinovea.Services
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.CloseOutput = true;
-
-            using (XmlWriter w = XmlWriter.Create(sessionFile, settings))
+            try
             {
-                w.WriteStartElement("KinoveaCaptureHistory");
-                w.WriteElementString("FormatVersion", "1.0");
-                
-                foreach (CaptureHistoryEntry entry in sessions[sessionFile])
+                log.DebugFormat("Exporting capture history.");
+                using (XmlWriter w = XmlWriter.Create(sessionFile, settings))
                 {
-                    w.WriteStartElement("Entry");
+                    w.WriteStartElement("KinoveaCaptureHistory");
+                    w.WriteElementString("FormatVersion", "1.0");
+                
+                    foreach (CaptureHistoryEntry entry in sessions[sessionFile])
+                    {
+                        w.WriteStartElement("Entry");
 
-                    w.WriteElementString("CaptureFile", entry.CaptureFile);
-                    w.WriteElementString("Start", string.Format("{0:yyyyMMddTHHmmss}", entry.Start));
-                    w.WriteElementString("End", string.Format("{0:yyyyMMddTHHmmss}", entry.End));
-                    w.WriteElementString("CameraAlias", entry.CameraAlias);
-                    w.WriteElementString("CameraIdentifier", entry.CameraIdentifier);
-                    w.WriteElementString("ConfiguredFramerate", string.Format("{0}", entry.ConfiguredFramerate, CultureInfo.InvariantCulture));
-                    w.WriteElementString("ReceivedFramerate", string.Format("{0}", entry.ReceivedFramerate, CultureInfo.InvariantCulture));
-                    w.WriteElementString("Drops", string.Format("{0}", entry.Drops, CultureInfo.InvariantCulture));
+                        w.WriteElementString("CaptureFile", entry.CaptureFile);
+                        w.WriteElementString("Start", string.Format("{0:yyyyMMddTHHmmss}", entry.Start));
+                        w.WriteElementString("End", string.Format("{0:yyyyMMddTHHmmss}", entry.End));
+                        w.WriteElementString("CameraAlias", entry.CameraAlias);
+                        w.WriteElementString("CameraIdentifier", entry.CameraIdentifier);
+                        w.WriteElementString("ConfiguredFramerate", string.Format("{0:0.000}", entry.ConfiguredFramerate, CultureInfo.InvariantCulture));
+                        w.WriteElementString("ReceivedFramerate", string.Format("{0:0.000}", entry.ReceivedFramerate, CultureInfo.InvariantCulture));
+                        w.WriteElementString("Drops", string.Format("{0}", entry.Drops, CultureInfo.InvariantCulture));
                     
+                        w.WriteEndElement();
+                    }
+
                     w.WriteEndElement();
                 }
 
-                w.WriteEndElement();
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while exporting capture history entries. {0}", e.Message);
             }
         }
 
