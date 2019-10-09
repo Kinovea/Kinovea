@@ -75,6 +75,7 @@ namespace Kinovea.Root
         private AudioInputLevelMonitor inputMonitor = new AudioInputLevelMonitor();
         private int thresholdFactor;
         private int decibelRange;
+        private string postRecordCommand;
         #endregion
 
         #region Construction & Initialization
@@ -125,6 +126,7 @@ namespace Kinovea.Root
             audioTriggerThreshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
             recordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
             ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
+            postRecordCommand = PreferencesManager.CapturePreferences.PostRecordCommand;
         }
         private void InitInputMonitor()
         {
@@ -290,6 +292,9 @@ namespace Kinovea.Root
             
             chkEnableAudioTrigger.Checked = enableAudioTrigger;
             EnableDisableAudioTrigger();
+
+            lblPostRecordCommand.Text = "Post recording command:";
+            tbPostRecordCommand.Text = postRecordCommand;
         }
 
         private void InitNamingTextBoxes()
@@ -422,6 +427,17 @@ namespace Kinovea.Root
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 tb.Text = dialog.FileName;
         }
+
+        private void btnMacroReference_Click(object sender, EventArgs e)
+        {
+            if (formPatternsVisible)
+                return;
+
+            formPatterns = new FormPatterns(PatternSymbolsFile.Symbols);
+            formPatterns.FormClosed += formPatterns_FormClosed;
+            formPatternsVisible = true;
+            formPatterns.Show(this);
+        }
         #endregion
 
         #region Tab Memory
@@ -500,6 +516,26 @@ namespace Kinovea.Root
             if (parsed)
                 recordingSeconds = value;
         }
+        private void tbPostRecordCommand_TextChanged(object sender, EventArgs e)
+        {
+            Control tb = sender as Control;
+            if (tb == null)
+                return;
+
+            // No validation whatsoever. The user is responsible for not messing this up.
+            postRecordCommand = tb.Text;
+        }
+
+        private void btnPostRecordCommand_Click(object sender, EventArgs e)
+        {
+            if (formPatternsVisible)
+                return;
+
+            formPatterns = new FormPatterns(PatternSymbolsCommand.Symbols);
+            formPatterns.FormClosed += formPatterns_FormClosed;
+            formPatternsVisible = true;
+            formPatterns.Show(this);
+        }
         #endregion
         #endregion
 
@@ -552,17 +588,7 @@ namespace Kinovea.Root
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold = audioTriggerThreshold;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds = recordingSeconds;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite = ignoreOverwriteWarning;
-        }
-
-        private void btnMacroReference_Click(object sender, EventArgs e)
-        {
-            if (formPatternsVisible)
-                return;
-            
-            formPatterns = new FormPatterns();
-            formPatterns.FormClosed += formPatterns_FormClosed;
-            formPatternsVisible = true;
-            formPatterns.Show(this);
+            PreferencesManager.CapturePreferences.PostRecordCommand = postRecordCommand;
         }
 
         private void formPatterns_FormClosed(object sender, FormClosedEventArgs e)

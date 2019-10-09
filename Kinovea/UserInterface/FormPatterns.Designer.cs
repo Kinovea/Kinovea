@@ -28,51 +28,52 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lvSymbols = new System.Windows.Forms.ListView();
-            this.colContext = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colPattern = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.SuspendLayout();
-            // 
-            // lvSymbols
-            // 
-            this.lvSymbols.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.lvSymbols = new System.Windows.Forms.ListView();
+      this.colContext = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.colPattern = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.SuspendLayout();
+      // 
+      // lvSymbols
+      // 
+      this.lvSymbols.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvSymbols.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colContext,
-            this.colPattern});
-            this.lvSymbols.Location = new System.Drawing.Point(12, 12);
-            this.lvSymbols.Name = "lvSymbols";
-            this.lvSymbols.Size = new System.Drawing.Size(406, 284);
-            this.lvSymbols.TabIndex = 0;
-            this.lvSymbols.UseCompatibleStateImageBehavior = false;
-            this.lvSymbols.View = System.Windows.Forms.View.Details;
-            // 
-            // colContext
-            // 
-            this.colContext.Text = "Context";
-            this.colContext.Width = 264;
-            // 
-            // colPattern
-            // 
-            this.colPattern.Text = "Macro";
-            this.colPattern.Width = 128;
-            // 
-            // FormPatterns
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(430, 308);
-            this.Controls.Add(this.lvSymbols);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "FormPatterns";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "   Context variables";
-            this.ResumeLayout(false);
+      this.lvSymbols.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colPattern,
+            this.colContext});
+      this.lvSymbols.HideSelection = false;
+      this.lvSymbols.Location = new System.Drawing.Point(12, 12);
+      this.lvSymbols.Name = "lvSymbols";
+      this.lvSymbols.Size = new System.Drawing.Size(406, 284);
+      this.lvSymbols.TabIndex = 0;
+      this.lvSymbols.UseCompatibleStateImageBehavior = false;
+      this.lvSymbols.View = System.Windows.Forms.View.Details;
+      // 
+      // colContext
+      // 
+      this.colContext.Text = "Context";
+      this.colContext.Width = 264;
+      // 
+      // colPattern
+      // 
+      this.colPattern.Text = "Macro";
+      this.colPattern.Width = 128;
+      // 
+      // FormPatterns
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ClientSize = new System.Drawing.Size(430, 308);
+      this.Controls.Add(this.lvSymbols);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+      this.MaximizeBox = false;
+      this.MinimizeBox = false;
+      this.Name = "FormPatterns";
+      this.ShowIcon = false;
+      this.ShowInTaskbar = false;
+      this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+      this.Text = "   Context variables";
+      this.ResumeLayout(false);
 
         }
 

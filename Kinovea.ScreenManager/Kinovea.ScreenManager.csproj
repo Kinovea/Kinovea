@@ -281,9 +281,10 @@
       <DependentUpon>FormConfigureComposite.cs</DependentUpon>
     </Compile>
     <Compile Include="DrawingClipboard.cs" />
+    <Compile Include="FilePatterns\PatternSymbolsCommand.cs" />
     <Compile Include="FilePatterns\Filenamer.cs" />
-    <Compile Include="FilePatterns\FilePatternContexts.cs" />
-    <Compile Include="FilePatterns\FilePatternSymbols.cs" />
+    <Compile Include="FilePatterns\PatternContext.cs" />
+    <Compile Include="FilePatterns\PatternSymbolsFile.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Interfaces\IDrawingHostView.cs" />
     <Compile Include="Measurement\Geometry\AngleOptions.cs" />

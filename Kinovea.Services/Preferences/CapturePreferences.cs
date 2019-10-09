@@ -97,6 +97,11 @@ namespace Kinovea.Services
             get { return highspeedRecordingFramerateOutput; }
             set { highspeedRecordingFramerateOutput = value; }
         }
+        public string PostRecordCommand
+        {
+            get { return postRecordCommand; }
+            set { postRecordCommand = value; }
+        }
         #endregion
 
         #region Members
@@ -112,6 +117,7 @@ namespace Kinovea.Services
         private CaptureAutomationConfiguration captureAutomationConfiguration = new CaptureAutomationConfiguration();
         private float highspeedRecordingFramerateThreshold = 100;
         private float highspeedRecordingFramerateOutput = 30;
+        private string postRecordCommand;
         #endregion
         
         public void AddCamera(CameraBlurb blurb)
@@ -173,6 +179,8 @@ namespace Kinovea.Services
             string hrfo = highspeedRecordingFramerateOutput.ToString("0.000", CultureInfo.InvariantCulture);
             writer.WriteElementString("HighspeedRecordingFramerateThreshold", hrft);
             writer.WriteElementString("HighspeedRecordingFramerateOutput", hrfo);
+
+            writer.WriteElementString("PostRecordCommand", postRecordCommand);
         }
 
         public void ReadXML(XmlReader reader)
@@ -221,6 +229,9 @@ namespace Kinovea.Services
                     case "HighspeedRecordingFramerateOutput":
                         string hrfo = reader.ReadElementContentAsString();
                         highspeedRecordingFramerateOutput = float.Parse(hrfo, CultureInfo.InvariantCulture);
+                        break;
+                    case "PostRecordCommand":
+                        postRecordCommand = reader.ReadElementContentAsString();
                         break;
                     default:
                         reader.ReadOuterXml();

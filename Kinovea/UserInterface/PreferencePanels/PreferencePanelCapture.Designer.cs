@@ -110,6 +110,9 @@ namespace Kinovea.Root
       this.lblLeftVideoRoot = new System.Windows.Forms.Label();
       this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
       this.tabAutomation = new System.Windows.Forms.TabPage();
+      this.btnPostRecordCommand = new System.Windows.Forms.Button();
+      this.lblPostRecordCommand = new System.Windows.Forms.Label();
+      this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
       this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
       this.lblLevel = new System.Windows.Forms.Label();
       this.lblAudioTriggerHits = new System.Windows.Forms.Label();
@@ -824,6 +827,9 @@ namespace Kinovea.Root
       // 
       // tabAutomation
       // 
+      this.tabAutomation.Controls.Add(this.btnPostRecordCommand);
+      this.tabAutomation.Controls.Add(this.lblPostRecordCommand);
+      this.tabAutomation.Controls.Add(this.tbPostRecordCommand);
       this.tabAutomation.Controls.Add(this.vumeter);
       this.tabAutomation.Controls.Add(this.lblLevel);
       this.tabAutomation.Controls.Add(this.lblAudioTriggerHits);
@@ -840,6 +846,40 @@ namespace Kinovea.Root
       this.tabAutomation.TabIndex = 5;
       this.tabAutomation.Text = "Automation";
       this.tabAutomation.UseVisualStyleBackColor = true;
+      // 
+      // btnPostRecordCommand
+      // 
+      this.btnPostRecordCommand.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+      this.btnPostRecordCommand.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnPostRecordCommand.FlatAppearance.BorderSize = 0;
+      this.btnPostRecordCommand.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+      this.btnPostRecordCommand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnPostRecordCommand.Image = global::Kinovea.Root.Properties.Resources.percent;
+      this.btnPostRecordCommand.Location = new System.Drawing.Point(380, 158);
+      this.btnPostRecordCommand.MinimumSize = new System.Drawing.Size(20, 20);
+      this.btnPostRecordCommand.Name = "btnPostRecordCommand";
+      this.btnPostRecordCommand.Size = new System.Drawing.Size(20, 20);
+      this.btnPostRecordCommand.TabIndex = 54;
+      this.btnPostRecordCommand.Tag = "";
+      this.btnPostRecordCommand.UseVisualStyleBackColor = true;
+      this.btnPostRecordCommand.Click += new System.EventHandler(this.btnPostRecordCommand_Click);
+      // 
+      // lblPostRecordCommand
+      // 
+      this.lblPostRecordCommand.AutoSize = true;
+      this.lblPostRecordCommand.Location = new System.Drawing.Point(19, 161);
+      this.lblPostRecordCommand.Name = "lblPostRecordCommand";
+      this.lblPostRecordCommand.Size = new System.Drawing.Size(127, 13);
+      this.lblPostRecordCommand.TabIndex = 52;
+      this.lblPostRecordCommand.Text = "Post recording command:";
+      // 
+      // tbPostRecordCommand
+      // 
+      this.tbPostRecordCommand.Location = new System.Drawing.Point(190, 158);
+      this.tbPostRecordCommand.Name = "tbPostRecordCommand";
+      this.tbPostRecordCommand.Size = new System.Drawing.Size(185, 20);
+      this.tbPostRecordCommand.TabIndex = 53;
+      this.tbPostRecordCommand.TextChanged += new System.EventHandler(this.tbPostRecordCommand_TextChanged);
       // 
       // vumeter
       // 
@@ -1043,5 +1083,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblLevel;
         private Services.VolumeMeterThreshold vumeter;
         private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
+        private System.Windows.Forms.Button btnPostRecordCommand;
+        private System.Windows.Forms.Label lblPostRecordCommand;
+        private System.Windows.Forms.TextBox tbPostRecordCommand;
     }
 }

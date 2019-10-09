@@ -14,14 +14,23 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Gets the full path, including root directory, filename and extension.
         /// </summary>
-        public static string GetFilePath(string root, string subdir, string filename, string extension, Dictionary<FilePatternContexts, string> context)
+        public static string GetFilePath(string root, string subdir, string filename, string extension, Dictionary<PatternContext, string> context)
         {
-            root = ReplacePatterns(root, context);
-            subdir = ReplacePatterns(subdir, context);
-            filename = ReplacePatterns(filename, context);
+            root = ReplacePatterns(root, PatternSymbolsFile.Symbols, context);
+            subdir = ReplacePatterns(subdir, PatternSymbolsFile.Symbols, context);
+            filename = ReplacePatterns(filename, PatternSymbolsFile.Symbols, context);
 
             return Path.Combine(root, Path.Combine(subdir, filename + extension));
         }
+
+        /// <summary>
+        /// Gets the full command line.
+        /// </summary>
+        public static string GetCommandLine(string command, Dictionary<PatternContext, string> context)
+        {
+            return ReplacePatterns(command, PatternSymbolsCommand.Symbols, context);
+        }
+
 
         /// <summary>
         /// Gets the next filename to allow continued recording without requiring the user to update the filename manually.
@@ -110,16 +119,16 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Replaces all the variables found by their current values.
         /// </summary>
-        private static string ReplacePatterns(string pattern, Dictionary<FilePatternContexts, string> context)
+        private static string ReplacePatterns(string text, Dictionary<PatternContext, string> symbols, Dictionary<PatternContext, string> context)
         {
-            string result = pattern;
+            string result = text;
 
-            foreach (FilePatternContexts key in FilePatternSymbols.Symbols.Keys)
+            foreach (PatternContext key in symbols.Keys)
             {
                 if (!context.ContainsKey(key))
                     continue;
 
-                result = result.Replace(FilePatternSymbols.Symbols[key], context[key]);
+                result = result.Replace(symbols[key], context[key]);
             }
 
             return result;

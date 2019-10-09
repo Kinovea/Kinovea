@@ -1062,7 +1062,7 @@ namespace Kinovea.ScreenManager
             string filenameWithoutExtension = view.CurrentImageFilename;
             string extension = Filenamer.GetImageFileExtension();
             
-            Dictionary<FilePatternContexts, string> context = BuildCaptureContext();
+            Dictionary<PatternContext, string> context = BuildCaptureContext();
 
             string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context);
             
@@ -1102,27 +1102,27 @@ namespace Kinovea.ScreenManager
             view.UpdateNextImageFilename(next);
         }
         
-        private Dictionary<FilePatternContexts, string> BuildCaptureContext()
+        private Dictionary<PatternContext, string> BuildCaptureContext()
         {
             // TODO: 
             // We need to know if we are left or right screen to grab the correct top level variables from prefs.
 
-            Dictionary<FilePatternContexts, string> context = new Dictionary<FilePatternContexts, string>();
+            Dictionary<PatternContext, string> context = new Dictionary<PatternContext, string>();
 
             DateTime now = DateTime.Now;
 
-            context[FilePatternContexts.Year] = string.Format("{0:yyyy}", now);
-            context[FilePatternContexts.Month] = string.Format("{0:MM}", now);
-            context[FilePatternContexts.Day] = string.Format("{0:dd}", now);
-            context[FilePatternContexts.Hour] = string.Format("{0:HH}", now);
-            context[FilePatternContexts.Minute] = string.Format("{0:mm}", now);
-            context[FilePatternContexts.Second] = string.Format("{0:ss}", now);
+            context[PatternContext.Year] = string.Format("{0:yyyy}", now);
+            context[PatternContext.Month] = string.Format("{0:MM}", now);
+            context[PatternContext.Day] = string.Format("{0:dd}", now);
+            context[PatternContext.Hour] = string.Format("{0:HH}", now);
+            context[PatternContext.Minute] = string.Format("{0:mm}", now);
+            context[PatternContext.Second] = string.Format("{0:ss}", now);
 
-            context[FilePatternContexts.CameraAlias] = cameraSummary.Alias;
-            context[FilePatternContexts.ConfiguredFramerate] = string.Format("{0:0.00}", cameraGrabber.Framerate); 
-            context[FilePatternContexts.ReceivedFramerate] = string.Format("{0:0.00}", pipelineManager.Frequency);
+            context[PatternContext.CameraAlias] = cameraSummary.Alias;
+            context[PatternContext.ConfiguredFramerate] = string.Format("{0:0.00}", cameraGrabber.Framerate); 
+            context[PatternContext.ReceivedFramerate] = string.Format("{0:0.00}", pipelineManager.Frequency);
 
-            context[FilePatternContexts.Escape] = "";
+            context[PatternContext.Escape] = "";
 
             return context;
         }
@@ -1206,7 +1206,7 @@ namespace Kinovea.ScreenManager
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && imageDescriptor.Format != Video.ImageFormat.JPEG;
             string extension = Filenamer.GetVideoFileExtension(uncompressed);
 
-            Dictionary<FilePatternContexts, string> context = BuildCaptureContext();
+            Dictionary<PatternContext, string> context = BuildCaptureContext();
 
             string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context);
 
@@ -1309,6 +1309,11 @@ namespace Kinovea.ScreenManager
             CaptureHistoryEntry entry = CreateHistoryEntry(finalFilename);
             CaptureHistory.AddEntry(entry);
 
+            // Execute post-recording command.
+            string command = PreferencesManager.CapturePreferences.PostRecordCommand;
+            if (!string.IsNullOrEmpty(command))
+                ExecutePostCaptureCommand(command, finalFilename);
+            
             // We need to use the original filename with patterns still in it.
             string filenamePattern = view.CurrentVideoFilename;
 
@@ -1326,6 +1331,36 @@ namespace Kinovea.ScreenManager
 
             if (RecordingStopped != null)
                 RecordingStopped(this, EventArgs.Empty);
+        }
+
+        private void ExecutePostCaptureCommand(string command, string path)
+        {
+            // Build replacement context.
+            Dictionary<PatternContext, string> context = new Dictionary<PatternContext, string>();
+            context.Add(PatternContext.CaptureDirectory, Path.GetDirectoryName(path));
+            context.Add(PatternContext.CaptureFilename, Path.GetFileName(path));
+
+            string fullCommand = Filenamer.GetCommandLine(command, context);
+
+            Process process = new Process();
+            try
+            {
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                process.StartInfo.FileName = "cmd.exe";
+                process.StartInfo.Arguments = "/C " + fullCommand;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.UseShellExecute = false;
+                //process.WorkingDirectory = ""; // app data CaptureCommands.
+
+                log.DebugFormat("Running post capture command:");
+                log.DebugFormat(">cmd.exe /C {0}", fullCommand);
+
+                process.Start();
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Could not execute post capture command. {0}", e.Message);
+            }
         }
 
         private CaptureHistoryEntry CreateHistoryEntry(string filename)

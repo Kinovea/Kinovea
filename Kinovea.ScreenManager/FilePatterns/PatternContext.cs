@@ -7,8 +7,9 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Available context variables.
+    /// This represent all the possible variables, the features using this may restrict the symbol map.
     /// </summary>
-    public enum FilePatternContexts
+    public enum PatternContext
     {
         Year,
         Month,
@@ -21,6 +22,9 @@ namespace Kinovea.ScreenManager
         ConfiguredFramerate,
         ReceivedFramerate,
 
-        Escape
+        Escape, 
+
+        CaptureDirectory,
+        CaptureFilename,
     }
 }
