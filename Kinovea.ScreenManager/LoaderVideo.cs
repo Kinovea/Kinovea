@@ -70,6 +70,15 @@ namespace Kinovea.ScreenManager
             else if (screen is PlayerScreen)
             {
                 PlayerScreen playerScreen = screen as PlayerScreen;
+
+                if (playerScreen.IsWaitingForIdle)
+                {
+                    // The player screen will yield its thread after having loaded the first frame and come back later.
+                    // We must not launch a new video while it's waiting.
+                    log.ErrorFormat("Player screen is currently busy loading the previous video. Aborting load.");
+                    return;
+                }
+
                 bool confirmed = manager.BeforeReplacingPlayerContent(targetScreen);
                 if (!confirmed)
                     return;

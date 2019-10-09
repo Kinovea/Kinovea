@@ -85,6 +85,7 @@ namespace Kinovea.ScreenManager
         {
             get { return m_bIsCurrentlyPlaying; }
         }
+        public bool IsWaitingForIdle { get; private set; }
         public bool InteractiveFiltering 
         {
             get 
@@ -583,6 +584,7 @@ namespace Kinovea.ScreenManager
             m_FrameServer.Metadata.StartAutosave();
 
             log.DebugFormat("End of post load process, waiting for idle.");
+            IsWaitingForIdle = true;
             Application.Idle += PostLoad_Idle;
             
             return 0;
@@ -1135,6 +1137,7 @@ namespace Kinovea.ScreenManager
         {
             Application.Idle -= PostLoad_Idle;
             m_Constructed = true;
+            IsWaitingForIdle = false;
 
             log.DebugFormat("Post load idle event.");
 

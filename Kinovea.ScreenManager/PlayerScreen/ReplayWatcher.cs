@@ -124,6 +124,12 @@ namespace Kinovea.ScreenManager
             // Update the descriptor with the speed from the UI.
             screenDescription.SpeedPercentage = player.view.RealtimePercentage;
 
+            if (player.IsWaitingForIdle)
+            {
+                log.ErrorFormat("Player screen is currently busy loading the previous video. Aborting load.");
+                return;
+            }
+
             // Load the video in the player.
             // We send the actual file name in path, at this point the player doesn't need to know this is coming from a watched directory.
             LoaderVideo.LoadVideo(player, path, screenDescription);

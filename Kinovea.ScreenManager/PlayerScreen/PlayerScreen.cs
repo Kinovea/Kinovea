@@ -151,6 +151,10 @@ namespace Kinovea.ScreenManager
                     return view.IsCurrentlyPlaying;
             }
         }
+        public bool IsWaitingForIdle
+        {
+            get { return view.IsWaitingForIdle; }
+        }
         public bool IsSingleFrame
         {
             get
