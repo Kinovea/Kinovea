@@ -40,8 +40,9 @@ Changelog:
     Added - Farsi locale.
     Added - Capture automation: audio trigger.
     Added - Capture automation: stop recording by time.
+    Added - Capture automation: run command after recording ends.
     Added - Capture: support for recording to uncompressed files.
-    Added - Capture: Finishline mode, enabled for Basler and IDS modules.
+    Added - Capture: Line scan mode for Basler and IDS modules.
     Added - Playback: Replay folder observers. Auto load and play any new file created in a folder.
     Added - Playback: import numbered image sequences as videos.
     Added - Playback: Support for demosaicing (debayering).
@@ -56,6 +57,8 @@ Changelog:
     Improved - Annotations: custom tools format now supports multiple option per object.
     Improved - Replaced folder selection dialogs with more usable ones.
     Improved - Updated IDS module to uEye 4.92.3.
+    Improved - Updated Basler module to Pylon 6.0.
+    Fixed - Files with negative start time could not be read.
     Fixed - Support of login/password in IP camera module was broken.
     Fixed - Update to the format converter for KVA 1.5 format (Kinovea 0.8.15).
     Fixed - A missing DLL was causing a crash when using the camera calibration.
