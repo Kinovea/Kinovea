@@ -178,6 +178,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool m_bIsVeryShort;
         bool m_bFirstFrameRead;
         VideoInfo m_VideoInfo;
+        long m_timestampOffset = 0;
         VideoSection m_WorkingZone;
         Object^ m_Locker;
         ThreadCanceler^ m_PreBufferingThreadCanceler;
