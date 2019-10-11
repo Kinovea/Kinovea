@@ -134,6 +134,12 @@ namespace Kinovea.ScreenManager
             get { return m_LaunchDescription; }
             set { m_LaunchDescription = value;}
         }
+
+        public long CurrentTimestamp
+        {
+            get { return m_iCurrentPosition; }
+        }
+
         public bool Synched
         {
             //get { return m_bSynched; }
@@ -268,8 +274,7 @@ namespace Kinovea.ScreenManager
         private static readonly Size m_MinimalSize = new Size(160,120);
         private bool m_bEnableCustomDecodingSize = true;
 
-        // Selection 
-        // All values in absolute timestamps.
+        // Selection and current position. All values in absolute timestamps.
         // trkSelection.minimum and maximum are also in absolute timestamps.
         private long m_iTotalDuration = 100;
         private long m_iSelStart;   
@@ -334,14 +339,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuDeleteTrajectory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteEndOfTrajectory = new ToolStripMenuItem();
         private ToolStripMenuItem mnuConfigureTrajectory = new ToolStripMenuItem();
-        
-        private ContextMenuStrip popMenuChrono = new ContextMenuStrip();
-        private ToolStripMenuItem mnuChronoStart = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuChronoStop = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuChronoHide = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuChronoCountdown = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuChronoDelete = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuChronoConfigure = new ToolStripMenuItem();
         
         private ContextMenuStrip popMenuMagnifier = new ContextMenuStrip();
         private List<ToolStripMenuItem> maginificationMenus = new List<ToolStripMenuItem>();
@@ -1111,24 +1108,8 @@ namespace Kinovea.ScreenManager
             mnuConfigureTrajectory.Click += new EventHandler(mnuConfigureTrajectory_Click);
             mnuConfigureTrajectory.Image = Properties.Drawings.configure;
             
-            // 4. Chrono pop menu (Start, Stop, Hide, etc.)
-            mnuChronoConfigure.Click += new EventHandler(mnuChronoConfigure_Click);
-            mnuChronoConfigure.Image = Properties.Drawings.configure;
-            mnuChronoStart.Click += new EventHandler(mnuChronoStart_Click);
-            mnuChronoStart.Image = Properties.Drawings.chronostart;
-            mnuChronoStop.Click += new EventHandler(mnuChronoStop_Click);
-            mnuChronoStop.Image = Properties.Drawings.chronostop;
-            mnuChronoCountdown.Click += new EventHandler(mnuChronoCountdown_Click);
-            mnuChronoCountdown.Checked = false;
-            mnuChronoCountdown.Enabled = false;
-            mnuChronoHide.Click += new EventHandler(mnuChronoHide_Click);
-            mnuChronoHide.Image = Properties.Drawings.hide;
-            mnuChronoDelete.Click += new EventHandler(mnuChronoDelete_Click);
-            mnuChronoDelete.Image = Properties.Drawings.delete;
-            popMenuChrono.Items.AddRange(new ToolStripItem[] { mnuChronoConfigure, new ToolStripSeparator(), mnuChronoStart, mnuChronoStop, mnuChronoCountdown, new ToolStripSeparator(), mnuChronoHide, mnuChronoDelete, });
-
             // 5. Magnifier
-            foreach(double factor in Magnifier.MagnificationFactors)
+            foreach (double factor in Magnifier.MagnificationFactors)
                 maginificationMenus.Add(CreateMagnificationMenu(factor));
             maginificationMenus[1].Checked = true;
             popMenuMagnifier.Items.AddRange(maginificationMenus.ToArray());
@@ -1375,7 +1356,6 @@ namespace Kinovea.ScreenManager
                 popMenu.Dispose();
                 popMenuDrawings.Dispose();
                 popMenuTrack.Dispose();
-                popMenuChrono.Dispose();
                 popMenuMagnifier.Dispose();
             }
 
@@ -1434,7 +1414,7 @@ namespace Kinovea.ScreenManager
                 DockKeyframePanel(true);
             }
         }
-        private void UpdateFramesMarkers()
+        public void UpdateFramesMarkers()
         {
             // Updates the markers coordinates and redraw the trkFrame.
             trkFrame.UpdateMarkers(m_FrameServer.Metadata);
@@ -2592,15 +2572,6 @@ namespace Kinovea.ScreenManager
             mnuDeleteEndOfTrajectory.Text = ScreenManagerLang.mnuDeleteEndOfTrajectory;
             mnuConfigureTrajectory.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             
-            // 4. Chrono pop menu (Start, Stop, Hide, etc.)
-            mnuChronoConfigure.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
-            mnuChronoStart.Text = ScreenManagerLang.mnuChronoStart;
-            mnuChronoStop.Text = ScreenManagerLang.mnuChronoStop;
-            mnuChronoHide.Text = ScreenManagerLang.mnuChronoHide;
-            mnuChronoCountdown.Text = ScreenManagerLang.mnuChronoCountdown;
-            mnuChronoDelete.Text = ScreenManagerLang.mnuChronoDelete;
-            mnuChronoDelete.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.DeleteDrawing);
-
             // 5. Magnifier
             foreach (ToolStripMenuItem m in maginificationMenus)
             {
@@ -2925,15 +2896,15 @@ namespace Kinovea.ScreenManager
             else if ((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
             { 
                 // Unlike attached drawings, each extra drawing type has its own context menu for now.
-                // TODO: Maybe we could use the custom menus system to host these menus in the drawing instead of here.
+                // TODO: use the custom menus system to host these menus inside the drawing instead of here.
                 // Only the drawing itself knows what to do upon click anyway.
                 
                 if(hitDrawing is DrawingChrono)
                 {
-                    // Toggle to countdown is active only if we have a stop time.
-                    mnuChronoCountdown.Enabled = ((DrawingChrono)hitDrawing).HasTimeStop;
-                    mnuChronoCountdown.Checked = ((DrawingChrono)hitDrawing).CountDown;
-                    panelCenter.ContextMenuStrip = popMenuChrono;
+                    AbstractDrawing drawing = hitDrawing;
+                    PrepareDrawingContextMenu(drawing, popMenuDrawings);
+                    popMenuDrawings.Items.Add(mnuDeleteDrawing);
+                    panelCenter.ContextMenuStrip = popMenuDrawings;
                 }
                 else if(hitDrawing is DrawingTrack)
                 {
@@ -3013,7 +2984,9 @@ namespace Kinovea.ScreenManager
 
             if (!m_FrameServer.Metadata.DrawingInitializing && drawing.InfosFading != null)
             {
-                bool gotoVisible = (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition));
+                bool attachedToKeyframe = m_FrameServer.Metadata.IsAttachedDrawing(drawing);
+                bool gotoVisible = attachedToKeyframe && PreferencesManager.PlayerPreferences.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition);
+
                 if (gotoVisible)
                 {
                     popMenu.Items.Add(mnuGotoKeyframe);
@@ -3300,7 +3273,7 @@ namespace Kinovea.ScreenManager
             {
                 if(hitDrawing is DrawingChrono)
                 {
-                    mnuChronoConfigure_Click(null, EventArgs.Empty);	
+                    mnuConfigureDrawing_Click(null, EventArgs.Empty);
                 }
                 else if(hitDrawing is DrawingTrack)
                 {
@@ -4175,7 +4148,8 @@ namespace Kinovea.ScreenManager
         {
             mnuAlwaysVisible.Checked = !mnuAlwaysVisible.Checked;
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.HitKeyframe.Id, drawing.Id, drawing.Name, SerializationFilter.Fading);
+            Guid managerId = m_FrameServer.Metadata.FindManagerId(drawing);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, managerId, drawing.Id, drawing.Name, SerializationFilter.Fading);
             drawing.InfosFading.UseDefault = false;
             drawing.InfosFading.AlwaysVisible = mnuAlwaysVisible.Checked;
             m_FrameServer.HistoryStack.PushNewCommand(memento);
@@ -4239,14 +4213,14 @@ namespace Kinovea.ScreenManager
             if (drawing == null || !drawing.IsCopyPasteable)
                 return;
 
-            Guid keyframeId = m_FrameServer.Metadata.FindAttachmentKeyframeId(m_FrameServer.Metadata.HitDrawing);
-            AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
+            Guid managerId = m_FrameServer.Metadata.FindManagerId(m_FrameServer.Metadata.HitDrawing);
+            AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(managerId);
             string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
 
             DrawingClipboard.Put(data, drawing.GetCopyPoint(), drawing.Name);
             
             if (DrawingDeleting != null)
-                DrawingDeleting(this, new DrawingEventArgs(drawing, keyframeId));
+                DrawingDeleting(this, new DrawingEventArgs(drawing, managerId));
 
             OnPoke();
         }
@@ -4262,8 +4236,8 @@ namespace Kinovea.ScreenManager
             if (drawing == null || !drawing.IsCopyPasteable)
                 return;
 
-            Guid keyframeId = m_FrameServer.Metadata.FindAttachmentKeyframeId(m_FrameServer.Metadata.HitDrawing);
-            AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(keyframeId);
+            Guid managerId = m_FrameServer.Metadata.FindManagerId(m_FrameServer.Metadata.HitDrawing);
+            AbstractDrawingManager manager = m_FrameServer.Metadata.GetDrawingManager(managerId);
             string data = DrawingSerializer.SerializeMemento(m_FrameServer.Metadata, manager.GetDrawing(drawing.Id), SerializationFilter.All, false);
 
             DrawingClipboard.Put(data, drawing.GetCopyPoint(), drawing.Name);
@@ -4283,11 +4257,21 @@ namespace Kinovea.ScreenManager
             if (!drawing.IsCopyPasteable)
                 return;
 
-            Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
-            if (kf == null)
+            Guid managerId;
+            if (drawing is DrawingChrono)
             {
-                AddKeyframe();
-                kf = m_FrameServer.Metadata.HitKeyframe;
+                managerId = m_FrameServer.Metadata.ChronoManager.Id;
+            }
+            else
+            {
+                Keyframe kf = m_FrameServer.Metadata.HitKeyframe;
+                if (kf == null)
+                {
+                    AddKeyframe();
+                    kf = m_FrameServer.Metadata.HitKeyframe;
+                }
+
+                managerId = kf.Id;
             }
 
             drawing.AfterCopy();
@@ -4306,7 +4290,7 @@ namespace Kinovea.ScreenManager
             }
 
             if (DrawingAdding != null)
-                DrawingAdding(this, new DrawingEventArgs(drawing, kf.Id));
+                DrawingAdding(this, new DrawingEventArgs(drawing, managerId));
         }
         
         private void mnuDeleteDrawing_Click(object sender, EventArgs e)
@@ -4328,9 +4312,9 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                Guid keyframeId = m_FrameServer.Metadata.FindAttachmentKeyframeId(m_FrameServer.Metadata.HitDrawing);
+                Guid managerId = m_FrameServer.Metadata.FindManagerId(m_FrameServer.Metadata.HitDrawing);
                 if (DrawingDeleting != null)
-                    DrawingDeleting(this, new DrawingEventArgs(drawing, keyframeId));
+                    DrawingDeleting(this, new DrawingEventArgs(drawing, managerId));
             }
         }
         #endregion
@@ -4470,90 +4454,6 @@ namespace Kinovea.ScreenManager
             m_iFramesToDecode = 1;
             ShowNextFrame(_positions[iClosestPoint].T, true);
             UpdatePositionUI();
-        }
-        #endregion
-
-        #region Chronometers Menus
-        private void mnuChronoStart_Click(object sender, EventArgs e)
-        {
-            DrawingChrono chrono = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
-            if (chrono == null)
-                return;
-
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.Name, SerializationFilter.Core);
-            chrono.Start(m_iCurrentPosition);
-            m_FrameServer.HistoryStack.PushNewCommand(memento);
-
-            UpdateFramesMarkers();
-        }
-        private void mnuChronoStop_Click(object sender, EventArgs e)
-        {
-            DrawingChrono chrono = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
-            if (chrono == null)
-                return;
-
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.Name, SerializationFilter.Core);
-            chrono.Stop(m_iCurrentPosition);
-            m_FrameServer.HistoryStack.PushNewCommand(memento);
-
-            UpdateFramesMarkers();
-        }
-        private void mnuChronoHide_Click(object sender, EventArgs e)
-        {
-            DrawingChrono chrono = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
-            if (chrono == null)
-                return;
-
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.Name, SerializationFilter.Core);
-            chrono.Hide(m_iCurrentPosition);
-            m_FrameServer.HistoryStack.PushNewCommand(memento);
-
-            UpdateFramesMarkers();
-        }
-        private void mnuChronoCountdown_Click(object sender, EventArgs e)
-        {
-            // This menu should only be accessible if we have a "Stop" value.
-
-            DrawingChrono chrono = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
-            if (chrono == null)
-                return;
-
-            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.Name, SerializationFilter.Core);
-            mnuChronoCountdown.Checked = !mnuChronoCountdown.Checked;
-            chrono.CountDown = mnuChronoCountdown.Checked;
-            m_FrameServer.HistoryStack.PushNewCommand(memento);
-            
-            DoInvalidate();
-        }
-        private void mnuChronoDelete_Click(object sender, EventArgs e)
-        {
-            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-            if(drawing == null || !(drawing is DrawingChrono))
-                return;
-            
-            if (DrawingDeleting != null)
-                DrawingDeleting(this, new DrawingEventArgs(drawing, m_FrameServer.Metadata.ChronoManager.Id));
-        }
-        private void mnuChronoConfigure_Click(object sender, EventArgs e)
-        {
-            DrawingChrono chrono = m_FrameServer.Metadata.HitDrawing as DrawingChrono;
-            if (chrono == null)
-                return;
-
-            HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, m_FrameServer.Metadata.ChronoManager.Id, chrono.Id, chrono.Name, SerializationFilter.Style);
-            
-            formConfigureChrono fcc = new formConfigureChrono(chrono, DoInvalidate);
-            FormsHelper.Locate(fcc);
-            fcc.ShowDialog();
-            
-            if (fcc.DialogResult == DialogResult.OK)
-            {
-                memento.UpdateCommandName(chrono.Name);
-                m_FrameServer.HistoryStack.PushNewCommand(memento);
-            }
-            
-            fcc.Dispose();
-            DoInvalidate();
         }
         #endregion
 

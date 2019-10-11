@@ -181,6 +181,27 @@ namespace Kinovea.ScreenManager
                 host.InvalidateFromMenu();
         }
 
+        public static long CurrentTimestampFromMenu(object sender)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return 0;
+
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            return host != null ? host.CurrentTimestamp : 0;
+        }
+
+        public static void UpdateFramesMarkersFromMenu(object sender)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi == null)
+                return;
+
+            IDrawingHostView host = tsmi.Tag as IDrawingHostView;
+            if (host != null)
+                host.UpdateFramesMarkers();
+        }
+
         public static void InitializeEndFromMenu(object sender, bool cancelLastPoint)
         {
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;

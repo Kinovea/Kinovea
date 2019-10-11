@@ -212,6 +212,16 @@ namespace Kinovea.ScreenManager
 
             metadataManipulator.InitializeEndFromMenu(cancelLastPoint);
         }
+
+        public long CurrentTimestamp
+        {
+            get { return 0; }
+        }
+
+        public void UpdateFramesMarkers()
+        {
+            // No implementation needed.
+        }
         #endregion
 
         #region Private methods

@@ -433,6 +433,27 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
+        /// Returns whether this drawing is the kind of drawing that is attached to a keyframe.
+        /// </summary>
+        public bool IsAttachedDrawing(AbstractDrawing drawing)
+        {
+            return !(drawing is DrawingChrono) && !(drawing is DrawingTrack);
+        }
+
+        /// <summary>
+        /// Returns the id of the manager managing this drawing.
+        /// </summary>
+        public Guid FindManagerId(AbstractDrawing drawing)
+        {
+            if (drawing is DrawingChrono)
+                return chronoManager.Id;
+            else if (drawing is DrawingTrack)
+                return trackManager.Id;
+            else
+                return FindAttachmentKeyframeId(drawing);
+        }
+
+        /// <summary>
         /// Returns the id of the keyframe the drawing is attached to.
         /// </summary>
         public Guid FindAttachmentKeyframeId(AbstractDrawing drawing)
@@ -454,7 +475,6 @@ namespace Kinovea.ScreenManager
             }
 
             return foundKeyframe == null ? Guid.Empty : foundKeyframe.Id;
-
         }
         public int GetKeyframeIndex(Guid id)
         {

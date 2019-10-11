@@ -7,7 +7,10 @@ namespace Kinovea.ScreenManager
 {
     public interface IDrawingHostView
     {
+        long CurrentTimestamp { get; }
+
         void InvalidateFromMenu();
         void InitializeEndFromMenu(bool cancelLastPoint);
+        void UpdateFramesMarkers();
     }
 }

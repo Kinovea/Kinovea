@@ -72,11 +72,25 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
         {
-            get { return DrawingCapabilities.ConfigureColorSize; }
+            get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.CopyPaste; }
         }
         public override List<ToolStripItem> ContextMenu
         {
-            get { return null; }
+            get
+            {
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+
+                mnuStart.Text = ScreenManagerLang.mnuChronoStart;
+                mnuStart.Image = Properties.Drawings.chronostart;
+                mnuStop.Text = ScreenManagerLang.mnuChronoStop;
+                mnuStop.Image = Properties.Drawings.chronostop;
+                mnuHide.Text = ScreenManagerLang.mnuChronoHide;
+                mnuHide.Image = Properties.Drawings.hide;
+                //mnuCountdown.Text = ScreenManagerLang.mnuChronoCountdown;
+                contextMenu.AddRange(new ToolStripItem[] { mnuStart, mnuStop, mnuHide });
+
+                return contextMenu;
+            }
         }
         public Metadata ParentMetadata
         {
@@ -149,7 +163,12 @@ namespace Kinovea.ScreenManager
         private static readonly int allowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
         private RoundedRectangle mainBackground = new RoundedRectangle();
         private RoundedRectangle lblBackground = new RoundedRectangle();
-        
+
+        private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHide = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCountdown = new ToolStripMenuItem();
+
         private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -185,6 +204,11 @@ namespace Kinovea.ScreenManager
             infosFading = new InfosFading(invisibleTimestamp, averageTimeStampsPerFrame);
             infosFading.FadingFrames = allowedFramesOver;
             infosFading.UseDefault = false;
+
+            mnuStart.Click += mnuStart_Click;
+            mnuStop.Click += mnuStop_Click;
+            mnuHide.Click += mnuHide_Click;
+            mnuCountdown.Click += mnuCountdown_Click;
         }
         public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
             : this(PointF.Empty, 0, 1, null)
@@ -291,9 +315,9 @@ namespace Kinovea.ScreenManager
                 w.WriteStartElement("Values");
                 
                 w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
+                w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
                 w.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
                 w.WriteElementString("StopCounting", (stopCountingTimestamp == long.MaxValue) ? "-1" : stopCountingTimestamp.ToString());
-                w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
                 w.WriteElementString("Countdown", countdown.ToString().ToLower());
 
                 if (ShouldSerializeAll(filter))
@@ -445,38 +469,57 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region PopMenu commands Implementation that change internal values.
-        public void Start(long currentTimestamp)
+        #region Specific context menu
+        private void mnuStart_Click(object sender, EventArgs e)
         {
-            startCountingTimestamp = currentTimestamp;
+            startCountingTimestamp = CurrentTimestampFromMenu(sender);
 
             if (stopCountingTimestamp < startCountingTimestamp)
                 stopCountingTimestamp = long.MaxValue;
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
         }
-        public void Stop(long currentTimestamp)
+
+        private void mnuStop_Click(object sender, EventArgs e)
         {
-            stopCountingTimestamp = currentTimestamp;
+            stopCountingTimestamp = CurrentTimestampFromMenu(sender);
 
             if (stopCountingTimestamp <= startCountingTimestamp)
                 startCountingTimestamp = stopCountingTimestamp;
 
             if (stopCountingTimestamp > invisibleTimestamp)
                 invisibleTimestamp = stopCountingTimestamp;
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
         }
-        public void Hide(long currentTimestamp)
+
+        private void mnuHide_Click(object sender, EventArgs e)
         {
-            invisibleTimestamp = currentTimestamp;
+            invisibleTimestamp = CurrentTimestampFromMenu(sender);
 
             // Update fading conf.
             infosFading.ReferenceTimestamp = invisibleTimestamp;
-            
+
             // Avoid counting when fading.
             if (invisibleTimestamp >= stopCountingTimestamp)
                 return;
-            
+
             stopCountingTimestamp = invisibleTimestamp;
             if (stopCountingTimestamp < startCountingTimestamp)
                 startCountingTimestamp = stopCountingTimestamp;
+
+            InvalidateFromMenu(sender);
+        }
+
+        private void mnuCountdown_Click(object sender, EventArgs e)
+        {
+            // Temporary disabled.
+
+            // Toggle countdown.
+            //CountDown = mnuChronoCountdown.Checked;
+            //InvalidateFromMenu(sender);
         }
         #endregion
 
