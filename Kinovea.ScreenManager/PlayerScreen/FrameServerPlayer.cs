@@ -73,18 +73,13 @@ namespace Kinovea.ScreenManager
                     return videoReader.Current.Image;
             }
         }
-        public long SyncTimestampRelative
-        {
-            get { return syncTimestampRelative; }
-            set { syncTimestampRelative = value; }
-        }
         #endregion
         
         #region Members
         private VideoReader videoReader;
         private HistoryStack historyStack;
         private Metadata metadata;
-        private long syncTimestampRelative;
+        private long timeOrigin;
         private formProgressBar formProgressBar;
         private BackgroundWorker bgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
         private SaveResult saveResult;
@@ -248,23 +243,36 @@ namespace Kinovea.ScreenManager
 
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
-        
-        public string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool isSynched)
+
+        /// <summary>
+        /// Sets the time origin, used to produce timecodes.
+        /// </summary>
+        public void SetTimeOrigin(long timeOrigin)
         {
-            // Input    : TimeStamp (might be a duration. If starting ts isn't 0, it should already be shifted.)
-            // Output   : time in a specific format
-            
+            this.timeOrigin = timeOrigin;
+        }
+
+        /// <summary>
+        /// Returns a time or duration in the user-preferred format.
+        /// The time must be passed in absolute timestamps, and the time type is used to make it relative.
+        /// </summary>
+        public string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool synched)
+        {
             if (videoReader == null || !videoReader.Loaded)
                 return "0";
 
             TimecodeFormat tcf = format == TimecodeFormat.Unknown ? PreferencesManager.PlayerPreferences.TimecodeFormat : format;
 
-            long actualTimestamps = timestamps;
+            long actualTimestamps;
             switch (type)
             {
-                case TimeType.Time:
-                    actualTimestamps = isSynched ? timestamps - syncTimestampRelative : timestamps;
+                case TimeType.WorkingZone:
+                    actualTimestamps = timestamps - videoReader.WorkingZone.Start;
                     break;
+                case TimeType.UserOrigin:
+                    actualTimestamps = timestamps - timeOrigin;
+                    break;
+                case TimeType.Absolute:
                 case TimeType.Duration:
                 default:
                     actualTimestamps = timestamps;

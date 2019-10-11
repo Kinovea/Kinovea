@@ -1239,15 +1239,15 @@
   </data>
   <data name="explorer_video" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAGtSURBVDhPlVJNLwNRFJ3/YmGnPkpSdPq1sZX4LewJglbbmcpYWvlIBCHYiLSrio/OzGsiURpN
-        aSQ0SCyEao/7nqm2jOIkJzOZue/cc+95Epv3PxgxNzhNzXcj/Rf8IMoXQCmDk3A3dKUXxpwMNh9Yt0qa
-        Q1f6gBcGPO58COGSWBAiVklz6Co5eE6gsD2IwykHjqYdOA52khMX0ppHiKQ172rdmMviYBXGnBelwgKy
-        SwPAa5bcZOh5DrxlcTDdmeI1TOmpjRlyIhV1CTGm+TckUwvgbHEI5atR4G4CuB0DiuO43hpEMBgSZJEO
-        cplC5X6bGpB4iRohL0SkZMRnchEj5oWh9MMgdZP2okddRWrexWlGnMDTLsq5EcFKbhioZGjMPjFia7WQ
-        k3e03tuIAqbaT51XaNFh4IH4GCIHjJraLNoSaMDeZO+mrso0O1GRqbMsDidm3PtWSQ12ApRU3iAX3HJy
-        1n1Kn6qOW/j/BtgJpBXagX0Ka1ZJDVzgK1m4/ecUbPC50CrNSFfTFH6FqfLr/scU7EDbjvN7oiseSsFT
-        n0LcKvkVfNvfRpMkqeUdBnCdERi+hokAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAa1JREFUOE+V
+        Uk0vA1EUnf9iYac+SlJ0+rWxlfgt7AmCVtuZylha+UgEIdiItKuKj87MayJRGk1pJDRILIRqj/ueqbaM
+        4iQnM5m579xz73kSm/c/GDE3OE3NdyP9F/wgyhdAKYOTcDd0pRfGnAw2H1i3SppDV/qAFwY87nwI4ZJY
+        ECJWSXPoKjl4TqCwPYjDKQeOph04DnaSExfSmkeIpDXvat2Yy+JgFcacF6XCArJLA8Brltxk6HkOvGVx
+        MN2Z4jVM6amNGXIiFXUJMab5NyRTC+BscQjlq1HgbgK4HQOK47jeGkQwGBJkkQ5ymULlfpsakHiJGiEv
+        RKRkxGdyESPmhaH0wyB1k/aiR11Fat7FaUacwNMuyrkRwUpuGKhkaMw+MWJrtZCTd7Te24gCptpPnVdo
+        0WHggfgYIgeMmtos2hJowN5k76auyjQ7UZGpsywOJ2bc+1ZJDXYClFTeIBfccnLWfUqfqo5b+P8G2Amk
+        FdqBfQprVkkNXOArWbj95xRs8LnQKs1IV9MUfoWp8uv+xxTsQNuO83uiKx5KwVOfQtwq+RV8299GkySp
+        5R0GcJ0RGL6GiQAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="save_paused_video" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -1727,5 +1727,8 @@
   </data>
   <data name="rggb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\rggb.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="marker_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\marker-small.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

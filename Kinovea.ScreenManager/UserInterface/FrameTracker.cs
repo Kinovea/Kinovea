@@ -57,8 +57,10 @@ namespace Kinovea.ScreenManager
             set
             {
                 minimum = value;
-                if (position < minimum) position = minimum;
+                if (position < minimum)
+                    position = minimum;
                 UpdateMarkersPositions();
+                UpdateSyncPointMarkerPosition();
                 UpdateCursorPosition();
                 Invalidate();
             }
@@ -72,6 +74,7 @@ namespace Kinovea.ScreenManager
                 maximum = value;
                 if (position > maximum) position = maximum;
                 UpdateMarkersPositions();
+                UpdateSyncPointMarkerPosition();
                 UpdateCursorPosition();
                 Invalidate();
             }
@@ -210,6 +213,7 @@ namespace Kinovea.ScreenManager
             if (position > maximum) position = maximum;
             
             UpdateMarkersPositions();
+            UpdateSyncPointMarkerPosition();
             UpdateCursorPosition();
             Invalidate();
         }
@@ -225,6 +229,7 @@ namespace Kinovea.ScreenManager
             
             this.metadata = metadata;
             UpdateMarkersPositions();
+            UpdateSyncPointMarkerPosition();
             UpdateCacheSegmentMarkerPosition();
         }
         public void UpdateSyncPointMarker(long syncPointTimestamp)
@@ -305,6 +310,7 @@ namespace Kinovea.ScreenManager
             maximumPixel = this.Width - spacers - halfCursorWidth;
             maxWidthPixel = maximumPixel - minimumPixel;
             UpdateMarkersPositions();
+            UpdateSyncPointMarkerPosition();
             UpdateCursorPosition();
             Invalidate();
         }

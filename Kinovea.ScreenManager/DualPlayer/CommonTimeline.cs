@@ -25,8 +25,8 @@ namespace Kinovea.ScreenManager
         {
             syncInfos.Clear();
 
-            leftPlayer.LocalSyncTime = leftSyncTime;
-            rightPlayer.LocalSyncTime = rightSyncTime;
+            leftPlayer.LocalTimeOriginPhysical = leftSyncTime;
+            rightPlayer.LocalTimeOriginPhysical = rightSyncTime;
 
             PlayerSyncInfo leftInfo = new PlayerSyncInfo();
             leftInfo.SyncTime = leftSyncTime;

@@ -40,6 +40,7 @@ namespace Kinovea.ScreenManager
         #region Events
         public event EventHandler SpeedChanged;
         public event EventHandler HighSpeedFactorChanged;
+        public event EventHandler TimeOriginChanged;
         public event EventHandler PauseAsked;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
@@ -175,12 +176,20 @@ namespace Kinovea.ScreenManager
                     return frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
             }
         }
-        
+
+        /// <summary>
+        /// Returns the current frame time relative to selection start.
+        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// </summary>
         public long LocalTime
         {
             get { return view.LocalTime; }
         }
 
+        /// <summary>
+        /// Returns the last valid time relative to selection start.
+        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// </summary>
         public long LocalLastTime
         {
             get
@@ -189,6 +198,10 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Returns the average time of one frame.
+        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// </summary>
         public long LocalFrameTime
         {
             get
@@ -197,19 +210,23 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public long LocalSyncTime
+        /// <summary>
+        /// Returns the time origin relative to selection start.
+        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// </summary>
+        public long LocalTimeOriginPhysical
         {
             get
             {
-                return view.LocalSyncTime;
+                return view.LocalTimeOriginPhysical;
             }
 
             set
             {
                 long absoluteTimestamp = RealtimeToTimestamp(value);
-
-                frameServer.SyncTimestampRelative = absoluteTimestamp - frameServer.VideoReader.WorkingZone.Start;
-                view.LocalSyncTimestamp = absoluteTimestamp;
+                frameServer.SetTimeOrigin(absoluteTimestamp);
+                view.LocalTimeOrigin = absoluteTimestamp;
+                view.LocalTimeOrigin = absoluteTimestamp;
             }
         }
          
@@ -322,6 +339,7 @@ namespace Kinovea.ScreenManager
             view.CloseAsked += View_CloseAsked;
             view.SetAsActiveScreen += View_SetAsActiveScreen;
             view.SpeedChanged += View_SpeedChanged;
+            view.TimeOriginChanged += View_TimeOriginChanged;
             view.KVAImported += View_KVAImported;
             view.PauseAsked += View_PauseAsked;
             view.SelectionChanged += View_SelectionChanged;
@@ -366,6 +384,12 @@ namespace Kinovea.ScreenManager
                 SpeedChanged(this, EventArgs.Empty);
         }
 
+        public void View_TimeOriginChanged(object sender, EventArgs e)
+        {
+            if (TimeOriginChanged != null)
+                TimeOriginChanged(this, EventArgs.Empty);
+        }
+
         public void View_KVAImported(object sender, EventArgs e)
         {
             if (HighSpeedFactorChanged != null)
@@ -404,7 +428,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             long time = e.Time;
-            string timecode = frameServer.TimeStampsToTimecode(time - frameServer.VideoReader.WorkingZone.Start, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, synched);
+            string timecode = frameServer.TimeStampsToTimecode(time, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, synched);
             Keyframe keyframe = new Keyframe(time, timecode, frameServer.Metadata);
 
             HistoryMementoAddKeyframe memento = new HistoryMementoAddKeyframe(frameServer.Metadata, keyframe.Id);

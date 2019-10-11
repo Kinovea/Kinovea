@@ -60,6 +60,9 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        /// <summary>
+        /// Helper function to generate timecodes.
+        /// </summary>
         public TimeCodeBuilder TimeCodeBuilder
         {
             get { return timecodeBuilder; }
@@ -402,7 +405,7 @@ namespace Kinovea.ScreenManager
         {
             foreach(Keyframe keyframe in keyframes)
             {
-                keyframe.TimeCode = timecodeBuilder(keyframe.Position - selectionStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+                keyframe.TimeCode = timecodeBuilder(keyframe.Position, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
                 keyframe.Disabled = keyframe.Position < selectionStart || keyframe.Position > selectionEnd;
             }
         }

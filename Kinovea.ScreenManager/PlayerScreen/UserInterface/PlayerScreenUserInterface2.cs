@@ -59,6 +59,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler CloseAsked;
         public event EventHandler SetAsActiveScreen;
         public event EventHandler SpeedChanged;
+        public event EventHandler TimeOriginChanged;
         public event EventHandler KVAImported;
         public event EventHandler PauseAsked;
         public event EventHandler ResetAsked;
@@ -142,8 +143,8 @@ namespace Kinovea.ScreenManager
                 
                 if(!m_bSynched)
                 {
-                    m_iSyncPosition = 0;
-                    trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
+                    // We do not reset the time origin.
+                    trkFrame.UpdateSyncPointMarker(timeOrigin);
                     trkFrame.Invalidate();
                     UpdateCurrentPositionLabel();
                     
@@ -156,23 +157,30 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        public long LocalSyncTimestamp
+        /// <summary>
+        /// Gets or sets the origin of the time coordinate system, in absolute timestamps.
+        /// This is used by the common timeline for synchronization.
+        /// </summary>
+        public long LocalTimeOrigin
         {
-            // The absolute ts of the sync point for this video.
             get 
             { 
-                return m_iSyncPosition; 
+                return timeOrigin; 
             }
 
             set
             {
-                m_iSyncPosition = value;
-                trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
+                timeOrigin = value;
+                trkFrame.UpdateSyncPointMarker(timeOrigin);
                 trkFrame.Invalidate();
                 UpdateCurrentPositionLabel();
             }
         }
-        
+
+        /// <summary>
+        /// Returns the current frame time relative to selection start.
+        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// </summary>
         public long LocalTime
         {
             get
@@ -181,6 +189,10 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Returns the last valid time relative to selection start.
+        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// </summary>
         public long LocalLastTime
         {
             get 
@@ -189,6 +201,10 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Returns the average time of one frame.
+        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// </summary>
         public long LocalFrameTime
         {
             get
@@ -198,18 +214,23 @@ namespace Kinovea.ScreenManager
             
         }
 
-        public long LocalSyncTime
+        /// <summary>
+        /// Returns the time origin relative to selection start.
+        /// The value is a physical time in microseconds, taking high speed factor into account.
+        /// </summary>
+        public long LocalTimeOriginPhysical
         {
             get 
             {
-                return TimestampToRealtime(m_iSyncPosition - m_iSelStart);
+                return TimestampToRealtime(timeOrigin - m_iSelStart);
             }
         }
-        
 
+        /// <summary>
+        /// Gets or sets whether we should draw the other screen image on top of this one. 
+        /// </summary>
         public bool SyncMerge
         {
-            // Idicates whether we should draw the other screen image on top of this one.
             get { return m_bSyncMerge; }
             set
             {
@@ -245,11 +266,11 @@ namespace Kinovea.ScreenManager
 
         // Timing
         private TimeMapper timeMapper = new TimeMapper();
-        private double slowMotion = 1;
+        private long timeOrigin;        // User-defined origin of the time coordinate system, in absolute timestamps.
+        private double slowMotion = 1;  // User-defined scaling of the time coordinate system, for high speed cameras.
 
         // Synchronisation
         private bool m_bSynched;
-        private long m_iSyncPosition;
         private bool m_bSyncMerge;
         private Bitmap m_SyncMergeImage;
         private ColorMatrix m_SyncMergeMatrix = new ColorMatrix();
@@ -432,7 +453,7 @@ namespace Kinovea.ScreenManager
             ClearKeyframeBoxes();
             DockKeyframePanel(true);
             UpdateFramesMarkers();
-            trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
+            trkFrame.UpdateSyncPointMarker(timeOrigin);
             trkFrame.Invalidate();
             EnableDisableAllPlayingControls(true);
             EnableDisableDrawingTools(true);
@@ -524,6 +545,7 @@ namespace Kinovea.ScreenManager
             m_iSelStart = m_iStartingPosition;
             m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
             m_iSelDuration  = m_iTotalDuration;
+            timeOrigin = m_iSelStart;
             
             if(!m_FrameServer.VideoReader.CanChangeWorkingZone)
                 EnableDisableWorkingZoneControls(false);
@@ -671,6 +693,16 @@ namespace Kinovea.ScreenManager
                 ResizeUpdate(true);
             }
             
+            // Time origin: we try to maintain user-defined time origin, but we don't want the origin to stay at the absolute zero when the zone changes.
+            // Check if we were previously aligned with the start of the zone, if so, keep it that way, otherwise keep the absolute value.
+            // A side effect of this approach is that when the start of the zone is moved forward so as to overtake the current time origin, 
+            // it will scoop it and drag it along with it.
+            if (timeOrigin == m_iSelStart)
+            {
+                timeOrigin = m_FrameServer.VideoReader.WorkingZone.Start;
+                TimeOriginManuallyUpdated();
+            }
+
             // Reupdate back the locals as the reader uses more precise values.
             m_iCurrentPosition = m_iCurrentPosition + (m_FrameServer.VideoReader.WorkingZone.Start - m_iSelStart);
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
@@ -940,7 +972,6 @@ namespace Kinovea.ScreenManager
             
             // Sync
             m_bSynched = false;
-            m_iSyncPosition = 0;
             m_bSyncMerge = false;
             if(m_SyncMergeImage != null)
                 m_SyncMergeImage.Dispose();
@@ -980,6 +1011,9 @@ namespace Kinovea.ScreenManager
                 m_iCurrentPosition = 0;
                 m_iStartingPosition = 0;
             }
+
+            timeOrigin = m_iSelStart;
+            TimeOriginManuallyUpdated();
         }
         private void SetupPrimarySelectionPanel()
         {
@@ -1250,8 +1284,7 @@ namespace Kinovea.ScreenManager
                     GotoNextKeyframe();
                     break;
                 case PlayerScreenCommands.GotoSyncPoint:
-                    if (m_bSynched)
-                        ForceCurrentFrame(m_iSyncPosition, true);
+                    ForceCurrentFrame(timeOrigin, true);
                     break;
                 case PlayerScreenCommands.IncreaseZoom:
                     IncreaseDirectZoom();
@@ -1449,13 +1482,14 @@ namespace Kinovea.ScreenManager
                 DoInvalidate();
             }
         }
+
+        /// <summary>
+        /// Returns the physical time in microseconds for this timestamp.
+        /// Used in the context of synchronization.
+        /// Input in timestamps relative to sel start.
+        /// convert it into video time then to real time using high speed factor.
         private long TimestampToRealtime(long timestamp)
         {
-            // This is used in the context of synchronization.
-            // Takes input in timestamps relative to sel start.
-            // convert it into video time then to real time using high speed factor.
-            // returned value is in microseconds.
-
             double correctedTPS = m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds * m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds / m_FrameServer.Metadata.UserInterval;
 
             if (correctedTPS == 0 || m_FrameServer.Metadata.HighSpeedFactor == 0)
@@ -1679,6 +1713,32 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Working Zone Selection
+        private void BtnTimeOrigin_Click(object sender, EventArgs e)
+        {
+            // Set time origin to current time.
+            log.DebugFormat("Changing time origin from player. {0} -> {1}.", timeOrigin, m_iCurrentPosition);
+
+            // TODO: raise an event for the common controls.
+
+            timeOrigin = m_iCurrentPosition;
+            TimeOriginManuallyUpdated();
+
+            trkFrame.UpdateSyncPointMarker(timeOrigin);
+            trkFrame.Invalidate();
+            UpdateCurrentPositionLabel();
+
+            // This will update the timecode on keyframe boxes if the user hasn't changed the kf name.
+            EnableDisableKeyframes();
+
+            if (TimeOriginChanged != null)
+                TimeOriginChanged(this, EventArgs.Empty);
+        }
+
+        private void TimeOriginManuallyUpdated()
+        {
+            m_FrameServer.SetTimeOrigin(timeOrigin);
+        }
+
         private void trkSelection_SelectionChanging(object sender, EventArgs e)
         {
             if (m_FrameServer.Loaded)
@@ -1823,8 +1883,8 @@ namespace Kinovea.ScreenManager
                 start = m_iSelStart - m_iStartingPosition;
                 duration = m_iSelDuration;
             }
-            
-            string startTimecode = m_FrameServer.TimeStampsToTimecode(start, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+
+            string startTimecode = m_FrameServer.TimeStampsToTimecode(start, TimeType.Absolute, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
             lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + startTimecode;
 
             duration -= m_FrameServer.Metadata.AverageTimeStampsPerFrame;
@@ -1836,6 +1896,14 @@ namespace Kinovea.ScreenManager
             // Update WorkingZone data according to control.
             if ((m_iSelStart != trkSelection.SelStart) || (m_iSelEnd != trkSelection.SelEnd))
             {
+                // Time origin: we try to maintain user-defined time origin, but we don't want the origin to stay at the absolute zero when the zone changes.
+                // Check if we were previously aligned with the start of the zone, if so, keep it that way, otherwise keep the absolute value.
+                if (timeOrigin == m_iSelStart)
+                {
+                    timeOrigin = trkSelection.SelStart;
+                    TimeOriginManuallyUpdated();
+                }
+
                 m_iSelStart = trkSelection.SelStart;
                 m_iSelEnd = trkSelection.SelEnd;
                 m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
@@ -1918,8 +1986,7 @@ namespace Kinovea.ScreenManager
         private void UpdateCurrentPositionLabel()
         {
             // Note: among other places, this is run inside the playloop.
-            // Position is relative to working zone.
-            string timecode = m_FrameServer.TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, TimeType.Time, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched);
+            string timecode = m_FrameServer.TimeStampsToTimecode(m_iCurrentPosition, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched);
             lblTimeCode.Text = string.Format("{0} : {1}", ScreenManagerLang.lblTimeCode_Text, timecode);
         }
         private void UpdatePositionUI()
@@ -2597,6 +2664,8 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnSetHandlerRight, ScreenManagerLang.ToolTip_SetHandlerRight);
             toolTips.SetToolTip(btnHandlersReset, ScreenManagerLang.ToolTip_ResetWorkingZone);
             trkSelection.ToolTip = ScreenManagerLang.ToolTip_trkSelection;
+
+            toolTips.SetToolTip(btnTimeOrigin, "Set current time as zero");
         }
         private void ReloadToolsCulture()
         {
@@ -4708,6 +4777,7 @@ namespace Kinovea.ScreenManager
             btnSetHandlerRight.Enabled = _bEnable;
             btnHandlersReset.Enabled = _bEnable;
             btn_HandlersLock.Enabled = _bEnable;
+            btnTimeOrigin.Enabled = _bEnable;
             trkSelection.EnableDisable(_bEnable);
         }
         private void EnableDisableSnapshot(bool _bEnable)
@@ -5002,10 +5072,10 @@ namespace Kinovea.ScreenManager
                 tcf = TimecodeFormat.ClassicTime;
             else
                 tcf = _timeCodeFormat;
-            
+
             // Timecode string (Not relative to sync position)
-            string suffix = m_FrameServer.TimeStampsToTimecode(_position - m_iSelStart, TimeType.Time, tcf, false);
-            string maxSuffix = m_FrameServer.TimeStampsToTimecode(m_iSelEnd - m_iSelStart, TimeType.Time, tcf, false);
+            string suffix = m_FrameServer.TimeStampsToTimecode(_position, TimeType.UserOrigin, tcf, false);
+            string maxSuffix = m_FrameServer.TimeStampsToTimecode(m_iSelEnd, TimeType.UserOrigin, tcf, false);
 
             switch (tcf)
             {
@@ -5058,6 +5128,5 @@ namespace Kinovea.ScreenManager
             m_iSelEnd = mps.SelEnd;
         }
         #endregion
-
     }
 }

@@ -218,7 +218,7 @@ namespace Kinovea.ScreenManager
 
                 foreach (TimedPoint point in points)
                 {
-                    string time = metadata.TimeCodeBuilder(point.T, TimeType.Time, TimecodeFormat.Milliseconds, false);
+                    string time = metadata.TimeCodeBuilder(point.T, TimeType.UserOrigin, TimecodeFormat.Milliseconds, false);
                     PointF p = metadata.CalibrationHelper.GetPointAtTime(point.Point, point.T);
                     w.WriteLine(string.Format("{0}{3}{1}{3}{2}", time, p.X, p.Y, separator));
                 }
@@ -235,7 +235,7 @@ namespace Kinovea.ScreenManager
 
             foreach (TimedPoint point in points)
             {
-                string time = metadata.TimeCodeBuilder(point.T, TimeType.Time, TimecodeFormat.Milliseconds, false);
+                string time = metadata.TimeCodeBuilder(point.T, TimeType.UserOrigin, TimecodeFormat.Milliseconds, false);
                 PointF p = metadata.CalibrationHelper.GetPointAtTime(point.Point, point.T);
                 b.AppendLine(string.Format("{0}{3}{1}{3}{2}", time, p.X, p.Y, separator));
             }

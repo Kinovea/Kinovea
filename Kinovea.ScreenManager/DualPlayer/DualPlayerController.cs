@@ -135,7 +135,7 @@ namespace Kinovea.ScreenManager
                 PlayerScreen player = players.FirstOrDefault(p => p.Id == description.Id);
                 if (player != null)
                 {
-                    player.LocalSyncTime = description.LocalSyncTime;
+                    player.LocalTimeOriginPhysical = description.LocalSyncTime;
                     recovered++;
                 }
             }
@@ -166,6 +166,23 @@ namespace Kinovea.ScreenManager
             GetOtherPlayer(player).RealtimePercentage = player.RealtimePercentage;
         }
 
+        private void Player_TimeOriginChanged(object sender, EventArgs e)
+        {
+            if (!active || !synching)
+                return;
+
+            PlayerScreen player = sender as PlayerScreen;
+            if (player == null || !PreferencesManager.PlayerPreferences.SyncLockSpeed)
+                return;
+
+            // Reinit synchronization.
+            commonTimeline.Initialize(players[0], players[0].LocalTimeOriginPhysical, players[1], players[1].LocalTimeOriginPhysical);
+            currentTime = commonTimeline.GetCommonTime(player, player.LocalTime);
+            view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);
+            view.UpdateSyncPosition(currentTime);
+            UpdateHairLines();
+        }
+
         private void Player_HighSpeedFactorChanged(object sender, EventArgs e)
         {
             if (!active || !synching)
@@ -179,7 +196,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Synchronization must be reinitialized.
-            commonTimeline.Initialize(players[0], players[0].LocalSyncTime, players[1], players[1].LocalSyncTime);
+            commonTimeline.Initialize(players[0], players[0].LocalTimeOriginPhysical, players[1], players[1].LocalTimeOriginPhysical);
 
             // TODO: Check if current time is still in bounds.
             currentTime = Math.Min(currentTime, commonTimeline.GetCommonTime(players[0], players[0].LocalTime));
@@ -409,7 +426,7 @@ namespace Kinovea.ScreenManager
             if (!synching)
                 return;
             
-            currentTime = commonTimeline.GetCommonTime(players[0], players[0].LocalSyncTime);
+            currentTime = commonTimeline.GetCommonTime(players[0], players[0].LocalTimeOriginPhysical);
             GotoTime(currentTime, true);
             UpdateTrkFrame(currentTime);
         }
@@ -450,6 +467,7 @@ namespace Kinovea.ScreenManager
             player.PauseAsked += Player_PauseAsked;
             player.SpeedChanged += Player_SpeedChanged;
             player.HighSpeedFactorChanged += Player_HighSpeedFactorChanged;
+            player.TimeOriginChanged += Player_TimeOriginChanged;
             player.ImageChanged += Player_ImageChanged;
         }
         private void RemoveEventHandlers(PlayerScreen player)
@@ -536,12 +554,12 @@ namespace Kinovea.ScreenManager
 
         private void InitializeSyncFromCurrentPositions()
         {
-            commonTimeline.Initialize(players[0], players[0].LocalSyncTime, players[1], players[1].LocalSyncTime);
+            commonTimeline.Initialize(players[0], players[0].LocalTimeOriginPhysical, players[1], players[1].LocalTimeOriginPhysical);
 
             currentTime = 0;
 
             view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);
-            view.UpdateSyncPosition(commonTimeline.GetCommonTime(players[0], players[0].LocalSyncTime));
+            view.UpdateSyncPosition(commonTimeline.GetCommonTime(players[0], players[0].LocalTimeOriginPhysical));
             UpdateHairLines();
         }
 
