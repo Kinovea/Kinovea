@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
             this.btnSync.FlatAppearance.BorderSize = 0;
             this.btnSync.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.btnSync.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSync.Image = global::Kinovea.ScreenManager.Properties.Resources.flatsync3c;
+            this.btnSync.Image = global::Kinovea.ScreenManager.Properties.Resources.marker;
             this.btnSync.Location = new System.Drawing.Point(290, 10);
             this.btnSync.Margin = new System.Windows.Forms.Padding(0);
             this.btnSync.MinimumSize = new System.Drawing.Size(25, 25);

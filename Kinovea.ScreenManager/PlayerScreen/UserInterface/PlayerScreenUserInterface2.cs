@@ -302,6 +302,7 @@ namespace Kinovea.ScreenManager
         
         #region Context Menus
         private ContextMenuStrip popMenu = new ContextMenuStrip();
+        private ToolStripMenuItem mnuTimeOrigin = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDirectTrack = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPlayPause = new ToolStripMenuItem();
@@ -1049,8 +1050,10 @@ namespace Kinovea.ScreenManager
         private void BuildContextMenus()
         {
             // Attach the event handlers and build the menus.
-            
+
             // 1. Default context menu.
+            mnuTimeOrigin.Click += mnuTimeOrigin_Click;
+            mnuTimeOrigin.Image = Properties.Resources.marker;
             mnuDirectTrack.Click += new EventHandler(mnuDirectTrack_Click);
             mnuDirectTrack.Image = Properties.Drawings.track;
             mnuPasteDrawing.Click += new EventHandler(mnuPasteDrawing_Click);
@@ -1064,7 +1067,7 @@ namespace Kinovea.ScreenManager
             mnuPastePic.Image = Properties.Drawings.paste;
             mnuCloseScreen.Click += new EventHandler(btnClose_Click);
             mnuCloseScreen.Image = Properties.Resources.film_close3;
-            popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuPasteDrawing, mnuSavePic, mnuCopyPic, mnuPastePic, new ToolStripSeparator(), mnuCloseScreen });
+            popMenu.Items.AddRange(new ToolStripItem[] { mnuTimeOrigin, mnuDirectTrack, mnuPasteDrawing, mnuSavePic, mnuCopyPic, mnuPastePic, new ToolStripSeparator(), mnuCloseScreen });
 
             // 2. Drawings context menu (Configure, Delete, Track this)
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
@@ -1701,6 +1704,11 @@ namespace Kinovea.ScreenManager
         #region Working Zone Selection
         private void BtnTimeOrigin_Click(object sender, EventArgs e)
         {
+            MarkTimeOrigin();
+        }
+
+        private void MarkTimeOrigin()
+        { 
             // Set time origin to current time.
             log.DebugFormat("Changing time origin from player. {0} -> {1}.", m_FrameServer.Metadata.TimeOrigin, m_iCurrentPosition);
 
@@ -2544,8 +2552,9 @@ namespace Kinovea.ScreenManager
         {
             // Reload the text for each menu.
             // this is done at construction time and at RefreshUICulture time.
-            
+
             // 1. Default context menu.
+            mnuTimeOrigin.Text = "Mark current time as time origin";
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
@@ -2640,7 +2649,7 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnHandlersReset, ScreenManagerLang.ToolTip_ResetWorkingZone);
             trkSelection.ToolTip = ScreenManagerLang.ToolTip_trkSelection;
 
-            toolTips.SetToolTip(btnTimeOrigin, "Set current time as zero");
+            toolTips.SetToolTip(btnTimeOrigin, "Mark current time as time origin");
         }
         private void ReloadToolsCulture()
         {
@@ -2886,6 +2895,7 @@ namespace Kinovea.ScreenManager
             // (Drawing, Trajectory, Chronometer, Magnifier, Nothing)
             if (m_bIsCurrentlyPlaying)
             {
+                mnuTimeOrigin.Visible = false;
                 mnuDirectTrack.Visible = false;
                 mnuPasteDrawing.Visible = false;
                 mnuPastePic.Visible = false;
@@ -2898,6 +2908,7 @@ namespace Kinovea.ScreenManager
                 
             if(InteractiveFiltering)
             {
+                mnuTimeOrigin.Visible = false;
                 mnuDirectTrack.Visible = false;
                 mnuPasteDrawing.Visible = false;
                 mnuPastePic.Visible = false;
@@ -2979,6 +2990,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 // No drawing touched and no tool selected, but not currently playing. Default menu.
+                mnuTimeOrigin.Visible = true;
                 mnuDirectTrack.Visible = true;
                 mnuPasteDrawing.Visible = true;
                 mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
@@ -4074,6 +4086,10 @@ namespace Kinovea.ScreenManager
         #region Context Menus Events
         
         #region Main
+        private void mnuTimeOrigin_Click(object sender, EventArgs e)
+        {
+            MarkTimeOrigin();
+        }
         private void mnuDirectTrack_Click(object sender, EventArgs e)
         {
             // Track the point.
@@ -4745,6 +4761,7 @@ namespace Kinovea.ScreenManager
             
             mnuPlayPause.Visible = _bEnable;
             mnuDirectTrack.Visible = _bEnable;
+            mnuTimeOrigin.Visible = _bEnable;
         }
         private void EnableDisableWorkingZoneControls(bool _bEnable)
         {
