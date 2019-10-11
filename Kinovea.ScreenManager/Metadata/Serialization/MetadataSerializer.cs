@@ -230,6 +230,9 @@ namespace Kinovea.ScreenManager
                     case "SelectionStart":
                         inputSelectionStart = r.ReadElementContentAsLong();
                         break;
+                    case "TimeOrigin":
+                        metadata.TimeOrigin = r.ReadElementContentAsLong();
+                        break;
                     case "Calibration":
                         metadata.CalibrationHelper.ReadXml(r, scaling, inputImageSize);
                         break;
@@ -415,6 +418,7 @@ namespace Kinovea.ScreenManager
             w.WriteElementString("UserFramerate", string.Format(CultureInfo.InvariantCulture, "{0}", 1000 / metadata.UserInterval));
             w.WriteElementString("FirstTimeStamp", metadata.FirstTimeStamp.ToString());
             w.WriteElementString("SelectionStart", metadata.SelectionStart.ToString());
+            w.WriteElementString("TimeOrigin", metadata.TimeOrigin.ToString());
 
             WriteCalibrationHelp(w);
         }

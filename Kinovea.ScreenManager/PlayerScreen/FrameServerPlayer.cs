@@ -245,14 +245,6 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Sets the time origin, used to produce timecodes.
-        /// </summary>
-        public void SetTimeOrigin(long timeOrigin)
-        {
-            this.timeOrigin = timeOrigin;
-        }
-
-        /// <summary>
         /// Returns a time or duration in the user-preferred format.
         /// The time must be passed in absolute timestamps, and the time type is used to make it relative.
         /// </summary>
@@ -270,7 +262,7 @@ namespace Kinovea.ScreenManager
                     actualTimestamps = timestamps - videoReader.WorkingZone.Start;
                     break;
                 case TimeType.UserOrigin:
-                    actualTimestamps = timestamps - timeOrigin;
+                    actualTimestamps = timestamps - metadata.TimeOrigin;
                     break;
                 case TimeType.Absolute:
                 case TimeType.Duration:

@@ -239,6 +239,15 @@ namespace Kinovea.ScreenManager
             get { return selectionEnd; }
             set { selectionEnd = value; }
         }
+
+        /// <summary>
+        /// User-defined origin of the time coordinate system, in absolute timestamps. 
+        /// </summary>
+        public long TimeOrigin
+        {
+            get { return timeOrigin; }
+            set { timeOrigin = value; }
+        }
         public bool TestGridVisible
         {
             get { return drawingTestGrid.Visible; }
@@ -315,6 +324,7 @@ namespace Kinovea.ScreenManager
         private long firstTimeStamp;
         private long selectionStart;
         private long selectionEnd;
+        private long timeOrigin;
         private double highSpeedFactor = 1.0;
         private double userInterval = 40;
         private int referenceHash;

@@ -223,10 +223,9 @@ namespace Kinovea.ScreenManager
 
             set
             {
-                long absoluteTimestamp = RealtimeToTimestamp(value);
-                frameServer.SetTimeOrigin(absoluteTimestamp);
-                view.LocalTimeOrigin = absoluteTimestamp;
-                view.LocalTimeOrigin = absoluteTimestamp;
+                long absoluteTimestamp = RelativeRealTimeToAbsoluteTimestamp(value);
+                frameServer.Metadata.TimeOrigin = absoluteTimestamp;
+                view.TimeOriginUpdatedFromSync();
             }
         }
          
@@ -577,7 +576,7 @@ namespace Kinovea.ScreenManager
         
         public void GotoTime(long microseconds, bool allowUIUpdate)
         {
-            long timestamp = RealtimeToTimestamp(microseconds);
+            long timestamp = RelativeRealTimeToAbsoluteTimestamp(microseconds);
             view.ForcePosition(timestamp, allowUIUpdate);
         }
         
@@ -749,9 +748,9 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Convert from real time in microseconds to absolute timestamps.
+        /// Convert from real time in microseconds relative to working zone start into absolute timestamps.
         /// </summary>
-        private long RealtimeToTimestamp(long time)
+        private long RelativeRealTimeToAbsoluteTimestamp(long time)
         {
             double realtimeSeconds = (double)time / 1000000;
             double videoSeconds = realtimeSeconds * frameServer.Metadata.HighSpeedFactor;
