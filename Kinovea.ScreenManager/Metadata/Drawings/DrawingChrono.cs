@@ -167,7 +167,7 @@ namespace Kinovea.ScreenManager
         public DrawingChrono(PointF p, long start, long averageTimeStampsPerFrame, DrawingStyle preset = null)
         {
             // Core
-            visibleTimestamp = start;
+            visibleTimestamp = 0;
             startCountingTimestamp = long.MaxValue;
             stopCountingTimestamp = long.MaxValue;
             invisibleTimestamp = long.MaxValue;
