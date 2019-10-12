@@ -18,7 +18,7 @@ namespace Kinovea.Tests
             //TestLineClipping();
 
             TestTime();
-
+            
             // Performance
             //ImageCopy.Test();
         }
@@ -60,8 +60,11 @@ namespace Kinovea.Tests
     
         private static void TestTime()
         {
-            TimeTester tester = new TimeTester();
-            tester.TestSliderSpeed();
+            //TimeTester tester = new TimeTester();
+            //tester.TestSliderSpeed();
+
+            TimecodeFormatTest tester = new TimecodeFormatTest();
+            tester.Test();
         }
     }
 }
