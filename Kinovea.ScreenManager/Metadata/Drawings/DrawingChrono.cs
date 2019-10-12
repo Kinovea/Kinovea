@@ -375,6 +375,7 @@ namespace Kinovea.ScreenManager
             }
             
             xmlReader.ReadEndElement();
+            SanityCheckValues();
         }
         private void ParseWorkingValues(XmlReader xmlReader, TimestampMapper timestampMapper)
         {
@@ -420,22 +421,19 @@ namespace Kinovea.ScreenManager
             }
             
             xmlReader.ReadEndElement();
-
-            SanityCheckValues();
         }
         private void SanityCheckValues()
         {
+            visibleTimestamp = Math.Max(visibleTimestamp, 0);
+            invisibleTimestamp = Math.Max(invisibleTimestamp, 0);
             startCountingTimestamp = Math.Max(startCountingTimestamp, 0);
             stopCountingTimestamp = Math.Max(stopCountingTimestamp, 0);
-            invisibleTimestamp = Math.Max(invisibleTimestamp, 0);
-            
-            visibleTimestamp = Math.Min(Math.Max(visibleTimestamp, 0), startCountingTimestamp);
-            
+
+            if (styleHelper.Clock)
+                return;
+
             if (stopCountingTimestamp < startCountingTimestamp)
                 stopCountingTimestamp = long.MaxValue;
-
-            if (invisibleTimestamp < stopCountingTimestamp)
-                invisibleTimestamp = long.MaxValue;
         }
         private void ParseLabel(XmlReader xmlReader)
         {
