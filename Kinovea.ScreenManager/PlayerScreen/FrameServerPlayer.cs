@@ -275,8 +275,11 @@ namespace Kinovea.ScreenManager
             double correctedTPS = videoReader.Info.FrameIntervalMilliseconds * videoReader.Info.AverageTimeStampsPerSeconds / metadata.UserInterval;
             double seconds = (double)actualTimestamps / correctedTPS;
             double milliseconds = 1000 * (seconds / metadata.HighSpeedFactor);
-            bool showThousandth = (metadata.UserInterval / metadata.HighSpeedFactor) <= 10;
 
+            double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
+            double framerateMagnitude = Math.Log10(framerate);
+            int precision = (int)Math.Ceiling(framerateMagnitude);
+            
             int frames = 0;
             if (videoReader.Info.AverageTimeStampsPerFrame != 0)
                 frames = (int)((double)actualTimestamps / videoReader.Info.AverageTimeStampsPerFrame);
@@ -287,7 +290,7 @@ namespace Kinovea.ScreenManager
             switch (tcf)
             {
                 case TimecodeFormat.ClassicTime:
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth);
+                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, precision);
                     break;
                 case TimecodeFormat.Frames:
                     outputTimeCode = frameString;
@@ -309,7 +312,7 @@ namespace Kinovea.ScreenManager
                     outputTimeCode = String.Format("{0}:{1:00}", (int)inHundredsOfAMinute, Math.Floor((inHundredsOfAMinute - (int)inHundredsOfAMinute) * 100));
                     break;
                 case TimecodeFormat.TimeAndFrames:
-                    String timeString = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth);
+                    String timeString = TimeHelper.MillisecondsToTimecode(milliseconds, precision);
                     outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
                     break;
                 case TimecodeFormat.Normalized:
@@ -324,7 +327,7 @@ namespace Kinovea.ScreenManager
                     outputTimeCode = String.Format("{0}", (int)actualTimestamps);
                     break;
                 default:
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, showThousandth);
+                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, precision);
                     break;
             }
 

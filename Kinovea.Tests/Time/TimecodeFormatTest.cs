@@ -34,17 +34,17 @@ namespace Kinovea.Tests
             foreach (long value in a)
             {
                 log.Debug("------------------");
-                TestValue(value, true);
-                TestValue(value, false);
-                TestValue(-value, true);
-                TestValue(-value, false);
+                TestValue(value, 3);
+                TestValue(value, 2);
+                TestValue(-value, 3);
+                TestValue(-value, 2);
             }
         }
 
-        private void TestValue(long value, bool thousandth)
+        private void TestValue(long value, int precision)
         {
-            string timecode = TimeHelper.MillisecondsToTimecode(value, thousandth);
-            log.DebugFormat("Input: {0} ms, Output:{1}. Thousandth:{2}.", value, timecode, thousandth);
+            string timecode = TimeHelper.MillisecondsToTimecode(value, precision);
+            log.DebugFormat("Input: {0} ms, Output:{1}. Thousandth:{2}.", value, timecode, precision);
         }
     }
 }

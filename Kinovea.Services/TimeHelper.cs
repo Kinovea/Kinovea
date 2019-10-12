@@ -30,10 +30,11 @@ namespace Kinovea.Services
         /// <summary>
         /// Input    : Milliseconds (Can be negative.)
         /// Output   : [h:][mm:]ss.mm[m].
-        /// Seconds and hundredths are always shown. Minutes and hours are shown depending on magnitude of passed time.
-        /// If 'thousandth' is true, show 3 digits after the separator, otherwise round to nearest centisecond.
+        /// Seconds and the decimal part are always shown. 
+        /// Minutes and hours are shown depending on the magnitude of passed time.
+        /// 'precision' is the number of digits to show after the seconds separator. It should be based on the magintude of the framerate.
         /// </summary>
-        public static string MillisecondsToTimecode(double totalMilliseconds, bool thousandth)
+        public static string MillisecondsToTimecode(double totalMilliseconds, int precision)
         {
             int millisecondsPerSecond = 1000;
             int millisecondsPerMinute = millisecondsPerSecond * 60;
@@ -45,8 +46,8 @@ namespace Kinovea.Services
             remainder = remainder % millisecondsPerMinute;
             int seconds = (int)(remainder / millisecondsPerSecond);
 
-            int milliseconds = (int)(remainder % millisecondsPerSecond);
-            int centiseconds = (int)Math.Round(milliseconds / 10.0);
+            double milliseconds = remainder % millisecondsPerSecond;
+            int centiseconds = (int)Math.Round((int)milliseconds / 10.0);
 
             bool negative = totalMilliseconds < 0;
             if (negative)
@@ -60,14 +61,18 @@ namespace Kinovea.Services
 
             string timecode;
             string sign = negative ? "- " : "";
-            if (thousandth)
+            if (precision > 2)
             {
+                int fractionValue = (int)(milliseconds * (precision - 2));
+                string format = "D" + precision.ToString();
+                string fraction = fractionValue.ToString(format);
+
                 if (hours > 0)
-                    timecode = string.Format("{0}{1:0}:{2:00}:{3:00}.{4:000}", sign, hours, minutes, seconds, milliseconds);
+                    timecode = string.Format("{0}{1:0}:{2:00}:{3:00}.{4}", sign, hours, minutes, seconds, fraction);
                 else if (minutes > 0)
-                    timecode = string.Format("{0}{1:0}:{2:00}.{3:000}", sign, minutes, seconds, milliseconds);
+                    timecode = string.Format("{0}{1:0}:{2:00}.{3}", sign, minutes, seconds, fraction);
                 else
-                    timecode = string.Format("{0}{1:0}.{2:000}", sign, seconds, milliseconds);
+                    timecode = string.Format("{0}{1:0}.{2}", sign, seconds, fraction);
             }
             else
             {
