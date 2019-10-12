@@ -146,7 +146,8 @@ namespace Kinovea.Root
             // enum Kinovea.Services.TimecodeFormat.
             tabUnits.Text = RootLang.dlgPreferences_Player_tabUnits;
             lblTimeMarkersFormat.Text = RootLang.dlgPreferences_Player_UnitTime;
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
+            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
+            cmbTimeCodeFormat.Items.Add("[h:][mm:]ss.mm[m]");
             //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
             cmbTimeCodeFormat.Items.Add("Frame number");
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Milliseconds);
@@ -154,7 +155,7 @@ namespace Kinovea.Root
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
             //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
-            cmbTimeCodeFormat.Items.Add("Classic + Frame number");
+            cmbTimeCodeFormat.Items.Add("[h:][mm:]ss.mm[m] + Frame number");
 #if DEBUG
             cmbTimeCodeFormat.Items.Add("Normalized");
             cmbTimeCodeFormat.Items.Add("Timestamps");
