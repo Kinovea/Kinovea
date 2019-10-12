@@ -110,39 +110,15 @@ namespace Kinovea.ScreenManager
         {
             get { return stopCountingTimestamp; }
         }
-        public long TimeVisible
-        {
-            get { return visibleTimestamp; }
-        }
-        public long TimeInvisible
-        {
-            get { return invisibleTimestamp; }
-        }
-        // The following properties are used from the formConfigureChrono.
-        public string Label
-        {
-            get { return label; }
-            set 
-            { 
-                label = value;
-                Name = value;
-                UpdateLabelRectangle();
-            }
-        }
-        public bool ShowLabel
-        {
-            get { return showLabel; }
-            set { showLabel = value; }
-        }
         #endregion
 
         #region Members
         // Core
-        private long startCountingTimestamp;         	// chrono starts counting.
-        private long stopCountingTimestamp;          	// chrono stops counting. 
         private long visibleTimestamp;               	// chrono becomes visible.
         private long invisibleTimestamp;             	// chrono stops being visible.
-        private long clockOriginTimestamp;              // time origin when in clock mode.
+        private long startCountingTimestamp;         	// chrono starts counting.
+        private long stopCountingTimestamp;          	// chrono stops counting. 
+        private long clockOriginTimestamp;              // time origin for clock mode.
         private string timecode;
         private string label;
         private bool showLabel;
@@ -566,16 +542,5 @@ namespace Kinovea.ScreenManager
             
         }
         #endregion
-    }
-
-    /// <summary>
-    /// Enum used in CommandModifyChrono to know what value we are touching.
-    /// </summary>
-    public enum ChronoModificationType
-    {
-        TimeStart,
-        TimeStop,
-        TimeHide,
-        Countdown
     }
 }
