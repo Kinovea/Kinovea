@@ -68,6 +68,7 @@ namespace Kinovea.ScreenManager
         public override InfosFading  InfosFading
         {
             // Fading is not modifiable from outside for chrono.
+            // The chrono visibility uses its own mechanism.
             get { return null; }
             set { }
         }
@@ -81,17 +82,22 @@ namespace Kinovea.ScreenManager
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
 
+                mnuVisibility.Text = "Visibility";
+                mnuHideBefore.Text = "Hide before this point";
+                mnuShowBefore.Text = "Show before this point";
+                mnuHideAfter.Text = "Hide after this point";
+                mnuShowAfter.Text = "Show after this point";
+
                 if (styleHelper.Clock)
                 {
                     mnuMarkOrigin.Text = "Mark current time as time origin for this clock";
-                    contextMenu.AddRange(new ToolStripItem[] { mnuMarkOrigin });
+                    contextMenu.AddRange(new ToolStripItem[] { mnuVisibility, mnuMarkOrigin });
                 }
                 else
                 {
                     mnuStart.Text = ScreenManagerLang.mnuChronoStart;
                     mnuStop.Text = ScreenManagerLang.mnuChronoStop;
-                    mnuHide.Text = ScreenManagerLang.mnuChronoHide;
-                    contextMenu.AddRange(new ToolStripItem[] { mnuStart, mnuStop, mnuHide });
+                    contextMenu.AddRange(new ToolStripItem[] { mnuVisibility, mnuStart, mnuStop });
                 }
 
                 return contextMenu;
@@ -130,9 +136,15 @@ namespace Kinovea.ScreenManager
         private RoundedRectangle mainBackground = new RoundedRectangle();
         private RoundedRectangle lblBackground = new RoundedRectangle();
 
+        private ToolStripMenuItem mnuVisibility = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHideBefore = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowBefore = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHideAfter = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuShowAfter = new ToolStripMenuItem();
+
+        //private ToolStripMenuItem mnuHide = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuHide = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMarkOrigin = new ToolStripMenuItem();
 
         private Metadata parentMetadata;
@@ -171,16 +183,25 @@ namespace Kinovea.ScreenManager
             infosFading.FadingFrames = allowedFramesOver;
             infosFading.UseDefault = false;
 
+            mnuVisibility.Image = Properties.Drawings.persistence;
+            mnuShowBefore.Image = Properties.Drawings.showbefore;
+            mnuShowAfter.Image = Properties.Drawings.showafter;
+            mnuHideBefore.Image = Properties.Drawings.hidebefore;
+            mnuHideAfter.Image = Properties.Drawings.hideafter;
+            mnuShowBefore.Click += MnuShowBefore_Click;
+            mnuShowAfter.Click += MnuShowAfter_Click;
+            mnuHideBefore.Click += MnuHideBefore_Click;
+            mnuHideAfter.Click += MnuHideAfter_Click;
+            mnuVisibility.DropDownItems.AddRange(new ToolStripItem[] { mnuShowBefore, mnuShowAfter, mnuHideBefore, mnuHideAfter });
+
             mnuStart.Image = Properties.Drawings.chronostart;
             mnuStop.Image = Properties.Drawings.chronostop;
-            mnuHide.Image = Properties.Drawings.hide;
             mnuMarkOrigin.Image = Properties.Resources.marker;
-
             mnuStart.Click += mnuStart_Click;
             mnuStop.Click += mnuStop_Click;
-            mnuHide.Click += mnuHide_Click;
             mnuMarkOrigin.Click += mnuMarkOrigin_Click;
         }
+
         public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
             : this(PointF.Empty, 0, 1, null)
         {
@@ -442,6 +463,32 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Specific context menu
+        private void MnuShowBefore_Click(object sender, EventArgs e)
+        {
+            visibleTimestamp = 0;
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuShowAfter_Click(object sender, EventArgs e)
+        {
+            invisibleTimestamp = long.MaxValue;
+            infosFading.ReferenceTimestamp = invisibleTimestamp;
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuHideBefore_Click(object sender, EventArgs e)
+        {
+            visibleTimestamp = CurrentTimestampFromMenu(sender);
+            InvalidateFromMenu(sender);
+        }
+
+        private void MnuHideAfter_Click(object sender, EventArgs e)
+        {
+            invisibleTimestamp = CurrentTimestampFromMenu(sender);
+            infosFading.ReferenceTimestamp = invisibleTimestamp;
+            InvalidateFromMenu(sender);
+        }
+
         private void mnuStart_Click(object sender, EventArgs e)
         {
             startCountingTimestamp = CurrentTimestampFromMenu(sender);
@@ -465,24 +512,6 @@ namespace Kinovea.ScreenManager
 
             InvalidateFromMenu(sender);
             UpdateFramesMarkersFromMenu(sender);
-        }
-
-        private void mnuHide_Click(object sender, EventArgs e)
-        {
-            invisibleTimestamp = CurrentTimestampFromMenu(sender);
-
-            // Update fading conf.
-            infosFading.ReferenceTimestamp = invisibleTimestamp;
-
-            // Avoid counting when fading.
-            if (invisibleTimestamp >= stopCountingTimestamp)
-                return;
-
-            stopCountingTimestamp = invisibleTimestamp;
-            if (stopCountingTimestamp < startCountingTimestamp)
-                startCountingTimestamp = stopCountingTimestamp;
-
-            InvalidateFromMenu(sender);
         }
 
         private void mnuMarkOrigin_Click(object sender, EventArgs e)
