@@ -1701,6 +1701,9 @@ namespace Kinovea.ScreenManager
             // This will update the timecode on keyframe boxes if the user hasn't changed the kf name.
             EnableDisableKeyframes();
 
+            // This will update the timecode on any clock object still using the overall time origin.
+            DoInvalidate();
+
             if (TimeOriginChanged != null)
                 TimeOriginChanged(this, EventArgs.Empty);
         }
