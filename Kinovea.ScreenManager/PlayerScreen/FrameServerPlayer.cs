@@ -277,9 +277,9 @@ namespace Kinovea.ScreenManager
             double milliseconds = 1000 * (seconds / metadata.HighSpeedFactor);
             bool showThousandth = (metadata.UserInterval / metadata.HighSpeedFactor) <= 10;
 
-            int frames = 1;
+            int frames = 0;
             if (videoReader.Info.AverageTimeStampsPerFrame != 0)
-                frames = (int)((double)actualTimestamps / videoReader.Info.AverageTimeStampsPerFrame) + 1;
+                frames = (int)((double)actualTimestamps / videoReader.Info.AverageTimeStampsPerFrame);
 
             string frameString = String.Format("{0}", frames);
             string outputTimeCode;
