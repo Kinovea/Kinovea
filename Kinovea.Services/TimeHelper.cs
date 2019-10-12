@@ -29,73 +29,73 @@ namespace Kinovea.Services
     {
         /// <summary>
         /// Input    : Milliseconds (Can be negative.)
-        /// Output   : 'hh:mm:ss:00'
-        /// 
-        /// /!\ TimeCode granularity is in Hundredth or Thousandth, not in Frames.
-        /// If bThousandth is true, it means we have more than 100 frames per seconds 
-        /// and needs to show it in the time returned.
-        /// This can happen when the user manually tune the input fps.	
+        /// Output   : [h:][mm:]ss.mm[m].
+        /// Seconds and hundredths are always shown. Minutes and hours are shown depending on magnitude of passed time.
+        /// If 'thousandth' is true, show 3 digits after the separator, otherwise round to nearest centisecond.
         /// </summary>
-        public static string MillisecondsToTimecode(double totalMilliseconds, bool thousandth, bool leadingZeroes)
+        public static string MillisecondsToTimecode(double totalMilliseconds, bool thousandth)
         {
-            int minutes, seconds, milliseconds;
-            int totalHours, totalMinutes, totalSeconds;
-            string timecode;
+            int millisecondsPerSecond = 1000;
+            int millisecondsPerMinute = millisecondsPerSecond * 60;
+            int millisecondsPerHour = millisecondsPerMinute * 60;
+
+            int hours = (int)(totalMilliseconds / millisecondsPerHour);
+            double remainder = totalMilliseconds % millisecondsPerHour;
+            int minutes = (int)(remainder / millisecondsPerMinute);
+            remainder = remainder % millisecondsPerMinute;
+            int seconds = (int)(remainder / millisecondsPerSecond);
+
+            int milliseconds = (int)(remainder % millisecondsPerSecond);
+            int centiseconds = (int)Math.Round(milliseconds / 10.0);
+
             bool negative = totalMilliseconds < 0;
-            
-            //Computes the total of hours, minutes, seconds, milliseconds.
-            totalSeconds = (int)(Math.Round(totalMilliseconds) / 1000);
-            totalMinutes = totalSeconds / 60;
-            totalHours = totalMinutes / 60;
-            minutes = totalMinutes - (totalHours * 60);
-            seconds = totalSeconds - (totalMinutes * 60);
-            milliseconds = (int)Math.Round(totalMilliseconds % 1000);
-                        
-            // Since the time can be relative to a sync point, it can be negative.
-            string negativeSign = negative ? "- " : "";
-            
             if (negative)
             {
-                totalHours = -totalHours;
+                hours = -hours;
                 minutes = -minutes;
                 seconds = -seconds;
+                centiseconds = -centiseconds;
                 milliseconds = -milliseconds;
             }
 
-            if (!thousandth)
+            string timecode;
+            string sign = negative ? "- " : "";
+            if (thousandth)
             {
-                int hundredth = (int) Math.Round((float)milliseconds / 10);
-                if(leadingZeroes || totalHours > 0)
-                {
-                    timecode = String.Format("{0}{1:0}:{2:00}:{3:00}:{4:00}", negativeSign, totalHours, minutes, seconds, hundredth);
-                }
+                if (hours > 0)
+                    timecode = string.Format("{0}{1:0}:{2:00}:{3:00}.{4:000}", sign, hours, minutes, seconds, milliseconds);
+                else if (minutes > 0)
+                    timecode = string.Format("{0}{1:0}:{2:00}.{3:000}", sign, minutes, seconds, milliseconds);
                 else
-                {
-                    if(minutes > 0)
-                        timecode = String.Format("{0}{1:00}:{2:00}:{3:00}", negativeSign, minutes, seconds, hundredth);
-                    else if(seconds > 0)
-                        timecode = String.Format("{0}{1:00}:{2:00}", negativeSign, seconds, hundredth);
-                    else
-                        timecode = String.Format("{0}{1:00}", negativeSign, hundredth);
-                }
+                    timecode = string.Format("{0}{1:0}.{2:000}", sign, seconds, milliseconds);
             }
             else
             {
-                if(leadingZeroes || totalHours > 0)
+                // Since we round to the nearest centisecond, we may have to carry.
+                if (centiseconds == 100)
                 {
-                    timecode = String.Format("{0}{1:0}:{2:00}:{3:00}:{4:000}", negativeSign, totalHours, minutes, seconds, milliseconds);
+                    centiseconds = 0;
+                    seconds++;
                 }
+                if (seconds == 60)
+                {
+                    seconds = 0;
+                    minutes++;
+                }
+                if (minutes == 60)
+                {
+                    minutes = 0;
+                    hours++;
+                }
+
+                if (hours > 0)
+                    timecode = string.Format("{0}{1:0}:{2:00}:{3:00}.{4:00}", sign, hours, minutes, seconds, centiseconds);
+                else if (minutes > 0)
+                    timecode = string.Format("{0}{1:0}:{2:00}.{3:00}", sign, minutes, seconds, centiseconds);
                 else
-                {
-                    if(minutes > 0)
-                        timecode = String.Format("{0}{1:00}:{2:00}:{3:000}", negativeSign, minutes, seconds, milliseconds);
-                    else if(seconds > 0)
-                        timecode = String.Format("{0}{1:00}:{2:000}", negativeSign, seconds, milliseconds);
-                    else
-                        timecode = String.Format("{0}{1:000}", negativeSign, milliseconds);
-                }
+                    timecode = string.Format("{0}{1:0}.{2:00}", sign, seconds, centiseconds);
             }
-            
+
             return timecode;
         }
     

@@ -223,7 +223,7 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    details.Details[FileProperty.Duration] = TimeHelper.MillisecondsToTimecode((double)summary.DurationMilliseconds, false, true);
+                    details.Details[FileProperty.Duration] = TimeHelper.MillisecondsToTimecode((double)summary.DurationMilliseconds, false);
                     details.Details[FileProperty.Framerate] = string.Format("{0:0.##} fps", summary.Framerate);
                 }
 
