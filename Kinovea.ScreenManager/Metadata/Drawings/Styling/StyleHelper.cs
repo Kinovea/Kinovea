@@ -128,6 +128,11 @@ namespace Kinovea.ScreenManager
             get { return perspective; }
             set { perspective = value; }
         }
+        public bool Clock
+        {
+            get { return clock; }
+            set { clock = value; }
+        }
 
         public int ContentHash
         {
@@ -145,6 +150,7 @@ namespace Kinovea.ScreenManager
                 hash ^= gridDivisions.GetHashCode();
                 hash ^= curved.GetHashCode();
                 hash ^= perspective.GetHashCode();
+                hash ^= clock.GetHashCode();
                 return hash;
             }
         }
@@ -161,6 +167,7 @@ namespace Kinovea.ScreenManager
         private PenShape penShape = PenShape.Solid;
         private bool curved;
         private bool perspective;
+        private bool clock;
         private int gridDivisions;
         private int minFontSize = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -372,6 +379,16 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
+                case "Clock":
+                    {
+                        if (value is bool)
+                        {
+                            clock = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
                 case "Font":
                     {
                         if (value is int)
@@ -499,6 +516,16 @@ namespace Kinovea.ScreenManager
                         if (targetType == typeof(bool))
                         {
                             result = perspective;
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Clock":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = clock;
                             converted = true;
                         }
 

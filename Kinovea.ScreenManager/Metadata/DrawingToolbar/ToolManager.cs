@@ -192,7 +192,7 @@ namespace Kinovea.ScreenManager
             // Style variants are for example the tools Line, Arrow, Squiggly line, Squiggly arrow.
             // These are all implemented by the same Drawing class.
             // The style can be changed on the fly, so you can start with a Line object and set it to have arrows, or vice versa.
-            // When someone does "set style as default" on an object that has arrows, they mostly likely want to change the style of arrows.
+            // When someone does "set style as default" on an object that has arrows, they most likely want to change the style of arrows.
             // For example if we add a line, change it to have an arrow and pass that file to someone else, 
             // when they click that arrow and do set style as default they can't expect that it will change the tool preset for bare lines.
             //------------------------------------------------------------
@@ -227,6 +227,10 @@ namespace Kinovea.ScreenManager
             else if (drawing.GetType() == typeof(DrawingPlane))
             {
                 return GetPlaneStyleVariant(drawing as DrawingPlane);
+            }
+            else if (drawing.GetType() == typeof(DrawingChrono))
+            {
+                return GetChronoStyleVariant(drawing as DrawingChrono);
             }
 
             // For others we match with the tool that instanciate that kind of drawings.
@@ -371,11 +375,27 @@ namespace Kinovea.ScreenManager
                 return "Plane";
 
             bool valuePerspective = (bool)elementPerspective.Value;
-
             if (valuePerspective)
                 return "Plane";
             else
                 return "Grid";
+        }
+
+        private static string GetChronoStyleVariant(DrawingChrono drawing)
+        {
+            // Style variants of DrawingChrono: Chrono, Clock.
+            if (!drawing.DrawingStyle.Elements.ContainsKey("clock"))
+                return "Chrono";
+
+            StyleElementToggle elementToggle = drawing.DrawingStyle.Elements["clock"] as StyleElementToggle;
+            if (elementToggle == null)
+                return "Chrono";
+
+            bool valueClock = (bool)elementToggle.Value;
+            if (valueClock)
+                return "Clock";
+            else
+                return "Chrono";
         }
 
         #endregion

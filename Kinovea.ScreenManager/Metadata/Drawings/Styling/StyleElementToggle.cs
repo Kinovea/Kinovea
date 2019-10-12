@@ -155,6 +155,10 @@ namespace Kinovea.ScreenManager
                     icon = Properties.Drawings.plane;
                     displayName = ScreenManagerLang.Generic_Perspective;
                     break;
+                case StyleToggleVariant.Clock:
+                    icon = Properties.Drawings.stopwatch;
+                    displayName = "Clock";
+                    break;
                 case StyleToggleVariant.Curved:
                 default:
                     icon = Properties.Drawings.curve;

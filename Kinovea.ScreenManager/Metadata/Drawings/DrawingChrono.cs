@@ -48,11 +48,12 @@ namespace Kinovea.ScreenManager
         {
             get 
             { 
-                int iHash = startCountingTimestamp.GetHashCode();
-                iHash ^= stopCountingTimestamp.GetHashCode();
-                iHash ^= visibleTimestamp.GetHashCode();
+                int iHash = visibleTimestamp.GetHashCode();
                 iHash ^= invisibleTimestamp.GetHashCode();
-                iHash ^= countdown.GetHashCode();
+                iHash ^= startCountingTimestamp.GetHashCode();
+                iHash ^= stopCountingTimestamp.GetHashCode();
+                iHash ^= clockOriginTimestamp.GetHashCode();
+
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= label.GetHashCode();
                 iHash ^= showLabel.GetHashCode();
@@ -80,14 +81,18 @@ namespace Kinovea.ScreenManager
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
 
-                mnuStart.Text = ScreenManagerLang.mnuChronoStart;
-                mnuStart.Image = Properties.Drawings.chronostart;
-                mnuStop.Text = ScreenManagerLang.mnuChronoStop;
-                mnuStop.Image = Properties.Drawings.chronostop;
-                mnuHide.Text = ScreenManagerLang.mnuChronoHide;
-                mnuHide.Image = Properties.Drawings.hide;
-                //mnuCountdown.Text = ScreenManagerLang.mnuChronoCountdown;
-                contextMenu.AddRange(new ToolStripItem[] { mnuStart, mnuStop, mnuHide });
+                if (styleHelper.Clock)
+                {
+                    mnuMarkOrigin.Text = "Mark current time as time origin for this clock";
+                    contextMenu.AddRange(new ToolStripItem[] { mnuMarkOrigin });
+                }
+                else
+                {
+                    mnuStart.Text = ScreenManagerLang.mnuChronoStart;
+                    mnuStop.Text = ScreenManagerLang.mnuChronoStop;
+                    mnuHide.Text = ScreenManagerLang.mnuChronoHide;
+                    contextMenu.AddRange(new ToolStripItem[] { mnuStart, mnuStop, mnuHide });
+                }
 
                 return contextMenu;
             }
@@ -113,21 +118,6 @@ namespace Kinovea.ScreenManager
         {
             get { return invisibleTimestamp; }
         }
-        public bool CountDown
-        {
-            get { return countdown;}
-            set 
-            {
-                // We should only toggle to countdown if we do have a stop value.
-                countdown = value;
-            }
-        }
-        public bool HasTimeStop
-        {
-            // This is used to know if we can toggle to countdown or not.
-            get{ return (stopCountingTimestamp != long.MaxValue);}
-        }
-        
         // The following properties are used from the formConfigureChrono.
         public string Label
         {
@@ -152,7 +142,7 @@ namespace Kinovea.ScreenManager
         private long stopCountingTimestamp;          	// chrono stops counting. 
         private long visibleTimestamp;               	// chrono becomes visible.
         private long invisibleTimestamp;             	// chrono stops being visible.
-        private bool countdown;							// chrono works backwards. (Must have a stop)
+        private long clockOriginTimestamp;              // time origin when in clock mode.
         private string timecode;
         private string label;
         private bool showLabel;
@@ -167,7 +157,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHide = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuCountdown = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMarkOrigin = new ToolStripMenuItem();
 
         private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -181,14 +171,14 @@ namespace Kinovea.ScreenManager
             startCountingTimestamp = long.MaxValue;
             stopCountingTimestamp = long.MaxValue;
             invisibleTimestamp = long.MaxValue;
-            countdown = false;
+            clockOriginTimestamp = long.MaxValue;
             mainBackground.Rectangle = new RectangleF(p, SizeF.Empty);
 
             timecode = "error";
 
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
-
+            styleHelper.Clock = false;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Chrono");
             
@@ -205,10 +195,15 @@ namespace Kinovea.ScreenManager
             infosFading.FadingFrames = allowedFramesOver;
             infosFading.UseDefault = false;
 
+            mnuStart.Image = Properties.Drawings.chronostart;
+            mnuStop.Image = Properties.Drawings.chronostop;
+            mnuHide.Image = Properties.Drawings.hide;
+            mnuMarkOrigin.Image = Properties.Resources.marker;
+
             mnuStart.Click += mnuStart_Click;
             mnuStop.Click += mnuStop_Click;
             mnuHide.Click += mnuHide_Click;
-            mnuCountdown.Click += mnuCountdown_Click;
+            mnuMarkOrigin.Click += mnuMarkOrigin_Click;
         }
         public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
             : this(PointF.Empty, 0, 1, null)
@@ -318,7 +313,7 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
                 w.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
                 w.WriteElementString("StopCounting", (stopCountingTimestamp == long.MaxValue) ? "-1" : stopCountingTimestamp.ToString());
-                w.WriteElementString("Countdown", countdown.ToString().ToLower());
+                w.WriteElementString("ClockOrigin", (clockOriginTimestamp == long.MaxValue) ? "-1" : clockOriginTimestamp.ToString());
 
                 if (ShouldSerializeAll(filter))
                 {
@@ -401,6 +396,10 @@ namespace Kinovea.ScreenManager
                     case "Visible":
                         visibleTimestamp = timestampMapper(xmlReader.ReadElementContentAsLong(), false);
                         break;
+                    case "Invisible":
+                        long hide = xmlReader.ReadElementContentAsLong();
+                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide, false);                        
+                        break;
                     case "StartCounting":
                         long start = xmlReader.ReadElementContentAsLong(); 
                         startCountingTimestamp = (start == -1) ? long.MaxValue : timestampMapper(start, false);
@@ -409,12 +408,9 @@ namespace Kinovea.ScreenManager
                         long stop = xmlReader.ReadElementContentAsLong();
                         stopCountingTimestamp = (stop == -1) ? long.MaxValue : timestampMapper(stop, false);
                         break;
-                    case "Invisible":
-                        long hide = xmlReader.ReadElementContentAsLong();
-                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide, false);                        
-                        break;
-                    case "Countdown":
-                        countdown = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                    case "ClockOrigin":
+                        long origin = xmlReader.ReadElementContentAsLong();
+                        clockOriginTimestamp = (origin == -1) ? long.MaxValue : timestampMapper(origin, false);
                         break;
                     case "UserDuration":
                         xmlReader.ReadOuterXml();
@@ -513,13 +509,10 @@ namespace Kinovea.ScreenManager
             InvalidateFromMenu(sender);
         }
 
-        private void mnuCountdown_Click(object sender, EventArgs e)
+        private void mnuMarkOrigin_Click(object sender, EventArgs e)
         {
-            // Temporary disabled.
-
-            // Toggle countdown.
-            //CountDown = mnuChronoCountdown.Checked;
-            //InvalidateFromMenu(sender);
+            clockOriginTimestamp = CurrentTimestampFromMenu(sender);
+            InvalidateFromMenu(sender);
         }
         #endregion
 
@@ -528,7 +521,8 @@ namespace Kinovea.ScreenManager
         {
             DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Chrono"));
             style.Bind(styleHelper, "Bicolor", "color");
-            style.Bind(styleHelper, "Font", "font size");    
+            style.Bind(styleHelper, "Font", "font size");
+            style.Bind(styleHelper, "Clock", "clock");
         }
         private void UpdateLabelRectangle()
         {
@@ -539,34 +533,37 @@ namespace Kinovea.ScreenManager
                     mainBackground.X, mainBackground.Y - lblBackground.Rectangle.Height, size.Width + 11, size.Height);
             }
         }
-        private string GetTimecode(long timestamp)
+        private string GetTimecode(long currentTimestamp)
         {
-            long timestamps;
-
-            // Compute Text value depending on where we are.
-            if (timestamp > startCountingTimestamp)
+            if (styleHelper.Clock)
             {
-                if (timestamp <= stopCountingTimestamp)
-                {
-                    // After start and before stop.
-                    if(countdown)
-                        timestamps = stopCountingTimestamp - timestamp;
-                    else
-                        timestamps = timestamp - startCountingTimestamp;                		
-                }
+                // Relative clock mode: video time relative to origin.
+                // Origin is either the drawing-specific origin, or this hasn't been set yet, the video-wide origin.
+                if (clockOriginTimestamp == long.MaxValue)
+                    return parentMetadata.TimeCodeBuilder(currentTimestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
                 else
-                {
-                    // After stop. Keep max value.
-                    timestamps = countdown ? 0 : stopCountingTimestamp - startCountingTimestamp;
-                }
+                    return parentMetadata.TimeCodeBuilder(currentTimestamp - clockOriginTimestamp, TimeType.Absolute, TimecodeFormat.Unknown, false);
+            }
+
+            // Stopwatch mode.
+            long durationTimestamps;
+            if (currentTimestamp <= startCountingTimestamp)
+            {
+                // Before start. Keep min value.
+                durationTimestamps = 0;
+            }
+            else if (currentTimestamp > stopCountingTimestamp)
+            {
+                // After stop. Keep max value.
+                durationTimestamps = stopCountingTimestamp - startCountingTimestamp;
             }
             else
             {
-                // Before start. Keep min value.
-                timestamps = countdown ? stopCountingTimestamp - startCountingTimestamp : 0;
+                durationTimestamps = currentTimestamp - startCountingTimestamp;
             }
 
-            return parentMetadata.TimeCodeBuilder(timestamps, TimeType.Duration, TimecodeFormat.Unknown, false);
+            return parentMetadata.TimeCodeBuilder(durationTimestamps, TimeType.Duration, TimecodeFormat.Unknown, false);
+            
         }
         #endregion
     }

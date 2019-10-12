@@ -9,6 +9,7 @@ namespace Kinovea.ScreenManager
     {
         Unknown,
         Curved,
-        Perspective
+        Perspective,
+        Clock,
     }
 }

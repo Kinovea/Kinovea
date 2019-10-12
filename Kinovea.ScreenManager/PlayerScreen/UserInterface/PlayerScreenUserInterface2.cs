@@ -2719,7 +2719,7 @@ namespace Kinovea.ScreenManager
             {
                 CreateNewMultiDrawingItem(m_FrameServer.Metadata.AutoNumberManager);
             }
-            else if (m_ActiveTool == ToolManager.Tools["Chrono"])
+            else if (m_ActiveTool == ToolManager.Tools["Chrono"] || m_ActiveTool == ToolManager.Tools["Clock"])
             {
                 CreateNewDrawing(m_FrameServer.Metadata.ChronoManager.Id);
             }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaDrawingTool>
   <FormatVersion>1.0</FormatVersion>
-  <Id>42694435-9FCC-43C0-AC27-2FB09D8B6FDF</Id>
-  <Name>Chrono</Name>
-  <DisplayName>ToolTip_DrawingToolChrono</DisplayName>
-  <Icon>stopwatch</Icon>
+  <Id>fe07fc65-624f-4cce-8a4f-e166624c6deb</Id>
+  <Name>Clock</Name>
+  <DisplayName>Clock</DisplayName>
+  <Icon>clock_frame</Icon>
   <DrawingClass>DrawingChrono</DrawingClass>
   <Attached>false</Attached>
   <KeepToolAfterDrawingCreation>false</KeepToolAfterDrawingCreation>
@@ -17,7 +17,7 @@
       <Value>16</Value>
     </FontSize>
     <Toggle Key="clock">
-      <Value>false</Value>
+      <Value>true</Value>
       <Variant>Clock</Variant>
     </Toggle>
   </DefaultStyle>

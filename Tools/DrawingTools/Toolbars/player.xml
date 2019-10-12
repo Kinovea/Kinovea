@@ -36,9 +36,11 @@
   <entry name="Angle">
     <subentry name="Goniometer" />
     <subentry name="AngleToHorizontal" />
-    <subentry name="AngleToVertical" />    
+    <subentry name="AngleToVertical" />
   </entry>
-  <entry name="Chrono" />
+  <entry name="Chrono">
+    <subentry name="Clock" />
+  </entry>
   <entry name="Plane">
     <subentry name="Grid" />
     <subentry name="DistortionGrid" />
