@@ -175,7 +175,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExpTreeLib, Version=2.11.7207.35868, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ExpTreeLib, Version=2.11.7225.42618, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\ExpTreeLib\Net48\ExpTreeLib.dll</HintPath>
     </Reference>
@@ -327,9 +327,6 @@
     <None Include="Resources\folder_explore.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\bulletfile.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\calendar_view_month.png" />
   </ItemGroup>
   <ItemGroup>
@@ -337,6 +334,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\user-detective.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\film_small.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

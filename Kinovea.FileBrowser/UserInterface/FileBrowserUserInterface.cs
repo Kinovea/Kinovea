@@ -87,7 +87,7 @@ namespace Kinovea.FileBrowser
             tvCaptureHistory.ImageList = cameraIcons;
             cameraIcons.Images.Add("historyEntryDay", Properties.Resources.calendar_view_day);
             cameraIcons.Images.Add("historyEntryMonth", Properties.Resources.calendar_view_month);
-            cameraIcons.Images.Add("unknownCamera", Properties.Resources.bulletfile);
+            cameraIcons.Images.Add("unknownCamera", Properties.Resources.film_small);
 
             btnAddShortcut.Parent = lblFavFolders;
             btnDeleteShortcut.Parent = lblFavFolders;
@@ -904,7 +904,7 @@ namespace Kinovea.FileBrowser
             {
                 ListViewItem lvi = new ListViewItem(Path.GetFileName(filename));
                 lvi.Tag = filename;
-                lvi.ImageIndex = 3;
+                lvi.ImageIndex = 0;
                 listView.Items.Add(lvi);
             }
             

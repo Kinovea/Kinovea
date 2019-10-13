@@ -176,10 +176,7 @@ namespace Kinovea.FileBrowser
       // 
       this.imgListFiles.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListFiles.ImageStream")));
       this.imgListFiles.TransparentColor = System.Drawing.Color.Transparent;
-      this.imgListFiles.Images.SetKeyName(0, "bullet_yellow.jpg");
-      this.imgListFiles.Images.SetKeyName(1, "bullet_blue.jpg");
-      this.imgListFiles.Images.SetKeyName(2, "bullet_blue2.jpg");
-      this.imgListFiles.Images.SetKeyName(3, "bulletfile.png");
+      this.imgListFiles.Images.SetKeyName(0, "film_small.png");
       // 
       // lblVideoFiles
       // 
@@ -202,7 +199,7 @@ namespace Kinovea.FileBrowser
       this.tabPageShortcuts.Location = new System.Drawing.Point(4, 23);
       this.tabPageShortcuts.Name = "tabPageShortcuts";
       this.tabPageShortcuts.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageShortcuts.Size = new System.Drawing.Size(308, 520);
+      this.tabPageShortcuts.Size = new System.Drawing.Size(311, 533);
       this.tabPageShortcuts.TabIndex = 1;
       // 
       // splitShortcutsFiles
@@ -223,8 +220,8 @@ namespace Kinovea.FileBrowser
       // 
       this.splitShortcutsFiles.Panel2.Controls.Add(this.lblFavFiles);
       this.splitShortcutsFiles.Panel2.Controls.Add(this.lvShortcuts);
-      this.splitShortcutsFiles.Size = new System.Drawing.Size(302, 514);
-      this.splitShortcutsFiles.SplitterDistance = 300;
+      this.splitShortcutsFiles.Size = new System.Drawing.Size(305, 527);
+      this.splitShortcutsFiles.SplitterDistance = 307;
       this.splitShortcutsFiles.TabIndex = 6;
       // 
       // etShortcuts
@@ -238,7 +235,7 @@ namespace Kinovea.FileBrowser
       this.etShortcuts.RootDisplayName = "Root";
       this.etShortcuts.ShortcutsMode = true;
       this.etShortcuts.ShowRootLines = false;
-      this.etShortcuts.Size = new System.Drawing.Size(302, 265);
+      this.etShortcuts.Size = new System.Drawing.Size(305, 272);
       this.etShortcuts.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Favorites;
       this.etShortcuts.TabIndex = 13;
       this.etShortcuts.ExpTreeNodeSelected += new ExpTreeLib.ExpTree.ExpTreeNodeSelectedEventHandler(this.etShortcuts_ExpTreeNodeSelected);
@@ -256,7 +253,7 @@ namespace Kinovea.FileBrowser
       this.btnDeleteShortcut.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnDeleteShortcut.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnDeleteShortcut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnDeleteShortcut.Location = new System.Drawing.Point(279, 0);
+      this.btnDeleteShortcut.Location = new System.Drawing.Point(282, 0);
       this.btnDeleteShortcut.Name = "btnDeleteShortcut";
       this.btnDeleteShortcut.Size = new System.Drawing.Size(20, 20);
       this.btnDeleteShortcut.TabIndex = 9;
@@ -273,7 +270,7 @@ namespace Kinovea.FileBrowser
       this.btnAddShortcut.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnAddShortcut.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnAddShortcut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnAddShortcut.Location = new System.Drawing.Point(3, 0);
+      this.btnAddShortcut.Location = new System.Drawing.Point(256, 0);
       this.btnAddShortcut.Name = "btnAddShortcut";
       this.btnAddShortcut.Size = new System.Drawing.Size(20, 20);
       this.btnAddShortcut.TabIndex = 8;
@@ -289,7 +286,7 @@ namespace Kinovea.FileBrowser
       this.lblFavFolders.ForeColor = System.Drawing.Color.SteelBlue;
       this.lblFavFolders.Location = new System.Drawing.Point(0, 8);
       this.lblFavFolders.Name = "lblFavFolders";
-      this.lblFavFolders.Size = new System.Drawing.Size(302, 20);
+      this.lblFavFolders.Size = new System.Drawing.Size(305, 20);
       this.lblFavFolders.TabIndex = 6;
       this.lblFavFolders.Text = "Dossiers :   ";
       this.lblFavFolders.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -302,7 +299,7 @@ namespace Kinovea.FileBrowser
       this.lblFavFiles.ForeColor = System.Drawing.Color.SteelBlue;
       this.lblFavFiles.Location = new System.Drawing.Point(0, 0);
       this.lblFavFiles.Name = "lblFavFiles";
-      this.lblFavFiles.Size = new System.Drawing.Size(302, 20);
+      this.lblFavFiles.Size = new System.Drawing.Size(305, 20);
       this.lblFavFiles.TabIndex = 3;
       this.lblFavFiles.Text = "Video files :   ";
       this.lblFavFiles.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -320,7 +317,7 @@ namespace Kinovea.FileBrowser
       this.lvShortcuts.HideSelection = false;
       this.lvShortcuts.Location = new System.Drawing.Point(0, 23);
       this.lvShortcuts.Name = "lvShortcuts";
-      this.lvShortcuts.Size = new System.Drawing.Size(299, 184);
+      this.lvShortcuts.Size = new System.Drawing.Size(302, 190);
       this.lvShortcuts.SmallImageList = this.imgListFiles;
       this.lvShortcuts.TabIndex = 2;
       this.lvShortcuts.UseCompatibleStateImageBehavior = false;
@@ -342,7 +339,7 @@ namespace Kinovea.FileBrowser
       this.tabPageCameras.Location = new System.Drawing.Point(4, 23);
       this.tabPageCameras.Name = "tabPageCameras";
       this.tabPageCameras.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageCameras.Size = new System.Drawing.Size(308, 520);
+      this.tabPageCameras.Size = new System.Drawing.Size(311, 533);
       this.tabPageCameras.TabIndex = 2;
       this.tabPageCameras.UseVisualStyleBackColor = true;
       // 
@@ -356,7 +353,7 @@ namespace Kinovea.FileBrowser
       this.btnImportHistory.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
       this.btnImportHistory.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
       this.btnImportHistory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnImportHistory.Location = new System.Drawing.Point(6, 284);
+      this.btnImportHistory.Location = new System.Drawing.Point(285, 284);
       this.btnImportHistory.Name = "btnImportHistory";
       this.btnImportHistory.Size = new System.Drawing.Size(20, 20);
       this.btnImportHistory.TabIndex = 9;
@@ -393,7 +390,7 @@ namespace Kinovea.FileBrowser
       // 
       // btnManual
       // 
-      this.btnManual.Location = new System.Drawing.Point(1, 235);
+      this.btnManual.Location = new System.Drawing.Point(0, 235);
       this.btnManual.Name = "btnManual";
       this.btnManual.Size = new System.Drawing.Size(132, 23);
       this.btnManual.TabIndex = 4;
