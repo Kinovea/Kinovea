@@ -38,36 +38,42 @@ Changelog:
 
 0.9.1 - TBD.
     Added - Farsi locale.
-    Added - Capture automation: audio trigger.
-    Added - Capture automation: stop recording by time.
-    Added - Capture automation: run command after recording ends.
+    Added - Capture: audio trigger.
+    Added - Capture: stop recording by time.
+    Added - Capture: run command after recording ends.
     Added - Capture: support for recording to uncompressed files.
-    Added - Capture: Line scan mode for Basler and IDS modules.
-    Added - Playback: Replay folder observers. Auto load and play any new file created in a folder.
+    Added - Capture: line scan mode for Basler and IDS modules.
+    Added - Playback: replay folder observers. Auto load and play any new file created in a folder.
     Added - Playback: import numbered image sequences as videos.
-    Added - Playback: Support for demosaicing (debayering).
-    Added - Annotations: Data importer for OpenPose keypoints.
-    Added - Annotations: Data importer for SRT subtitles.
+    Added - Playback: support for demosaicing (debayering).
+    Added - Playback: ability to mark a time as the time origin.
+    Added - Annotations: clock tool.
+    Added - Annotations: data importer for OpenPose keypoints.
+    Added - Annotations: data importer for SRT subtitles.
     Improved - Capture: high performance mode for delayed recording.
     Improved - Capture: option to ignore the file overwrite warning.
     Improved - Capture: use editable textboxes for camera properties values.
-    Improved - Capture, IDS module: Support "Sensor Raw 8" stream format.
-    Improved - Capture, IDS module: Support the "Pixel clock" property.
+    Improved - Capture: IDS module now supports "Sensor Raw 8" stream format and "Pixel clock" property.
+    Improved - Capture: IDS module was updated to uEye 4.92.3.
+    Improved - Capture: Basler module was updated to Pylon 6.0.
+    Improved - Playback: the default timecode format is easier to read and more standard conformant.
+    Improved - Playback: use of 0-based numbering when showing the frame number.
+    Improved - Annotations: the stopwatch now has copy & paste support and uses the common configuration dialog.
+    Improved - Annotations: the stopwatch has more visibility options.
+    Improved - Annotations: custom tools now supports combinations of options per primitive and hidden options.
     Improved - Annotations: the coordinate system menu is now a proper toggle.
-    Improved - Annotations: custom tools format now supports multiple option per object.
-    Improved - Replaced folder selection dialogs with more usable ones.
-    Improved - Updated IDS module to uEye 4.92.3.
-    Improved - Updated Basler module to Pylon 6.0.
+    Improved - Folder selection dialogs were replaced with more usable ones.
     Fixed - Files with negative start time could not be read.
     Fixed - Support of login/password in IP camera module was broken.
-    Fixed - Update to the format converter for KVA 1.5 format (Kinovea 0.8.15).
+    Fixed - The format converter for KVA 1.5 format (Kinovea 0.8.15) was incomplete.
     Fixed - A missing DLL was causing a crash when using the camera calibration.
     Fixed - When using the Forget custom settings function, profile files from IDS camera weren't deleted.
     Fixed - An error could happen when a zip was clicked in the directory explorer.
     Fixed - In some cases only the top left of the image was visible.
-    Fixed - Rafale export dialog could yield a crash.
-    Fixed - Flashing issues when resizing screens and flickering issue when using the delay slider.
+    Fixed - Rafale export dialog could crash.
+    Fixed - Resizing screens and using the delay slider caused flashing and flickering issues.
     Fixed - The style and behavior of the record button on the dual capture controls was broken.
+    Fixed - The timecode format shown a wrong value when the fractional part rounded up to 100 hundredth of a second.
     Removed - Capture: Ability to record the composited delay image (e.g: quadrants).
     Removed - Capture: Ability to record live changes in delay value. The delay is fixed at the start of the recording.
 
