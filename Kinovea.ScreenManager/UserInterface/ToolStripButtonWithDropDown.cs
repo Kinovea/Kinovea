@@ -54,17 +54,18 @@ namespace Kinovea.ScreenManager
         private DropDownMenuContainer dropDownMenuContainer = new DropDownMenuContainer();
         private Timer longClickTimer = new Timer();
         private int selectedIndex = -1;
+        private const int longClickInterval = 250;
         private bool longClicking;
         #endregion
         
         #region Constructor
         public ToolStripButtonWithDropDown()
         {
-            longClickTimer.Interval = 300;
+            longClickTimer.Interval = longClickInterval;
             longClickTimer.Tick += longClickTimer_Tick;
         }
         #endregion
-        
+
         public void UpdateToolTip()
         {
             if(dropDownMenuContainer.Items.Count < 1 || selectedIndex < 0 || selectedIndex >= dropDownMenuContainer.Items.Count)
@@ -72,12 +73,19 @@ namespace Kinovea.ScreenManager
             
             this.ToolTipText = dropDownMenuContainer.Items[selectedIndex].Text;
         }
-        
+
         #region Events and overrides
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            longClickTimer.Enabled = true;
-            longClicking = false;
+            if (e.Button == MouseButtons.Right)
+            {
+                ShowMenu();
+            }
+            else
+            {
+                longClickTimer.Enabled = true;
+                longClicking = false;
+            }
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
@@ -116,12 +124,17 @@ namespace Kinovea.ScreenManager
         }
         private void longClickTimer_Tick(object sender, EventArgs e)
         {
+            ShowMenu();
+        }
+        #endregion
+        
+        private void ShowMenu()
+        {
             longClickTimer.Enabled = false;
             dropDownMenuContainer.Show(GetDropDownLocation());
             longClicking = true;
         }
-        #endregion
-        
+
         private Point GetDropDownLocation()
         {
             // Return the top left location of the button.
