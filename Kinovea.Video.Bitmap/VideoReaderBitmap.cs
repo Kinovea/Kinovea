@@ -77,7 +77,7 @@ namespace Kinovea.Video.Bitmap
                 return res;
             
             SetupVideoInfo(filePath);
-            workingZone = new VideoSection(0, videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame);
+            workingZone = new VideoSection(0, videoInfo.DurationTimeStamps);
             
             return res;
         }
