@@ -129,7 +129,7 @@ namespace Kinovea.FileBrowser
             mnuAddToShortcuts.Click += new EventHandler(mnuAddToShortcuts_Click);
             mnuAddToShortcuts.Visible = false;
 
-            mnuOpenAsReplayWatcher.Image = Properties.Resources.folder_magnify;
+            mnuOpenAsReplayWatcher.Image = Properties.Resources.user_detective;
             mnuOpenAsReplayWatcher.Click += new EventHandler(mnuOpenAsReplayWatcher_Click);
             mnuOpenAsReplayWatcher.Visible = true;
 

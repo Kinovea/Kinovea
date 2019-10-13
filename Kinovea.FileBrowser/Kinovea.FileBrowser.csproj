@@ -335,11 +335,14 @@
   <ItemGroup>
     <None Include="Resources\folder_magnify.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user-detective.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
-  <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />
-  <PropertyGroup>
-    <TargetFrameworkSDKToolsDirectory>$(TargetFrameworkSDKToolsDirectory)$(PlatformTarget)\</TargetFrameworkSDKToolsDirectory>
-  </PropertyGroup>
-</Target>
+    <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />
+    <PropertyGroup>
+      <TargetFrameworkSDKToolsDirectory>$(TargetFrameworkSDKToolsDirectory)$(PlatformTarget)\</TargetFrameworkSDKToolsDirectory>
+    </PropertyGroup>
+  </Target>
 </Project>

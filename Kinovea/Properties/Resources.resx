@@ -154,11 +154,14 @@
   <data name="film" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\film.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="film_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\film-small.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\folder.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="folder_magnify" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\folder_magnify.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="framenumber" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\framenumber.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="fullscreen" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fullscreen.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -174,6 +177,12 @@
   </data>
   <data name="keyboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\keyboard.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="microseconds" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\microseconds.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="milliseconds" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\milliseconds.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="percent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\percent.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -196,8 +205,14 @@
   <data name="time" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\time.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="timecode" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\timecode.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="time_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\time_edit.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="user_detective" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\user-detective.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="video" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\video.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

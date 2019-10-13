@@ -42,27 +42,21 @@ namespace Kinovea.Updater
         }
         public void ExtendMenu(ToolStrip menu)
         {
-            //Catch Options Menu (6)  
-            ToolStripMenuItem mnuCatchOptions = new ToolStripMenuItem();            
-            mnuCatchOptions.MergeIndex = 6;
-            mnuCatchOptions.MergeAction = MergeAction.MatchOnly;
+            //Catch the Help menu.  
+            ToolStripMenuItem mnuCatchParent = new ToolStripMenuItem();            
+            mnuCatchParent.MergeIndex = 7;
+            mnuCatchParent.MergeAction = MergeAction.MatchOnly;
 
-            // sep    
-            ToolStripSeparator mnuSep = new ToolStripSeparator();
-            mnuSep.MergeIndex = 2;
-            mnuSep.MergeAction = MergeAction.Insert;
-
-            //Update
             mnuCheckForUpdates.Image = Properties.Resources.software_update;
             mnuCheckForUpdates.Click += new EventHandler(mnuCheckForUpdatesOnClick);
 
-            mnuCheckForUpdates.MergeIndex = 3;
+            mnuCheckForUpdates.MergeIndex = 1;
             mnuCheckForUpdates.MergeAction = MergeAction.Insert;
 
-            mnuCatchOptions.DropDownItems.AddRange(new ToolStripItem[] { mnuSep, mnuCheckForUpdates });
+            mnuCatchParent.DropDownItems.AddRange(new ToolStripItem[] { mnuCheckForUpdates });
 
             MenuStrip ThisMenu = new MenuStrip();
-            ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchOptions });
+            ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchParent });
             ThisMenu.AllowMerge = true;
 
             ToolStripManager.Merge(ThisMenu, menu);
@@ -75,7 +69,7 @@ namespace Kinovea.Updater
 
         public void RefreshUICulture()
         {
-            mnuCheckForUpdates.Text = UpdaterLang.mnuCheckForUpdates;
+            mnuCheckForUpdates.Text = "Check for updates..."; //UpdaterLang.mnuCheckForUpdates;
         }
         public bool CloseSubModules()
         {

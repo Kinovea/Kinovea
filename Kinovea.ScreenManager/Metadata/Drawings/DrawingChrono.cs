@@ -192,7 +192,7 @@ namespace Kinovea.ScreenManager
             mnuShowAfter.Click += MnuShowAfter_Click;
             mnuHideBefore.Click += MnuHideBefore_Click;
             mnuHideAfter.Click += MnuHideAfter_Click;
-            mnuVisibility.DropDownItems.AddRange(new ToolStripItem[] { mnuShowBefore, mnuShowAfter, mnuHideBefore, mnuHideAfter });
+            mnuVisibility.DropDownItems.AddRange(new ToolStripItem[] { mnuShowBefore, mnuShowAfter, new ToolStripSeparator(),  mnuHideBefore, mnuHideAfter });
 
             mnuStart.Image = Properties.Drawings.chronostart;
             mnuStop.Image = Properties.Drawings.chronostop;

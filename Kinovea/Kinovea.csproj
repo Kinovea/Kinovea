@@ -508,6 +508,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
+    <None Include="Resources\framenumber.png" />
+    <None Include="Resources\timecode.png" />
+    <None Include="Resources\microseconds.png" />
+    <None Include="Resources\milliseconds.png" />
+    <None Include="Resources\film-small.png" />
+    <None Include="Resources\user-detective.png" />
     <None Include="Resources\folder_magnify.png" />
     <None Include="Resources\percent.png" />
     <None Include="Resources\wrench.png" />

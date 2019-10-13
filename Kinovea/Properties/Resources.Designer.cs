@@ -183,6 +183,16 @@ namespace Kinovea.Root.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap film_small {
+            get {
+                object obj = ResourceManager.GetObject("film_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap folder {
             get {
                 object obj = ResourceManager.GetObject("folder", resourceCulture);
@@ -193,9 +203,9 @@ namespace Kinovea.Root.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap folder_magnify {
+        internal static System.Drawing.Bitmap framenumber {
             get {
-                object obj = ResourceManager.GetObject("folder_magnify", resourceCulture);
+                object obj = ResourceManager.GetObject("framenumber", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -246,6 +256,26 @@ namespace Kinovea.Root.Properties {
         internal static System.Drawing.Bitmap keyboard {
             get {
                 object obj = ResourceManager.GetObject("keyboard", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap microseconds {
+            get {
+                object obj = ResourceManager.GetObject("microseconds", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap milliseconds {
+            get {
+                object obj = ResourceManager.GetObject("milliseconds", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -326,6 +356,26 @@ namespace Kinovea.Root.Properties {
         internal static System.Drawing.Bitmap time_edit {
             get {
                 object obj = ResourceManager.GetObject("time_edit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap timecode {
+            get {
+                object obj = ResourceManager.GetObject("timecode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap user_detective {
+            get {
+                object obj = ResourceManager.GetObject("user_detective", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

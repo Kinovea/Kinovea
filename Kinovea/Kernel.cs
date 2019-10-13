@@ -87,7 +87,6 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuTimecodeNormalized = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuTutorialVideos = new ToolStripMenuItem();
         private ToolStripMenuItem mnuApplicationFolder = new ToolStripMenuItem();
         private ToolStripMenuItem mnuWebsite = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAbout = new ToolStripMenuItem();
@@ -251,7 +250,7 @@ namespace Kinovea.Root
             mnuOpenFile.ShortcutKeys = Keys.Control | Keys.O;
             mnuOpenFile.Click += mnuOpenFileOnClick;
 
-            mnuOpenReplayWatcher.Image = Properties.Resources.folder_magnify;
+            mnuOpenReplayWatcher.Image = Properties.Resources.user_detective;
             mnuOpenReplayWatcher.Click += mnuOpenReplayWatcherOnClick;
 
             mnuHistory.Image = Properties.Resources.time;
@@ -340,8 +339,6 @@ namespace Kinovea.Root
             mnuHelpContents.Image = Properties.Resources.book_open;
             mnuHelpContents.ShortcutKeys = Keys.F1;
             mnuHelpContents.Click += new EventHandler(mnuHelpContents_OnClick);
-            mnuTutorialVideos.Image = Properties.Resources.film;
-            mnuTutorialVideos.Click += new EventHandler(mnuTutorialVideos_OnClick);
             mnuApplicationFolder.Image = Properties.Resources.bug;
             mnuApplicationFolder.Click += (s, e) =>
             {
@@ -355,7 +352,6 @@ namespace Kinovea.Root
 
             mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
                 mnuHelpContents, 
-                mnuTutorialVideos, 
                 new ToolStripSeparator(), 
                 mnuApplicationFolder, 
                 new ToolStripSeparator(),
@@ -424,15 +420,18 @@ namespace Kinovea.Root
             //mnuTimecodeFrames.Text = RootLang.TimeCodeFormat_Frames;
 
             mnuTimecodeClassic.Text = "[h:][mm:]ss.mm[m]";
+            mnuTimecodeClassic.Image = Properties.Resources.timecode;
             mnuTimecodeFrames.Text = "Frame number";
+            mnuTimecodeFrames.Image = Properties.Resources.framenumber;
             mnuTimecodeMilliseconds.Text = RootLang.TimeCodeFormat_Milliseconds;
+            mnuTimecodeMilliseconds.Image = Properties.Resources.milliseconds;
             mnuTimecodeMicroseconds.Text = RootLang.TimeCodeFormat_Microseconds;
+            mnuTimecodeMicroseconds.Image = Properties.Resources.microseconds;
             //mnuTimecodeTimeAndFrames.Text = RootLang.TimeCodeFormat_TimeAndFrames;
             mnuTimecodeTimeAndFrames.Text = "[h:][mm:]ss.mm[m] (Frame number)";
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;
-            mnuTutorialVideos.Text = RootLang.mnuTutorialVideos;
             mnuApplicationFolder.Text = RootLang.mnuApplicationFolder;
             mnuWebsite.Text = "www.kinovea.org";
             mnuAbout.Text = RootLang.mnuAbout;
@@ -701,6 +700,7 @@ namespace Kinovea.Root
                     continue;
                 
                 ToolStripMenuItem menu = new ToolStripMenuItem();
+                menu.Image = Properties.Resources.film_small;
                 menu.Text = Path.GetFileName(file);
                 menu.Click += (s, evt) => OpenFileFromPath(file);
                 
