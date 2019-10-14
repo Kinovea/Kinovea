@@ -56,8 +56,6 @@ namespace Kinovea.ScreenManager
         #endregion
                 
         #region Members
-        //private PlayerScreen m_PlayerScreen;
-        
         private string m_OriginalFilename;
         private double m_fSlowmotionPercentage;
         private Metadata m_Metadata;
@@ -76,13 +74,6 @@ namespace Kinovea.ScreenManager
             m_OriginalFilename = _OriginalFilename;
             
             InitializeComponent();
-            
-            if(m_fSlowmotionPercentage == 100)
-            {
-                groupOptions.Visible = false;
-                this.Height -= groupOptions.Height;
-            }
-            
             InitCulture();
         }
         private void InitCulture()
@@ -94,7 +85,6 @@ namespace Kinovea.ScreenManager
             radioSaveAnalysis.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioAnalysis;
             tbSaveAnalysis.Lines = ScreenManagerLang.dlgSaveAnalysisOrVideo_HintAnalysis.Split('#');
             
-            groupOptions.Text = ScreenManagerLang.Generic_Options;
             checkSlowMotion.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_CheckSlow;
             checkSlowMotion.Text = checkSlowMotion.Text + string.Format("{0:0.00} %).", m_fSlowmotionPercentage);
 
@@ -105,25 +95,6 @@ namespace Kinovea.ScreenManager
 
             // default option
             radioSaveAnalysis.Checked = true;
-        }
-        #endregion
-        
-        #region Public methods
-        public DialogResult Spawn()
-        {
-            // We use this method instead of directly calling ShowDialog()
-            // in order to catch for the special case where the user has no choice.
-            if(!m_Metadata.HasData && m_fSlowmotionPercentage == 100)
-            {
-                // Directly ask for a filename.
-                m_bBlendDrawings = true;
-                m_bUseSlowMotion = false;
-                return DoSaveVideo();
-            }
-            else
-            {
-                return ShowDialog();
-            }
         }
         #endregion
         

@@ -79,7 +79,6 @@ namespace Kinovea.ScreenManager
         private VideoReader videoReader;
         private HistoryStack historyStack;
         private Metadata metadata;
-        private long timeOrigin;
         private formProgressBar formProgressBar;
         private BackgroundWorker bgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
         private SaveResult saveResult;
@@ -181,7 +180,7 @@ namespace Kinovea.ScreenManager
         {
             // Let the user select what he wants to save exactly.
             formVideoExport fve = new formVideoExport(videoReader.FilePath, metadata, slowmotionPercentage);
-            if (fve.Spawn() != DialogResult.OK)
+            if (fve.ShowDialog() != DialogResult.OK)
             {
                 fve.Dispose();
                 return;
