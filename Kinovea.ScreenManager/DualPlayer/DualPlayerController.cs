@@ -143,7 +143,7 @@ namespace Kinovea.ScreenManager
             if (recovered != 2)
                 return;
 
-            InitializeSyncFromCurrentPositions();
+            InitializeSync();
         }
         #endregion
 
@@ -176,7 +176,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             // Reinit synchronization.
-            commonTimeline.Initialize(players[0], players[0].LocalTimeOriginPhysical, players[1], players[1].LocalTimeOriginPhysical);
+            commonTimeline.Initialize(players[0], players[1]);
             currentTime = commonTimeline.GetCommonTime(player, player.LocalTime);
             view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);
             view.UpdateSyncPosition(currentTime);
@@ -196,7 +196,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Synchronization must be reinitialized.
-            commonTimeline.Initialize(players[0], players[0].LocalTimeOriginPhysical, players[1], players[1].LocalTimeOriginPhysical);
+            commonTimeline.Initialize(players[0], players[1]);
 
             // TODO: Check if current time is still in bounds.
             currentTime = Math.Min(currentTime, commonTimeline.GetCommonTime(players[0], players[0].LocalTime));
@@ -541,23 +541,11 @@ namespace Kinovea.ScreenManager
 
             GotoTime(currentTime, true);
         }
-        
+
         private void InitializeSync()
         {
-            commonTimeline.Initialize(players[0], 0, players[1], 0);
-
+            commonTimeline.Initialize(players[0], players[1]);
             currentTime = 0;
-
-            view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);
-            view.UpdateSyncPosition(currentTime); 
-        }
-
-        private void InitializeSyncFromCurrentPositions()
-        {
-            commonTimeline.Initialize(players[0], players[0].LocalTimeOriginPhysical, players[1], players[1].LocalTimeOriginPhysical);
-
-            currentTime = 0;
-
             view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);
             view.UpdateSyncPosition(commonTimeline.GetCommonTime(players[0], players[0].LocalTimeOriginPhysical));
             UpdateHairLines();
@@ -565,10 +553,11 @@ namespace Kinovea.ScreenManager
 
         private void SetSyncPoint(bool intervalOnly)
         {
-            log.DebugFormat("Setting sync point. [0]:{0}, [1]{1}", players[0].LocalTime, players[1].LocalTime);
+            log.DebugFormat("Resetting time origins. [0]:{0}, [1]{1}", players[0].LocalTime, players[1].LocalTime);
+            players[0].LocalTimeOriginPhysical = players[0].LocalTime;
+            players[1].LocalTimeOriginPhysical = players[0].LocalTime;
 
-            commonTimeline.Initialize(players[0], players[0].LocalTime, players[1], players[1].LocalTime);
-
+            commonTimeline.Initialize(players[0], players[1]);
             currentTime = commonTimeline.GetCommonTime(players[0], players[0].LocalTime);
             
             view.SetupTrkFrame(0, commonTimeline.LastTime, currentTime);

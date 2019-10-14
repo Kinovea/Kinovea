@@ -21,33 +21,31 @@ namespace Kinovea.ScreenManager
         private long commonLastTime;
         private long frameTime;
 
-        public void Initialize(PlayerScreen leftPlayer, long leftSyncTime, PlayerScreen rightPlayer, long rightSyncTime)
+        /// <summary>
+        /// Initialize synchro using players current time origins.
+        /// </summary>
+        public void Initialize(PlayerScreen leftPlayer, PlayerScreen rightPlayer)
         {
-            syncInfos.Clear();
-
-            leftPlayer.LocalTimeOriginPhysical = leftSyncTime;
-            rightPlayer.LocalTimeOriginPhysical = rightSyncTime;
-
-            PlayerSyncInfo leftInfo = new PlayerSyncInfo();
-            leftInfo.SyncTime = leftSyncTime;
-            leftInfo.LastTime = leftPlayer.LocalLastTime;
-
-            PlayerSyncInfo rightInfo = new PlayerSyncInfo();
-            rightInfo.SyncTime = rightSyncTime;
-            rightInfo.LastTime = rightPlayer.LocalLastTime;
-
             // Start of each video in common time. One will start at 0 while the other will have an offset.
             long offsetLeft = 0;
             long offsetRight = 0;
 
-            if (leftSyncTime < rightSyncTime)
-                offsetLeft = rightSyncTime - leftSyncTime;
+            if (leftPlayer.LocalTimeOriginPhysical < rightPlayer.LocalTimeOriginPhysical)
+                offsetLeft = rightPlayer.LocalTimeOriginPhysical - leftPlayer.LocalTimeOriginPhysical;
             else
-                offsetRight = leftSyncTime - rightSyncTime;
+                offsetRight = leftPlayer.LocalTimeOriginPhysical - rightPlayer.LocalTimeOriginPhysical;
 
+            PlayerSyncInfo leftInfo = new PlayerSyncInfo();
+            leftInfo.SyncTime = leftPlayer.LocalTimeOriginPhysical;
+            leftInfo.LastTime = leftPlayer.LocalLastTime;
             leftInfo.Offset = offsetLeft;
+
+            PlayerSyncInfo rightInfo = new PlayerSyncInfo();
+            rightInfo.SyncTime = rightPlayer.LocalTimeOriginPhysical;
+            rightInfo.LastTime = rightPlayer.LocalLastTime;
             rightInfo.Offset = offsetRight;
 
+            syncInfos.Clear();
             syncInfos.Add(leftPlayer.Id, leftInfo);
             syncInfos.Add(rightPlayer.Id, rightInfo);
 

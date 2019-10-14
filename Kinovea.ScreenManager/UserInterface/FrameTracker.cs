@@ -231,7 +231,16 @@ namespace Kinovea.ScreenManager
             UpdateMarkersPositions();
             UpdateSyncPointMarkerPosition();
             UpdateCacheSegmentMarkerPosition();
+
+            this.syncPointTimestamp = metadata.TimeOrigin;
+            UpdateSyncPointMarkerPosition();
+
+            this.Invalidate();
         }
+
+        /// <summary>
+        /// This should only be used by the common controls.
+        /// </summary>
         public void UpdateSyncPointMarker(long syncPointTimestamp)
         {
             this.syncPointTimestamp = syncPointTimestamp;

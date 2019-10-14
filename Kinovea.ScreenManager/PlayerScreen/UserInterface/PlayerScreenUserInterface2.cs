@@ -150,8 +150,7 @@ namespace Kinovea.ScreenManager
                 if(!m_bSynched)
                 {
                     // We do not reset the time origin.
-                    trkFrame.UpdateSyncPointMarker(m_FrameServer.Metadata.TimeOrigin);
-                    trkFrame.Invalidate();
+                    trkFrame.UpdateMarkers(m_FrameServer.Metadata);
                     UpdateCurrentPositionLabel();
                     
                     m_bSyncMerge = false;
@@ -430,8 +429,6 @@ namespace Kinovea.ScreenManager
             ClearKeyframeBoxes();
             DockKeyframePanel(true);
             UpdateFramesMarkers();
-            trkFrame.UpdateSyncPointMarker(m_FrameServer.Metadata.TimeOrigin);
-            trkFrame.Invalidate();
             EnableDisableAllPlayingControls(true);
             EnableDisableDrawingTools(true);
             EnableDisableSnapshot(true);
@@ -662,8 +659,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void TimeOriginUpdatedFromSync()
         {
-            trkFrame.UpdateSyncPointMarker(m_FrameServer.Metadata.TimeOrigin);
-            trkFrame.Invalidate();
+            trkFrame.UpdateMarkers(m_FrameServer.Metadata);
             UpdateCurrentPositionLabel();
         }
 
@@ -1418,7 +1414,6 @@ namespace Kinovea.ScreenManager
         {
             // Updates the markers coordinates and redraw the trkFrame.
             trkFrame.UpdateMarkers(m_FrameServer.Metadata);
-            trkFrame.Invalidate();
         }
         private void ShowBorder(bool _bShow)
         {
@@ -1693,9 +1688,7 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Changing time origin from player. {0} -> {1}.", m_FrameServer.Metadata.TimeOrigin, m_iCurrentPosition);
 
             m_FrameServer.Metadata.TimeOrigin = m_iCurrentPosition;
-
-            trkFrame.UpdateSyncPointMarker(m_FrameServer.Metadata.TimeOrigin);
-            trkFrame.Invalidate();
+            trkFrame.UpdateMarkers(m_FrameServer.Metadata);
             UpdateCurrentPositionLabel();
 
             // This will update the timecode on keyframe boxes if the user hasn't changed the kf name.
