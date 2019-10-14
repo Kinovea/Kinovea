@@ -80,7 +80,6 @@ namespace Kinovea.ScreenManager
         #region Context menu
         private ContextMenuStrip  popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuLaunch = new ToolStripMenuItem();
-        private ToolStripSeparator mnuSep = new ToolStripSeparator();
         private ToolStripMenuItem mnuRename = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenInExplorer = new ToolStripMenuItem();
@@ -145,7 +144,6 @@ namespace Kinovea.ScreenManager
             
             popMenu.Items.AddRange(new ToolStripItem[] { 
                 mnuLaunch, 
-                mnuSep, 
                 mnuOpenInExplorer,
                 //mnuRename, 
                 new ToolStripSeparator(),
@@ -174,7 +172,6 @@ namespace Kinovea.ScreenManager
                 mnuLaunch.Dispose();
                 mnuOpenInExplorer.Dispose();
                 mnuRename.Dispose();
-                mnuSep.Dispose();
                 mnuDelete.Dispose();
                 
                 popMenu.Items.Clear();
@@ -291,7 +288,6 @@ namespace Kinovea.ScreenManager
         {
             m_IsError = true;
             mnuLaunch.Visible = false;
-            mnuSep.Visible = false;
         }
         public void SetUnselected()
         {

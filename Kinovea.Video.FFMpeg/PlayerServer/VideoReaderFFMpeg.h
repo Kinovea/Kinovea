@@ -220,7 +220,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
         static void DisposeFrame(VideoFrame^ _frame);
         static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
-        void UpdateReferenceSizes(ImageAspectRatio _ratio);
+        void UpdateReferenceSizes(ImageAspectRatio _ratio, bool verbose);
         Size FixSize(Size _size, bool sideways);
         void ResetDecodingSize();
         void PreBufferingWorker(Object^ _canceler);

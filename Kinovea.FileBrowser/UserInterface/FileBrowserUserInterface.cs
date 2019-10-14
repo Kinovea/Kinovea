@@ -163,7 +163,6 @@ namespace Kinovea.FileBrowser
             popMenuFiles.Items.AddRange(new ToolStripItem[] 
             {
                 mnuLaunch,
-                new ToolStripSeparator(), 
                 mnuLocate,
                 new ToolStripSeparator(), 
                 mnuDelete

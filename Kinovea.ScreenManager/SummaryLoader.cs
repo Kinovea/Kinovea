@@ -7,6 +7,7 @@ Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.p
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -29,6 +30,7 @@ namespace Kinovea.ScreenManager
         private List<String> filenames;
         private Size maxImageSize;
         private BackgroundWorker bgWorker = new BackgroundWorker();
+        private const int thumbnailsToExtract = 5;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public SummaryLoader(List<String> filenames, Size maxImageSize)
@@ -66,8 +68,8 @@ namespace Kinovea.ScreenManager
         	    e.Result = null;
         	    return;
         	}
-            
-            for(int i = 0; i<filenames.Count; i++)
+
+            for (int i = 0; i<filenames.Count; i++)
             {
                 if(bgWorker.CancellationPending)
                     break;
@@ -83,10 +85,8 @@ namespace Kinovea.ScreenManager
                     string extension = Path.GetExtension(filename);
                     VideoReader reader = VideoTypeManager.GetVideoReader(extension);
 
-                    int numberOfThumbnails = 5;
-                    
         			if(reader != null)
-                        summary = reader.ExtractSummary(filename, numberOfThumbnails, maxImageSize);
+                        summary = reader.ExtractSummary(filename, thumbnailsToExtract, maxImageSize);
                 }
                 catch(Exception exp)
                 {
