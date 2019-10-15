@@ -570,6 +570,8 @@ namespace Kinovea.ScreenManager
             metadata.PostSetupCapture();
 
             AllocateDelayer();
+
+            SanityCheckDisplayRectangle(cameraSummary, imageDescriptor.Width, imageDescriptor.Height);
             
             // Make sure the viewport will not use the bitmap allocated by the consumerDisplay as it is about to be disposed.
             viewportController.ForgetBitmap();
@@ -634,6 +636,21 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Delay compositor mode: {0}.", PreferencesManager.CapturePreferences.DelayCompositeConfiguration.CompositeType);
         }
         
+        /// <summary>
+        /// Ensure the display rectangle has a matching aspect ratio to the incoming images.
+        /// </summary>
+        private void SanityCheckDisplayRectangle(CameraSummary summary, int width, int height)
+        {
+            // The display rectangle can change its size based on user zoom, 
+            // but the image size can be modified from the outside in some scenarios.
+            double dspAR = (double)summary.DisplayRectangle.Width / summary.DisplayRectangle.Height;
+            double camAR = (double)width / height;
+
+            double epsilon = 1.0e-6;
+            if (Math.Abs(dspAR - camAR) > epsilon)
+                summary.DisplayRectangle = Rectangle.Empty;
+        }
+
         private void cameraManager_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)
         {
             // This handler is only hit during connection workflow when the connection preparation failed due to insufficient configuration information.
