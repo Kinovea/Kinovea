@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using Kinovea.Camera;
 using Kinovea.Services;
 using Kinovea.Camera.Languages;
+using System.IO;
 
 namespace Kinovea.Camera.IDS
 {
@@ -86,7 +87,6 @@ namespace Kinovea.Camera.IDS
             lblSystemName.Text = summary.Name;
             btnIcon.BackgroundImage = summary.Icon;
             btnReconnect.Text = "Reconnect";
-            btnReconnect.Enabled = false;
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
             if (specific == null || specific.Camera == null || !specific.Camera.IsOpened)
@@ -96,7 +96,6 @@ namespace Kinovea.Camera.IDS
             int temp;
             camera.Device.GetDeviceID(out temp);
             deviceId = (long)temp;
-
             cameraProperties = CameraPropertyManager.Read(camera, deviceId);
             
             if (cameraProperties.Count != specific.CameraProperties.Count)
@@ -140,6 +139,7 @@ namespace Kinovea.Camera.IDS
 
             // Get currently selected option.
             int currentColorMode = IDSHelper.ReadCurrentStreamFormat(camera);
+            cmbFormat.Items.Clear();
 
             foreach (IDSEnum streamFormat in streamFormats)
             {
@@ -165,6 +165,14 @@ namespace Kinovea.Camera.IDS
             AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, top + 90);
             AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro, top + 120);
             AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, top + 150);
+        }
+
+        private void RemoveCameraControls()
+        {
+            foreach (var pair in propertiesControls)
+                gbProperties.Controls.Remove(pair.Value);
+
+            propertiesControls.Clear();
         }
 
         private void AddCameraProperty(string key, string text, int top)
@@ -233,8 +241,6 @@ namespace Kinovea.Camera.IDS
             {
                 ReloadProperty("framerate");
                 ReloadProperty("exposure");
-
-                btnReconnect.Enabled = true;
             }
             else if (key == "pixelclock")
             {
@@ -257,7 +263,6 @@ namespace Kinovea.Camera.IDS
 
             selectedStreamFormat = selected;
             specificChanged = true;
-            btnReconnect.Enabled = true;
         }
 
         private void BtnReconnect_Click(object sender, EventArgs e)
@@ -288,8 +293,62 @@ namespace Kinovea.Camera.IDS
 
             ReloadProperty("framerate");
             ReloadProperty("exposure");
+        }
 
-            btnReconnect.Enabled = false;
+        private void BtnImport_Click(object sender, EventArgs e)
+        {
+            // Locate an .ini file.
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Load parameters";
+            //openFileDialog.InitialDirectory = Path.GetDirectoryName(ProfileHelper.GetProfileFilename(summary.Identifier));
+            openFileDialog.RestoreDirectory = true;
+            openFileDialog.Filter = "Ini file (*.ini)|*.ini;";
+            openFileDialog.FilterIndex = 0;
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            string filename = openFileDialog.FileName;
+            if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
+                return;
+
+            // The timing here is finnicky.
+            // connect() will start the delay buffer allocation on the current image size and start receiving frames.
+            // disconnect prevents reading the new values from the camera.
+            // Load with new sizes while the camera is streaming will fail because the buffers are wrong.
+            // So we need to load the new values with the camera opened but not streaming.
+
+            this.SuspendLayout();
+
+            disconnect();
+            ProfileHelper.Replace(summary.Identifier, filename);
+
+            // Reopen the camera but do not start grabbing.
+            uEye.Defines.Status status = camera.Init((Int32)deviceId | (Int32)uEye.Defines.DeviceEnumeration.UseDeviceID);
+            if (status != uEye.Defines.Status.SUCCESS)
+            {
+                log.ErrorFormat("Error trying to open IDS uEye camera.");
+                return;
+            }
+
+            // Load new parameters.
+            ProfileHelper.Load(camera, summary.Identifier);
+            cameraProperties = CameraPropertyManager.Read(camera, deviceId);
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            PopulateStreamFormat();
+            info.StreamFormat = this.SelectedStreamFormat.Value;
+            info.CameraProperties = cameraProperties;
+            summary.UpdateDisplayRectangle(Rectangle.Empty);
+            CameraTypeManager.UpdatedCameraSummary(summary);
+
+            // Reconnect.
+            camera.Exit();
+            connect();
+
+            // Reload UI.
+            RemoveCameraControls();
+            PopulateCameraControls();
+
+            this.ResumeLayout();
         }
     }
 }

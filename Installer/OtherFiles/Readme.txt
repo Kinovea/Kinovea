@@ -54,6 +54,7 @@ Changelog:
     Improved - Capture: option to ignore the file overwrite warning.
     Improved - Capture: use editable textboxes for camera properties values.
     Improved - Capture: IDS module now supports "Sensor Raw 8" stream format and "Pixel clock" property.
+    Improved - Capture: IDS module configuration dialog can import external parameter files.
     Improved - Capture: IDS module was updated to uEye 4.92.3.
     Improved - Capture: Basler module was updated to Pylon 6.0.
     Improved - Playback: the default timecode format is easier to read and more standard conformant.

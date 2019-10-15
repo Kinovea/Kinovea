@@ -223,7 +223,7 @@ namespace Kinovea.Camera.IDS
                 }
 
                 // Load parameter set.
-                ProfileHelper.Load(camera, ProfileHelper.GetProfileFilename(summary.Identifier));
+                ProfileHelper.Load(camera, summary.Identifier);
             }
             catch (Exception e)
             {

@@ -58,6 +58,7 @@ namespace Kinovea.Camera.IDS
       this.btnIcon = new System.Windows.Forms.Button();
       this.btnApply = new System.Windows.Forms.Button();
       this.btnReconnect = new System.Windows.Forms.Button();
+      this.btnImport = new System.Windows.Forms.Button();
       this.gbProperties.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.SuspendLayout();
@@ -177,7 +178,7 @@ namespace Kinovea.Camera.IDS
       // btnReconnect
       // 
       this.btnReconnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnReconnect.Location = new System.Drawing.Point(12, 376);
+      this.btnReconnect.Location = new System.Drawing.Point(244, 376);
       this.btnReconnect.Name = "btnReconnect";
       this.btnReconnect.Size = new System.Drawing.Size(99, 24);
       this.btnReconnect.TabIndex = 90;
@@ -185,12 +186,24 @@ namespace Kinovea.Camera.IDS
       this.btnReconnect.UseVisualStyleBackColor = true;
       this.btnReconnect.Click += new System.EventHandler(this.BtnReconnect_Click);
       // 
+      // btnImport
+      // 
+      this.btnImport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnImport.Location = new System.Drawing.Point(12, 376);
+      this.btnImport.Name = "btnImport";
+      this.btnImport.Size = new System.Drawing.Size(138, 24);
+      this.btnImport.TabIndex = 91;
+      this.btnImport.Text = "Import parameters";
+      this.btnImport.UseVisualStyleBackColor = true;
+      this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
+      // 
       // FormConfiguration
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
       this.ClientSize = new System.Drawing.Size(458, 412);
+      this.Controls.Add(this.btnImport);
       this.Controls.Add(this.btnReconnect);
       this.Controls.Add(this.btnApply);
       this.Controls.Add(this.groupBox2);
@@ -217,5 +230,6 @@ namespace Kinovea.Camera.IDS
         private System.Windows.Forms.Label lblAuto;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.Button btnReconnect;
+        private System.Windows.Forms.Button btnImport;
     }
 }
