@@ -41,14 +41,46 @@ namespace Kinovea.Video
         private static Dictionary<string, Type> m_VideoReaders = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-        
+
         #region Public methods
+
         /// <summary>
-        /// Find and register types implementing the VideoReader base class.
+        /// Register types implementing the VideoReader base class.
+        /// The readers are not instanciated at this phase.
+        /// </summary>
+        public static void LoadVideoReaders(List<Type> videoReaders)
+        {
+            try
+            {
+                foreach (Type t in videoReaders)
+                {
+                    if (!IsCompatibleType(t))
+                        continue;
+
+                    ProcessType(t);
+                }
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                foreach (Exception exception in ex.LoaderExceptions)
+                    log.ErrorFormat(exception.Message.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Look for assemblies implementing the VideoReader base class, and register them.
         /// The readers are not instanciated at this phase.
         /// </summary>
         public static void LoadVideoReaders()
         {
+            //----------------------------
+            // OBSOLETE.
+            // For some reason Assembly.LoadFrom() doesn't work for everyone.
+            // The loadFromRemoteSources tag is present in the app.exe.config but the load is still failing.
+            // Use the explicit list instead for now, since we don't really need these to be dynamically looked for.
+            // When we have true plugins we'll need to find a solution.
+            //----------------------------
+
             // Check in this assembly and assemblies in the plugin folder.
             List<Assembly> assemblies = new List<Assembly>();
             assemblies.Add(typeof(VideoTypeManager).Assembly);
@@ -65,18 +97,10 @@ namespace Kinovea.Video
                 {
                     foreach(Type t in a.GetTypes())
                     {
-                        if (t.BaseType == null || 
-                            (t.BaseType.Name != "VideoReader" && t.BaseType.Name != "VideoReaderAlwaysCaching") || 
-                            t.IsAbstract)
+                        if (!IsCompatibleType(t))
                             continue;
 
-                        // Retrieve the extension list from the attribute, add each entry to the readers dictionary.
-                        object[] attributes = t.GetCustomAttributes(typeof(SupportedExtensionsAttribute), false);
-                        if(attributes.Length > 0)
-                        {
-                           string[] extensions = ((SupportedExtensionsAttribute)attributes[0]).Extensions;
-                           RegisterExtensions(extensions, t);
-                        }
+                        ProcessType(t);
                     }
                 }
                 catch (ReflectionTypeLoadException ex)
@@ -144,6 +168,10 @@ namespace Kinovea.Video
         #endregion
         
         #region Private methods
+        private static bool IsCompatibleType(Type t)
+        {
+            return t.BaseType != null && !t.IsAbstract && (t.BaseType.Name == "VideoReader" || t.BaseType.Name == "VideoReaderAlwaysCaching");
+        }
         private static void AddAssembly(string _filename, List<Assembly> _list)
         {
             try
@@ -156,14 +184,22 @@ namespace Kinovea.Video
                 log.ErrorFormat("Could not load assembly {0} for file types plugin. {1}", _filename, e.Message);
             }
         }
-        private static void RegisterExtensions(string[] _extensions, Type _readerType)
+
+        private static void ProcessType(Type t)
         {
-            log.InfoFormat("Registering extensions for {0} : {1}", _readerType.Name, string.Join("; ", _extensions));
-            
-            foreach(string extension in _extensions)
+            // Retrieve the extension list from the attribute, add each entry to the readers dictionary.
+            object[] attributes = t.GetCustomAttributes(typeof(SupportedExtensionsAttribute), false);
+            if (attributes.Length > 0)
             {
-                if(!m_VideoReaders.ContainsKey(extension))
-                    m_VideoReaders.Add(extension, _readerType);
+                string[] extensions = ((SupportedExtensionsAttribute)attributes[0]).Extensions;
+
+                log.InfoFormat("Registering extensions for {0} : {1}", t.Name, string.Join("; ", extensions));
+
+                foreach (string extension in extensions)
+                {
+                    if (!m_VideoReaders.ContainsKey(extension))
+                        m_VideoReaders.Add(extension, t);
+                }
             }
         }
         #endregion

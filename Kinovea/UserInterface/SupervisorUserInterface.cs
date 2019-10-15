@@ -67,6 +67,8 @@ namespace Kinovea.Root
 
         public void PlugUI(UserControl fileExplorer, UserControl screenManager)
         {
+            SuspendLayout();
+
             splitWorkSpace.Panel1.Controls.Add(fileExplorer);
             splitWorkSpace.Panel2.Controls.Add(screenManager);
             
@@ -76,6 +78,8 @@ namespace Kinovea.Root
             fileExplorer.Width = splitWorkSpace.Panel1.Width;
             fileExplorer.Height = splitWorkSpace.Panel1.Height - topMargin;
             fileExplorer.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+
+            ResumeLayout();
         }
 
         #region Event Handlers

@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
         #region Constructor & initialization
         public ScreenManagerKernel()
         {
-            log.Debug("Module Construction : ScreenManager.");
+            log.Debug("Module Construction: ScreenManager.");
 
             view = new ScreenManagerUserInterface();
             view.FileLoadAsked += View_FileLoadAsked;

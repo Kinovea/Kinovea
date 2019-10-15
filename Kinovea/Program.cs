@@ -63,12 +63,12 @@ namespace Kinovea.Root
             log.Debug("Application level initialisations.");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
+
             log.Debug("Showing SplashScreen.");
             FormSplashScreen splashForm = new FormSplashScreen();
             splashForm.Show();
             splashForm.Update();
-            
+
             RootKernel kernel = new RootKernel(firstInstance);
             kernel.Prepare();
             

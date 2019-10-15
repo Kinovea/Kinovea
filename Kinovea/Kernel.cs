@@ -57,6 +57,7 @@ namespace Kinovea.Root
         private FileBrowserKernel fileBrowser;
         private UpdaterKernel updater;
         private ScreenManagerKernel screenManager;
+        private Stopwatch stopwatch = new Stopwatch();
         
         #region Menus
         private ToolStripMenuItem mnuFile = new ToolStripMenuItem();
@@ -101,10 +102,29 @@ namespace Kinovea.Root
         #region Constructor
         public RootKernel(bool firstInstance)
         {
-            CommandLineArgumentManager.Instance.ParseArguments(Environment.GetCommandLineArgs());
-            
-            VideoTypeManager.LoadVideoReaders();
-            CameraTypeManager.LoadCameraManagers();
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+                CommandLineArgumentManager.Instance.ParseArguments(args);
+
+            log.Debug("Loading video readers.");
+            List<Type> videoReaders = new List<Type>();
+            videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
+            videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
+            videoReaders.Add(typeof(Video.GIF.VideoReaderGIF));
+            videoReaders.Add(typeof(Video.SVG.VideoReaderSVG));
+            videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
+            VideoTypeManager.LoadVideoReaders(videoReaders);
+
+            log.Debug("Loading camera managers.");
+            List<Type> cameraManagers = new List<Type>();
+            cameraManagers.Add(typeof(Camera.Basler.CameraManagerBasler));
+            cameraManagers.Add(typeof(Camera.DirectShow.CameraManagerDirectShow));
+            cameraManagers.Add(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
+            cameraManagers.Add(typeof(Camera.HTTP.CameraManagerHTTP));
+            cameraManagers.Add(typeof(Camera.IDS.CameraManagerIDS));
+            CameraTypeManager.LoadCameraManagers(cameraManagers);
+
+            log.Debug("Loading tools.");
             ToolManager.LoadTools();
 
             BuildSubTree();
@@ -114,7 +134,7 @@ namespace Kinovea.Root
             NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
             NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked; 
 
-            log.Debug("Plug sub modules at UI extension points (Menus, ToolBars, StatusBAr, Windows).");
+            log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
             ExtendMenu(mainWindow.menuStrip);
             ExtendToolBar(mainWindow.toolStrip);
             ExtendStatusBar(mainWindow.statusStrip);
@@ -147,11 +167,12 @@ namespace Kinovea.Root
         #region IKernel Implementation
         public void BuildSubTree()
         {   
-            log.Debug("Building the modules tree.");            
+            stopwatch.Restart();
+            log.Debug("Building the modules tree.");
             fileBrowser = new FileBrowserKernel();
             updater = new UpdaterKernel();
             screenManager = new ScreenManagerKernel();
-            log.Debug("Modules tree built.");
+            log.DebugFormat("Modules tree built in {0} ms.", stopwatch.ElapsedMilliseconds);
         }
         public void ExtendMenu(ToolStrip menu)
         {

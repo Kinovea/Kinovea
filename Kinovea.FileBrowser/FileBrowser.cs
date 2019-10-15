@@ -46,6 +46,7 @@ namespace Kinovea.FileBrowser
         
         public FileBrowserKernel()
         {
+            log.Debug("Module Construction: File browser.");
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
             CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
             CameraTypeManager.CameraForgotten += CameraTypeManager_CameraForgotten;

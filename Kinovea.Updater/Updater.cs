@@ -35,6 +35,12 @@ namespace Kinovea.Updater
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
+        public UpdaterKernel()
+        {
+            log.Debug("Module Construction: Updater.");
+        }
+
+
         #region IKernel Implementation
         public void BuildSubTree()
         {
