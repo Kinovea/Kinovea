@@ -327,10 +327,10 @@ namespace Kinovea.Camera.DirectShow
             switch (property.Representation)
             {
                 case CameraPropertyRepresentation.LinearSlider:
-                    control = new CameraPropertyLinearView(property, text, valueMapper);
+                    control = new CameraPropertyViewLinear(property, text, valueMapper);
                     break;
                 case CameraPropertyRepresentation.LogarithmicSlider:
-                    control = new CameraPropertyLogarithmicView(property, text, valueMapper);
+                    control = new CameraPropertyViewLogarithmic(property, text, valueMapper);
                     break;
 
                 default:

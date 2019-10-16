@@ -201,10 +201,10 @@ namespace Kinovea.Camera.Basler
             switch (property.Representation)
             {
                 case CameraPropertyRepresentation.LinearSlider:
-                    control = new CameraPropertyLinearView(property, text, null);
+                    control = new CameraPropertyViewLinear(property, text, null);
                     break;
                 case CameraPropertyRepresentation.LogarithmicSlider:
-                    control = new CameraPropertyLogarithmicView(property, text, null);
+                    control = new CameraPropertyViewLogarithmic(property, text, null);
                     break;
 
                 default:

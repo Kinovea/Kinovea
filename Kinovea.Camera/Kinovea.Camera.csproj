@@ -110,6 +110,7 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -124,19 +125,25 @@
     <Compile Include="Configuration\CameraPropertyType.cs" />
     <Compile Include="CameraSummary.cs" />
     <Compile Include="CameraTypeManager.cs" />
-    <Compile Include="Configuration\CameraPropertyLinearView.cs">
+    <Compile Include="Configuration\CameraPropertyViewLinear.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Configuration\CameraPropertyLinearView.Designer.cs">
-      <DependentUpon>CameraPropertyLinearView.cs</DependentUpon>
+    <Compile Include="Configuration\CameraPropertyViewLinear.Designer.cs">
+      <DependentUpon>CameraPropertyViewLinear.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\CameraPropertyLogarithmicView.cs">
+    <Compile Include="Configuration\CameraPropertyViewLogarithmic.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Configuration\CameraPropertyLogarithmicView.Designer.cs">
-      <DependentUpon>CameraPropertyLogarithmicView.cs</DependentUpon>
+    <Compile Include="Configuration\CameraPropertyViewLogarithmic.Designer.cs">
+      <DependentUpon>CameraPropertyViewLogarithmic.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuration\AbstractControlDescriptionProvider`2.cs" />
+    <Compile Include="Configuration\CameraPropertyViewCheckbox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Configuration\CameraPropertyViewCheckbox.Designer.cs">
+      <DependentUpon>CameraPropertyViewCheckbox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Events\CameraThumbnailProducedEventArgs.cs" />
     <Compile Include="Events\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Events\CamerasDiscoveredEventArgs.cs" />
@@ -172,11 +179,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\CameraPropertyLinearView.resx">
-      <DependentUpon>CameraPropertyLinearView.cs</DependentUpon>
+    <EmbeddedResource Include="Configuration\CameraPropertyViewLinear.resx">
+      <DependentUpon>CameraPropertyViewLinear.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Configuration\CameraPropertyLogarithmicView.resx">
-      <DependentUpon>CameraPropertyLogarithmicView.cs</DependentUpon>
+    <EmbeddedResource Include="Configuration\CameraPropertyViewLogarithmic.resx">
+      <DependentUpon>CameraPropertyViewLogarithmic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\CameraPropertyViewCheckbox.resx">
+      <DependentUpon>CameraPropertyViewCheckbox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormHandshakeResult.resx">
       <DependentUpon>FormHandshakeResult.cs</DependentUpon>

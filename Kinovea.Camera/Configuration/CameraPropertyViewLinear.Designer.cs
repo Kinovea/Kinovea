@@ -1,6 +1,6 @@
 ﻿namespace Kinovea.Camera
 {
-    partial class CameraPropertyLinearView
+    partial class CameraPropertyViewLinear
     {
         /// <summary> 
         /// Required designer variable.

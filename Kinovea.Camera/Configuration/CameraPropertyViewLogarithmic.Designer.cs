@@ -1,6 +1,6 @@
 ﻿namespace Kinovea.Camera
 {
-    partial class CameraPropertyLogarithmicView
+    partial class CameraPropertyViewLogarithmic
     {
         /// <summary> 
         /// Required designer variable.
