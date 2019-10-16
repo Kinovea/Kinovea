@@ -165,6 +165,7 @@ namespace Kinovea.Camera.IDS
             AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, top + 90);
             AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro, top + 120);
             AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, top + 150);
+            AddCameraProperty("gainboost", "Gain boost", top + 180);
         }
 
         private void RemoveCameraControls()
@@ -191,6 +192,9 @@ namespace Kinovea.Camera.IDS
                     break;
                 case CameraPropertyRepresentation.LogarithmicSlider:
                     control = new CameraPropertyLogarithmicView(property, text, null);
+                    break;
+                case CameraPropertyRepresentation.Checkbox:
+                    control = new CameraPropertyViewCheckbox(property, text);
                     break;
 
                 default:

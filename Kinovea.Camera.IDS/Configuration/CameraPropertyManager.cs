@@ -26,6 +26,7 @@ namespace Kinovea.Camera.IDS
             ReadFramerate(camera, properties);
             ReadExposure(camera, properties);
             ReadGain(camera, properties);
+            ReadGainBoost(camera, properties);
 
             return properties;
         }
@@ -44,6 +45,8 @@ namespace Kinovea.Camera.IDS
                 return ReadExposure(camera, null);
             else if (key == "gain")
                 return ReadGain(camera, null);
+            else if (key == "gainboost")
+                return ReadGainBoost(camera, null);
             else
                 return null;
         }
@@ -70,6 +73,9 @@ namespace Kinovea.Camera.IDS
                         break;
                     case "gain":
                         WriteGain(camera, property);
+                        break;
+                    case "gainboost":
+                        WriteGainBoost(camera, property);
                         break;
                     case "width":
                     case "height":
@@ -114,6 +120,9 @@ namespace Kinovea.Camera.IDS
             
             if (properties.ContainsKey("gain"))
                 WriteGain(camera, properties["gain"]);
+
+            if (properties.ContainsKey("gainboost"))
+                WriteGainBoost(camera, properties["gainboost"]);
         }
 
         private static void ReadSize(uEye.Camera camera, Dictionary<string, CameraProperty> properties)
@@ -290,6 +299,32 @@ namespace Kinovea.Camera.IDS
             return p;
         }
 
+        private static CameraProperty ReadGainBoost(uEye.Camera camera, Dictionary<string, CameraProperty> properties)
+        {
+            bool supported;
+            camera.Gain.Hardware.Boost.GetSupported(out supported);
+
+            CameraProperty p = new CameraProperty();
+            p.Identifier = "gainboost";
+            p.Supported = supported;
+            p.ReadOnly = false;
+            p.Type = CameraPropertyType.Boolean;
+            p.Representation = CameraPropertyRepresentation.Checkbox;
+
+            if (supported)
+            {
+                bool enable;
+                camera.Gain.Hardware.Boost.GetEnable(out enable);
+                p.CurrentValue = enable ? "true" : "false";
+            }
+
+            if (properties != null)
+                properties.Add(p.Identifier, p);
+
+            return p;
+        }
+
+
         private static void WriteWidth(uEye.Camera camera, CameraProperty property)
         {
             Rectangle rect;
@@ -359,6 +394,17 @@ namespace Kinovea.Camera.IDS
 
             int value = (int)float.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             camera.Gain.Hardware.Scaled.SetMaster(value);
+        }
+
+        private static void WriteGainBoost(uEye.Camera camera, CameraProperty property)
+        {
+            bool supported;
+            camera.Gain.Hardware.Boost.GetSupported(out supported);
+            if (!supported)
+                return;
+
+            bool value = bool.Parse(property.CurrentValue);
+            camera.Gain.Hardware.Boost.SetEnable(value);
         }
     }
 }
