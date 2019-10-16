@@ -205,7 +205,6 @@ namespace Kinovea.Camera.IDS
         {
             uEye.Types.Range<Double> range;
             camera.Timing.Exposure.GetRange(out range);
-            //camera.Timing.Exposure.Fine.GetRange(out range); // Not supported on test camera.
 
             double currentValue;
             camera.Timing.Exposure.Get(out currentValue);
@@ -226,6 +225,26 @@ namespace Kinovea.Camera.IDS
             p.Step = step.ToString(CultureInfo.InvariantCulture);
             p.Representation = CameraPropertyRepresentation.LinearSlider;
             p.CurrentValue = val.ToString(CultureInfo.InvariantCulture);
+
+            // Note: there is also a special case for uEye XS, where the automatic control of the exposure time and gain 
+            // can only be enabled/disabled together.
+            // We don't support this here, user will have to import a parameter set.
+            
+            bool canBeAutomatic;
+            camera.AutoFeatures.Sensor.Shutter.GetSupported(out canBeAutomatic);
+            if (!canBeAutomatic)
+            {
+                p.CanBeAutomatic = false;
+                p.Automatic = false;
+            }
+            else
+            {
+                p.CanBeAutomatic = true;
+                bool automatic;
+                camera.AutoFeatures.Sensor.Shutter.GetEnable(out automatic);
+
+                p.Automatic = automatic;
+            }
 
             if (properties != null)
                 properties.Add(p.Identifier, p);
@@ -248,6 +267,22 @@ namespace Kinovea.Camera.IDS
             p.Step = "1";
             p.Representation = CameraPropertyRepresentation.LinearSlider;
             p.CurrentValue = gain.ToString(CultureInfo.InvariantCulture);
+
+            bool canBeAutomatic;
+            camera.AutoFeatures.Sensor.Gain.GetSupported(out canBeAutomatic);
+            if (!canBeAutomatic)
+            {
+                p.CanBeAutomatic = false;
+                p.Automatic = false;
+            }
+            else
+            {
+                p.CanBeAutomatic = true;
+                bool automatic;
+                camera.AutoFeatures.Sensor.Gain.GetEnable(out automatic);
+
+                p.Automatic = automatic;
+            }
 
             if (properties != null)
                 properties.Add(p.Identifier, p);
@@ -305,6 +340,11 @@ namespace Kinovea.Camera.IDS
 
         private static void WriteExposure(uEye.Camera camera, CameraProperty property)
         {
+            bool canBeAutomatic;
+            camera.AutoFeatures.Sensor.Shutter.GetSupported(out canBeAutomatic);
+            if (canBeAutomatic)
+                camera.AutoFeatures.Sensor.Shutter.SetEnable(property.Automatic);
+
             float value = float.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             value /= 1000;
             camera.Timing.Exposure.Set(value);
@@ -312,6 +352,11 @@ namespace Kinovea.Camera.IDS
 
         private static void WriteGain(uEye.Camera camera, CameraProperty property)
         {
+            bool canBeAutomatic;
+            camera.AutoFeatures.Sensor.Gain.GetSupported(out canBeAutomatic);
+            if (canBeAutomatic)
+                camera.AutoFeatures.Sensor.Gain.SetEnable(property.Automatic);
+
             int value = (int)float.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             camera.Gain.Hardware.Scaled.SetMaster(value);
         }
