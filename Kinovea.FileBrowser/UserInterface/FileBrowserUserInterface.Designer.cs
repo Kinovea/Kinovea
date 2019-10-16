@@ -262,6 +262,7 @@ namespace Kinovea.FileBrowser
       // 
       // btnAddShortcut
       // 
+      this.btnAddShortcut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnAddShortcut.BackColor = System.Drawing.Color.Transparent;
       this.btnAddShortcut.BackgroundImage = global::Kinovea.FileBrowser.Properties.Resources.folder_add;
       this.btnAddShortcut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
@@ -345,6 +346,7 @@ namespace Kinovea.FileBrowser
       // 
       // btnImportHistory
       // 
+      this.btnImportHistory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnImportHistory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
       this.btnImportHistory.BackgroundImage = global::Kinovea.FileBrowser.Properties.Resources.folder_explore;
       this.btnImportHistory.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
@@ -390,7 +392,7 @@ namespace Kinovea.FileBrowser
       // 
       // btnManual
       // 
-      this.btnManual.Location = new System.Drawing.Point(0, 235);
+      this.btnManual.Location = new System.Drawing.Point(6, 235);
       this.btnManual.Name = "btnManual";
       this.btnManual.Size = new System.Drawing.Size(132, 23);
       this.btnManual.TabIndex = 4;
