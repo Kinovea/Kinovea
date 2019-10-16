@@ -207,12 +207,14 @@ namespace Kinovea.Root
             grpRecordingMode.Text = RootLang.dlgPreferences_Capture_RecordingMode;
             //rbRecordingDisplay.Text = RootLang.dlgPreferences_Capture_RecordingMode_Display;
             //rbRecordingCamera.Text = RootLang.dlgPreferences_Capture_RecordingMode_Camera;
-            rbRecordingDisplay.Text = "Delayed: record delayed frames."; 
-            rbRecordingCamera.Text = "Camera: record real time frames.";
-            chkUncompressedVideo.Text = "Record without compression"; 
+            rbRecordingCamera.Text = "Camera: records real time frames.";
+            rbRecordingDelayed.Text = "Delayed: records delayed frames."; 
+            rbRecordingScheduled.Text = "Scheduled: records delayed frames at stop."; 
+            chkUncompressedVideo.Text = "Record without compression";
 
             rbRecordingCamera.Checked = recordingMode == CaptureRecordingMode.Camera;
-            rbRecordingDisplay.Checked = recordingMode != CaptureRecordingMode.Camera;
+            rbRecordingDelayed.Checked = recordingMode == CaptureRecordingMode.Delay;
+            rbRecordingScheduled.Checked = recordingMode == CaptureRecordingMode.Scheduled;
             chkUncompressedVideo.Checked = saveUncompressedVideo;
         }
 
@@ -456,7 +458,12 @@ namespace Kinovea.Root
         #region Tab Recording
         private void radioRecordingMode_CheckedChanged(object sender, EventArgs e)
         {
-            recordingMode = rbRecordingCamera.Checked ? CaptureRecordingMode.Camera : CaptureRecordingMode.Display;
+            if (rbRecordingCamera.Checked)
+                recordingMode = CaptureRecordingMode.Camera;
+            else if (rbRecordingDelayed.Checked)
+                recordingMode = CaptureRecordingMode.Delay;
+            else
+                recordingMode = CaptureRecordingMode.Scheduled;
         }
         private void chkUncompressedVideo_CheckedChanged(object sender, EventArgs e)
         {

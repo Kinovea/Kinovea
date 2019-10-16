@@ -65,7 +65,8 @@ namespace Kinovea.Root
       this.tabRecording = new System.Windows.Forms.TabPage();
       this.chkUncompressedVideo = new System.Windows.Forms.CheckBox();
       this.grpRecordingMode = new System.Windows.Forms.GroupBox();
-      this.rbRecordingDisplay = new System.Windows.Forms.RadioButton();
+      this.rbRecordingScheduled = new System.Windows.Forms.RadioButton();
+      this.rbRecordingDelayed = new System.Windows.Forms.RadioButton();
       this.rbRecordingCamera = new System.Windows.Forms.RadioButton();
       this.tabImageNaming = new System.Windows.Forms.TabPage();
       this.grpRightImage = new System.Windows.Forms.GroupBox();
@@ -289,6 +290,7 @@ namespace Kinovea.Root
       // 
       // tabRecording
       // 
+      this.tabRecording.Controls.Add(this.rbRecordingScheduled);
       this.tabRecording.Controls.Add(this.chkUncompressedVideo);
       this.tabRecording.Controls.Add(this.grpRecordingMode);
       this.tabRecording.Location = new System.Drawing.Point(4, 22);
@@ -302,7 +304,7 @@ namespace Kinovea.Root
       // chkUncompressedVideo
       // 
       this.chkUncompressedVideo.AutoSize = true;
-      this.chkUncompressedVideo.Location = new System.Drawing.Point(15, 133);
+      this.chkUncompressedVideo.Location = new System.Drawing.Point(15, 125);
       this.chkUncompressedVideo.Name = "chkUncompressedVideo";
       this.chkUncompressedVideo.Size = new System.Drawing.Size(152, 17);
       this.chkUncompressedVideo.TabIndex = 40;
@@ -312,36 +314,48 @@ namespace Kinovea.Root
       // 
       // grpRecordingMode
       // 
-      this.grpRecordingMode.Controls.Add(this.rbRecordingDisplay);
+      this.grpRecordingMode.Controls.Add(this.rbRecordingDelayed);
       this.grpRecordingMode.Controls.Add(this.rbRecordingCamera);
       this.grpRecordingMode.Location = new System.Drawing.Point(15, 19);
       this.grpRecordingMode.Name = "grpRecordingMode";
-      this.grpRecordingMode.Size = new System.Drawing.Size(386, 93);
+      this.grpRecordingMode.Size = new System.Drawing.Size(386, 88);
       this.grpRecordingMode.TabIndex = 40;
       this.grpRecordingMode.TabStop = false;
       this.grpRecordingMode.Text = "Recording mode";
       // 
-      // rbRecordingDisplay
+      // rbRecordingScheduled
       // 
-      this.rbRecordingDisplay.AutoSize = true;
-      this.rbRecordingDisplay.Location = new System.Drawing.Point(20, 57);
-      this.rbRecordingDisplay.Name = "rbRecordingDisplay";
-      this.rbRecordingDisplay.Size = new System.Drawing.Size(229, 17);
-      this.rbRecordingDisplay.TabIndex = 39;
-      this.rbRecordingDisplay.TabStop = true;
-      this.rbRecordingDisplay.Text = "Screen: records what is currently displayed.";
-      this.rbRecordingDisplay.UseVisualStyleBackColor = true;
-      this.rbRecordingDisplay.CheckedChanged += new System.EventHandler(this.radioRecordingMode_CheckedChanged);
+      this.rbRecordingScheduled.AutoSize = true;
+      this.rbRecordingScheduled.Location = new System.Drawing.Point(186, 187);
+      this.rbRecordingScheduled.Name = "rbRecordingScheduled";
+      this.rbRecordingScheduled.Size = new System.Drawing.Size(232, 17);
+      this.rbRecordingScheduled.TabIndex = 40;
+      this.rbRecordingScheduled.TabStop = true;
+      this.rbRecordingScheduled.Text = "Scheduled: records delayed frames on stop.";
+      this.rbRecordingScheduled.UseVisualStyleBackColor = true;
+      this.rbRecordingScheduled.Visible = false;
+      // 
+      // rbRecordingDelayed
+      // 
+      this.rbRecordingDelayed.AutoSize = true;
+      this.rbRecordingDelayed.Location = new System.Drawing.Point(20, 52);
+      this.rbRecordingDelayed.Name = "rbRecordingDelayed";
+      this.rbRecordingDelayed.Size = new System.Drawing.Size(228, 17);
+      this.rbRecordingDelayed.TabIndex = 39;
+      this.rbRecordingDelayed.TabStop = true;
+      this.rbRecordingDelayed.Text = "Delayed: records delayed frames on the fly.";
+      this.rbRecordingDelayed.UseVisualStyleBackColor = true;
+      this.rbRecordingDelayed.CheckedChanged += new System.EventHandler(this.radioRecordingMode_CheckedChanged);
       // 
       // rbRecordingCamera
       // 
       this.rbRecordingCamera.AutoSize = true;
       this.rbRecordingCamera.Location = new System.Drawing.Point(20, 25);
       this.rbRecordingCamera.Name = "rbRecordingCamera";
-      this.rbRecordingCamera.Size = new System.Drawing.Size(229, 17);
+      this.rbRecordingCamera.Size = new System.Drawing.Size(227, 17);
       this.rbRecordingCamera.TabIndex = 38;
       this.rbRecordingCamera.TabStop = true;
-      this.rbRecordingCamera.Text = "Camera: records the camera stream to disk.";
+      this.rbRecordingCamera.Text = "Camera: records real time frames on the fly.";
       this.rbRecordingCamera.UseVisualStyleBackColor = true;
       this.rbRecordingCamera.CheckedChanged += new System.EventHandler(this.radioRecordingMode_CheckedChanged);
       // 
@@ -1066,7 +1080,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.Button btnLeftVideoRoot;
         private System.Windows.Forms.TabPage tabRecording;
         private System.Windows.Forms.GroupBox grpRecordingMode;
-        private System.Windows.Forms.RadioButton rbRecordingDisplay;
+        private System.Windows.Forms.RadioButton rbRecordingDelayed;
         private System.Windows.Forms.RadioButton rbRecordingCamera;
         private System.Windows.Forms.CheckBox chkUncompressedVideo;
         private System.Windows.Forms.ComboBox cmbUncompressedVideoFormat;
@@ -1086,5 +1100,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.Button btnPostRecordCommand;
         private System.Windows.Forms.Label lblPostRecordCommand;
         private System.Windows.Forms.TextBox tbPostRecordCommand;
+        private System.Windows.Forms.RadioButton rbRecordingScheduled;
     }
 }

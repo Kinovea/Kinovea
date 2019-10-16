@@ -8,16 +8,26 @@ namespace Kinovea.Services
     public enum CaptureRecordingMode
     {
         /// <summary>
-        /// In this mode the camera feed is hooked directly to the recorder through the "Kinovea.Pipeline" framework.
-        /// This is the most direct way and offers the best performance, minimum drops.
+        /// In this mode the camera feed is hooked directly to the recorder.
+        /// Encoding and storage is done on the fly and has to match camera framerate.
+        /// In this mode the MJPEG sources will go straight to storage.
+        /// Delay buffer is fed at display framerate and may not contain all the frames.
         /// </summary>
         Camera,
 
         /// <summary>
-        /// In this mode the camera feed goes through the delay compositor before being fed back into the recorder.
-        /// This mode allows to record what is displayed on screen including delay, composition and drawings.
-        /// This mode runs on the UI thread and may experience frame drops.
+        /// In this mode the camera feed goes through the delay buffer before being pulled for recording.
+        /// Encoding and storage is done on the fly and has to match camera framerate.
+        /// Incoming frames are converted to RGB24 for storage in the delay buffer.
         /// </summary>
-        Display
+        Delay, 
+
+        /// <summary>
+        /// In this mode the camera feed goes through the delay buffer, but recording isn't done on the fly.
+        /// At the recording stop event, the feed is frozen, and frames are taken from the delay buffer 
+        /// and sent to storage all at once. This alleviates encoding perfs issues but only allow 
+        /// for time-limited recording, based on the delay buffer capacity.
+        /// </summary>
+        Scheduled
     }
 }
