@@ -31,19 +31,25 @@ namespace Kinovea.Video
         /// </summary>
         public unsafe static void Copy(Bitmap src, Bitmap dst, Rectangle rect)
         {
+            BitmapData srcData = null;
+            BitmapData dstData = null;
             try
             {
-                BitmapData srcData = src.LockBits(rect, ImageLockMode.ReadOnly, src.PixelFormat);
-                BitmapData dstData = dst.LockBits(rect, ImageLockMode.WriteOnly, dst.PixelFormat);
-
+                srcData = src.LockBits(rect, ImageLockMode.ReadOnly, src.PixelFormat);
+                dstData = dst.LockBits(rect, ImageLockMode.WriteOnly, dst.PixelFormat);
                 NativeMethods.memcpy(dstData.Scan0.ToPointer(), srcData.Scan0.ToPointer(), srcData.Height * srcData.Stride);
-
-                dst.UnlockBits(dstData);
-                src.UnlockBits(srcData);
             }
-            catch
+            catch (Exception e)
             {
-                log.ErrorFormat("Error while copying bitmaps.");
+                log.ErrorFormat("Error while copying bitmaps. {0}", e.Message);
+            }
+            finally
+            {
+                if (dstData != null)
+                    dst.UnlockBits(dstData);
+
+                if (srcData != null)
+                    src.UnlockBits(srcData);
             }
 
             return;
@@ -187,12 +193,23 @@ namespace Kinovea.Video
         /// </summary>
         public static void CopyBitmapToBuffer(Bitmap bitmap, byte[] buffer)
         {
-            Rectangle bmpRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-            BitmapData bmpData = bitmap.LockBits(bmpRectangle, ImageLockMode.ReadOnly, bitmap.PixelFormat);
+            BitmapData bmpData = null;
+            try
+            {
+                Rectangle bmpRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+                bmpData = bitmap.LockBits(bmpRectangle, ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
-            Marshal.Copy(bmpData.Scan0, buffer, 0, bmpData.Stride * bitmap.Height);
-
-            bitmap.UnlockBits(bmpData);
+                Marshal.Copy(bmpData.Scan0, buffer, 0, bmpData.Stride * bitmap.Height);
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while copying bitmap to buffer. {0}", e.Message);
+            }
+            finally
+            {
+                if (bmpData != null)
+                    bitmap.UnlockBits(bmpData);
+            }
         }
     }
 }
