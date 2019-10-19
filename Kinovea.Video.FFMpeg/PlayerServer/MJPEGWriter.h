@@ -85,8 +85,10 @@ namespace Kinovea { namespace Video { namespace FFMpeg
     private :
         SavingContext^ m_SavingContext;
         Stopwatch^ m_swEncoding;
+        Stopwatch^ m_swWrite;
         int m_frame;
         Int64 m_encodingDurationAccumulator;
+        Int64 m_writeDurationAccumulator;
         static const double megabyte = 1024 * 1024;
         static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
     };

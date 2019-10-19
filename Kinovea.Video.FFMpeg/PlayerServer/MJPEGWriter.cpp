@@ -33,6 +33,8 @@ MJPEGWriter::MJPEGWriter()
 {
     av_register_all();
     m_swEncoding = gcnew Stopwatch();
+    m_swWrite = gcnew Stopwatch();
+
 }
 MJPEGWriter::~MJPEGWriter()
 {
@@ -56,6 +58,7 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
     SaveResult result = SaveResult::Success;
     m_frame = 0;
     m_swEncoding->Start();
+    m_swWrite->Start();
 
     if (m_SavingContext != nullptr) 
         delete m_SavingContext;
@@ -256,6 +259,7 @@ SaveResult MJPEGWriter::CloseSavingContext(bool _bEncodingSuccess)
 
     SaveResult result = SaveResult::Success;
     m_swEncoding->Stop();
+    m_swWrite->Stop();
 
     if(_bEncodingSuccess)
     {
@@ -300,6 +304,8 @@ SaveResult MJPEGWriter::SaveFrame(ImageFormat format, array<System::Byte>^ buffe
 {
     SaveResult result = SaveResult::Success;
     bool saved = false;
+
+    m_frame++;
 
     switch (format)
     {
@@ -542,7 +548,6 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, a
     
     do
     {
-        m_frame++;
         Int64 then = m_swEncoding->ElapsedMilliseconds;
 
         int width = _SavingContext->outputSize.Width;
@@ -613,8 +618,6 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB32(SavingContext^ _SavingContext, a
     }
     while(false);
 
-    LogStats();
-
     if (pJpegBuffer != nullptr)
         av_free(pJpegBuffer);
 
@@ -640,7 +643,6 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
     
     do
     {
-        m_frame++;
         Int64 then = m_swEncoding->ElapsedMilliseconds;
 
         int width = _SavingContext->outputSize.Width;
@@ -711,8 +713,6 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameRGB24(SavingContext^ _SavingContext, a
     }
     while(false);
 
-    LogStats();
-
     if (pJpegBuffer != nullptr)
         av_free(pJpegBuffer);
 
@@ -738,7 +738,6 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
     
     do
     {
-        m_frame++;
         Int64 then = m_swEncoding->ElapsedMilliseconds;
 
         pin_ptr<uint8_t> pInputBuffer = &managedBuffer[0];
@@ -818,8 +817,6 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameY800(SavingContext^ _SavingContext, ar
     }
     while(false);
 
-    LogStats();
-
     if (pJpegBuffer != nullptr)
         av_free(pJpegBuffer);
 
@@ -858,6 +855,8 @@ bool MJPEGWriter::EncodeAndWriteVideoFrameJPEG(SavingContext^ _SavingContext, ar
 ///</summary>
 bool MJPEGWriter::WriteBuffer(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool bForceKeyframe)
 {
+    Int64 then = m_swWrite->ElapsedMilliseconds;
+
     AVPacket OutputPacket;
     av_init_packet(&OutputPacket);
 
@@ -878,6 +877,10 @@ bool MJPEGWriter::WriteBuffer(int _iEncodedSize, SavingContext^ _SavingContext, 
     fs->Write(managedBuffer, 0, _iEncodedSize);
     fs->Close();*/
     
+    m_writeDurationAccumulator += (m_swWrite->ElapsedMilliseconds - then);
+
+    LogStats();
+
     return true;
 }
 
@@ -894,10 +897,11 @@ void MJPEGWriter::LogStats()
     if (m_frame % 100 != 0)
         return;
     
-    log->DebugFormat("Frame #{0}. Conversion/Encoding: ~{1:0.000} ms.",
-        m_frame, (float)m_encodingDurationAccumulator / 100);
+    log->DebugFormat("Frame #{0}. Conversion/Encoding: ~{1:0.000} ms. Write: ~{2:0.000} ms.",
+        m_frame, (float)m_encodingDurationAccumulator / 100, (float)m_writeDurationAccumulator / 100);
 
     m_encodingDurationAccumulator = 0;
+    m_writeDurationAccumulator = 0;
 }
 
 int MJPEGWriter::GreatestCommonDenominator(int a, int b)
