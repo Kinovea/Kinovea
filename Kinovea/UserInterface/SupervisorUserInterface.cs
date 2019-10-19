@@ -53,6 +53,7 @@ namespace Kinovea.Root
             oldSplitterDistance = PreferencesManager.GeneralPreferences.ExplorerSplitterDistance;
             
             NotificationCenter.LaunchOpenDialog += NotificationCenter_LaunchOpenDialog;
+
         }
         private void SupervisorUserInterface_Load(object sender, EventArgs e)
         {
@@ -122,6 +123,9 @@ namespace Kinovea.Root
         }
         private void splitWorkSpace_MouseMove(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.None)
+                return;
+
             if (explorerCollapsed && splitWorkSpace.SplitterDistance > 30)
                 ExpandExplorer(false);
         }

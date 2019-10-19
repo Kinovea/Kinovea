@@ -440,7 +440,7 @@ namespace Kinovea.Root
             //mnuTimecodeClassic.Text = RootLang.TimeCodeFormat_Classic;
             //mnuTimecodeFrames.Text = RootLang.TimeCodeFormat_Frames;
 
-            mnuTimecodeClassic.Text = "[h:][mm:]ss.mm[m]";
+            mnuTimecodeClassic.Text = "[h:][mm:]ss.xx[x]";
             mnuTimecodeClassic.Image = Properties.Resources.timecode;
             mnuTimecodeFrames.Text = "Frame number";
             mnuTimecodeFrames.Image = Properties.Resources.framenumber;
@@ -449,7 +449,7 @@ namespace Kinovea.Root
             mnuTimecodeMicroseconds.Text = RootLang.TimeCodeFormat_Microseconds;
             mnuTimecodeMicroseconds.Image = Properties.Resources.microseconds;
             //mnuTimecodeTimeAndFrames.Text = RootLang.TimeCodeFormat_TimeAndFrames;
-            mnuTimecodeTimeAndFrames.Text = "[h:][mm:]ss.mm[m] (Frame number)";
+            mnuTimecodeTimeAndFrames.Text = "[h:][mm:]ss.xx[x] (Frame number)";
 
             mnuHelp.Text = RootLang.mnuHelp;
             mnuHelpContents.Text = RootLang.mnuHelpContents;

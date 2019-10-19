@@ -110,7 +110,7 @@ namespace Kinovea.Camera.DirectShow
                 cap = caps[0];
 
                 device.SetMediaTypeAndFramerate(cap.Index, (float)cap.AverageFrameRate);
-                log.DebugFormat("Device set to default configuration: Index:{0}. ({1}×{2} @ {3:0.###} fps ({4})).",
+                log.DebugFormat("Device set to default configuration: Index:{0}. ({1}x{2} @ {3:0.###} fps ({4})).",
                     cap.Index, cap.FrameSize.Width, cap.FrameSize.Height, cap.AverageFrameRate, cap.Compression);
             }
             else

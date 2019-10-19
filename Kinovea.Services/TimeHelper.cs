@@ -29,7 +29,7 @@ namespace Kinovea.Services
     {
         /// <summary>
         /// Input    : Milliseconds (Can be negative.)
-        /// Output   : [h:][mm:]ss.mm[m].
+        /// Output   : [h:][mm:]ss.xx[x].
         /// Seconds and the decimal part are always shown. 
         /// Minutes and hours are shown depending on the magnitude of passed time.
         /// 'precision' is the number of digits to show after the seconds separator. It should be based on the magintude of the framerate.
