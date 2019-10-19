@@ -115,7 +115,7 @@ namespace Kinovea.Services
         private DelayCompositeConfiguration delayCompositeConfiguration = new DelayCompositeConfiguration();
         private PhotofinishConfiguration photofinishConfiguration = new PhotofinishConfiguration();
         private CaptureAutomationConfiguration captureAutomationConfiguration = new CaptureAutomationConfiguration();
-        private float highspeedRecordingFramerateThreshold = 100;
+        private float highspeedRecordingFramerateThreshold = 150;
         private float highspeedRecordingFramerateOutput = 30;
         private string postRecordCommand;
         #endregion
