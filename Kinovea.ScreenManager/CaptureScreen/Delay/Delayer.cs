@@ -7,6 +7,7 @@ using Kinovea.Video;
 using Kinovea.Pipeline;
 using System.Drawing.Imaging;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Kinovea.ScreenManager
 {
@@ -30,14 +31,16 @@ namespace Kinovea.ScreenManager
         #region Members
         private List<Bitmap> images = new List<Bitmap>();
         private Rectangle rect;
-        private int fullCapacity;
+        private int fullCapacity;               // Total number of frames kept.
         private const int minCapacity = 12;
-        private const int reserveCapacity = 8; // number of frames kept unreachable to clients.
-        private int currentPosition = -1; // The last absolute position written to by the producer.
+        private const int reserveCapacity = 8;  // Number of frames kept unreachable to clients.
+        private int currentPosition = -1;       // Freshest absolute position written to and available to consumers.
         private bool allocated;
         private long availableMemory;
         private ImageDescriptor imageDescriptor;
         private Stopwatch stopwatch = new Stopwatch();
+        private object lockerFrame = new object();
+        private object lockerPosition = new object();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -117,12 +120,17 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public bool Push(Bitmap src)
         {
+            //-----------------------------------------
+            // Runs in UI thread in mode Camera.
+            // Runs in consumer thread in mode Delayed.
+            //-----------------------------------------
             if (!allocated)
                 return false;
 
-            currentPosition++;
-            int index = currentPosition % fullCapacity;
+            int nextPosition = currentPosition + 1;
+            int index = nextPosition % fullCapacity;
             bool pushed = false;
+
             try
             {
                 BitmapHelper.Copy(src, images[index], rect);
@@ -132,34 +140,110 @@ namespace Kinovea.ScreenManager
             {
                 log.ErrorFormat("Failed to push frame to delay buffer.");
             }
+            
+            // Lock on write just to avoid a torn read in Get().
+            lock(lockerPosition)
+                currentPosition = nextPosition;
 
             return pushed;
         }
 
         /// <summary>
-        /// Retrieve a frame from "age" frames ago without copy.
-        /// If the requested frame is no longer in memory, returns the oldest frame.
-        /// Does not have any side-effects.
+        /// Get the frame from `age` frames ago, wait for it if necessary, copy it into the passed buffer.
         /// </summary>
-        public Bitmap Get(int age)
+        public bool GetStrong(int age, byte[] buffer)
         {
-            if (!allocated || currentPosition < 0 || images.Count == 0)
+            //-----------------------------------------------
+            // Runs in the consumer thread, during recording.
+            //-----------------------------------------------
+            Bitmap image = Get(age);
+            if (image == null)
+                return false;
+
+            // The UI thread and the recording thread can ask the same image at the same time.
+            // Here we have a strong need to get the image out, so in the event the UI has 
+            // taken the lock on the image, we wait for it.
+            lock (lockerFrame)
+            {
+                BitmapHelper.CopyBitmapToBuffer(image, buffer);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Get the frame from `age` frames ago, do not wait for it if it's not available, returns a copy or null. 
+        /// </summary>
+        public Bitmap GetWeak(int age)
+        {
+            //----------------------------------------------------
+            // Runs in the UI thread, to get the image to display.
+            //----------------------------------------------------
+            Bitmap image = Get(age);
+            if (image == null)
                 return null;
 
-            if (currentPosition - age <= 0)
-                return images[0];
+            Bitmap copy = null;
 
-            if (age >= (fullCapacity - reserveCapacity))
+            // The UI thread and the recording thread can ask the same image at the same time.
+            // Here we yield priority to the recording, so if the lock is taken, we return immediately.
+            if (Monitor.TryEnter(lockerFrame, 0))
             {
-                // We are too close to the end of the buffer.
-                // This can cause issues now that the writing and reading are done on different threads.
-                // The reader (display thread) usually runs at a lower frequency than the writer (camera fps), 
-                // so having just a few frames of buffer should be largely enough.
+                try
+                {
+                    copy = BitmapHelper.Copy(image);
+                }
+                finally
+                {
+                    Monitor.Exit(lockerFrame);
+                }
+            }
+
+            return copy;
+        }
+
+        /// <summary>
+        /// Retrieve a frame from "age" frames ago. Returns the original image or null.
+        /// </summary>
+        private Bitmap Get(int age)
+        {
+            //----------------------------------------------------------
+            // Runs in UI thread in mode Camera for display (through compositor).
+            // Runs in UI thread in mode Delayed for display (through compositor).
+            // Runs in consumer thread in mode Delayed for recording.
+            //----------------------------------------------------------
+
+            if (!allocated || images.Count == 0)
+                return null;
+
+            int newestAvailablePosition = 0;
+
+            // We only lock on reading to avoid a torn read if the other thread is writing to this variable.
+            // The mechanism to avoid actually reading the frame we want while the other thread is writing to it 
+            // is the reserve capacity.
+            lock (lockerPosition)
+                newestAvailablePosition = currentPosition;
+
+            if (newestAvailablePosition < 0)
+                return null;
+
+            if (newestAvailablePosition - age <= 0)
+            {
+                // This happens if delay is set and we haven't captured these images yet.
                 return null;
             }
 
-            int position = Math.Max(currentPosition - age, (currentPosition - fullCapacity + 1));
-            return images[position % fullCapacity];
+            // The producer may currently be writing the slot after the newest available position, which may wrap around the ring buffer.
+            // we use the reserve capacity to give the writer some room.
+            // Both are only doing copies so there should be very little chance that the writer had time to 
+            // overwrite more than reserve capacity while the reader is still making one copy.
+            int requestedPosition = newestAvailablePosition - age;
+            int oldestAvailablePosition = newestAvailablePosition - (fullCapacity - 1) + reserveCapacity;
+            int finalPosition = Math.Max(requestedPosition, oldestAvailablePosition);
+
+            // We return the actual image, not a copy. The caller is responsible for doing its own copy as fast as possible.
+            // If not fast enough, the writer could catch up the reserve capacity and start writing this slot.
+            return images[finalPosition % fullCapacity];
         }
         
         /// <summary>

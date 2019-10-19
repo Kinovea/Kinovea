@@ -213,11 +213,12 @@ namespace Kinovea.ScreenManager
                 // Extract a bitmap from delayer at right delay and convert it into a frame for the writer.
                 // Note that we do not go through the delay compositer. We only support "normal" delay here.
                 // Compositers (e.g: quadrants with different ages) are only supported in display.
-                Bitmap delayedBitmap = delayer.Get(age);
-                BitmapHelper.CopyBitmapToBuffer(delayedBitmap, delayedFrame.Buffer);
-                delayedFrame.PayloadLength = delayerImageDescriptor.BufferSize;
-
-                writer.SaveFrame(delayerImageDescriptor.Format, delayedFrame.Buffer, delayedFrame.PayloadLength, delayerImageDescriptor.TopDown);
+                bool copied = delayer.GetStrong(age, delayedFrame.Buffer);
+                if (copied)
+                {
+                    delayedFrame.PayloadLength = delayerImageDescriptor.BufferSize;
+                    writer.SaveFrame(delayerImageDescriptor.Format, delayedFrame.Buffer, delayedFrame.PayloadLength, delayerImageDescriptor.TopDown);
+                }
             }
         }
 

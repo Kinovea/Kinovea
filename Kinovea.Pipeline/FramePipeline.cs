@@ -156,6 +156,7 @@ namespace Kinovea.Pipeline
 
             if (!claimed)
             {
+                // At least one consumer is still reading the slot we would like to write to.
                 lock (lockerDrops)
                     drops++;
             }

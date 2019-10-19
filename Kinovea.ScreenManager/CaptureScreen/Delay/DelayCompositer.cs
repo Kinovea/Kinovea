@@ -6,6 +6,7 @@ using Kinovea.Pipeline;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -113,7 +114,13 @@ namespace Kinovea.ScreenManager
                 return null;
 
             if (composite.Subframes == null || composite.Subframes.Count == 0)
-                return delayer.Get(age);
+            {
+                Bitmap delayed = delayer.GetWeak(age);
+                if (delayed == null)
+                    return null;
+
+                return delayed;
+            }
 
             Graphics g = Graphics.FromImage(image);
             g.InterpolationMode = InterpolationMode.NearestNeighbor;
@@ -130,7 +137,7 @@ namespace Kinovea.ScreenManager
                 if (subframeAge < 0)
                     continue;
 
-                Bitmap subframeImage = delayer.Get(subframeAge);
+                Bitmap subframeImage = delayer.GetWeak(subframeAge);
                 if (subframeImage == null)
                     continue;
 
