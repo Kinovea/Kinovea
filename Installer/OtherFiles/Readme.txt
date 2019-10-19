@@ -43,7 +43,7 @@ Changelog:
     Added - Capture: run command after recording ends.
     Added - Capture: support for recording to uncompressed files.
     Added - Capture: line scan mode for Basler and IDS modules.
-    Added - Playback: replay folder observers. Auto load and play any new file created in a folder.
+    Added - Playback: replay folder observers, auto load and play any new file created in a folder.
     Added - Playback: import numbered image sequences as videos.
     Added - Playback: support for demosaicing (debayering).
     Added - Playback: ability to mark a time as the time origin.
@@ -52,11 +52,12 @@ Changelog:
     Added - Annotations: data importer for SRT subtitles.
     Improved - Capture: high performance mode for delayed recording.
     Improved - Capture: option to ignore the file overwrite warning.
-    Improved - Capture: use editable textboxes for camera properties values.
-    Improved - Capture: IDS module now supports "Sensor Raw 8" stream format and "Pixel clock" property.
+    Improved - Capture: usage of editable textboxes for camera properties values.
+    Improved - Capture: IDS module now supports "Sensor Raw 8", "Pixel clock" and "Gain boost" properties.
     Improved - Capture: IDS module configuration dialog can import external parameter files.
     Improved - Capture: IDS module was updated to uEye 4.92.3.
     Improved - Capture: Basler module was updated to Pylon 6.0.
+    Improved - Capture: option to adjust the threshold and replacement framerate for high speed capture.
     Improved - Playback: the default timecode format is easier to read and more standard conformant.
     Improved - Playback: use of 0-based numbering when showing the frame number.
     Improved - Annotations: the stopwatch now has copy & paste support and uses the common configuration dialog.
@@ -64,6 +65,8 @@ Changelog:
     Improved - Annotations: custom tools now supports combinations of options per primitive and hidden options.
     Improved - Annotations: the coordinate system menu is now a proper toggle.
     Improved - Folder selection dialogs were replaced with more usable ones.
+    Improved - Multiple Kinovea instances are numbered in order and can have their own preferences.
+    Improved - Cold start interface loading performance was improved.
     Fixed - Files with negative start time could not be read.
     Fixed - Support of login/password in IP camera module was broken.
     Fixed - The format converter for KVA 1.5 format (Kinovea 0.8.15) was incomplete.
@@ -75,6 +78,8 @@ Changelog:
     Fixed - Resizing screens and using the delay slider caused flashing and flickering issues.
     Fixed - The style and behavior of the record button on the dual capture controls was broken.
     Fixed - The timecode format shown a wrong value when the fractional part rounded up to 100 hundredth of a second.
+    Fixed - The heuristic to load videos or cameras into existing screens was not consistent.
+    Fixed - In the IDS configuration dialog, auto-gain and auto-exposure were disabled.
     Removed - Capture: Ability to record the composited delay image (e.g: quadrants).
     Removed - Capture: Ability to record live changes in delay value. The delay is fixed at the start of the recording.
 
