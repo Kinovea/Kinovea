@@ -222,8 +222,8 @@ namespace Kinovea.Root
             chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
 
             gbHighspeedCameras.Text = "High speed cameras";
-            lblReplacementThreshold.Text = "Framerate replacement threshold:";
-            lblReplacementFramerate.Text = "Replacement framerate:";
+            lblReplacementThreshold.Text = "Framerate replacement threshold (fps):";
+            lblReplacementFramerate.Text = "Replacement framerate (fps):";
             nudReplacementThreshold.Value = (decimal)replacementFramerateThreshold;
             nudReplacementFramerate.Value = (decimal)replacementFramerate;
             // Tooltip: Starting at this capture framerate, videos will be created with the replacement framerate in their metadata.
