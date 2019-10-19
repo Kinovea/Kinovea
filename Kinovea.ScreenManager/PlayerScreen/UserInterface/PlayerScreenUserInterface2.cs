@@ -1030,7 +1030,8 @@ namespace Kinovea.ScreenManager
                 
             infobar.Visible = true;
             infobar.Dock = DockStyle.Fill;
-            infobar.UpdateValues(name, size, fps);
+            bool isReplayWatcher = m_LaunchDescription != null && m_LaunchDescription.IsReplayWatcher;
+            infobar.UpdateValues(name, size, fps, isReplayWatcher);
         }
         private void ShowHideRenderingSurface(bool _bShow)
         {
@@ -3324,12 +3325,6 @@ namespace Kinovea.ScreenManager
                 catch (Exception exp)
                 {
                     log.Error("Error while painting image.");
-                    log.Error(exp.Message);
-                    log.Error(exp.StackTrace);
-                    
-                    #if DEBUG
-                    //throw;
-                    #endif
                 }
             }
             else

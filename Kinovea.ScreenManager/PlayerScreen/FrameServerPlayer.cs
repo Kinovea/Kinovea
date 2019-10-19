@@ -253,7 +253,6 @@ namespace Kinovea.ScreenManager
                 return "0";
 
             TimecodeFormat tcf = format == TimecodeFormat.Unknown ? PreferencesManager.PlayerPreferences.TimecodeFormat : format;
-
             long actualTimestamps;
             switch (type)
             {
