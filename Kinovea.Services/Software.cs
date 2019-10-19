@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -29,12 +30,24 @@ namespace Kinovea.Services
         public static string ApplicationName { get { return "Kinovea";}}
         public static bool Experimental { get { return true;}}
         
+        public static int InstanceNumber { get; private set; }
+
         public static string Version { get; private set; }
         public static bool Is32bit { get; private set; }
         public static string SettingsDirectory { get; private set; }
         public static string ColorProfileDirectory { get; private set; }
         public static string CameraCalibrationDirectory { get; private set; }
-        public static string PreferencesFile { get; private set; }
+
+        public static string PreferencesFile
+        {
+            get
+            {
+                if (!instanceConfigured || InstanceNumber < 2 || !PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
+                    return SettingsDirectory + "Preferences.xml";
+                else
+                    return SettingsDirectory + string.Format("Preferences.{0}.xml", InstanceNumber);
+            }
+        }
         public static string TempDirectory { get; private set; }
         public static string CaptureHistoryDirectory { get; private set; }
         public static string CameraProfilesDirectory { get; private set; }
@@ -47,6 +60,7 @@ namespace Kinovea.Services
         public static string CustomToolsDirectory { get; private set; }
         public static string StandardToolsDirectory { get; private set; }
 
+        private static bool instanceConfigured;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public static void Initialize(Version version)
@@ -67,8 +81,7 @@ namespace Kinovea.Services
             TempDirectory = SettingsDirectory + "Temp\\";
             CaptureHistoryDirectory = Path.Combine(SettingsDirectory, "CaptureHistory");
             CameraProfilesDirectory = Path.Combine(SettingsDirectory, "CameraProfiles");
-            PreferencesFile = SettingsDirectory + "Preferences.xml";
-            
+
             HelpVideosDirectory = applicationDirectory + "HelpVideos\\";
             ManualsDirectory = applicationDirectory + "Manuals\\";
             XSLTDirectory = applicationDirectory + "xslt\\";
@@ -78,6 +91,13 @@ namespace Kinovea.Services
             StandardToolsDirectory = applicationDirectory + "\\DrawingTools\\Standard\\";
 
             RemoteHelpIndex = Experimental ? "http://www.kinovea.org/setup/updatebeta.xml" : "http://www.kinovea.org/setup/update.xml";
+        }
+
+        public static void ConfigureInstance()
+        {
+            Process[] instances = Process.GetProcessesByName("Kinovea");
+            InstanceNumber = instances.Length;
+            instanceConfigured = true;
         }
         
         public static void SanityCheckDirectories()

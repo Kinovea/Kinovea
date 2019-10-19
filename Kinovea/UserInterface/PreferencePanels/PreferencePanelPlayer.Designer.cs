@@ -57,6 +57,7 @@ namespace Kinovea.Root
       this.lblWorkingZoneMemory = new System.Windows.Forms.Label();
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
+      this.chkDetectImageSequences = new System.Windows.Forms.CheckBox();
       this.chkInteractiveTracker = new System.Windows.Forms.CheckBox();
       this.cmbImageFormats = new System.Windows.Forms.ComboBox();
       this.lblImageFormat = new System.Windows.Forms.Label();
@@ -78,7 +79,6 @@ namespace Kinovea.Root
       this.cmbTimeCodeFormat = new System.Windows.Forms.ComboBox();
       this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
       this.tabMemory = new System.Windows.Forms.TabPage();
-      this.chkDetectImageSequences = new System.Windows.Forms.CheckBox();
       this.grpSwitchToAnalysis.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneSeconds)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneMemory)).BeginInit();
@@ -90,7 +90,7 @@ namespace Kinovea.Root
       // 
       // chkDeinterlace
       // 
-      this.chkDeinterlace.Location = new System.Drawing.Point(29, 24);
+      this.chkDeinterlace.Location = new System.Drawing.Point(21, 167);
       this.chkDeinterlace.Name = "chkDeinterlace";
       this.chkDeinterlace.Size = new System.Drawing.Size(369, 20);
       this.chkDeinterlace.TabIndex = 23;
@@ -100,6 +100,9 @@ namespace Kinovea.Root
       // 
       // grpSwitchToAnalysis
       // 
+      this.grpSwitchToAnalysis.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.grpSwitchToAnalysis.Controls.Add(this.lblWorkingZoneLogic);
       this.grpSwitchToAnalysis.Controls.Add(this.trkWorkingZoneSeconds);
       this.grpSwitchToAnalysis.Controls.Add(this.lblWorkingZoneSeconds);
@@ -107,7 +110,7 @@ namespace Kinovea.Root
       this.grpSwitchToAnalysis.Controls.Add(this.lblWorkingZoneMemory);
       this.grpSwitchToAnalysis.Location = new System.Drawing.Point(7, 11);
       this.grpSwitchToAnalysis.Name = "grpSwitchToAnalysis";
-      this.grpSwitchToAnalysis.Size = new System.Drawing.Size(405, 193);
+      this.grpSwitchToAnalysis.Size = new System.Drawing.Size(469, 191);
       this.grpSwitchToAnalysis.TabIndex = 26;
       this.grpSwitchToAnalysis.TabStop = false;
       this.grpSwitchToAnalysis.Text = "Switch to Analysis Mode";
@@ -124,12 +127,14 @@ namespace Kinovea.Root
       // 
       // trkWorkingZoneSeconds
       // 
+      this.trkWorkingZoneSeconds.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.trkWorkingZoneSeconds.BackColor = System.Drawing.Color.White;
       this.trkWorkingZoneSeconds.Location = new System.Drawing.Point(9, 43);
       this.trkWorkingZoneSeconds.Maximum = 30;
       this.trkWorkingZoneSeconds.Minimum = 1;
       this.trkWorkingZoneSeconds.Name = "trkWorkingZoneSeconds";
-      this.trkWorkingZoneSeconds.Size = new System.Drawing.Size(386, 45);
+      this.trkWorkingZoneSeconds.Size = new System.Drawing.Size(454, 45);
       this.trkWorkingZoneSeconds.TabIndex = 38;
       this.trkWorkingZoneSeconds.Value = 12;
       this.trkWorkingZoneSeconds.ValueChanged += new System.EventHandler(this.trkWorkingZoneSeconds_ValueChanged);
@@ -145,12 +150,14 @@ namespace Kinovea.Root
       // 
       // trkWorkingZoneMemory
       // 
+      this.trkWorkingZoneMemory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.trkWorkingZoneMemory.BackColor = System.Drawing.Color.White;
       this.trkWorkingZoneMemory.Location = new System.Drawing.Point(10, 137);
       this.trkWorkingZoneMemory.Maximum = 1024;
       this.trkWorkingZoneMemory.Minimum = 16;
       this.trkWorkingZoneMemory.Name = "trkWorkingZoneMemory";
-      this.trkWorkingZoneMemory.Size = new System.Drawing.Size(390, 45);
+      this.trkWorkingZoneMemory.Size = new System.Drawing.Size(453, 45);
       this.trkWorkingZoneMemory.TabIndex = 35;
       this.trkWorkingZoneMemory.TickFrequency = 50;
       this.trkWorkingZoneMemory.Value = 512;
@@ -174,7 +181,7 @@ namespace Kinovea.Root
       this.tabSubPages.Location = new System.Drawing.Point(0, 0);
       this.tabSubPages.Name = "tabSubPages";
       this.tabSubPages.SelectedIndex = 0;
-      this.tabSubPages.Size = new System.Drawing.Size(432, 236);
+      this.tabSubPages.Size = new System.Drawing.Size(490, 322);
       this.tabSubPages.TabIndex = 27;
       // 
       // tabGeneral
@@ -188,14 +195,24 @@ namespace Kinovea.Root
       this.tabGeneral.Location = new System.Drawing.Point(4, 22);
       this.tabGeneral.Name = "tabGeneral";
       this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
-      this.tabGeneral.Size = new System.Drawing.Size(424, 210);
+      this.tabGeneral.Size = new System.Drawing.Size(482, 296);
       this.tabGeneral.TabIndex = 0;
       this.tabGeneral.Text = "General";
       this.tabGeneral.UseVisualStyleBackColor = true;
       // 
+      // chkDetectImageSequences
+      // 
+      this.chkDetectImageSequences.Location = new System.Drawing.Point(23, 27);
+      this.chkDetectImageSequences.Name = "chkDetectImageSequences";
+      this.chkDetectImageSequences.Size = new System.Drawing.Size(369, 20);
+      this.chkDetectImageSequences.TabIndex = 31;
+      this.chkDetectImageSequences.Text = "dlgPreferences_DetectImageSequences";
+      this.chkDetectImageSequences.UseVisualStyleBackColor = true;
+      this.chkDetectImageSequences.CheckedChanged += new System.EventHandler(this.ChkDetectImageSequencesCheckedChanged);
+      // 
       // chkInteractiveTracker
       // 
-      this.chkInteractiveTracker.Location = new System.Drawing.Point(29, 102);
+      this.chkInteractiveTracker.Location = new System.Drawing.Point(23, 79);
       this.chkInteractiveTracker.Name = "chkInteractiveTracker";
       this.chkInteractiveTracker.Size = new System.Drawing.Size(369, 20);
       this.chkInteractiveTracker.TabIndex = 30;
@@ -206,16 +223,16 @@ namespace Kinovea.Root
       // cmbImageFormats
       // 
       this.cmbImageFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbImageFormats.Location = new System.Drawing.Point(217, 154);
+      this.cmbImageFormats.Location = new System.Drawing.Point(300, 132);
       this.cmbImageFormats.Name = "cmbImageFormats";
-      this.cmbImageFormats.Size = new System.Drawing.Size(183, 21);
+      this.cmbImageFormats.Size = new System.Drawing.Size(154, 21);
       this.cmbImageFormats.TabIndex = 29;
       this.cmbImageFormats.SelectedIndexChanged += new System.EventHandler(this.cmbImageAspectRatio_SelectedIndexChanged);
       // 
       // lblImageFormat
       // 
       this.lblImageFormat.AutoSize = true;
-      this.lblImageFormat.Location = new System.Drawing.Point(24, 158);
+      this.lblImageFormat.Location = new System.Drawing.Point(18, 135);
       this.lblImageFormat.Name = "lblImageFormat";
       this.lblImageFormat.Size = new System.Drawing.Size(110, 13);
       this.lblImageFormat.TabIndex = 28;
@@ -223,7 +240,7 @@ namespace Kinovea.Root
       // 
       // chkLockSpeeds
       // 
-      this.chkLockSpeeds.Location = new System.Drawing.Point(29, 76);
+      this.chkLockSpeeds.Location = new System.Drawing.Point(23, 53);
       this.chkLockSpeeds.Name = "chkLockSpeeds";
       this.chkLockSpeeds.Size = new System.Drawing.Size(369, 20);
       this.chkLockSpeeds.TabIndex = 24;
@@ -251,14 +268,14 @@ namespace Kinovea.Root
       this.tabUnits.Location = new System.Drawing.Point(4, 22);
       this.tabUnits.Name = "tabUnits";
       this.tabUnits.Padding = new System.Windows.Forms.Padding(3);
-      this.tabUnits.Size = new System.Drawing.Size(424, 210);
+      this.tabUnits.Size = new System.Drawing.Size(482, 296);
       this.tabUnits.TabIndex = 2;
       this.tabUnits.Text = "Units";
       this.tabUnits.UseVisualStyleBackColor = true;
       // 
       // tbCustomLengthAb
       // 
-      this.tbCustomLengthAb.Location = new System.Drawing.Point(349, 185);
+      this.tbCustomLengthAb.Location = new System.Drawing.Point(349, 237);
       this.tbCustomLengthAb.Name = "tbCustomLengthAb";
       this.tbCustomLengthAb.Size = new System.Drawing.Size(49, 20);
       this.tbCustomLengthAb.TabIndex = 44;
@@ -266,7 +283,7 @@ namespace Kinovea.Root
       // 
       // tbCustomLengthUnit
       // 
-      this.tbCustomLengthUnit.Location = new System.Drawing.Point(205, 185);
+      this.tbCustomLengthUnit.Location = new System.Drawing.Point(205, 237);
       this.tbCustomLengthUnit.Name = "tbCustomLengthUnit";
       this.tbCustomLengthUnit.Size = new System.Drawing.Size(138, 20);
       this.tbCustomLengthUnit.TabIndex = 43;
@@ -275,7 +292,7 @@ namespace Kinovea.Root
       // lblCustomLength
       // 
       this.lblCustomLength.AutoSize = true;
-      this.lblCustomLength.Location = new System.Drawing.Point(21, 189);
+      this.lblCustomLength.Location = new System.Drawing.Point(21, 241);
       this.lblCustomLength.Name = "lblCustomLength";
       this.lblCustomLength.Size = new System.Drawing.Size(100, 13);
       this.lblCustomLength.TabIndex = 42;
@@ -284,7 +301,7 @@ namespace Kinovea.Root
       // cmbAngularAccelerationUnit
       // 
       this.cmbAngularAccelerationUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbAngularAccelerationUnit.Location = new System.Drawing.Point(177, 154);
+      this.cmbAngularAccelerationUnit.Location = new System.Drawing.Point(177, 195);
       this.cmbAngularAccelerationUnit.Name = "cmbAngularAccelerationUnit";
       this.cmbAngularAccelerationUnit.Size = new System.Drawing.Size(221, 21);
       this.cmbAngularAccelerationUnit.TabIndex = 41;
@@ -293,7 +310,7 @@ namespace Kinovea.Root
       // lblAngularAcceleration
       // 
       this.lblAngularAcceleration.AutoSize = true;
-      this.lblAngularAcceleration.Location = new System.Drawing.Point(21, 159);
+      this.lblAngularAcceleration.Location = new System.Drawing.Point(21, 200);
       this.lblAngularAcceleration.Name = "lblAngularAcceleration";
       this.lblAngularAcceleration.Size = new System.Drawing.Size(110, 13);
       this.lblAngularAcceleration.TabIndex = 40;
@@ -302,7 +319,7 @@ namespace Kinovea.Root
       // cmbAngularVelocityUnit
       // 
       this.cmbAngularVelocityUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbAngularVelocityUnit.Location = new System.Drawing.Point(177, 125);
+      this.cmbAngularVelocityUnit.Location = new System.Drawing.Point(177, 161);
       this.cmbAngularVelocityUnit.Name = "cmbAngularVelocityUnit";
       this.cmbAngularVelocityUnit.Size = new System.Drawing.Size(221, 21);
       this.cmbAngularVelocityUnit.TabIndex = 39;
@@ -311,7 +328,7 @@ namespace Kinovea.Root
       // lblAngularVelocityUnit
       // 
       this.lblAngularVelocityUnit.AutoSize = true;
-      this.lblAngularVelocityUnit.Location = new System.Drawing.Point(21, 130);
+      this.lblAngularVelocityUnit.Location = new System.Drawing.Point(21, 166);
       this.lblAngularVelocityUnit.Name = "lblAngularVelocityUnit";
       this.lblAngularVelocityUnit.Size = new System.Drawing.Size(81, 13);
       this.lblAngularVelocityUnit.TabIndex = 38;
@@ -320,7 +337,7 @@ namespace Kinovea.Root
       // cmbAngleUnit
       // 
       this.cmbAngleUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbAngleUnit.Location = new System.Drawing.Point(177, 96);
+      this.cmbAngleUnit.Location = new System.Drawing.Point(177, 127);
       this.cmbAngleUnit.Name = "cmbAngleUnit";
       this.cmbAngleUnit.Size = new System.Drawing.Size(221, 21);
       this.cmbAngleUnit.TabIndex = 37;
@@ -329,7 +346,7 @@ namespace Kinovea.Root
       // lblAngleUnit
       // 
       this.lblAngleUnit.AutoSize = true;
-      this.lblAngleUnit.Location = new System.Drawing.Point(21, 101);
+      this.lblAngleUnit.Location = new System.Drawing.Point(21, 132);
       this.lblAngleUnit.Name = "lblAngleUnit";
       this.lblAngleUnit.Size = new System.Drawing.Size(40, 13);
       this.lblAngleUnit.TabIndex = 36;
@@ -338,7 +355,7 @@ namespace Kinovea.Root
       // cmbAccelerationUnit
       // 
       this.cmbAccelerationUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbAccelerationUnit.Location = new System.Drawing.Point(177, 67);
+      this.cmbAccelerationUnit.Location = new System.Drawing.Point(177, 93);
       this.cmbAccelerationUnit.Name = "cmbAccelerationUnit";
       this.cmbAccelerationUnit.Size = new System.Drawing.Size(221, 21);
       this.cmbAccelerationUnit.TabIndex = 35;
@@ -347,7 +364,7 @@ namespace Kinovea.Root
       // lblAccelerationUnit
       // 
       this.lblAccelerationUnit.AutoSize = true;
-      this.lblAccelerationUnit.Location = new System.Drawing.Point(21, 72);
+      this.lblAccelerationUnit.Location = new System.Drawing.Point(21, 98);
       this.lblAccelerationUnit.Name = "lblAccelerationUnit";
       this.lblAccelerationUnit.Size = new System.Drawing.Size(72, 13);
       this.lblAccelerationUnit.TabIndex = 34;
@@ -356,7 +373,7 @@ namespace Kinovea.Root
       // cmbSpeedUnit
       // 
       this.cmbSpeedUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbSpeedUnit.Location = new System.Drawing.Point(177, 38);
+      this.cmbSpeedUnit.Location = new System.Drawing.Point(177, 59);
       this.cmbSpeedUnit.Name = "cmbSpeedUnit";
       this.cmbSpeedUnit.Size = new System.Drawing.Size(221, 21);
       this.cmbSpeedUnit.TabIndex = 33;
@@ -365,7 +382,7 @@ namespace Kinovea.Root
       // lblSpeedUnit
       // 
       this.lblSpeedUnit.AutoSize = true;
-      this.lblSpeedUnit.Location = new System.Drawing.Point(21, 43);
+      this.lblSpeedUnit.Location = new System.Drawing.Point(21, 64);
       this.lblSpeedUnit.Name = "lblSpeedUnit";
       this.lblSpeedUnit.Size = new System.Drawing.Size(50, 13);
       this.lblSpeedUnit.TabIndex = 32;
@@ -374,7 +391,7 @@ namespace Kinovea.Root
       // cmbTimeCodeFormat
       // 
       this.cmbTimeCodeFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbTimeCodeFormat.Location = new System.Drawing.Point(177, 9);
+      this.cmbTimeCodeFormat.Location = new System.Drawing.Point(177, 25);
       this.cmbTimeCodeFormat.Name = "cmbTimeCodeFormat";
       this.cmbTimeCodeFormat.Size = new System.Drawing.Size(221, 21);
       this.cmbTimeCodeFormat.TabIndex = 28;
@@ -383,7 +400,7 @@ namespace Kinovea.Root
       // lblTimeMarkersFormat
       // 
       this.lblTimeMarkersFormat.AutoSize = true;
-      this.lblTimeMarkersFormat.Location = new System.Drawing.Point(21, 12);
+      this.lblTimeMarkersFormat.Location = new System.Drawing.Point(21, 28);
       this.lblTimeMarkersFormat.Name = "lblTimeMarkersFormat";
       this.lblTimeMarkersFormat.Size = new System.Drawing.Size(108, 13);
       this.lblTimeMarkersFormat.TabIndex = 27;
@@ -395,20 +412,10 @@ namespace Kinovea.Root
       this.tabMemory.Location = new System.Drawing.Point(4, 22);
       this.tabMemory.Name = "tabMemory";
       this.tabMemory.Padding = new System.Windows.Forms.Padding(3);
-      this.tabMemory.Size = new System.Drawing.Size(424, 210);
+      this.tabMemory.Size = new System.Drawing.Size(482, 296);
       this.tabMemory.TabIndex = 1;
       this.tabMemory.Text = "Memory";
       this.tabMemory.UseVisualStyleBackColor = true;
-      // 
-      // chkDetectImageSequences
-      // 
-      this.chkDetectImageSequences.Location = new System.Drawing.Point(29, 50);
-      this.chkDetectImageSequences.Name = "chkDetectImageSequences";
-      this.chkDetectImageSequences.Size = new System.Drawing.Size(369, 20);
-      this.chkDetectImageSequences.TabIndex = 31;
-      this.chkDetectImageSequences.Text = "dlgPreferences_DetectImageSequences";
-      this.chkDetectImageSequences.UseVisualStyleBackColor = true;
-      this.chkDetectImageSequences.CheckedChanged += new System.EventHandler(this.ChkDetectImageSequencesCheckedChanged);
       // 
       // PreferencePanelPlayer
       // 
@@ -417,7 +424,7 @@ namespace Kinovea.Root
       this.BackColor = System.Drawing.Color.Gainsboro;
       this.Controls.Add(this.tabSubPages);
       this.Name = "PreferencePanelPlayer";
-      this.Size = new System.Drawing.Size(432, 236);
+      this.Size = new System.Drawing.Size(490, 322);
       this.grpSwitchToAnalysis.ResumeLayout(false);
       this.grpSwitchToAnalysis.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneSeconds)).EndInit();

@@ -92,7 +92,7 @@ namespace Kinovea.Root
             // Since we use a decibel range of 60, it maps to a power ratio of 1000:1 between the highest and lowest amplitude,
             // thus quantizing this to 1000 steps seems as good as anything else.
             decibelRange = 60;
-            thresholdFactor = (int)Math.Pow(10, 60 / 20);
+            thresholdFactor = (int)Math.Pow(10, decibelRange / 20);
 
             ImportPreferences();
             InitInputMonitor();
@@ -174,9 +174,6 @@ namespace Kinovea.Root
 
             lblFramerate.Text = RootLang.dlgPreferences_Capture_lblForcedFramerate;
             tbFramerate.Text = string.Format("{0:0.###}", displaySynchronizationFramerate);
-
-            chkIgnoreOverwriteWarning.Text = "Ignore file overwrite warning";
-            chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
         }
 
         private void InitPageMemory()
@@ -184,8 +181,8 @@ namespace Kinovea.Root
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
 
             // Max allocation of memory based on bitness and physical memory.
-            ComputerInfo ci = new ComputerInfo();
             ulong megabytes = 1024 * 1024;
+            ComputerInfo ci = new ComputerInfo();
             int maxMemory = (int)(ci.TotalPhysicalMemory / megabytes);
             int thresholdLargeMemory = 3072;
             int reserve = 2048;
@@ -210,12 +207,15 @@ namespace Kinovea.Root
             rbRecordingCamera.Text = "Camera: records real time frames.";
             rbRecordingDelayed.Text = "Delayed: records delayed frames."; 
             rbRecordingScheduled.Text = "Scheduled: records delayed frames at stop."; 
-            chkUncompressedVideo.Text = "Record without compression";
+            chkUncompressedVideo.Text = "Record uncompressed video";
 
             rbRecordingCamera.Checked = recordingMode == CaptureRecordingMode.Camera;
             rbRecordingDelayed.Checked = recordingMode == CaptureRecordingMode.Delay;
             rbRecordingScheduled.Checked = recordingMode == CaptureRecordingMode.Scheduled;
             chkUncompressedVideo.Checked = saveUncompressedVideo;
+
+            chkIgnoreOverwriteWarning.Text = "Ignore file overwrite warning";
+            chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
         }
 
         private void InitPageImageNaming()
@@ -285,9 +285,10 @@ namespace Kinovea.Root
             }
 
             lblAudioTriggerThreshold.Text = "Trigger threshold:";
-            tbAudioTriggerThreshold.Text = string.Format("{0}", audioTriggerThreshold * thresholdFactor);
             vumeter.Threshold = audioTriggerThreshold;
             vumeter.DecibelRange = decibelRange;
+            nudAudioTriggerThreshold.Value = (decimal)vumeter.ThresholdLinear * decibelRange;
+            nudAudioTriggerThreshold.Maximum = decibelRange;
 
             lblRecordingTime.Text = "Stop recording by duration (s):";
             tbRecordingTime.Text = string.Format("{0:0.###}", recordingSeconds);
@@ -349,10 +350,6 @@ namespace Kinovea.Root
             bool parsed = double.TryParse(tbFramerate.Text, out value);
             if (parsed)
                 displaySynchronizationFramerate = value;
-        }
-        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
-        {
-            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
         }
         #endregion
 
@@ -469,6 +466,10 @@ namespace Kinovea.Root
         {
             saveUncompressedVideo = chkUncompressedVideo.Checked;
         }
+        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
+        {
+            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
+        }
         #endregion
 
         #region Tab Automation
@@ -495,23 +496,19 @@ namespace Kinovea.Root
             audioTriggerHits = 0;
             UpdateHits();
         }
-        private void tbAudioTriggerThreshold_TextChanged(object sender, EventArgs e)
+        private void NudAudioTriggerThreshold_ValueChanged(object sender, EventArgs e)
         {
-            // Parse in current culture.
-            //float value;
-            //bool parsed = float.TryParse(tbAudioTriggerThreshold.Text, out value);
-            //if (parsed)
-            //    audioTriggerThreshold = value / 100;
-
-            //inputMonitor.Threshold = audioTriggerThreshold;
-            //audioTriggerHits = 0;
-            //UpdateHits();
+            vumeter.ThresholdLinear = (float)nudAudioTriggerThreshold.Value / decibelRange;
+            audioTriggerThreshold = vumeter.Threshold;
+            inputMonitor.Threshold = audioTriggerThreshold;
+            audioTriggerHits = 0;
+            UpdateHits();
         }
         private void Vumeter_ThresholdChanged(object sender, EventArgs e)
         {
             audioTriggerThreshold = vumeter.Threshold;
             inputMonitor.Threshold = audioTriggerThreshold;
-            tbAudioTriggerThreshold.Text = string.Format("{0}", (int)(audioTriggerThreshold * thresholdFactor));
+            nudAudioTriggerThreshold.Text = string.Format("{0:0.0}", vumeter.ThresholdLinear * decibelRange);
             audioTriggerHits = 0;
             UpdateHits();
         }
@@ -556,7 +553,6 @@ namespace Kinovea.Root
         private void InputMonitor_LevelChanged(object sender, float e)
         {
             int level = (int)(e * 100);
-            lblLevel.Text = level.ToString();
             vumeter.Amplitude = e;
         }
 
@@ -569,7 +565,7 @@ namespace Kinovea.Root
             lblAudioTriggerHits.Enabled = enabled;
             cmbInputDevice.Enabled = enabled;
             lblAudioTriggerThreshold.Enabled = enabled;
-            tbAudioTriggerThreshold.Enabled = enabled;
+            nudAudioTriggerThreshold.Enabled = enabled;
             vumeter.Enabled = enabled;
 
             if (!enabled)

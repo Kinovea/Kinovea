@@ -108,7 +108,7 @@ namespace Kinovea.Root
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDrawOnPlay.Text = RootLang.dlgPreferences_Drawings_chkDrawOnPlay;
             chkEnableFiltering.Text = RootLang.dlgPreferences_Drawings_chkEnableFiltering;
-            chkCustomToolsDebug.Text = RootLang.dlgPreferences_Drawings_chkCustomToolsDebugMode;
+            chkCustomToolsDebug.Text = "Enable custom tools debug mode"; //RootLang.dlgPreferences_Drawings_chkCustomToolsDebugMode;
 
             chkDrawOnPlay.Checked = drawOnPlay;
             chkEnableFiltering.Checked = enableFiltering;

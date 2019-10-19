@@ -60,7 +60,7 @@ namespace Kinovea.Root
         private string uiCultureName;
         private int maxRecentFiles;
         private bool allowMultipleInstances;
-
+        private bool instancesOwnPreferences;
         #endregion
         
         #region Construction & Initialization
@@ -89,6 +89,7 @@ namespace Kinovea.Root
             uiCultureName = LanguageManager.GetCurrentCultureName();
             maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
             allowMultipleInstances = PreferencesManager.GeneralPreferences.AllowMultipleInstances;
+            instancesOwnPreferences = PreferencesManager.GeneralPreferences.InstancesOwnPreferences;
         }
         private void InitPage()
         {
@@ -108,6 +109,19 @@ namespace Kinovea.Root
 
             chkAllowMultipleInstances.Text = RootLang.dlgPreferences_Drawings_chkAllowMultipleInstances;
             chkAllowMultipleInstances.Checked = allowMultipleInstances;
+            chkInstancesPreferences.Text = "Instances have their own preferences";
+            chkInstancesPreferences.Checked = instancesOwnPreferences;
+            chkInstancesPreferences.Enabled = allowMultipleInstances;
+
+            if (Software.InstanceNumber > 1 && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
+            {
+                // These options are only read from the master prefs, 
+                // so there is no point allowing the user to change them here.
+                // The only way for InstancesOwnPreferences to be false is if it was false in the master, 
+                // meaning we are still using the master, in which case we do allow changes.
+                chkAllowMultipleInstances.Enabled = false;
+                chkInstancesPreferences.Enabled = false;
+            }
         }
         private void SelectCurrentLanguage()
         {
@@ -141,6 +155,11 @@ namespace Kinovea.Root
         private void chkAllowMultipleInstances_CheckedChanged(object sender, EventArgs e)
         {
             allowMultipleInstances = chkAllowMultipleInstances.Checked;
+            chkInstancesPreferences.Enabled = allowMultipleInstances;
+        }
+        private void ChkInstancesPreferences_CheckedChanged(object sender, EventArgs e)
+        {
+            instancesOwnPreferences = chkInstancesPreferences.Checked;
         }
         #endregion
 
@@ -149,6 +168,7 @@ namespace Kinovea.Root
             PreferencesManager.GeneralPreferences.SetCulture(uiCultureName);
             PreferencesManager.FileExplorerPreferences.MaxRecentFiles = maxRecentFiles;
             PreferencesManager.GeneralPreferences.AllowMultipleInstances = allowMultipleInstances;
+            PreferencesManager.GeneralPreferences.InstancesOwnPreferences = instancesOwnPreferences;
         }
     }
 }

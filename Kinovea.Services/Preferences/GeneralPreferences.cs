@@ -50,6 +50,12 @@ namespace Kinovea.Services
             set { allowMultipleInstances = value; }
         }
 
+        public bool InstancesOwnPreferences
+        {
+            get { return instancesOwnPreferences; }
+            set { instancesOwnPreferences = value; }
+        }
+
         public int PreferencePage
         {
             get { return preferencePage; }
@@ -59,7 +65,8 @@ namespace Kinovea.Services
         private string uiCultureName;
         private bool explorerVisible = true;
         private int explorerSplitterDistance = 250;
-        private bool allowMultipleInstances = false;
+        private bool allowMultipleInstances = true;
+        private bool instancesOwnPreferences = true;
         private int preferencePage;
 
         public GeneralPreferences()
@@ -92,6 +99,7 @@ namespace Kinovea.Services
             writer.WriteElementString("ExplorerVisible", explorerVisible ? "true" : "false");
             writer.WriteElementString("ExplorerSplitterDistance", explorerSplitterDistance.ToString());
             writer.WriteElementString("AllowMultipleInstances", allowMultipleInstances ? "true" : "false");
+            writer.WriteElementString("InstancesOwnPreferences", instancesOwnPreferences ? "true" : "false");
             writer.WriteElementString("PreferencesPage", preferencePage.ToString());
         }
 
@@ -114,6 +122,9 @@ namespace Kinovea.Services
                         break;
                     case "AllowMultipleInstances":
                         allowMultipleInstances = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "InstancesOwnPreferences":
+                        instancesOwnPreferences = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "PreferencesPage":
                         preferencePage = reader.ReadElementContentAsInt();

@@ -50,7 +50,6 @@ namespace Kinovea.Root
 		{
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
-      this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
       this.cmbUncompressedVideoFormat = new System.Windows.Forms.ComboBox();
       this.lblUncompressedVideoFormat = new System.Windows.Forms.Label();
       this.lblFramerate = new System.Windows.Forms.Label();
@@ -63,9 +62,8 @@ namespace Kinovea.Root
       this.lblMemoryBuffer = new System.Windows.Forms.Label();
       this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
       this.tabRecording = new System.Windows.Forms.TabPage();
-      this.chkUncompressedVideo = new System.Windows.Forms.CheckBox();
-      this.grpRecordingMode = new System.Windows.Forms.GroupBox();
       this.rbRecordingScheduled = new System.Windows.Forms.RadioButton();
+      this.grpRecordingMode = new System.Windows.Forms.GroupBox();
       this.rbRecordingDelayed = new System.Windows.Forms.RadioButton();
       this.rbRecordingCamera = new System.Windows.Forms.RadioButton();
       this.tabImageNaming = new System.Windows.Forms.TabPage();
@@ -111,19 +109,21 @@ namespace Kinovea.Root
       this.lblLeftVideoRoot = new System.Windows.Forms.Label();
       this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
       this.tabAutomation = new System.Windows.Forms.TabPage();
+      this.gbAudioTrigger = new System.Windows.Forms.GroupBox();
+      this.nudAudioTriggerThreshold = new System.Windows.Forms.NumericUpDown();
+      this.chkEnableAudioTrigger = new System.Windows.Forms.CheckBox();
+      this.lblAudioTriggerThreshold = new System.Windows.Forms.Label();
+      this.lblInputDevice = new System.Windows.Forms.Label();
+      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
+      this.cmbInputDevice = new System.Windows.Forms.ComboBox();
+      this.lblAudioTriggerHits = new System.Windows.Forms.Label();
       this.btnPostRecordCommand = new System.Windows.Forms.Button();
       this.lblPostRecordCommand = new System.Windows.Forms.Label();
       this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
-      this.vumeter = new Kinovea.Services.VolumeMeterThreshold();
-      this.lblLevel = new System.Windows.Forms.Label();
-      this.lblAudioTriggerHits = new System.Windows.Forms.Label();
-      this.cmbInputDevice = new System.Windows.Forms.ComboBox();
-      this.lblInputDevice = new System.Windows.Forms.Label();
-      this.lblAudioTriggerThreshold = new System.Windows.Forms.Label();
-      this.tbAudioTriggerThreshold = new System.Windows.Forms.TextBox();
-      this.chkEnableAudioTrigger = new System.Windows.Forms.CheckBox();
       this.lblRecordingTime = new System.Windows.Forms.Label();
       this.tbRecordingTime = new System.Windows.Forms.TextBox();
+      this.chkUncompressedVideo = new System.Windows.Forms.CheckBox();
+      this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
@@ -137,6 +137,8 @@ namespace Kinovea.Root
       this.grpRightVideo.SuspendLayout();
       this.grpLeftVideo.SuspendLayout();
       this.tabAutomation.SuspendLayout();
+      this.gbAudioTrigger.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).BeginInit();
       this.SuspendLayout();
       // 
       // tabSubPages
@@ -151,12 +153,12 @@ namespace Kinovea.Root
       this.tabSubPages.Location = new System.Drawing.Point(0, 0);
       this.tabSubPages.Name = "tabSubPages";
       this.tabSubPages.SelectedIndex = 0;
-      this.tabSubPages.Size = new System.Drawing.Size(432, 236);
+      this.tabSubPages.Size = new System.Drawing.Size(490, 322);
       this.tabSubPages.TabIndex = 0;
       // 
       // tabGeneral
       // 
-      this.tabGeneral.Controls.Add(this.chkIgnoreOverwriteWarning);
+      this.tabGeneral.Controls.Add(this.chkUncompressedVideo);
       this.tabGeneral.Controls.Add(this.cmbUncompressedVideoFormat);
       this.tabGeneral.Controls.Add(this.lblUncompressedVideoFormat);
       this.tabGeneral.Controls.Add(this.lblFramerate);
@@ -168,27 +170,16 @@ namespace Kinovea.Root
       this.tabGeneral.Location = new System.Drawing.Point(4, 22);
       this.tabGeneral.Name = "tabGeneral";
       this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
-      this.tabGeneral.Size = new System.Drawing.Size(424, 210);
+      this.tabGeneral.Size = new System.Drawing.Size(482, 296);
       this.tabGeneral.TabIndex = 0;
       this.tabGeneral.Text = "General";
       this.tabGeneral.UseVisualStyleBackColor = true;
-      // 
-      // chkIgnoreOverwriteWarning
-      // 
-      this.chkIgnoreOverwriteWarning.AutoSize = true;
-      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(23, 145);
-      this.chkIgnoreOverwriteWarning.Name = "chkIgnoreOverwriteWarning";
-      this.chkIgnoreOverwriteWarning.Size = new System.Drawing.Size(142, 17);
-      this.chkIgnoreOverwriteWarning.TabIndex = 44;
-      this.chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
-      this.chkIgnoreOverwriteWarning.UseVisualStyleBackColor = true;
-      this.chkIgnoreOverwriteWarning.CheckedChanged += new System.EventHandler(this.chkIgnoreOverwriteWarning_CheckedChanged);
       // 
       // cmbUncompressedVideoFormat
       // 
       this.cmbUncompressedVideoFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cmbUncompressedVideoFormat.FormattingEnabled = true;
-      this.cmbUncompressedVideoFormat.Location = new System.Drawing.Point(210, 109);
+      this.cmbUncompressedVideoFormat.Location = new System.Drawing.Point(209, 152);
       this.cmbUncompressedVideoFormat.Name = "cmbUncompressedVideoFormat";
       this.cmbUncompressedVideoFormat.Size = new System.Drawing.Size(52, 21);
       this.cmbUncompressedVideoFormat.TabIndex = 43;
@@ -196,7 +187,7 @@ namespace Kinovea.Root
       // 
       // lblUncompressedVideoFormat
       // 
-      this.lblUncompressedVideoFormat.Location = new System.Drawing.Point(20, 112);
+      this.lblUncompressedVideoFormat.Location = new System.Drawing.Point(19, 155);
       this.lblUncompressedVideoFormat.Name = "lblUncompressedVideoFormat";
       this.lblUncompressedVideoFormat.Size = new System.Drawing.Size(149, 18);
       this.lblUncompressedVideoFormat.TabIndex = 42;
@@ -205,7 +196,7 @@ namespace Kinovea.Root
       // lblFramerate
       // 
       this.lblFramerate.AutoSize = true;
-      this.lblFramerate.Location = new System.Drawing.Point(20, 27);
+      this.lblFramerate.Location = new System.Drawing.Point(19, 55);
       this.lblFramerate.Name = "lblFramerate";
       this.lblFramerate.Size = new System.Drawing.Size(117, 13);
       this.lblFramerate.TabIndex = 41;
@@ -213,7 +204,7 @@ namespace Kinovea.Root
       // 
       // tbFramerate
       // 
-      this.tbFramerate.Location = new System.Drawing.Point(210, 24);
+      this.tbFramerate.Location = new System.Drawing.Point(209, 52);
       this.tbFramerate.Name = "tbFramerate";
       this.tbFramerate.Size = new System.Drawing.Size(30, 20);
       this.tbFramerate.TabIndex = 40;
@@ -223,7 +214,7 @@ namespace Kinovea.Root
       // 
       this.cmbVideoFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cmbVideoFormat.FormattingEnabled = true;
-      this.cmbVideoFormat.Location = new System.Drawing.Point(210, 81);
+      this.cmbVideoFormat.Location = new System.Drawing.Point(209, 124);
       this.cmbVideoFormat.Name = "cmbVideoFormat";
       this.cmbVideoFormat.Size = new System.Drawing.Size(52, 21);
       this.cmbVideoFormat.TabIndex = 41;
@@ -231,7 +222,7 @@ namespace Kinovea.Root
       // 
       // lblVideoFormat
       // 
-      this.lblVideoFormat.Location = new System.Drawing.Point(20, 84);
+      this.lblVideoFormat.Location = new System.Drawing.Point(19, 127);
       this.lblVideoFormat.Name = "lblVideoFormat";
       this.lblVideoFormat.Size = new System.Drawing.Size(149, 18);
       this.lblVideoFormat.TabIndex = 40;
@@ -241,7 +232,7 @@ namespace Kinovea.Root
       // 
       this.cmbImageFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cmbImageFormat.FormattingEnabled = true;
-      this.cmbImageFormat.Location = new System.Drawing.Point(210, 54);
+      this.cmbImageFormat.Location = new System.Drawing.Point(209, 97);
       this.cmbImageFormat.Name = "cmbImageFormat";
       this.cmbImageFormat.Size = new System.Drawing.Size(52, 21);
       this.cmbImageFormat.TabIndex = 5;
@@ -249,7 +240,7 @@ namespace Kinovea.Root
       // 
       // lblImageFormat
       // 
-      this.lblImageFormat.Location = new System.Drawing.Point(20, 57);
+      this.lblImageFormat.Location = new System.Drawing.Point(19, 100);
       this.lblImageFormat.Name = "lblImageFormat";
       this.lblImageFormat.Size = new System.Drawing.Size(149, 18);
       this.lblImageFormat.TabIndex = 2;
@@ -261,7 +252,7 @@ namespace Kinovea.Root
       this.tabMemory.Controls.Add(this.trkMemoryBuffer);
       this.tabMemory.Location = new System.Drawing.Point(4, 22);
       this.tabMemory.Name = "tabMemory";
-      this.tabMemory.Size = new System.Drawing.Size(424, 210);
+      this.tabMemory.Size = new System.Drawing.Size(482, 296);
       this.tabMemory.TabIndex = 2;
       this.tabMemory.Text = "Memory";
       this.tabMemory.UseVisualStyleBackColor = true;
@@ -282,7 +273,7 @@ namespace Kinovea.Root
       this.trkMemoryBuffer.Maximum = 1024;
       this.trkMemoryBuffer.Minimum = 16;
       this.trkMemoryBuffer.Name = "trkMemoryBuffer";
-      this.trkMemoryBuffer.Size = new System.Drawing.Size(386, 45);
+      this.trkMemoryBuffer.Size = new System.Drawing.Size(452, 45);
       this.trkMemoryBuffer.TabIndex = 38;
       this.trkMemoryBuffer.TickFrequency = 50;
       this.trkMemoryBuffer.Value = 16;
@@ -291,42 +282,19 @@ namespace Kinovea.Root
       // tabRecording
       // 
       this.tabRecording.Controls.Add(this.rbRecordingScheduled);
-      this.tabRecording.Controls.Add(this.chkUncompressedVideo);
       this.tabRecording.Controls.Add(this.grpRecordingMode);
       this.tabRecording.Location = new System.Drawing.Point(4, 22);
       this.tabRecording.Name = "tabRecording";
       this.tabRecording.Padding = new System.Windows.Forms.Padding(3);
-      this.tabRecording.Size = new System.Drawing.Size(424, 210);
+      this.tabRecording.Size = new System.Drawing.Size(482, 296);
       this.tabRecording.TabIndex = 4;
       this.tabRecording.Text = "Recording";
       this.tabRecording.UseVisualStyleBackColor = true;
       // 
-      // chkUncompressedVideo
-      // 
-      this.chkUncompressedVideo.AutoSize = true;
-      this.chkUncompressedVideo.Location = new System.Drawing.Point(15, 125);
-      this.chkUncompressedVideo.Name = "chkUncompressedVideo";
-      this.chkUncompressedVideo.Size = new System.Drawing.Size(152, 17);
-      this.chkUncompressedVideo.TabIndex = 40;
-      this.chkUncompressedVideo.Text = "Save uncompressed video";
-      this.chkUncompressedVideo.UseVisualStyleBackColor = true;
-      this.chkUncompressedVideo.CheckedChanged += new System.EventHandler(this.chkUncompressedVideo_CheckedChanged);
-      // 
-      // grpRecordingMode
-      // 
-      this.grpRecordingMode.Controls.Add(this.rbRecordingDelayed);
-      this.grpRecordingMode.Controls.Add(this.rbRecordingCamera);
-      this.grpRecordingMode.Location = new System.Drawing.Point(15, 19);
-      this.grpRecordingMode.Name = "grpRecordingMode";
-      this.grpRecordingMode.Size = new System.Drawing.Size(386, 88);
-      this.grpRecordingMode.TabIndex = 40;
-      this.grpRecordingMode.TabStop = false;
-      this.grpRecordingMode.Text = "Recording mode";
-      // 
       // rbRecordingScheduled
       // 
       this.rbRecordingScheduled.AutoSize = true;
-      this.rbRecordingScheduled.Location = new System.Drawing.Point(186, 187);
+      this.rbRecordingScheduled.Location = new System.Drawing.Point(244, 273);
       this.rbRecordingScheduled.Name = "rbRecordingScheduled";
       this.rbRecordingScheduled.Size = new System.Drawing.Size(232, 17);
       this.rbRecordingScheduled.TabIndex = 40;
@@ -334,6 +302,17 @@ namespace Kinovea.Root
       this.rbRecordingScheduled.Text = "Scheduled: records delayed frames on stop.";
       this.rbRecordingScheduled.UseVisualStyleBackColor = true;
       this.rbRecordingScheduled.Visible = false;
+      // 
+      // grpRecordingMode
+      // 
+      this.grpRecordingMode.Controls.Add(this.rbRecordingDelayed);
+      this.grpRecordingMode.Controls.Add(this.rbRecordingCamera);
+      this.grpRecordingMode.Location = new System.Drawing.Point(6, 6);
+      this.grpRecordingMode.Name = "grpRecordingMode";
+      this.grpRecordingMode.Size = new System.Drawing.Size(470, 88);
+      this.grpRecordingMode.TabIndex = 40;
+      this.grpRecordingMode.TabStop = false;
+      this.grpRecordingMode.Text = "Recording mode";
       // 
       // rbRecordingDelayed
       // 
@@ -366,7 +345,7 @@ namespace Kinovea.Root
       this.tabImageNaming.Location = new System.Drawing.Point(4, 22);
       this.tabImageNaming.Name = "tabImageNaming";
       this.tabImageNaming.Padding = new System.Windows.Forms.Padding(3);
-      this.tabImageNaming.Size = new System.Drawing.Size(424, 210);
+      this.tabImageNaming.Size = new System.Drawing.Size(482, 296);
       this.tabImageNaming.TabIndex = 1;
       this.tabImageNaming.Text = "Image naming";
       this.tabImageNaming.UseVisualStyleBackColor = true;
@@ -384,20 +363,21 @@ namespace Kinovea.Root
       this.grpRightImage.Controls.Add(this.tbRightImageRoot);
       this.grpRightImage.Location = new System.Drawing.Point(6, 106);
       this.grpRightImage.Name = "grpRightImage";
-      this.grpRightImage.Size = new System.Drawing.Size(412, 94);
+      this.grpRightImage.Size = new System.Drawing.Size(470, 94);
       this.grpRightImage.TabIndex = 47;
       this.grpRightImage.TabStop = false;
       this.grpRightImage.Text = "Right";
       // 
       // btnRightImageFile
       // 
+      this.btnRightImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnRightImageFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnRightImageFile.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnRightImageFile.FlatAppearance.BorderSize = 0;
       this.btnRightImageFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnRightImageFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnRightImageFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnRightImageFile.Location = new System.Drawing.Point(382, 64);
+      this.btnRightImageFile.Location = new System.Drawing.Point(440, 64);
       this.btnRightImageFile.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnRightImageFile.Name = "btnRightImageFile";
       this.btnRightImageFile.Size = new System.Drawing.Size(20, 20);
@@ -408,13 +388,14 @@ namespace Kinovea.Root
       // 
       // btnRightImageSubdir
       // 
+      this.btnRightImageSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnRightImageSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnRightImageSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnRightImageSubdir.FlatAppearance.BorderSize = 0;
       this.btnRightImageSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnRightImageSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnRightImageSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnRightImageSubdir.Location = new System.Drawing.Point(382, 38);
+      this.btnRightImageSubdir.Location = new System.Drawing.Point(440, 38);
       this.btnRightImageSubdir.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnRightImageSubdir.Name = "btnRightImageSubdir";
       this.btnRightImageSubdir.Size = new System.Drawing.Size(20, 20);
@@ -425,13 +406,14 @@ namespace Kinovea.Root
       // 
       // btnRightImageRoot
       // 
+      this.btnRightImageRoot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnRightImageRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnRightImageRoot.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnRightImageRoot.FlatAppearance.BorderSize = 0;
       this.btnRightImageRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnRightImageRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnRightImageRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnRightImageRoot.Location = new System.Drawing.Point(382, 12);
+      this.btnRightImageRoot.Location = new System.Drawing.Point(440, 12);
       this.btnRightImageRoot.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnRightImageRoot.Name = "btnRightImageRoot";
       this.btnRightImageRoot.Size = new System.Drawing.Size(20, 20);
@@ -450,9 +432,11 @@ namespace Kinovea.Root
       // 
       // tbRightImageFile
       // 
+      this.tbRightImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbRightImageFile.Location = new System.Drawing.Point(145, 65);
       this.tbRightImageFile.Name = "tbRightImageFile";
-      this.tbRightImageFile.Size = new System.Drawing.Size(231, 20);
+      this.tbRightImageFile.Size = new System.Drawing.Size(289, 20);
       this.tbRightImageFile.TabIndex = 46;
       // 
       // lblRightImageSubdir
@@ -465,9 +449,11 @@ namespace Kinovea.Root
       // 
       // tbRightImageSubdir
       // 
+      this.tbRightImageSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbRightImageSubdir.Location = new System.Drawing.Point(145, 39);
       this.tbRightImageSubdir.Name = "tbRightImageSubdir";
-      this.tbRightImageSubdir.Size = new System.Drawing.Size(231, 20);
+      this.tbRightImageSubdir.Size = new System.Drawing.Size(289, 20);
       this.tbRightImageSubdir.TabIndex = 44;
       // 
       // lblRightImageRoot
@@ -480,9 +466,11 @@ namespace Kinovea.Root
       // 
       // tbRightImageRoot
       // 
+      this.tbRightImageRoot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbRightImageRoot.Location = new System.Drawing.Point(145, 13);
       this.tbRightImageRoot.Name = "tbRightImageRoot";
-      this.tbRightImageRoot.Size = new System.Drawing.Size(231, 20);
+      this.tbRightImageRoot.Size = new System.Drawing.Size(289, 20);
       this.tbRightImageRoot.TabIndex = 40;
       // 
       // grpLeftImage
@@ -498,20 +486,21 @@ namespace Kinovea.Root
       this.grpLeftImage.Controls.Add(this.btnLeftImageRoot);
       this.grpLeftImage.Location = new System.Drawing.Point(6, 6);
       this.grpLeftImage.Name = "grpLeftImage";
-      this.grpLeftImage.Size = new System.Drawing.Size(412, 94);
+      this.grpLeftImage.Size = new System.Drawing.Size(470, 94);
       this.grpLeftImage.TabIndex = 44;
       this.grpLeftImage.TabStop = false;
       this.grpLeftImage.Text = "Left";
       // 
       // btnLeftImageFile
       // 
+      this.btnLeftImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnLeftImageFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnLeftImageFile.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnLeftImageFile.FlatAppearance.BorderSize = 0;
       this.btnLeftImageFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnLeftImageFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnLeftImageFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnLeftImageFile.Location = new System.Drawing.Point(382, 64);
+      this.btnLeftImageFile.Location = new System.Drawing.Point(440, 64);
       this.btnLeftImageFile.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnLeftImageFile.Name = "btnLeftImageFile";
       this.btnLeftImageFile.Size = new System.Drawing.Size(20, 20);
@@ -522,13 +511,14 @@ namespace Kinovea.Root
       // 
       // btnLeftImageSubdir
       // 
+      this.btnLeftImageSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnLeftImageSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnLeftImageSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnLeftImageSubdir.FlatAppearance.BorderSize = 0;
       this.btnLeftImageSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnLeftImageSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnLeftImageSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnLeftImageSubdir.Location = new System.Drawing.Point(382, 38);
+      this.btnLeftImageSubdir.Location = new System.Drawing.Point(440, 38);
       this.btnLeftImageSubdir.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnLeftImageSubdir.Name = "btnLeftImageSubdir";
       this.btnLeftImageSubdir.Size = new System.Drawing.Size(20, 20);
@@ -547,9 +537,11 @@ namespace Kinovea.Root
       // 
       // tbLeftImageFile
       // 
+      this.tbLeftImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbLeftImageFile.Location = new System.Drawing.Point(145, 65);
       this.tbLeftImageFile.Name = "tbLeftImageFile";
-      this.tbLeftImageFile.Size = new System.Drawing.Size(231, 20);
+      this.tbLeftImageFile.Size = new System.Drawing.Size(289, 20);
       this.tbLeftImageFile.TabIndex = 46;
       // 
       // lblLeftImageSubdir
@@ -562,9 +554,11 @@ namespace Kinovea.Root
       // 
       // tbLeftImageSubdir
       // 
+      this.tbLeftImageSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbLeftImageSubdir.Location = new System.Drawing.Point(145, 39);
       this.tbLeftImageSubdir.Name = "tbLeftImageSubdir";
-      this.tbLeftImageSubdir.Size = new System.Drawing.Size(231, 20);
+      this.tbLeftImageSubdir.Size = new System.Drawing.Size(289, 20);
       this.tbLeftImageSubdir.TabIndex = 44;
       // 
       // lblLeftImageRoot
@@ -577,20 +571,23 @@ namespace Kinovea.Root
       // 
       // tbLeftImageRoot
       // 
+      this.tbLeftImageRoot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbLeftImageRoot.Location = new System.Drawing.Point(145, 13);
       this.tbLeftImageRoot.Name = "tbLeftImageRoot";
-      this.tbLeftImageRoot.Size = new System.Drawing.Size(231, 20);
+      this.tbLeftImageRoot.Size = new System.Drawing.Size(289, 20);
       this.tbLeftImageRoot.TabIndex = 40;
       // 
       // btnLeftImageRoot
       // 
+      this.btnLeftImageRoot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnLeftImageRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnLeftImageRoot.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnLeftImageRoot.FlatAppearance.BorderSize = 0;
       this.btnLeftImageRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnLeftImageRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnLeftImageRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnLeftImageRoot.Location = new System.Drawing.Point(382, 12);
+      this.btnLeftImageRoot.Location = new System.Drawing.Point(440, 12);
       this.btnLeftImageRoot.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnLeftImageRoot.Name = "btnLeftImageRoot";
       this.btnLeftImageRoot.Size = new System.Drawing.Size(20, 20);
@@ -606,7 +603,7 @@ namespace Kinovea.Root
       this.tabVideoNaming.Location = new System.Drawing.Point(4, 22);
       this.tabVideoNaming.Name = "tabVideoNaming";
       this.tabVideoNaming.Padding = new System.Windows.Forms.Padding(3);
-      this.tabVideoNaming.Size = new System.Drawing.Size(424, 210);
+      this.tabVideoNaming.Size = new System.Drawing.Size(482, 296);
       this.tabVideoNaming.TabIndex = 3;
       this.tabVideoNaming.Text = "Video naming";
       this.tabVideoNaming.UseVisualStyleBackColor = true;
@@ -624,20 +621,21 @@ namespace Kinovea.Root
       this.grpRightVideo.Controls.Add(this.tbRightVideoRoot);
       this.grpRightVideo.Location = new System.Drawing.Point(6, 106);
       this.grpRightVideo.Name = "grpRightVideo";
-      this.grpRightVideo.Size = new System.Drawing.Size(412, 94);
+      this.grpRightVideo.Size = new System.Drawing.Size(470, 94);
       this.grpRightVideo.TabIndex = 49;
       this.grpRightVideo.TabStop = false;
       this.grpRightVideo.Text = "Right";
       // 
       // btnRightVideoFile
       // 
+      this.btnRightVideoFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnRightVideoFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnRightVideoFile.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnRightVideoFile.FlatAppearance.BorderSize = 0;
       this.btnRightVideoFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnRightVideoFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnRightVideoFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnRightVideoFile.Location = new System.Drawing.Point(382, 64);
+      this.btnRightVideoFile.Location = new System.Drawing.Point(440, 64);
       this.btnRightVideoFile.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnRightVideoFile.Name = "btnRightVideoFile";
       this.btnRightVideoFile.Size = new System.Drawing.Size(20, 20);
@@ -648,13 +646,14 @@ namespace Kinovea.Root
       // 
       // btnRightVideoSubdir
       // 
+      this.btnRightVideoSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnRightVideoSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnRightVideoSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnRightVideoSubdir.FlatAppearance.BorderSize = 0;
       this.btnRightVideoSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnRightVideoSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnRightVideoSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnRightVideoSubdir.Location = new System.Drawing.Point(382, 38);
+      this.btnRightVideoSubdir.Location = new System.Drawing.Point(440, 38);
       this.btnRightVideoSubdir.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnRightVideoSubdir.Name = "btnRightVideoSubdir";
       this.btnRightVideoSubdir.Size = new System.Drawing.Size(20, 20);
@@ -665,13 +664,14 @@ namespace Kinovea.Root
       // 
       // btnRightVideoRoot
       // 
+      this.btnRightVideoRoot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnRightVideoRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnRightVideoRoot.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnRightVideoRoot.FlatAppearance.BorderSize = 0;
       this.btnRightVideoRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnRightVideoRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnRightVideoRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnRightVideoRoot.Location = new System.Drawing.Point(382, 12);
+      this.btnRightVideoRoot.Location = new System.Drawing.Point(440, 12);
       this.btnRightVideoRoot.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnRightVideoRoot.Name = "btnRightVideoRoot";
       this.btnRightVideoRoot.Size = new System.Drawing.Size(20, 20);
@@ -690,9 +690,11 @@ namespace Kinovea.Root
       // 
       // tbRightVideoFile
       // 
+      this.tbRightVideoFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbRightVideoFile.Location = new System.Drawing.Point(145, 65);
       this.tbRightVideoFile.Name = "tbRightVideoFile";
-      this.tbRightVideoFile.Size = new System.Drawing.Size(231, 20);
+      this.tbRightVideoFile.Size = new System.Drawing.Size(289, 20);
       this.tbRightVideoFile.TabIndex = 46;
       // 
       // lblRightVideoSubdir
@@ -705,9 +707,11 @@ namespace Kinovea.Root
       // 
       // tbRightVideoSubdir
       // 
+      this.tbRightVideoSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbRightVideoSubdir.Location = new System.Drawing.Point(145, 39);
       this.tbRightVideoSubdir.Name = "tbRightVideoSubdir";
-      this.tbRightVideoSubdir.Size = new System.Drawing.Size(231, 20);
+      this.tbRightVideoSubdir.Size = new System.Drawing.Size(289, 20);
       this.tbRightVideoSubdir.TabIndex = 44;
       // 
       // lblRightVideoRoot
@@ -720,9 +724,11 @@ namespace Kinovea.Root
       // 
       // tbRightVideoRoot
       // 
+      this.tbRightVideoRoot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbRightVideoRoot.Location = new System.Drawing.Point(145, 13);
       this.tbRightVideoRoot.Name = "tbRightVideoRoot";
-      this.tbRightVideoRoot.Size = new System.Drawing.Size(231, 20);
+      this.tbRightVideoRoot.Size = new System.Drawing.Size(289, 20);
       this.tbRightVideoRoot.TabIndex = 40;
       // 
       // grpLeftVideo
@@ -738,20 +744,21 @@ namespace Kinovea.Root
       this.grpLeftVideo.Controls.Add(this.tbLeftVideoRoot);
       this.grpLeftVideo.Location = new System.Drawing.Point(6, 6);
       this.grpLeftVideo.Name = "grpLeftVideo";
-      this.grpLeftVideo.Size = new System.Drawing.Size(412, 94);
+      this.grpLeftVideo.Size = new System.Drawing.Size(470, 94);
       this.grpLeftVideo.TabIndex = 48;
       this.grpLeftVideo.TabStop = false;
       this.grpLeftVideo.Text = "Left";
       // 
       // btnLeftVideoRoot
       // 
+      this.btnLeftVideoRoot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnLeftVideoRoot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnLeftVideoRoot.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnLeftVideoRoot.FlatAppearance.BorderSize = 0;
       this.btnLeftVideoRoot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnLeftVideoRoot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnLeftVideoRoot.Image = global::Kinovea.Root.Properties.Resources.folder;
-      this.btnLeftVideoRoot.Location = new System.Drawing.Point(381, 12);
+      this.btnLeftVideoRoot.Location = new System.Drawing.Point(440, 12);
       this.btnLeftVideoRoot.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnLeftVideoRoot.Name = "btnLeftVideoRoot";
       this.btnLeftVideoRoot.Size = new System.Drawing.Size(20, 20);
@@ -762,13 +769,14 @@ namespace Kinovea.Root
       // 
       // btnLeftVideoFile
       // 
+      this.btnLeftVideoFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnLeftVideoFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnLeftVideoFile.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnLeftVideoFile.FlatAppearance.BorderSize = 0;
       this.btnLeftVideoFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnLeftVideoFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnLeftVideoFile.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnLeftVideoFile.Location = new System.Drawing.Point(382, 64);
+      this.btnLeftVideoFile.Location = new System.Drawing.Point(440, 64);
       this.btnLeftVideoFile.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnLeftVideoFile.Name = "btnLeftVideoFile";
       this.btnLeftVideoFile.Size = new System.Drawing.Size(20, 20);
@@ -779,13 +787,14 @@ namespace Kinovea.Root
       // 
       // btnLeftVideoSubdir
       // 
+      this.btnLeftVideoSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnLeftVideoSubdir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
       this.btnLeftVideoSubdir.Cursor = System.Windows.Forms.Cursors.Hand;
       this.btnLeftVideoSubdir.FlatAppearance.BorderSize = 0;
       this.btnLeftVideoSubdir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnLeftVideoSubdir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnLeftVideoSubdir.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnLeftVideoSubdir.Location = new System.Drawing.Point(382, 38);
+      this.btnLeftVideoSubdir.Location = new System.Drawing.Point(440, 38);
       this.btnLeftVideoSubdir.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnLeftVideoSubdir.Name = "btnLeftVideoSubdir";
       this.btnLeftVideoSubdir.Size = new System.Drawing.Size(20, 20);
@@ -804,9 +813,11 @@ namespace Kinovea.Root
       // 
       // tbLeftVideoFile
       // 
+      this.tbLeftVideoFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbLeftVideoFile.Location = new System.Drawing.Point(145, 65);
       this.tbLeftVideoFile.Name = "tbLeftVideoFile";
-      this.tbLeftVideoFile.Size = new System.Drawing.Size(231, 20);
+      this.tbLeftVideoFile.Size = new System.Drawing.Size(289, 20);
       this.tbLeftVideoFile.TabIndex = 46;
       // 
       // lblLeftVideoSubdir
@@ -819,9 +830,11 @@ namespace Kinovea.Root
       // 
       // tbLeftVideoSubdir
       // 
+      this.tbLeftVideoSubdir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbLeftVideoSubdir.Location = new System.Drawing.Point(145, 39);
       this.tbLeftVideoSubdir.Name = "tbLeftVideoSubdir";
-      this.tbLeftVideoSubdir.Size = new System.Drawing.Size(231, 20);
+      this.tbLeftVideoSubdir.Size = new System.Drawing.Size(289, 20);
       this.tbLeftVideoSubdir.TabIndex = 44;
       // 
       // lblLeftVideoRoot
@@ -834,32 +847,125 @@ namespace Kinovea.Root
       // 
       // tbLeftVideoRoot
       // 
+      this.tbLeftVideoRoot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tbLeftVideoRoot.Location = new System.Drawing.Point(145, 13);
       this.tbLeftVideoRoot.Name = "tbLeftVideoRoot";
-      this.tbLeftVideoRoot.Size = new System.Drawing.Size(230, 20);
+      this.tbLeftVideoRoot.Size = new System.Drawing.Size(289, 20);
       this.tbLeftVideoRoot.TabIndex = 40;
       // 
       // tabAutomation
       // 
+      this.tabAutomation.Controls.Add(this.chkIgnoreOverwriteWarning);
+      this.tabAutomation.Controls.Add(this.gbAudioTrigger);
       this.tabAutomation.Controls.Add(this.btnPostRecordCommand);
       this.tabAutomation.Controls.Add(this.lblPostRecordCommand);
       this.tabAutomation.Controls.Add(this.tbPostRecordCommand);
-      this.tabAutomation.Controls.Add(this.vumeter);
-      this.tabAutomation.Controls.Add(this.lblLevel);
-      this.tabAutomation.Controls.Add(this.lblAudioTriggerHits);
-      this.tabAutomation.Controls.Add(this.cmbInputDevice);
-      this.tabAutomation.Controls.Add(this.lblInputDevice);
-      this.tabAutomation.Controls.Add(this.lblAudioTriggerThreshold);
-      this.tabAutomation.Controls.Add(this.tbAudioTriggerThreshold);
-      this.tabAutomation.Controls.Add(this.chkEnableAudioTrigger);
       this.tabAutomation.Controls.Add(this.lblRecordingTime);
       this.tabAutomation.Controls.Add(this.tbRecordingTime);
       this.tabAutomation.Location = new System.Drawing.Point(4, 22);
       this.tabAutomation.Name = "tabAutomation";
-      this.tabAutomation.Size = new System.Drawing.Size(424, 210);
+      this.tabAutomation.Size = new System.Drawing.Size(482, 296);
       this.tabAutomation.TabIndex = 5;
       this.tabAutomation.Text = "Automation";
       this.tabAutomation.UseVisualStyleBackColor = true;
+      // 
+      // gbAudioTrigger
+      // 
+      this.gbAudioTrigger.Controls.Add(this.nudAudioTriggerThreshold);
+      this.gbAudioTrigger.Controls.Add(this.chkEnableAudioTrigger);
+      this.gbAudioTrigger.Controls.Add(this.lblAudioTriggerThreshold);
+      this.gbAudioTrigger.Controls.Add(this.lblInputDevice);
+      this.gbAudioTrigger.Controls.Add(this.vumeter);
+      this.gbAudioTrigger.Controls.Add(this.cmbInputDevice);
+      this.gbAudioTrigger.Controls.Add(this.lblAudioTriggerHits);
+      this.gbAudioTrigger.Location = new System.Drawing.Point(13, 12);
+      this.gbAudioTrigger.Name = "gbAudioTrigger";
+      this.gbAudioTrigger.Size = new System.Drawing.Size(455, 122);
+      this.gbAudioTrigger.TabIndex = 55;
+      this.gbAudioTrigger.TabStop = false;
+      // 
+      // nudAudioTriggerThreshold
+      // 
+      this.nudAudioTriggerThreshold.DecimalPlaces = 1;
+      this.nudAudioTriggerThreshold.Location = new System.Drawing.Point(195, 77);
+      this.nudAudioTriggerThreshold.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+      this.nudAudioTriggerThreshold.Name = "nudAudioTriggerThreshold";
+      this.nudAudioTriggerThreshold.Size = new System.Drawing.Size(42, 20);
+      this.nudAudioTriggerThreshold.TabIndex = 52;
+      this.nudAudioTriggerThreshold.Value = new decimal(new int[] {
+            59,
+            0,
+            0,
+            0});
+      this.nudAudioTriggerThreshold.ValueChanged += new System.EventHandler(this.NudAudioTriggerThreshold_ValueChanged);
+      // 
+      // chkEnableAudioTrigger
+      // 
+      this.chkEnableAudioTrigger.AutoSize = true;
+      this.chkEnableAudioTrigger.Location = new System.Drawing.Point(10, 19);
+      this.chkEnableAudioTrigger.Name = "chkEnableAudioTrigger";
+      this.chkEnableAudioTrigger.Size = new System.Drawing.Size(120, 17);
+      this.chkEnableAudioTrigger.TabIndex = 44;
+      this.chkEnableAudioTrigger.Text = "Enable audio trigger";
+      this.chkEnableAudioTrigger.UseVisualStyleBackColor = true;
+      this.chkEnableAudioTrigger.CheckedChanged += new System.EventHandler(this.chkEnableAudioTrigger_CheckedChanged);
+      // 
+      // lblAudioTriggerThreshold
+      // 
+      this.lblAudioTriggerThreshold.AutoSize = true;
+      this.lblAudioTriggerThreshold.Location = new System.Drawing.Point(37, 81);
+      this.lblAudioTriggerThreshold.Name = "lblAudioTriggerThreshold";
+      this.lblAudioTriggerThreshold.Size = new System.Drawing.Size(115, 13);
+      this.lblAudioTriggerThreshold.TabIndex = 46;
+      this.lblAudioTriggerThreshold.Text = "Audio trigger threshold:";
+      // 
+      // lblInputDevice
+      // 
+      this.lblInputDevice.AutoSize = true;
+      this.lblInputDevice.Location = new System.Drawing.Point(37, 50);
+      this.lblInputDevice.Name = "lblInputDevice";
+      this.lblInputDevice.Size = new System.Drawing.Size(114, 13);
+      this.lblInputDevice.TabIndex = 47;
+      this.lblInputDevice.Text = "Preferred input device:";
+      // 
+      // vumeter
+      // 
+      this.vumeter.Amplitude = 0F;
+      this.vumeter.BackColor = System.Drawing.Color.White;
+      this.vumeter.DecibelRange = 60F;
+      this.vumeter.Location = new System.Drawing.Point(249, 77);
+      this.vumeter.Name = "vumeter";
+      this.vumeter.Size = new System.Drawing.Size(175, 21);
+      this.vumeter.TabIndex = 51;
+      this.vumeter.Text = "volumeMeterThreshold1";
+      this.vumeter.Threshold = 0.001F;
+      this.vumeter.ThresholdLinear = 0F;
+      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
+      // 
+      // cmbInputDevice
+      // 
+      this.cmbInputDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbInputDevice.FormattingEnabled = true;
+      this.cmbInputDevice.Location = new System.Drawing.Point(195, 47);
+      this.cmbInputDevice.Name = "cmbInputDevice";
+      this.cmbInputDevice.Size = new System.Drawing.Size(254, 21);
+      this.cmbInputDevice.TabIndex = 48;
+      this.cmbInputDevice.SelectedIndexChanged += new System.EventHandler(this.cmbInputDevice_SelectedIndexChanged);
+      // 
+      // lblAudioTriggerHits
+      // 
+      this.lblAudioTriggerHits.AutoSize = true;
+      this.lblAudioTriggerHits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblAudioTriggerHits.Location = new System.Drawing.Point(433, 79);
+      this.lblAudioTriggerHits.Name = "lblAudioTriggerHits";
+      this.lblAudioTriggerHits.Size = new System.Drawing.Size(15, 16);
+      this.lblAudioTriggerHits.TabIndex = 49;
+      this.lblAudioTriggerHits.Text = "0";
       // 
       // btnPostRecordCommand
       // 
@@ -869,7 +975,7 @@ namespace Kinovea.Root
       this.btnPostRecordCommand.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
       this.btnPostRecordCommand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.btnPostRecordCommand.Image = global::Kinovea.Root.Properties.Resources.percent;
-      this.btnPostRecordCommand.Location = new System.Drawing.Point(380, 158);
+      this.btnPostRecordCommand.Location = new System.Drawing.Point(441, 188);
       this.btnPostRecordCommand.MinimumSize = new System.Drawing.Size(20, 20);
       this.btnPostRecordCommand.Name = "btnPostRecordCommand";
       this.btnPostRecordCommand.Size = new System.Drawing.Size(20, 20);
@@ -881,7 +987,7 @@ namespace Kinovea.Root
       // lblPostRecordCommand
       // 
       this.lblPostRecordCommand.AutoSize = true;
-      this.lblPostRecordCommand.Location = new System.Drawing.Point(19, 161);
+      this.lblPostRecordCommand.Location = new System.Drawing.Point(16, 192);
       this.lblPostRecordCommand.Name = "lblPostRecordCommand";
       this.lblPostRecordCommand.Size = new System.Drawing.Size(127, 13);
       this.lblPostRecordCommand.TabIndex = 52;
@@ -889,97 +995,16 @@ namespace Kinovea.Root
       // 
       // tbPostRecordCommand
       // 
-      this.tbPostRecordCommand.Location = new System.Drawing.Point(190, 158);
+      this.tbPostRecordCommand.Location = new System.Drawing.Point(208, 189);
       this.tbPostRecordCommand.Name = "tbPostRecordCommand";
-      this.tbPostRecordCommand.Size = new System.Drawing.Size(185, 20);
+      this.tbPostRecordCommand.Size = new System.Drawing.Size(227, 20);
       this.tbPostRecordCommand.TabIndex = 53;
       this.tbPostRecordCommand.TextChanged += new System.EventHandler(this.tbPostRecordCommand_TextChanged);
-      // 
-      // vumeter
-      // 
-      this.vumeter.Amplitude = 0F;
-      this.vumeter.BackColor = System.Drawing.Color.White;
-      this.vumeter.DecibelRange = 60F;
-      this.vumeter.Location = new System.Drawing.Point(190, 80);
-      this.vumeter.Name = "vumeter";
-      this.vumeter.Size = new System.Drawing.Size(185, 21);
-      this.vumeter.TabIndex = 51;
-      this.vumeter.Text = "volumeMeterThreshold1";
-      this.vumeter.Threshold = 0.8F;
-      this.vumeter.ThresholdChanged += new System.EventHandler(this.Vumeter_ThresholdChanged);
-      // 
-      // lblLevel
-      // 
-      this.lblLevel.AutoSize = true;
-      this.lblLevel.Location = new System.Drawing.Point(387, 22);
-      this.lblLevel.Name = "lblLevel";
-      this.lblLevel.Size = new System.Drawing.Size(13, 13);
-      this.lblLevel.TabIndex = 50;
-      this.lblLevel.Text = "0";
-      this.lblLevel.Visible = false;
-      // 
-      // lblAudioTriggerHits
-      // 
-      this.lblAudioTriggerHits.AutoSize = true;
-      this.lblAudioTriggerHits.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblAudioTriggerHits.Location = new System.Drawing.Point(384, 82);
-      this.lblAudioTriggerHits.Name = "lblAudioTriggerHits";
-      this.lblAudioTriggerHits.Size = new System.Drawing.Size(15, 16);
-      this.lblAudioTriggerHits.TabIndex = 49;
-      this.lblAudioTriggerHits.Text = "0";
-      // 
-      // cmbInputDevice
-      // 
-      this.cmbInputDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbInputDevice.FormattingEnabled = true;
-      this.cmbInputDevice.Location = new System.Drawing.Point(190, 50);
-      this.cmbInputDevice.Name = "cmbInputDevice";
-      this.cmbInputDevice.Size = new System.Drawing.Size(210, 21);
-      this.cmbInputDevice.TabIndex = 48;
-      this.cmbInputDevice.SelectedIndexChanged += new System.EventHandler(this.cmbInputDevice_SelectedIndexChanged);
-      // 
-      // lblInputDevice
-      // 
-      this.lblInputDevice.AutoSize = true;
-      this.lblInputDevice.Location = new System.Drawing.Point(49, 53);
-      this.lblInputDevice.Name = "lblInputDevice";
-      this.lblInputDevice.Size = new System.Drawing.Size(114, 13);
-      this.lblInputDevice.TabIndex = 47;
-      this.lblInputDevice.Text = "Preferred input device:";
-      // 
-      // lblAudioTriggerThreshold
-      // 
-      this.lblAudioTriggerThreshold.AutoSize = true;
-      this.lblAudioTriggerThreshold.Location = new System.Drawing.Point(49, 84);
-      this.lblAudioTriggerThreshold.Name = "lblAudioTriggerThreshold";
-      this.lblAudioTriggerThreshold.Size = new System.Drawing.Size(115, 13);
-      this.lblAudioTriggerThreshold.TabIndex = 46;
-      this.lblAudioTriggerThreshold.Text = "Audio trigger threshold:";
-      // 
-      // tbAudioTriggerThreshold
-      // 
-      this.tbAudioTriggerThreshold.Location = new System.Drawing.Point(336, 19);
-      this.tbAudioTriggerThreshold.Name = "tbAudioTriggerThreshold";
-      this.tbAudioTriggerThreshold.Size = new System.Drawing.Size(39, 20);
-      this.tbAudioTriggerThreshold.TabIndex = 45;
-      this.tbAudioTriggerThreshold.Visible = false;
-      this.tbAudioTriggerThreshold.TextChanged += new System.EventHandler(this.tbAudioTriggerThreshold_TextChanged);
-      // 
-      // chkEnableAudioTrigger
-      // 
-      this.chkEnableAudioTrigger.AutoSize = true;
-      this.chkEnableAudioTrigger.Location = new System.Drawing.Point(22, 22);
-      this.chkEnableAudioTrigger.Name = "chkEnableAudioTrigger";
-      this.chkEnableAudioTrigger.Size = new System.Drawing.Size(120, 17);
-      this.chkEnableAudioTrigger.TabIndex = 44;
-      this.chkEnableAudioTrigger.Text = "Enable audio trigger";
-      this.chkEnableAudioTrigger.UseVisualStyleBackColor = true;
-      this.chkEnableAudioTrigger.CheckedChanged += new System.EventHandler(this.chkEnableAudioTrigger_CheckedChanged);
       // 
       // lblRecordingTime
       // 
       this.lblRecordingTime.AutoSize = true;
-      this.lblRecordingTime.Location = new System.Drawing.Point(19, 127);
+      this.lblRecordingTime.Location = new System.Drawing.Point(16, 158);
       this.lblRecordingTime.Name = "lblRecordingTime";
       this.lblRecordingTime.Size = new System.Drawing.Size(98, 13);
       this.lblRecordingTime.TabIndex = 43;
@@ -987,11 +1012,33 @@ namespace Kinovea.Root
       // 
       // tbRecordingTime
       // 
-      this.tbRecordingTime.Location = new System.Drawing.Point(190, 124);
+      this.tbRecordingTime.Location = new System.Drawing.Point(208, 155);
       this.tbRecordingTime.Name = "tbRecordingTime";
       this.tbRecordingTime.Size = new System.Drawing.Size(28, 20);
       this.tbRecordingTime.TabIndex = 42;
       this.tbRecordingTime.TextChanged += new System.EventHandler(this.tbRecordingTime_TextChanged);
+      // 
+      // chkUncompressedVideo
+      // 
+      this.chkUncompressedVideo.AutoSize = true;
+      this.chkUncompressedVideo.Location = new System.Drawing.Point(22, 26);
+      this.chkUncompressedVideo.Name = "chkUncompressedVideo";
+      this.chkUncompressedVideo.Size = new System.Drawing.Size(152, 17);
+      this.chkUncompressedVideo.TabIndex = 47;
+      this.chkUncompressedVideo.Text = "Save uncompressed video";
+      this.chkUncompressedVideo.UseVisualStyleBackColor = true;
+      this.chkUncompressedVideo.CheckedChanged += new System.EventHandler(this.chkUncompressedVideo_CheckedChanged);
+      // 
+      // chkIgnoreOverwriteWarning
+      // 
+      this.chkIgnoreOverwriteWarning.AutoSize = true;
+      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(19, 229);
+      this.chkIgnoreOverwriteWarning.Name = "chkIgnoreOverwriteWarning";
+      this.chkIgnoreOverwriteWarning.Size = new System.Drawing.Size(142, 17);
+      this.chkIgnoreOverwriteWarning.TabIndex = 56;
+      this.chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
+      this.chkIgnoreOverwriteWarning.UseVisualStyleBackColor = true;
+      this.chkIgnoreOverwriteWarning.CheckedChanged += new System.EventHandler(this.chkIgnoreOverwriteWarning_CheckedChanged);
       // 
       // PreferencePanelCapture
       // 
@@ -999,7 +1046,7 @@ namespace Kinovea.Root
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.tabSubPages);
       this.Name = "PreferencePanelCapture";
-      this.Size = new System.Drawing.Size(432, 236);
+      this.Size = new System.Drawing.Size(490, 322);
       this.tabSubPages.ResumeLayout(false);
       this.tabGeneral.ResumeLayout(false);
       this.tabGeneral.PerformLayout();
@@ -1022,6 +1069,9 @@ namespace Kinovea.Root
       this.grpLeftVideo.PerformLayout();
       this.tabAutomation.ResumeLayout(false);
       this.tabAutomation.PerformLayout();
+      this.gbAudioTrigger.ResumeLayout(false);
+      this.gbAudioTrigger.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).EndInit();
       this.ResumeLayout(false);
 
 		}
@@ -1082,24 +1132,24 @@ namespace Kinovea.Root
         private System.Windows.Forms.GroupBox grpRecordingMode;
         private System.Windows.Forms.RadioButton rbRecordingDelayed;
         private System.Windows.Forms.RadioButton rbRecordingCamera;
-        private System.Windows.Forms.CheckBox chkUncompressedVideo;
         private System.Windows.Forms.ComboBox cmbUncompressedVideoFormat;
         private System.Windows.Forms.Label lblUncompressedVideoFormat;
         private System.Windows.Forms.TabPage tabAutomation;
         private System.Windows.Forms.Label lblRecordingTime;
         private System.Windows.Forms.TextBox tbRecordingTime;
         private System.Windows.Forms.Label lblAudioTriggerThreshold;
-        private System.Windows.Forms.TextBox tbAudioTriggerThreshold;
         private System.Windows.Forms.CheckBox chkEnableAudioTrigger;
         private System.Windows.Forms.ComboBox cmbInputDevice;
         private System.Windows.Forms.Label lblInputDevice;
         private System.Windows.Forms.Label lblAudioTriggerHits;
-        private System.Windows.Forms.Label lblLevel;
         private Services.VolumeMeterThreshold vumeter;
-        private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
         private System.Windows.Forms.Button btnPostRecordCommand;
         private System.Windows.Forms.Label lblPostRecordCommand;
         private System.Windows.Forms.TextBox tbPostRecordCommand;
         private System.Windows.Forms.RadioButton rbRecordingScheduled;
+        private System.Windows.Forms.GroupBox gbAudioTrigger;
+        private System.Windows.Forms.NumericUpDown nudAudioTriggerThreshold;
+        private System.Windows.Forms.CheckBox chkUncompressedVideo;
+        private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
     }
 }

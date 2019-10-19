@@ -1,8 +1,7 @@
 ﻿using System.Windows.Forms;
-using Kinovea.Services;
 using System.Drawing;
 
-namespace Kinovea.Root
+namespace Kinovea.Services
 {
     public class TextboxHotkey : TextBox
     {

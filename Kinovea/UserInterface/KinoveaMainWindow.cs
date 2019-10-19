@@ -18,10 +18,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Kinovea.Services;
 
 namespace Kinovea.Root
 {
@@ -67,11 +67,7 @@ namespace Kinovea.Root
 
             string title = " Kinovea";
             if (!firstInstance)
-            {
-                // Add random characters at the end of the window title so it can be identified by automation scripts.
-                string id = Guid.NewGuid().ToString().Substring(0, 4);
-                title += " [" + id + "]";
-            }
+                title += string.Format(" [{0}]", Software.InstanceNumber);
 
             this.Text = title;
             supervisorView = new SupervisorUserInterface(rootKernel);

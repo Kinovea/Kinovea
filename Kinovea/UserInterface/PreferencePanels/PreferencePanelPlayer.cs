@@ -130,7 +130,7 @@ namespace Kinovea.Root
         {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDeinterlace.Text = RootLang.dlgPreferences_Player_DeinterlaceByDefault;
-            chkDetectImageSequences.Text = "Detect image sequences";
+            chkDetectImageSequences.Text = "Import image sequences as videos";
             chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
             chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
 

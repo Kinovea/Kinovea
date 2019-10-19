@@ -263,9 +263,6 @@
     <Compile Include="UserInterface\PreferencePanels\PreferencePanelPlayer.Designer.cs">
       <DependentUpon>PreferencePanelPlayer.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\PreferencePanels\TextboxHotkey.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="UserInterface\SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>

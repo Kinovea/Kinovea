@@ -22,7 +22,7 @@ namespace Kinovea.Services
         #endregion
 
         /// <summary>
-        /// Input level between 0 and 1.
+        /// Input level in [0..1].
         /// </summary>
         [DefaultValue(0.0)]
         public float Amplitude
@@ -36,7 +36,7 @@ namespace Kinovea.Services
         }
 
         /// <summary>
-        /// Threshold amplitude.
+        /// Threshold level in [0..1].
         /// </summary>
         [DefaultValue(0.8)]
         public float Threshold
@@ -45,6 +45,24 @@ namespace Kinovea.Services
             set
             {
                 threshold = value;
+                this.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// Threshold level linearized.
+        /// This is only used for UI purposes.
+        /// </summary>
+        [DefaultValue(0)]
+        public float ThresholdLinear
+        {
+            get
+            {
+                return Map(threshold);
+            }
+            set
+            {
+                threshold = Unmap(value);
                 this.Invalidate();
             }
         }

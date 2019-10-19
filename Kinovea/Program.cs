@@ -24,6 +24,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Reflection;
 using Kinovea.Services;
+using System.Diagnostics;
 
 namespace Kinovea.Root
 {
@@ -57,8 +58,12 @@ namespace Kinovea.Root
             Software.SanityCheckDirectories();
             PreferencesManager.Initialize();
             bool firstInstance = Program.FirstInstance;
-            if (!PreferencesManager.GeneralPreferences.AllowMultipleInstances && !firstInstance)
+            if (!firstInstance && !PreferencesManager.GeneralPreferences.AllowMultipleInstances)
                 return;
+
+            Software.ConfigureInstance();
+            if (!firstInstance && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
+                PreferencesManager.Initialize();
 
             log.Debug("Application level initialisations.");
             Application.EnableVisualStyles();
