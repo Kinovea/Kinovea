@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
             // In the case of replay watcher this will only be called the first time, to setup the screen.
             // Subsequent video loads will be done directly by the replay watcher.
 
-            log.DebugFormat("Loading video {0}.", path);
+            log.DebugFormat("Loading video {0}.", Path.GetFileName(path));
             
             NotificationCenter.RaiseStopPlayback(null);
 
