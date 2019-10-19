@@ -50,6 +50,7 @@ namespace Kinovea.Root
 		{
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
+      this.chkUncompressedVideo = new System.Windows.Forms.CheckBox();
       this.cmbUncompressedVideoFormat = new System.Windows.Forms.ComboBox();
       this.lblUncompressedVideoFormat = new System.Windows.Forms.Label();
       this.lblFramerate = new System.Windows.Forms.Label();
@@ -109,6 +110,7 @@ namespace Kinovea.Root
       this.lblLeftVideoRoot = new System.Windows.Forms.Label();
       this.tbLeftVideoRoot = new System.Windows.Forms.TextBox();
       this.tabAutomation = new System.Windows.Forms.TabPage();
+      this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
       this.gbAudioTrigger = new System.Windows.Forms.GroupBox();
       this.nudAudioTriggerThreshold = new System.Windows.Forms.NumericUpDown();
       this.chkEnableAudioTrigger = new System.Windows.Forms.CheckBox();
@@ -121,9 +123,12 @@ namespace Kinovea.Root
       this.lblPostRecordCommand = new System.Windows.Forms.Label();
       this.tbPostRecordCommand = new System.Windows.Forms.TextBox();
       this.lblRecordingTime = new System.Windows.Forms.Label();
-      this.tbRecordingTime = new System.Windows.Forms.TextBox();
-      this.chkUncompressedVideo = new System.Windows.Forms.CheckBox();
-      this.chkIgnoreOverwriteWarning = new System.Windows.Forms.CheckBox();
+      this.gbHighspeedCameras = new System.Windows.Forms.GroupBox();
+      this.nudReplacementThreshold = new System.Windows.Forms.NumericUpDown();
+      this.lblReplacementThreshold = new System.Windows.Forms.Label();
+      this.lblReplacementFramerate = new System.Windows.Forms.Label();
+      this.nudReplacementFramerate = new System.Windows.Forms.NumericUpDown();
+      this.nudRecordingTime = new System.Windows.Forms.NumericUpDown();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabMemory.SuspendLayout();
@@ -139,6 +144,10 @@ namespace Kinovea.Root
       this.tabAutomation.SuspendLayout();
       this.gbAudioTrigger.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).BeginInit();
+      this.gbHighspeedCameras.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudReplacementThreshold)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudReplacementFramerate)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudRecordingTime)).BeginInit();
       this.SuspendLayout();
       // 
       // tabSubPages
@@ -175,11 +184,22 @@ namespace Kinovea.Root
       this.tabGeneral.Text = "General";
       this.tabGeneral.UseVisualStyleBackColor = true;
       // 
+      // chkUncompressedVideo
+      // 
+      this.chkUncompressedVideo.AutoSize = true;
+      this.chkUncompressedVideo.Location = new System.Drawing.Point(22, 26);
+      this.chkUncompressedVideo.Name = "chkUncompressedVideo";
+      this.chkUncompressedVideo.Size = new System.Drawing.Size(152, 17);
+      this.chkUncompressedVideo.TabIndex = 47;
+      this.chkUncompressedVideo.Text = "Save uncompressed video";
+      this.chkUncompressedVideo.UseVisualStyleBackColor = true;
+      this.chkUncompressedVideo.CheckedChanged += new System.EventHandler(this.chkUncompressedVideo_CheckedChanged);
+      // 
       // cmbUncompressedVideoFormat
       // 
       this.cmbUncompressedVideoFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cmbUncompressedVideoFormat.FormattingEnabled = true;
-      this.cmbUncompressedVideoFormat.Location = new System.Drawing.Point(209, 152);
+      this.cmbUncompressedVideoFormat.Location = new System.Drawing.Point(209, 157);
       this.cmbUncompressedVideoFormat.Name = "cmbUncompressedVideoFormat";
       this.cmbUncompressedVideoFormat.Size = new System.Drawing.Size(52, 21);
       this.cmbUncompressedVideoFormat.TabIndex = 43;
@@ -187,7 +207,7 @@ namespace Kinovea.Root
       // 
       // lblUncompressedVideoFormat
       // 
-      this.lblUncompressedVideoFormat.Location = new System.Drawing.Point(19, 155);
+      this.lblUncompressedVideoFormat.Location = new System.Drawing.Point(19, 160);
       this.lblUncompressedVideoFormat.Name = "lblUncompressedVideoFormat";
       this.lblUncompressedVideoFormat.Size = new System.Drawing.Size(149, 18);
       this.lblUncompressedVideoFormat.TabIndex = 42;
@@ -214,7 +234,7 @@ namespace Kinovea.Root
       // 
       this.cmbVideoFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cmbVideoFormat.FormattingEnabled = true;
-      this.cmbVideoFormat.Location = new System.Drawing.Point(209, 124);
+      this.cmbVideoFormat.Location = new System.Drawing.Point(209, 127);
       this.cmbVideoFormat.Name = "cmbVideoFormat";
       this.cmbVideoFormat.Size = new System.Drawing.Size(52, 21);
       this.cmbVideoFormat.TabIndex = 41;
@@ -222,7 +242,7 @@ namespace Kinovea.Root
       // 
       // lblVideoFormat
       // 
-      this.lblVideoFormat.Location = new System.Drawing.Point(19, 127);
+      this.lblVideoFormat.Location = new System.Drawing.Point(19, 130);
       this.lblVideoFormat.Name = "lblVideoFormat";
       this.lblVideoFormat.Size = new System.Drawing.Size(149, 18);
       this.lblVideoFormat.TabIndex = 40;
@@ -281,6 +301,7 @@ namespace Kinovea.Root
       // 
       // tabRecording
       // 
+      this.tabRecording.Controls.Add(this.gbHighspeedCameras);
       this.tabRecording.Controls.Add(this.rbRecordingScheduled);
       this.tabRecording.Controls.Add(this.grpRecordingMode);
       this.tabRecording.Location = new System.Drawing.Point(4, 22);
@@ -856,19 +877,30 @@ namespace Kinovea.Root
       // 
       // tabAutomation
       // 
+      this.tabAutomation.Controls.Add(this.nudRecordingTime);
       this.tabAutomation.Controls.Add(this.chkIgnoreOverwriteWarning);
       this.tabAutomation.Controls.Add(this.gbAudioTrigger);
       this.tabAutomation.Controls.Add(this.btnPostRecordCommand);
       this.tabAutomation.Controls.Add(this.lblPostRecordCommand);
       this.tabAutomation.Controls.Add(this.tbPostRecordCommand);
       this.tabAutomation.Controls.Add(this.lblRecordingTime);
-      this.tabAutomation.Controls.Add(this.tbRecordingTime);
       this.tabAutomation.Location = new System.Drawing.Point(4, 22);
       this.tabAutomation.Name = "tabAutomation";
       this.tabAutomation.Size = new System.Drawing.Size(482, 296);
       this.tabAutomation.TabIndex = 5;
       this.tabAutomation.Text = "Automation";
       this.tabAutomation.UseVisualStyleBackColor = true;
+      // 
+      // chkIgnoreOverwriteWarning
+      // 
+      this.chkIgnoreOverwriteWarning.AutoSize = true;
+      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(19, 229);
+      this.chkIgnoreOverwriteWarning.Name = "chkIgnoreOverwriteWarning";
+      this.chkIgnoreOverwriteWarning.Size = new System.Drawing.Size(142, 17);
+      this.chkIgnoreOverwriteWarning.TabIndex = 56;
+      this.chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
+      this.chkIgnoreOverwriteWarning.UseVisualStyleBackColor = true;
+      this.chkIgnoreOverwriteWarning.CheckedChanged += new System.EventHandler(this.chkIgnoreOverwriteWarning_CheckedChanged);
       // 
       // gbAudioTrigger
       // 
@@ -1010,35 +1042,91 @@ namespace Kinovea.Root
       this.lblRecordingTime.TabIndex = 43;
       this.lblRecordingTime.Text = "Recording time (s) :";
       // 
-      // tbRecordingTime
+      // gbHighspeedCameras
       // 
-      this.tbRecordingTime.Location = new System.Drawing.Point(208, 155);
-      this.tbRecordingTime.Name = "tbRecordingTime";
-      this.tbRecordingTime.Size = new System.Drawing.Size(28, 20);
-      this.tbRecordingTime.TabIndex = 42;
-      this.tbRecordingTime.TextChanged += new System.EventHandler(this.tbRecordingTime_TextChanged);
+      this.gbHighspeedCameras.Controls.Add(this.nudReplacementFramerate);
+      this.gbHighspeedCameras.Controls.Add(this.lblReplacementFramerate);
+      this.gbHighspeedCameras.Controls.Add(this.nudReplacementThreshold);
+      this.gbHighspeedCameras.Controls.Add(this.lblReplacementThreshold);
+      this.gbHighspeedCameras.Location = new System.Drawing.Point(6, 100);
+      this.gbHighspeedCameras.Name = "gbHighspeedCameras";
+      this.gbHighspeedCameras.Size = new System.Drawing.Size(470, 94);
+      this.gbHighspeedCameras.TabIndex = 41;
+      this.gbHighspeedCameras.TabStop = false;
+      this.gbHighspeedCameras.Text = "High speed cameras";
       // 
-      // chkUncompressedVideo
+      // nudReplacementThreshold
       // 
-      this.chkUncompressedVideo.AutoSize = true;
-      this.chkUncompressedVideo.Location = new System.Drawing.Point(22, 26);
-      this.chkUncompressedVideo.Name = "chkUncompressedVideo";
-      this.chkUncompressedVideo.Size = new System.Drawing.Size(152, 17);
-      this.chkUncompressedVideo.TabIndex = 47;
-      this.chkUncompressedVideo.Text = "Save uncompressed video";
-      this.chkUncompressedVideo.UseVisualStyleBackColor = true;
-      this.chkUncompressedVideo.CheckedChanged += new System.EventHandler(this.chkUncompressedVideo_CheckedChanged);
+      this.nudReplacementThreshold.Location = new System.Drawing.Point(281, 31);
+      this.nudReplacementThreshold.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+      this.nudReplacementThreshold.Minimum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+      this.nudReplacementThreshold.Name = "nudReplacementThreshold";
+      this.nudReplacementThreshold.Size = new System.Drawing.Size(45, 20);
+      this.nudReplacementThreshold.TabIndex = 54;
+      this.nudReplacementThreshold.Value = new decimal(new int[] {
+            150,
+            0,
+            0,
+            0});
+      this.nudReplacementThreshold.ValueChanged += new System.EventHandler(this.NudReplacementThreshold_ValueChanged);
       // 
-      // chkIgnoreOverwriteWarning
+      // lblReplacementThreshold
       // 
-      this.chkIgnoreOverwriteWarning.AutoSize = true;
-      this.chkIgnoreOverwriteWarning.Location = new System.Drawing.Point(19, 229);
-      this.chkIgnoreOverwriteWarning.Name = "chkIgnoreOverwriteWarning";
-      this.chkIgnoreOverwriteWarning.Size = new System.Drawing.Size(142, 17);
-      this.chkIgnoreOverwriteWarning.TabIndex = 56;
-      this.chkIgnoreOverwriteWarning.Text = "Ignore overwrite warning";
-      this.chkIgnoreOverwriteWarning.UseVisualStyleBackColor = true;
-      this.chkIgnoreOverwriteWarning.CheckedChanged += new System.EventHandler(this.chkIgnoreOverwriteWarning_CheckedChanged);
+      this.lblReplacementThreshold.AutoSize = true;
+      this.lblReplacementThreshold.Location = new System.Drawing.Point(17, 33);
+      this.lblReplacementThreshold.Name = "lblReplacementThreshold";
+      this.lblReplacementThreshold.Size = new System.Drawing.Size(164, 13);
+      this.lblReplacementThreshold.TabIndex = 53;
+      this.lblReplacementThreshold.Text = "Framerate replacement threshold:";
+      // 
+      // lblReplacementFramerate
+      // 
+      this.lblReplacementFramerate.AutoSize = true;
+      this.lblReplacementFramerate.Location = new System.Drawing.Point(17, 59);
+      this.lblReplacementFramerate.Name = "lblReplacementFramerate";
+      this.lblReplacementFramerate.Size = new System.Drawing.Size(120, 13);
+      this.lblReplacementFramerate.TabIndex = 55;
+      this.lblReplacementFramerate.Text = "Replacement framerate:";
+      // 
+      // nudReplacementFramerate
+      // 
+      this.nudReplacementFramerate.Location = new System.Drawing.Point(281, 57);
+      this.nudReplacementFramerate.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.nudReplacementFramerate.Name = "nudReplacementFramerate";
+      this.nudReplacementFramerate.Size = new System.Drawing.Size(45, 20);
+      this.nudReplacementFramerate.TabIndex = 56;
+      this.nudReplacementFramerate.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+      this.nudReplacementFramerate.ValueChanged += new System.EventHandler(this.NudReplacementFramerate_ValueChanged);
+      // 
+      // nudRecordingTime
+      // 
+      this.nudRecordingTime.DecimalPlaces = 1;
+      this.nudRecordingTime.Location = new System.Drawing.Point(208, 156);
+      this.nudRecordingTime.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+      this.nudRecordingTime.Name = "nudRecordingTime";
+      this.nudRecordingTime.Size = new System.Drawing.Size(48, 20);
+      this.nudRecordingTime.TabIndex = 53;
+      this.nudRecordingTime.ValueChanged += new System.EventHandler(this.NudRecordingTime_ValueChanged);
       // 
       // PreferencePanelCapture
       // 
@@ -1072,6 +1160,11 @@ namespace Kinovea.Root
       this.gbAudioTrigger.ResumeLayout(false);
       this.gbAudioTrigger.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudAudioTriggerThreshold)).EndInit();
+      this.gbHighspeedCameras.ResumeLayout(false);
+      this.gbHighspeedCameras.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudReplacementThreshold)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudReplacementFramerate)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudRecordingTime)).EndInit();
       this.ResumeLayout(false);
 
 		}
@@ -1136,7 +1229,6 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblUncompressedVideoFormat;
         private System.Windows.Forms.TabPage tabAutomation;
         private System.Windows.Forms.Label lblRecordingTime;
-        private System.Windows.Forms.TextBox tbRecordingTime;
         private System.Windows.Forms.Label lblAudioTriggerThreshold;
         private System.Windows.Forms.CheckBox chkEnableAudioTrigger;
         private System.Windows.Forms.ComboBox cmbInputDevice;
@@ -1151,5 +1243,11 @@ namespace Kinovea.Root
         private System.Windows.Forms.NumericUpDown nudAudioTriggerThreshold;
         private System.Windows.Forms.CheckBox chkUncompressedVideo;
         private System.Windows.Forms.CheckBox chkIgnoreOverwriteWarning;
+        private System.Windows.Forms.GroupBox gbHighspeedCameras;
+        private System.Windows.Forms.NumericUpDown nudReplacementFramerate;
+        private System.Windows.Forms.Label lblReplacementFramerate;
+        private System.Windows.Forms.NumericUpDown nudReplacementThreshold;
+        private System.Windows.Forms.Label lblReplacementThreshold;
+        private System.Windows.Forms.NumericUpDown nudRecordingTime;
     }
 }

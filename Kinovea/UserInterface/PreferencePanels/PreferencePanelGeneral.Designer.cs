@@ -72,7 +72,7 @@ namespace Kinovea.Root
             "8",
             "9",
             "10"});
-      this.cmbHistoryCount.Location = new System.Drawing.Point(302, 81);
+      this.cmbHistoryCount.Location = new System.Drawing.Point(302, 83);
       this.cmbHistoryCount.Name = "cmbHistoryCount";
       this.cmbHistoryCount.Size = new System.Drawing.Size(36, 21);
       this.cmbHistoryCount.TabIndex = 13;

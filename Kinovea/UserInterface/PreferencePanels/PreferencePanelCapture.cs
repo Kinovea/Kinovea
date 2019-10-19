@@ -76,6 +76,8 @@ namespace Kinovea.Root
         private int thresholdFactor;
         private int decibelRange;
         private string postRecordCommand;
+        private float replacementFramerateThreshold;
+        private float replacementFramerate;
         #endregion
 
         #region Construction & Initialization
@@ -116,17 +118,19 @@ namespace Kinovea.Root
 
         private void ImportPreferences()
         {
-            capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
-            displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
-            recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             saveUncompressedVideo = PreferencesManager.CapturePreferences.SaveUncompressedVideo;
+            displaySynchronizationFramerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
+            capturePathConfiguration = PreferencesManager.CapturePreferences.CapturePathConfiguration.Clone();
             memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
+            recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
+            replacementFramerateThreshold = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateThreshold;
+            replacementFramerate = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput;
             enableAudioTrigger = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger;
             audioInputDevice = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice;
             audioTriggerThreshold = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold;
             recordingSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
-            ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
             postRecordCommand = PreferencesManager.CapturePreferences.PostRecordCommand;
+            ignoreOverwriteWarning = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.IgnoreOverwrite;
         }
         private void InitInputMonitor()
         {
@@ -216,6 +220,13 @@ namespace Kinovea.Root
 
             chkIgnoreOverwriteWarning.Text = "Ignore file overwrite warning";
             chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
+
+            gbHighspeedCameras.Text = "High speed cameras";
+            lblReplacementThreshold.Text = "Framerate replacement threshold:";
+            lblReplacementFramerate.Text = "Replacement framerate:";
+            nudReplacementThreshold.Value = (decimal)replacementFramerateThreshold;
+            nudReplacementFramerate.Value = (decimal)replacementFramerate;
+            // Tooltip: Starting at this capture framerate, videos will be created with the replacement framerate in their metadata.
         }
 
         private void InitPageImageNaming()
@@ -291,7 +302,7 @@ namespace Kinovea.Root
             nudAudioTriggerThreshold.Maximum = decibelRange;
 
             lblRecordingTime.Text = "Stop recording by duration (s):";
-            tbRecordingTime.Text = string.Format("{0:0.###}", recordingSeconds);
+            nudRecordingTime.Value = (decimal)recordingSeconds;
             
             chkEnableAudioTrigger.Checked = enableAudioTrigger;
             EnableDisableAudioTrigger();
@@ -466,9 +477,13 @@ namespace Kinovea.Root
         {
             saveUncompressedVideo = chkUncompressedVideo.Checked;
         }
-        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
+        private void NudReplacementThreshold_ValueChanged(object sender, EventArgs e)
         {
-            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
+            replacementFramerateThreshold = (float)nudReplacementThreshold.Value;
+        }
+        private void NudReplacementFramerate_ValueChanged(object sender, EventArgs e)
+        {
+            replacementFramerate = (float)nudReplacementFramerate.Value;
         }
         #endregion
 
@@ -512,14 +527,12 @@ namespace Kinovea.Root
             audioTriggerHits = 0;
             UpdateHits();
         }
-        private void tbRecordingTime_TextChanged(object sender, EventArgs e)
+
+        private void NudRecordingTime_ValueChanged(object sender, EventArgs e)
         {
-            // Parse in current culture.
-            float value;
-            bool parsed = float.TryParse(tbRecordingTime.Text, out value);
-            if (parsed)
-                recordingSeconds = value;
+            recordingSeconds = (float)nudRecordingTime.Value;
         }
+
         private void tbPostRecordCommand_TextChanged(object sender, EventArgs e)
         {
             Control tb = sender as Control;
@@ -540,6 +553,12 @@ namespace Kinovea.Root
             formPatternsVisible = true;
             formPatterns.Show(this);
         }
+
+        private void chkIgnoreOverwriteWarning_CheckedChanged(object sender, EventArgs e)
+        {
+            ignoreOverwriteWarning = chkIgnoreOverwriteWarning.Checked;
+        }
+
         #endregion
         #endregion
 
@@ -581,11 +600,13 @@ namespace Kinovea.Root
 
         public void CommitChanges()
         {
-            PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
+            PreferencesManager.CapturePreferences.SaveUncompressedVideo = saveUncompressedVideo;
             PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate = displaySynchronizationFramerate;
+            PreferencesManager.CapturePreferences.CapturePathConfiguration = capturePathConfiguration;
             PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
             PreferencesManager.CapturePreferences.RecordingMode = recordingMode;
-            PreferencesManager.CapturePreferences.SaveUncompressedVideo = saveUncompressedVideo;
+            PreferencesManager.CapturePreferences.HighspeedRecordingFramerateThreshold = replacementFramerateThreshold;
+            PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput = replacementFramerate;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.EnableAudioTrigger = enableAudioTrigger;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioInputDevice = audioInputDevice;
             PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.AudioTriggerThreshold = audioTriggerThreshold;
