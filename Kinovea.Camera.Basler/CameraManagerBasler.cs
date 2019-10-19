@@ -86,9 +86,9 @@ namespace Kinovea.Camera.Basler
                 Pylon.Initialize();
                 result = true;
             }
-            catch (Exception e)
+            catch
             {
-                log.DebugFormat("Basler Camera subsystem not available. {0}", e.Message);
+                log.DebugFormat("Basler Camera subsystem not available.");
             }
 
             return result;
@@ -280,7 +280,8 @@ namespace Kinovea.Camera.Basler
             if(retriever != null)
             {
                 retriever.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-                snapshotting.Remove(retriever.Identifier);
+                if (snapshotting != null && snapshotting.Count > 0)
+                    snapshotting.Remove(retriever.Identifier);
             }
             
             OnCameraThumbnailProduced(e);
