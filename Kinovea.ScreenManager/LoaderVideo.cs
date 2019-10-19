@@ -43,12 +43,9 @@ namespace Kinovea.ScreenManager
             }
             else if (manager.ScreenCount == 2)
             {
-                int emptyScreen = manager.FindEmptyScreen(typeof(PlayerScreen));
-
-                if (emptyScreen != -1)
-                    LoadInSpecificTarget(manager, emptyScreen, path, screenDescription);
-                else
-                    LoadInSpecificTarget(manager, 1, path, screenDescription);
+                int target = manager.FindTargetScreen(typeof(PlayerScreen));
+                if (target != -1)
+                    LoadInSpecificTarget(manager, target, path, screenDescription);
             }
         }
 

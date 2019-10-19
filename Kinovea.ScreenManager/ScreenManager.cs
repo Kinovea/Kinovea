@@ -2354,40 +2354,28 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Looks for an empty screen to load something into.
-        /// Returns the index of the first empty screen of the preferred type, 
-        /// if not found, the index of the first empty screen of the other type, 
-        /// if not found, returns -1.
+        /// Find the most appropriate screen to load into.
+        /// Must be of the same type, and empty if possible.
         /// </summary>
-        public int FindEmptyScreen(Type preferredType)
+        public int FindTargetScreen(Type type)
         {
             AbstractScreen screen0 = GetScreenAt(0);
             AbstractScreen screen1 = GetScreenAt(1);
+            if (screen0 != null && !screen0.Full && screen0.GetType() == type)
+                return 0;
 
-            List<AbstractScreen> list = new List<AbstractScreen>();
-            if (screen0 != null && !screen0.Full)
-                list.Add(screen0);
-            else
-                list.Add(null);
+            if (screen1 != null && !screen1.Full && screen1.GetType() == type)
+                return 1;
 
-            if (screen1 != null && !screen1.Full)
-                list.Add(screen1);
-            else
-                list.Add(null);
+            // If no empty screen was found, overload, but start on the right.
+            if (screen1 != null && screen1.GetType() == type)
+                return 1;
 
-            int nonPreferredIndex = -1;
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (list[i] == null)
-                    continue;
+            if (screen0 != null && screen0.GetType() == type)
+                return 0;
 
-                if (list[i].GetType() == preferredType)
-                    return i;
-
-                nonPreferredIndex = i;
-            }
-
-            return nonPreferredIndex;
+            // We do not replace capture screens with videos or vice-versa.
+            return -1;
         }
 
         /// <summary>
