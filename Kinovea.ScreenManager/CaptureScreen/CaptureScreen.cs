@@ -933,12 +933,14 @@ namespace Kinovea.ScreenManager
                     recordingThumbnail = BitmapHelper.Copy(fresh);
 
                 Bitmap delayed = delayCompositer.Get(delay);
-                viewportController.Bitmap = delayed;
+                if (delayed != null)
+                    viewportController.Bitmap = delayed;
             }
             else
             {
                 Bitmap delayed = delayCompositer.Get(delay);
-                viewportController.Bitmap = delayed;
+                if (delayed != null)
+                    viewportController.Bitmap = delayed;
 
                 if (recording && recordingThumbnail == null && delayed != null)
                     recordingThumbnail = BitmapHelper.Copy(delayed);
