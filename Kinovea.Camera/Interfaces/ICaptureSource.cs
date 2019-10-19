@@ -32,6 +32,10 @@ namespace Kinovea.Camera
         event EventHandler GrabbingStatusChanged;
         
         bool Grabbing { get; }
+
+        /// <summary>
+        /// The framerate at which the camera is configured.
+        /// </summary>
         float Framerate { get; }
         double LiveDataRate { get; }
 

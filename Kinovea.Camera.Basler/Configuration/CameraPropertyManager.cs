@@ -150,7 +150,7 @@ namespace Kinovea.Camera.Basler
             prop.CanBeAutomatic = true;
             prop.AutomaticIdentifier = "ExposureAuto";
             GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, prop.AutomaticIdentifier);
-            prop.Automatic = auto.Symbol == "Continuous";
+            prop.Automatic = auto != null && auto.Symbol == "Continuous";
             properties.Add("exposure", prop);
         }
 
@@ -165,7 +165,7 @@ namespace Kinovea.Camera.Basler
             prop.CanBeAutomatic = true;
             prop.AutomaticIdentifier = "GainAuto";
             GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, prop.AutomaticIdentifier);
-            prop.Automatic = auto.Symbol == "Continuous";
+            prop.Automatic = auto != null && auto.Symbol == "Continuous";
             properties.Add("gain", prop);
         }
 
@@ -248,7 +248,7 @@ namespace Kinovea.Camera.Basler
                 repr = EGenApiRepresentation.Linear;
 
             // Fix values that should be log.
-            double range = Math.Log(max - min, 10);
+            double range = Math.Log10(max) - Math.Log10(min);
             if (range > 4 && repr == EGenApiRepresentation.Linear)
                 repr = EGenApiRepresentation.Logarithmic;
 

@@ -112,7 +112,11 @@ namespace Kinovea.Camera.Basler
             }
             catch
             {
-                log.ErrorFormat(PylonHelper.GetLastError());
+                string error = PylonHelper.GetLastError();
+                if (string.IsNullOrEmpty(error))
+                    error = "Unknown";
+
+                log.ErrorFormat("Pylon error: {0}.", error);
             }
         }
         

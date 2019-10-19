@@ -49,9 +49,6 @@ namespace Kinovea.Camera
             dataRange = maxData - minData;
             proxyRange = maxProxy - minProxy;
 
-            if (dataRange == proxyRange)
-                throw new ArgumentOutOfRangeException();
-
             logBase = Math.Pow(dataRange, (1.0 / proxyRange));
         }
 
