@@ -231,7 +231,7 @@ namespace Kinovea.ScreenManager
                         inputSelectionStart = r.ReadElementContentAsLong();
                         break;
                     case "TimeOrigin":
-                        metadata.TimeOrigin = r.ReadElementContentAsLong();
+                        metadata.TimeOrigin = RemapTimestamp(r.ReadElementContentAsLong(), false);
                         break;
                     case "Calibration":
                         metadata.CalibrationHelper.ReadXml(r, scaling, inputImageSize);
