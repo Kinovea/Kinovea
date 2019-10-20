@@ -350,6 +350,8 @@ namespace Kinovea.ScreenManager
             mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.None));
             mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Name));
             mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.Position));
+            mnuMeasurement.DropDownItems.Add(GetMeasurementMenu(TrackExtraData.TotalDistance));
+
         }
         private ToolStripMenuItem GetMeasurementMenu(TrackExtraData data)
         {
@@ -375,6 +377,7 @@ namespace Kinovea.ScreenManager
                 case TrackExtraData.None: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None;
                 case TrackExtraData.Name: return ScreenManagerLang.dlgConfigureDrawing_Name;
                 case TrackExtraData.Position: return ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
+                case TrackExtraData.TotalDistance: return "Distance to origin"; //ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Position;
             }
 
             return "";
@@ -390,9 +393,13 @@ namespace Kinovea.ScreenManager
                 case TrackExtraData.Name:
                     displayText = name;
                     break;
+                case TrackExtraData.TotalDistance:
+                    PointF o = CalibrationHelper.GetOrigin();
+                    displayText = CalibrationHelper.GetLengthText(o, points["0"], true, true);
+                    break;
                 case TrackExtraData.Position:
                 default:
-                    displayText = CalibrationHelper.GetPointText(new PointF(points["0"].X, points["0"].Y), true, true, referencTimestamp);
+                    displayText = CalibrationHelper.GetPointText(points["0"], true, true, referencTimestamp);
                     break;
             }
 
@@ -413,7 +420,8 @@ namespace Kinovea.ScreenManager
             // If the option is supported, we just use it, otherwise we use the position.
             if (trackExtraData == TrackExtraData.None || 
                 trackExtraData == TrackExtraData.Name ||
-                trackExtraData == TrackExtraData.Position)
+                trackExtraData == TrackExtraData.Position ||
+                trackExtraData == TrackExtraData.TotalDistance)
                 this.trackExtraData = trackExtraData;
             else
                 this.trackExtraData = TrackExtraData.Position;

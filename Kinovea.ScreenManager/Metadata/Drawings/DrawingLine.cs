@@ -531,9 +531,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case TrackExtraData.TotalDistance:
                 default:
-                    PointF a = new PointF(points["a"].X, points["a"].Y);
-                    PointF b = new PointF(points["b"].X, points["b"].Y);
-                    displayText = CalibrationHelper.GetLengthText(a, b, true, true);
+                    displayText = CalibrationHelper.GetLengthText(points["a"], points["b"], true, true);
                     break;
             }
 
