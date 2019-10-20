@@ -81,48 +81,41 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeValues()
         {
+            bool calibrated = false;
             if(calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Line)
             {
                 string text = calibrationHelper.GetLengthText(line.A, line.B, true, false);
-                tbMeasure.Text = text;
-                
-                cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
+                float value;
+                bool parsed = float.TryParse(text, out value);
+                if (parsed)
+                {
+                    nudMeasure.Value = (decimal)value;
+                    cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
+                    calibrated = true;
+                }
             }
-            else
+
+            if (!calibrated)
             {
-                tbMeasure.Text = "50";
+                nudMeasure.Value = 50;
                 cbUnit.SelectedIndex = (int)LengthUnit.Centimeters;
             }
         }
         #endregion
 
-        #region User choices handlers
-        private void textBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            // We only accept numbers, points and coma in there.
-            char key = e.KeyChar;
-            if (((key < '0') || (key > '9')) && (key != ',') && (key != '.') && (key != '\b'))
-            {
-                e.Handled = true;
-            }
-        }
-        #endregion
-        
         #region OK/Cancel Handlers
         private void btnOK_Click(object sender, EventArgs e)
         {
-            if(tbMeasure.Text.Length == 0)
-                return;
-            
             try
             {
-                float length = float.Parse(tbMeasure.Text);
-                if(length <= 0)
+                float length = (float)nudMeasure.Value;
+                if (length <= 0)
                     return;
 
                 PointF a = calibrationHelper.DistortionHelper.Undistort(line.A);
                 PointF b = calibrationHelper.DistortionHelper.Undistort(line.B);
                 float pixelLength = GeometryHelper.GetDistance(a, b);
+
 
                 float ratio = length / pixelLength;
                 
@@ -133,7 +126,7 @@ namespace Kinovea.ScreenManager
             catch
             {
                 // Failed : do nothing.
-                log.Error(String.Format("Error while parsing measure. ({0}).", tbMeasure.Text));
+                log.Error(String.Format("Error while parsing calibration measure."));
             }
         }
         private void btnCancel_Click(object sender, EventArgs e)
