@@ -668,7 +668,7 @@ namespace Kinovea.ScreenManager
       this.btnSaveVideo.TabIndex = 25;
       this.btnSaveVideo.Tag = "";
       this.btnSaveVideo.UseVisualStyleBackColor = false;
-      this.btnSaveVideo.Click += new System.EventHandler(this.btnVideo_Click);
+      this.btnSaveVideo.Click += new System.EventHandler(this.btnSaveVideo_Click);
       // 
       // btnDiaporama
       // 

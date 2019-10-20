@@ -303,7 +303,7 @@ namespace Kinovea.ScreenManager
             
             // Load Analysis
             mnuLoadAnalysis.Image = Properties.Resources.file_kva2;
-            mnuLoadAnalysis.Click += new EventHandler(mnuLoadAnalysisOnClick);
+            mnuLoadAnalysis.Click += mnuLoadAnalysisOnClick;
             mnuLoadAnalysis.MergeIndex = 8;
             mnuLoadAnalysis.MergeAction = MergeAction.Insert;
 
@@ -670,6 +670,35 @@ namespace Kinovea.ScreenManager
                 dualCapture.ExecuteDualCommand(e.Value);
         }
 
+        private void Player_OpenVideoAsked(object sender, EventArgs e)
+        {
+            string filename = FilePicker.OpenVideo();
+            if (string.IsNullOrEmpty(filename))
+                return;
+
+            int index = sender == screenList[0] ? 0 : 1;
+            VideoTypeManager.LoadVideo(filename, index);
+        }
+        private void Player_OpenReplayWatcherAsked(object sender, EventArgs e)
+        {
+            string path = FilePicker.OpenReplayWatcher();
+            if (string.IsNullOrEmpty(path))
+                return;
+
+            int index = sender == screenList[0] ? 0 : 1;
+
+            ScreenDescriptionPlayback screenDescription = new ScreenDescriptionPlayback();
+            screenDescription.FullPath = path;
+            screenDescription.IsReplayWatcher = true;
+            screenDescription.Autoplay = true;
+            screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
+            LoaderVideo.LoadVideoInScreen(this, path, index, screenDescription);
+        }
+        private void Player_OpenAnnotationsAsked(object sender, EventArgs e)
+        {
+            int index = sender == screenList[0] ? 0 : 1;
+            LoadAnalysis(index);
+        }
         private void Player_SelectionChanged(object sender, EventArgs<bool> e)
         {
             PrepareSync();
@@ -1459,32 +1488,24 @@ namespace Kinovea.ScreenManager
         private void mnuLoadAnalysisOnClick(object sender, EventArgs e)
         {
             if (activeScreen != null && activeScreen is PlayerScreen)
-                LoadAnalysis();
+            {
+                int index = activeScreen == screenList[0] ? 0 : 1;
+                LoadAnalysis(index);
+            }
         }
-        private void LoadAnalysis()
+        private void LoadAnalysis(int targetScreen)
         {
-            PlayerScreen player = activeScreen as PlayerScreen;
+            PlayerScreen player = screenList[targetScreen] as PlayerScreen;
             if (player == null)
                 return;
 
             DoStopPlaying();
-
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
-            openFileDialog.RestoreDirectory = true;
-            //openFileDialog.Filter = ScreenManagerLang.FileFilter_KVA;
-            string filterAllAnalysis = "All supported formats (*.kva, *.srt, *.json, *.xml)|*.kva;*.srt;*.json;*.xml";
-            string filterKVA = "Kinovea Video Analysis (*.kva)|*.kva";
-            string filterSRT = "Subtitles (*.srt)|*.srt";
-            string filterOpenPose = "OpenPose (*.json)|*.json";
-            string totalFilter = string.Join("|", new string[] { filterAllAnalysis, filterKVA, filterSRT, filterOpenPose});
-            openFileDialog.Filter = totalFilter;
-            openFileDialog.FilterIndex = 1;
-            if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
+            string filename = FilePicker.OpenAnnotations();
+            if (filename == null)
                 return;
 
             MetadataSerializer s = new MetadataSerializer();
-            s.Load(player.FrameServer.Metadata, openFileDialog.FileName, true);
+            s.Load(player.FrameServer.Metadata, filename, true);
         }
         private void mnuExportODF_OnClick(object sender, EventArgs e)
         {
@@ -2429,6 +2450,9 @@ namespace Kinovea.ScreenManager
         }
         private void AddPlayerScreenEventHandlers(PlayerScreen player)
         {
+            player.OpenVideoAsked += Player_OpenVideoAsked;
+            player.OpenReplayWatcherAsked += Player_OpenReplayWatcherAsked;
+            player.OpenAnnotationsAsked += Player_OpenAnnotationsAsked;
             player.SelectionChanged += Player_SelectionChanged;
             player.ResetAsked += Player_ResetAsked;
         }
@@ -2443,6 +2467,9 @@ namespace Kinovea.ScreenManager
         }
         private void RemovePlayerScreenEventHandlers(PlayerScreen player)
         {
+            player.OpenVideoAsked -= Player_OpenVideoAsked;
+            player.OpenReplayWatcherAsked -= Player_OpenReplayWatcherAsked;
+            player.OpenAnnotationsAsked -= Player_OpenAnnotationsAsked;
             player.SelectionChanged -= Player_SelectionChanged;
             player.ResetAsked -= Player_ResetAsked;
         }

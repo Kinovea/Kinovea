@@ -243,23 +243,6 @@ namespace Kinovea.Root
         }
         #endregion
 
-        #region Public methods and Services
-        public string LaunchOpenFileDialog()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = RootLang.dlgOpenFile_Title;
-            openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = RootLang.dlgOpenFile_Filter;
-            openFileDialog.FilterIndex = 1;
-            string filePath = "";
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                filePath = openFileDialog.FileName;
-            }
-            return filePath;
-        }
-        #endregion
-
         #region Extension point helpers
         private void GetModuleMenus(ToolStrip menu)
         {
@@ -467,32 +450,15 @@ namespace Kinovea.Root
         {
             NotificationCenter.RaiseStopPlayback(this);
             
-            string filePath = LaunchOpenFileDialog();
-            if (filePath.Length > 0)
-                OpenFileFromPath(filePath);
+            string filename = FilePicker.OpenVideo();
+            if (!string.IsNullOrEmpty(filename))
+                OpenFileFromPath(filename);
         }
         private void mnuOpenReplayWatcherOnClick(object sender, EventArgs e)
         {
             NotificationCenter.RaiseStopPlayback(this);
 
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            string lastReplayFolder = PreferencesManager.FileExplorerPreferences.LastReplayFolder;
-            if (!string.IsNullOrEmpty(lastReplayFolder))
-            {
-                lastReplayFolder = Path.GetDirectoryName(lastReplayFolder);
-                if (Directory.Exists(lastReplayFolder))
-                    dialog.InitialDirectory = lastReplayFolder;
-            }
-            else
-            {
-                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            }
-
-            dialog.IsFolderPicker = true;
-            string path = null;
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                path = dialog.FileName;
-
+            string path = FilePicker.OpenReplayWatcher();
             if (path == null || !Directory.Exists(path))
                 return;
 
@@ -672,20 +638,6 @@ namespace Kinovea.Root
             else
             {
                 log.Error(String.Format("Cannot find the manual. ({0}).", resourceUri));
-            }
-        }
-        private void mnuTutorialVideos_OnClick(object sender, EventArgs e)
-        {
-            // Launch help video from current UI language.
-            string resourceUri = GetLocalizedHelpResource(false);
-            if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
-            {
-                LoaderVideo.LoadVideoInScreen(screenManager, resourceUri, -1);
-            }
-            else
-            {
-                log.Error(String.Format("Cannot find the video tutorial file. ({0}).", resourceUri));
-                MessageBox.Show(ScreenManagerLang.LoadMovie_FileNotOpened, ScreenManagerLang.LoadMovie_Error, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
         private void mnuAbout_OnClick(object sender, EventArgs e)

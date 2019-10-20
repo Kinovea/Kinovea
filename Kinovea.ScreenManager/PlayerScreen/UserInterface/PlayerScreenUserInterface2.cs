@@ -56,6 +56,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Events
+        public event EventHandler OpenVideoAsked;
+        public event EventHandler OpenReplayWatcherAsked;
+        public event EventHandler OpenAnnotationsAsked;
         public event EventHandler CloseAsked;
         public event EventHandler SetAsActiveScreen;
         public event EventHandler SpeedChanged;
@@ -308,11 +311,14 @@ namespace Kinovea.ScreenManager
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuTimeOrigin = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDirectTrack = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuPlayPause = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCopyPic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPastePic = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPasteDrawing = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenVideo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenReplayWatcher = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenAnnotations = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSaveVideo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
 
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
@@ -637,6 +643,7 @@ namespace Kinovea.ScreenManager
             if (KVAImported != null)
                 KVAImported(this, EventArgs.Empty);
 
+            trkFrame.UpdateMarkers(m_FrameServer.Metadata);
             UpdateTimeLabels();
             DoInvalidate();
         }
@@ -1048,20 +1055,35 @@ namespace Kinovea.ScreenManager
             // 1. Default context menu.
             mnuTimeOrigin.Click += mnuTimeOrigin_Click;
             mnuTimeOrigin.Image = Properties.Resources.marker;
-            mnuDirectTrack.Click += new EventHandler(mnuDirectTrack_Click);
+            mnuDirectTrack.Click += mnuDirectTrack_Click;
             mnuDirectTrack.Image = Properties.Drawings.track;
-            mnuPasteDrawing.Click += new EventHandler(mnuPasteDrawing_Click);
-            mnuPasteDrawing.Image = Properties.Drawings.paste;
-            mnuPlayPause.Click += new EventHandler(buttonPlay_Click);
-            mnuSavePic.Click += new EventHandler(btnSnapShot_Click);
-            mnuSavePic.Image = Properties.Resources.picture_save;
             mnuCopyPic.Click += (s, e) => { CopyImageToClipboard(); };
             mnuCopyPic.Image = Properties.Resources.clipboard_block;
             mnuPastePic.Click += mnuPastePic_Click;
             mnuPastePic.Image = Properties.Drawings.paste;
-            mnuCloseScreen.Click += new EventHandler(btnClose_Click);
+            mnuPasteDrawing.Click += mnuPasteDrawing_Click;
+            mnuPasteDrawing.Image = Properties.Drawings.paste;
+
+            mnuOpenVideo.Click += (s, e) => OpenVideoAsked?.Invoke(this, EventArgs.Empty);
+            mnuOpenVideo.Image = Properties.Resources.folder;
+            mnuOpenReplayWatcher.Click += (s, e) => OpenReplayWatcherAsked?.Invoke(this, EventArgs.Empty);
+            mnuOpenReplayWatcher.Image = Properties.Resources.replaywatcher;
+            mnuOpenAnnotations.Click += (s, e) => OpenAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+            mnuOpenAnnotations.Image = Properties.Resources.file_kva2;
+
+            mnuSaveVideo.Click += btnSaveVideo_Click;
+            mnuSaveVideo.Image = Properties.Resources.filesave;
+            mnuSavePic.Click += btnSnapShot_Click;
+            mnuSavePic.Image = Properties.Resources.picture_save;
+            mnuCloseScreen.Click += btnClose_Click;
             mnuCloseScreen.Image = Properties.Resources.film_close3;
-            popMenu.Items.AddRange(new ToolStripItem[] { mnuTimeOrigin, mnuDirectTrack, mnuPasteDrawing, mnuSavePic, mnuCopyPic, mnuPastePic, new ToolStripSeparator(), mnuCloseScreen });
+            popMenu.Items.AddRange(new ToolStripItem[] 
+            {
+                mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
+                mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
+                mnuOpenVideo, mnuOpenReplayWatcher, mnuOpenAnnotations, mnuSaveVideo, mnuSavePic, new ToolStripSeparator(),
+                mnuCloseScreen
+            });
 
             // 2. Drawings context menu (Configure, Delete, Track this)
             mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
@@ -2535,7 +2557,10 @@ namespace Kinovea.ScreenManager
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
-            mnuPlayPause.Text = ScreenManagerLang.mnuPlayPause;
+            mnuOpenVideo.Text = "Open video...";
+            mnuOpenReplayWatcher.Text = "Open replay folder observer...";
+            mnuOpenAnnotations.Text = "Load annotations...";
+            mnuSaveVideo.Text = ScreenManagerLang.Generic_Save;
             mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
             mnuCopyPic.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CopyImage);
@@ -2863,10 +2888,10 @@ namespace Kinovea.ScreenManager
             // (Drawing, Trajectory, Chronometer, Magnifier, Nothing)
             if (m_bIsCurrentlyPlaying)
             {
-                mnuTimeOrigin.Visible = false;
-                mnuDirectTrack.Visible = false;
-                mnuPasteDrawing.Visible = false;
-                mnuPastePic.Visible = false;
+                mnuTimeOrigin.Enabled = false;
+                mnuDirectTrack.Enabled = false;
+                mnuPasteDrawing.Enabled = false;
+                mnuPastePic.Enabled = false;
                 panelCenter.ContextMenuStrip = popMenu;
                 return;
             }
@@ -2876,10 +2901,10 @@ namespace Kinovea.ScreenManager
                 
             if(InteractiveFiltering)
             {
-                mnuTimeOrigin.Visible = false;
-                mnuDirectTrack.Visible = false;
-                mnuPasteDrawing.Visible = false;
-                mnuPastePic.Visible = false;
+                mnuTimeOrigin.Enabled = false;
+                mnuDirectTrack.Enabled = false;
+                mnuPasteDrawing.Enabled = false;
+                mnuPastePic.Enabled = false;
                 panelCenter.ContextMenuStrip = popMenu;
             }
             else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
@@ -2960,6 +2985,7 @@ namespace Kinovea.ScreenManager
                 // No drawing touched and no tool selected, but not currently playing. Default menu.
                 mnuTimeOrigin.Visible = true;
                 mnuDirectTrack.Visible = true;
+                mnuDirectTrack.Enabled = true;
                 mnuPasteDrawing.Visible = true;
                 mnuPasteDrawing.Enabled = DrawingClipboard.HasContent;
                 mnuPastePic.Visible = true;
@@ -3560,9 +3586,9 @@ namespace Kinovea.ScreenManager
         }
         private void PanelCenter_MouseDown(object sender, MouseEventArgs e)
         {
-            mnuDirectTrack.Visible = false;
-            mnuPasteDrawing.Visible = false;
-            mnuPastePic.Visible = false;
+            mnuDirectTrack.Enabled = false;
+            mnuPasteDrawing.Enabled = false;
+            mnuPastePic.Enabled = false;
             panelCenter.ContextMenuStrip = popMenu;
         }
         #endregion
@@ -4650,9 +4676,8 @@ namespace Kinovea.ScreenManager
             btnDiaporama.Enabled = _bEnable;
             btnPausedVideo.Enabled = _bEnable;
             
-            mnuPlayPause.Visible = _bEnable;
-            mnuDirectTrack.Visible = _bEnable;
-            mnuTimeOrigin.Visible = _bEnable;
+            mnuDirectTrack.Enabled = _bEnable;
+            mnuTimeOrigin.Enabled = _bEnable;
         }
         private void EnableDisableWorkingZoneControls(bool _bEnable)
         {
@@ -4739,7 +4764,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Local wrapper for Save, which triggers the main saving pipeline.
         /// </summary>
-        private void btnVideo_Click(object sender, EventArgs e)
+        private void btnSaveVideo_Click(object sender, EventArgs e)
         {
             if(!m_FrameServer.Loaded)
                 return;

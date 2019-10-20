@@ -38,6 +38,9 @@ namespace Kinovea.ScreenManager
     public class PlayerScreen : AbstractScreen
     {
         #region Events
+        public event EventHandler OpenVideoAsked;
+        public event EventHandler OpenReplayWatcherAsked;
+        public event EventHandler OpenAnnotationsAsked;
         public event EventHandler SpeedChanged;
         public event EventHandler HighSpeedFactorChanged;
         public event EventHandler TimeOriginChanged;
@@ -335,6 +338,9 @@ namespace Kinovea.ScreenManager
             // Provides implementation for behaviors triggered from the view, either as commands or as event handlers.
             // Fixme: those using FrameServer.Metadata work only because the Metadata object is never replaced during the PlayerScreen life.
 
+            view.OpenVideoAsked += (s, e) => OpenVideoAsked?.Invoke(this, e);
+            view.OpenReplayWatcherAsked += (s, e) => OpenReplayWatcherAsked?.Invoke(this, e);
+            view.OpenAnnotationsAsked += (s, e) => OpenAnnotationsAsked?.Invoke(this, e);
             view.CloseAsked += View_CloseAsked;
             view.SetAsActiveScreen += View_SetAsActiveScreen;
             view.SpeedChanged += View_SpeedChanged;

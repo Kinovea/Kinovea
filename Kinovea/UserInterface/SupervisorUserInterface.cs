@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Windows.Forms;
+using Kinovea.ScreenManager;
 using Kinovea.Services;
 using Kinovea.Video;
 
@@ -104,9 +105,9 @@ namespace Kinovea.Root
             
             isOpening = true;
 
-            string filepath = rootKernel.LaunchOpenFileDialog();
-            if (filepath.Length > 0)
-                VideoTypeManager.LoadVideo(filepath, -1);
+            string filename = FilePicker.OpenVideo();
+            if (!string.IsNullOrEmpty(filename))
+                VideoTypeManager.LoadVideo(filename, -1);
                 
             isOpening = false;
         }
