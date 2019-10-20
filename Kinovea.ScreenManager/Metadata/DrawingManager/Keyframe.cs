@@ -146,7 +146,8 @@ namespace Kinovea.ScreenManager
             
             if (image != null)
             {
-                this.thumbnail = new Bitmap(image, 100, 75);
+                Rectangle rect = UIHelper.RatioStretch(image.Size, new Size(100, 75));
+                this.thumbnail = new Bitmap(image, rect.Width, rect.Height);
                 this.fullFrame = ImageHelper.ConvertToJPG(image, 90);
                 this.disabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(thumbnail);
             }

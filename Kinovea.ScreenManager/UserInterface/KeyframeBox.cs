@@ -67,7 +67,8 @@ namespace Kinovea.ScreenManager
             btnClose.Parent = pbThumbnail;
             btnComment.Parent = pbThumbnail;
 
-            pbThumbnail.SizeMode = PictureBoxSizeMode.StretchImage;
+            pbThumbnail.BackColor = Color.Black;
+            pbThumbnail.SizeMode = PictureBoxSizeMode.CenterImage;
 
             manualUpdate = true;
             tbTitle.Text = keyframe.Title;
