@@ -58,10 +58,14 @@ Changelog:
     Improved - Capture: IDS module was updated to uEye 4.92.3.
     Improved - Capture: Basler module was updated to Pylon 6.0.
     Improved - Capture: option to adjust the threshold and replacement framerate for high speed capture.
+    Improved - Capture: display of percentage of "load" for performance feedback.
     Improved - Playback: the default timecode format is easier to read and more standard conformant.
     Improved - Playback: use of 0-based numbering when showing the frame number.
+    Improved - Playback: more file-level operations available in the main context menu.
+    Improved - Playback: only preload a small number of key images when loading KVA.
     Improved - Annotations: the stopwatch now has copy & paste support and uses the common configuration dialog.
     Improved - Annotations: the stopwatch has more visibility options.
+    Improved - Annotations: point markers can now show the distance to the origin of the coordinate system.
     Improved - Annotations: custom tools now supports combinations of options per primitive and hidden options.
     Improved - Annotations: the coordinate system menu is now a proper toggle.
     Improved - Folder selection dialogs were replaced with more usable ones.
@@ -80,6 +84,8 @@ Changelog:
     Fixed - The timecode format shown a wrong value when the fractional part rounded up to 100 hundredth of a second.
     Fixed - The heuristic to load videos or cameras into existing screens was not consistent.
     Fixed - In the IDS configuration dialog, auto-gain and auto-exposure were disabled.
+    Fixed - The aspect ratio of thumbnails for key images was wrong.
+    Fixed - The coordinates of points and circle was wrong when the coordinate system itself was tracked.
     Removed - Capture: Ability to record the composited delay image (e.g: quadrants).
     Removed - Capture: Ability to record live changes in delay value. The delay is fixed at the start of the recording.
 
