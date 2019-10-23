@@ -238,21 +238,35 @@ namespace Kinovea.Camera.IDS
             // Note: there is also a special case for uEye XS, where the automatic control of the exposure time and gain 
             // can only be enabled/disabled together.
             // We don't support this here, user will have to import a parameter set.
-            
-            bool canBeAutomatic;
-            camera.AutoFeatures.Sensor.Shutter.GetSupported(out canBeAutomatic);
-            if (!canBeAutomatic)
+
+            // Some cameras support sensor-level auto features, we give this priority over software-level ones.
+            bool supportAutoShutterSensor;
+            camera.AutoFeatures.Sensor.Shutter.GetSupported(out supportAutoShutterSensor);
+            if (supportAutoShutterSensor)
             {
-                p.CanBeAutomatic = false;
-                p.Automatic = false;
+                p.CanBeAutomatic = true;
+                p.AutomaticIdentifier = "sensor";
+                bool automatic;
+                camera.AutoFeatures.Sensor.Shutter.GetEnable(out automatic);
+                p.Automatic = automatic;
             }
             else
             {
-                p.CanBeAutomatic = true;
-                bool automatic;
-                camera.AutoFeatures.Sensor.Shutter.GetEnable(out automatic);
+                bool supportAutoShutterSoftware;
+                camera.AutoFeatures.Software.Shutter.GetSupported(out supportAutoShutterSoftware);
 
-                p.Automatic = automatic;
+                if (supportAutoShutterSoftware)
+                {
+                    p.CanBeAutomatic = true;
+                    p.AutomaticIdentifier = "software";
+                    bool automatic;
+                    camera.AutoFeatures.Software.Shutter.GetEnable(out automatic);
+                    p.Automatic = automatic;
+                }
+                else
+                {
+                    log.DebugFormat("Auto-exposure is not supported by the camera.");
+                }
             }
 
             if (properties != null)
@@ -277,20 +291,34 @@ namespace Kinovea.Camera.IDS
             p.Representation = CameraPropertyRepresentation.LinearSlider;
             p.CurrentValue = gain.ToString(CultureInfo.InvariantCulture);
 
-            bool canBeAutomatic;
-            camera.AutoFeatures.Sensor.Gain.GetSupported(out canBeAutomatic);
-            if (!canBeAutomatic)
+            // Some cameras support sensor-level auto features, we give this priority over software-level ones.
+            bool supportAutoGainSensor;
+            camera.AutoFeatures.Sensor.Gain.GetSupported(out supportAutoGainSensor);
+            if (supportAutoGainSensor)
             {
-                p.CanBeAutomatic = false;
-                p.Automatic = false;
+                p.CanBeAutomatic = true;
+                p.AutomaticIdentifier = "sensor";
+                bool automatic;
+                camera.AutoFeatures.Sensor.Gain.GetEnable(out automatic);
+                p.Automatic = automatic;
             }
             else
             {
-                p.CanBeAutomatic = true;
-                bool automatic;
-                camera.AutoFeatures.Sensor.Gain.GetEnable(out automatic);
+                bool supportAutoGainSoftware;
+                camera.AutoFeatures.Software.Gain.GetSupported(out supportAutoGainSoftware);
 
-                p.Automatic = automatic;
+                if (supportAutoGainSoftware)
+                {
+                    p.CanBeAutomatic = true;
+                    p.AutomaticIdentifier = "software";
+                    bool automatic;
+                    camera.AutoFeatures.Software.Gain.GetEnable(out automatic);
+                    p.Automatic = automatic;
+                }
+                else
+                {
+                    log.DebugFormat("Auto-gain is not supported by the camera.");
+                }
             }
 
             if (properties != null)
@@ -316,6 +344,10 @@ namespace Kinovea.Camera.IDS
                 bool enable;
                 camera.Gain.Hardware.Boost.GetEnable(out enable);
                 p.CurrentValue = enable ? "true" : "false";
+            }
+            else
+            {
+                log.DebugFormat("Gain boost is not supported by the camera.");
             }
 
             if (properties != null)
@@ -375,10 +407,16 @@ namespace Kinovea.Camera.IDS
 
         private static void WriteExposure(uEye.Camera camera, CameraProperty property)
         {
-            bool canBeAutomatic;
-            camera.AutoFeatures.Sensor.Shutter.GetSupported(out canBeAutomatic);
-            if (canBeAutomatic)
-                camera.AutoFeatures.Sensor.Shutter.SetEnable(property.Automatic);
+            if (property.CanBeAutomatic)
+            {
+                if (property.AutomaticIdentifier == "sensor")
+                    camera.AutoFeatures.Sensor.Shutter.SetEnable(property.Automatic);
+                else
+                    camera.AutoFeatures.Software.Shutter.SetEnable(property.Automatic);
+            }
+
+            if (property.CanBeAutomatic && property.Automatic)
+                return;
 
             float value = float.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             value /= 1000;
@@ -387,10 +425,16 @@ namespace Kinovea.Camera.IDS
 
         private static void WriteGain(uEye.Camera camera, CameraProperty property)
         {
-            bool canBeAutomatic;
-            camera.AutoFeatures.Sensor.Gain.GetSupported(out canBeAutomatic);
-            if (canBeAutomatic)
-                camera.AutoFeatures.Sensor.Gain.SetEnable(property.Automatic);
+            if (property.CanBeAutomatic)
+            {
+                if (property.AutomaticIdentifier == "sensor")
+                    camera.AutoFeatures.Sensor.Gain.SetEnable(property.Automatic);
+                else
+                    camera.AutoFeatures.Software.Gain.SetEnable(property.Automatic);
+            }
+
+            if (property.CanBeAutomatic && property.Automatic)
+                return;
 
             int value = (int)float.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             camera.Gain.Hardware.Scaled.SetMaster(value);
