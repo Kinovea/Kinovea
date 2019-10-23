@@ -146,6 +146,12 @@ namespace Kinovea.ScreenManager
             long startTs = (long)(start * metadata.AverageTimeStampsPerSecond / 1000.0f);
             long endTs = (long)(end * metadata.AverageTimeStampsPerSecond / 1000.0f);
 
+            // Make sure the keyframe timestamps corresponds to an actual video frame.
+            long startFrame = (long)Math.Round((float)startTs / metadata.AverageTimeStampsPerFrame);
+            startTs = startFrame * metadata.AverageTimeStampsPerFrame;
+            long endFrame = (long)Math.Round((float)endTs / metadata.AverageTimeStampsPerFrame);
+            endTs = endFrame * metadata.AverageTimeStampsPerFrame;
+
             Guid id = Guid.NewGuid();
             long position = startTs;
             string title = null;

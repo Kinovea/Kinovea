@@ -80,12 +80,11 @@ namespace Kinovea.ScreenManager
                 if (!parsedFrameNumber)
                     break;
 
-                long timestamp = metadata.FirstTimeStamp + (frameNumber * metadata.AverageTimeStampsPerFrame);
-                ParseFile(f, metadata, timestamp);
+                ParseFile(f, metadata, frameNumber);
             }
         }
 
-        private static void ParseFile(string source, Metadata metadata, long timestamp)
+        private static void ParseFile(string source, Metadata metadata, int frameNumber)
         { 
             string json = File.ReadAllText(source);
             OpenPoseFrame frame;
@@ -99,6 +98,8 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
+            long timestamp = metadata.FirstTimeStamp + (frameNumber * metadata.AverageTimeStampsPerFrame);
+            
             List<AbstractDrawing> drawings = new List<AbstractDrawing>();
             foreach (OpenPosePerson person in frame.people)
             {
@@ -109,9 +110,9 @@ namespace Kinovea.ScreenManager
 
             // Create a keyframe and add the drawings to it.
             Guid id = Guid.NewGuid();
-            long position = 0;
+            long position = timestamp;
             string title = null;
-            string timecode = "0";
+            string timecode = null;
             string comments = "";
             Keyframe keyframe = new Keyframe(id, position, title, timecode, comments, drawings, metadata);
 

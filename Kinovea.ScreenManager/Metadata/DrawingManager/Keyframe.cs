@@ -41,10 +41,6 @@ namespace Kinovea.ScreenManager
             get { return id; }
             set { id = value; }
         }
-        public bool Initialized
-        {
-            get { return initialized; }
-        }
         public long Position
         {
             get { return position; }
@@ -58,13 +54,13 @@ namespace Kinovea.ScreenManager
         {
             get { return disabledThumbnail; }
         }
+        public bool HasThumbnails
+        {
+            get { return thumbnail != null; }
+        }
         public List<AbstractDrawing> Drawings
         {
             get { return drawings; }
-        }
-        public Bitmap FullFrame
-        {
-            get { return fullFrame; }
         }
         public string Comments
         {
@@ -106,7 +102,6 @@ namespace Kinovea.ScreenManager
         private string title;
         private string timecode;
         private string comments;
-        private Bitmap fullFrame;
         private Bitmap thumbnail;
         private Bitmap disabledThumbnail;
         private List<AbstractDrawing> drawings = new List<AbstractDrawing>();
@@ -140,19 +135,18 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public Interface
-        public void Initialize(long position, Bitmap image)
+        public void InitializePosition(long position)
         {
             this.position = position;
+        }
+        public void InitializeImage(Bitmap image)
+        {
+            if (image == null)
+                return;
             
-            if (image != null)
-            {
-                Rectangle rect = UIHelper.RatioStretch(image.Size, new Size(100, 75));
-                this.thumbnail = new Bitmap(image, rect.Width, rect.Height);
-                this.fullFrame = ImageHelper.ConvertToJPG(image, 90);
-                this.disabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(thumbnail);
-            }
-            
-            initialized = true;
+            Rectangle rect = UIHelper.RatioStretch(image.Size, new Size(100, 75));
+            this.thumbnail = new Bitmap(image, rect.Width, rect.Height);
+            this.disabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(thumbnail);
         }
         #endregion
 

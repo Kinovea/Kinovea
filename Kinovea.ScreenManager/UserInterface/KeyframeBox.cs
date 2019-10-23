@@ -94,8 +94,14 @@ namespace Kinovea.ScreenManager
         public void UpdateEnableStatus()
         {
             this.Enabled = !keyframe.Disabled;
-            this.pbThumbnail.Image = keyframe.Disabled ? keyframe.DisabledThumbnail : keyframe.Thumbnail;
             UpdateTitle(keyframe.Title);
+            UpdateImage();
+        }
+
+        public void UpdateImage()
+        {
+            this.pbThumbnail.Image = keyframe.Disabled ? keyframe.DisabledThumbnail : keyframe.Thumbnail;
+            this.Invalidate();
         }
         #endregion
         

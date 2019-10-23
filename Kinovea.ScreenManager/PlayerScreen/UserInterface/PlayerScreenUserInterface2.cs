@@ -603,18 +603,25 @@ namespace Kinovea.ScreenManager
             int currentKeyframe = -1;
             long lastTimestamp = m_FrameServer.VideoReader.Info.FirstTimeStamp + m_FrameServer.VideoReader.Info.DurationTimeStamps;
 
+            int preloaded = 0;
+            int maxPreload = PreferencesManager.PlayerPreferences.PreloadKeyframes;
             foreach (Keyframe kf in m_FrameServer.Metadata.Keyframes)
             {
                 currentKeyframe++;
 
                 if (kf.Position < lastTimestamp)
                 {
-                    if (!kf.Initialized)
+                    if (!kf.HasThumbnails && preloaded < maxPreload)
                         InitializeKeyframe(kf);
+
+                    preloaded++;
+                    continue;
                 }
-                else if (firstOutOfRange < 0)
+
+                if (firstOutOfRange < 0)
                 {
                     firstOutOfRange = currentKeyframe;
+                    break;
                 }
             }
 
@@ -3691,6 +3698,12 @@ namespace Kinovea.ScreenManager
                     {
                         thumbnails[i].DisplayAsSelected(true);
                         pnlThumbnails.ScrollControlIntoView(thumbnails[i]);
+
+                        if (!m_FrameServer.Metadata[i].HasThumbnails && m_FrameServer.CurrentImage != null)
+                        {
+                            m_FrameServer.Metadata[i].InitializeImage(m_FrameServer.CurrentImage);
+                            thumbnails[i].UpdateImage();
+                        }
                     }
                 }
                 else
@@ -3786,8 +3799,8 @@ namespace Kinovea.ScreenManager
             if (keyframe == null)
                 return;
 
-            if (!keyframe.Initialized)
-                InitializeKeyframe(keyframe);
+            if (!keyframe.HasThumbnails)
+              InitializeKeyframe(keyframe);
 
             OrganizeKeyframes();
             UpdateFramesMarkers();
@@ -3798,9 +3811,13 @@ namespace Kinovea.ScreenManager
             if (!m_bIsCurrentlyPlaying)
                 ActivateKeyframe(m_iCurrentPosition);
         }
+
+        /// <summary>
+        /// Fully initialize a keyframe by seeking the video to the keyframe position 
+        /// and creating a thumbnail out of the image.
+        /// </summary>
         private void InitializeKeyframe(Keyframe keyframe)
         {
-            // Move the playhead to the keyframe position to import the image and build thumbnail.
             if (m_iCurrentPosition != keyframe.Position)
             {
                 m_iFramesToDecode = 1;
@@ -3811,7 +3828,10 @@ namespace Kinovea.ScreenManager
             if (m_FrameServer.CurrentImage == null)
                 return;
 
-            keyframe.Initialize(m_iCurrentPosition, m_FrameServer.CurrentImage);
+            // The actual position may differ from what was originally stored in the keyframe.
+            keyframe.InitializePosition(m_iCurrentPosition);
+            keyframe.InitializeImage(m_FrameServer.CurrentImage);
+            
         }
         private void DeleteKeyframe(Guid keyframeId)
         {

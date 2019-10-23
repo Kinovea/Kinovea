@@ -519,10 +519,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Filtered iterators
-        public IEnumerable<VideoFrame> EnabledKeyframes()
-        {
-            return keyframes.Where(kf => !kf.Disabled).Select(kf => new VideoFrame(kf.Position, kf.FullFrame));
-        }
         public IEnumerable<DrawingTrack> Tracks()
         {
             foreach (AbstractDrawing drawing in TrackManager.Drawings)
