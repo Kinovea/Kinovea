@@ -249,11 +249,11 @@ namespace Kinovea.ScreenManager
         public void UpdatePlayHeadMarkers()
         {
             leftPlayHeadMark = 0;
-            if (leftHairline != 0 && leftHairline >= minimum && leftHairline <= maximum)
+            if (leftHairline >= minimum && leftHairline <= maximum)
                 leftPlayHeadMark = GetCoordFromTimestamp(leftHairline);
 
             rightPlayHeadMark = 0;
-            if (rightHairline != 0 && rightHairline >= minimum && rightHairline <= maximum)
+            if (rightHairline >= minimum && rightHairline <= maximum)
                 rightPlayHeadMark = GetCoordFromTimestamp(rightHairline);
         }
 
