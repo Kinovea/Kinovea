@@ -426,11 +426,14 @@ namespace Kinovea.ScreenManager
                 model.Series.Add(yseries);
 
                 // Filtering tab.
-                double xcutoff = ft.FilterResultXs[ft.XCutoffIndex].CutoffFrequency;
-                double ycutoff = ft.FilterResultXs[ft.YCutoffIndex].CutoffFrequency;
-                string strXCutoff = string.Format("{0:0.000}", xcutoff);
-                string strYCutoff = string.Format("{0:0.000}", ycutoff);
-                lvCutoffFrequencies.Items.Add(new ListViewItem(new string[] { tspd.Label, strXCutoff, strYCutoff}));
+                if (ft.XCutoffIndex >= 0 && ft.YCutoffIndex >= 0)
+                {
+                    double xcutoff = ft.FilterResultXs[ft.XCutoffIndex].CutoffFrequency;
+                    double ycutoff = ft.FilterResultXs[ft.YCutoffIndex].CutoffFrequency;
+                    string strXCutoff = string.Format("{0:0.000}", xcutoff);
+                    string strYCutoff = string.Format("{0:0.000}", ycutoff);
+                    lvCutoffFrequencies.Items.Add(new ListViewItem(new string[] { tspd.Label, strXCutoff, strYCutoff}));
+                }
             }
 
             return model;
