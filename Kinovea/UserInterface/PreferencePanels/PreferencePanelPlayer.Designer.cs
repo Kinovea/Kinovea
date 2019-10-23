@@ -175,8 +175,8 @@ namespace Kinovea.Root
       // tabSubPages
       // 
       this.tabSubPages.Controls.Add(this.tabGeneral);
-      this.tabSubPages.Controls.Add(this.tabUnits);
       this.tabSubPages.Controls.Add(this.tabMemory);
+      this.tabSubPages.Controls.Add(this.tabUnits);
       this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabSubPages.Location = new System.Drawing.Point(0, 0);
       this.tabSubPages.Name = "tabSubPages";
