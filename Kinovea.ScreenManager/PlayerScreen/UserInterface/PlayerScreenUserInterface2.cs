@@ -552,13 +552,19 @@ namespace Kinovea.ScreenManager
             bool recoveredMetadata = false;
             if (m_LaunchDescription != null)
             {
-                // Starting the file watcher for .IsReplayWatcher is done in PlayerScreen.
+                // Starting the filesystem watcher if .IsReplayWatcher is done in PlayerScreen.
                 // Starting the video for .Play is done later at first Idle.
                 if (m_LaunchDescription.Id != Guid.Empty)
                     recoveredMetadata = m_FrameServer.Metadata.Recover(m_LaunchDescription.Id);
 
                 if (m_LaunchDescription.SpeedPercentage != (slowMotion * 100))
                     slowMotion = m_LaunchDescription.SpeedPercentage / 100.0;
+
+                if (m_LaunchDescription.Stretch)
+                {
+                    m_fill = true;
+                    ResizeUpdate(true);
+                }
             }
 
             if (!recoveredMetadata)

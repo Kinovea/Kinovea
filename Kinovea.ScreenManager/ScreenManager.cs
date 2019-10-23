@@ -691,6 +691,7 @@ namespace Kinovea.ScreenManager
             screenDescription.FullPath = path;
             screenDescription.IsReplayWatcher = true;
             screenDescription.Autoplay = true;
+            screenDescription.Stretch = true;
             screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
             LoaderVideo.LoadVideoInScreen(this, path, index, screenDescription);
         }
@@ -2248,6 +2249,7 @@ namespace Kinovea.ScreenManager
                 screenDescription.FullPath = path;
                 screenDescription.IsReplayWatcher = true;
                 screenDescription.Autoplay = true;
+                screenDescription.Stretch = true;
                 screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
                 LoaderVideo.LoadVideoInScreen(this, path, screenDescription);
             }

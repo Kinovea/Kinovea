@@ -459,14 +459,13 @@ namespace Kinovea.Root
             NotificationCenter.RaiseStopPlayback(this);
 
             string path = FilePicker.OpenReplayWatcher();
-            if (path == null || !Directory.Exists(path))
+            if (path == null || !Directory.Exists(Path.GetDirectoryName(path)))
                 return;
-
-            path = Path.Combine(path, "*");
 
             ScreenDescriptionPlayback screenDescription = new ScreenDescriptionPlayback();
             screenDescription.FullPath = path;
             screenDescription.IsReplayWatcher = true;
+            screenDescription.Stretch = true;
             screenDescription.Autoplay = true;
             screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
             LoaderVideo.LoadVideoInScreen(screenManager, path, screenDescription);
