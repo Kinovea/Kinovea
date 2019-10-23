@@ -164,7 +164,7 @@ namespace Kinovea.ScreenManager
             
             if (trackExtraData != TrackExtraData.None)
             {
-                string text = GetExtraDataText(infosFading.ReferenceTimestamp);
+                string text = GetExtraDataText(currentTimestamp);
                 miniLabel.SetText(text);
                 miniLabel.Draw(canvas, transformer, opacityFactor);
             }
@@ -382,7 +382,7 @@ namespace Kinovea.ScreenManager
 
             return "";
         }
-        private string GetExtraDataText(long referencTimestamp)
+        private string GetExtraDataText(long currentTimestamp)
         {
             if (trackExtraData == TrackExtraData.None)
                 return "";
@@ -399,7 +399,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case TrackExtraData.Position:
                 default:
-                    displayText = CalibrationHelper.GetPointText(points["0"], true, true, referencTimestamp);
+                    displayText = CalibrationHelper.GetPointText(points["0"], true, true, currentTimestamp);
                     break;
             }
 
