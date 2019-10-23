@@ -8,6 +8,7 @@ using Kinovea.Pipeline;
 using System.Drawing.Imaging;
 using System.Diagnostics;
 using System.Threading;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -32,8 +33,8 @@ namespace Kinovea.ScreenManager
         private List<Bitmap> images = new List<Bitmap>();
         private Rectangle rect;
         private int fullCapacity;               // Total number of frames kept.
-        private const int minCapacity = 12;
-        private const int reserveCapacity = 8;  // Number of frames kept unreachable to clients.
+        private int minCapacity = 12;
+        private int reserveCapacity = 8;  // Number of frames kept unreachable to clients.
         private int currentPosition = -1;       // Freshest absolute position written to and available to consumers.
         private bool allocated;
         private long availableMemory;
@@ -54,7 +55,23 @@ namespace Kinovea.ScreenManager
                 return true;
 
             int targetCapacity = (int)(availableMemory / imageDescriptor.BufferSize);
-            targetCapacity = Math.Max(targetCapacity, minCapacity);
+
+            bool memoryPressure = minCapacity * imageDescriptor.BufferSize > availableMemory;
+            if (memoryPressure)
+            {
+                // The user explicitly asked to not use enough memory. We try to honor the request by lowering the min levels.
+                // This may result in thread cross talks.
+                reserveCapacity = Math.Max(targetCapacity, 2);
+                minCapacity = Math.Max(targetCapacity + 1, 3);
+                targetCapacity = Math.Max(targetCapacity, minCapacity);
+            }
+            else
+            {
+                reserveCapacity = 8;
+                minCapacity = 12;
+                targetCapacity = Math.Max(targetCapacity, minCapacity);
+            }
+
             int width = imageDescriptor.Width;
             int height = imageDescriptor.Height;
             PixelFormat pixelFormat = PixelFormat.Format24bppRgb;
