@@ -176,10 +176,6 @@ namespace Kinovea.ScreenManager
                     }
                 case OpenVideoResult.EmptyWatcher:
                     {
-                        player.view.EnableDisableActions(false);
-                        player.StartReplayWatcher(player.view.LaunchDescription, null);
-                        PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
-                        PreferencesManager.Save();
                         break;
                     }
                 default:
@@ -189,6 +185,14 @@ namespace Kinovea.ScreenManager
                     }
             }
 
+            if (res != OpenVideoResult.Success && player.view.LaunchDescription != null && player.view.LaunchDescription.IsReplayWatcher)
+            {
+                // Even if we can't load the latest video, or there's no video at all, we should still start watching this folder.
+                player.view.EnableDisableActions(false);
+                player.StartReplayWatcher(player.view.LaunchDescription, null);
+                PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
+                PreferencesManager.Save();
+            }
         }
 
         private static void AfterLoadSuccess(PlayerScreen player)
