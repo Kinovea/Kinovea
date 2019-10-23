@@ -225,7 +225,7 @@ namespace Kinovea.ScreenManager
                         canvas.DrawLine(p, radiusLeft, radiusRight);
                     }
 
-                    string text = GetExtraDataText(infosFading.ReferenceTimestamp);
+                    string text = GetExtraDataText(currentTimestamp);
                     miniLabel.SetText(text);
                     miniLabel.Draw(canvas, transformer, opacityFactor);
                 }
@@ -450,7 +450,7 @@ namespace Kinovea.ScreenManager
 
             return "";
         }
-        private string GetExtraDataText(long referencTimestamp)
+        private string GetExtraDataText(long currentTimestamp)
         {
             if (trackExtraData == TrackExtraData.None)
                 return "";
@@ -459,7 +459,7 @@ namespace Kinovea.ScreenManager
             switch (trackExtraData)
             {
                 case TrackExtraData.Center:
-                    displayText = CalibrationHelper.GetPointText(center, true, true, referencTimestamp);
+                    displayText = CalibrationHelper.GetPointText(center, true, true, currentTimestamp);
                     break;
                 case TrackExtraData.Radius:
                     displayText = CalibrationHelper.GetLengthText(center, radiusRightInImage, true, true);
