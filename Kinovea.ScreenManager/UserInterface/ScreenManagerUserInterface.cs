@@ -45,8 +45,18 @@ namespace Kinovea.ScreenManager
         {
             get { return !splitScreensPanel.Panel2Collapsed; }
         }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
+                return cp;
+            }
+        }
         #endregion
-        
+
         #region Members
         private ThumbnailViewerContainer thumbnailViewerContainer = new ThumbnailViewerContainer();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

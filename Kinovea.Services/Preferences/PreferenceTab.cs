@@ -14,8 +14,8 @@ namespace Kinovea.Services
         General_General,
 
         Player_General,
-        Player_Units,
         Player_Memory,
+        Player_Units,
 
         Drawings_General,
         Drawings_Persistence,
