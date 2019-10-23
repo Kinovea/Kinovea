@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-    public partial class Infobar : UserControl
+    public partial class InfobarPlayer : UserControl
     {
-        public Infobar()
+        public InfobarPlayer()
         {
             InitializeComponent();
         }

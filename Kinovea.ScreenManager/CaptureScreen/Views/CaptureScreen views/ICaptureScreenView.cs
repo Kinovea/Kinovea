@@ -48,7 +48,8 @@ namespace Kinovea.ScreenManager
         void ConfigureDisplayControl(DelayCompositeType type);
 
         void UpdateTitle(string title, Bitmap icon);
-        void UpdateInfo(string info);
+        void UpdateInfo(string signal, string bandwidth, string load, string drops);
+        void UpdateLoadStatus(float load);
         void UpdateGrabbingStatus(bool grabbing);
         void UpdateRecordingStatus(bool recording);
         void UpdateDelay(double delaySeconds, int delayFrames);

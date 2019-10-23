@@ -355,7 +355,7 @@ namespace Kinovea.ScreenManager
         private ToolStripButton m_btnAddKeyFrame;
         private ToolStripButton m_btnShowComments;
         private ToolStripButton m_btnToolPresets;
-        private Infobar infobar = new Infobar();
+        private InfobarPlayer infobar = new InfobarPlayer();
         
         private DropWatcher m_DropWatcher = new DropWatcher();
         private TimeWatcher m_TimeWatcher = new TimeWatcher();

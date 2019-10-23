@@ -45,6 +45,8 @@ namespace Kinovea.ScreenManager
             get { return bitmap; }
         }
 
+        public long Ellapsed { get; private set; }
+
         // Frame memory storage
         private RingBuffer buffer;
         private int frameLength;
@@ -56,7 +58,13 @@ namespace Kinovea.ScreenManager
         private Bitmap bitmap;
         private byte[] decoded;
         private bool allocated;
+        private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public ConsumerDisplay()
+        {
+            stopwatch.Start();
+        }
 
         public void Run()
         {
@@ -135,10 +143,14 @@ namespace Kinovea.ScreenManager
             if (!allocated || buffer.ProducerPosition < 0)
                 return;
 
+            long then = stopwatch.ElapsedMilliseconds;
+
             long next = buffer.ProducerPosition;
             
             Frame entry = buffer.GetEntry(next);
             ProcessEntry(next, entry);
+
+            Ellapsed = stopwatch.ElapsedMilliseconds - then;
         }
 
         private void ProcessEntry(long position, Frame entry)

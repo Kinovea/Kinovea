@@ -6,6 +6,7 @@ using Kinovea.Video;
 using Kinovea.Video.FFMpeg;
 using System.Drawing;
 using Kinovea.Services;
+using System.Diagnostics;
 
 namespace Kinovea.ScreenManager
 {
@@ -27,16 +28,20 @@ namespace Kinovea.ScreenManager
             get { return recording; }
         }
 
+        public long Ellapsed { get; private set; }
+
         private ImageDescriptor imageDescriptor;
         private MJPEGWriter writer;
         private bool recording;
         private string filename;
         private string shortId;
+        private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public ConsumerMJPEGRecorder(string shortId)
         {
             this.shortId = shortId;
+            stopwatch.Start();
         }
         
         public void SetImageDescriptor(ImageDescriptor imageDescriptor)
@@ -103,7 +108,11 @@ namespace Kinovea.ScreenManager
 
         protected override void ProcessEntry(long position, Frame entry)
         {
+            long then = stopwatch.ElapsedMilliseconds;
+
             writer.SaveFrame(imageDescriptor.Format, entry.Buffer, entry.PayloadLength, imageDescriptor.TopDown);
+
+            Ellapsed = stopwatch.ElapsedMilliseconds - then;
         }
     }
 }

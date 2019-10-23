@@ -206,6 +206,7 @@ namespace Kinovea.ScreenManager
 
         private System.Windows.Forms.Timer displayTimer = new System.Windows.Forms.Timer();
         private System.Windows.Forms.Timer nonGrabbingInteractionTimer = new System.Windows.Forms.Timer();
+        private float load; // processing time over frame budget.
 
         private HistoryStack historyStack = new HistoryStack();
         private string shortId;
@@ -818,18 +819,30 @@ namespace Kinovea.ScreenManager
         
         private void UpdateStats()
         {
-            if (pipelineManager.Frequency == 0)
+            if (pipelineManager.Frequency <= 0)
                 return;
 
-            StringBuilder sb = new StringBuilder();
-            if (prepareFailed && imageDescriptor != null)
-                sb.AppendFormat("Signal: {0}×{1} @ {2:0.00} fps.", imageDescriptor.Width, imageDescriptor.Height, pipelineManager.Frequency);
-            else
-                sb.AppendFormat("Signal: {0:0.00} fps.", pipelineManager.Frequency);
+            // Compute load (processing time vs frame budget).
+            long ellapsed = 0;
+            if (recordingMode == CaptureRecordingMode.Camera)
+            {
+                // Here we don't report load if not recording as it's non-blocking.
+                if (recording && consumerRecord != null)
+                    ellapsed = consumerRecord.Ellapsed;
+            }
+            else if (recordingMode == CaptureRecordingMode.Delay && consumerDelayer != null)
+            {
+                ellapsed = consumerDelayer.Ellapsed;
+            }
 
-            sb.AppendFormat(" Bandwidth: {0:0.00} MB/s.", cameraGrabber.LiveDataRate);
-            sb.AppendFormat(" Drops: {0}.", pipelineManager.Drops);
-            view.UpdateInfo(sb.ToString());
+            load = (ellapsed / (1000.0f / (float)pipelineManager.Frequency)) * 100;
+             
+            string signal = string.Format(" {0:0.00} fps", pipelineManager.Frequency);
+            string bandwidth = string.Format(" {0:0.00} MB/s", cameraGrabber.LiveDataRate);
+            string strLoad = string.Format(" {0:0} %", load);
+            string drops = string.Format(" {0}", pipelineManager.Drops);
+            view.UpdateInfo(signal, bandwidth, strLoad, drops);
+            view.UpdateLoadStatus(load);
 
             if (delayCompositeType == DelayCompositeType.SlowMotion)
             {

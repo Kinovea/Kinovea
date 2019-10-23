@@ -279,12 +279,19 @@
     <Compile Include="CaptureScreen\Delay\IDelaySubframe.cs" />
     <Compile Include="CaptureScreen\ImageProcessing\OIPRollingShutterCalibration.cs" />
     <Compile Include="CaptureScreen\ImageProcessing\OnlineImageProcessor.cs" />
+    <Compile Include="CaptureScreen\LoadStatus.cs" />
     <Compile Include="CaptureScreen\PipelineManager.cs" />
     <Compile Include="CaptureScreen\Delay\FormConfigureComposite.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CaptureScreen\Delay\FormConfigureComposite.Designer.cs">
       <DependentUpon>FormConfigureComposite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaptureScreen\Views\InfobarCapture.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CaptureScreen\Views\InfobarCapture.Designer.cs">
+      <DependentUpon>InfobarCapture.cs</DependentUpon>
     </Compile>
     <Compile Include="DrawingClipboard.cs" />
     <Compile Include="FilePatterns\PatternSymbolsCommand.cs" />
@@ -475,11 +482,11 @@
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
     </Compile>
     <Compile Include="Measurement\Plotting\PlotHelper.cs" />
-    <Compile Include="PlayerScreen\UserInterface\Infobar.cs">
+    <Compile Include="PlayerScreen\UserInterface\InfobarPlayer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Infobar.Designer.cs">
-      <DependentUpon>Infobar.cs</DependentUpon>
+    <Compile Include="PlayerScreen\UserInterface\InfobarPlayer.Designer.cs">
+      <DependentUpon>InfobarPlayer.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Player.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -918,6 +925,9 @@
     <EmbeddedResource Include="CaptureScreen\Delay\FormConfigureComposite.resx">
       <DependentUpon>FormConfigureComposite.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CaptureScreen\Views\InfobarCapture.resx">
+      <DependentUpon>InfobarCapture.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.ar.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ca.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.cs.resx" />
@@ -956,8 +966,8 @@
     <EmbeddedResource Include="Measurement\Plotting\FormPointsAnalysis.resx">
       <DependentUpon>FormPointsAnalysis.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\Infobar.resx">
-      <DependentUpon>Infobar.cs</DependentUpon>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\InfobarPlayer.resx">
+      <DependentUpon>InfobarPlayer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Player.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -1408,6 +1418,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\signal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dashboard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drops.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trafficyellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trafficgreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trafficred.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

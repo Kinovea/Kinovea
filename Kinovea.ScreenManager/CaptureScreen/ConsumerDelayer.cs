@@ -9,6 +9,7 @@ using Kinovea.Services;
 using TurboJpegNet;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace Kinovea.ScreenManager
 {
@@ -29,6 +30,8 @@ namespace Kinovea.ScreenManager
             get { return recording; }
         }
 
+        public long Ellapsed { get; private set; }
+
         private ImageDescriptor inputImageDescriptor;
         private int width;
         private int height;
@@ -46,11 +49,13 @@ namespace Kinovea.ScreenManager
         private string filename;
         private bool stopRecordAsked;
         private string shortId;
+        private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public ConsumerDelayer(string shortId)
         {
             this.shortId = shortId;
+            stopwatch.Start();
         }
 
         /// <summary>
@@ -174,6 +179,8 @@ namespace Kinovea.ScreenManager
             if (!allocated)
                 return;
 
+            long then = stopwatch.ElapsedMilliseconds;
+
             switch (inputImageDescriptor.Format)
             {
                 case Video.ImageFormat.RGB24:
@@ -220,6 +227,8 @@ namespace Kinovea.ScreenManager
                     writer.SaveFrame(delayerImageDescriptor.Format, delayedFrame.Buffer, delayedFrame.PayloadLength, delayerImageDescriptor.TopDown);
                 }
             }
+
+            Ellapsed = stopwatch.ElapsedMilliseconds - then;
         }
 
         private void SetDelayerImageDescriptor(ImageDescriptor imageDescriptor)

@@ -140,12 +140,23 @@ namespace Kinovea.ScreenManager
         {
             btnIcon.BackgroundImage = icon;
             lblCameraTitle.Text = title;
-            lblCameraInfo.Left = lblCameraTitle.Right + 5;
+            infobarCapture.Left = lblCameraTitle.Right + 5;
         }
         
-        public void UpdateInfo(string info)
+        public void UpdateInfo(string signal, string bandwidth, string load, string drops)
         {
-            lblCameraInfo.Text = info;
+            infobarCapture.Visible = true;
+            infobarCapture.UpdateValues(signal, bandwidth, load, drops);
+        }
+
+        public void UpdateLoadStatus(float load)
+        {
+            if (load < 85)
+                infobarCapture.UpdateLoadStatus(LoadStatus.OK);
+            else if (load < 100)
+                infobarCapture.UpdateLoadStatus(LoadStatus.Warning);
+            else
+                infobarCapture.UpdateLoadStatus(LoadStatus.Critical);
         }
         
         public void UpdateGrabbingStatus(bool grabbing)

@@ -1,6 +1,6 @@
 ﻿namespace Kinovea.ScreenManager
 {
-    partial class Infobar
+    partial class InfobarPlayer
     {
         /// <summary> 
         /// Required designer variable.
