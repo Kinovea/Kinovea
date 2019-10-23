@@ -87,6 +87,9 @@ namespace Kinovea.ScreenManager
         public void SetUserValue(PointF value)
         {
             // The context should have been set at Track() time when we landed on the video frame.
+            if (context == null)
+                return;
+
             currentValue = value;
 
             if (!isTracking)
