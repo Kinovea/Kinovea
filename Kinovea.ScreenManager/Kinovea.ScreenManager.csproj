@@ -265,7 +265,7 @@
     <Compile Include="AudioInputLevelMonitor.cs" />
     <Compile Include="CaptureScreen\ConsumerDelayer.cs" />
     <Compile Include="CaptureScreen\ConsumerDisplay.cs" />
-    <Compile Include="CaptureScreen\ConsumerMJPEGRecorder.cs" />
+    <Compile Include="CaptureScreen\ConsumerRealtime.cs" />
     <Compile Include="CaptureScreen\Delay\DelayCompositeBasic.cs" />
     <Compile Include="CaptureScreen\Delay\DelayCompositeFrozenMosaic.cs" />
     <Compile Include="CaptureScreen\Delay\DelayCompositeMixed.cs" />
@@ -1429,13 +1429,13 @@
     <None Include="Resources\drops.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\trafficyellow.png" />
+    <None Include="Resources\load_rain.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\trafficgreen.png" />
+    <None Include="Resources\load_sun.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\trafficred.png" />
+    <None Include="Resources\load_cloudy.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

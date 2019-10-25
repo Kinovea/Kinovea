@@ -151,7 +151,7 @@
       this.btnLoadStatus.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnLoadStatus.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnLoadStatus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnLoadStatus.Image = global::Kinovea.ScreenManager.Properties.Resources.trafficgreen;
+      this.btnLoadStatus.Image = global::Kinovea.ScreenManager.Properties.Resources.load_sun;
       this.btnLoadStatus.Location = new System.Drawing.Point(190, 0);
       this.btnLoadStatus.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
       this.btnLoadStatus.Name = "btnLoadStatus";

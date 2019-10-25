@@ -35,14 +35,14 @@ namespace Kinovea.ScreenManager
             switch (loadStatus)
             {
                 case LoadStatus.Warning:
-                    btnLoadStatus.Image = Properties.Resources.trafficyellow;
+                    btnLoadStatus.Image = Properties.Resources.load_cloudy;
                     break;
                 case LoadStatus.Critical:
-                    btnLoadStatus.Image = Properties.Resources.trafficred;
+                    btnLoadStatus.Image = Properties.Resources.load_rain;
                     break;
                 case LoadStatus.OK:
                 default:
-                    btnLoadStatus.Image = Properties.Resources.trafficgreen;
+                    btnLoadStatus.Image = Properties.Resources.load_sun;
                     break;
             }
         }
