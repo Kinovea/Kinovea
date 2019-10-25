@@ -313,12 +313,17 @@ namespace Kinovea.ScreenManager
         }
         public override void PreferencesUpdated()
         {
-            AllocateDelayer();
             InitializeCaptureFilenames();
 
-            // Updating the recording mode is too critical at the moment.
-            // It has impact on recorder threads and the pipeline.
-            // Ignore the change for now, we'll update at the next connection.
+            // For simplicity's sake we always reconnect the camera after the master preferences change.
+            // This accounts for change in recording mode, display framerate, etc. that requires passing
+            // through connect() for proper initialization of threads and timers.
+            if (!cameraConnected)
+                return;
+            
+            log.DebugFormat("Master preferences changed, reconnecting the camera.");
+            Disconnect();
+            Connect();
         }
         public override void BeforeClose()
         {
