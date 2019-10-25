@@ -97,6 +97,16 @@ namespace Kinovea.Services
             get { return highspeedRecordingFramerateOutput; }
             set { highspeedRecordingFramerateOutput = value; }
         }
+        public float SlowspeedRecordingFramerateThreshold
+        {
+            get { return slowspeedRecordingFramerateThreshold; }
+            set { slowspeedRecordingFramerateThreshold = value; }
+        }
+        public float SlowspeedRecordingFramerateOutput
+        {
+            get { return slowspeedRecordingFramerateOutput; }
+            set { slowspeedRecordingFramerateOutput = value; }
+        }
         public string PostRecordCommand
         {
             get { return postRecordCommand; }
@@ -117,6 +127,8 @@ namespace Kinovea.Services
         private CaptureAutomationConfiguration captureAutomationConfiguration = new CaptureAutomationConfiguration();
         private float highspeedRecordingFramerateThreshold = 150;
         private float highspeedRecordingFramerateOutput = 30;
+        private float slowspeedRecordingFramerateThreshold = 1;
+        private float slowspeedRecordingFramerateOutput = 30;
         private string postRecordCommand;
         #endregion
         
@@ -179,6 +191,10 @@ namespace Kinovea.Services
             string hrfo = highspeedRecordingFramerateOutput.ToString("0.000", CultureInfo.InvariantCulture);
             writer.WriteElementString("HighspeedRecordingFramerateThreshold", hrft);
             writer.WriteElementString("HighspeedRecordingFramerateOutput", hrfo);
+            string srft = slowspeedRecordingFramerateThreshold.ToString("0.000", CultureInfo.InvariantCulture);
+            string srfo = slowspeedRecordingFramerateOutput.ToString("0.000", CultureInfo.InvariantCulture);
+            writer.WriteElementString("SlowspeedRecordingFramerateThreshold", srft);
+            writer.WriteElementString("SlowspeedRecordingFramerateOutput", srfo);
 
             writer.WriteElementString("PostRecordCommand", postRecordCommand);
         }
@@ -229,6 +245,14 @@ namespace Kinovea.Services
                     case "HighspeedRecordingFramerateOutput":
                         string hrfo = reader.ReadElementContentAsString();
                         highspeedRecordingFramerateOutput = float.Parse(hrfo, CultureInfo.InvariantCulture);
+                        break;
+                    case "SlowspeedRecordingFramerateThreshold":
+                        string srft = reader.ReadElementContentAsString();
+                        slowspeedRecordingFramerateThreshold = float.Parse(srft, CultureInfo.InvariantCulture);
+                        break;
+                    case "SlowspeedRecordingFramerateOutput":
+                        string srfo = reader.ReadElementContentAsString();
+                        slowspeedRecordingFramerateOutput = float.Parse(srfo, CultureInfo.InvariantCulture);
                         break;
                     case "PostRecordCommand":
                         postRecordCommand = reader.ReadElementContentAsString();

@@ -172,7 +172,7 @@ namespace Kinovea.ScreenManager
         private ICaptureSource cameraGrabber;
         private PipelineManager pipelineManager = new PipelineManager();
         private ConsumerDisplay consumerDisplay = new ConsumerDisplay();
-        private ConsumerMJPEGRecorder consumerRecord;
+        private ConsumerRealtime consumerRealtime;
         private ConsumerDelayer consumerDelayer;
         private Thread recorderThread;
         private Bitmap recordingThumbnail;
@@ -180,7 +180,7 @@ namespace Kinovea.ScreenManager
         private CaptureRecordingMode recordingMode;
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private Stopwatch stopwatchRecording = new Stopwatch();
-
+        
         private OIPRollingShutterCalibration imageProcessor = new OIPRollingShutterCalibration();
 
         private Delayer delayer = new Delayer();
@@ -206,8 +206,7 @@ namespace Kinovea.ScreenManager
 
         private System.Windows.Forms.Timer displayTimer = new System.Windows.Forms.Timer();
         private System.Windows.Forms.Timer nonGrabbingInteractionTimer = new System.Windows.Forms.Timer();
-        private float load; // processing time over frame budget.
-
+        
         private HistoryStack historyStack = new HistoryStack();
         private string shortId;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -595,12 +594,12 @@ namespace Kinovea.ScreenManager
                 // Start consumer thread for recording mode "camera".
                 // This is used to pull frames from the pipeline and push them directly to disk.
                 // It will be dormant until recording is started but it has the same lifetime as the pipeline.
-                consumerRecord = new ConsumerMJPEGRecorder(shortId);
-                recorderThread = new Thread(consumerRecord.Run) { IsBackground = true };
-                recorderThread.Name = consumerRecord.GetType().Name + "-" + shortId;
+                consumerRealtime = new ConsumerRealtime(shortId);
+                recorderThread = new Thread(consumerRealtime.Run) { IsBackground = true };
+                recorderThread.Name = consumerRealtime.GetType().Name + "-" + shortId;
                 recorderThread.Start();
 
-                pipelineManager.Connect(imageDescriptor, cameraGrabber, consumerDisplay, consumerRecord);
+                pipelineManager.Connect(imageDescriptor, cameraGrabber, consumerDisplay, consumerRealtime);
             }
             else if (recordingMode == CaptureRecordingMode.Delay || recordingMode == CaptureRecordingMode.Scheduled)
             {
@@ -686,8 +685,8 @@ namespace Kinovea.ScreenManager
             if (recording)
                 StopRecording();
 
-            if (consumerRecord != null)
-                consumerRecord.Stop();
+            if (consumerRealtime != null)
+                consumerRealtime.Stop();
 
             if (consumerDelayer != null)
                 consumerDelayer.Stop();
@@ -832,15 +831,15 @@ namespace Kinovea.ScreenManager
             if (recordingMode == CaptureRecordingMode.Camera)
             {
                 // Here we don't report load if not recording as it's non-blocking.
-                if (recording && consumerRecord != null)
-                    ellapsed = consumerRecord.Ellapsed;
+                if (recording && consumerRealtime != null)
+                    ellapsed = consumerRealtime.Ellapsed;
             }
             else if (recordingMode == CaptureRecordingMode.Delay && consumerDelayer != null)
             {
                 ellapsed = consumerDelayer.Ellapsed;
             }
 
-            load = (ellapsed / (1000.0f / (float)pipelineManager.Frequency)) * 100;
+            float load = (ellapsed / (1000.0f / (float)pipelineManager.Frequency)) * 100;
              
             string signal = string.Format(" {0:0.00} fps", pipelineManager.Frequency);
             string bandwidth = string.Format(" {0:0.00} MB/s", cameraGrabber.LiveDataRate);
@@ -1302,8 +1301,8 @@ namespace Kinovea.ScreenManager
             switch (recordingMode)
             {
                 case CaptureRecordingMode.Camera:
-                    if (consumerRecord != null && consumerRecord.Active)
-                        consumerRecord.Deactivate();
+                    if (consumerRealtime != null && consumerRealtime.Active)
+                        consumerRealtime.Deactivate();
                     break;
                 case CaptureRecordingMode.Delay:
                 case CaptureRecordingMode.Scheduled:
@@ -1320,7 +1319,7 @@ namespace Kinovea.ScreenManager
 
             log.DebugFormat("--------------------------------------------------");
             log.DebugFormat("Starting recording. Recording mode: {0}, Compression: {1}. Image size: {2}x{3} px.", 
-                PreferencesManager.CapturePreferences.RecordingMode, !PreferencesManager.CapturePreferences.SaveUncompressedVideo, imageDescriptor.Width, imageDescriptor.Height);
+                recordingMode, !PreferencesManager.CapturePreferences.SaveUncompressedVideo, imageDescriptor.Width, imageDescriptor.Height);
             log.DebugFormat("Nominal framerate: {0:0.###} fps, Received framerate: {1:0.###} fps, Display framerate: {2:0.###} fps.", 
                 cameraGrabber.Framerate, pipelineManager.Frequency, 1000.0f / displayTimer.Interval);
             
@@ -1364,11 +1363,11 @@ namespace Kinovea.ScreenManager
             string finalFilename;
             if (recordingMode == CaptureRecordingMode.Camera)
             {
-                if (consumerRecord == null || (consumerRecord != null && !consumerRecord.Active))
+                if (consumerRealtime == null || (consumerRealtime != null && !consumerRealtime.Active))
                     return;
 
                 pipelineManager.StopRecord();
-                finalFilename = consumerRecord.Filename;
+                finalFilename = consumerRealtime.Filename;
             }
             else if (recordingMode == CaptureRecordingMode.Delay)
             {
@@ -1384,7 +1383,11 @@ namespace Kinovea.ScreenManager
             }
             
             recording = false;
-            log.DebugFormat("Dropped frames: {0}", pipelineManager.Drops);
+            string dropMessage = string.Format("Dropped frames: {0}.", pipelineManager.Drops);
+            if (pipelineManager.Drops > 0)
+                log.Warn(dropMessage);
+            else
+                log.Debug(dropMessage);
             
             view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
             NotificationCenter.RaiseRefreshFileExplorer(this, false);

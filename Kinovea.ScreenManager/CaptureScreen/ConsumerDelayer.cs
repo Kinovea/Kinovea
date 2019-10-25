@@ -15,8 +15,8 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// ConsumerDelayer. 
-    /// Push incoming samples to the delay buffer. Pulls from the delay buffer and saves to file.
-    /// Convert all samples to RGB24 to be pushed into the delay buffer.
+    /// Push frames coming from the camera into the delay buffer. Pulls from the delay buffer and saves to file.
+    /// Convert all frames to RGB24 to be pushed into the delay buffer.
     /// </summary>
     public class ConsumerDelayer : AbstractConsumer
     {
@@ -137,16 +137,23 @@ namespace Kinovea.ScreenManager
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && delayerImageDescriptor.Format != Video.ImageFormat.JPEG;
             string formatString = FilenameHelper.GetFormatStringCapture(uncompressed);
 
-            // If the capture happens at more than 100fps, set the video itself to be at 30fps.
+            // If the capture happens too fast or too slow for a regular player, set the video metadata to a more sensible framerate.
             // This avoids erratic playback because the player can't cope with the framerate, drawback: prevents review in real time.
             double hrft = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateThreshold;
-            double hrfo = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput;
+            double srft = PreferencesManager.CapturePreferences.SlowspeedRecordingFramerateThreshold;
             double fps = 1000.0 / interval;
             double fileInterval = interval;
             if (fps >= hrft)
             {
+                double hrfo = PreferencesManager.CapturePreferences.HighspeedRecordingFramerateOutput;
                 fileInterval = 1000.0 / hrfo;
                 log.DebugFormat("High speed recording detected, {0:0.###} fps. Forcing output framerate to {1:0.###} fps.", fps, hrfo);
+            }
+            else if (fps <= srft)
+            {
+                double srfo = PreferencesManager.CapturePreferences.SlowspeedRecordingFramerateOutput;
+                fileInterval = 1000.0 / srfo;
+                log.DebugFormat("Slow speed recording detected, {0:0.###} fps. Forcing output framerate to {1:0.###} fps.", fps, srfo);
             }
 
             log.DebugFormat("Frame budget for writer [{0}]: {1:0.000} ms.", shortId, interval);
