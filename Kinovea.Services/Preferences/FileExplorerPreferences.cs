@@ -48,11 +48,29 @@ namespace Kinovea.Services
                 maxRecentFiles = value;
             }
         }
+
+        public int MaxRecentCapturedFiles
+        {
+            get { return maxRecentCapturedFiles; }
+            set
+            {
+                if (recentCapturedFiles.Count > value)
+                    recentCapturedFiles.RemoveRange(value, recentCapturedFiles.Count - value);
+
+                maxRecentCapturedFiles = value;
+            }
+        }
+
         public List<string> RecentFiles
         {
             get { return recentFiles;}
         }
-        
+
+        public List<string> RecentCapturedFiles
+        {
+            get { return recentCapturedFiles; }
+        }
+
         public int ExplorerFilesSplitterDistance
         {
             // Splitter between folders and files on Explorer tab
@@ -95,8 +113,10 @@ namespace Kinovea.Services
             set { lastReplayFolder = value; }
         }
 
+        private int maxRecentFiles = 10;
+        private int maxRecentCapturedFiles = 10;
         private List<string> recentFiles = new List<string>();
-        private int maxRecentFiles = 5;
+        private List<string> recentCapturedFiles = new List<string>();
         private int explorerFilesSplitterDistance = 350;
         private int shortcutsFilesSplitterDistance = 350;
         private ExplorerThumbSize explorerThumbsSize = ExplorerThumbSize.Medium; 
@@ -111,13 +131,40 @@ namespace Kinovea.Services
             PreferencesManager.UpdateRecents(file, recentFiles, maxRecentFiles);
             NotificationCenter.RaiseRecentFilesChanged(this);
         }
-        
+
         public void ResetRecentFiles()
         {
             recentFiles.Clear();
             NotificationCenter.RaiseRecentFilesChanged(this);
         }
+
+        public void AddRecentCapturedFile(string file)
+        {
+            PreferencesManager.UpdateRecents(file, recentCapturedFiles, maxRecentCapturedFiles);
+        }
+
+        public void ConsolidateRecentCapturedFiles()
+        {
+            ConsolidateRecentFiles(recentCapturedFiles);
+        }
+
+        /// <summary>
+        /// Remove missing entries from recent list.
+        /// </summary>
+        private void ConsolidateRecentFiles(List<string> recentFiles)
+        {
+            for (int i = recentFiles.Count - 1; i >= 0; i--)
+            {
+                if (!File.Exists(recentFiles[i]))
+                    recentFiles.RemoveAt(i);
+            }
+        }
         
+        public void ResetRecentCapturedFiles()
+        {
+            recentCapturedFiles.Clear();
+        }
+
         public void RemoveShortcut(ShortcutFolder shortcut)
         {
             shortcutFolders.RemoveAll(s => s.Location == shortcut.Location);
@@ -147,26 +194,12 @@ namespace Kinovea.Services
         public void WriteXML(XmlWriter writer)
         {
             writer.WriteElementString("MaxRecentFiles", maxRecentFiles.ToString());
-            
-            if(recentFiles.Count > 0)
-            {
-                writer.WriteStartElement("RecentFiles");
-                
-                for(int i=0; i<maxRecentFiles; i++)
-                {
-                    if(i >= recentFiles.Count)
-                        break;
-                    
-                    if(string.IsNullOrEmpty(recentFiles[i]))
-                        continue;
-                    
-                    writer.WriteElementString("RecentFile", recentFiles[i]);
-                }
-                
-                writer.WriteEndElement();
-            }
-            
-            if(shortcutFolders.Count > 0)
+            WriteRecents(writer, recentFiles, maxRecentFiles, "RecentFiles", "RecentFile");
+
+            writer.WriteElementString("MaxRecentCapturedFiles", maxRecentCapturedFiles.ToString());
+            WriteRecents(writer, recentCapturedFiles, maxRecentCapturedFiles, "RecentCapturedFiles", "RecentCapturedFile");
+
+            if (shortcutFolders.Count > 0)
             {
                 writer.WriteStartElement("Shortcuts");
 
@@ -193,6 +226,27 @@ namespace Kinovea.Services
             writer.WriteElementString("LastReplayFolder", lastReplayFolder);
         }
 
+        private void WriteRecents(XmlWriter writer, List<string> recentFiles, int max, string collectionTag, string itemTag)
+        {
+            if (recentFiles.Count == 0)
+                return;
+            
+            writer.WriteStartElement(collectionTag);
+
+            for (int i = 0; i < max; i++)
+            {
+                if (i >= recentFiles.Count)
+                    break;
+
+                if (string.IsNullOrEmpty(recentFiles[i]))
+                    continue;
+
+                writer.WriteElementString(itemTag, recentFiles[i]);
+            }
+
+            writer.WriteEndElement();
+        }
+
         public void ReadXML(XmlReader reader)
         {
             reader.ReadStartElement();
@@ -205,7 +259,13 @@ namespace Kinovea.Services
                         maxRecentFiles = reader.ReadElementContentAsInt();
                         break;
                     case "RecentFiles":
-                        ParseRecentFiles(reader);
+                        ParseRecentFiles(reader, recentFiles, "RecentFile");
+                        break;
+                    case "MaxRecentCapturedFiles":
+                        maxRecentCapturedFiles = reader.ReadElementContentAsInt();
+                        break;
+                    case "RecentCapturedFiles":
+                        ParseRecentFiles(reader, recentCapturedFiles, "RecentCapturedFile");
                         break;
                     case "Shortcuts":
                         ParseShortcuts(reader);
@@ -237,7 +297,7 @@ namespace Kinovea.Services
             reader.ReadEndElement();
         }
         
-        private void ParseRecentFiles(XmlReader reader)
+        private void ParseRecentFiles(XmlReader reader, List<string> recentFiles, string itemTag)
         {
             recentFiles.Clear();
             bool empty = reader.IsEmptyElement;
@@ -249,7 +309,7 @@ namespace Kinovea.Services
             
             while(reader.NodeType == XmlNodeType.Element)
             {
-                if(reader.Name == "RecentFile")
+                if(reader.Name == itemTag)
                     recentFiles.Add(reader.ReadElementContentAsString());
                 else
                     reader.ReadOuterXml();

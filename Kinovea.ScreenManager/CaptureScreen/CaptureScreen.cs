@@ -1163,11 +1163,8 @@ namespace Kinovea.ScreenManager
             view.Toast(ScreenManagerLang.Toast_ImageSaved, 750);
 
             // After save routines.
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
-
             AddCapturedFile(path, outputImage, false);
-            CaptureHistoryEntry entry = CreateHistoryEntrySnapshot(path);
-            CaptureHistory.AddEntry(entry);
+            NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
             if (index == 0)
                 PreferencesManager.CapturePreferences.CapturePathConfiguration.LeftImageFile = filenameWithoutExtension;
@@ -1390,7 +1387,6 @@ namespace Kinovea.ScreenManager
                 log.Debug(dropMessage);
             
             view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
-            NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
             if (recordingThumbnail != null)
             {
@@ -1399,8 +1395,8 @@ namespace Kinovea.ScreenManager
                 recordingThumbnail = null;
             }
 
-            CaptureHistoryEntry entry = CreateHistoryEntry(finalFilename);
-            CaptureHistory.AddEntry(entry);
+            PreferencesManager.FileExplorerPreferences.AddRecentCapturedFile(finalFilename);
+            NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
             // Execute post-recording command.
             string command = PreferencesManager.CapturePreferences.PostRecordCommand;
@@ -1454,36 +1450,6 @@ namespace Kinovea.ScreenManager
             {
                 log.ErrorFormat("Could not execute post capture command. {0}", e.Message);
             }
-        }
-
-        private CaptureHistoryEntry CreateHistoryEntry(string filename)
-        {
-            string captureFile = filename;
-            DateTime start = recordingStart;
-            DateTime end = DateTime.Now;
-            string cameraAlias = cameraSummary.Alias;
-            string cameraIdentifier = cameraSummary.Identifier;
-            double configuredFramerate = cameraGrabber.Framerate;
-            double receivedFramerate = pipelineManager.Frequency;
-            int drops = (int)pipelineManager.Drops;
-
-            CaptureHistoryEntry entry = new CaptureHistoryEntry(captureFile, start, end, cameraAlias, cameraIdentifier, configuredFramerate, receivedFramerate, drops);
-            return entry;
-        }
-
-        private CaptureHistoryEntry CreateHistoryEntrySnapshot(string filename)
-        {
-            string captureFile = filename;
-            DateTime start = DateTime.Now;
-            DateTime end = DateTime.Now;
-            string cameraAlias = cameraSummary.Alias;
-            string cameraIdentifier = cameraSummary.Identifier;
-            double configuredFramerate = 0;
-            double receivedFramerate = 0;
-            int drops = 0;
-
-            CaptureHistoryEntry entry = new CaptureHistoryEntry(captureFile, start, end, cameraAlias, cameraIdentifier, configuredFramerate, receivedFramerate, drops);
-            return entry;
         }
 
         private void AddCapturedFile(string filepath, Bitmap image, bool video)

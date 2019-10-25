@@ -59,7 +59,6 @@ namespace Kinovea.FileBrowser
         private bool externalSelection;
         private string lastOpenedDirectory;
         private ActiveFileBrowserTab activeTab;
-        private Dictionary<string, TreeNode> captureHistoryNodes = new Dictionary<string, TreeNode>();
         private FileSystemWatcher fileWatcher = new FileSystemWatcher();
 
         #region Menu
@@ -84,7 +83,6 @@ namespace Kinovea.FileBrowser
             InitializeComponent();
             
             lvCameras.SmallImageList = cameraIcons;
-            tvCaptureHistory.ImageList = cameraIcons;
             cameraIcons.Images.Add("historyEntryDay", Properties.Resources.calendar_view_day);
             cameraIcons.Images.Add("historyEntryMonth", Properties.Resources.calendar_view_month);
             cameraIcons.Images.Add("unknownCamera", Properties.Resources.film_small);
@@ -95,6 +93,8 @@ namespace Kinovea.FileBrowser
             // Drag Drop handling.
             lvExplorer.ItemDrag += lv_ItemDrag;
             lvShortcuts.ItemDrag += lv_ItemDrag;
+            lvCaptured.ItemDrag += lv_ItemDrag;
+
             etExplorer.AllowDrop = false;
             etShortcuts.AllowDrop = false;
             
@@ -109,8 +109,6 @@ namespace Kinovea.FileBrowser
             
             // Reload stored persistent information.
             ReloadShortcuts();
-            ReloadCaptureHistory(true);
-
             InitializeFileWatcher();
             
             // Reload last tab from prefs.
@@ -170,7 +168,7 @@ namespace Kinovea.FileBrowser
 
             lvShortcuts.ContextMenuStrip = popMenuFiles;
             lvExplorer.ContextMenuStrip = popMenuFiles;
-            tvCaptureHistory.ContextMenuStrip = popMenuFiles;
+            lvCaptured.ContextMenuStrip = popMenuFiles;
         }
 
         private void mnuLocate_Click(object sender, EventArgs e)
@@ -221,7 +219,7 @@ namespace Kinovea.FileBrowser
                 return;
 
             // Find the file and select it here.
-            ListView lv = activeTab == ActiveFileBrowserTab.Explorer ? lvExplorer : lvShortcuts;
+            ListView lv = GetFileListview();
             lv.SelectedItems.Clear();
 
             if (string.IsNullOrEmpty(e.File))
@@ -236,6 +234,19 @@ namespace Kinovea.FileBrowser
                 item.Selected = true;
                 item.EnsureVisible();
                 break;
+            }
+        }
+        private ListView GetFileListview()
+        {
+            switch (activeTab)
+            {
+                case ActiveFileBrowserTab.Shortcuts:
+                    return lvShortcuts;
+                case ActiveFileBrowserTab.Cameras:
+                    return lvCaptured;
+                case ActiveFileBrowserTab.Explorer:
+                default:
+                    return lvExplorer;
             }
         }
         private void NotificationCenter_FileOpened(object sender, FileActionEventArgs e)
@@ -289,8 +300,7 @@ namespace Kinovea.FileBrowser
             }
             else if(activeTab == ActiveFileBrowserTab.Cameras)
             {
-                ReloadCaptureHistory(false);
-                ReloadCaptureHistoryExpandedSessions();
+                UpdateFileList(PreferencesManager.FileExplorerPreferences.RecentCapturedFiles, lvCaptured, false, false);
             }
         }
         public void RefreshUICulture()
@@ -299,7 +309,7 @@ namespace Kinovea.FileBrowser
             tabPageClassic.Text = "";
             lblFolders.Text = FileBrowserLang.lblFolders;
             lblVideoFiles.Text = FileBrowserLang.lblVideoFiles;
-            
+
             // Shortcut tab.
             tabPageShortcuts.Text = "";
             lblFavFolders.Text = lblFolders.Text;
@@ -316,14 +326,13 @@ namespace Kinovea.FileBrowser
             mnuLocateFolder.Text = "Locate in Windows Explorer";
             mnuDeleteShortcut.Text = FileBrowserLang.mnuDeleteShortcut;
             mnuLaunch.Text = FileBrowserLang.Generic_Open;
-            mnuLocate.Text = FileBrowserLang.mnuVideoLocate;
+            mnuLocate.Text = "Locate in Windows Explorer"; //FileBrowserLang.mnuVideoLocate;
             mnuDelete.Text = FileBrowserLang.mnuVideoDelete;
 
             // ToolTips
             ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
             ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
             ttTabs.SetToolTip(btnDeleteShortcut, FileBrowserLang.mnuDeleteShortcut);
-            ttTabs.SetToolTip(btnImportHistory, FileBrowserLang.Tooltip_ImportToCaptureHistory);
         }
         public void ReloadShortcuts()
         {
@@ -376,109 +385,7 @@ namespace Kinovea.FileBrowser
             List<CameraSummary> newList = new List<CameraSummary>(cameraSummaries);
             UpdateCameraList(newList);
         }
-        public void ReloadCaptureHistory(bool clear)
-        {
-            //------------------------------------------------------------------------------------------------------
-            // Capture history tree view update mechanics.
-            // 1. Deleting a file, we only need to refresh the session node where the deleted file was. We use ReloadCaptureHistoryExpandedNodes alone.
-            // 2. Adding a file through recording. We need to reload the whole list because it could be the first file for today.
-            // We need to add the new session node. But we also want to keep the current expanded nodes.
-            // For this, we use the parallel dictionary (captureHistoryNodes) keeping track of the currently added nodes, whether days or months.
-            // 3. When importing from an existing directory we must insert the new nodes at the correct chronological place. 
-            // For this, we clear and recreate the whole list for simplicity.
-            // 
-            // This function is only concerned with the top level hierarchy (days and months), not the individual files.
-            //------------------------------------------------------------------------------------------------------
-
-            if (clear)
-            {
-                captureHistoryNodes.Clear();
-                tvCaptureHistory.Nodes.Clear();
-            }
-
-            IEnumerable<string> sessions = CaptureHistory.GetRoots();
-            
-            foreach (string session in sessions)
-            {
-                if (captureHistoryNodes.ContainsKey(session))
-                    continue;
-
-                // Find the correct place to insert this node.
-                DateTime dt;
-                bool parsed = DateTime.TryParseExact(session, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
-
-                if (!parsed)
-                {
-                    TreeNode node = CreateCaptureHistoryNode(session);
-                    node.Text = session;
-
-                    tvCaptureHistory.Nodes.Add(node);
-                    captureHistoryNodes.Add(session, node);
-                }
-                else
-                {
-                    TreeNode node = CreateCaptureHistoryNodeDated(session, dt);
-
-                    TimeSpan age = DateTime.Now - dt;
-                    if (age.TotalDays < 30)
-                    {
-                        tvCaptureHistory.Nodes.Add(node);
-                        captureHistoryNodes.Add(session, node);
-                    }
-                    else
-                    {
-                        // Archived session (stored by month).
-                        string archiveName = string.Format("{0:yyyy-MM}", dt);
-
-                        if (!captureHistoryNodes.ContainsKey(archiveName))
-                        {
-                            TreeNode archiveNode = CreateCaptureHistoryNodeArchive(archiveName);
-
-                            tvCaptureHistory.Nodes.Add(archiveNode);
-                            captureHistoryNodes.Add(archiveName, archiveNode);
-                        }
-
-                        TreeNode parent = captureHistoryNodes[archiveName];
-                        parent.Nodes.Add(node);
-                        captureHistoryNodes.Add(session, node);
-                    }
-                }   
-            }
-        }
-
-        private TreeNode CreateCaptureHistoryNode(string session)
-        {
-            TreeNode node = new TreeNode();
-            node.Tag = session;
-
-            // Add a dummy child to display the [+] button.
-            TreeNode dummy = new TreeNode();
-            node.Nodes.Add(dummy);
-
-            return node;
-        }
-
-        private TreeNode CreateCaptureHistoryNodeDated(string session, DateTime dt)
-        {
-            TreeNode node = CreateCaptureHistoryNode(session);
-            node.Text = dt.ToString("d");
-
-            node.ImageKey = "historyEntryDay";
-            node.SelectedImageKey = node.ImageKey;
-
-            return node;
-        }
-
-        private TreeNode CreateCaptureHistoryNodeArchive(string archiveName)
-        {
-            TreeNode archiveNode = new TreeNode();
-            archiveNode.Text = archiveName;
-            archiveNode.ImageKey = "historyEntryMonth";
-            archiveNode.SelectedImageKey = archiveNode.ImageKey;
-
-            return archiveNode;
-        }
-
+        
         public void Closing()
         {
             if(currentExptreeItem != null)
@@ -526,11 +433,6 @@ namespace Kinovea.FileBrowser
         private void lvExplorer_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             LaunchItemAt(lvExplorer, e);
-        }
-        private void lvExplorer_MouseEnter(object sender, EventArgs e)
-        {
-            // Give focus to enable mouse scroll.
-            //lvExplorer.Focus();
         }
         #endregion
         
@@ -636,16 +538,13 @@ namespace Kinovea.FileBrowser
         {
             LaunchItemAt(lvShortcuts, e);
         }
-        private void lvShortcuts_MouseEnter(object sender, EventArgs e)
-        {
-            // Give focus to enable mouse scroll.
-            //lvShortcuts.Focus();
-        }
         #endregion
-        
+
         #endregion
-        
+
         #region Camera tab
+
+        #region Camera list
         private void UpdateCameraList(List<CameraSummary> summaries)
         {
             cameraSummaries.Clear();
@@ -699,21 +598,6 @@ namespace Kinovea.FileBrowser
                 item.ImageKey = item.ImageKey;
 
             lvCameras.Invalidate();
-            
-            // If there is a current opened node, update its icons too.
-            foreach (TreeNode sessionNode in tvCaptureHistory.Nodes)
-            {
-                if (!sessionNode.IsExpanded)
-                    continue;
-
-                foreach (TreeNode entryNode in sessionNode.Nodes)
-                {
-                    entryNode.ImageKey = entryNode.ImageKey;
-                    entryNode.SelectedImageKey = entryNode.SelectedImageKey;
-                }
-            }
-
-            tvCaptureHistory.Invalidate();
         }
         
         private int IndexOfCamera(List<CameraSummary> summaries, string id)
@@ -758,84 +642,15 @@ namespace Kinovea.FileBrowser
             if(index >= 0)
                 DoDragDrop(cameraSummaries[index], DragDropEffects.All);
         }
-
-        private void tvCaptureHistory_BeforeExpand(object sender, TreeViewCancelEventArgs e)
-        {
-            // Populate the node with actual entries.
-            TreeNode node = e.Node;
-            LoadSessionNode(node);
-        }
-
-        private void tvCaptureHistory_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            // Launch video at node.
-            CaptureHistoryEntry entry = e.Node.Tag as CaptureHistoryEntry;
-            if (entry == null)
-                return;
-
-            string path = entry.CaptureFile;
-            if (path == null)
-                return;
-
-            VideoTypeManager.LoadVideo(path, -1);
-        }
-
-        private void tvCaptureHistory_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            TreeNode node = e.Item as TreeNode;
-            if (node == null)
-                return;
-
-            CaptureHistoryEntry entry = node.Tag as CaptureHistoryEntry;
-            if (entry == null)
-                return;
-
-            string path = entry.CaptureFile;
-            if (path == null)
-                return;
-
-            DoDragDrop(path, DragDropEffects.All);
-        }
+        #endregion
         
-        private void ReloadCaptureHistoryExpandedSessions()
+        #region File list
+        private void LvCaptured_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            foreach (TreeNode sessionNode in tvCaptureHistory.Nodes)
-            {
-                if (!sessionNode.IsExpanded)
-                    continue;
-
-                LoadSessionNode(sessionNode);    
-            }
+            LaunchItemAt(lvCaptured, e);
         }
+        #endregion
 
-        private void LoadSessionNode(TreeNode sessionNode)
-        {
-            string session = sessionNode.Tag as string;
-            if (string.IsNullOrEmpty(session))
-                return;
-
-            sessionNode.Nodes.Clear();
-
-            IEnumerable<CaptureHistoryEntry> entries = CaptureHistory.GetEntries(session);
-
-            foreach (CaptureHistoryEntry entry in entries)
-            {
-                TreeNode entryNode = new TreeNode();
-                string filename = Path.GetFileName(entry.CaptureFile);
-                string time = entry.Start.ToLongTimeString();
-                entryNode.Text = string.Format("{0}  -  {1}", time, filename);
-                entryNode.Tag = entry;
-
-                if (string.IsNullOrEmpty(entry.CameraIdentifier) || !tvCaptureHistory.ImageList.Images.ContainsKey(entry.CameraIdentifier))
-                    entryNode.ImageKey = "unknownCamera";
-                else
-                    entryNode.ImageKey = entry.CameraIdentifier;
-
-                entryNode.SelectedImageKey = entryNode.ImageKey;
-
-                sessionNode.Nodes.Add(entryNode);
-            }
-        }
         #endregion
         
         #region Common
@@ -919,7 +734,32 @@ namespace Kinovea.FileBrowser
             NotificationCenter.RaiseCurrentDirectoryChanged(this, shortcuts, filenames, refreshThumbnails);
             this.Cursor = Cursors.Default;
         }
-        
+
+        /// <summary>
+        /// Updates a file list with an explicit list of files.
+        /// </summary>
+        private void UpdateFileList(List<string> filenames, ListView listView, bool refreshThumbnails, bool shortcuts)
+        {
+            listView.BeginUpdate();
+            listView.View = View.Details;
+            listView.Items.Clear();
+            listView.Columns.Clear();
+            listView.Columns.Add("", listView.Width);
+            listView.GridLines = true;
+            listView.HeaderStyle = ColumnHeaderStyle.None;
+
+            foreach (string filename in filenames)
+            {
+                ListViewItem lvi = new ListViewItem(Path.GetFileName(filename));
+                lvi.Tag = filename;
+                lvi.ImageIndex = 0;
+                listView.Items.Add(lvi);
+            }
+
+            listView.Invalidate();
+            listView.EndUpdate();
+        }
+
         private void lv_ItemDrag(object sender, ItemDragEventArgs e)
         {
             ListViewItem lvi = e.Item as ListViewItem;
@@ -951,20 +791,6 @@ namespace Kinovea.FileBrowser
             ShowHideListMenu(true);
         }
 
-        private void tvCaptureHistory_MouseDown(object sender, MouseEventArgs e)
-        {
-            ShowHideListMenu(false);
-
-            if (!tvCaptureHistory.Focused || tvCaptureHistory.SelectedNode == null)
-                return;
-
-            CaptureHistoryEntry entry = tvCaptureHistory.SelectedNode.Tag as CaptureHistoryEntry;
-            if (entry == null)
-                return;
-
-            ShowHideListMenu(true);
-        }
-
         private void ShowHideListMenu(bool visible)
         {
             foreach (ToolStripItem menu in popMenuFiles.Items)
@@ -984,19 +810,6 @@ namespace Kinovea.FileBrowser
                 
             VideoTypeManager.LoadVideo(path, -1);
         }
-
-        private void btnImportHistory_Click(object sender, EventArgs e)
-        {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
-            {
-                CaptureHistory.ImportDirectory(dialog.FileName);
-                ReloadCaptureHistory(true);
-            }
-        }
-
         #endregion
         
         #region Menu Event Handlers
@@ -1159,7 +972,7 @@ namespace Kinovea.FileBrowser
                     LaunchSelectedVideo(lvShortcuts);
                     break;
                 case ActiveFileBrowserTab.Cameras:
-                    LaunchSelectedCamera(lvCameras, tvCaptureHistory);
+                    LaunchSelectedVideo(lvCaptured);
                     break;
             }
         }
@@ -1172,21 +985,6 @@ namespace Kinovea.FileBrowser
             return lv.SelectedItems[0].Tag as string;
         }
 
-        private string GetSelectedVideoPath(TreeView tv)
-        {
-            if (!tv.Focused)
-                return null;
-
-            if (tv.SelectedNode == null)
-                return null;
-
-            CaptureHistoryEntry entry = tv.SelectedNode.Tag as CaptureHistoryEntry;
-            if (entry == null)
-                return null;
-
-            return entry.CaptureFile;
-        }
-        
         private void LaunchSelectedVideo(ListView lv)
         {
             string path = GetSelectedVideoPath(lv);
@@ -1194,85 +992,33 @@ namespace Kinovea.FileBrowser
                 VideoTypeManager.LoadVideo(path, -1);
         }
 
-        private void LaunchSelectedCamera(ListView lv, TreeView tv)
+        private void LaunchSelectedCamera(ListView lv)
         {
-            if (lv == null || tv == null)
+            if (lv == null || !lv.Focused)
                 return;
 
-            if (lv.Focused)
-            {
-                if (lv.SelectedItems == null || lv.SelectedItems.Count != 1)
-                    return;
+            if (lv.SelectedItems == null || lv.SelectedItems.Count != 1)
+                return;
 
-                int index = IndexOfCamera(cameraSummaries, lv.SelectedItems[0].Name);
-                if (index >= 0)
-                    CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
-            }
-            else if (tv.Focused)
-            {
-                if (tv.SelectedNode == null)
-                    return;
-
-                CaptureHistoryEntry entry = tv.SelectedNode.Tag as CaptureHistoryEntry;
-                if (entry == null)
-                    return;
-
-                string path = entry.CaptureFile;
-                if (path == null)
-                    return;
-
-                VideoTypeManager.LoadVideo(path, -1);
-            }
+            int index = IndexOfCamera(cameraSummaries, lv.SelectedItems[0].Name);
+            if (index >= 0)
+                CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
         }
 
         private void CommandDelete()
         {
-            if (activeTab == ActiveFileBrowserTab.Explorer)
-                DeleteSelectedVideo(lvExplorer);
-            else if (activeTab == ActiveFileBrowserTab.Shortcuts)
-                DeleteSelectedVideo(lvShortcuts);
-            else if (activeTab == ActiveFileBrowserTab.Cameras)
-                DeleteSelectedVideo(tvCaptureHistory);
-        }
-
-        private void DeleteSelectedVideo(ListView lv)
-        {
+            ListView lv = GetFileListview();
             string path = GetSelectedVideoPath(lv);
             if (path == null)
                 return;
 
             FilesystemHelper.DeleteFile(path);
             if (!File.Exists(path))
-                DoRefreshFileList(true);
-        }
-
-        private void DeleteSelectedVideo(TreeView tv)
-        {
-            if (!tv.Focused)
-                return;
-
-            if (tv.SelectedNode == null)
-                return;
-
-            CaptureHistoryEntry entry = tv.SelectedNode.Tag as CaptureHistoryEntry;
-            if (entry == null)
-                return;
-
-            TreeNode parent = tv.SelectedNode.Parent;
-            if (parent == null)
-                return;
-
-            string session = parent.Tag as string;
-
-            string path = entry.CaptureFile;
-            if (path == null)
-                return;
-
-            FilesystemHelper.DeleteFile(path);
-            if (!File.Exists(path))
             {
-                CaptureHistory.RemoveEntry(session, entry);
-                ReloadCaptureHistoryExpandedSessions();
+                if (activeTab == ActiveFileBrowserTab.Cameras)
+                    PreferencesManager.FileExplorerPreferences.ConsolidateRecentCapturedFiles();
+
+                DoRefreshFileList(true);
             }
         }
 
@@ -1283,7 +1029,7 @@ namespace Kinovea.FileBrowser
             else if (activeTab == ActiveFileBrowserTab.Shortcuts)
                 LocateSelectedVideo(lvShortcuts);
             else if (activeTab == ActiveFileBrowserTab.Cameras)
-                LocateSelectedVideo(tvCaptureHistory);
+                LocateSelectedVideo(lvCaptured);
         }
 
         private void LocateSelectedVideo(ListView lv)
@@ -1292,15 +1038,6 @@ namespace Kinovea.FileBrowser
             if (path != null)
                 FilesystemHelper.LocateFile(path);
         }
-
-        private void LocateSelectedVideo(TreeView tv)
-        {
-            string path = GetSelectedVideoPath(tv);
-            if (path != null)
-                FilesystemHelper.LocateFile(path);
-        }
-
         #endregion
-       
     }
 }

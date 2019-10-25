@@ -149,7 +149,7 @@ namespace Kinovea.ScreenManager
         private void BuildContextMenus()
         {
             mnuLoadVideo.Image = Properties.Resources.film_go;
-            mnuLocate.Image = capturedFile.Video ? Properties.Capture.folder_camera : Properties.Capture.folder_image;
+            mnuLocate.Image = Properties.Resources.folder_new;
             mnuRename.Image = Properties.Capture.rename;
             mnuHide.Image = Properties.Resources.hide;
             mnuDelete.Image = Properties.Resources.delete;
