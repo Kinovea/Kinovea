@@ -6,7 +6,6 @@ using Kinovea.Video;
 using Kinovea.Video.FFMpeg;
 using System.Drawing;
 using Kinovea.Services;
-using TurboJpegNet;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -200,7 +199,7 @@ namespace Kinovea.ScreenManager
                     BitmapHelper.FillFromY800(bitmap, rect, inputImageDescriptor.TopDown, entry.Buffer);
                     break;
                 case Video.ImageFormat.JPEG:
-                    FillBitmapJPEG(entry.Buffer, entry.PayloadLength);
+                    BitmapHelper.FillFromJPEG(bitmap, rect, decoded, entry.Buffer, entry.PayloadLength, pitch);
                     break;
             }
 
@@ -264,29 +263,6 @@ namespace Kinovea.ScreenManager
             writer = null;
 
             recording = false;
-        }
-
-        private void FillBitmapJPEG(byte[] buffer, int payloadLength)
-        {
-            // Convert JPEG to RGB24 buffer then to bitmap.
-
-            IntPtr handle = tjnet.tjInitDecompress();
-
-            uint jpegSize = (uint)payloadLength;
-            int width;
-            int height;
-            TJSAMP jpegSubsamp;
-            tjnet.tjDecompressHeader2(handle, buffer, jpegSize, out width, out height, out jpegSubsamp);
-
-            tjnet.tjDecompress2(handle, buffer, jpegSize, decoded, width, pitch, height, TJPF.TJPF_BGR, TJFLAG.TJFLAG_FASTDCT);
-
-            tjnet.tjDestroy(handle);
-
-            // Encapsulate into bitmap.
-            // Fixme: do we need the copy here? What about getting an IntPtr from tjnet and setting it to scan0?
-            BitmapData bmpData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);
-            Marshal.Copy(decoded, 0, bmpData.Scan0, bmpData.Stride * bitmap.Height);
-            bitmap.UnlockBits(bmpData);
         }
     }
 }

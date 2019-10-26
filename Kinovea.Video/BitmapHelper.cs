@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.IO;
+using TurboJpegNet;
 
 namespace Kinovea.Video
 {
@@ -160,7 +161,36 @@ namespace Kinovea.Video
 
             bitmap.UnlockBits(bmpData);
         }
-    
+
+        /// <summary>
+        /// Copy the buffer into the bitmap.
+        /// The buffer is assumed JPEG. 
+        /// The Bitmap should be RGB24, already allocated.
+        /// The decoded array should already be allocated and big enough to hold the RGB24 frame bytes.
+        /// </summary>
+        public static void FillFromJPEG(Bitmap bitmap, Rectangle rect, byte[] decoded, byte[] buffer, int payloadLength, int pitch)
+        {
+            // Convert JPEG to RGB24 buffer then to bitmap.
+
+            IntPtr handle = tjnet.tjInitDecompress();
+
+            uint jpegSize = (uint)payloadLength;
+            int width;
+            int height;
+            TJSAMP jpegSubsamp;
+            tjnet.tjDecompressHeader2(handle, buffer, jpegSize, out width, out height, out jpegSubsamp);
+
+            tjnet.tjDecompress2(handle, buffer, jpegSize, decoded, width, pitch, height, TJPF.TJPF_BGR, TJFLAG.TJFLAG_FASTDCT);
+
+            tjnet.tjDestroy(handle);
+
+            // Encapsulate into bitmap.
+            // Fixme: do we need the copy here? What about getting an IntPtr from tjnet and setting it to scan0?
+            BitmapData bmpData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);
+            Marshal.Copy(decoded, 0, bmpData.Scan0, bmpData.Stride * bitmap.Height);
+            bitmap.UnlockBits(bmpData);
+        }
+
         /// <summary>
         /// Copy the whole bitmap into a rectangle in the frame buffer.
         /// The source bitmap is expected to be smaller than destination.
