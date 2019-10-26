@@ -13,7 +13,6 @@ namespace Kinovea.Video
         None,
         RGB24,
         RGB32,
-        I420,
         Y800,
         JPEG
     }

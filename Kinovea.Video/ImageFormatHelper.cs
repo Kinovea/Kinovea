@@ -24,7 +24,6 @@ namespace Kinovea.Video
                     return width * height * 3;
                 case ImageFormat.Y800:
                     return width * height * 1;
-                case ImageFormat.I420:
                 case ImageFormat.None:
                 default:
                     return width * height * 3;
@@ -42,7 +41,6 @@ namespace Kinovea.Video
                 case ImageFormat.Y800:
                     return 1;
                 case ImageFormat.JPEG:
-                case ImageFormat.I420:
                 case ImageFormat.None:
                 default:
                     // We should really not be asking this for these formats.
