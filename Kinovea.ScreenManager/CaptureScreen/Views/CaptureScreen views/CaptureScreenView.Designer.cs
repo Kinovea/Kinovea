@@ -53,10 +53,10 @@ namespace Kinovea.ScreenManager
       this.lblDelay = new System.Windows.Forms.Label();
       this.pnlCapturedVideos = new System.Windows.Forms.Panel();
       this.pnlTitle = new System.Windows.Forms.Panel();
+      this.btnClose = new System.Windows.Forms.Button();
       this.infobarCapture = new Kinovea.ScreenManager.InfobarCapture();
       this.btnIcon = new System.Windows.Forms.Button();
       this.lblCameraTitle = new System.Windows.Forms.Label();
-      this.btnClose = new System.Windows.Forms.Button();
       this.lblCameraInfo = new System.Windows.Forms.Label();
       this.pnlViewport = new System.Windows.Forms.Panel();
       this.pnlDrawingToolsBar = new System.Windows.Forms.Panel();
@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
       this.pnlControls.Location = new System.Drawing.Point(0, 446);
       this.pnlControls.MinimumSize = new System.Drawing.Size(175, 70);
       this.pnlControls.Name = "pnlControls";
-      this.pnlControls.Size = new System.Drawing.Size(665, 92);
+      this.pnlControls.Size = new System.Drawing.Size(865, 92);
       this.pnlControls.TabIndex = 3;
       // 
       // lblSlomoSync
@@ -306,7 +306,7 @@ namespace Kinovea.ScreenManager
       this.pnlCapturedVideos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
       this.pnlCapturedVideos.Location = new System.Drawing.Point(0, 345);
       this.pnlCapturedVideos.Name = "pnlCapturedVideos";
-      this.pnlCapturedVideos.Size = new System.Drawing.Size(665, 100);
+      this.pnlCapturedVideos.Size = new System.Drawing.Size(865, 100);
       this.pnlCapturedVideos.TabIndex = 4;
       // 
       // pnlTitle
@@ -319,8 +319,26 @@ namespace Kinovea.ScreenManager
       this.pnlTitle.Dock = System.Windows.Forms.DockStyle.Top;
       this.pnlTitle.Location = new System.Drawing.Point(0, 0);
       this.pnlTitle.Name = "pnlTitle";
-      this.pnlTitle.Size = new System.Drawing.Size(665, 24);
+      this.pnlTitle.Size = new System.Drawing.Size(865, 24);
       this.pnlTitle.TabIndex = 5;
+      // 
+      // btnClose
+      // 
+      this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnClose.BackColor = System.Drawing.Color.Transparent;
+      this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.closegrey;
+      this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnClose.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnClose.FlatAppearance.BorderSize = 0;
+      this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+      this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+      this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnClose.Location = new System.Drawing.Point(843, 2);
+      this.btnClose.Name = "btnClose";
+      this.btnClose.Size = new System.Drawing.Size(20, 20);
+      this.btnClose.TabIndex = 2;
+      this.btnClose.UseVisualStyleBackColor = false;
+      this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
       // 
       // infobarCapture
       // 
@@ -328,7 +346,7 @@ namespace Kinovea.ScreenManager
       this.infobarCapture.BackColor = System.Drawing.Color.Transparent;
       this.infobarCapture.Location = new System.Drawing.Point(125, 2);
       this.infobarCapture.Name = "infobarCapture";
-      this.infobarCapture.Size = new System.Drawing.Size(512, 22);
+      this.infobarCapture.Size = new System.Drawing.Size(579, 22);
       this.infobarCapture.TabIndex = 0;
       this.infobarCapture.Visible = false;
       // 
@@ -352,30 +370,13 @@ namespace Kinovea.ScreenManager
       // 
       this.lblCameraTitle.AutoSize = true;
       this.lblCameraTitle.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.lblCameraTitle.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblCameraTitle.Location = new System.Drawing.Point(30, 6);
       this.lblCameraTitle.Name = "lblCameraTitle";
-      this.lblCameraTitle.Size = new System.Drawing.Size(62, 13);
+      this.lblCameraTitle.Size = new System.Drawing.Size(79, 13);
       this.lblCameraTitle.TabIndex = 4;
       this.lblCameraTitle.Text = "Camera title";
       this.lblCameraTitle.Click += new System.EventHandler(this.LblCameraInfoClick);
-      // 
-      // btnClose
-      // 
-      this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnClose.BackColor = System.Drawing.Color.Transparent;
-      this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.closegrey;
-      this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-      this.btnClose.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnClose.FlatAppearance.BorderSize = 0;
-      this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-      this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnClose.Location = new System.Drawing.Point(643, 2);
-      this.btnClose.Name = "btnClose";
-      this.btnClose.Size = new System.Drawing.Size(20, 20);
-      this.btnClose.TabIndex = 2;
-      this.btnClose.UseVisualStyleBackColor = false;
-      this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
       // 
       // lblCameraInfo
       // 
@@ -398,7 +399,7 @@ namespace Kinovea.ScreenManager
       this.pnlViewport.Location = new System.Drawing.Point(0, 25);
       this.pnlViewport.MinimumSize = new System.Drawing.Size(345, 25);
       this.pnlViewport.Name = "pnlViewport";
-      this.pnlViewport.Size = new System.Drawing.Size(665, 292);
+      this.pnlViewport.Size = new System.Drawing.Size(865, 292);
       this.pnlViewport.TabIndex = 6;
       // 
       // pnlDrawingToolsBar
@@ -410,7 +411,7 @@ namespace Kinovea.ScreenManager
       this.pnlDrawingToolsBar.Controls.Add(this.btnFoldCapturedVideosPanel);
       this.pnlDrawingToolsBar.Location = new System.Drawing.Point(0, 317);
       this.pnlDrawingToolsBar.Name = "pnlDrawingToolsBar";
-      this.pnlDrawingToolsBar.Size = new System.Drawing.Size(665, 28);
+      this.pnlDrawingToolsBar.Size = new System.Drawing.Size(865, 28);
       this.pnlDrawingToolsBar.TabIndex = 5;
       this.pnlDrawingToolsBar.DoubleClick += new System.EventHandler(this.BtnCapturedVideosFold_Click);
       // 
@@ -425,7 +426,7 @@ namespace Kinovea.ScreenManager
       this.btnFoldCapturedVideosPanel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
       this.btnFoldCapturedVideosPanel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
       this.btnFoldCapturedVideosPanel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnFoldCapturedVideosPanel.Location = new System.Drawing.Point(642, 2);
+      this.btnFoldCapturedVideosPanel.Location = new System.Drawing.Point(842, 2);
       this.btnFoldCapturedVideosPanel.Name = "btnFoldCapturedVideosPanel";
       this.btnFoldCapturedVideosPanel.Size = new System.Drawing.Size(20, 20);
       this.btnFoldCapturedVideosPanel.TabIndex = 17;
@@ -443,7 +444,7 @@ namespace Kinovea.ScreenManager
       this.Controls.Add(this.pnlCapturedVideos);
       this.Controls.Add(this.pnlControls);
       this.Name = "CaptureScreenView";
-      this.Size = new System.Drawing.Size(665, 538);
+      this.Size = new System.Drawing.Size(865, 538);
       this.pnlControls.ResumeLayout(false);
       this.pnlControls.PerformLayout();
       this.pnlCaptureDock.ResumeLayout(false);

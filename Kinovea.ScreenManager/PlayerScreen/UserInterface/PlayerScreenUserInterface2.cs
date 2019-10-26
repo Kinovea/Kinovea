@@ -1045,7 +1045,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             string name = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
-            string size = string.Format("{0} × {1} px", m_FrameServer.Metadata.ImageSize.Width, m_FrameServer.Metadata.ImageSize.Height);
+            string size = string.Format("{0}×{1} px", m_FrameServer.Metadata.ImageSize.Width, m_FrameServer.Metadata.ImageSize.Height);
             string fps = string.Format("{0:0.00} fps", 1000 / timeMapper.UserInterval);
                 
             infobar.Visible = true;

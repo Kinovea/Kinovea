@@ -731,6 +731,8 @@ namespace Kinovea.ScreenManager
                 Disconnect();
                 Connect();
             }
+
+            UpdateTitle();
         }
 
         private void ConfigureComposite()
@@ -843,7 +845,9 @@ namespace Kinovea.ScreenManager
              
             string signal = string.Format(" {0:0.00} fps", pipelineManager.Frequency);
             string bandwidth = string.Format(" {0:0.00} MB/s", cameraGrabber.LiveDataRate);
+            bandwidth = bandwidth.PadLeft(12);
             string strLoad = string.Format(" {0:0} %", load);
+            strLoad = strLoad.PadLeft(6);
             string drops = string.Format(" {0}", pipelineManager.Drops);
             view.UpdateInfo(signal, bandwidth, strLoad, drops);
             view.UpdateLoadStatus(load);
