@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
         private CapturedFilesView capturedFilesView;
         private bool recording;
         private bool grabbing;
-        private DelayCompositeType delayCompositeType;
+        private DelayCompositeType delayCompositeType = DelayCompositeType.Basic;
         private double delaySeconds;
         private int delayFrames;
         private float refreshRate;
@@ -85,6 +85,8 @@ namespace Kinovea.ScreenManager
             btnSlomoSync.Left = sldrRefreshRate.Right + 15;
             lblSlomoSync.Top = lblRefreshRate.Top;
             lblSlomoSync.Left = btnSlomoSync.Right - 2;
+
+            ConfigureDisplayControl(delayCompositeType);
 
             this.Hotkeys = HotkeySettingsManager.LoadHotkeys("CaptureScreen");
         }

@@ -181,13 +181,7 @@ namespace Kinovea.ScreenManager
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private Stopwatch stopwatchRecording = new Stopwatch();
         
-        private OIPRollingShutterCalibration imageProcessor = new OIPRollingShutterCalibration();
-
         private Delayer delayer = new Delayer();
-        private DelayCompositer delayCompositer;
-        private DelayCompositeConfiguration delayCompositeConfiguration;
-        private DelayCompositeType delayCompositeType;
-        private Dictionary<DelayCompositeType, IDelayComposite> delayComposites = new Dictionary<DelayCompositeType, IDelayComposite>();
         private int delay; // The current image age in number of frames.
 
         private ViewportController viewportController;
@@ -235,16 +229,6 @@ namespace Kinovea.ScreenManager
             InitializeTools();            
             InitializeMetadata();
 
-            delayCompositer = new DelayCompositer(delayer);
-            delayCompositeConfiguration = PreferencesManager.CapturePreferences.DelayCompositeConfiguration;
-            delayCompositeType = delayCompositeConfiguration.CompositeType;
-            delayComposites[delayCompositeType] = GetComposite(delayCompositeConfiguration);
-            delayCompositer.SetComposite(delayComposites[delayCompositeType]);
-            view.ConfigureDisplayControl(delayCompositeConfiguration.CompositeType);
-            
-            if (delayCompositeType == DelayCompositeType.SlowMotion)
-                view.UpdateSlomoRefreshRate(((DelayCompositeSlowMotion)delayComposites[delayCompositeType]).RefreshRate);
-            
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
             
             view.SetToolbarView(drawingToolbarPresenter.View);
@@ -414,10 +398,6 @@ namespace Kinovea.ScreenManager
         }
         public void View_ConfigureComposite()
         {
-            if (!cameraLoaded || !cameraConnected)
-                return;
-            
-            ConfigureComposite();
         }
         public void View_ToggleGrabbing()
         {
@@ -436,7 +416,6 @@ namespace Kinovea.ScreenManager
         }
         public void View_ForceDelaySynchronization()
         {
-            ForceDelaySynchronization();
         }
         public void View_SnapshotAsked()
         {
@@ -508,7 +487,6 @@ namespace Kinovea.ScreenManager
             cameraGrabber = null;
 
             delayer.FreeAll();
-            delayCompositer.Free();
             UpdateDelayMaxAge();
 
             UpdateTitle();
@@ -712,9 +690,6 @@ namespace Kinovea.ScreenManager
                 nonGrabbingInteractionTimer.Start();
             }
 
-            if (imageProcessor.Active)
-                imageProcessor.Stop();
-
             prepareFailedImageDescriptor = ImageDescriptor.Invalid;
             UpdateTitle();
         }
@@ -733,35 +708,6 @@ namespace Kinovea.ScreenManager
             }
 
             UpdateTitle();
-        }
-
-        private void ConfigureComposite()
-        {
-            if (!cameraLoaded || cameraManager == null)
-                return;
-
-            FormConfigureComposite form = new FormConfigureComposite(delayCompositeConfiguration);
-            form.StartPosition = FormStartPosition.CenterScreen;
-
-            if (form.ShowDialog() == DialogResult.OK)
-            {
-                delayCompositeConfiguration = form.Configuration;
-
-                delayCompositeType = delayCompositeConfiguration.CompositeType;
-                if (!delayComposites.ContainsKey(delayCompositeType))
-                    delayComposites[delayCompositeType] = GetComposite(delayCompositeConfiguration);
-
-                if (delayCompositeType == DelayCompositeType.SlowMotion)
-                    view.UpdateSlomoRefreshRate(((DelayCompositeSlowMotion)delayComposites[delayCompositeType]).RefreshRate);
-
-                delayCompositer.ResetComposite(delayComposites[delayCompositeType]);
-                PreferencesManager.CapturePreferences.DelayCompositeConfiguration = delayCompositeConfiguration;
-                PreferencesManager.Save();
-
-                view.ConfigureDisplayControl(delayCompositeConfiguration.CompositeType);
-            }
-
-            form.Dispose();
         }
 
         private void pipelineManager_FrameSignaled(object sender, EventArgs e)
@@ -851,13 +797,6 @@ namespace Kinovea.ScreenManager
             string drops = string.Format(" {0}", pipelineManager.Drops);
             view.UpdateInfo(signal, bandwidth, strLoad, drops);
             view.UpdateLoadStatus(load);
-
-            if (delayCompositeType == DelayCompositeType.SlowMotion)
-            {
-                DelayCompositeSlowMotion dcsm = delayComposites[DelayCompositeType.SlowMotion] as DelayCompositeSlowMotion;
-                if (dcsm != null)
-                    view.UpdateSlomoCountdown(AgeToSeconds(dcsm.GetCountdown()));
-            }
         }
 
         private void ChangeAspectRatio(ImageAspectRatio aspectRatio)
@@ -947,19 +886,16 @@ namespace Kinovea.ScreenManager
 
                 delayer.Push(fresh);
 
-                if (imageProcessor.Active)
-                    imageProcessor.Update(fresh);
-
                 if (recording && recordingThumbnail == null)
                     recordingThumbnail = BitmapHelper.Copy(fresh);
 
-                Bitmap delayed = delayCompositer.Get(delay);
+                Bitmap delayed = delayer.GetWeak(delay);
                 if (delayed != null)
                     viewportController.Bitmap = delayed;
             }
             else
             {
-                Bitmap delayed = delayCompositer.Get(delay);
+                Bitmap delayed = delayer.GetWeak(delay);
                 if (delayed != null)
                     viewportController.Bitmap = delayed;
 
@@ -1122,7 +1058,7 @@ namespace Kinovea.ScreenManager
                 case CaptureRecordingMode.Delay:
                 case CaptureRecordingMode.Scheduled:
                 default:
-                    bitmap = delayCompositer.Get(delay);
+                    bitmap = delayer.GetWeak(delay);
                     break;
             }
 
@@ -1508,7 +1444,6 @@ namespace Kinovea.ScreenManager
             }
 
             delayer.AllocateBuffers(imageDescriptor, availableMemory);
-            delayCompositer.Allocate(imageDescriptor);
 
             if ((recordingMode == CaptureRecordingMode.Delay || recordingMode == CaptureRecordingMode.Scheduled) && consumerDelayer != null)
                 consumerDelayer.Activate();
@@ -1526,7 +1461,7 @@ namespace Kinovea.ScreenManager
             // Force a refresh if we are not connected to the camera to enable "pause and browse".
             if (cameraLoaded && !cameraConnected)
             {
-                Bitmap delayed = delayCompositer.Get(delay);
+                Bitmap delayed = delayer.GetWeak(delay);
                 viewportController.Bitmap = delayed;
                 viewportController.Refresh();
             }
@@ -1536,26 +1471,8 @@ namespace Kinovea.ScreenManager
         {
             rate = Math.Max(rate, 0.01f);
             view.UpdateSlomoRefreshRate(rate);
-
-            DelayCompositeSlowMotion dcsm = delayComposites[delayCompositeType] as DelayCompositeSlowMotion;
-            if (dcsm == null)
-                return;
-
-            dcsm.UpdateRefreshRate(rate);
         }
         
-        private void ForceDelaySynchronization()
-        {
-            if (delayCompositeType == DelayCompositeType.SlowMotion)
-            {
-                DelayCompositeSlowMotion dcsm = delayComposites[delayCompositeType] as DelayCompositeSlowMotion;
-                if (dcsm == null)
-                    return;
-
-                dcsm.Sync();
-            }
-        }
-
         private void UpdateDelayMaxAge()
         {
             view.UpdateDelayMaxAge(delayer.SafeCapacity - 1);
@@ -1584,19 +1501,6 @@ namespace Kinovea.ScreenManager
                     return 0;
 
                 return age / pipelineManager.Frequency;
-            }
-        }
-        
-        private IDelayComposite GetComposite(DelayCompositeConfiguration configuration)
-        {
-            switch (configuration.CompositeType)
-            {
-                case DelayCompositeType.SlowMotion:
-                    return new DelayCompositeSlowMotion();
-                case DelayCompositeType.MultiReview:
-                    return new DelayCompositeMultiReview();
-                default:
-                    return new DelayCompositeBasic();
             }
         }
         #endregion

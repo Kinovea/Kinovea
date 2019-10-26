@@ -263,27 +263,9 @@
     <Compile Include="CaptureScreen\ConsumerDelayer.cs" />
     <Compile Include="CaptureScreen\ConsumerDisplay.cs" />
     <Compile Include="CaptureScreen\ConsumerRealtime.cs" />
-    <Compile Include="CaptureScreen\Delay\DelayCompositeBasic.cs" />
-    <Compile Include="CaptureScreen\Delay\DelayCompositeFrozenMosaic.cs" />
-    <Compile Include="CaptureScreen\Delay\DelayCompositeMixed.cs" />
-    <Compile Include="CaptureScreen\Delay\DelayCompositeMultiReview.cs" />
-    <Compile Include="CaptureScreen\Delay\DelayCompositer.cs" />
-    <Compile Include="CaptureScreen\Delay\DelayCompositeSlowMotion.cs" />
-    <Compile Include="CaptureScreen\Delay\Delayer.cs" />
-    <Compile Include="CaptureScreen\Delay\DelaySubframeConstant.cs" />
-    <Compile Include="CaptureScreen\Delay\DelaySubframeVariable.cs" />
-    <Compile Include="CaptureScreen\Delay\IDelayComposite.cs" />
-    <Compile Include="CaptureScreen\Delay\IDelaySubframe.cs" />
-    <Compile Include="CaptureScreen\ImageProcessing\OIPRollingShutterCalibration.cs" />
-    <Compile Include="CaptureScreen\ImageProcessing\OnlineImageProcessor.cs" />
+    <Compile Include="CaptureScreen\Delayer.cs" />
     <Compile Include="CaptureScreen\LoadStatus.cs" />
     <Compile Include="CaptureScreen\PipelineManager.cs" />
-    <Compile Include="CaptureScreen\Delay\FormConfigureComposite.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CaptureScreen\Delay\FormConfigureComposite.Designer.cs">
-      <DependentUpon>FormConfigureComposite.cs</DependentUpon>
-    </Compile>
     <Compile Include="CaptureScreen\Views\InfobarCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -918,9 +900,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\FilenameBox.resx">
       <DependentUpon>FilenameBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CaptureScreen\Delay\FormConfigureComposite.resx">
-      <DependentUpon>FormConfigureComposite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\InfobarCapture.resx">
       <DependentUpon>InfobarCapture.cs</DependentUpon>
