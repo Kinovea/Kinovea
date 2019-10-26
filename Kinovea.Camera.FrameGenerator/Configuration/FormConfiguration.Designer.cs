@@ -54,9 +54,9 @@ namespace Kinovea.Camera.FrameGenerator
       this.tbAlias = new System.Windows.Forms.TextBox();
       this.lblSystemName = new System.Windows.Forms.Label();
       this.gbProperties = new System.Windows.Forms.GroupBox();
+      this.lblAuto = new System.Windows.Forms.Label();
       this.cmbFormat = new System.Windows.Forms.ComboBox();
       this.lblColorSpace = new System.Windows.Forms.Label();
-      this.lblAuto = new System.Windows.Forms.Label();
       this.groupBox1.SuspendLayout();
       this.gbProperties.SuspendLayout();
       this.SuspendLayout();
@@ -137,29 +137,6 @@ namespace Kinovea.Camera.FrameGenerator
       this.gbProperties.TabIndex = 89;
       this.gbProperties.TabStop = false;
       // 
-      // cmbFormat
-      // 
-      this.cmbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cmbFormat.FormattingEnabled = true;
-      this.cmbFormat.Location = new System.Drawing.Point(214, 28);
-      this.cmbFormat.Name = "cmbFormat";
-      this.cmbFormat.Size = new System.Drawing.Size(163, 21);
-      this.cmbFormat.TabIndex = 97;
-      // 
-      // lblColorSpace
-      // 
-      this.lblColorSpace.BackColor = System.Drawing.Color.Transparent;
-      this.lblColorSpace.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblColorSpace.ForeColor = System.Drawing.Color.Black;
-      this.lblColorSpace.Location = new System.Drawing.Point(21, 26);
-      this.lblColorSpace.Name = "lblColorSpace";
-      this.lblColorSpace.Size = new System.Drawing.Size(187, 23);
-      this.lblColorSpace.TabIndex = 96;
-      this.lblColorSpace.Text = "Stream format:";
-      this.lblColorSpace.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
       // lblAuto
       // 
       this.lblAuto.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -173,6 +150,30 @@ namespace Kinovea.Camera.FrameGenerator
       this.lblAuto.TabIndex = 102;
       this.lblAuto.Text = "Auto";
       this.lblAuto.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // cmbFormat
+      // 
+      this.cmbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbFormat.FormattingEnabled = true;
+      this.cmbFormat.Location = new System.Drawing.Point(214, 28);
+      this.cmbFormat.Name = "cmbFormat";
+      this.cmbFormat.Size = new System.Drawing.Size(163, 21);
+      this.cmbFormat.TabIndex = 97;
+      this.cmbFormat.SelectedIndexChanged += new System.EventHandler(this.cmbFormat_SelectedIndexChanged);
+      // 
+      // lblColorSpace
+      // 
+      this.lblColorSpace.BackColor = System.Drawing.Color.Transparent;
+      this.lblColorSpace.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblColorSpace.ForeColor = System.Drawing.Color.Black;
+      this.lblColorSpace.Location = new System.Drawing.Point(21, 26);
+      this.lblColorSpace.Name = "lblColorSpace";
+      this.lblColorSpace.Size = new System.Drawing.Size(187, 23);
+      this.lblColorSpace.TabIndex = 96;
+      this.lblColorSpace.Text = "Stream format:";
+      this.lblColorSpace.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // FormConfiguration
       // 

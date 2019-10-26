@@ -211,6 +211,9 @@ namespace Kinovea.Camera.FrameGenerator
                 info.Width = ParseInt(doc, "/FrameGenerator/Width", info.Width);
                 info.Height = ParseInt(doc, "/FrameGenerator/Height", info.Height);
                 info.Framerate = ParseInt(doc, "/FrameGenerator/Framerate", info.Framerate);
+
+                if (info.ImageFormat == ImageFormat.JPEG)
+                    info.Width -= (info.Width % 4);
             }
             catch (Exception e)
             {

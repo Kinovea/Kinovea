@@ -64,6 +64,7 @@ namespace Kinovea.Camera.FrameGenerator
         private bool iconChanged;
         private bool specificChanged;
         private SpecificInfo specific;
+        private ImageFormat selectedStreamFormat;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private Dictionary<string, AbstractCameraPropertyView> propertiesControls = new Dictionary<string, AbstractCameraPropertyView>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -101,13 +102,13 @@ namespace Kinovea.Camera.FrameGenerator
         {
             lblColorSpace.Text = "Stream format:";
             ImageFormat currentImageFormat = specific.ImageFormat;
-            //List<ImageFormat> supported = new List<ImageFormat>() { ImageFormat.Y800, ImageFormat.RGB24, ImageFormat.RGB32, ImageFormat.JPEG };
-            List<ImageFormat> supported = new List<ImageFormat>() { ImageFormat.RGB24 };
+            List<ImageFormat> supported = new List<ImageFormat>() { ImageFormat.RGB24, ImageFormat.JPEG };
             foreach (ImageFormat f in supported)
             {
                 cmbFormat.Items.Add(f);
                 if (f == currentImageFormat)
                 {
+                    selectedStreamFormat = f;
                     cmbFormat.SelectedIndex = cmbFormat.Items.Count - 1;
                 }
             }
@@ -170,6 +171,26 @@ namespace Kinovea.Camera.FrameGenerator
 
             CameraPropertyManager.Write(specific, control.Property);
             specificChanged = true;
+            FixWidth();
+        }
+
+        private void cmbFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ImageFormat selected = (ImageFormat)cmbFormat.SelectedItem;
+            if (selectedStreamFormat == selected)
+                return;
+
+            selectedStreamFormat = selected;
+            specific.ImageFormat = selected;
+            specificChanged = true;
+            FixWidth();
+        }
+
+        private void FixWidth()
+        {
+            // Align width to the previous multiple of 4 for JPEG streams.
+            if (selectedStreamFormat == ImageFormat.JPEG)
+                specific.Width -= (specific.Width % 4);
         }
     }
 }

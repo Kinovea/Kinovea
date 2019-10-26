@@ -171,6 +171,7 @@ namespace Kinovea.Video
         public static void FillFromJPEG(Bitmap bitmap, Rectangle rect, byte[] decoded, byte[] buffer, int payloadLength, int pitch)
         {
             // Convert JPEG to RGB24 buffer then to bitmap.
+            // Assumes the JPEG width is a multiple of 4.
 
             IntPtr handle = tjnet.tjInitDecompress();
 

@@ -45,7 +45,6 @@ namespace Kinovea.Camera.FrameGenerator
         private ImageDescriptor imageDescriptor;
         private Thread grabThread;
         private Generator generator;
-        private byte[] currentFrameBuffer;
         private long generatedFrames;
         private ManualResetEvent cancellationEvent = null;
         private Stopwatch stopwatch = new Stopwatch();
@@ -90,18 +89,15 @@ namespace Kinovea.Camera.FrameGenerator
         /// <summary>
         /// Helper method to create a full bitmap from the current frame buffer.
         /// Used in the context of thumbnail creation.
+        /// Returns an RGB24 Bitmap.
         /// Creates a copy of the frame buffer and is safe to use downstream.
         /// </summary>
         public Bitmap GetCurrentBitmap()
         {
             // This still runs in the grabbing thread.
-            PixelFormat pixelFormat = GetPixelFormat(imageDescriptor.Format);
-
-            Bitmap image = new Bitmap(imageDescriptor.Width, imageDescriptor.Height, pixelFormat);
-            Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
-            BitmapHelper.FillFromRGB24(image, rect, topDown, currentFrameBuffer);
-            
-            return image;
+            // In theory we should get the generator frame, and possibly convert it from JPEG into RGB24.
+            // For simplicity, since we now the source is blank, just return a blank bitmap.
+            return new Bitmap(imageDescriptor.Width, imageDescriptor.Height, PixelFormat.Format24bppRgb); ;
         }
         #endregion
 
@@ -111,12 +107,6 @@ namespace Kinovea.Camera.FrameGenerator
         {
             int bufferSize = ImageFormatHelper.ComputeBufferSize(configuration.Width, configuration.Height, configuration.ImageFormat);
             imageDescriptor = new ImageDescriptor(configuration.ImageFormat, configuration.Width, configuration.Height, topDown, bufferSize);
-        }
-
-        private PixelFormat GetPixelFormat(Video.ImageFormat imageFormat)
-        {
-            // TODO: have a helper method do the conversion from image descriptor.
-            return PixelFormat.Format24bppRgb;
         }
 
         /// <summary>
@@ -166,15 +156,18 @@ namespace Kinovea.Camera.FrameGenerator
             if (stopwatch.Elapsed.TotalMilliseconds < dueTime)
                 return;
 
-            currentFrameBuffer = generator.Generate();
+            Frame frame = generator.GetFrame();
             generatedFrames++;
 
             dueTime = (generatedFrames + 1) * frameIntervalMilliseconds;
 
-            int length = currentFrameBuffer == null ? 0 : currentFrameBuffer.Length;
+            if (FrameProduced == null)
+                return;
 
-            if (FrameProduced != null)
-                FrameProduced(this, new FrameProducedEventArgs(currentFrameBuffer, length));
+            if (frame == null)
+                FrameProduced(this, new FrameProducedEventArgs(null, 0));
+            else
+                FrameProduced(this, new FrameProducedEventArgs(frame.Buffer, frame.PayloadLength));
         }
 
         #endregion
