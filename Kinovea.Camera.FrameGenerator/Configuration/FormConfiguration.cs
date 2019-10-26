@@ -25,9 +25,14 @@ using System.Windows.Forms;
 using Kinovea.Camera;
 using Kinovea.Services;
 using Kinovea.Camera.Languages;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.FrameGenerator
 {
+    /// <summary>
+    /// Configuration dialog for the simulated camera.
+    /// Loosely modeled on the configuration dialog for the machine vision cameras modules.
+    /// </summary>
     public partial class FormConfiguration : Form
     {
         public bool AliasChanged
@@ -50,86 +55,35 @@ namespace Kinovea.Camera.FrameGenerator
             get { return specificChanged; }
         }
         
-        public Size FrameSize
+        public SpecificInfo SpecificInfo
         {
-            get 
-            { 
-                FrameSize selected = cmbFrameSize.SelectedItem as FrameSize;
-                return selected == null ? defaultFrameSize.Value : selected.Value;
-            }
-        }
-        
-        public int FrameInterval
-        {
-            get
-            {
-                Framerate framerate = (Framerate)cmbFramerate.SelectedItem;
-                return framerate == null ? defaultFrameInterval : framerate.FrameInterval;
-            }
+            get { return specific; }
         }
 
+        private CameraSummary summary;
         private bool iconChanged;
         private bool specificChanged;
-        private CameraSummary summary;
-        private bool loaded;
-        private List<FrameSize> frameSizes = new List<FrameSize>();
-        private List<Framerate> framerates = new List<Framerate>();
-        private FrameSize defaultFrameSize;
-        private int defaultFrameInterval = 20000;
+        private SpecificInfo specific;
+        private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
+        private Dictionary<string, AbstractCameraPropertyView> propertiesControls = new Dictionary<string, AbstractCameraPropertyView>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FormConfiguration(CameraSummary summary)
         {
             this.summary = summary;
-            
+            specific = summary.Specific as SpecificInfo;
+
             InitializeComponent();
-            Initialize();
-            InitializeParameters();
             
             tbAlias.Text = summary.Alias;
             lblSystemName.Text = summary.Name;
             btnIcon.BackgroundImage = summary.Icon;
 
-            PopulateCapabilities();
-            loaded = true;
+            cameraProperties = CameraPropertyManager.Read(specific);
+            PopulateStreamFormat();
+            PopulateCameraControls();
         }
 
-        private void Initialize()
-        {
-            this.Text = CameraLang.FormConfiguration_Title;
-            lblImageSize.Text = CameraLang.FormConfiguration_Properties_ImageSize;
-            lblFramerate.Text = CameraLang.FormConfiguration_Properties_Framerate;
-            btnApply.Text = CameraLang.Generic_Apply;
-            btnCancel.Text = CameraLang.Generic_Cancel;
-        }
-
-        private void InitializeParameters()
-        {
-            frameSizes.Clear();
-            frameSizes.Add(new FrameSize("QVGA (320 × 240)", new Size(320, 240)));
-            frameSizes.Add(new FrameSize("VGA (640 × 480)", new Size(640, 480)));
-            frameSizes.Add(new FrameSize("DV (720 × 480)", new Size(720, 480)));
-            frameSizes.Add(new FrameSize("SVGA (800 × 600)", new Size(800, 600)));
-            frameSizes.Add(new FrameSize("720p (1280 × 720)", new Size(1280, 720)));
-            frameSizes.Add(new FrameSize("1080p (1920 × 1080)", new Size(1920, 1080)));
-            frameSizes.Add(new FrameSize("2K (2048 × 1080)", new Size(2048, 1080)));
-            frameSizes.Add(new FrameSize("4K UHDTV (3840 × 2160)", new Size(3840, 2160)));
-            frameSizes.Add(new FrameSize("4K (4096 × 2160)", new Size(4096, 2160)));
-            //frameSizes.Add(new FrameSize("8K UHDTV (7680 × 4320)", new Size(7680, 4320)));
-            //frameSizes.Add(new FrameSize("8K (8192 × 4320)", new Size(8192, 4320)));
-            
-            defaultFrameSize = frameSizes[3];
-
-            List<double> commonFramerates = new List<double>() { 10, 15, 20, 24, 25, 29.97, 30, 50, 60, 100, 120, 200, 300, 500, 1000 };
-            
-            framerates.Clear();
-            foreach (double framerate in commonFramerates)
-            {
-                int interval = (int)Math.Round(1000000.0 / framerate);
-                framerates.Add(new Framerate(interval));
-            }
-        }
-        
         void BtnIconClick(object sender, EventArgs e)
         {
             FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5);
@@ -143,51 +97,79 @@ namespace Kinovea.Camera.FrameGenerator
             fip.Dispose();
         }
         
-        private void PopulateCapabilities()
+        private void PopulateStreamFormat()
         {
-            int selectedFrameInterval = 0;
-            Size selectedFrameSize = Size.Empty;
-
-            SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info != null)
+            lblColorSpace.Text = "Stream format:";
+            ImageFormat currentImageFormat = specific.ImageFormat;
+            //List<ImageFormat> supported = new List<ImageFormat>() { ImageFormat.Y800, ImageFormat.RGB24, ImageFormat.RGB32, ImageFormat.JPEG };
+            List<ImageFormat> supported = new List<ImageFormat>() { ImageFormat.RGB24 };
+            foreach (ImageFormat f in supported)
             {
-                selectedFrameInterval = info.FrameInterval;
-                selectedFrameSize = info.FrameSize;
-            }
-            else
-            {
-                selectedFrameInterval = defaultFrameInterval;
-                selectedFrameSize = defaultFrameSize.Value;
-            }
-
-            int sizeIndex = 0;
-            foreach (FrameSize frameSize in frameSizes)
-            {
-                cmbFrameSize.Items.Add(frameSize);
-
-                if (frameSize.Value == selectedFrameSize)
-                    cmbFrameSize.SelectedIndex = sizeIndex;
-
-                sizeIndex++;
-            }
-
-            int fpsIndex = 0;
-
-            foreach (Framerate framerate in framerates)
-            {
-                cmbFramerate.Items.Add(framerate);
-                
-                if (framerate.FrameInterval == selectedFrameInterval)
-                    cmbFramerate.SelectedIndex = fpsIndex;
-
-                fpsIndex++;
+                cmbFormat.Items.Add(f);
+                if (f == currentImageFormat)
+                {
+                    cmbFormat.SelectedIndex = cmbFormat.Items.Count - 1;
+                }
             }
         }
-        
-        private void SpecificInfo_Changed(object sender, EventArgs e)
+
+        private void PopulateCameraControls()
         {
-            if(loaded)
-                specificChanged = true;
+            int top = lblAuto.Bottom;
+
+            AddCameraProperty("width", CameraLang.FormConfiguration_Properties_ImageWidth, top);
+            AddCameraProperty("height", CameraLang.FormConfiguration_Properties_ImageHeight, top + 30);
+            AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, top + 60);
+        }
+
+        private void AddCameraProperty(string key, string text, int top)
+        {
+            if (!cameraProperties.ContainsKey(key))
+                return;
+
+            CameraProperty property = cameraProperties[key];
+
+            AbstractCameraPropertyView control = null;
+
+            switch (property.Representation)
+            {
+                case CameraPropertyRepresentation.LinearSlider:
+                    control = new CameraPropertyViewLinear(property, text, null);
+                    break;
+                case CameraPropertyRepresentation.LogarithmicSlider:
+                    control = new CameraPropertyViewLogarithmic(property, text, null);
+                    break;
+                case CameraPropertyRepresentation.Checkbox:
+                    control = new CameraPropertyViewCheckbox(property, text);
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (control == null)
+                return;
+
+            control.Tag = key;
+            control.ValueChanged += cpvCameraControl_ValueChanged;
+            control.Left = 20;
+            control.Top = top;
+            gbProperties.Controls.Add(control);
+            propertiesControls.Add(key, control);
+        }
+
+        private void cpvCameraControl_ValueChanged(object sender, EventArgs e)
+        {
+            AbstractCameraPropertyView control = sender as AbstractCameraPropertyView;
+            if (control == null)
+                return;
+
+            string key = control.Tag as string;
+            if (string.IsNullOrEmpty(key) || !cameraProperties.ContainsKey(key))
+                return;
+
+            CameraPropertyManager.Write(specific, control.Property);
+            specificChanged = true;
         }
     }
 }

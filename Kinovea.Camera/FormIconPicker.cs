@@ -44,9 +44,8 @@ namespace Kinovea.Camera
             this.columns = columns;
             
             InitializeComponent();
-            this.Text = CameraLang.FormIconPicker_Title;
-            
             InitializeButtons();
+            this.Text = CameraLang.FormIconPicker_Title;
         }
         
         private void InitializeButtons()
@@ -90,8 +89,8 @@ namespace Kinovea.Camera
             int totalRows = (icons.Count() / cols) + 1;
             int buttonTotalHeight = ((buttonSize + internalMargin) * totalRows) - internalMargin;
             
-            this.Width = externalMargin + buttonTotalWidth + externalMargin;
-            this.Height = titleBarHeight + externalMargin + buttonTotalHeight + externalMargin;
+            this.Width = externalMargin + buttonTotalWidth + externalMargin + externalMargin;
+            this.Height = titleBarHeight + externalMargin + buttonTotalHeight + externalMargin + externalMargin;
         }
 
         private void Button_Click(object sender, EventArgs e)

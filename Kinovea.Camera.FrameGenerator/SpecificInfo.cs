@@ -18,24 +18,25 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.Video;
 using System;
 using System.Drawing;
 
 namespace Kinovea.Camera.FrameGenerator
 {
     /// <summary>
-    /// Information about a camera that is specific to the FrameGenerator plugin.
+    /// Information about a camera that is specific to the FrameGenerator module.
     /// This info is opaquely transported inside the CameraSummary.
     /// </summary>
     public class SpecificInfo
     {
-        public Size FrameSize { get; set; }
-        public int FrameInterval { get; set; } 
+        public ImageFormat ImageFormat { get; set; } = ImageFormat.RGB24;
+
+        public int Width { get; set; } = 1280;
+
+        public int Height { get; set; } = 720;
+
+        public int Framerate { get; set; } = 60;
         
-        public SpecificInfo()
-        {
-            FrameSize = Size.Empty;
-            FrameInterval = 20000;
-        }
     }
 }

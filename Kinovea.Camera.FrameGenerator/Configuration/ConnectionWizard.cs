@@ -74,10 +74,7 @@ namespace Kinovea.Camera.FrameGenerator
         
         private SpecificInfo CreateSpecific()
         {
-            SpecificInfo specific = new SpecificInfo();
-            specific.FrameInterval = 20000;
-            specific.FrameSize = new Size(1920, 1080);
-            return specific;
+            return new SpecificInfo();
         }
         
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)

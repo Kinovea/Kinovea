@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraManagerFrameGenerator.cs" />
+    <Compile Include="Configuration\CameraPropertyManager.cs" />
     <Compile Include="Configuration\ConnectionWizard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -109,9 +110,7 @@
     <Compile Include="Configuration\FormConfiguration.designer.cs">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\Framerate.cs" />
     <Compile Include="FrameGrabber.cs" />
-    <Compile Include="Configuration\FrameSize.cs" />
     <Compile Include="Device\FrameGeneratorDevice.cs" />
     <Compile Include="Device\Generator.cs" />
     <Compile Include="Device\NativeMethods.cs" />

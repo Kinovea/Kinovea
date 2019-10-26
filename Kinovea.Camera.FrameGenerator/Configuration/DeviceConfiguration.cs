@@ -8,10 +8,10 @@ namespace Kinovea.Camera.FrameGenerator
 {
     public class DeviceConfiguration
     {
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public int FrameIntervalMicroseconds { get; set; }
-        public ImageFormat ImageFormat { get; set; }
+        public ImageFormat ImageFormat { get; set; } = ImageFormat.RGB24;
+        public int Width { get; set; } = 1280;
+        public int Height { get; set; } = 720;
+        public int Framerate { get; set; } = 60;
 
         public static DeviceConfiguration Default
         {
@@ -20,17 +20,21 @@ namespace Kinovea.Camera.FrameGenerator
 
         private static DeviceConfiguration defaultConfiguration;
 
-        public DeviceConfiguration(int width, int height, int frameIntervalMicroseconds, ImageFormat imageFormat)
+        public DeviceConfiguration()
         {
+        }
+
+        public DeviceConfiguration(ImageFormat imageFormat, int width, int height, int framerate)
+        {
+            this.ImageFormat = imageFormat;
             this.Width = width;
             this.Height = height;
-            this.FrameIntervalMicroseconds = frameIntervalMicroseconds;
-            this.ImageFormat = imageFormat;
+            this.Framerate = framerate;
         }
 
         static DeviceConfiguration()
         {
-            defaultConfiguration = new DeviceConfiguration(1920, 1080, 20000, ImageFormat.RGB24);
+            defaultConfiguration = new DeviceConfiguration();
         }
     }
 }

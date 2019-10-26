@@ -11,6 +11,10 @@ using System.Diagnostics;
 
 namespace Kinovea.Camera.FrameGenerator
 {
+    /// <summary>
+    /// Software-defined camera. 
+    /// Tries to match what a real camera integration code would do.
+    /// </summary>
     public class FrameGeneratorDevice
     {
         #region Events
@@ -66,7 +70,7 @@ namespace Kinovea.Camera.FrameGenerator
         {
             generator = new Generator(configuration);
             cancellationEvent = new ManualResetEvent(false);
-            frameIntervalMilliseconds = configuration.FrameIntervalMicroseconds / 1000.0;
+            frameIntervalMilliseconds = 1000.0 / configuration.Framerate;
             dueTime = 1 * frameIntervalMilliseconds;
             stopwatch.Start();
             grabThread.Start();

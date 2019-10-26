@@ -82,13 +82,13 @@ namespace Kinovea.Camera.IDS
                         // Do nothing. These properties must be changed from WriteCriticalProperties below.
                         break;
                     default:
-                        log.ErrorFormat("IDS uEye property not supported: {0}", property.Identifier);
+                        log.ErrorFormat("IDS uEye property not supported: {0}.", property.Identifier);
                         break;
                 }
             }
             catch
             {
-                log.ErrorFormat("Error while writing IDS uEye property {0}", property.Identifier);
+                log.ErrorFormat("Error while writing IDS uEye property {0}.", property.Identifier);
             }
         }
 

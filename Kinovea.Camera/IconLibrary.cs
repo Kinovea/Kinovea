@@ -88,6 +88,9 @@ namespace Kinovea.Camera
             icons.Add("counter", Properties.Icons.counter);
             icons.Add("construction", Properties.Icons.construction);
             icons.Add("na", Properties.Icons.na);
+            icons.Add("bug", Properties.Icons.bug);
+            icons.Add("dummy", Properties.Icons.dummy_happy);
+            icons.Add("robot", Properties.Icons.robot);
 
             icons.Add("logitech", Properties.Icons.logitech);
             icons.Add("microsoft", Properties.Icons.microsoft);

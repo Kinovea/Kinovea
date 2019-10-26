@@ -29,6 +29,7 @@ using System.Xml;
 
 using Kinovea.Camera;
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.FrameGenerator
 {
@@ -63,7 +64,7 @@ namespace Kinovea.Camera.FrameGenerator
 
         public CameraManagerFrameGenerator()
         {
-            defaultIcon = IconLibrary.GetIcon("dashboard");
+            defaultIcon = IconLibrary.GetIcon("robot");
         }
 
         public override bool SanityCheck()
@@ -136,12 +137,9 @@ namespace Kinovea.Camera.FrameGenerator
 
                 if (form.SpecificChanged)
                 {
-                    SpecificInfo info = new SpecificInfo();
-                    info.FrameInterval = form.FrameInterval;
-                    info.FrameSize = form.FrameSize;
+                    SpecificInfo info = form.SpecificInfo;
                     summary.UpdateSpecific(info);
                     summary.UpdateDisplayRectangle(Rectangle.Empty);
-
                     needsReconnection = true;
                 }
 
@@ -159,15 +157,9 @@ namespace Kinovea.Camera.FrameGenerator
 
             SpecificInfo info = summary.Specific as SpecificInfo;
             if (info != null)
-            {
-                Size size = info.FrameSize;
-                float fps = 1000000.0f / info.FrameInterval;
-                result = string.Format("{0} - {1}×{2} @ {3:0.##} fps.", alias, size.Width, size.Height, fps);
-            }
+                result = string.Format("{0} - {1}×{2} @ {3} fps ({4}).", alias, info.Width, info.Height, info.Framerate, info.ImageFormat);
             else
-            {
                 result = string.Format("{0}", alias);
-            }
 
             return result;
         }
@@ -211,20 +203,14 @@ namespace Kinovea.Camera.FrameGenerator
                 doc.Load(new StringReader(xml));
 
                 info = new SpecificInfo();
-
-                int frameInterval = 20000;
-                Size frameSize = Size.Empty;
-
-                XmlNode xmlFrameInterval = doc.SelectSingleNode("/FrameGenerator/FrameInterval");
-                if (xmlFrameInterval != null)
-                    frameInterval = int.Parse(xmlFrameInterval.InnerText, CultureInfo.InvariantCulture);
-
-                XmlNode xmlFrameSize = doc.SelectSingleNode("/FrameGenerator/FrameSize");
-                if (xmlFrameSize != null)
-                    frameSize = XmlHelper.ParseSize(xmlFrameSize.InnerText);
-
-                info.FrameInterval = frameInterval;
-                info.FrameSize = frameSize;
+                
+                XmlNode xmlImageFormat = doc.SelectSingleNode("/FrameGenerator/ImageFormat");
+                if (xmlImageFormat != null)
+                    info.ImageFormat = (ImageFormat)Enum.Parse(typeof(ImageFormat), xmlImageFormat.InnerText);
+                
+                info.Width = ParseInt(doc, "/FrameGenerator/Width", info.Width);
+                info.Height = ParseInt(doc, "/FrameGenerator/Height", info.Height);
+                info.Framerate = ParseInt(doc, "/FrameGenerator/Framerate", info.Framerate);
             }
             catch (Exception e)
             {
@@ -232,6 +218,15 @@ namespace Kinovea.Camera.FrameGenerator
             }
 
             return info;
+        }
+
+        private int ParseInt(XmlDocument doc, string path, int defaultValue)
+        {
+            XmlNode xmlNode = doc.SelectSingleNode(path);
+            if (xmlNode != null)
+                return int.Parse(xmlNode.InnerText);
+            else
+                return defaultValue;
         }
 
         private string SpecificInfoSerialize(CameraSummary summary)
@@ -243,19 +238,23 @@ namespace Kinovea.Camera.FrameGenerator
             XmlDocument doc = new XmlDocument();
             XmlElement xmlRoot = doc.CreateElement("FrameGenerator");
 
-            XmlElement xmlFrameInterval = doc.CreateElement("FrameInterval");
-            string frameInterval = string.Format("{0}", info.FrameInterval);
-            xmlFrameInterval.InnerText = frameInterval;
-            xmlRoot.AppendChild(xmlFrameInterval);
+            XmlElement xmlImageFormat = doc.CreateElement("ImageFormat");
+            xmlImageFormat.InnerText = info.ImageFormat.ToString();
+            xmlRoot.AppendChild(xmlImageFormat);
 
-            XmlElement xmlFrameSize = doc.CreateElement("FrameSize");
-            string frameSize = string.Format("{0};{1}", info.FrameSize.Width, info.FrameSize.Height);
-            xmlFrameSize.InnerText = frameSize;
-            xmlRoot.AppendChild(xmlFrameSize);
+            WriteInt(doc, xmlRoot, "Width", info.Width);
+            WriteInt(doc, xmlRoot, "Height", info.Height);
+            WriteInt(doc, xmlRoot, "Framerate", info.Framerate);
 
             doc.AppendChild(xmlRoot);
-
             return doc.OuterXml;
+        }
+
+        private void WriteInt(XmlDocument doc, XmlElement parent, string tag, int value)
+        {
+            XmlElement xmlNode = doc.CreateElement(tag);
+            xmlNode.InnerText = value.ToString();
+            parent.AppendChild(xmlNode);
         }
     }
 }

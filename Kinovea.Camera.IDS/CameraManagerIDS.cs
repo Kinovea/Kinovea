@@ -288,45 +288,7 @@ namespace Kinovea.Camera.IDS
             {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(new StringReader(xml));
-
                 info = new SpecificInfo();
-
-                /*string streamFormat = "";
-
-                XmlNode xmlStreamFormat = doc.SelectSingleNode("/IDS/StreamFormat");
-                if (xmlStreamFormat != null)
-                    streamFormat = xmlStreamFormat.InnerText;
-
-                Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
-
-                XmlNodeList props = doc.SelectNodes("/IDS/CameraProperties/CameraProperty");
-                foreach (XmlNode node in props)
-                {
-                    XmlAttribute keyAttribute = node.Attributes["key"];
-                    if (keyAttribute == null)
-                        continue;
-
-                    string key = keyAttribute.Value;
-                    CameraProperty property = new CameraProperty();
-
-                    string xpath = string.Format("/IDS/CameraProperties/CameraProperty[@key='{0}']", key);
-                    XmlNode xmlPropertyValue = doc.SelectSingleNode(xpath + "/Value");
-                    if (xmlPropertyValue != null)
-                        property.CurrentValue = xmlPropertyValue.InnerText;
-                    else
-                        property.Supported = false;
-
-                    XmlNode xmlPropertyAuto = doc.SelectSingleNode(xpath + "/Auto");
-                    if (xmlPropertyAuto != null)
-                        property.Automatic = XmlHelper.ParseBoolean(xmlPropertyAuto.InnerText);
-                    else
-                        property.Supported = false;
-
-                    cameraProperties.Add(key, property);
-                }
-
-                info.StreamFormat = streamFormat;
-                info.CameraProperties = cameraProperties;*/
             }
             catch(Exception e)
             {
@@ -344,32 +306,6 @@ namespace Kinovea.Camera.IDS
                 
             XmlDocument doc = new XmlDocument();
             XmlElement xmlRoot = doc.CreateElement("IDS");
-
-            /*XmlElement xmlStreamFormat = doc.CreateElement("StreamFormat");
-            xmlStreamFormat.InnerText = info.StreamFormat;
-            xmlRoot.AppendChild(xmlStreamFormat);
-
-            XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
-
-            foreach (KeyValuePair<string, CameraProperty> pair in info.CameraProperties)
-            {
-                XmlElement xmlCameraProperty = doc.CreateElement("CameraProperty");
-                XmlAttribute attr = doc.CreateAttribute("key");
-                attr.Value = pair.Key;
-                xmlCameraProperty.Attributes.Append(attr);
-
-                XmlElement xmlCameraPropertyValue = doc.CreateElement("Value");
-                xmlCameraPropertyValue.InnerText = pair.Value.CurrentValue;
-                xmlCameraProperty.AppendChild(xmlCameraPropertyValue);
-
-                XmlElement xmlCameraPropertyAuto = doc.CreateElement("Auto");
-                xmlCameraPropertyAuto.InnerText = pair.Value.Automatic.ToString().ToLower();
-                xmlCameraProperty.AppendChild(xmlCameraPropertyAuto);
-
-                xmlCameraProperties.AppendChild(xmlCameraProperty);
-            }
-
-            xmlRoot.AppendChild(xmlCameraProperties);*/
 
             doc.AppendChild(xmlRoot);
             

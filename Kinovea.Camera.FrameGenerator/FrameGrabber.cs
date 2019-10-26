@@ -42,7 +42,7 @@ namespace Kinovea.Camera.FrameGenerator
         }
         public float Framerate
         {
-            get { return 0; }
+            get { return resultingFramerate; }
         }
         public double LiveDataRate
         {
@@ -59,6 +59,7 @@ namespace Kinovea.Camera.FrameGenerator
         private bool grabbing;
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
+        private float resultingFramerate = 0;
         private const double megabyte = 1024 * 1024;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -85,6 +86,8 @@ namespace Kinovea.Camera.FrameGenerator
             // Read final values from device.
             int width = device.Configuration.Width;
             int height = device.Configuration.Height;
+            resultingFramerate = device.Configuration.Framerate;
+
             ImageFormat format = device.Configuration.ImageFormat;
             int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
             bool topDown = true;
@@ -148,8 +151,7 @@ namespace Kinovea.Camera.FrameGenerator
             if (specific == null)
                 return;
 
-            DeviceConfiguration configuration = new DeviceConfiguration(specific.FrameSize.Width, specific.FrameSize.Height, specific.FrameInterval, ImageFormat.RGB24);
-            device.Configuration = configuration;
+            device.Configuration = new DeviceConfiguration(specific.ImageFormat, specific.Width, specific.Height, specific.Framerate);
         }
 
         private void ComputeDataRate(int bytes)
