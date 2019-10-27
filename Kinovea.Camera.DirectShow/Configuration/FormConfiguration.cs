@@ -169,7 +169,21 @@ namespace Kinovea.Camera.DirectShow
                 selectedMediaTypeIndex = info.MediaTypeIndex;
                 selectedFramerate = info.SelectedFramerate;
             }
+            else
+            {
+                // First configuration of the device.
+                // We should be using the default parameters.
+                VideoCapabilities[] caps = device.VideoCapabilities;
+                if (caps.Length == 0)
+                {
+                    log.ErrorFormat("Cannot get any media type for the device.");
+                    return;
+                }
 
+                selectedMediaTypeIndex = caps[0].Index;
+                selectedFramerate = caps[selectedMediaTypeIndex].AverageFrameRate;
+            }
+        
             mediaTypes = MediaTypeImporter.Import(device);
             if (mediaTypes == null || mediaTypes.Count == 0)
             {
@@ -180,8 +194,8 @@ namespace Kinovea.Camera.DirectShow
             // Ensure indexing by selected media type is valid.
             if (!mediaTypes.ContainsKey(selectedMediaTypeIndex))
             {
-                selectedMediaTypeIndex = mediaTypes[0].MediaTypeIndex;
                 log.ErrorFormat("Mediatype index not found, using first media type.");
+                selectedMediaTypeIndex = mediaTypes[0].MediaTypeIndex;
             }
 
             organizer.Organize(mediaTypes, MediaTypeImporter.GetSupportedFramerates(device));

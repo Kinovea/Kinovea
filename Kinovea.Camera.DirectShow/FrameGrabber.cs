@@ -50,12 +50,7 @@ namespace Kinovea.Camera.DirectShow
         {
             get 
             {
-                // Note: this will most likely return the highest option on the combo.
-                // If the user selected a lower option the resulting video will be too fast.
-                if (device.VideoResolution != null)
-                    return device.VideoResolution.AverageFrameRate;
-                else
-                    return 30F;
+                return resultingFramerate == 0 ? 30 : resultingFramerate;
             }
         }
         public double LiveDataRate
@@ -72,6 +67,7 @@ namespace Kinovea.Camera.DirectShow
         private string moniker;
         private VideoCaptureDevice device;
         private bool grabbing;
+        private float resultingFramerate = 0;
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
         private const double megabyte = 1024 * 1024;
@@ -120,6 +116,7 @@ namespace Kinovea.Camera.DirectShow
 
             int width = cap.FrameSize.Width;
             int height = cap.FrameSize.Height;
+            resultingFramerate = cap.AverageFrameRate;
 
             ImageFormat format = ImageFormat.RGB24;
 
