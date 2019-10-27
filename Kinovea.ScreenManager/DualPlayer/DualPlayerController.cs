@@ -158,7 +158,7 @@ namespace Kinovea.ScreenManager
                 dynamicSynching = true;
 
                 // Immediately force synchronization.
-                AlignPlayers();
+                AlignPlayers(true);
                 EnsureBothPlaying();
             }
         }
@@ -238,8 +238,8 @@ namespace Kinovea.ScreenManager
                         long divergence = Math.Abs(currentTime - otherTime);
                         if (divergence > desynchronizationThreshold)
                         {
-                            log.DebugFormat("Synchronization divergence. Force time alignment.");
-                            AlignPlayers();
+                            log.DebugFormat("Synchronization divergence. Times: {0} vs {1}.", currentTime, otherTime);
+                            AlignPlayers(true);
                         }
                     }
 
@@ -267,7 +267,7 @@ namespace Kinovea.ScreenManager
         {
             if (synching)
             {
-                AlignPlayers();
+                AlignPlayers(false);
 
                 dynamicSynching = view.Playing;
                 if (dynamicSynching)
@@ -613,11 +613,17 @@ namespace Kinovea.ScreenManager
         /// Used if players may have moved independently from the common tracker.
         /// Should not be used while playback is active.
         /// </summary>
-        private void AlignPlayers()
+        private void AlignPlayers(bool max)
         {
             long leftTime = commonTimeline.GetCommonTime(players[0], players[0].LocalTime);
             long rightTime = commonTimeline.GetCommonTime(players[1], players[1].LocalTime);
-            currentTime = Math.Min(leftTime, rightTime);
+
+            if (max)
+                currentTime = Math.Max(leftTime, rightTime);
+            else
+                currentTime = Math.Min(leftTime, rightTime);
+
+            log.DebugFormat("Players aligned to {0}.", currentTime);
             GotoTime(currentTime, true);
         }
 
