@@ -127,22 +127,6 @@ namespace Kinovea.ScreenManager
             players[0].Synched = true;
             players[1].Synched = true;
 
-            // Inject launch settings sync point into actual screens.
-            // We can't do this earlier because the sync points are reset to 0 during initialization.
-            int recovered = 0;
-            foreach (ScreenDescriptionPlayback description in LaunchSettingsManager.ScreenDescriptions)
-            {
-                PlayerScreen player = players.FirstOrDefault(p => p.Id == description.Id);
-                if (player != null)
-                {
-                    player.LocalTimeOriginPhysical = description.LocalSyncTime;
-                    recovered++;
-                }
-            }
-
-            if (recovered != 2)
-                return;
-
             InitializeSync();
         }
         #endregion
