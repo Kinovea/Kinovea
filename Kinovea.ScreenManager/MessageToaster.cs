@@ -80,7 +80,6 @@ namespace Kinovea.ScreenManager
         }
         public void Show(string message)
         {
-            log.Debug(String.Format("Toasting message: {0}", message));
             this.message = message;
             enabled = true;
             StartStopTimer();

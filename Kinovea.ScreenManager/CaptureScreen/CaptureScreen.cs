@@ -973,17 +973,6 @@ namespace Kinovea.ScreenManager
         
         }
 
-        private void ToggleImageProcessing()
-        {
-            /*Bitmap delayed = delayer.Get(delay);
-
-            // Test
-            if (metadata.TestGridVisible)
-                imageProcessor.Start(delayed.Width, delayed.Height, delayed.PixelFormat);
-            else
-                imageProcessor.Stop();*/
-        }
-
         private double GetMonitorFramerate()
         {
             // Based on https://github.com/rickbrew/RefreshRateWpf/blob/master/RefreshRateWpfApp/MainWindow.xaml.cs

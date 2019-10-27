@@ -63,7 +63,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             timer.Start();
-            log.DebugFormat("Autosaver started.");
         }
 
         public void Stop()
@@ -72,7 +71,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             timer.Stop();
-            log.DebugFormat("Autosaver stopped");
         }
 
         public void Clear()
