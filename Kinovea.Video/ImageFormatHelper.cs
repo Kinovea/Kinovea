@@ -9,7 +9,7 @@ namespace Kinovea.Video
     {
         /// <summary>
         /// Returns the number of bytes taken by an image depending on its size and format.
-        /// For color images, buffer size is always the full RGB24 size, even for compressed formats.
+        /// For color images, buffer size is always the full RGB size, even for compressed formats.
         /// </summary>
         public static int ComputeBufferSize(int width, int height, ImageFormat format)
         {

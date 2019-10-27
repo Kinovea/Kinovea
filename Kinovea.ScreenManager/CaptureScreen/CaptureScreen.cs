@@ -880,30 +880,22 @@ namespace Kinovea.ScreenManager
             if (recordingMode == CaptureRecordingMode.Camera)
             {
                 consumerDisplay.ConsumeOne();
-                Bitmap fresh = consumerDisplay.Bitmap;
-                if (fresh == null)
+                Frame freshFrame = consumerDisplay.Frame;
+                if (freshFrame == null)
                     return;
 
-                delayer.Push(fresh);
-
-                if (recording && recordingThumbnail == null)
-                    recordingThumbnail = BitmapHelper.Copy(fresh);
-
-                Bitmap delayed = delayer.GetWeak(delay);
-                if (delayed != null)
-                    viewportController.Bitmap = delayed;
+                delayer.Push(freshFrame);
             }
-            else
+            
+            Bitmap delayed = delayer.GetWeak(delay);
+            if (delayed != null)
             {
-                Bitmap delayed = delayer.GetWeak(delay);
-                if (delayed != null)
-                    viewportController.Bitmap = delayed;
-
-                if (recording && recordingThumbnail == null && delayed != null)
-                    recordingThumbnail = BitmapHelper.Copy(delayed);
+                viewportController.ForgetBitmap();
+                viewportController.Bitmap = delayed;
             }
 
-            // TODO: if recording mode scheduled, find out if we should freeze and save.
+            if (recording && recordingThumbnail == null && delayed != null)
+                recordingThumbnail = BitmapHelper.Copy(delayed);
 
             if (recording)
             {
@@ -1049,19 +1041,7 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded)
                 return;
 
-            Bitmap bitmap;
-            switch (recordingMode)
-            {
-                case CaptureRecordingMode.Camera:
-                    bitmap = consumerDisplay.Bitmap;
-                    break;
-                case CaptureRecordingMode.Delay:
-                case CaptureRecordingMode.Scheduled:
-                default:
-                    bitmap = delayer.GetWeak(delay);
-                    break;
-            }
-
+            Bitmap bitmap = delayer.GetWeak(delay);
             if (bitmap == null)
                 return;
 
@@ -1085,25 +1065,17 @@ namespace Kinovea.ScreenManager
 
             string path = Filenamer.GetFilePath(root, subdir, filenameWithoutExtension, extension, context);
             
-            if (!DirectoryExistsCheck(path))
+            if (!DirectoryExistsCheck(path) || !FilePathSanityCheck(path) || !OverwriteCheck(path))
+            {
+                bitmap.Dispose();
                 return;
+            }
 
-            if(!FilePathSanityCheck(path))
-                return;
-                
-            if(!OverwriteCheck(path))
-                return;
-
-            //Actual save.
-            Bitmap outputImage = BitmapHelper.Copy(bitmap);
-            if(outputImage == null)
-                return;
-            
-            ImageHelper.Save(path, outputImage);
+            ImageHelper.Save(path, bitmap);
             view.Toast(ScreenManagerLang.Toast_ImageSaved, 750);
 
             // After save routines.
-            AddCapturedFile(path, outputImage, false);
+            AddCapturedFile(path, bitmap, false);
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
 
             if (index == 0)
@@ -1116,6 +1088,8 @@ namespace Kinovea.ScreenManager
             // Compute next name for user feedback.
             string next = Filenamer.ComputeNextFilename(filenameWithoutExtension);
             view.UpdateNextImageFilename(next);
+
+            bitmap.Dispose();
         }
         
         private Dictionary<PatternContext, string> BuildCaptureContext()

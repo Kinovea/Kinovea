@@ -18,7 +18,6 @@ namespace Kinovea.Services
         /// <summary>
         /// In this mode the camera feed goes through the delay buffer before being pulled for recording.
         /// Encoding and storage is done on the fly and has to match camera framerate.
-        /// Incoming frames are converted to RGB24 for storage in the delay buffer.
         /// </summary>
         Delay, 
 

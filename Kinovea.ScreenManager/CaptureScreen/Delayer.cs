@@ -14,7 +14,6 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Circular buffer storing delayed frames.
-    /// Images are stored as full RGB24 bitmaps.
     /// This buffer uses the infinite array abstraction.
     /// </summary>
     public class Delayer
@@ -27,7 +26,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private List<Bitmap> images = new List<Bitmap>();
+        private List<Frame> frames = new List<Frame>();
         private Rectangle rect;
         private int fullCapacity;               // Total number of frames kept.
         private int minCapacity = 12;
@@ -36,6 +35,8 @@ namespace Kinovea.ScreenManager
         private bool allocated;
         private long availableMemory;
         private ImageDescriptor imageDescriptor;
+        int pitch;
+        byte[] tempJpeg;
         private Stopwatch stopwatch = new Stopwatch();
         private object lockerFrame = new object();
         private object lockerPosition = new object();
@@ -68,16 +69,12 @@ namespace Kinovea.ScreenManager
                 minCapacity = 12;
                 targetCapacity = Math.Max(targetCapacity, minCapacity);
             }
-
-            int width = imageDescriptor.Width;
-            int height = imageDescriptor.Height;
-            PixelFormat pixelFormat = PixelFormat.Format24bppRgb;
-
+            
             bool compatible = ImageDescriptor.Compatible(this.imageDescriptor, imageDescriptor);
             if (compatible && targetCapacity <= fullCapacity)
             {
                 FreeSome(targetCapacity);
-                this.fullCapacity = images.Count;
+                this.fullCapacity = frames.Count;
                 this.availableMemory = availableMemory;
                 return true;
             }
@@ -86,15 +83,17 @@ namespace Kinovea.ScreenManager
                 FreeAll();
             
             stopwatch.Restart();
-            images.Capacity = targetCapacity;
+            frames.Capacity = targetCapacity;
             log.DebugFormat("Allocating {0} frames.", targetCapacity - fullCapacity);
+
+            int bufferSize = ImageFormatHelper.ComputeBufferSize(imageDescriptor.Width, imageDescriptor.Height, imageDescriptor.Format);
 
             try
             {
                 for (int i = fullCapacity; i < targetCapacity; i++)
                 {
-                    Bitmap slot = new Bitmap(width, height, pixelFormat);
-                    images.Add(slot);
+                    Frame slot = new Frame(bufferSize);
+                    frames.Add(slot);
                 }
             }
             catch (Exception e)
@@ -103,12 +102,15 @@ namespace Kinovea.ScreenManager
                 log.Error(e);
             }
 
-            if (images.Count > 0)
+            if (frames.Count > 0)
             {
-                this.rect = new Rectangle(0, 0, width, height);
+                // The following variables are used during frame -> bitmap conversion.
+                this.rect = new Rectangle(0, 0, imageDescriptor.Width, imageDescriptor.Height);
+                this.pitch = imageDescriptor.Width * 3;
+                this.tempJpeg = new byte[bufferSize];
 
                 this.allocated = true;
-                this.fullCapacity = images.Count;
+                this.fullCapacity = frames.Count;
                 this.availableMemory = availableMemory;
                 this.imageDescriptor = imageDescriptor;
 
@@ -130,9 +132,9 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Push a single frame to the buffer.
-        /// Copies the bitmap into a preallocated slot.
+        /// Copies the content into a pre-allocated slot.
         /// </summary>
-        public bool Push(Bitmap src)
+        public bool Push(Frame src)
         {
             //-----------------------------------------
             // Runs in UI thread in mode Camera.
@@ -147,16 +149,16 @@ namespace Kinovea.ScreenManager
 
             try
             {
-                BitmapHelper.Copy(src, images[index], rect);
+                frames[index].Import(src);
                 pushed = true;
             }
             catch
             {
                 log.ErrorFormat("Failed to push frame to delay buffer.");
             }
-            
+
             // Lock on write just to avoid a torn read in Get().
-            lock(lockerPosition)
+            lock (lockerPosition)
                 currentPosition = nextPosition;
 
             return pushed;
@@ -165,13 +167,13 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Get the frame from `age` frames ago, wait for it if necessary, copy it into the passed buffer.
         /// </summary>
-        public bool GetStrong(int age, byte[] buffer)
+        public bool GetStrong(int age, Frame dst)
         {
             //-----------------------------------------------
             // Runs in the consumer thread, during recording.
             //-----------------------------------------------
-            Bitmap image = Get(age);
-            if (image == null)
+            Frame frame = Get(age);
+            if (frame == null)
                 return false;
 
             // The UI thread and the recording thread can ask the same image at the same time.
@@ -179,37 +181,61 @@ namespace Kinovea.ScreenManager
             // taken the lock on the image, we wait for it.
             lock (lockerFrame)
             {
-                BitmapHelper.CopyBitmapToBuffer(image, buffer);
+                dst.Import(frame);
             }
 
             return true;
         }
 
         /// <summary>
-        /// Get the frame from `age` frames ago, do not wait for it if it's not available, returns a copy or null. 
+        /// Get the frame from `age` frames ago as an RGB24 Bitmap. Do not wait for it and returns null if it's not available. 
         /// </summary>
         public Bitmap GetWeak(int age)
         {
             //----------------------------------------------------
             // Runs in the UI thread, to get the image to display.
             //----------------------------------------------------
-            Bitmap image = Get(age);
-            if (image == null)
-                return null;
 
             Bitmap copy = null;
 
             // The UI thread and the recording thread can ask the same image at the same time.
-            // Here we yield priority to the recording, so if the lock is taken, we return immediately.
+            // We yield priority to the recording, so if the lock is taken, we return immediately.
             if (Monitor.TryEnter(lockerFrame, 0))
             {
                 try
                 {
-                    copy = BitmapHelper.Copy(image);
+                    Frame frame = Get(age);
+                    if (frame == null)
+                        return null;
+
+                    // Returns a newly allocated RGB24 bitmap.
+                    // TODO: maybe get a pre-allocated bitmap from caller.
+                    copy = new Bitmap(imageDescriptor.Width, imageDescriptor.Height, PixelFormat.Format24bppRgb);
+
+                    switch (imageDescriptor.Format)
+                    {
+                        case Video.ImageFormat.RGB24:
+                            BitmapHelper.FillFromRGB24(copy, rect, imageDescriptor.TopDown, frame.Buffer);
+                            break;
+                        case Video.ImageFormat.RGB32:
+                            BitmapHelper.FillFromRGB32(copy, rect, imageDescriptor.TopDown, frame.Buffer);
+                            break;
+                        case Video.ImageFormat.Y800:
+                            BitmapHelper.FillFromY800(copy, rect, imageDescriptor.TopDown, frame.Buffer);
+                            break;
+                        case Video.ImageFormat.JPEG:
+                            BitmapHelper.FillFromJPEG(copy, rect, tempJpeg, frame.Buffer, frame.PayloadLength, pitch);
+                            break;
+                    }
+                }
+                catch
+                {
+                    log.Error("Error while copying frame into bitmap for display.");
                 }
                 finally
                 {
                     Monitor.Exit(lockerFrame);
+                    
                 }
             }
 
@@ -219,7 +245,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Retrieve a frame from "age" frames ago. Returns the original image or null.
         /// </summary>
-        private Bitmap Get(int age)
+        private Frame Get(int age)
         {
             //----------------------------------------------------------
             // Runs in UI thread in mode Camera for display (through compositor).
@@ -227,7 +253,7 @@ namespace Kinovea.ScreenManager
             // Runs in consumer thread in mode Delayed for recording.
             //----------------------------------------------------------
 
-            if (!allocated || images.Count == 0)
+            if (!allocated || frames.Count == 0)
                 return null;
 
             int newestAvailablePosition = 0;
@@ -257,7 +283,7 @@ namespace Kinovea.ScreenManager
 
             // We return the actual image, not a copy. The caller is responsible for doing its own copy as fast as possible.
             // If not fast enough, the writer could catch up the reserve capacity and start writing this slot.
-            return images[finalPosition % fullCapacity];
+            return frames[finalPosition % fullCapacity];
         }
         
         /// <summary>
@@ -272,14 +298,12 @@ namespace Kinovea.ScreenManager
 
             log.DebugFormat("Freeing {0} frames.", fullCapacity);
 
-            foreach (Bitmap image in images)
-                image.Dispose();
-
-            images.Clear();
+            frames.Clear();
+            GC.Collect(2);
 
             ResetData();
 
-            log.DebugFormat("Freed delay buffer: {0} ms. Total: {1} frames.", stopwatch.ElapsedMilliseconds, images.Count);
+            log.DebugFormat("Freed delay buffer: {0} ms. Total: {1} frames.", stopwatch.ElapsedMilliseconds, frames.Count);
         }
         
         private void ResetData()
@@ -298,13 +322,14 @@ namespace Kinovea.ScreenManager
 
             log.DebugFormat("Freeing {0} frames.", fullCapacity - targetCapacity);
 
-            for (int i = images.Count - 1; i >= targetCapacity; i--)
+            for (int i = frames.Count - 1; i >= targetCapacity; i--)
             {
-                images[i].Dispose();
-                images.RemoveAt(i);
+                frames.RemoveAt(i);
             }
 
-            log.DebugFormat("Freed delay buffer: {0} ms. Total: {1} frames.", stopwatch.ElapsedMilliseconds, images.Count);
+            GC.Collect(2);
+
+            log.DebugFormat("Freed delay buffer: {0} ms. Total: {1} frames.", stopwatch.ElapsedMilliseconds, frames.Count);
         }
         #endregion
 

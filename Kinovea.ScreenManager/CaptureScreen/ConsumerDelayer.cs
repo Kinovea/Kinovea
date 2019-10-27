@@ -14,8 +14,8 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// ConsumerDelayer. 
-    /// Push frames coming from the camera into the delay buffer. Pulls from the delay buffer and saves to file.
-    /// Convert all frames to RGB24 to be pushed into the delay buffer.
+    /// Push frames coming from the camera into the delay buffer. 
+    /// Pulls from the delay buffer and saves to file.
     /// </summary>
     public class ConsumerDelayer : AbstractConsumer
     {
@@ -31,13 +31,6 @@ namespace Kinovea.ScreenManager
 
         public long Ellapsed { get; private set; }
 
-        private ImageDescriptor inputImageDescriptor;
-        private int width;
-        private int height;
-        private int pitch;
-        private Rectangle rect;
-        private Bitmap bitmap;
-        private byte[] decoded;
         private bool allocated;
         private Delayer delayer;
         private int age;
@@ -62,17 +55,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void SetImageDescriptor(ImageDescriptor imageDescriptor)
         {
-            // Allocate a long-lived bitmap that we will use to receive incoming samples.
-            // And a long-lived frame we will use to collect delayed frames and send them to the writer.
-            if (bitmap != null)
-            {
-                bitmap.Dispose();
-                bitmap = null;
-            }
-
-            if (decoded != null)
-                decoded = null;
-
+            // Allocate a long-lived frame we will use to collect delayed frames and send them to the writer.
             if (delayedFrame != null)
             {
                 delayedFrame = null;
@@ -84,18 +67,8 @@ namespace Kinovea.ScreenManager
 
             try
             {
-                // Prepare the long-lived bitmap.
-                this.inputImageDescriptor = imageDescriptor;
-                width = imageDescriptor.Width;
-                height = imageDescriptor.Height;
-                rect = new Rectangle(0, 0, width, height);
-                pitch = width * 3;
-
-                decoded = new byte[pitch * height];
-                bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-
                 // Prepare the long-lived delayed frame.
-                SetDelayerImageDescriptor(imageDescriptor);
+                delayerImageDescriptor = imageDescriptor;
                 delayedFrame = new Frame(delayerImageDescriptor.BufferSize);
                 
                 allocated = true;
@@ -187,27 +160,11 @@ namespace Kinovea.ScreenManager
 
             long then = stopwatch.ElapsedMilliseconds;
 
-            switch (inputImageDescriptor.Format)
-            {
-                case Video.ImageFormat.RGB24:
-                    BitmapHelper.FillFromRGB24(bitmap, rect, inputImageDescriptor.TopDown, entry.Buffer);
-                    break;
-                case Video.ImageFormat.RGB32:
-                    BitmapHelper.FillFromRGB32(bitmap, rect, inputImageDescriptor.TopDown, entry.Buffer);
-                    break;
-                case Video.ImageFormat.Y800:
-                    BitmapHelper.FillFromY800(bitmap, rect, inputImageDescriptor.TopDown, entry.Buffer);
-                    break;
-                case Video.ImageFormat.JPEG:
-                    BitmapHelper.FillFromJPEG(bitmap, rect, decoded, entry.Buffer, entry.PayloadLength, pitch);
-                    break;
-            }
-
             // We don't move back this call to the UI thread.
             // During recording we extract frames from the delayer on that very same thread, 
             // and for the display it's not critical that the images be broken. (less critical than switching context each frame).
             // As this mode is tailored for delay scenario, in all likelihood the display is not going to be reading the frame we are writing to.
-            bool pushed = delayer.Push(bitmap);
+            bool pushed = delayer.Push(entry);
             if (!pushed)
             {
                 // Very critical error. Most likely cross thread access to the same frame.
@@ -226,26 +183,12 @@ namespace Kinovea.ScreenManager
                 // Extract a bitmap from delayer at right delay and convert it into a frame for the writer.
                 // Note that we do not go through the delay compositer. We only support "normal" delay here.
                 // Compositers (e.g: quadrants with different ages) are only supported in display.
-                bool copied = delayer.GetStrong(age, delayedFrame.Buffer);
+                bool copied = delayer.GetStrong(age, delayedFrame);
                 if (copied)
-                {
-                    delayedFrame.PayloadLength = delayerImageDescriptor.BufferSize;
                     writer.SaveFrame(delayerImageDescriptor.Format, delayedFrame.Buffer, delayedFrame.PayloadLength, delayerImageDescriptor.TopDown);
-                }
             }
 
             Ellapsed = stopwatch.ElapsedMilliseconds - then;
-        }
-
-        private void SetDelayerImageDescriptor(ImageDescriptor imageDescriptor)
-        {
-            // Describes the format of frames we send to the writer.
-            // The writer is then responsible for compressing or converting depending on "record raw" option.
-            // We'll pull frames from the delay buffer which is always storing RGB24 top-down.
-            Video.ImageFormat format = Video.ImageFormat.RGB24;
-            bool topDown = true;
-            int pfBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
-            delayerImageDescriptor = new ImageDescriptor(format, width, height, topDown, pfBufferSize);
         }
 
         private void DoStopRecord()

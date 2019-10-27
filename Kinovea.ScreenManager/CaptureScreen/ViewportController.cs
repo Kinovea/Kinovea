@@ -123,6 +123,10 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void ForgetBitmap()
         {
+            if (bitmap == null)
+                return;
+
+            bitmap.Dispose();
             bitmap = null;
         }
 

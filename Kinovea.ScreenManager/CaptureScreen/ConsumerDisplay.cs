@@ -16,7 +16,6 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Pipeline consumer wrapping the main UI thread.
-    /// Convert the sample buffer to RGB24, then to Bitmap for display purposes.
     /// </summary>
     public class ConsumerDisplay : IFrameConsumer
     {
@@ -39,23 +38,16 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        public Bitmap Bitmap
+        public Frame Frame
         {
-            get { return bitmap; }
+            get { return frame; }
         }
 
         public long Ellapsed { get; private set; }
 
-        // Frame memory storage
         private RingBuffer buffer;
-        private int frameLength;
         private ImageDescriptor imageDescriptor;
-        private int width;
-        private int height;
-        private int pitch;
-        private Rectangle rect;
-        private Bitmap bitmap;
-        private byte[] decoded;
+        private Frame frame;
         private bool allocated;
         private Stopwatch stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -73,13 +65,11 @@ namespace Kinovea.ScreenManager
         public void SetRingBuffer(RingBuffer buffer)
         {
             this.buffer = buffer;
-            this.frameLength = buffer.FrameLength;
         }
 
         public void ClearRingBuffer()
         {
             buffer = null;
-            frameLength = 0;
         }
 
         public void Activate()
@@ -94,29 +84,14 @@ namespace Kinovea.ScreenManager
 
         public void SetImageDescriptor(ImageDescriptor imageDescriptor)
         {
-            if (bitmap != null)
-            {
-                bitmap.Dispose();
-                bitmap = null;
-            }
-            
-            if (decoded != null)
-                decoded = null;
-
-            GC.Collect();
-
             allocated = false;
 
             try
             {
                 this.imageDescriptor = imageDescriptor;
-                width = imageDescriptor.Width;
-                height = imageDescriptor.Height;
-                rect = new Rectangle(0, 0, width, height);
-                pitch = width * 3;
-
-                decoded = new byte[pitch * height];
-                bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(imageDescriptor.Width, imageDescriptor.Height, imageDescriptor.Format);
+                frame = new Frame(bufferSize);
+                GC.Collect();
 
                 allocated = true;
             }
@@ -147,31 +122,10 @@ namespace Kinovea.ScreenManager
             long next = buffer.ProducerPosition;
             
             Frame entry = buffer.GetEntry(next);
-            ProcessEntry(next, entry);
+            if (allocated)
+                frame.Import(entry);
 
             Ellapsed = stopwatch.ElapsedMilliseconds - then;
-        }
-
-        private void ProcessEntry(long position, Frame entry)
-        {
-            if (!allocated)
-                return;
-
-            switch (imageDescriptor.Format)
-            {
-                case Video.ImageFormat.RGB24:
-                    BitmapHelper.FillFromRGB24(bitmap, rect, imageDescriptor.TopDown, entry.Buffer);
-                    break;
-                case Video.ImageFormat.RGB32:
-                    BitmapHelper.FillFromRGB32(bitmap, rect, imageDescriptor.TopDown, entry.Buffer);
-                    break;
-                case Video.ImageFormat.Y800:
-                    BitmapHelper.FillFromY800(bitmap, rect, imageDescriptor.TopDown, entry.Buffer);
-                    break;
-                case Video.ImageFormat.JPEG:
-                    BitmapHelper.FillFromJPEG(bitmap, rect, decoded, entry.Buffer, entry.PayloadLength, pitch);
-                    break;
-            }
         }
     }
 }
