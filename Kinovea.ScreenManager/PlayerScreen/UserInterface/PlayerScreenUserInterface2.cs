@@ -64,6 +64,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler SpeedChanged;
         public event EventHandler TimeOriginChanged;
         public event EventHandler KVAImported;
+        public event EventHandler PlayAsked;
         public event EventHandler PauseAsked;
         public event EventHandler ResetAsked;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
@@ -552,7 +553,7 @@ namespace Kinovea.ScreenManager
             bool recoveredMetadata = false;
             if (m_LaunchDescription != null)
             {
-                // Starting the filesystem watcher if .IsReplayWatcher is done in PlayerScreen.
+                // Starting the filesystem watcher for .IsReplayWatcher is done in PlayerScreen.
                 // Starting the video for .Play is done later at first Idle.
                 if (m_LaunchDescription.Id != Guid.Empty)
                     recoveredMetadata = m_FrameServer.Metadata.Recover(m_LaunchDescription.Id);
@@ -1197,6 +1198,7 @@ namespace Kinovea.ScreenManager
             {
                 buttonPlay.Image = Resources.flatpause3b;
                 StartMultimediaTimer(GetPlaybackFrameInterval());
+                PlayAsked?.Invoke(this, EventArgs.Empty);
             }
         }
         #endregion
@@ -1564,12 +1566,6 @@ namespace Kinovea.ScreenManager
         }
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            //----------------------------------------------------------------------------
-            // L'appui sur le bouton play ne fait qu'activer ou désactiver le Timer
-            // La lecture est ensuite automatique et c'est dans la fonction du Timer
-            // que l'on gère la NextFrame à afficher en fonction du ralentit,
-            // du mode de bouclage etc...
-            //----------------------------------------------------------------------------
             if (m_FrameServer.Loaded)
             {
                 OnPoke();
@@ -1663,8 +1659,24 @@ namespace Kinovea.ScreenManager
                 // Go into Play mode
                 buttonPlay.Image = Resources.flatpause3b;
                 StartMultimediaTimer(GetPlaybackFrameInterval());
+                PlayAsked?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        /// <summary>
+        /// Make sure we are playing. 
+        /// Does not raise the play asked event.
+        /// Used for synchronization.
+        /// </summary>
+        public void EnsurePlaying()
+        {
+            if (!m_FrameServer.Loaded || m_FrameServer.Metadata.DrawingInitializing || m_bIsCurrentlyPlaying)
+                return;
+
+            buttonPlay.Image = Resources.flatpause3b;
+            StartMultimediaTimer(GetPlaybackFrameInterval());
+        }
+
         public void Common_MouseWheel(object sender, MouseEventArgs e)
         {
             // MouseWheel was recorded on one of the controls.
@@ -2299,6 +2311,7 @@ namespace Kinovea.ScreenManager
         {
             if (m_IdMultimediaTimer != 0)
                 NativeMethods.timeKillEvent(m_IdMultimediaTimer);
+
             m_IdMultimediaTimer = 0;
             m_bIsCurrentlyPlaying = false;
             Application.Idle -= Application_Idle;

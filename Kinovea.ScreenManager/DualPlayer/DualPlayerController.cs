@@ -36,7 +36,8 @@ namespace Kinovea.ScreenManager
         private bool dualSaveInProgress;
 
         private CommonTimeline commonTimeline = new CommonTimeline();   
-        private long currentTime;
+        private long currentTime;   // current time in common timeline, in microseconds.
+        private readonly long desynchronizationThreshold = 100 * 1000; // In microseconds.
 
         private CommonControlsPlayers view = new CommonControlsPlayers();
         private List<PlayerScreen> players = new List<PlayerScreen>();
@@ -137,7 +138,31 @@ namespace Kinovea.ScreenManager
             if (active && synching && view.Playing)
                 Pause();
         }
-        
+
+        private void Player_PlayAsked(object sender, EventArgs e)
+        {
+            // If both players are playing, we must activate the dynamic synching, even if they were started independently. 
+            // This way they will continue playing on the next loop, this time in sync.
+            if (!active || !synching)
+                return;
+
+            PlayerScreen player = sender as PlayerScreen;
+            if (player == null)
+                return;
+
+            PlayerScreen otherPlayer = GetOtherPlayer(player);
+
+            if (player.IsPlaying && otherPlayer.IsPlaying && !view.Playing)
+            {
+                view.Play();
+                dynamicSynching = true;
+
+                // Immediately force synchronization.
+                AlignPlayers();
+                EnsureBothPlaying();
+            }
+        }
+
         private void Player_SpeedChanged(object sender, EventArgs e)
         {
             if (!active || !synching)
@@ -204,14 +229,27 @@ namespace Kinovea.ScreenManager
             {
                 if (player.IsPlaying)
                 {
+                    // This player is running, the other one may be playing or waiting.
                     currentTime = commonTimeline.GetCommonTime(player, player.LocalTime);
-                    Synchronize();
+
+                    if (otherPlayer.IsPlaying)
+                    {
+                        long otherTime = commonTimeline.GetCommonTime(otherPlayer, otherPlayer.LocalTime);
+                        long divergence = Math.Abs(currentTime - otherTime);
+                        if (divergence > desynchronizationThreshold)
+                        {
+                            log.DebugFormat("Synchronization divergence. Force time alignment.");
+                            AlignPlayers();
+                        }
+                    }
+
+                    EnsureBothPlaying();
                 }
                 else if (!otherPlayer.IsPlaying)
                 {
                     // Both players have completed a loop and are waiting.
                     currentTime = 0;
-                    Synchronize();
+                    EnsureBothPlaying();
                 }
             }
 
@@ -229,18 +267,11 @@ namespace Kinovea.ScreenManager
         {
             if (synching)
             {
+                AlignPlayers();
+
                 dynamicSynching = view.Playing;
                 if (dynamicSynching)
-                {
-                    // Both players may have been moved independently from the common tracker.
-                    // Reset common frame to the one most early in the common timeline.
-                    long leftTime = commonTimeline.GetCommonTime(players[0], players[0].LocalTime);
-                    long rightTime = commonTimeline.GetCommonTime(players[1], players[1].LocalTime);
-                    currentTime = Math.Min(leftTime, rightTime);
-                    GotoTime(currentTime, true);
-
-                    Synchronize();
-                }
+                    EnsureBothPlaying();
             }
 
             // Propagate the stop call to screens.
@@ -448,6 +479,7 @@ namespace Kinovea.ScreenManager
         }
         private void AddEventHandlers(PlayerScreen player)
         {
+            player.PlayAsked += Player_PlayAsked;
             player.PauseAsked += Player_PauseAsked;
             player.SpeedChanged += Player_SpeedChanged;
             player.HighSpeedFactorChanged += Player_HighSpeedFactorChanged;
@@ -456,6 +488,7 @@ namespace Kinovea.ScreenManager
         }
         private void RemoveEventHandlers(PlayerScreen player)
         {
+            player.PlayAsked -= Player_PlayAsked;
             player.PauseAsked -= Player_PauseAsked;
             player.SpeedChanged -= Player_SpeedChanged;
             player.HighSpeedFactorChanged -= Player_HighSpeedFactorChanged;
@@ -575,16 +608,32 @@ namespace Kinovea.ScreenManager
             view.UpdateHairline(rightTime, false);
         }
         
-        private void Synchronize()
+        /// <summary>
+        /// Reset common frame to the most earliest of both players in the common timeline.
+        /// Used if players may have moved independently from the common tracker.
+        /// Should not be used while playback is active.
+        /// </summary>
+        private void AlignPlayers()
         {
-            SynchronizePlayer(players[0]);
-            SynchronizePlayer(players[1]);
+            long leftTime = commonTimeline.GetCommonTime(players[0], players[0].LocalTime);
+            long rightTime = commonTimeline.GetCommonTime(players[1], players[1].LocalTime);
+            currentTime = Math.Min(leftTime, rightTime);
+            GotoTime(currentTime, true);
         }
 
-        private void SynchronizePlayer(PlayerScreen player)
+        private void EnsureBothPlaying()
+        {
+            EnsurePlaying(players[0]);
+            EnsurePlaying(players[1]);
+        }
+
+        /// <summary>
+        /// Make sure a player is playing if it needs to but does not start it if it shouldn't.
+        /// </summary>
+        private void EnsurePlaying(PlayerScreen player)
         {
             if (!player.IsPlaying && !commonTimeline.IsOutOfBounds(player, currentTime))
-                player.StartPlaying();
+                player.EnsurePlaying();
         }
 
         #endregion

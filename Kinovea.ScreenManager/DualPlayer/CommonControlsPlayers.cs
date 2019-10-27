@@ -143,13 +143,14 @@ namespace Kinovea.ScreenManager
         
         public void Pause()
         {
-            //bool toggled = playing == true;
-
             playing = false;
             RefreshPlayButton();
+        }
 
-            //if (toggled && PlayToggled != null)
-                //PlayToggled(this, EventArgs.Empty);
+        public void Play()
+        {
+            playing = true;
+            RefreshPlayButton();
         }
 
         public void StopMerge()
