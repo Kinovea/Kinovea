@@ -42,6 +42,16 @@ namespace Kinovea.Camera.DirectShow
         {
             get { return this.summary.Identifier; }
         }
+
+        public string Alias
+        {
+            get { return summary.Alias; }
+        }
+
+        public Thread Thread
+        {
+            get { return snapperThread; }
+        }
         
         #region Members
         private static readonly int timeout = 5000;
@@ -53,6 +63,7 @@ namespace Kinovea.Camera.DirectShow
         private bool hadError;
         private string moniker;
         private VideoCaptureDevice device;
+        private Thread snapperThread;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -64,13 +75,19 @@ namespace Kinovea.Camera.DirectShow
             device = new VideoCaptureDevice(moniker);
         }
 
+        public void Start()
+        {
+            snapperThread = new Thread(Run) { IsBackground = true };
+            snapperThread.Name = string.Format("{0} thumbnailer", summary.Alias); 
+            snapperThread.Start();
+        }
+
         /// <summary>
         /// Start the device for a frame grab, wait a bit and then return the result.
         /// This method will raise a CameraThumbnailProduced event even in case of error.
         /// </summary>
-        public void Run(object data)
+        private void Run(object data)
         {
-            Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
 
             device.NewFrameBuffer += device_NewFrameBuffer;
@@ -101,6 +118,10 @@ namespace Kinovea.Camera.DirectShow
         /// </summary>
         public void Cancel()
         {
+            //-------------------
+            // Runs in UI thread.
+            //-------------------
+
             // This is called before we start the camera for actual connection.
             // It runs on the UI thread and we must make sure the snapper thread is dead and camera ready to use.
             device.NewFrameBuffer -= device_NewFrameBuffer;
