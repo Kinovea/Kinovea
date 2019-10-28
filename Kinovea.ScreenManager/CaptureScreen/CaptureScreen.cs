@@ -563,8 +563,7 @@ namespace Kinovea.ScreenManager
 
 
             // The behavior of how we pull frames from the pipeline, push them to the delayer, record them to disk and display them is dependent 
-            // on the recording mode (even while not recording). The recoring mode does not change for the camera connection session, 
-            // even if it's changed in the preferences, we keep the value we started with.
+            // on the recording mode (even while not recording). The recoring mode does not change for the camera connection session. 
             recordingMode = PreferencesManager.CapturePreferences.RecordingMode;
 
             if (recordingMode == CaptureRecordingMode.Camera)

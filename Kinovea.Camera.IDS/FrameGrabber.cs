@@ -218,7 +218,7 @@ namespace Kinovea.Camera.IDS
 
                 if (status != uEye.Defines.Status.SUCCESS)
                 {
-                    log.ErrorFormat("Error trying to open IDS uEye camera for snapshot.");
+                    log.ErrorFormat("Error trying to open IDS uEye camera.");
                     return;
                 }
 

@@ -66,7 +66,7 @@ namespace Kinovea.Camera.DirectShow
 
         /// <summary>
         /// Start the device for a frame grab, wait a bit and then return the result.
-        /// This method MUST raise a CameraThumbnailProduced event, even in case of error.
+        /// This method will raise a CameraThumbnailProduced event even in case of error.
         /// </summary>
         public void Run(object data)
         {
@@ -80,17 +80,33 @@ namespace Kinovea.Camera.DirectShow
 
             waitHandle.WaitOne(timeout, false);
 
+            if (cancelled)
+            {
+                log.WarnFormat("Snapshot for {0} cancelled.", summary.Alias);
+                return;
+            }
+
+            // Stop the device before reporting the thumbnail, so the parent manager can use the thumbnail event 
+            // to know the camera is no longer snapping and can be used for actual connection.
             device.NewFrameBuffer -= device_NewFrameBuffer;
             device.VideoSourceError -= device_VideoSourceError;
+            DeviceHelper.StopDevice(device);
             
             if (CameraThumbnailProduced != null)
                 CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, image, imageDescriptor, hadError, cancelled));
-
-            DeviceHelper.StopDevice(device);
         }
         
+        /// <summary>
+        /// Stop the camera and cancel the snapshot.
+        /// </summary>
         public void Cancel()
         {
+            // This is called before we start the camera for actual connection.
+            // It runs on the UI thread and we must make sure the snapper thread is dead and camera ready to use.
+            device.NewFrameBuffer -= device_NewFrameBuffer;
+            device.VideoSourceError -= device_VideoSourceError;
+            DeviceHelper.StopDevice(device);
+
             cancelled = true;
             waitHandle.Set();
         }

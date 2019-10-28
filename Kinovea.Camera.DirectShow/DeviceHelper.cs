@@ -13,25 +13,32 @@ namespace Kinovea.Camera.DirectShow
 
         public static void StopDevice(VideoCaptureDevice device)
         {
-            device.SignalToStop();
-            device.WaitForStop();
-
-            // Sometimes the thread just won't die. 
-            // This may happen when the thread is locked on the camera handle and there is some issue at a lower level.
-            // This not only prevent usage of the camera, it also make the whole application enter a comatose state needing a reboot.
-            int maxAttempts = 10;
-            int attempts = 0;
-
-            while (device.IsRunning && attempts < maxAttempts)
+            try
             {
-                Thread.Sleep(50);
-                attempts++;
+                device.SignalToStop();
+                device.WaitForStop();
+                
+                // Sometimes the thread just won't die. 
+                // This may happen when the thread is locked on the camera handle and there is some issue at a lower level.
+                // This not only prevent usage of the camera, it also make the whole application enter a comatose state needing a reboot.
+                int maxAttempts = 10;
+                int attempts = 0;
+
+                while (device.IsRunning && attempts < maxAttempts)
+                {
+                    Thread.Sleep(50);
+                    attempts++;
+                }
+
+                if (device.IsRunning)
+                {
+                    log.ErrorFormat("Aborting device thread.");
+                    device.Stop();
+                }
             }
-
-            if (device.IsRunning)
+            catch
             {
-                log.ErrorFormat("Aborting device thread.");
-                device.Stop();
+                log.ErrorFormat("Error while trying to stop device.");
             }
         }
     }
