@@ -61,8 +61,8 @@ namespace Kinovea.Camera.DirectShow
         #region Members
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
-        //private List<string> snapshotting = new List<string>();
         private List<SnapshotRetriever> snapshotting = new List<SnapshotRetriever>();
+        private object locker = new object();
         private HashSet<string> blacklist = new HashSet<string>();
         private Regex idsPattern = new Regex(@"^UI\d{3,4}");
         private Regex baslerPattern = new Regex(@"^Basler GenICam");
@@ -161,17 +161,20 @@ namespace Kinovea.Camera.DirectShow
         
         public override void GetSingleImage(CameraSummary summary)
         {
-            SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
-            if(snapper != null)
-                return;
-            
-            string moniker = summary.Identifier;
-            
-            // Spawn a thread to get a snapshot.
-            snapper = new SnapshotRetriever(summary, moniker);
-            snapper.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
-            snapshotting.Add(snapper);
-            ThreadPool.QueueUserWorkItem(snapper.Run);
+            lock (locker)
+            {
+                SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
+                if (snapper != null)
+                    return;
+
+                string moniker = summary.Identifier;
+
+                // Spawn a thread to get a snapshot.
+                snapper = new SnapshotRetriever(summary, moniker);
+                snapper.CameraThumbnailProduced += SnapshotRetriever_CameraThumbnailProduced;
+                snapshotting.Add(snapper);
+                ThreadPool.QueueUserWorkItem(snapper.Run);
+            }
         }
         
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
@@ -183,14 +186,17 @@ namespace Kinovea.Camera.DirectShow
         
         public override ICaptureSource CreateCaptureSource(CameraSummary summary)
         {
-            SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
-            if (snapper != null)
+            lock (locker)
             {
-                snapper.Cancel();
-                snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-                snapshotting.Remove(snapper);
+                SnapshotRetriever snapper = snapshotting.FirstOrDefault(s => s.Identifier == summary.Identifier);
+                if (snapper != null)
+                {
+                    snapper.Cancel();
+                    snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
+                    snapshotting.Remove(snapper);
+                }
             }
-
+            
             string moniker = summary.Identifier;
             FrameGrabber grabber = new FrameGrabber(summary, moniker);
             return grabber;
@@ -267,9 +273,12 @@ namespace Kinovea.Camera.DirectShow
             if (snapper == null)
                 return;
 
-            snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
-            snapshotting.Remove(snapper);
-
+            lock (locker)
+            {
+                snapper.CameraThumbnailProduced -= SnapshotRetriever_CameraThumbnailProduced;
+                snapshotting.Remove(snapper);
+            }
+            
             if (!e.Cancelled)
                 OnCameraThumbnailProduced(e);
         }
