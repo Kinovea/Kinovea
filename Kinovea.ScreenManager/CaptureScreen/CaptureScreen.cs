@@ -335,6 +335,8 @@ namespace Kinovea.ScreenManager
                 view.BeforeClose();
                 view = null;
             }
+
+            metadata.Close();
         }
         public override void AfterClose()
         {
