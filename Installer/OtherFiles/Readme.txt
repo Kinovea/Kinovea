@@ -59,6 +59,7 @@ Changelog:
     Improved - Capture: Basler module was updated to Pylon 6.0.
     Improved - Capture: option to adjust the threshold and replacement framerate for high speed capture.
     Improved - Capture: display of percentage of "load" for performance feedback.
+    Improved - Capture: camera simulator has more options for stream format, image size and framerate.
     Improved - Playback: the default timecode format is easier to read and more standard conformant.
     Improved - Playback: use of 0-based numbering when showing the frame number.
     Improved - Playback: more file-level operations available in the main context menu.
@@ -86,8 +87,9 @@ Changelog:
     Fixed - In the IDS configuration dialog, auto-gain and auto-exposure were disabled.
     Fixed - The aspect ratio of thumbnails for key images was wrong.
     Fixed - The coordinates of points and circle was wrong when the coordinate system itself was tracked.
-    Removed - Capture: Ability to record the composited delay image (e.g: quadrants).
+    Removed - Capture: Removed delay compositing framework (e.g: quadrants).
     Removed - Capture: Ability to record live changes in delay value. The delay is fixed at the start of the recording.
+    Removed - Replaced capture history sessions by a simpler list of last captured files.
 
 
 0.8.27 - October 2018.
