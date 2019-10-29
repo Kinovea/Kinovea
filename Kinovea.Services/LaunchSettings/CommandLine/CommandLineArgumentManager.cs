@@ -69,6 +69,7 @@ namespace Kinovea.Services
             CommandLineArgumentParser.DefineOptionalParameter(optional);
             CommandLineArgumentParser.DefineSwitches(switches);
         }
+
         public void ParseArguments(string[] args)
         {
             string[] arguments = args.Skip(1).ToArray();
@@ -89,10 +90,26 @@ namespace Kinovea.Services
                     }
                     else if(File.Exists(arguments[0]))
                     {
-                        // Special case for dragging a file on kinovea.exe icon.
-                        ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
-                        sdp.FullPath = arguments[0];
-                        LaunchSettingsManager.AddScreenDescription(sdp);
+                        // Special case for dragging a file on kinovea.exe icon or starting with a workspace.
+                        if (Path.GetExtension(arguments[0]).ToLower() == ".xml")
+                        {
+                            Workspace workspace = new Workspace();
+                            bool loaded = workspace.Load(arguments[0]);
+                            if (loaded)
+                            {
+                                foreach (IScreenDescription screen in workspace.Screens)
+                                    LaunchSettingsManager.AddScreenDescription(screen);
+                            }
+                        }
+                        else
+                        {
+                            // Assume video and try to load it in a single screen.
+                            ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
+                            sdp.FullPath = arguments[0];
+                            sdp.Autoplay = true;
+                            sdp.Stretch = true;
+                            LaunchSettingsManager.AddScreenDescription(sdp);
+                        }
                     }
                 }
                 else

@@ -233,6 +233,7 @@
     <Compile Include="LaunchSettings\ScreenDescriptionCapture.cs" />
     <Compile Include="LaunchSettings\ScreenDescriptionPlayback.cs" />
     <Compile Include="LaunchSettings\ScreenType.cs" />
+    <Compile Include="LaunchSettings\Workspace.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="Preferences\AccelerationUnit.cs" />
     <Compile Include="Preferences\AngleUnit.cs" />

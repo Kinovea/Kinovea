@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Xml;
 
 namespace Kinovea.Services
 {
@@ -72,9 +73,40 @@ namespace Kinovea.Services
         public ScreenDescriptionPlayback()
         {
             SpeedPercentage = 100;
-            Stretch = false;
             Id = Guid.NewGuid();
             RecoveryLastSave = DateTime.MinValue;
+        }
+
+        public ScreenDescriptionPlayback(XmlReader reader) : this()
+        {
+            reader.ReadStartElement();
+
+            while (reader.NodeType == XmlNodeType.Element)
+            {
+                switch (reader.Name)
+                {
+                    case "FullPath":
+                        FullPath = reader.ReadElementContentAsString();
+                        break;
+                    case "Autoplay":
+                        Autoplay = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "SpeedPercentage":
+                        SpeedPercentage = reader.ReadElementContentAsDouble();
+                        break;
+                    case "Stretch":
+                        Stretch = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    case "IsReplayWatcher":
+                        IsReplayWatcher = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
+                        break;
+                    default:
+                        reader.ReadOuterXml();
+                        break;
+                }
+            }
+
+            reader.ReadEndElement();
         }
     }
 }
