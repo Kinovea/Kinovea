@@ -64,7 +64,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler SpeedChanged;
         public event EventHandler TimeOriginChanged;
         public event EventHandler KVAImported;
-        public event EventHandler PlayAsked;
+        public event EventHandler PlayStarted;
         public event EventHandler PauseAsked;
         public event EventHandler ResetAsked;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
@@ -1198,7 +1198,7 @@ namespace Kinovea.ScreenManager
             {
                 buttonPlay.Image = Resources.flatpause3b;
                 StartMultimediaTimer(GetPlaybackFrameInterval());
-                PlayAsked?.Invoke(this, EventArgs.Empty);
+                PlayStarted?.Invoke(this, EventArgs.Empty);
             }
         }
         #endregion
@@ -1659,7 +1659,7 @@ namespace Kinovea.ScreenManager
                 // Go into Play mode
                 buttonPlay.Image = Resources.flatpause3b;
                 StartMultimediaTimer(GetPlaybackFrameInterval());
-                PlayAsked?.Invoke(this, EventArgs.Empty);
+                PlayStarted?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -2317,8 +2317,7 @@ namespace Kinovea.ScreenManager
             Application.Idle -= Application_Idle;
             m_FrameServer.Metadata.UnpauseAutosave();
             
-            log.DebugFormat("Rendering drops ratio: {0:0.00}", m_DropWatcher.Ratio);
-            log.DebugFormat("Average rendering loop time: {0:0.000}ms", m_LoopWatcher.Average);
+            log.DebugFormat("Playback paused. Avg frame time: {0:0.000} ms. Drop ratio: {1:0.00}", m_LoopWatcher.Average, m_DropWatcher.Ratio);
         }
         private void MultimediaTimer_Tick(uint uTimerID, uint uMsg, UIntPtr dwUser, UIntPtr dw1, UIntPtr dw2)
         {

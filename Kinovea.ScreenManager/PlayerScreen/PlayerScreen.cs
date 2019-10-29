@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler SpeedChanged;
         public event EventHandler HighSpeedFactorChanged;
         public event EventHandler TimeOriginChanged;
-        public event EventHandler PlayAsked;
+        public event EventHandler PlayStarted;
         public event EventHandler PauseAsked;
         public event EventHandler<EventArgs<bool>> SelectionChanged;
         public event EventHandler<EventArgs<Bitmap>> ImageChanged;
@@ -347,7 +347,7 @@ namespace Kinovea.ScreenManager
             view.SpeedChanged += View_SpeedChanged;
             view.TimeOriginChanged += View_TimeOriginChanged;
             view.KVAImported += View_KVAImported;
-            view.PlayAsked += View_PlayAsked;
+            view.PlayStarted += View_PlayStarted;
             view.PauseAsked += View_PauseAsked;
             view.SelectionChanged += View_SelectionChanged;
             view.ImageChanged += View_ImageChanged;
@@ -403,10 +403,10 @@ namespace Kinovea.ScreenManager
                 HighSpeedFactorChanged(this, EventArgs.Empty);
         }
 
-        public void View_PlayAsked(object sender, EventArgs e)
+        public void View_PlayStarted(object sender, EventArgs e)
         {
-            if (PlayAsked != null)
-                PlayAsked(this, EventArgs.Empty);
+            if (PlayStarted != null)
+                PlayStarted(this, EventArgs.Empty);
         }
 
         public void View_PauseAsked(object sender, EventArgs e)

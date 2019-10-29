@@ -271,7 +271,8 @@ namespace Kinovea.Camera.DirectShow
             //--------------------------------
             // Runs in the snapshotter thread.
             //--------------------------------
-            dummy.BeginInvoke((Action)delegate { ProcessThumbnail(sender, e); });
+            if (!dummy.IsDisposed && dummy.IsHandleCreated)
+                dummy.BeginInvoke((Action)delegate { ProcessThumbnail(sender, e); });
         }
 
         private void ProcessThumbnail(object sender, CameraThumbnailProducedEventArgs e)

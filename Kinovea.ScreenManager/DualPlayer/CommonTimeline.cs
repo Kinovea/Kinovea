@@ -56,6 +56,9 @@ namespace Kinovea.ScreenManager
             commonLastTime = Math.Max(leftEnd, rightEnd);
         }
         
+        /// <summary>
+        /// Converts a common time into a local time for a specific player.
+        /// </summary>
         public long GetLocalTime(PlayerScreen player, long commonTime)
         {
             if (!syncInfos.ContainsKey(player.Id))
@@ -64,6 +67,9 @@ namespace Kinovea.ScreenManager
             return commonTime - syncInfos[player.Id].Offset;
         }
 
+        /// <summary>
+        /// Converts a local time in a player into a common time.
+        /// </summary>
         public long GetCommonTime(PlayerScreen player, long localTime)
         {
             if (!syncInfos.ContainsKey(player.Id))
@@ -72,6 +78,9 @@ namespace Kinovea.ScreenManager
             return syncInfos[player.Id].Offset + localTime;
         }
 
+        /// <summary>
+        /// Test whether a given common time is outside the range of the player.
+        /// </summary>
         public bool IsOutOfBounds(PlayerScreen player, long commonTime)
         {
             if (!syncInfos.ContainsKey(player.Id))
