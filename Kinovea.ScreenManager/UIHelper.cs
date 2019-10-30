@@ -33,13 +33,13 @@ namespace Kinovea.ScreenManager
             float ratioWidth = (float)imageSize.Width / containerSize.Width;
             float ratioHeight = (float)imageSize.Height / containerSize.Height;
             float ratio = Math.Max(ratioWidth, ratioHeight);
-            Size size = new Size((int)(imageSize.Width / ratio), (int)(imageSize.Height / ratio));
+
+            int width = (int)(imageSize.Width / ratio);
+            int height = (int)(imageSize.Height / ratio);
+            int left = (containerSize.Width - width)/2;
+            int top = (containerSize.Height - height)/2;
             
-            int left = (containerSize.Width - size.Width)/2;
-            int top = (containerSize.Height - size.Height)/2;
-            Point location = new Point(left, top);
-            
-            return new Rectangle(location, size);
+            return new Rectangle(left, top, width, height);
         }
     }
 }

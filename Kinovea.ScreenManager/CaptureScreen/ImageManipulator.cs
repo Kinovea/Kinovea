@@ -136,12 +136,7 @@ namespace Kinovea.ScreenManager
        
         private void Maximize(Rectangle displayRectangle, Size containerSize)
         {
-            float ratioWidth = (float)containerSize.Width / displayRectangle.Size.Width;
-            float ratioHeight = (float)containerSize.Height / displayRectangle.Size.Height;
-            float ratio = Math.Min(ratioWidth, ratioHeight);
-            Size size = displayRectangle.Size.Scale(ratio);
-            Point location = new Point((containerSize.Width - size.Width)/ 2, (containerSize.Height - size.Height) / 2);
-            this.displayRectangle = new Rectangle(location, size);
+            this.displayRectangle = UIHelper.RatioStretch(displayRectangle.Size, containerSize);
             expanded = true;
         }
         

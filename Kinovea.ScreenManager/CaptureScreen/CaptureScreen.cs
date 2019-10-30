@@ -636,9 +636,10 @@ namespace Kinovea.ScreenManager
             // but the image size can be modified from the outside in some scenarios.
             double dspAR = (double)summary.DisplayRectangle.Width / summary.DisplayRectangle.Height;
             double camAR = (double)width / height;
+            int expectedWidth = (int)Math.Round(summary.DisplayRectangle.Height * camAR);
 
-            double epsilon = 1.0e-6;
-            if (Math.Abs(dspAR - camAR) > epsilon)
+            double epsilon = 1;
+            if (Math.Abs(summary.DisplayRectangle.Width - expectedWidth) > epsilon)
                 summary.DisplayRectangle = Rectangle.Empty;
         }
 

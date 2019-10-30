@@ -295,17 +295,7 @@ namespace Kinovea.ScreenManager
         
         private void InitializeDisplayRectangle(Rectangle saved)
         {
-            if(saved.Size != Size.Empty)
-            {
-                displayRectangle = saved;
-            }
-            else
-            {
-                int left = (this.Size.Width - imageSize.Width)/2;
-                int top = (this.Size.Height - imageSize.Height)/2;
-                displayRectangle = new Rectangle(left, top, imageSize.Width, imageSize.Height);
-            }
-            
+            displayRectangle = saved.Size == Size.Empty ? UIHelper.RatioStretch(imageSize, this.Size) : saved;
             AfterDisplayRectangleChanged();
         }
         
@@ -324,6 +314,10 @@ namespace Kinovea.ScreenManager
         
         private void AfterDisplayRectangleChanged()
         {
+            // Force aspect ratio to match original size.
+            double aspectRatio = (double)imageSize.Width / imageSize.Height;
+            displayRectangle.Width = (int)Math.Round((double)displayRectangle.Height * aspectRatio);
+
             resizers[0].Location = new Point(displayRectangle.Left - resizerOffset, displayRectangle.Top - resizerOffset);
             resizers[1].Location = new Point(displayRectangle.Right - resizerOffset, displayRectangle.Top - resizerOffset);
             resizers[2].Location = new Point(displayRectangle.Right - resizerOffset, displayRectangle.Bottom - resizerOffset);
