@@ -112,7 +112,10 @@ namespace Kinovea.ScreenManager
                 return;
 
             this.capturedFiles.Add(capturedFile);
-            
+
+            if (capturedFiles.Count > PreferencesManager.FileExplorerPreferences.MaxRecentCapturedFiles)
+                HideCapturedFileView(capturedFiles[0]);
+
             CapturedFileView view = new CapturedFileView(capturedFile);
             view.SelectAsked += View_Clicked;
             view.LaunchAsked += View_LaunchAsked;

@@ -28,7 +28,7 @@ namespace Kinovea.ScreenManager
     /// A small pack of info to help launching a recently captured video.
     /// The unique id is used because the filename can be changed.
     /// </summary>
-    public class CapturedFile
+    public class CapturedFile :  IDisposable
     {
         public DateTime Time
         {
@@ -55,7 +55,8 @@ namespace Kinovea.ScreenManager
         private string filepath;
         private Bitmap thumbnail;
         private bool video;
-        
+        private bool disposed = false;
+
         public CapturedFile(string filepath, Bitmap image, bool video)
         {
             time = DateTime.Now;
@@ -67,10 +68,27 @@ namespace Kinovea.ScreenManager
             else
                 thumbnail = new Bitmap(100, 75);
         }
-        
+
+        ~CapturedFile()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
         {
-            thumbnail.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+                thumbnail.Dispose();
+
+            disposed = true;
         }
         
         public void FileRenamed(string newPath)
