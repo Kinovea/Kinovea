@@ -859,17 +859,6 @@ namespace Kinovea.ScreenManager
             // In the case of recording mode "delay/display" it's the opposite, since the recording will pull frames
             // from the delay buffer, it must be filled densely, with all the frames.
             // 
-            // Recording mode = Camera.
-            // - Take a frame from Pipeline to send to Delay.
-            // - Take a frame from Delay to send to Display.
-            // 
-            // Recording mode = Delay/Scheduled.
-            // - Take a frame frome Delay to send to Display.
-            // 
-            // Other tasks.
-            // - Create thumbnail of recorded file if not done already.
-            // - Auto stop recording if time is up.
-            // 
             // Note on delay: the user is setting the delay in frames.
             // Here, whether the delay buffer is sparse or dense, the correct frame to pull is the one specified by this delay in frames, 
             // we don't need to take into account the difference in display framerate vs camera framerate.
