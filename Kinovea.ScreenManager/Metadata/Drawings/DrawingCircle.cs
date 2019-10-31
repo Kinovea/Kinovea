@@ -84,6 +84,7 @@ namespace Kinovea.ScreenManager
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 ReinitializeMenu();
                 contextMenu.Add(mnuMeasurement);
+                contextMenu.Add(mnuShowCenter);
                 return contextMenu;
             }
         }
@@ -117,6 +118,7 @@ namespace Kinovea.ScreenManager
         private TrackExtraData trackExtraData = TrackExtraData.None;
         private ToolStripMenuItem mnuMeasurement = new ToolStripMenuItem();
         private List<ToolStripMenuItem> mnuMeasurementOptions = new List<ToolStripMenuItem>();
+        private ToolStripMenuItem mnuShowCenter = new ToolStripMenuItem();
 
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
@@ -126,6 +128,7 @@ namespace Kinovea.ScreenManager
         private Ellipse ellipseInImage;
         private PointF radiusLeftInImage;
         private PointF radiusRightInImage;
+        private bool showCenter = true;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -160,6 +163,9 @@ namespace Kinovea.ScreenManager
             style = preset.Clone();
             BindStyle();
 
+            mnuShowCenter.Image = Properties.Drawings.crossmark;
+            mnuShowCenter.Checked = showCenter;
+            mnuShowCenter.Click += mnuShowCenter_Click;
             ReinitializeMenu();
         }
         public DrawingCircle(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
@@ -184,7 +190,8 @@ namespace Kinovea.ScreenManager
 
                 // The center of the original circle is still the correct center even in perspective.
                 PointF circleCenter = transformer.Transform(center);
-                DrawCenter(canvas, p, circleCenter.ToPoint());
+                if (showCenter)
+                    DrawCenter(canvas, p, circleCenter.ToPoint());
 
                 if (CalibrationHelper.CalibratorType == CalibratorType.Plane)
                 {
@@ -330,6 +337,9 @@ namespace Kinovea.ScreenManager
                             miniLabel = new MiniLabel(xmlReader, scale);
                             break;
                         }
+                    case "ShowCenter":
+                        showCenter = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
                     case "DrawingStyle":
                         style = new DrawingStyle(xmlReader);
                         BindStyle();
@@ -364,6 +374,8 @@ namespace Kinovea.ScreenManager
                 w.WriteStartElement("MeasureLabel");
                 miniLabel.WriteXml(w);
                 w.WriteEndElement();
+
+                w.WriteElementString("ShowCenter", XmlHelper.WriteBoolean(showCenter));
             }
 
             if (ShouldSerializeStyle(filter))
@@ -399,9 +411,16 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Context menu
+        private void mnuShowCenter_Click(object sender, EventArgs e)
+        {
+            mnuShowCenter.Checked = !mnuShowCenter.Checked;
+            showCenter = mnuShowCenter.Checked;
+            InvalidateFromMenu(sender);
+        }
         private void ReinitializeMenu()
         {
             InitializeMenuMeasurement();
+            mnuShowCenter.Text = "Show circle center";
         }
         private void InitializeMenuMeasurement()
         {
