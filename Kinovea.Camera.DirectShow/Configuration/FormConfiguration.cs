@@ -319,20 +319,22 @@ namespace Kinovea.Camera.DirectShow
         private void PopulateCameraControl()
         {
             int top = lblAuto.Bottom;
-
+            bool added = false;
             if (cameraProperties.ContainsKey("exposure_logitech"))
-                AddCameraProperty("exposure_logitech", CameraLang.FormConfiguration_Properties_Exposure, VendorHelper.GetValueMapper(identifier, "exposure_logitech"), top);
+                added = AddCameraProperty("exposure_logitech", CameraLang.FormConfiguration_Properties_Exposure, VendorHelper.GetValueMapper(identifier, "exposure_logitech"), top);
             else if (cameraProperties.ContainsKey("exposure"))
-                AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_Exposure, VendorHelper.GetValueMapper(identifier, "exposure"), top);
+                added = AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_Exposure, VendorHelper.GetValueMapper(identifier, "exposure"), top);
 
-            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, null, top + 30);
-            AddCameraProperty("focus", CameraLang.FormConfiguration_Properties_Focus, null, top + 60);
+            top += (added ? 30 : 0);
+            added = AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, null, top);
+            top += (added ? 30 : 0);
+            AddCameraProperty("focus", CameraLang.FormConfiguration_Properties_Focus, null, top);
         }
 
-        private void AddCameraProperty(string key, string text, Func<int, string> valueMapper, int top)
+        private bool AddCameraProperty(string key, string text, Func<int, string> valueMapper, int top)
         {
             if (!cameraProperties.ContainsKey(key))
-                return;
+                return false;
 
             CameraProperty property = cameraProperties[key];
 
@@ -352,13 +354,15 @@ namespace Kinovea.Camera.DirectShow
             }
 
             if (control == null)
-                return;
+                return false;
 
             control.Tag = key;
             control.ValueChanged += cpvCameraControl_ValueChanged;
             control.Left = 20;
             control.Top = top;
             groupBox1.Controls.Add(control);
+
+            return true;
         }
 
         private void cpvCameraControl_ValueChanged(object sender, EventArgs e)

@@ -217,9 +217,9 @@ namespace Kinovea.Camera.DirectShow
             {
                 CameraPropertyManager.Write(device, info.CameraProperties);
             }
-            catch
+            catch (Exception e)
             {
-                log.ErrorFormat("An error occured while reloading camera properties.");
+                log.ErrorFormat("An error occured while reloading camera properties. {0}", e.Message);
             }
         }
         

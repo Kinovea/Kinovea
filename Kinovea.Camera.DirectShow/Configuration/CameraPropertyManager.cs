@@ -12,17 +12,32 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public static class CameraPropertyManager
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static Dictionary<string, CameraProperty> Read(VideoCaptureDevice device)
         {
             Dictionary<string, CameraProperty> properties = new Dictionary<string, CameraProperty>();
 
             if (device.Logitech_SupportExposureProperty())
-                properties.Add("exposure_logitech", ReadLogitechProperty(device));
+            {
+                CameraProperty exposureProp = ReadLogitechProperty(device);
+                if (exposureProp.Supported)
+                    properties.Add("exposure_logitech", exposureProp);
+            }
             else
-                properties.Add("exposure", ReadProperty(device, CameraControlProperty.Exposure));
+            {
+                CameraProperty exposureProp = ReadProperty(device, CameraControlProperty.Exposure);
+                if (exposureProp.Supported)
+                    properties.Add("exposure", exposureProp);
+            }
 
-            properties.Add("gain", ReadProperty(device, VideoProcAmpProperty.Gain));
-            properties.Add("focus", ReadProperty(device, CameraControlProperty.Focus));
+            CameraProperty gainProp = ReadProperty(device, VideoProcAmpProperty.Gain);
+            if (gainProp.Supported)
+                properties.Add("gain", gainProp);
+
+            CameraProperty focusProp = ReadProperty(device, CameraControlProperty.Focus);
+            if (focusProp.Supported)
+                properties.Add("focus", focusProp);
             
             return properties;
         }
@@ -31,7 +46,7 @@ namespace Kinovea.Camera.DirectShow
         {
             if (properties.ContainsKey("exposure_logitech"))
                 WriteLogitechProperty(device, properties["exposure_logitech"]);
-
+            
             if (properties.ContainsKey("exposure"))
                 WriteProperty(device, CameraControlProperty.Exposure, properties["exposure"]);
 
@@ -209,22 +224,64 @@ namespace Kinovea.Camera.DirectShow
 
         private static void WriteProperty(VideoCaptureDevice device, CameraControlProperty property, CameraProperty value)
         {
-            CameraControlFlags flags = value.Automatic ? CameraControlFlags.Auto : CameraControlFlags.Manual;
-            int v = int.Parse(value.CurrentValue, CultureInfo.InvariantCulture);
-            device.SetCameraProperty(property, v, flags);
+            if (!value.Supported)
+                return;
+
+            try
+            {
+                CameraControlFlags flags = value.Automatic ? CameraControlFlags.Auto : CameraControlFlags.Manual;
+                int v;
+                bool parsed = int.TryParse(value.CurrentValue, NumberStyles.Any, CultureInfo.InvariantCulture, out v);
+                if (parsed)
+                    device.SetCameraProperty(property, v, flags);
+                else
+                    log.ErrorFormat("Could not parse property {0}, value: {1}.", value.Identifier, value.CurrentValue);
+            }
+            catch(Exception e)
+            {
+                log.ErrorFormat("Could not write property {0}. {1}.", value.Identifier, e.Message);
+            }
         }
 
         private static void WriteProperty(VideoCaptureDevice device, VideoProcAmpProperty property, CameraProperty value)
         {
-            VideoProcAmpFlags flags = value.Automatic ? VideoProcAmpFlags.Auto : VideoProcAmpFlags.Manual;
-            int v = int.Parse(value.CurrentValue, CultureInfo.InvariantCulture);
-            device.SetVideoProperty(property, v, flags);
+            if (!value.Supported)
+                return;
+
+            try
+            {
+                VideoProcAmpFlags flags = value.Automatic ? VideoProcAmpFlags.Auto : VideoProcAmpFlags.Manual;
+                int v;
+                bool parsed = int.TryParse(value.CurrentValue, NumberStyles.Any, CultureInfo.InvariantCulture, out v);
+                if (parsed)
+                    device.SetVideoProperty(property, v, flags);
+                else
+                    log.ErrorFormat("Could not parse property {0}, value: {1}.", value.Identifier, value.CurrentValue);
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Could not write property {0}. {1}.", value.Identifier, e.Message);
+            }
         }
 
         private static void WriteLogitechProperty(VideoCaptureDevice device, CameraProperty value)
         {
-            int v = int.Parse(value.CurrentValue, CultureInfo.InvariantCulture);
-            device.Logitech_SetExposure(v, !value.Automatic);
+            if (!value.Supported)
+                return;
+
+            try
+            {
+                int v;
+                bool parsed = int.TryParse(value.CurrentValue, NumberStyles.Any, CultureInfo.InvariantCulture, out v);
+                if (parsed)
+                    device.Logitech_SetExposure(v, !value.Automatic);
+                else
+                    log.ErrorFormat("Could not parse property {0}, value: {1}.", value.Identifier, value.CurrentValue);
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Could not write property {0}. {1}.", value.Identifier, e.Message);
+            }
         }
     }
 }

@@ -362,6 +362,7 @@ namespace Kinovea.Camera.DirectShow
 
                     string key = keyAttribute.Value;
                     CameraProperty property = new CameraProperty();
+                    property.Supported = true;
 
                     string xpath = string.Format("/DirectShow/CameraProperties/CameraProperty2[@key='{0}']", key);
                     XmlNode xmlPropertyValue = doc.SelectSingleNode(xpath + "/Value");
