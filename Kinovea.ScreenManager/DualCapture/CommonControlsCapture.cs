@@ -159,6 +159,7 @@ namespace Kinovea.ScreenManager
         private void RefreshGrabbingButton()
         {
             btnGrab.Image = grabbing ? Properties.Capture.grab_pause : Properties.Capture.grab_start;
+            btnRecord.Enabled = grabbing;
         }
 
         private void RefreshRecordingButton()
