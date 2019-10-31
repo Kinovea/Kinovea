@@ -1451,10 +1451,18 @@ namespace Kinovea.ScreenManager
             else
             {
                 // In recording mode Delayed and Scheduled, we put all the produced frames into the delayer, so we must use camera fps.
-                if (pipelineManager.Frequency == 0)
+                double framerate = cameraGrabber.Framerate;
+
+                if (framerate == 0)
+                    framerate = pipelineManager.Frequency;
+
+                if (framerate == 0)
+                    framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
+
+                if (framerate == 0)
                     return 0;
 
-                return age / pipelineManager.Frequency;
+                return age / framerate;
             }
         }
         #endregion
