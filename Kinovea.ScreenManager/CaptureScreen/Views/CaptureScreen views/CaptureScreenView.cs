@@ -81,6 +81,8 @@ namespace Kinovea.ScreenManager
             sldrRefreshRate.Value = 100;
             sldrRefreshRate.Sticky = true;
             sldrRefreshRate.StickyValue = 50;
+            nudDelay.Minimum = 0;
+            nudDelay.Maximum = 100;
             btnSlomoSync.Top = sldrRefreshRate.Top - 5;
             btnSlomoSync.Left = sldrRefreshRate.Right + 15;
             lblSlomoSync.Top = lblRefreshRate.Top;
@@ -201,10 +203,12 @@ namespace Kinovea.ScreenManager
             this.delayFrames = delayFrames;
             UpdateDelayLabel();
         }
-        public void UpdateDelayMaxAge(double maxAge)
+        public void UpdateDelayMax(double delaySeconds, int delayFrames)
         {
             // If the delayer was not allocated, fake a number so that we have a slider stuck at the 0th image.
-            sldrDelay.Maximum = maxAge == 0 ? 0.9 : maxAge;
+            sldrDelay.Maximum = delayFrames == 0 ? 0.9 : (double)delayFrames;
+            nudDelay.Minimum = 0;
+            nudDelay.Maximum = (decimal)delaySeconds;
         }
         public void UpdateSlomoRefreshRate(float refreshRate)
         {
@@ -303,6 +307,13 @@ namespace Kinovea.ScreenManager
         {
             presenter.View_DelayChanged(sldrDelay.Value);
         }
+        private void NudDelay_ValueChanged(object sender, EventArgs e)
+        {
+            double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
+            int frames = (int)Math.Round((double)nudDelay.Value * framerate);
+            sldrDelay.Value = frames;
+            sldrDelay.Invalidate();
+        }
         private void SldrRefreshRate_ValueChanged(object sender, EventArgs e)
         {
             float value = (float)(sldrRefreshRate.Value / 100.0f);
@@ -377,15 +388,9 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateDelayLabel()
         {
-            double round = Math.Round(delaySeconds);
-
-            string formattedDelay = "";
-            if (round < 10)
-                formattedDelay = string.Format("{0:0.00}", delaySeconds);
-            else
-                formattedDelay = string.Format("{0}", round);
-
-            lblDelay.Text = string.Format(ScreenManagerLang.lblDelay_Text, formattedDelay, delayFrames);
+            lblDelay.Text = "Delay (s):"; // string.Format(ScreenManagerLang.lblDelay_Text, formattedDelay, delayFrames);
+            if (delaySeconds >= (double)nudDelay.Minimum && delaySeconds <= (double)nudDelay.Maximum)
+                nudDelay.Value = (decimal)delaySeconds;
         }
         private void UpdateSlomoRefreshRateLabel()
         {
@@ -512,8 +517,7 @@ namespace Kinovea.ScreenManager
         }
 
 
-        #endregion
 
-        
+        #endregion
     }
 }
