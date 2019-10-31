@@ -1433,7 +1433,7 @@ namespace Kinovea.ScreenManager
         
         private void UpdateDelayMaxAge()
         {
-            int frames = delayer.SafeCapacity - 1;
+            int frames = Math.Max(delayer.SafeCapacity - 1, 0);
             double seconds = AgeToSeconds(frames);
             view.UpdateDelayMax(seconds, frames);
         }

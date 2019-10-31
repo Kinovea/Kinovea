@@ -21,17 +21,17 @@ namespace Kinovea.ScreenManager
         #region Properties
         public int SafeCapacity
         {
-            get { return fullCapacity - reserveCapacity; }
+            get { return Math.Max(fullCapacity - reserveCapacity, 0); }
         }
         #endregion
 
         #region Members
         private List<Frame> frames = new List<Frame>();
         private Rectangle rect;
-        private int fullCapacity;               // Total number of frames kept.
         private int minCapacity = 12;
-        private int reserveCapacity = 8;  // Number of frames kept unreachable to clients.
-        private int currentPosition = -1;       // Freshest absolute position written to and available to consumers.
+        private int reserveCapacity = 8;    // Number of frames kept unreachable to clients.
+        private int fullCapacity = 12;      // Total number of frames kept.
+        private int currentPosition = -1;   // Freshest absolute position written to and available to consumers.
         private bool allocated;
         private long availableMemory;
         private ImageDescriptor imageDescriptor;
