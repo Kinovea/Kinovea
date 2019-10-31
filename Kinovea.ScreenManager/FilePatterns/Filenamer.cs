@@ -123,12 +123,15 @@ namespace Kinovea.ScreenManager
         {
             string result = text;
 
-            foreach (PatternContext key in symbols.Keys)
+            // Sort symbols in descending length so we test for %datetime before testing for %date or %time.
+            var sortedSymbols = symbols.OrderBy(pair => -pair.Value.Length);
+
+            foreach (var symbol in sortedSymbols)
             {
-                if (!context.ContainsKey(key))
+                if (!context.ContainsKey(symbol.Key))
                     continue;
 
-                result = result.Replace(symbols[key], context[key]);
+                result = result.Replace(symbols[symbol.Key], context[symbol.Key]);
             }
 
             return result;

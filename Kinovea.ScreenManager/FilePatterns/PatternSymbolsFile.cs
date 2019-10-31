@@ -23,6 +23,10 @@ namespace Kinovea.ScreenManager
                 { PatternContext.Minute, "%minute" },
                 { PatternContext.Second, "%second" },
 
+                { PatternContext.Date, "%date" },
+                { PatternContext.Time, "%time" },
+                { PatternContext.DateTime, "%datetime" },
+
                 { PatternContext.CameraAlias, "%camalias" },
                 { PatternContext.ConfiguredFramerate, "%camfps" },
                 { PatternContext.ReceivedFramerate, "%recvfps" },

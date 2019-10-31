@@ -1088,6 +1088,10 @@ namespace Kinovea.ScreenManager
             context[PatternContext.Minute] = string.Format("{0:mm}", now);
             context[PatternContext.Second] = string.Format("{0:ss}", now);
 
+            context[PatternContext.Date] = string.Format("{0:yyyyMMdd}", now);
+            context[PatternContext.Time] = string.Format("{0:HHmmss}", now);
+            context[PatternContext.DateTime] = string.Format("{0:yyyyMMdd-HHmmss}", now);
+
             context[PatternContext.CameraAlias] = cameraSummary.Alias;
             context[PatternContext.ConfiguredFramerate] = string.Format("{0:0.00}", cameraGrabber.Framerate); 
             context[PatternContext.ReceivedFramerate] = string.Format("{0:0.00}", pipelineManager.Frequency);

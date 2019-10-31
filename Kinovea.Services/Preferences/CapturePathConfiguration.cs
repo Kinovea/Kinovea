@@ -43,11 +43,11 @@ namespace Kinovea.Services
             RightImageSubdir = subdir;
             RightVideoSubdir = subdir;
             
-            string file = @"%year%month%day-%hour%minute%second";
+            string file = @"%datetime";
             LeftImageFile = file;
             LeftVideoFile = file;
-            RightImageFile = file;
-            RightVideoFile = file;
+            RightImageFile = file + "-2";
+            RightVideoFile = file + "-2";
 
             ImageFormat = KinoveaImageFormat.JPG;
             VideoFormat = KinoveaVideoFormat.MP4;

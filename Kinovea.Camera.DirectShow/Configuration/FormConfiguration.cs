@@ -379,46 +379,7 @@ namespace Kinovea.Camera.DirectShow
             CameraPropertyManager.Write(device, cameraProperties[key]);
 
             specificChanged = true;
-
-            /*
-            CameraPropertyView cpv = sender as CameraPropertyView;
-            if (cpv == null)
-                return;
-
-            CameraControlProperty? property = cpv.Tag as CameraControlProperty?;
-            if (property == null || !property.HasValue)
-                return;
-
-            CameraControlFlags flags = cpv.Property.Automatic ? CameraControlFlags.Auto : CameraControlFlags.Manual;
-            device.SetCameraProperty(property.Value, cpv.Property.Value, flags); */
         }
-
-        /*private void cpvVideoProcAmp_ValueChanged(object sender, EventArgs e)
-        {
-            CameraPropertyView cpv = sender as CameraPropertyView;
-            if (cpv == null)
-                return;
-
-            VideoProcAmpProperty? property = cpv.Tag as VideoProcAmpProperty?;
-            if (property == null || !property.HasValue)
-                return;
-
-            VideoProcAmpFlags flags = cpv.Property.Automatic ? VideoProcAmpFlags.Auto : VideoProcAmpFlags.Manual;
-            device.SetVideoProperty(property.Value, cpv.Property.Value, flags);
-        }
-
-        private void cpvLogitechExposure_ValueChanged(object sender, EventArgs e)
-        {
-            CameraPropertyView cpv = sender as CameraPropertyView;
-            if (cpv == null)
-                return;
-
-            device.Logitech_SetExposure(cpv.Property.Value, !cpv.Property.Automatic);
-
-            // The device might decide to adjust the selected exposure on its own due to internal constraints.
-            // However it was found that the actual exposure used is closer to the original asked one than 
-            // to the adjusted one. It is possibly just a truncation after a float conversion.
-        }*/
         #endregion
     }
 }

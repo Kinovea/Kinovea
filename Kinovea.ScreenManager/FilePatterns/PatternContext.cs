@@ -17,7 +17,11 @@ namespace Kinovea.ScreenManager
         Hour,
         Minute,
         Second,
-        
+
+        Date,
+        Time,
+        DateTime,
+
         CameraAlias,
         ConfiguredFramerate,
         ReceivedFramerate,
