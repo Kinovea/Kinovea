@@ -48,178 +48,178 @@ namespace Kinovea.Camera.Basler
         /// </summary>
         private void InitializeComponent()
         {
-            this.gbProperties = new System.Windows.Forms.GroupBox();
-            this.cmbBayer8Conversion = new System.Windows.Forms.ComboBox();
-            this.lblBayerConversion = new System.Windows.Forms.Label();
-            this.lblAuto = new System.Windows.Forms.Label();
-            this.cmbFormat = new System.Windows.Forms.ComboBox();
-            this.lblColorSpace = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.tbAlias = new System.Windows.Forms.TextBox();
-            this.lblSystemName = new System.Windows.Forms.Label();
-            this.btnIcon = new System.Windows.Forms.Button();
-            this.btnApply = new System.Windows.Forms.Button();
-            this.gbProperties.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // gbProperties
-            // 
-            this.gbProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.gbProperties = new System.Windows.Forms.GroupBox();
+      this.cmbBayer8Conversion = new System.Windows.Forms.ComboBox();
+      this.lblBayerConversion = new System.Windows.Forms.Label();
+      this.lblAuto = new System.Windows.Forms.Label();
+      this.cmbFormat = new System.Windows.Forms.ComboBox();
+      this.lblColorSpace = new System.Windows.Forms.Label();
+      this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this.tbAlias = new System.Windows.Forms.TextBox();
+      this.lblSystemName = new System.Windows.Forms.Label();
+      this.btnIcon = new System.Windows.Forms.Button();
+      this.btnApply = new System.Windows.Forms.Button();
+      this.gbProperties.SuspendLayout();
+      this.groupBox2.SuspendLayout();
+      this.SuspendLayout();
+      // 
+      // gbProperties
+      // 
+      this.gbProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbProperties.Controls.Add(this.cmbBayer8Conversion);
-            this.gbProperties.Controls.Add(this.lblBayerConversion);
-            this.gbProperties.Controls.Add(this.lblAuto);
-            this.gbProperties.Controls.Add(this.cmbFormat);
-            this.gbProperties.Controls.Add(this.lblColorSpace);
-            this.gbProperties.Location = new System.Drawing.Point(12, 94);
-            this.gbProperties.Name = "gbProperties";
-            this.gbProperties.Size = new System.Drawing.Size(434, 275);
-            this.gbProperties.TabIndex = 84;
-            this.gbProperties.TabStop = false;
-            // 
-            // cmbBayer8Conversion
-            // 
-            this.cmbBayer8Conversion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.gbProperties.Controls.Add(this.cmbBayer8Conversion);
+      this.gbProperties.Controls.Add(this.lblBayerConversion);
+      this.gbProperties.Controls.Add(this.lblAuto);
+      this.gbProperties.Controls.Add(this.cmbFormat);
+      this.gbProperties.Controls.Add(this.lblColorSpace);
+      this.gbProperties.Location = new System.Drawing.Point(12, 94);
+      this.gbProperties.Name = "gbProperties";
+      this.gbProperties.Size = new System.Drawing.Size(434, 275);
+      this.gbProperties.TabIndex = 80;
+      this.gbProperties.TabStop = false;
+      // 
+      // cmbBayer8Conversion
+      // 
+      this.cmbBayer8Conversion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbBayer8Conversion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbBayer8Conversion.FormattingEnabled = true;
-            this.cmbBayer8Conversion.Location = new System.Drawing.Point(214, 62);
-            this.cmbBayer8Conversion.Name = "cmbBayer8Conversion";
-            this.cmbBayer8Conversion.Size = new System.Drawing.Size(144, 21);
-            this.cmbBayer8Conversion.TabIndex = 103;
-            this.cmbBayer8Conversion.SelectedIndexChanged += new System.EventHandler(this.cmbBayerConversion_SelectedIndexChanged);
-            // 
-            // lblBayerConversion
-            // 
-            this.lblBayerConversion.BackColor = System.Drawing.Color.Transparent;
-            this.lblBayerConversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBayerConversion.ForeColor = System.Drawing.Color.Black;
-            this.lblBayerConversion.Location = new System.Drawing.Point(21, 62);
-            this.lblBayerConversion.Name = "lblBayerConversion";
-            this.lblBayerConversion.Size = new System.Drawing.Size(187, 23);
-            this.lblBayerConversion.TabIndex = 102;
-            this.lblBayerConversion.Text = "Bayer format conversion:";
-            this.lblBayerConversion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblAuto
-            // 
-            this.lblAuto.BackColor = System.Drawing.Color.Transparent;
-            this.lblAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAuto.ForeColor = System.Drawing.Color.Black;
-            this.lblAuto.Location = new System.Drawing.Point(372, 91);
-            this.lblAuto.Name = "lblAuto";
-            this.lblAuto.Size = new System.Drawing.Size(56, 23);
-            this.lblAuto.TabIndex = 101;
-            this.lblAuto.Text = "Auto";
-            this.lblAuto.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // cmbFormat
-            // 
-            this.cmbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.cmbBayer8Conversion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbBayer8Conversion.FormattingEnabled = true;
+      this.cmbBayer8Conversion.Location = new System.Drawing.Point(214, 62);
+      this.cmbBayer8Conversion.Name = "cmbBayer8Conversion";
+      this.cmbBayer8Conversion.Size = new System.Drawing.Size(144, 21);
+      this.cmbBayer8Conversion.TabIndex = 84;
+      this.cmbBayer8Conversion.SelectedIndexChanged += new System.EventHandler(this.cmbBayerConversion_SelectedIndexChanged);
+      // 
+      // lblBayerConversion
+      // 
+      this.lblBayerConversion.BackColor = System.Drawing.Color.Transparent;
+      this.lblBayerConversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblBayerConversion.ForeColor = System.Drawing.Color.Black;
+      this.lblBayerConversion.Location = new System.Drawing.Point(21, 62);
+      this.lblBayerConversion.Name = "lblBayerConversion";
+      this.lblBayerConversion.Size = new System.Drawing.Size(187, 23);
+      this.lblBayerConversion.TabIndex = 103;
+      this.lblBayerConversion.Text = "Bayer format conversion:";
+      this.lblBayerConversion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // lblAuto
+      // 
+      this.lblAuto.BackColor = System.Drawing.Color.Transparent;
+      this.lblAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblAuto.ForeColor = System.Drawing.Color.Black;
+      this.lblAuto.Location = new System.Drawing.Point(372, 91);
+      this.lblAuto.Name = "lblAuto";
+      this.lblAuto.Size = new System.Drawing.Size(56, 23);
+      this.lblAuto.TabIndex = 101;
+      this.lblAuto.Text = "Auto";
+      this.lblAuto.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // cmbFormat
+      // 
+      this.cmbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFormat.FormattingEnabled = true;
-            this.cmbFormat.Location = new System.Drawing.Point(214, 26);
-            this.cmbFormat.Name = "cmbFormat";
-            this.cmbFormat.Size = new System.Drawing.Size(144, 21);
-            this.cmbFormat.TabIndex = 97;
-            this.cmbFormat.SelectedIndexChanged += new System.EventHandler(this.cmbFormat_SelectedIndexChanged);
-            // 
-            // lblColorSpace
-            // 
-            this.lblColorSpace.BackColor = System.Drawing.Color.Transparent;
-            this.lblColorSpace.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblColorSpace.ForeColor = System.Drawing.Color.Black;
-            this.lblColorSpace.Location = new System.Drawing.Point(21, 26);
-            this.lblColorSpace.Name = "lblColorSpace";
-            this.lblColorSpace.Size = new System.Drawing.Size(187, 23);
-            this.lblColorSpace.TabIndex = 96;
-            this.lblColorSpace.Text = "Stream format:";
-            this.lblColorSpace.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbFormat.FormattingEnabled = true;
+      this.cmbFormat.Location = new System.Drawing.Point(214, 26);
+      this.cmbFormat.Name = "cmbFormat";
+      this.cmbFormat.Size = new System.Drawing.Size(144, 21);
+      this.cmbFormat.TabIndex = 82;
+      this.cmbFormat.SelectedIndexChanged += new System.EventHandler(this.cmbFormat_SelectedIndexChanged);
+      // 
+      // lblColorSpace
+      // 
+      this.lblColorSpace.BackColor = System.Drawing.Color.Transparent;
+      this.lblColorSpace.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblColorSpace.ForeColor = System.Drawing.Color.Black;
+      this.lblColorSpace.Location = new System.Drawing.Point(21, 26);
+      this.lblColorSpace.Name = "lblColorSpace";
+      this.lblColorSpace.Size = new System.Drawing.Size(187, 23);
+      this.lblColorSpace.TabIndex = 101;
+      this.lblColorSpace.Text = "Stream format:";
+      this.lblColorSpace.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // groupBox2
+      // 
+      this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.tbAlias);
-            this.groupBox2.Controls.Add(this.lblSystemName);
-            this.groupBox2.Controls.Add(this.btnIcon);
-            this.groupBox2.Location = new System.Drawing.Point(12, 12);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(435, 76);
-            this.groupBox2.TabIndex = 88;
-            this.groupBox2.TabStop = false;
-            // 
-            // tbAlias
-            // 
-            this.tbAlias.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tbAlias.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbAlias.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.tbAlias.Location = new System.Drawing.Point(73, 22);
-            this.tbAlias.Name = "tbAlias";
-            this.tbAlias.Size = new System.Drawing.Size(342, 15);
-            this.tbAlias.TabIndex = 86;
-            this.tbAlias.Text = "Basler acA2000-50gm";
-            // 
-            // lblSystemName
-            // 
-            this.lblSystemName.AutoSize = true;
-            this.lblSystemName.BackColor = System.Drawing.Color.Transparent;
-            this.lblSystemName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSystemName.ForeColor = System.Drawing.Color.Black;
-            this.lblSystemName.Location = new System.Drawing.Point(68, 45);
-            this.lblSystemName.Name = "lblSystemName";
-            this.lblSystemName.Size = new System.Drawing.Size(70, 13);
-            this.lblSystemName.TabIndex = 85;
-            this.lblSystemName.Text = "System name";
-            this.lblSystemName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // btnIcon
-            // 
-            this.btnIcon.BackColor = System.Drawing.Color.Transparent;
-            this.btnIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnIcon.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnIcon.FlatAppearance.BorderSize = 0;
-            this.btnIcon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnIcon.Location = new System.Drawing.Point(24, 26);
-            this.btnIcon.Name = "btnIcon";
-            this.btnIcon.Size = new System.Drawing.Size(16, 16);
-            this.btnIcon.TabIndex = 83;
-            this.btnIcon.UseVisualStyleBackColor = false;
-            this.btnIcon.Click += new System.EventHandler(this.BtnIconClick);
-            // 
-            // btnApply
-            // 
-            this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnApply.Location = new System.Drawing.Point(349, 375);
-            this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(99, 24);
-            this.btnApply.TabIndex = 89;
-            this.btnApply.Text = "Apply";
-            this.btnApply.UseVisualStyleBackColor = true;
-            // 
-            // FormConfiguration
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(458, 411);
-            this.Controls.Add(this.btnApply);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.gbProperties);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "FormConfiguration";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Camera configuration";
-            this.gbProperties.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.ResumeLayout(false);
+      this.groupBox2.Controls.Add(this.tbAlias);
+      this.groupBox2.Controls.Add(this.lblSystemName);
+      this.groupBox2.Controls.Add(this.btnIcon);
+      this.groupBox2.Location = new System.Drawing.Point(12, 12);
+      this.groupBox2.Name = "groupBox2";
+      this.groupBox2.Size = new System.Drawing.Size(435, 76);
+      this.groupBox2.TabIndex = 50;
+      this.groupBox2.TabStop = false;
+      // 
+      // tbAlias
+      // 
+      this.tbAlias.BorderStyle = System.Windows.Forms.BorderStyle.None;
+      this.tbAlias.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.tbAlias.ForeColor = System.Drawing.Color.CornflowerBlue;
+      this.tbAlias.Location = new System.Drawing.Point(73, 22);
+      this.tbAlias.Name = "tbAlias";
+      this.tbAlias.Size = new System.Drawing.Size(342, 15);
+      this.tbAlias.TabIndex = 52;
+      this.tbAlias.Text = "Basler acA2000-50gm";
+      // 
+      // lblSystemName
+      // 
+      this.lblSystemName.AutoSize = true;
+      this.lblSystemName.BackColor = System.Drawing.Color.Transparent;
+      this.lblSystemName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblSystemName.ForeColor = System.Drawing.Color.Black;
+      this.lblSystemName.Location = new System.Drawing.Point(68, 45);
+      this.lblSystemName.Name = "lblSystemName";
+      this.lblSystemName.Size = new System.Drawing.Size(70, 13);
+      this.lblSystemName.TabIndex = 53;
+      this.lblSystemName.Text = "System name";
+      this.lblSystemName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // btnIcon
+      // 
+      this.btnIcon.BackColor = System.Drawing.Color.Transparent;
+      this.btnIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.btnIcon.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.btnIcon.FlatAppearance.BorderSize = 0;
+      this.btnIcon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.btnIcon.Location = new System.Drawing.Point(24, 26);
+      this.btnIcon.Name = "btnIcon";
+      this.btnIcon.Size = new System.Drawing.Size(16, 16);
+      this.btnIcon.TabIndex = 51;
+      this.btnIcon.UseVisualStyleBackColor = false;
+      this.btnIcon.Click += new System.EventHandler(this.BtnIconClick);
+      // 
+      // btnApply
+      // 
+      this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
+      this.btnApply.Location = new System.Drawing.Point(349, 375);
+      this.btnApply.Name = "btnApply";
+      this.btnApply.Size = new System.Drawing.Size(99, 24);
+      this.btnApply.TabIndex = 200;
+      this.btnApply.Text = "Apply";
+      this.btnApply.UseVisualStyleBackColor = true;
+      // 
+      // FormConfiguration
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.Color.White;
+      this.ClientSize = new System.Drawing.Size(458, 411);
+      this.Controls.Add(this.btnApply);
+      this.Controls.Add(this.groupBox2);
+      this.Controls.Add(this.gbProperties);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+      this.MaximizeBox = false;
+      this.MinimizeBox = false;
+      this.Name = "FormConfiguration";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+      this.Text = "Camera configuration";
+      this.gbProperties.ResumeLayout(false);
+      this.groupBox2.ResumeLayout(false);
+      this.groupBox2.PerformLayout();
+      this.ResumeLayout(false);
 
         }
         private System.Windows.Forms.Button btnIcon;

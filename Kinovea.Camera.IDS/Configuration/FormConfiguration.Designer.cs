@@ -98,7 +98,7 @@ namespace Kinovea.Camera.IDS
       this.cmbFormat.Location = new System.Drawing.Point(214, 26);
       this.cmbFormat.Name = "cmbFormat";
       this.cmbFormat.Size = new System.Drawing.Size(144, 21);
-      this.cmbFormat.TabIndex = 97;
+      this.cmbFormat.TabIndex = 80;
       this.cmbFormat.SelectedIndexChanged += new System.EventHandler(this.cmbFormat_SelectedIndexChanged);
       // 
       // lblColorSpace
@@ -134,7 +134,7 @@ namespace Kinovea.Camera.IDS
       this.tbAlias.Location = new System.Drawing.Point(73, 22);
       this.tbAlias.Name = "tbAlias";
       this.tbAlias.Size = new System.Drawing.Size(342, 15);
-      this.tbAlias.TabIndex = 86;
+      this.tbAlias.TabIndex = 52;
       this.tbAlias.Text = "IDS camera";
       // 
       // lblSystemName
@@ -160,7 +160,7 @@ namespace Kinovea.Camera.IDS
       this.btnIcon.Location = new System.Drawing.Point(24, 26);
       this.btnIcon.Name = "btnIcon";
       this.btnIcon.Size = new System.Drawing.Size(16, 16);
-      this.btnIcon.TabIndex = 83;
+      this.btnIcon.TabIndex = 50;
       this.btnIcon.UseVisualStyleBackColor = false;
       this.btnIcon.Click += new System.EventHandler(this.BtnIconClick);
       // 
@@ -171,7 +171,7 @@ namespace Kinovea.Camera.IDS
       this.btnApply.Location = new System.Drawing.Point(349, 413);
       this.btnApply.Name = "btnApply";
       this.btnApply.Size = new System.Drawing.Size(99, 24);
-      this.btnApply.TabIndex = 89;
+      this.btnApply.TabIndex = 204;
       this.btnApply.Text = "Apply";
       this.btnApply.UseVisualStyleBackColor = true;
       // 
@@ -181,7 +181,7 @@ namespace Kinovea.Camera.IDS
       this.btnReconnect.Location = new System.Drawing.Point(244, 413);
       this.btnReconnect.Name = "btnReconnect";
       this.btnReconnect.Size = new System.Drawing.Size(99, 24);
-      this.btnReconnect.TabIndex = 90;
+      this.btnReconnect.TabIndex = 202;
       this.btnReconnect.Text = "Reconnect";
       this.btnReconnect.UseVisualStyleBackColor = true;
       this.btnReconnect.Click += new System.EventHandler(this.BtnReconnect_Click);
@@ -192,7 +192,7 @@ namespace Kinovea.Camera.IDS
       this.btnImport.Location = new System.Drawing.Point(12, 413);
       this.btnImport.Name = "btnImport";
       this.btnImport.Size = new System.Drawing.Size(138, 24);
-      this.btnImport.TabIndex = 91;
+      this.btnImport.TabIndex = 200;
       this.btnImport.Text = "Import parameters";
       this.btnImport.UseVisualStyleBackColor = true;
       this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
