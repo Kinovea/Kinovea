@@ -1445,6 +1445,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private double AgeToSeconds(int age)
         {
+            if (cameraGrabber == null || !cameraLoaded || age == 0)
+                return 0;
+
             if (recordingMode == CaptureRecordingMode.Camera)
             {
                 // In recording mode "camera" we don't really care about the delayer, and we just feed it at display fps.

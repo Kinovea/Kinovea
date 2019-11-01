@@ -67,6 +67,9 @@ namespace Kinovea.Camera.FrameGenerator
 
         public void Start()
         {
+            if (generator != null)
+                generator.Dispose();
+
             generator = new Generator(configuration);
             cancellationEvent = new ManualResetEvent(false);
             frameIntervalMilliseconds = 1000.0 / configuration.Framerate;
