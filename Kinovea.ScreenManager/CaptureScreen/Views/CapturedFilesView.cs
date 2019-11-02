@@ -163,13 +163,14 @@ namespace Kinovea.ScreenManager
             CapturedFileView view = sender as CapturedFileView;
             if(view == null || view.CapturedFile == null || string.IsNullOrEmpty(view.CapturedFile.Filepath))
                 return;
-            
+
             FilesystemHelper.DeleteFile(view.CapturedFile.Filepath);
             
             if(File.Exists(view.CapturedFile.Filepath))
                 return;
             
             HideCapturedFileView(view.CapturedFile);
+            PreferencesManager.FileExplorerPreferences.ConsolidateRecentCapturedFiles();
             NotificationCenter.RaiseRefreshFileExplorer(this, true);
         }
         private void View_LaunchAsked(object sender, EventArgs e)

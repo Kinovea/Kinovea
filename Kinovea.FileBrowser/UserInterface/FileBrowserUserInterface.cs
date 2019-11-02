@@ -202,6 +202,9 @@ namespace Kinovea.FileBrowser
             splitExplorerFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterDistance;
             splitShortcutsFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterDistance;
 
+            // Prune any captured file removed since last run.
+            PreferencesManager.FileExplorerPreferences.ConsolidateRecentCapturedFiles();
+
             NotificationCenter.RaiseExplorerTabChanged(this, (ActiveFileBrowserTab)tabControl.SelectedIndex);
                 
             DoRefreshFileList(true);
