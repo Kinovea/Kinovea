@@ -127,15 +127,17 @@ namespace Kinovea.ScreenManager
             {
                 found.Add(summary.Identifier);
                 
-                if(refreshImages)
-                    summary.Manager.GetSingleImage(summary);
-                
                 int index = IndexOf(summary.Identifier);
                 if(index >= 0)
+                {
+                    if (refreshImages)
+                        summary.Manager.GetSingleImage(summary);
+
                     continue;
+                }
                 
                 updated = true;
-
+                summary.Manager.GetSingleImage(summary);
                 AddThumbnail(new ThumbnailCamera(summary));
             }
             

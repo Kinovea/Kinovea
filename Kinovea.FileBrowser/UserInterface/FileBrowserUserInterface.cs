@@ -72,6 +72,10 @@ namespace Kinovea.FileBrowser
         private ToolStripMenuItem mnuLaunch = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLocate = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
+
+        private ContextMenuStrip popMenuCameras = new ContextMenuStrip();
+        private ToolStripMenuItem mnuCameraLaunch = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCameraForget = new ToolStripMenuItem();
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -166,9 +170,16 @@ namespace Kinovea.FileBrowser
                 mnuDelete
             });
 
+            mnuCameraLaunch.Image = Properties.Resources.film_go;
+            mnuCameraLaunch.Click += (s, e) => LaunchSelectedCamera(lvCameras);
+            mnuCameraForget.Image = Properties.Resources.delete;
+            mnuCameraForget.Click += (s, e) => DeleteSelectedCamera(lvCameras);
+            popMenuCameras.Items.AddRange(new ToolStripItem[] { mnuCameraLaunch, new ToolStripSeparator(), mnuCameraForget });
+
             lvShortcuts.ContextMenuStrip = popMenuFiles;
             lvExplorer.ContextMenuStrip = popMenuFiles;
             lvCaptured.ContextMenuStrip = popMenuFiles;
+            lvCameras.ContextMenuStrip = popMenuCameras;
         }
 
         private void mnuLocate_Click(object sender, EventArgs e)
@@ -328,6 +339,8 @@ namespace Kinovea.FileBrowser
             mnuLaunch.Text = FileBrowserLang.Generic_Open;
             mnuLocate.Text = "Locate in Windows Explorer"; //FileBrowserLang.mnuVideoLocate;
             mnuDelete.Text = FileBrowserLang.mnuVideoDelete;
+            mnuCameraLaunch.Text = FileBrowserLang.Generic_Open;
+            mnuCameraForget.Text = "Forget custom settings";
 
             // ToolTips
             ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
@@ -549,30 +562,35 @@ namespace Kinovea.FileBrowser
         {
             cameraSummaries.Clear();
             
-            // Add new cameras.
-            foreach(CameraSummary summary in summaries)
-            {
-                cameraSummaries.Add(summary);
-                
-                if(lvCameras.Items.ContainsKey(summary.Identifier))
-                    continue;
-
-                cameraIcons.Images.Add(summary.Identifier, summary.Icon);
-                lvCameras.Items.Add(summary.Identifier, summary.Alias, summary.Identifier);
-            }
-            
             // Remove lost cameras.
             List<string> lost = new List<string>();
-            foreach(ListViewItem lvi in lvCameras.Items)
+            foreach (ListViewItem lvi in lvCameras.Items)
             {
-                if(IndexOfCamera(summaries, lvi.Name) < 0)
+                CameraSummary found = summaries.FirstOrDefault(s => s.Identifier == lvi.Name);
+                if (found == null)
                     lost.Add(lvi.Name);
             }
 
-            foreach(string id in lost)
+            foreach (string id in lost)
             {
                 cameraIcons.Images.RemoveByKey(lvCameras.Items[id].ImageKey);
                 lvCameras.Items.RemoveByKey(id);
+            }
+
+            // Consolidate list.
+            foreach (CameraSummary summary in summaries)
+            {
+                cameraSummaries.Add(summary);
+
+                bool known = lvCameras.Items.ContainsKey(summary.Identifier);
+                if (known)
+                {
+                    lvCameras.Items[summary.Identifier].ImageKey = summary.Identifier;
+                    continue;
+                }
+
+                cameraIcons.Images.Add(summary.Identifier, summary.Icon);
+                lvCameras.Items.Add(summary.Identifier, summary.Alias, summary.Identifier);
             }
         }
         
@@ -1003,6 +1021,21 @@ namespace Kinovea.FileBrowser
             int index = IndexOfCamera(cameraSummaries, lv.SelectedItems[0].Name);
             if (index >= 0)
                 CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
+        }
+
+        private void DeleteSelectedCamera(ListView lv)
+        {
+            if (lv == null || !lv.Focused)
+                return;
+
+            if (lv.SelectedItems == null || lv.SelectedItems.Count != 1)
+                return;
+
+            int index = IndexOfCamera(cameraSummaries, lv.SelectedItems[0].Name);
+            if (index >= 0)
+            {
+                CameraTypeManager.ForgetCamera(cameraSummaries[index]);
+            }
         }
 
         private void CommandDelete()
