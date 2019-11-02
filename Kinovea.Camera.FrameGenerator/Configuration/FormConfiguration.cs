@@ -100,7 +100,7 @@ namespace Kinovea.Camera.FrameGenerator
         
         private void PopulateStreamFormat()
         {
-            lblColorSpace.Text = "Stream format:";
+            lblColorSpace.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
             ImageFormat currentImageFormat = specific.ImageFormat;
             List<ImageFormat> supported = new List<ImageFormat>() { ImageFormat.RGB24, ImageFormat.JPEG };
             foreach (ImageFormat f in supported)

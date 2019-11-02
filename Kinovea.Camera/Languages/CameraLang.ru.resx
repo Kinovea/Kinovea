@@ -86,9 +86,12 @@
    <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve"><value>Экспозиция (µs):</value></data>
    <data name="FormConfiguration_Properties_Gain" xml:space="preserve"><value>Усиление:</value></data>
    <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>Фокус:</value></data>
+   
    <data name="FormConfiguration_Auto" xml:space="preserve"><value>Авто</value></data>
    <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve"><value>Страницы свойств устройства</value></data>
    <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve"><value>Случилась ошибка во время попытки отобразить страницы свойств устройства {0}.</value></data>
+   
+   
    <data name="FormConfiguration_Test" xml:space="preserve"><value>Тест</value></data>
    <data name="FormConnectionWizard_Network" xml:space="preserve"><value>Сеть</value></data>
    <data name="FormConnectionWizard_Host" xml:space="preserve"><value>Хост (IP address)</value></data>

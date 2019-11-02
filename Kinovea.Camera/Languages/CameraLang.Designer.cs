@@ -88,6 +88,24 @@ namespace Kinovea.Camera.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import parameters.
+        /// </summary>
+        public static string FormConfiguration_ImportParameters {
+            get {
+                return ResourceManager.GetString("FormConfiguration_ImportParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bayer format conversion.
+        /// </summary>
+        public static string FormConfiguration_Properties_BayerFormatConversion {
+            get {
+                return ResourceManager.GetString("FormConfiguration_Properties_BayerFormatConversion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exposure:.
         /// </summary>
         public static string FormConfiguration_Properties_Exposure {
@@ -165,6 +183,15 @@ namespace Kinovea.Camera.Languages {
         public static string FormConfiguration_Properties_StreamFormat {
             get {
                 return ResourceManager.GetString("FormConfiguration_Properties_StreamFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reconnect.
+        /// </summary>
+        public static string FormConfiguration_Reconnect {
+            get {
+                return ResourceManager.GetString("FormConfiguration_Reconnect", resourceCulture);
             }
         }
         

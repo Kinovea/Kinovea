@@ -86,9 +86,12 @@
    <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve"><value>التعرض (ميكرو ثانية):</value></data>
    <data name="FormConfiguration_Properties_Gain" xml:space="preserve"><value>الوضوح:</value></data>
    <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>التركيز:</value></data>
+   
    <data name="FormConfiguration_Auto" xml:space="preserve"><value>تلقائي</value></data>
    <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve"><value>صفحات الخصائص جهاز</value></data>
    <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve"><value>حدث خطأ أثناء محاولة لعرض صفحة خصائص الجهاز ل{0}.</value></data>
+   
+   
    <data name="FormConfiguration_Test" xml:space="preserve"><value>اختبار</value></data>
    <data name="FormConnectionWizard_Network" xml:space="preserve"><value>شبكة</value></data>
    <data name="FormConnectionWizard_Host" xml:space="preserve"><value>المضيف (عنوان IP)</value></data>

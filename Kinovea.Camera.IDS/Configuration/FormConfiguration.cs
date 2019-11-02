@@ -86,7 +86,8 @@ namespace Kinovea.Camera.IDS
             tbAlias.Text = summary.Alias;
             lblSystemName.Text = summary.Name;
             btnIcon.BackgroundImage = summary.Icon;
-            btnReconnect.Text = "Reconnect";
+            btnReconnect.Text = CameraLang.FormConfiguration_Reconnect;
+            btnImport.Text = CameraLang.FormConfiguration_ImportParameters;
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
             if (specific == null || specific.Camera == null || !specific.Camera.IsOpened)
@@ -132,7 +133,7 @@ namespace Kinovea.Camera.IDS
 
         private void PopulateStreamFormat()
         {
-            lblColorSpace.Text = "Stream format:";
+            lblColorSpace.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
 
             // Get the intersection of camera and Kinovea supported formats.
             List<IDSEnum> streamFormats = IDSHelper.GetSupportedStreamFormats(camera, deviceId);
@@ -303,10 +304,10 @@ namespace Kinovea.Camera.IDS
         {
             // Locate an .ini file.
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Load parameters";
+            openFileDialog.Title = CameraLang.FormConfiguration_ImportParameters;
             //openFileDialog.InitialDirectory = Path.GetDirectoryName(ProfileHelper.GetProfileFilename(summary.Identifier));
             openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = "Ini file (*.ini)|*.ini;";
+            openFileDialog.Filter = "Ini file (*.ini)" + "|*.ini;";
             openFileDialog.FilterIndex = 0;
             if (openFileDialog.ShowDialog() != DialogResult.OK)
                 return;

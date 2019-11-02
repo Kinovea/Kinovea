@@ -86,9 +86,12 @@
    <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve"><value>Exposure (µs):</value></data>
    <data name="FormConfiguration_Properties_Gain" xml:space="preserve"><value>Gain:</value></data>
    <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>Focus:</value></data>
+   <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve"><value>Bayer format conversion</value></data>
    <data name="FormConfiguration_Auto" xml:space="preserve"><value>Auto</value></data>
    <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve"><value>Device property pages</value></data>
    <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve"><value>An error happened while trying to display the device property page for {0}.</value></data>
+   <data name="FormConfiguration_Reconnect" xml:space="preserve"><value>Reconnect</value></data>
+   <data name="FormConfiguration_ImportParameters" xml:space="preserve"><value>Import parameters</value></data>
    <data name="FormConfiguration_Test" xml:space="preserve"><value>Test</value></data>
    <data name="FormConnectionWizard_Network" xml:space="preserve"><value>Network</value></data>
    <data name="FormConnectionWizard_Host" xml:space="preserve"><value>Host (IP address)</value></data>

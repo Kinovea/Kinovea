@@ -86,9 +86,12 @@
    <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve"><value>Eкспозиција (µs):</value></data>
    <data name="FormConfiguration_Properties_Gain" xml:space="preserve"><value>Gain:</value></data>
    <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>Изоштавање:</value></data>
+   
    <data name="FormConfiguration_Auto" xml:space="preserve"><value>Аутоматски</value></data>
    <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve"><value>Странице са подацима уређаја</value></data>
    <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve"><value>Десила се грешка приликом приказа странице са подацима уређаја</value></data>
+   
+   
    <data name="FormConfiguration_Test" xml:space="preserve"><value>Тест</value></data>
    <data name="FormConnectionWizard_Network" xml:space="preserve"><value>Мрежа</value></data>
    <data name="FormConnectionWizard_Host" xml:space="preserve"><value>Host (IP address)</value></data>

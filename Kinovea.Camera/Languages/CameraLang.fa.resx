@@ -86,9 +86,12 @@
    <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve"><value>آشکاری (میکروثانیه):</value></data>
    <data name="FormConfiguration_Properties_Gain" xml:space="preserve"><value>وضوح:</value></data>
    <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>فوکوس:</value></data>
+   
    <data name="FormConfiguration_Auto" xml:space="preserve"><value>اتوماتیک</value></data>
    <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve"><value>صفحات ویژگی دستگاه</value></data>
    <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve"><value>هنگام تلاش برای نمایش صفحه خاصیت دستگاه خطایی روی داد. {0}</value></data>
+   
+   
    <data name="FormConfiguration_Test" xml:space="preserve"><value>تست</value></data>
    <data name="FormConnectionWizard_Network" xml:space="preserve"><value>شبکه</value></data>
    <data name="FormConnectionWizard_Host" xml:space="preserve"><value>میزبان (آدرس IP)</value></data>

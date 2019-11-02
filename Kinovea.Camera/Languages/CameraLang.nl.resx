@@ -86,9 +86,12 @@
    <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve"><value>Belichting (µs):</value></data>
    <data name="FormConfiguration_Properties_Gain" xml:space="preserve"><value>Versterking:</value></data>
    <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>Focus:</value></data>
+   
    <data name="FormConfiguration_Auto" xml:space="preserve"><value>Auto:</value></data>
    <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve"><value>Eigenschappagina's van apparaat</value></data>
    <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve"><value>Een fout is ontstaan, terwijl geprobeerd wordt om de eigenschappagina van het apparaat weer te geven {0}.</value></data>
+   
+   
    <data name="FormConfiguration_Test" xml:space="preserve"><value>Test</value></data>
    <data name="FormConnectionWizard_Network" xml:space="preserve"><value>Netwerk</value></data>
    <data name="FormConnectionWizard_Host" xml:space="preserve"><value>Host (IP adres)</value></data>

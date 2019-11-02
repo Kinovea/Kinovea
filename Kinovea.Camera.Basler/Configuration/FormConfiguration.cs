@@ -166,7 +166,7 @@ namespace Kinovea.Camera.Basler
 
         private void PopulateBayerConversion()
         {
-            lblBayerConversion.Text = "Bayer format conversion:";
+            lblBayerConversion.Text = CameraLang.FormConfiguration_Properties_BayerFormatConversion;
             cmbBayer8Conversion.Items.Add("Raw");
             cmbBayer8Conversion.Items.Add("Mono");
             cmbBayer8Conversion.Items.Add("Color");
