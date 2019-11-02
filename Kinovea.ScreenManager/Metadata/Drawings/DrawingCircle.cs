@@ -56,6 +56,7 @@ namespace Kinovea.ScreenManager
             { 
                 int hash = center.GetHashCode();
                 hash ^= radius.GetHashCode();
+                hash ^= showCenter.GetHashCode();
                 hash ^= trackExtraData.GetHashCode();
                 hash ^= miniLabel.GetHashCode();
                 hash ^= styleHelper.ContentHash;
@@ -421,6 +422,7 @@ namespace Kinovea.ScreenManager
         {
             InitializeMenuMeasurement();
             mnuShowCenter.Text = "Show circle center";
+            mnuShowCenter.Checked = showCenter;
         }
         private void InitializeMenuMeasurement()
         {
