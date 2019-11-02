@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Atkurti numatytajį spalvos profilį</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Įkelti spalvos profilį</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Išsaugoti spalvos profilį</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Visą laiką rodyti žymą</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Žymė :</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Nustatyti chronometrą</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Piešinių nustatymai</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Pastovei matomas</value></data>
@@ -131,7 +128,6 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Atkurti</value></data>
-   
    
    
    
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Klaida: Negaliu atverti dokumento : video šaltinis nerastas.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Užrakinti darbo zonos ribas</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Atrakinti darbo zonos ribas</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>Nustatyti</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>Atgalinis rėžimas</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>Panaikinti chronometrą</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>Paslėpti chronometrą</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Paleisti chronometrą</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stabdyti chronometrą</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Uždaryti langą</value></data>
@@ -377,7 +369,6 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Nustatyti dydį...</value></data>
    
    
-   <data name="mnuShowCoordinates" xml:space="preserve"><value>Rodyti koordinates</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Rodyti dydį</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Baigti redaguoti kelią</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Stebėjimo nuoroda</value></data>
@@ -458,9 +449,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Apžvalga...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reversas...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatinis kontrastas...</value></data>
-   
-   
-   
    
    
    

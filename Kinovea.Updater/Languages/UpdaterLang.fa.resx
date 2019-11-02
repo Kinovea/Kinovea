@@ -72,18 +72,15 @@
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>بروز رسانی نرم افزار ...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>نسخه جدیدی در دسترس است!</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>لطفا دایرکتوری مورد نظر برای فایل نصبی را انتخاب کنید.</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>نسخه فعلی :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>دانلود</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>حجم فایل:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>هنگام چک کردن به روز رسانی، خطایی رخ داد. لطفا از اتصال اینترنت اطمینان حاصل کنید.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>فهرست تغییرات:</value></data>
-   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>نسخه جدید با موفقیت دانلود شد. \n لطفا کینوویا را ببندید و نصب را از جایی که آن را ذخیره کردید اجرا کنید.</value></data>
-   <data name="Updater_MegaBytes" xml:space="preserve"><value>مگابایت</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>نسخه جدید</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>خروج</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>کینوویا - در حال بررسی برای نسخه جدید.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>نسخه شما بروز است !</value></data>
+   
    
    
    

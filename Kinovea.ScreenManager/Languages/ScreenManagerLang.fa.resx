@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>بازنشانی تنظیمات پیش فرض نمایه رنگ</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>بارگذاری نمایه رنگ</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>ذخیره نمایه رنگ</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>همیشه برچسب را نشان بده</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>برچسب:</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>پیکربندی کرونومتر</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>پیکربندی طرح</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>نام</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>همیشه نمایان</value></data>
@@ -132,7 +129,6 @@
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>این گزینه نرخ فریم مرجع مورد استفاده توسط کینوویا را برای پخش ویدئو تعیین می کند. هنگامی از آن استفاده کنید که ویدیو حاوی یک فریم اشتباه باشد یا کینوویا نمی تواند آن را بخواند. </value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>تنظیم مجدد</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>پیکربندی ابزار مسیر پرتابه</value></data>
-   <data name="dlgConfigureTrajectory_grpIdentification" xml:space="preserve"><value>شناسایی</value></data>
    <data name="dlgConfigureTrajectory_LabelVisibility" xml:space="preserve"><value>نمایانی:</value></data>
    <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>تکمیل</value></data>
    <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve"><value>یک ثانیه</value></data>
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>عدم موفقیت: امکان باز کردن پرونده وجود ندارد: جریان ویدیو یافت نشد.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>مرزهای منطقه کاری را قفل کنید</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>مرزهای منطقه کاری را باز کنید</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>پیکربندی</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>حالت شمارش معکوس</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>حذف کردن کرنومتر </value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>مخفی کردن کرنومتر</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>شروع کرنومتر</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>توقف کرنومتر</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>بستن این صفحه</value></data>
@@ -377,7 +369,6 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>اندازه گیری کالیبراسیون ...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>کالیبراسیون ...</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>پیکربندی زمانی ویدئو ...</value></data>
-   <data name="mnuShowCoordinates" xml:space="preserve"><value>مختصات نمایش</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>مقیاس نمایش</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>پایان ویرایش مسیر</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>مرجع مشاهده ای</value></data>
@@ -463,10 +454,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>پرونده</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>تاریخ</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>پروژه‌های زیر به درستی ذخیره نشده‌اند اما قابل بازیابی هستند:</value></data>
-   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>پیکربندی حالت تاخیر</value></data>
-   <data name="FormConfigureComposite_Delay" xml:space="preserve"><value>تاخیر</value></data>
-   <data name="FormConfigureComposite_SlowMotion" xml:space="preserve"><value>حرکت آهسته</value></data>
-   <data name="FormConfigureComposite_Quadrants" xml:space="preserve"><value>ربع‌ها</value></data>
+   
    
    
    

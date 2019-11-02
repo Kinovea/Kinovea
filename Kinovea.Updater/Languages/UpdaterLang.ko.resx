@@ -72,18 +72,15 @@
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>새 소프트웨어로 교체…</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>새로운 버전 가용함!</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>설치기 파일을 위한 목표 디렉터리를 지정하시오.</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>현재 버전:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>내려 받기</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>파일 크기:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>새 소프트웨어를 찾는 중 오류 발생. 인터넷에 연결되어 있는지 확인요망.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>기록 변경:</value></data>
-   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>새 버전을 성공적으로 내려 받았습니다.\n Kinovea를 종료하고 새 버전을 다운 받은 곳에서 설치파일을 실행하십시오.</value></data>
-   <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>새 버전</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>끝내기</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea-새 버전을 검토하시오.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>최신 버전입니다.</value></data>
+   
    
    
    

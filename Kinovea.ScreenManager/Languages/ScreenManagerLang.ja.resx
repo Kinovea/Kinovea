@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>デフォルトのカラープロファイルへ戻す</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>カラープロファイルを開く</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>カラープロファイルの保存</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>ラベルを常に表示</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>ラベル:</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>ストップウォッチの設定</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>ドローイングの設定</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>常に表示</value></data>
@@ -131,7 +128,6 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>リセット</value></data>
-   
    
    
    
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>エラー: ファイルを開くことができませんでした : ビデオストリームが検出されませんでした。</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>作業範囲を固定</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>作業範囲の固定解除</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>設定</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>カウントダウンモード</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>ストップウォッチを削除</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>ストップウォッチを隠す</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>ストップウォッチをスタートする</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>ストップウォッチを止める</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>このスクリーンを閉じる</value></data>
@@ -377,7 +369,6 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>計測値の較正…</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>較正…</value></data>
    
-   <data name="mnuShowCoordinates" xml:space="preserve"><value>座標を表示</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>計測値を表示</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>軌道の最終地点を確定</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>実測用画像</value></data>
@@ -458,9 +449,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>概要…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>逆再生…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>オートコントラスト…</value></data>
-   
-   
-   
    
    
    

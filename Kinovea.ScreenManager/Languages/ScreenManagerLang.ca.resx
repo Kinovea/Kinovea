@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Restablir el perfil de colors per defecte</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Carregar un perfil de colors</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Desar el perfil de colors</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Sempre mostrar les etiquetes</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Etiqueta:</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configurar el Cronòmetre</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurar el dibuix</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Nom</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Sempre visible</value></data>
@@ -132,7 +129,6 @@
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Aquesta opció estableix els fotogrames per segon usats pel Kinovea per reproduir el vídeo. Useu-la quan el vídeo contingui el paràmetre de fotogrames per segon erroni o quan el Kinovea no pugui llegir-lo.</value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Restablir</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurar l'eina de trajectòria</value></data>
-   <data name="dlgConfigureTrajectory_grpIdentification" xml:space="preserve"><value>Identificació</value></data>
    <data name="dlgConfigureTrajectory_LabelVisibility" xml:space="preserve"><value>Visibilitat:</value></data>
    <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>Complert</value></data>
    <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve"><value>Un segon</value></data>
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Error: No s'ha pogut obrir l'arxiu: no s'ha trobat el flux del vídeo.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Bloqueja els límits de la zona de treball</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Desbloqueja els límits de la zona de treball</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>Configurar</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>Mode de compte enrere</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>Esborra el Cronòmetre</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>Amaga el Cronòmetre</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Inicia el Cronòmetre</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Atura el Cronòmetre</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Tanca aquesta finestra</value></data>
@@ -377,7 +369,6 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar la mesura...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar...</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configurar la velocitat del video</value></data>
-   <data name="mnuShowCoordinates" xml:space="preserve"><value>Mostrar coordenades</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar mesura</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Finalitzar l'edició de la trajectòria</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Referència d'observació</value></data>
@@ -463,9 +454,6 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Arxiu</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Data</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Els següents projectes no han estat desats però poden ser recuperats:</value></data>
-   
-   
-   
    
    
    

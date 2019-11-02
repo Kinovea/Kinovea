@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Standard fargeprofil</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Last inn fargeprofil</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Lagre fargeprofil</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Alltid vis beskrivelse</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Beskrivelse: </value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Konfigurer stoppeklokke</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Konfigurer tegning</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
@@ -131,7 +128,6 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Tilbakestill</value></data>
-   
    
    
    
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Advarsel: Kan ikke åpne fil : videostream ikke funnet</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lås arbeidssonegrensene</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Åpne arbeidssonegrensene</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfigurer</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>Nedtellingsmodus</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>Slett stoppeklokke</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>Skjul stoppeklokke</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Start stoppeklokke</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stop stoppeklokke</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Lukk vindu</value></data>
@@ -375,7 +367,6 @@
    
    <data name="mnuSave" xml:space="preserve"><value>Lagre...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrere måling</value></data>
-   
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
@@ -458,9 +449,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
-   
-   
-   
    
    
    

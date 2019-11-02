@@ -72,18 +72,15 @@
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Atualização do software...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Uma nova versão está disponível!</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Por favor, escolha a pasta que deseja salvar o arquivo de instalação.</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versão atual :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Baixar</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>Tamanho do arquivo :</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Ocorreu um erro enquanto o programa procurava atualizações. Por favor, verifique se existe uma conexão de Internet ativa.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Log de mudanças:</value></data>
-   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>A nova versão foi baixada com sucesso.\n Por favor, feche o Kinovea e execute o instalador de onde você o salvou.</value></data>
-   <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Nova Versão</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Sair</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Buscando nova versão.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Sua versão está atualizada!</value></data>
+   
    
    
    

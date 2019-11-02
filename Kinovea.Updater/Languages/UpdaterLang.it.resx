@@ -72,18 +72,15 @@
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Aggiornamento software...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>E' disponibile una nuova versione !</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Scegliere la Directory di destinazione per il File di installazione.</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versione Attuale :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Scarico (Download)</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>Dimensione File :</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>E' avvenuto un errore durante la ricerca di Aggiornamenti. Assicurarsi che sia attiva la connessione Internet. </value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Lista Variazioni :</value></data>
-   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>La nuova Versione e' stata scaricata con successo.\n Chiudere Kinovea e far partire il Programma di Installazione dalla cartella in cui e' stato salvato. </value></data>
-   <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Nuova Versione</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Esci</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Verifica esistenza di nuova versione.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>La vostra Versione e' aggiornata !</value></data>
+   
    
    
    

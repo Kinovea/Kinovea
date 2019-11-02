@@ -72,18 +72,15 @@
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Programos atnaujinimas...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Jau galite atnaujinti programą!</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Prašau pasirinkti aplanką diegimo dokumentui.</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Dabartinė programos versija :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Atsiųsti</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>Dokumento dydis :</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Klaida ieškant atnaujinimo. Prašau patikrinkite prieigą prie interneto.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Pakeitimų žurnalas :</value></data>
-   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>Programos naujausia versija atsiusta.\n Prašau uždaryti programą Kinovea ir paleisti diegimo dokumentą.</value></data>
-   <data name="Updater_MegaBytes" xml:space="preserve"><value>Mb</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Nauja versija</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Baigti</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - tikrinama programos versija.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Programa atnaujinta!</value></data>
+   
    
    
    

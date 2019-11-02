@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>默认颜色配置</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>载入颜色配置</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>保存颜色配置</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>一直显示标签</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>标签:</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>配置秒表</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>配置绘图</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>一直可见</value></data>
@@ -131,7 +128,6 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>重设</value></data>
-   
    
    
    
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>失败: 无法打开文件 : 无法找到视频流.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>锁定工作区界限</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>解锁工作区界限</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>配置</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>倒计时模式</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>删除秒表</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>隐藏秒表</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>开始数秒</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>停止数秒</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>关闭这个屏幕</value></data>
@@ -375,7 +367,6 @@
    
    <data name="mnuSave" xml:space="preserve"><value>保存…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>校准测量...</value></data>
-   
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>显示测量</value></data>
@@ -458,9 +449,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>马赛克...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>反向...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>自动对比度...</value></data>
-   
-   
-   
    
    
    

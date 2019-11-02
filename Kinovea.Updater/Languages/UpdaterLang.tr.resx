@@ -72,18 +72,15 @@
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Yazılım Güncelleme...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Yeni bir sürüm mevcut !</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Lütfen yükleyici dosya için gerekli hedef klasörünü seçin.</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Geçerli Sürüm :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>İndir</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>Dosya Büyüklüğü :</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Güncellemeleri tararken bir hata meydana geldi. İnternet bağlantınızın olduğundan emin olun.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Değişim Logu:</value></data>
-   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>Yeni sürüm başarıyla indirildi.\n Lütfen Kinovea'yı kapatın ve yükleyiciyi kaydettiğiniz yerden çalıştırın.</value></data>
-   <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Yeni Sürüm</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Çık</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Yeni bir sürümü tarıyor.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Sürümünüz güncel !</value></data>
+   
    
    
    

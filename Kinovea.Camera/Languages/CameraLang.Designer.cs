@@ -88,15 +88,6 @@ namespace Kinovea.Camera.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert Bayer formats to color.
-        /// </summary>
-        public static string FormConfiguration_Properties_Debayering {
-            get {
-                return ResourceManager.GetString("FormConfiguration_Properties_Debayering", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Exposure:.
         /// </summary>
         public static string FormConfiguration_Properties_Exposure {

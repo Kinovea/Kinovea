@@ -78,7 +78,6 @@
    <data name="FormIconPicker_Title" xml:space="preserve"><value>Icônes</value></data>
    <data name="FormConfiguration_Title" xml:space="preserve"><value>Configuration de la caméra</value></data>
    <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve"><value>Format :</value></data>
-   <data name="FormConfiguration_Properties_Debayering" xml:space="preserve"><value>Convertir les formats Bayer en couleur</value></data>
    <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve"><value>Taille d'image :</value></data>
    <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve"><value>Largeur :</value></data>
    <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve"><value>Hauteur :</value></data>

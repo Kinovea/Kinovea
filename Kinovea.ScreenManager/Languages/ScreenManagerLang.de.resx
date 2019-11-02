@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Standardprofil zurücksetzen</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Lade Farbprofil</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Speichere Farbprofil</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Beschriftung dauernd anzeigen</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Beschriftung:</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Stoppuhr einstellen</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Zeichnung konfigurieren</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>immer sichtbar</value></data>
@@ -131,7 +128,6 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Zurücksetzen</value></data>
-   
    
    
    
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Fehler beim Öffnen der Datei – Videostream nicht gefunden.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Arbeitsbereichsgrenzen sperren</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Arbeitsbereichsgrenzen verändern</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfigurieren</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>Countdown Modus</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>Lösche Stoppuhr</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>Verstecke Stoppuhr</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Starte Stoppuhr</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stoppuhr anhalten</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Fenster schließen</value></data>
@@ -377,7 +369,6 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Messung kalibrieren</value></data>
    
    
-   <data name="mnuShowCoordinates" xml:space="preserve"><value>Koordinaten anzeigen</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Messwert anzeigen</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Beende Trajektorienbearbeitung</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Referenzobjekt</value></data>
@@ -458,9 +449,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Übersicht</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invers</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Autokontrast...</value></data>
-   
-   
-   
    
    
    

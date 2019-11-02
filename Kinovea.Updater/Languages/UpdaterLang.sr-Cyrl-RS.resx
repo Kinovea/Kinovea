@@ -72,18 +72,15 @@
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Ажурирање софтвера…</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Нова верзија је доступна!</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Молимо изаберите жељени директоријум за датотеку са инсталатором .</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Тренутна верзија:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Преузети</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>Величина датотеке:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Дошло је до грешке приликом провере ажурирања. Молимо вас да осигурате да Интернет веза буде доступна.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Евиденција промена:</value></data>
-   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>Нова верзија је успешно преузета.\n Молимо вас да затворите Kinovea и покренете инсталатор са места где сте га сачували.</value></data>
-   <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Нова верзија</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Одустани</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Провера за нову верзију.</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Ваша верзија је најновија !</value></data>
+   
    
    
    

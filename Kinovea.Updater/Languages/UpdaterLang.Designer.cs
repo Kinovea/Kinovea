@@ -79,15 +79,6 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please choose the target directory for the installer file..
-        /// </summary>
-        public static string Updater_BrowseFolderDescription {
-            get {
-                return ResourceManager.GetString("Updater_BrowseFolderDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Current Version :.
         /// </summary>
         public static string Updater_CurrentVersion {
@@ -106,15 +97,6 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File Size :.
-        /// </summary>
-        public static string Updater_FileSize {
-            get {
-                return ResourceManager.GetString("Updater_FileSize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An error occurred while checking for updates. Please ensure an Internet connection is available. .
         /// </summary>
         public static string Updater_InternetError {
@@ -129,24 +111,6 @@ namespace Kinovea.Updater.Languages {
         public static string Updater_LblChangeLog {
             get {
                 return ResourceManager.GetString("Updater_LblChangeLog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The new version was successfully downloaded.\n Please close Kinovea and launch the installer from where you saved it. .
-        /// </summary>
-        public static string Updater_mboxDownloadSuccess_Description {
-            get {
-                return ResourceManager.GetString("Updater_mboxDownloadSuccess_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MB.
-        /// </summary>
-        public static string Updater_MegaBytes {
-            get {
-                return ResourceManager.GetString("Updater_MegaBytes", resourceCulture);
             }
         }
         

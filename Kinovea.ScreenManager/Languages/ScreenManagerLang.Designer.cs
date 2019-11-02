@@ -547,33 +547,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Always Show Label.
-        /// </summary>
-        public static string dlgConfigureChrono_chkShowLabel {
-            get {
-                return ResourceManager.GetString("dlgConfigureChrono_chkShowLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Label :.
-        /// </summary>
-        public static string dlgConfigureChrono_Label {
-            get {
-                return ResourceManager.GetString("dlgConfigureChrono_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure Stopwatch.
-        /// </summary>
-        public static string dlgConfigureChrono_Title {
-            get {
-                return ResourceManager.GetString("dlgConfigureChrono_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string dlgConfigureDrawing_Name {
@@ -786,15 +759,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string dlgConfigureTrajectory_ExtraData_VerticalVelocity {
             get {
                 return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_VerticalVelocity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Identification.
-        /// </summary>
-        public static string dlgConfigureTrajectory_grpIdentification {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_grpIdentification", resourceCulture);
             }
         }
         
@@ -1753,42 +1717,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delay.
-        /// </summary>
-        public static string FormConfigureComposite_Delay {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_Delay", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Quadrants.
-        /// </summary>
-        public static string FormConfigureComposite_Quadrants {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_Quadrants", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Slow motion.
-        /// </summary>
-        public static string FormConfigureComposite_SlowMotion {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_SlowMotion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure delay mode.
-        /// </summary>
-        public static string FormConfigureComposite_Title {
-            get {
-                return ResourceManager.GetString("FormConfigureComposite_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
         public static string FormCrashRecovery_Date {
@@ -2401,42 +2329,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure.
-        /// </summary>
-        public static string mnuChronoConfigure {
-            get {
-                return ResourceManager.GetString("mnuChronoConfigure", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Countdown Mode.
-        /// </summary>
-        public static string mnuChronoCountdown {
-            get {
-                return ResourceManager.GetString("mnuChronoCountdown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Delete Stopwatch.
-        /// </summary>
-        public static string mnuChronoDelete {
-            get {
-                return ResourceManager.GetString("mnuChronoDelete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hide Stopwatch.
-        /// </summary>
-        public static string mnuChronoHide {
-            get {
-                return ResourceManager.GetString("mnuChronoHide", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Start Stopwatch.
         /// </summary>
         public static string mnuChronoStart {
@@ -2973,15 +2865,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuShowArrow {
             get {
                 return ResourceManager.GetString("mnuShowArrow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Display coordinates.
-        /// </summary>
-        public static string mnuShowCoordinates {
-            get {
-                return ResourceManager.GetString("mnuShowCoordinates", resourceCulture);
             }
         }
         

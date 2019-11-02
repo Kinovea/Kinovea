@@ -78,7 +78,6 @@
    <data name="FormIconPicker_Title" xml:space="preserve"><value>الرموز</value></data>
    <data name="FormConfiguration_Title" xml:space="preserve"><value>التكوين الكاميرا</value></data>
    <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve"><value>تنسيق التدفق:</value></data>
-   
    <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve"><value>حجم الصورة:</value></data>
    <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve"><value>عرض:</value></data>
    <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve"><value>ارتفاع:</value></data>

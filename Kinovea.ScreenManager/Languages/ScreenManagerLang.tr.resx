@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Varsayılan Renk Profiline Dön</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Renk Profili Yükle</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Renk Profili Kaydet</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Etiketi Her Zaman Göster</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Etiket :</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Kronometreyi Ayarla</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Çizimi Ayarla</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Her zaman Görünür</value></data>
@@ -131,7 +128,6 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Baştaki Konuma Getir</value></data>
-   
    
    
    
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Hata: Dosya açılamıyor : video akışı bulunamadı.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Çalışma Alanı Sınırlarını Kilitle</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Çalışma Alanı Sınırlarının Kilidini Aç</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>Ayarla</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>Geriye doğru sayma Modu</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>Kronometreyi Sil</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>Kronemetreyi Gizle</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Kronometreyi Başlat</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Kronometreyi Durdur</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Bu Ekranı Kapa</value></data>
@@ -377,7 +369,6 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Ölçümü Kalibre Et...</value></data>
    
    
-   <data name="mnuShowCoordinates" xml:space="preserve"><value>Koordinatları göster</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Ölçümü Göster</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Yol Düzenlemesini Sonlandır</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Gözlemsel referans</value></data>
@@ -458,9 +449,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Göz Atma...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Geri...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Oto Kontrast...</value></data>
-   
-   
-   
    
    
    

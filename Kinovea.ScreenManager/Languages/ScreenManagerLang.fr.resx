@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Rétablir le Profil Couleurs par défaut</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Charger un profil couleurs</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Sauver le profil couleurs</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Toujours Montrer le Label</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Label :</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configurer le Chronomètre</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurer le Dessin</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Nom</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Toujours Visible</value></data>
@@ -132,7 +129,6 @@
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Cette option définit la fréquence de référence utilisée par Kinovea pour jouer la vidéo. À utiliser si la vidéo contient une mauvaise fréquence d'images ou si Kinovea ne peut pas la relire correctement.</value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Remettre à zéro</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configuration de l'outil trajectoire</value></data>
-   <data name="dlgConfigureTrajectory_grpIdentification" xml:space="preserve"><value>Identification</value></data>
    <data name="dlgConfigureTrajectory_LabelVisibility" xml:space="preserve"><value>Visibilité :</value></data>
    <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>Complète</value></data>
    <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve"><value>Une seconde</value></data>
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Chargement du fichier impossible : aucun flux vidéo trouvé.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Vérouiller les Bornes de la Zone de Travail</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Dévérouiller les Bornes de la Zone de Travail</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>Configurer</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>Mode Compte à Rebours</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>Effacer le Chronomètre</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>Masquer le Chronomètre</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Démarrer le Chronomètre</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Arrêter le Chronomètre</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Fermer cet Écran</value></data>
@@ -377,7 +369,6 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Étalonner la mesure...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrer…</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configurer le timing de la vidéo…</value></data>
-   <data name="mnuShowCoordinates" xml:space="preserve"><value>Afficher les coordonnées</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afficher la mesure</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Terminer l'édition de la Trajectoire</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Référence d'observation</value></data>
@@ -463,10 +454,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Fichier</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Date</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Les projets suivants n'ont pas été enregistré correctement mais peuvent être récupérés :</value></data>
-   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Configurer le mode de retardement</value></data>
-   <data name="FormConfigureComposite_Delay" xml:space="preserve"><value>Délai</value></data>
-   <data name="FormConfigureComposite_SlowMotion" xml:space="preserve"><value>Ralentit</value></data>
-   <data name="FormConfigureComposite_Quadrants" xml:space="preserve"><value>Quadrants</value></data>
+   
    
    
    

@@ -72,18 +72,15 @@
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Actualització de programari</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Hi ha disponible una nova versió</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Siusplau, escolliu un directori on desar l'arxiu d'instal·lació</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versió actual:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Descarregar</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>Mida de l'arxiu:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>S'ha produït un error mentre es comprovaven les actualitzacions. Siusplau assegureu-vos de que estu connectats a Internet</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Llista de canvis</value></data>
-   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>La nov a versió s'ha descarregat correctament.\n Siusplau tanquel el Kinovea i executeu l'instal·lador des de on l'hagueu desat.</value></data>
-   <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Nova Versió</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Sortir</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea – Comprovant si hi ha una nova versió</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>La vostre versió està actualitzada</value></data>
+   
    
    
    

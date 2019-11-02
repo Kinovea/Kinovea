@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Reset to default Color Profile</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Load color profile</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Save color Profile</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Always Show Label</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Label :</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configure Stopwatch</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configure Drawing</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Name</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Always Visible</value></data>
@@ -132,7 +129,6 @@
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>This option defines the reference framerate used by Kinovea to play the video. Use it when the video contains a wrong framerate or Kinovea cannot read it. </value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Reset</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configure trajectory tool</value></data>
-   <data name="dlgConfigureTrajectory_grpIdentification" xml:space="preserve"><value>Identification</value></data>
    <data name="dlgConfigureTrajectory_LabelVisibility" xml:space="preserve"><value>Visibility:</value></data>
    <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>Complete</value></data>
    <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve"><value>One second</value></data>
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Failure: Unable to open the file : video stream not found.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lock the Working Zone Boundaries</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Unlock the Working Zone Boundaries</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>Configure</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>Countdown Mode</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>Delete Stopwatch</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>Hide Stopwatch</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Start Stopwatch</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stop Stopwatch</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Close This Screen</value></data>
@@ -377,7 +369,6 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrate measure...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrate...</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configure video timing...</value></data>
-   <data name="mnuShowCoordinates" xml:space="preserve"><value>Display coordinates</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Display Measure</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>End Path Edition </value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Observational reference</value></data>
@@ -463,10 +454,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>File</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Date</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>The following projects were not saved properly but can be recovered:</value></data>
-   <data name="FormConfigureComposite_Title" xml:space="preserve"><value>Configure delay mode</value></data>
-   <data name="FormConfigureComposite_Delay" xml:space="preserve"><value>Delay</value></data>
-   <data name="FormConfigureComposite_SlowMotion" xml:space="preserve"><value>Slow motion</value></data>
-   <data name="FormConfigureComposite_Quadrants" xml:space="preserve"><value>Quadrants</value></data>
+   
    
    
    

@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Nastavit na předvolený barevný profil</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Nahrát barevný profil</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Uložit barevný profil</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Vždy zobrazit označení</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Označení:</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Konfigurovat stopky</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Konfigurovat nákres</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Vždy viditelné</value></data>
@@ -131,7 +128,6 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Reset</value></data>
-   
    
    
    
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Chyba: Nelze otevřít soubor: video stream nenalezen.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Uzamčít hranice pracovní oblasti</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Odemčít hranice pracovní oblasti</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfigurovat</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>Mód odpočítávání</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>Vymazat stopky</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>Skrýt stopky</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Stopky - start</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stopky - konec</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Zavřít tuto obrazovku</value></data>
@@ -377,7 +369,6 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrovat měření…</value></data>
    
    
-   <data name="mnuShowCoordinates" xml:space="preserve"><value>Zobrazit souřadnice</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Zobrazit měření</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Konec trasování</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Srovnávací reference</value></data>
@@ -458,9 +449,6 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Celkový přehled</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Zpětné přehrávání…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast….</value></data>
-   
-   
-   
    
    
    

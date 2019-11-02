@@ -72,18 +72,15 @@
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Обновить программу</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Доступна новая версия!</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Пожалуйста, измените директорию для установочного файла.</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Текущая версия:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Загрузить</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>Размер файла:</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Произошла ошибка при проверке обновлений. Пожалуйста, убедитесь, что вы подключены к Интернету.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Изменение регистрации:</value></data>
-   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>Новая версия была успешно загружена.\n Пожалуйста, закройте Kinovea и запустите инсталлятор из места установки.</value></data>
-   <data name="Updater_MegaBytes" xml:space="preserve"><value>МБ</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Новая версия</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Выйти</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - проверить новую версию</value></data>
    <data name="Updater_UpToDate" xml:space="preserve"><value>Ваша версия обновлена!</value></data>
+   
    
    
    

@@ -115,9 +115,6 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Herstel naar basiskleurenprofiel</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Laad een kleurenprofiel</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Bewaar kleurenprofiel</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Toon altijd Label</value></data>
-   <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Label:</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configureer Stopwatch</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configureer Tekening</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Naam</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Altijd zichtbaar</value></data>
@@ -132,7 +129,6 @@
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Dese optie bepaalt de referentie framerate die door Kinovea wordt gebuikt om de video af te spelen. Gebruik het als de video een verkeerde framerate bevat of als Kinovea deze niet kan lezen.</value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Herstel</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configureer het trajectory gereedschap</value></data>
-   <data name="dlgConfigureTrajectory_grpIdentification" xml:space="preserve"><value>Identificatie</value></data>
    <data name="dlgConfigureTrajectory_LabelVisibility" xml:space="preserve"><value>Zichtbaarheid:</value></data>
    <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>Compleet</value></data>
    <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve"><value>Eén seconde</value></data>
@@ -319,10 +315,6 @@
    <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Fout bij openen van het bestand : geen video voortgang gevonden.</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Werkgebiedgrenzen vergrendelen</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Werkgebiedgrenzen ontgrendelen</value></data>
-   <data name="mnuChronoConfigure" xml:space="preserve"><value>Configureer</value></data>
-   <data name="mnuChronoCountdown" xml:space="preserve"><value>Aftelmodus</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>Verwijder Stopwatch</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>Verberg Stopwatch</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Start Stopwatch</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stop Stopwatch</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Sluit dit scherm</value></data>
@@ -377,7 +369,6 @@
    <data name="mnuSealMeasure" xml:space="preserve"><value>Fixeer de afmeting</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibreer…</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configureer de videotiming…</value></data>
-   <data name="mnuShowCoordinates" xml:space="preserve"><value>Toon coördinaten</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Toon afmeting</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Beëindig Trajectory bewerking</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Observatie Referentie</value></data>
@@ -463,9 +454,6 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Bestand</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Datum</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>De volgende projecten werden niet correct opgeslagen, maar kunnen hersteld worden:</value></data>
-   
-   
-   
    
    
    
