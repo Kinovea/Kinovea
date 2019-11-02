@@ -543,9 +543,9 @@ namespace Kinovea.ScreenManager
                 // Relative clock mode: video time relative to origin.
                 // Origin is either the drawing-specific origin, or this hasn't been set yet, the video-wide origin.
                 if (clockOriginTimestamp == long.MaxValue)
-                    return parentMetadata.TimeCodeBuilder(currentTimestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, false);
+                    return parentMetadata.TimeCodeBuilder(currentTimestamp, TimeType.UserOrigin, TimecodeFormat.Unknown, true);
                 else
-                    return parentMetadata.TimeCodeBuilder(currentTimestamp - clockOriginTimestamp, TimeType.Absolute, TimecodeFormat.Unknown, false);
+                    return parentMetadata.TimeCodeBuilder(currentTimestamp - clockOriginTimestamp, TimeType.Absolute, TimecodeFormat.Unknown, true);
             }
 
             // Stopwatch mode.
@@ -565,7 +565,7 @@ namespace Kinovea.ScreenManager
                 durationTimestamps = currentTimestamp - startCountingTimestamp;
             }
 
-            return parentMetadata.TimeCodeBuilder(durationTimestamps, TimeType.Duration, TimecodeFormat.Unknown, false);
+            return parentMetadata.TimeCodeBuilder(durationTimestamps, TimeType.Duration, TimecodeFormat.Unknown, true);
             
         }
         #endregion

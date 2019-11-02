@@ -415,7 +415,7 @@ namespace Kinovea.ScreenManager
         {
             foreach(Keyframe keyframe in keyframes)
             {
-                keyframe.TimeCode = timecodeBuilder(keyframe.Position, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+                keyframe.TimeCode = timecodeBuilder(keyframe.Position, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
                 keyframe.Disabled = keyframe.Position < selectionStart || keyframe.Position > selectionEnd;
             }
         }

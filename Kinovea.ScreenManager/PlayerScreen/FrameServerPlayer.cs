@@ -244,10 +244,10 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Returns a time or duration in the user-preferred format.
+        /// Returns a textual representation of a time or duration in the user-preferred format.
         /// The time must be passed in absolute timestamps, and the time type is used to make it relative.
         /// </summary>
-        public string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool synched)
+        public string TimeStampsToTimecode(long timestamps, TimeType type, TimecodeFormat format, bool symbol)
         {
             if (videoReader == null || !videoReader.Loaded)
                 return "0";
@@ -295,9 +295,13 @@ namespace Kinovea.ScreenManager
                     break;
                 case TimecodeFormat.Milliseconds:
                     outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds));
+                    if (symbol)
+                        outputTimeCode += " ms";
                     break;
                 case TimecodeFormat.Microseconds:
                     outputTimeCode = String.Format("{0}", (int)Math.Round(milliseconds * 1000));
+                    if (symbol)
+                        outputTimeCode += " µs";
                     break;
                 case TimecodeFormat.TenThousandthOfHours:
                     // 1 Ten Thousandth of Hour = 360 ms.

@@ -441,7 +441,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             long time = e.Time;
-            string timecode = frameServer.TimeStampsToTimecode(time, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, synched);
+            string timecode = frameServer.TimeStampsToTimecode(time, TimeType.UserOrigin, PreferencesManager.PlayerPreferences.TimecodeFormat, true);
             Keyframe keyframe = new Keyframe(time, timecode, frameServer.Metadata);
 
             HistoryMementoAddKeyframe memento = new HistoryMementoAddKeyframe(frameServer.Metadata, keyframe.Id);
