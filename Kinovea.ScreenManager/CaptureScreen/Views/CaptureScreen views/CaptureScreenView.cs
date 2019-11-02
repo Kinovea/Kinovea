@@ -403,7 +403,7 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateDelayLabel()
         {
-            lblDelay.Text = "Delay (s):"; // string.Format(ScreenManagerLang.lblDelay_Text, formattedDelay, delayFrames);
+            lblDelay.Text = ScreenManagerLang.lblDelay_Text;
             if (delaySeconds >= (double)nudDelay.Minimum && delaySeconds <= (double)nudDelay.Maximum)
                 nudDelay.Value = (decimal)delaySeconds;
         }

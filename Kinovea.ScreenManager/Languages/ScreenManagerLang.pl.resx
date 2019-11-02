@@ -167,6 +167,7 @@
    
    
    
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0} setnych sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0:0.00} sekund.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Zapisz wideo</value></data>
@@ -252,6 +253,7 @@
    
    
    
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Anuluj</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Zamknij</value></data>
    
@@ -286,7 +288,9 @@
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>Obrazy JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Obrazy PNG (*.png)|*.png|Bitmapy (*.bmp)|*.bmp</value></data>
    
    
-   <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   
+   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)</value></data>
+   
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    
    
@@ -353,7 +357,7 @@
    
    
    
-   <data name="mnuLoadAnalysis" xml:space="preserve"><value>Wczytaj kluczowe dane obrazu</value></data>
+   
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    
    
@@ -361,6 +365,7 @@
    <data name="mnuOneCapture" xml:space="preserve"><value>Pojedynczy zrzut ekranu</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Jeden ekran odtwarzania</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Odtwarzaj | Pauza</value></data>
+   
    
    <data name="mnuOpenVideo" xml:space="preserve"><value>Otwórz plik wideo</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Wszystkie pliki (*.*)|*.*</value></data>
@@ -378,6 +383,7 @@
    
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Pokaż/Ukryj wspólne sterowanie</value></data>
+   
    
    
    

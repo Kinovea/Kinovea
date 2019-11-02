@@ -146,6 +146,7 @@
    
    
    
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Hastighet</value></data>
    
    
@@ -252,6 +253,7 @@
    
    
    
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Ångra</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Stäng</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Färg :</value></data>
@@ -286,7 +288,9 @@
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG bilder (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG bilder (*.png)|*.png|Bitmap bilder (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>Följande filer stöds (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text(*.txt)|*.txt;</value></data>
-   <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea Videoanalys (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   
+   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Videoanalys (*.kva)</value></data>
+   
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Nyckelbilder har modifierats.\nVill du spara nyckelbildsinformation innan stängning ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Nyckelbilds data ej sparad</value></data>
@@ -353,7 +357,7 @@
    
    
    
-   <data name="mnuLoadAnalysis" xml:space="preserve"><value>Ladda data för nyckelbild</value></data>
+   
    <data name="mnuMagnification" xml:space="preserve"><value>Zooma x{0:0.00}</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Byt till direkt zoom</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Stäng förstoringsglas</value></data>
@@ -362,6 +366,7 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Ett uppspelningsfönster</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Starta | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Återstarta banans editering</value></data>
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Öppna Video Fil</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alla filer (*.*)|*.*</value></data>
    
@@ -379,6 +384,7 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Visa/Dölj gemensamma kontroller</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Spåra banan</value></data>
+   
    
    
    

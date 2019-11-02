@@ -146,6 +146,7 @@
    <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distància total</value></data>
    
    
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Velocitat</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve"><value>Velocitat vertical</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve"><value>Velocitat horitzontal</value></data>
@@ -252,6 +253,7 @@
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Fletxes :</value></data>
    <data name="Generic_Curved" xml:space="preserve"><value>Corba:</value></data>
    
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Tancar</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color :</value></data>
@@ -286,11 +288,13 @@
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>Imatges JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Imatges PNG (*.png)|*.png|Imatges Bitmap (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>Tots els formats suportats(*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Texte (*.txt)|*.txt;</value></data>
-   <data name="FileFilter_KVA" xml:space="preserve"><value>Anàlisis de vídeo de Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   
+   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Anàlisis de vídeo de Kinovea (*.kva)</value></data>
+   
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Els fotogrames clau han estat modificats:\nVoleu desar-los abans de tancar?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Els fotogrames clau no s'han desat</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Retard: {0}s ({1})</value></data>
+   <data name="lblDelay_Text" xml:space="preserve"><value>Retard (s) :</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Controls comuns :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duració</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Inici</value></data>
@@ -353,7 +357,7 @@
    
    <data name="mnuFlipHorizontally" xml:space="preserve"><value>Reflexa horitzontalment</value></data>
    <data name="mnuFlipVertically" xml:space="preserve"><value>Reflexa verticalment</value></data>
-   <data name="mnuLoadAnalysis" xml:space="preserve"><value>Carregar dades de imatges clau...</value></data>
+   
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Passar a zoom directe</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Sortir del mode lupa</value></data>
@@ -362,6 +366,7 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Una pantalla de reproducció</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Reprodueix | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reprendre l'edició de la trajectòria</value></data>
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Obrir un arxiu de video</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tots els fitxers (*.*)|*.*</value></data>
    
@@ -387,6 +392,7 @@
    <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Finalitzar la polilínia aquí</value></data>
    <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Finalitzar la polilínia al punt anterior</value></data>
    <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Tancar aquest menú</value></data>
+   
    
    
    

@@ -196,7 +196,7 @@ namespace Kinovea.ScreenManager
             saveFileDialog.InitialDirectory = Path.GetDirectoryName(m_OriginalFilename);
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(m_OriginalFilename);
             saveFileDialog.FilterIndex = 1;
-            saveFileDialog.Filter = ScreenManagerLang.FileFilter_KVA;
+            saveFileDialog.Filter = ScreenManagerLang.FileFilter_KVA_kva;
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {

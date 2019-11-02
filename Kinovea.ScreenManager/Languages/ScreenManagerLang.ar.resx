@@ -146,6 +146,7 @@
    <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>المسافة الكلية</value></data>
    
    
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>السرعة</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve"><value>السرعة الرأسية</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve"><value>السرعة الافقية</value></data>
@@ -252,6 +253,7 @@
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>اسهم:</value></data>
    <data name="Generic_Curved" xml:space="preserve"><value>منحنى:</value></data>
    
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>إلغاء</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>اغلاق</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>لون:</value></data>
@@ -286,11 +288,13 @@
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG صور (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG صور (*.png)|*.png|Bitmap صور (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>الملفات المدعومة (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
-   <data name="FileFilter_KVA" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   
+   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)</value></data>
+   
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>تم تعديل الصور الرئيسية. \n هل تريد حفظ بيانات الصور الرئيسية قبل الاغلاق؟</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>لم يتم حفظ بيانات الصور الرئيسية</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>({1}) {0}s : التأخير</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>التحكم العام :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>المدة</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>بداية</value></data>
@@ -353,7 +357,7 @@
    
    <data name="mnuFlipHorizontally" xml:space="preserve"><value>اقلب أفقيا</value></data>
    <data name="mnuFlipVertically" xml:space="preserve"><value>اقلب عموديا</value></data>
-   <data name="mnuLoadAnalysis" xml:space="preserve"><value>تحميل بيانات الصور الرئيسية...</value></data>
+   
    <data name="mnuMagnification" xml:space="preserve"><value>التكبير x {0: 0.00}</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>تبديل للتكبير المباشر</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>مكبر عن قرب</value></data>
@@ -362,6 +366,7 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>شاشة واحدة للعرض</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>تشغيل | ايقاف</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>اعادة تحرير المسار</value></data>
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>فتح ملف الفيديو</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>جميع الملفات (*. *)| *. *</value></data>
    
@@ -387,6 +392,7 @@
    <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>إنهاء متعدد الخطوط هنا</value></data>
    <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>إنهاء متعدد الخطوط في النقطة السابقة</value></data>
    <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>إغلاق هذه القائمة</value></data>
+   
    
    
    

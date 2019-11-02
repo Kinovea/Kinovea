@@ -157,7 +157,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case StyleToggleVariant.Clock:
                     icon = Properties.Drawings.stopwatch;
-                    displayName = "Clock";
+                    displayName = ScreenManagerLang.Generic_Clock;
                     break;
                 case StyleToggleVariant.Curved:
                 default:

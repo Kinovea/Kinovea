@@ -2578,13 +2578,13 @@ namespace Kinovea.ScreenManager
             // this is done at construction time and at RefreshUICulture time.
 
             // 1. Default context menu.
-            mnuTimeOrigin.Text = "Mark current time as time origin";
+            mnuTimeOrigin.Text = ScreenManagerLang.mnuMarkTimeAsOrigin;
             mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
             mnuPasteDrawing.Text = ScreenManagerLang.mnuPasteDrawing;
             mnuPasteDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.PasteDrawing);
-            mnuOpenVideo.Text = "Open video...";
-            mnuOpenReplayWatcher.Text = "Open replay folder observer...";
-            mnuOpenAnnotations.Text = "Load annotations...";
+            mnuOpenVideo.Text = ScreenManagerLang.mnuOpenVideo;
+            mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
+            mnuOpenAnnotations.Text = ScreenManagerLang.mnuLoadAnalysis;
             mnuSaveVideo.Text = ScreenManagerLang.Generic_Save;
             mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
             mnuCopyPic.Text = ScreenManagerLang.mnuCopyImageToClipboard;
@@ -2667,7 +2667,7 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnHandlersReset, ScreenManagerLang.ToolTip_ResetWorkingZone);
             trkSelection.ToolTip = ScreenManagerLang.ToolTip_trkSelection;
 
-            toolTips.SetToolTip(btnTimeOrigin, "Mark current time as time origin");
+            toolTips.SetToolTip(btnTimeOrigin, ScreenManagerLang.mnuMarkTimeAsOrigin);
         }
         private void ReloadToolsCulture()
         {

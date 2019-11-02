@@ -146,6 +146,7 @@
    
    
    
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Velocidad</value></data>
    
    
@@ -252,6 +253,7 @@
    
    
    
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Cerrar</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color :</value></data>
@@ -286,7 +288,9 @@
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>Imagenes JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Imagenes PNG (*.png)|*.png|Imagenes Bitmap (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>Todos los archivos soportados (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
-   <data name="FileFilter_KVA" xml:space="preserve"><value>Analisis Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   
+   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Analisis Video Kinovea (*.kva)</value></data>
+   
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Imágenes clave han sido modificados.\n ¿Desea guardar los datos antes de cerrar ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Imágenes clave no guardadas</value></data>
@@ -353,7 +357,7 @@
    
    
    
-   <data name="mnuLoadAnalysis" xml:space="preserve"><value>Cargando datos claves de las imágenes …</value></data>
+   
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Cambiar a Zoom Directo</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Salir del modo lupa</value></data>
@@ -362,6 +366,7 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Una pantalla de Lectura</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Lectura | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reanudar la edición de la Trayectoria</value></data>
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Abrir un video</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos los archivos (*.*)|*.*</value></data>
    
@@ -379,6 +384,7 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Mostrar / Ocultar controles comunes</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Seguir la Trayectoria</value></data>
+   
    
    
    

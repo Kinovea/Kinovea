@@ -421,7 +421,7 @@ namespace Kinovea.ScreenManager
         private void ReinitializeMenu()
         {
             InitializeMenuMeasurement();
-            mnuShowCenter.Text = "Show circle center";
+            mnuShowCenter.Text = ScreenManagerLang.mnuShowCircleCenter;
             mnuShowCenter.Checked = showCenter;
         }
         private void InitializeMenuMeasurement()

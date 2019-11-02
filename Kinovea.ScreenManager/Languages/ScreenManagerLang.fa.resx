@@ -144,6 +144,7 @@
    <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve"><value>موقعیت عمودی</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve"><value>موقعیت افقی</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>مجموع فاصله‌ها</value></data>
+   
    <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve"><value>مجموع جابجایی افقی </value></data>
    <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve"><value>مجموع جابجایی عمودی</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>سرعت</value></data>
@@ -252,6 +253,7 @@
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>پیکان‌ها:</value></data>
    <data name="Generic_Curved" xml:space="preserve"><value>منحنی:</value></data>
    <data name="Generic_Perspective" xml:space="preserve"><value>چشم انداز:</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>لغو</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>بستن</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>رنگ:</value></data>
@@ -286,11 +288,13 @@
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>تصاویر JPEG (* .jpg ، *. jpeg) | * .jpg؛ *. jpeg | تصاویر PNG (* .png) | * .png | تصاویر Bitmap (* .bmp) | * .bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>کلیه پرونده های پشتیبانی شده  (* .SVG؛ *. JPG؛ *. PNG؛ *. BMP؛ *. GIF) | * .SVG؛ *. JPG؛ *. PNG؛ *. BMP؛ *. GIF</value></data>
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (* .ods) | * .ods | Microsoft Excel (* .xml) | * .xml | XHTML (* .html) | * .html | متن (* .txt) | * .txt؛</value></data>
-   <data name="FileFilter_KVA" xml:space="preserve"><value>تجزیه و تحلیل ویدئو کینوویا (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   
+   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>تجزیه و تحلیل ویدئو کینوویا (*.kva)</value></data>
+   
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>تصاویر کلیدی اصلاح شده اند. \n آیا می‌خواهید قبل از بسته شدن داده‌های تصاویر را ذخیره کنید؟</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>داده‌های تصاویر ذخیره نشده‌اند</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>تأخیر: {0} ثانیه (1 {})</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>کنترل‌های متداول:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>مدت زمان </value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>شروع</value></data>
@@ -353,7 +357,7 @@
    <data name="mnuSupplementaryAngle" xml:space="preserve"><value>زاویه تکمیلی</value></data>
    <data name="mnuFlipHorizontally" xml:space="preserve"><value>تلنگر افقی</value></data>
    <data name="mnuFlipVertically" xml:space="preserve"><value>تلنگر عمودی</value></data>
-   <data name="mnuLoadAnalysis" xml:space="preserve"><value>بارگیری داده‌های تصاویر ...</value></data>
+   
    <data name="mnuMagnification" xml:space="preserve"><value>بزرگنمایی x {0: 0.00}</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>تغییر به بزرگنمایی مستقیم</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>بستن ذره بین</value></data>
@@ -362,6 +366,7 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>یک صفحه نمایش پخش</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>اجرا | مکث </value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>راه اندازی مجدد ویرایش مسیر</value></data>
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>بازکردن فایل ویدیوئی</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>تمام فایل‌ها (*.*)|*.*</value></data>
    
@@ -393,6 +398,7 @@
    <data name="mnuSetStyleAsDefault" xml:space="preserve"><value>تنظیم سبک به صورت پیش فرض</value></data>
    <data name="mnuPasteImage" xml:space="preserve"><value>جایگذاری تصویر از کلیپ برد</value></data>
    <data name="mnuShowArrow" xml:space="preserve"><value>نمایش پیکان</value></data>
+   
    <data name="RecentlyUsedColors" xml:space="preserve"><value>رنگ‌های اخیراً استفاده شده:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>خالی</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>مکث</value></data>

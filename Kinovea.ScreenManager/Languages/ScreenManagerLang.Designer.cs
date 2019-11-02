@@ -655,6 +655,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Distance to origin.
+        /// </summary>
+        public static string dlgConfigureTrajectory_ExtraData_DistanceToOrigin {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_DistanceToOrigin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Horizontal acceleration.
         /// </summary>
         public static string dlgConfigureTrajectory_ExtraData_HorizontalAcceleration {
@@ -1600,11 +1609,29 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml;.
+        ///   Looks up a localized string similar to All supported formats.
         /// </summary>
-        public static string FileFilter_KVA {
+        public static string FileFilter_KVA_All {
             get {
-                return ResourceManager.GetString("FileFilter_KVA", resourceCulture);
+                return ResourceManager.GetString("FileFilter_KVA_All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kinovea Video Analysis (*.kva).
+        /// </summary>
+        public static string FileFilter_KVA_kva {
+            get {
+                return ResourceManager.GetString("FileFilter_KVA_kva", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subtitles (*.srt).
+        /// </summary>
+        public static string FileFilter_KVA_srt {
+            get {
+                return ResourceManager.GetString("FileFilter_KVA_srt", resourceCulture);
             }
         }
         
@@ -1852,6 +1879,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clock:.
+        /// </summary>
+        public static string Generic_Clock {
+            get {
+                return ResourceManager.GetString("Generic_Clock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string Generic_Close {
@@ -2095,7 +2131,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delay: {0}s ({1}).
+        ///   Looks up a localized string similar to Delay (s):.
         /// </summary>
         public static string lblDelay_Text {
             get {
@@ -2644,7 +2680,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load Key Images Data....
+        ///   Looks up a localized string similar to Load annotations….
         /// </summary>
         public static string mnuLoadAnalysis {
             get {
@@ -2676,6 +2712,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuMagnifierQuit {
             get {
                 return ResourceManager.GetString("mnuMagnifierQuit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark current time as time origin.
+        /// </summary>
+        public static string mnuMarkTimeAsOrigin {
+            get {
+                return ResourceManager.GetString("mnuMarkTimeAsOrigin", resourceCulture);
             }
         }
         
@@ -2865,6 +2910,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuShowArrow {
             get {
                 return ResourceManager.GetString("mnuShowArrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show circle center.
+        /// </summary>
+        public static string mnuShowCircleCenter {
+            get {
+                return ResourceManager.GetString("mnuShowCircleCenter", resourceCulture);
             }
         }
         

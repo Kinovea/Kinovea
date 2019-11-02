@@ -146,6 +146,7 @@
    
    
    
+   
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>スピード</value></data>
    
    
@@ -252,6 +253,7 @@
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>矢印:</value></data>
    
    
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>キャンセル</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>閉じる</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>色</value></data>
@@ -286,7 +288,9 @@
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>JPEG 画像 (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG 画像 (*.png)|*.png|Bitmap 画像 (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>すべてのファイル拡張子(*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|テキスト (*.txt)|*.txt;</value></data>
-   <data name="FileFilter_KVA" xml:space="preserve"><value>Kinoveaビデオアナラシス (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
+   
+   <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Kinoveaビデオアナラシス (*.kva)</value></data>
+   
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>キーイメージが変更されました。\n終了する前にキーイメージを保存しますか？</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>キーイメージは保存されませんでした。</value></data>
@@ -353,7 +357,7 @@
    
    <data name="mnuFlipHorizontally" xml:space="preserve"><value>水平に反転</value></data>
    <data name="mnuFlipVertically" xml:space="preserve"><value>垂直に反転</value></data>
-   <data name="mnuLoadAnalysis" xml:space="preserve"><value>キーイメージデータを開く…</value></data>
+   
    <data name="mnuMagnification" xml:space="preserve"><value>ズーム x{0:0.00}</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>ダイレクトズームに切替え</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>拡大を終了</value></data>
@@ -362,6 +366,7 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>プレイバックスクリーン</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>再生 | 一時停止</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>軌道の最終地点を再設定</value></data>
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>ビデオファイルを開く</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>すべてのファイル (*.*)|*.*</value></data>
    
@@ -384,6 +389,7 @@
    <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>グリッド</value></data>
    <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>目盛り</value></data>
    <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>隠す</value></data>
+   
    
    
    
