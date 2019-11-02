@@ -51,6 +51,7 @@ Changelog:
     Added - Annotations: data importer for OpenPose keypoints.
     Added - Annotations: data importer for SRT subtitles.
     Improved - Capture: high performance mode for delayed recording.
+    Improved - Capture: the delay value can now be entered manually.
     Improved - Capture: option to ignore the file overwrite warning.
     Improved - Capture: usage of editable textboxes for camera properties values.
     Improved - Capture: IDS module now supports "Sensor Raw 8", "Pixel clock" and "Gain boost" properties.
@@ -70,8 +71,8 @@ Changelog:
     Improved - Annotations: custom tools now supports combinations of options per primitive and hidden options.
     Improved - Annotations: the coordinate system menu is now a proper toggle.
     Improved - Folder selection dialogs were replaced with more usable ones.
-    Improved - Multiple Kinovea instances are numbered in order and can have their own preferences.
-    Improved - Cold start interface loading performance was improved.
+    Improved - Kinovea instances are numbered sequentially and can have their own preferences.
+    Improved - Loading of the user interface after reboot was improved.
     Fixed - Files with negative start time could not be read.
     Fixed - Support of login/password in IP camera module was broken.
     Fixed - The format converter for KVA 1.5 format (Kinovea 0.8.15) was incomplete.
@@ -84,12 +85,13 @@ Changelog:
     Fixed - The style and behavior of the record button on the dual capture controls was broken.
     Fixed - The timecode format shown a wrong value when the fractional part rounded up to 100 hundredth of a second.
     Fixed - The heuristic to load videos or cameras into existing screens was not consistent.
-    Fixed - In the IDS configuration dialog, auto-gain and auto-exposure were disabled.
+    Fixed - In the IDS configuration dialog, auto-gain and auto-exposure were always disabled.
     Fixed - The aspect ratio of thumbnails for key images was wrong.
     Fixed - The coordinates of points and circle was wrong when the coordinate system itself was tracked.
+    Fixed - Dual export was broken when the total image width was not a multiple of 4.
     Removed - Capture: Removed delay compositing framework (e.g: quadrants).
     Removed - Capture: Ability to record live changes in delay value. The delay is fixed at the start of the recording.
-    Removed - Replaced capture history sessions by a simpler list of last captured files.
+    Removed - Replaced capture history sessions by a simple list of the last captured files.
 
 
 0.8.27 - October 2018.
