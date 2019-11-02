@@ -97,24 +97,6 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All files (*.*)|*.*.
-        /// </summary>
-        public static string dlgOpenFile_Filter {
-            get {
-                return ResourceManager.GetString("dlgOpenFile_Filter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Video File.
-        /// </summary>
-        public static string dlgOpenFile_Title {
-            get {
-                return ResourceManager.GetString("dlgOpenFile_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enable audio trigger.
         /// </summary>
         public static string dlgPreferences_Capture_chkEnableAudioTrigger {
@@ -351,9 +333,9 @@ namespace Kinovea.Root.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Date and time (YYYYMMDD-HHMMSS).
         /// </summary>
-        public static string dlgPreferences_Capture_PatternDatetime {
+        public static string dlgPreferences_Capture_PatternDateTime {
             get {
-                return ResourceManager.GetString("dlgPreferences_Capture_PatternDatetime", resourceCulture);
+                return ResourceManager.GetString("dlgPreferences_Capture_PatternDateTime", resourceCulture);
             }
         }
         
@@ -1227,24 +1209,6 @@ namespace Kinovea.Root.Languages {
         public static string mnuLanguages {
             get {
                 return ResourceManager.GetString("mnuLanguages", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Video File….
-        /// </summary>
-        public static string mnuOpenFile {
-            get {
-                return ResourceManager.GetString("mnuOpenFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open replay folder observer….
-        /// </summary>
-        public static string mnuOpenReplayWatcher {
-            get {
-                return ResourceManager.GetString("mnuOpenReplayWatcher", resourceCulture);
             }
         }
         

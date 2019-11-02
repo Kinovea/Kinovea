@@ -74,8 +74,6 @@
    
    
    
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Visi dokumentai (*.*)|*.*</value></data>
-   <data name="dlgOpenFile_Title" xml:space="preserve"><value>Atidaryti vaizdo dokumentą</value></data>
    <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Įrašymas</value></data>
    <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Piešimas</value></data>
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Pagrindinis</value></data>
@@ -203,8 +201,6 @@
    <data name="mnuLanguages" xml:space="preserve"><value>Kalba</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Vaizdas</value></data>
    
-   <data name="mnuOpenFile" xml:space="preserve"><value>Atidaryti vaizdo dokumentą...</value></data>
-   
    <data name="mnuOptions" xml:space="preserve"><value>Nustatymai</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Nuostatos...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Veiksmas pirmyn</value></data>
@@ -216,6 +212,7 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Šimtosios minutės</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dešimt tūkstantoji valandos</value></data>
+   
    
    
    

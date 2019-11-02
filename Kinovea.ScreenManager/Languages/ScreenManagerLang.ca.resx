@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Una pantalla de reproducció</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Reprodueix | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reprendre l'edició de la trajectòria</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Obrir un arxiu de video</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tots els fitxers (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Desar</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar la mesura...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar...</value></data>

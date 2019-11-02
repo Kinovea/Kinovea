@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Jeden ekran odtwarzania</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Odtwarzaj | Pauza</value></data>
    
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Otwórz plik wideo</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Wszystkie pliki (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Zapisz dane wideo albo kluczowych obrazów</value></data>
    
    

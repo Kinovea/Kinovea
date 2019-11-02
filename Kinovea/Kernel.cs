@@ -213,7 +213,7 @@ namespace Kinovea.Root
             CheckLanguageMenu();
             CheckTimecodeMenu();
             
-            toolOpenFile.ToolTipText = RootLang.mnuOpenFile;
+            toolOpenFile.ToolTipText = ScreenManagerLang.mnuOpenVideo;
             
             fileBrowser.RefreshUICulture();
             updater.RefreshUICulture();
@@ -384,7 +384,7 @@ namespace Kinovea.Root
             // Open.
             toolOpenFile.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolOpenFile.Image = Properties.Resources.folder;
-            toolOpenFile.ToolTipText = RootLang.mnuOpenFile;
+            toolOpenFile.ToolTipText = ScreenManagerLang.mnuOpenVideo;
             toolOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
             
             toolbar.Items.Add(toolOpenFile);
@@ -398,8 +398,8 @@ namespace Kinovea.Root
         private void RefreshCultureMenu()
         {
             mnuFile.Text = RootLang.mnuFile;
-            mnuOpenFile.Text = RootLang.mnuOpenFile;
-            mnuOpenReplayWatcher.Text = RootLang.mnuOpenReplayWatcher;
+            mnuOpenFile.Text = ScreenManagerLang.mnuOpenVideo;
+            mnuOpenReplayWatcher.Text = ScreenManagerLang.mnuOpenReplayWatcher;
             mnuHistory.Text = RootLang.mnuHistory;
             mnuHistoryReset.Text = RootLang.mnuHistoryReset;
             mnuQuit.Text = RootLang.Generic_Quit;

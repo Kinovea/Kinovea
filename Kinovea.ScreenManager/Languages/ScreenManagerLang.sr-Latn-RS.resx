@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Jedan ekran za reprodukovanje</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Reprodukuj | Pauziraj</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Ponovo pokreni putanju izdanja</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Otvori video datoteku</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Sve datoteke (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Sačuvaj...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibriši meru...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Kalibriši...</value></data>

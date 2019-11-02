@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Una pantalla de Lectura</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Lectura | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reanudar la edición de la Trayectoria</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Abrir un video</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos los archivos (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Guardar el video o los datos de las imàgenes clave…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Contrastar la medida</value></data>
    

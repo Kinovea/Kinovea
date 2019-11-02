@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>1 obrazovka pro přehrávání</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Přehrát I Pozastavit</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Restart trasování</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Otevřít video soubor</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Všechny soubory (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Uložit…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrovat měření…</value></data>
    

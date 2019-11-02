@@ -20,8 +20,8 @@ namespace UnusedResources
             // - Compile & test if used strings were removed.
             // - Run tool again.
             
-            string sourceDirectory = @"D:\dev\Joan\Multimedia\Video\Kinovea\Bitbucket\_MASTER4";
-            string resultDirectory = @"D:\dev\Joan\Multimedia\Video\Kinovea\Bitbucket\_MASTER4\Tools\UnusedResources\UnusedResources\Results-20180311";
+            string sourceDirectory = @"D:\dev\Joan\Multimedia\Video\Kinovea\Source\Kinovea";
+            string resultDirectory = @"D:\dev\Joan\Multimedia\Video\Kinovea\Source\Kinovea\Tools\UnusedResources\UnusedResources\Results-20191102";
             
             UnusedResourcesFinder finder = new UnusedResourcesFinder(sourceDirectory, resultDirectory);
 

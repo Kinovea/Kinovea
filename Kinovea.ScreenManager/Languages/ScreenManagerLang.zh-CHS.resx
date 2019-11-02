@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>单屏幕显示模式</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>播放|暂停</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>重启路径</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>打开视频文件</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>所有文件 (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>保存…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>校准测量...</value></data>
    

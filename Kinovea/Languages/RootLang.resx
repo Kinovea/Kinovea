@@ -74,8 +74,6 @@
    <data name="dlgAbout_License" xml:space="preserve"><value>License</value></data>
    <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Building blocks</value></data>
    <data name="dlgAbout_Citation" xml:space="preserve"><value>Citation</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>All files (*.*)|*.*</value></data>
-   <data name="dlgOpenFile_Title" xml:space="preserve"><value>Open Video File</value></data>
    <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Capture</value></data>
    <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Drawings</value></data>
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>General</value></data>
@@ -112,7 +110,7 @@
    <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve"><value>Captured file name</value></data>
    <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve"><value>Date (YYYYMMDD)</value></data>
    <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve"><value>Time (HHMMSS)</value></data>
-   <data name="dlgPreferences_Capture_PatternDatetime" xml:space="preserve"><value>Date and time (YYYYMMDD-HHMMSS)</value></data>
+   <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve"><value>Date and time (YYYYMMDD-HHMMSS)</value></data>
    <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>Context variables</value></data>
    <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>Context</value></data>
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Macro</value></data>
@@ -203,8 +201,6 @@
    <data name="mnuLanguages" xml:space="preserve"><value>Language</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
    <data name="mnuTools" xml:space="preserve"><value>Tools</value></data>
-   <data name="mnuOpenFile" xml:space="preserve"><value>Open Video File…</value></data>
-   <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Open replay folder observer…</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Options</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preferences…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Redo</value></data>
@@ -216,6 +212,7 @@
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Total microseconds</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundredth of a minute</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Ten thousandth of an hour</value></data>
+   
    
    
    

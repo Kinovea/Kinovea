@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>شاشة واحدة للعرض</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>تشغيل | ايقاف</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>اعادة تحرير المسار</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>فتح ملف الفيديو</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>جميع الملفات (*. *)| *. *</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>حفظ...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>معايرة قياس...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>معايرة...</value></data>

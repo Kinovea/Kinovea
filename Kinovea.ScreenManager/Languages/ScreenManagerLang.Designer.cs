@@ -1006,6 +1006,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All files (*.*)|*.*.
+        /// </summary>
+        public static string dlgOpenFile_Filter {
+            get {
+                return ResourceManager.GetString("dlgOpenFile_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export all images..
         /// </summary>
         public static string dlgRafaleExport_ExportAll {
@@ -2802,6 +2811,24 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuOnePlayer {
             get {
                 return ResourceManager.GetString("mnuOnePlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open replay folder observer….
+        /// </summary>
+        public static string mnuOpenReplayWatcher {
+            get {
+                return ResourceManager.GetString("mnuOpenReplayWatcher", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open video….
+        /// </summary>
+        public static string mnuOpenVideo {
+            get {
+                return ResourceManager.GetString("mnuOpenVideo", resourceCulture);
             }
         }
         

@@ -74,8 +74,6 @@
    <data name="dlgAbout_License" xml:space="preserve"><value>Llicència</value></data>
    <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Fonaments</value></data>
    <data name="dlgAbout_Citation" xml:space="preserve"><value>Citació</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tots els fitxers (*.*)|*.*</value></data>
-   <data name="dlgOpenFile_Title" xml:space="preserve"><value>Obrir un arxiu de video</value></data>
    <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Capturar</value></data>
    <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Dibuixos</value></data>
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>General</value></data>
@@ -203,8 +201,6 @@
    <data name="mnuLanguages" xml:space="preserve"><value>Idioma</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Vídeo</value></data>
    <data name="mnuTools" xml:space="preserve"><value>Utilitats</value></data>
-   <data name="mnuOpenFile" xml:space="preserve"><value>Obrir un arxiu de video</value></data>
-   
    <data name="mnuOptions" xml:space="preserve"><value>Opcions</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preferències...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Refer</value></data>
@@ -216,6 +212,7 @@
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Total en microsegons</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centèssimes de minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deumilèssimes d'hora</value></data>
+   
    
    
    

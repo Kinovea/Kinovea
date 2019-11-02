@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Eén afspeelscherm</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Afspelen | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Herstart Trajectpad Editor</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Open een video bestand</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle bestanden (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Fixeer de afmeting</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibreer…</value></data>

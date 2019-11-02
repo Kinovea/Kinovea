@@ -70,7 +70,7 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Mise à Jour…</value></data>
+   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Vérifier les mises à jour…</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Une nouvelle version est disponible !</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Veuillez choisir le dossier dans lequel sera placé le programme d'installation.</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Version Courante :</value></data>

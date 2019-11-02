@@ -74,8 +74,6 @@
    
    
    
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos os arquivos (*.*)|*.*</value></data>
-   <data name="dlgOpenFile_Title" xml:space="preserve"><value>Abrir arquivo de vídeo</value></data>
    <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Capturar</value></data>
    <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Desenhos</value></data>
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Geral</value></data>
@@ -203,8 +201,6 @@
    <data name="mnuLanguages" xml:space="preserve"><value>Idioma</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
    
-   <data name="mnuOpenFile" xml:space="preserve"><value>Abrir Arquivo de Vídeo...</value></data>
-   
    <data name="mnuOptions" xml:space="preserve"><value>Opções</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preferências...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Refazer</value></data>
@@ -216,6 +212,7 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centésimos de minuto</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dez milésimos de uma hora</value></data>
+   
    
    
    

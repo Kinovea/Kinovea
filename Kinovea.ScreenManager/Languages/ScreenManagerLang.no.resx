@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Et avspillingsvindu</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Spill av | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Start bane på nytt Editor</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Åpne videofil</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle filer (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Lagre...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrere måling</value></data>
    

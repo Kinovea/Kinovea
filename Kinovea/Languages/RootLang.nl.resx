@@ -74,8 +74,6 @@
    <data name="dlgAbout_License" xml:space="preserve"><value>Licentie</value></data>
    <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Bouwstenen</value></data>
    <data name="dlgAbout_Citation" xml:space="preserve"><value>Citaat</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle bestanden (*.*)|*.*</value></data>
-   <data name="dlgOpenFile_Title" xml:space="preserve"><value>Open een video bestand</value></data>
    <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Opnemen</value></data>
    <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Tekeningen</value></data>
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Algemeen</value></data>
@@ -203,8 +201,6 @@
    <data name="mnuLanguages" xml:space="preserve"><value>Taal</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
    <data name="mnuTools" xml:space="preserve"><value>Gereedschappen</value></data>
-   <data name="mnuOpenFile" xml:space="preserve"><value>Open een video bestand...</value></data>
-   
    <data name="mnuOptions" xml:space="preserve"><value>Opties</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Voorkeuren…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Opnieuw</value></data>
@@ -216,6 +212,7 @@
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Totaal microsecondes</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hondersten van een minuut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een uur</value></data>
+   
    
    
    

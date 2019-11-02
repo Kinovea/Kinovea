@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Vienas peržūros ekranas</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Groti | Pauzė</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Atstatyti kelio redagavimą</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Atidaryti vaizdo dokumentą</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Visi dokumentai (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Išsaugoti...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Nustatyti dydį...</value></data>
    

@@ -61,7 +61,7 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Software Update….
+        ///   Looks up a localized string similar to Check for updates….
         /// </summary>
         public static string mnuCheckForUpdates {
             get {

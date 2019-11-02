@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Μια οθόνη Αναπαραγωγής</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Αναπαραγωγή | Παύση</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Επανεκκίνηση Έκδοσης Διαδρομής</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Άνοιγμα Αρχείου Video</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Όλα τα αρχεία (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Αποθήκευση…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Μέτρηση σφραγίδας…</value></data>
    

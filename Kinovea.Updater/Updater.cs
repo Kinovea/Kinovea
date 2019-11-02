@@ -75,7 +75,7 @@ namespace Kinovea.Updater
 
         public void RefreshUICulture()
         {
-            mnuCheckForUpdates.Text = "Check for updates..."; //UpdaterLang.mnuCheckForUpdates;
+            mnuCheckForUpdates.Text = UpdaterLang.mnuCheckForUpdates;
         }
         public bool CloseSubModules()
         {

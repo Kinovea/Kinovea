@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Bir Oynatma Ekranı</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Oynat | Duraklat</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Yol Düzenlemesini Baştan Başlat</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Video Dosyasını Aç</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tüm Dosyalar (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Kaydet...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Ölçümü Kalibre Et...</value></data>
    

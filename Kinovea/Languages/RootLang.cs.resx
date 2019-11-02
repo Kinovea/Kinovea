@@ -74,8 +74,6 @@
    
    
    
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Všechny soubory (*.*)|*.*</value></data>
-   <data name="dlgOpenFile_Title" xml:space="preserve"><value>Otevřít video soubor</value></data>
    <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Záznam</value></data>
    <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Kreslení</value></data>
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Obecné</value></data>
@@ -203,8 +201,6 @@
    <data name="mnuLanguages" xml:space="preserve"><value>Jazyk</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
    
-   <data name="mnuOpenFile" xml:space="preserve"><value>Otevřít video soubor…</value></data>
-   
    <data name="mnuOptions" xml:space="preserve"><value>Možnosti</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preference…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Zrušit zpět</value></data>
@@ -216,6 +212,7 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Setina minuty</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Desetitisícina hodiny</value></data>
+   
    
    
    

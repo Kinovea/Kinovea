@@ -74,8 +74,6 @@
    
    
    
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Kaikki tiedostot (*.*)|*.*</value></data>
-   <data name="dlgOpenFile_Title" xml:space="preserve"><value>Avaa videotiedosto</value></data>
    <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Videotallennus</value></data>
    <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Piirrokset</value></data>
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Yleinen</value></data>
@@ -203,8 +201,6 @@
    <data name="mnuLanguages" xml:space="preserve"><value>Kieli</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
    
-   <data name="mnuOpenFile" xml:space="preserve"><value>Avaa videotiedosto</value></data>
-   
    <data name="mnuOptions" xml:space="preserve"><value>Vaihtoehdot</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Asetukset...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Toista</value></data>
@@ -216,6 +212,7 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sadasosaminuutti</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tunnin kymmenestuhannesosa</value></data>
+   
    
    
    

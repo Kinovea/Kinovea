@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Un schermo di Riproduzione</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Riproduzione | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Riprendi tracciatura Traiettoria</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>Apri File Video</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tutti I files (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>Salva...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Misura stabilita...</value></data>
    

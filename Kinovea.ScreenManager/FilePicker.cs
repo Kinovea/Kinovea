@@ -19,9 +19,9 @@ namespace Kinovea.ScreenManager
         public static string OpenVideo()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Open video..."; // RootLang.dlgOpenFile_Title
+            openFileDialog.Title = ScreenManagerLang.mnuOpenVideo;
             openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = "All files (*.*)|*.*"; // RootLang.dlgOpenFile_Filter;
+            openFileDialog.Filter = ScreenManagerLang.dlgOpenFile_Filter;
             openFileDialog.FilterIndex = 1;
             DialogResult result = openFileDialog.ShowDialog();
             if (result != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName) || !File.Exists(openFileDialog.FileName))

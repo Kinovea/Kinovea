@@ -370,6 +370,9 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>プレイバックスクリーン</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>再生 | 一時停止</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>軌道の最終地点を再設定</value></data>
+   <data name="mnuOpenVideo" xml:space="preserve"><value>ビデオファイルを開く</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>すべてのファイル (*.*)|*.*</value></data>
+   
    <data name="mnuSave" xml:space="preserve"><value>保存…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>計測値の較正…</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>較正…</value></data>
