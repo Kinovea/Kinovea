@@ -99,7 +99,7 @@ namespace Kinovea.ScreenManager
             long currentTime = 0;
             Bitmap composite = GetCompositeImage(currentTime);
             
-            log.Debug(String.Format("Composite size: {0}.", composite.Size));
+            log.DebugFormat("Composite size: {0}.", composite.Size);
 
             VideoInfo info = new VideoInfo
             {

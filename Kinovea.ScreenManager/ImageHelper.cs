@@ -99,16 +99,21 @@ namespace Kinovea.ScreenManager
         {
             Bitmap composite = null;
             
-            if(horizontal)
+            if (horizontal)
             {
                 // Create the output image.
                 int height = Math.Max(leftImage.Height, rightImage.Height);
                 int width = leftImage.Width + rightImage.Width;
-                    
-                // For video export, only even heights are valid.			
-                if(video && (height % 2 != 0))
-                    height++;
-                
+
+                if (video)
+                {
+                    if (height % 2 != 0)
+                        height++;
+
+                    if (width % 4 != 0)
+                        width += 4 - (width % 4);
+                }
+
                 composite = new Bitmap(width, height, leftImage.PixelFormat);
                 
                 // Vertically center the shortest image.
@@ -130,11 +135,16 @@ namespace Kinovea.ScreenManager
                 // Create the output image.
                 int height = leftImage.Height + rightImage.Height;
                 int width = Math.Max(leftImage.Width, rightImage.Width);
-                
-                // For video export, only even heights are valid.			
-                if(video && (height % 2 != 0))
-                    height++;
-                
+
+                if (video)
+                {
+                    if (height % 2 != 0)
+                        height++;
+
+                    if (width % 4 != 0)
+                        width += 4 - (width % 4);
+                }
+
                 composite = new Bitmap(width, height, leftImage.PixelFormat);
                 
                 // Horizontally center the shortest image.
