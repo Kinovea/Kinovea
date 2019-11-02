@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Any</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mes</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dia</value></data>
@@ -105,12 +107,29 @@
    <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve"><value>Sobrenom de la càmera</value></data>
    <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>Nombre d'imatges per segon configurat</value></data>
    <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>Nombre d'imatges per segon rebudes</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>Variables contextuals</value></data>
    <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>Contexte</value></data>
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Macro</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memòria</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memòria reservada per la la memòria cau : {0} MB</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Mostra els dibuixos mentre el video es reprodueix</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Detecció automàtica</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Canviar a Mode d'Anàlisis</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Nombre d'arxius a l'historial</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Format d'imatge per defecte</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Idioma</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>I</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>Vídeo</value></data>
    <data name="mnuTools" xml:space="preserve"><value>Utilitats</value></data>
    <data name="mnuOpenFile" xml:space="preserve"><value>Obrir un arxiu de video</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Opcions</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preferències...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Refer</value></data>
@@ -195,7 +216,6 @@
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Total en microsegons</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centèssimes de minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deumilèssimes d'hora</value></data>
-   
    
    
    

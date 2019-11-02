@@ -123,8 +123,28 @@
    
    
    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Przejdź do trybu Analizy</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Liczba plików w historii :</value></data>
+   
    
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Język :</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>I</value></data>
@@ -184,6 +204,7 @@
    
    
    <data name="mnuOpenFile" xml:space="preserve"><value>Otwórz plik wideo...</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Opcje</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preferencje...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Powtórz</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Setne części minuty</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dziesięcio-tysięczne części godziny</value></data>
-   
    
    
    

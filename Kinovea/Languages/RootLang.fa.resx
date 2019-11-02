@@ -81,7 +81,7 @@
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>عمومی</value></data>
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>باز پخش</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>صفحه کلید</value></data>
-   <data name="dlgPreferences_Drawings_chkAllowMultipleInstances" xml:space="preserve"><value>اجازه چند نمونه از کینوویا</value></data>
+   <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve"><value>اجازه چند نمونه از کینوویا</value></data>
    <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>نمایش فریم (فریم بر ثانیه):</value></data>
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>چپ</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>راست</value></data>
@@ -92,9 +92,11 @@
    <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>نام‌گذاری ویدئو:</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>فرمت تصویر:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>فرمت ویدئو:</value></data>
+   
+   
    <data name="dlgPreferences_Capture_Recording" xml:space="preserve"><value>ضبط </value></data>
    <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>حالت ضبط و تاخیر</value></data>
-   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>دوربین: ویدئوهای در جریان مستقیما ثبت می‌شوند</value></data>
+   
    <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>نمایش: آنچه که در نمایشکر نشان داده می‌شود به صورت جاری ضبط می‌شود</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>سال</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>ماه</value></data>
@@ -105,18 +107,35 @@
    <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve"><value>نام مستعار دوربین</value></data>
    <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>نرخ فریم پیکر بندی شده</value></data>
    <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>نرخ فریم دریافت شده</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>متغیرهای متن</value></data>
    <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>متن</value></data>
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>ماکرو</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>حافظه</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>حافظه اختصاص داده شده به بافر‌های تاخیری: {0} مگابایت.</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>نمایش طرح‌ها در هنگام پخش ویدئو</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>فیلتر مختصات را فعال کنید</value></data>
-   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve"><value>حالت سفارشی اشکال زدایی</value></data>
+   
    <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>ابهام پیش فرض طرح‌های جدید:</value></data>
    <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>قابل مشاهده سرتاسر ویدئو</value></data>
    <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>محو شدن در ابتدا و انتهای اطراف فریمی که به آنها اضافه شده</value></data>
    <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>تعداد فریم‌های محو شدن در ابتدا و انتهای طرح‌ها: {0}</value></data>
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>هنگام باز کردن ویدئوهای جدید، همیشه در حالت تبدیل ویدئوهای درهم آمیخته است.</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>بروزرسانی تصویر طی زمان حرکت مکان‌نما</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>پیوند سرعت اسلایدرها در هنگام تطبیق ویدئوها</value></data>
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>تشخیص خودکار</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>تعویض به حالت تجزیه و تحلیل</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>تعداد فایل‌ها در پیشینه:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>نسبت ابعاد پیش‌فرض:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>زبان:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>و</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>ویدئو</value></data>
    <data name="mnuTools" xml:space="preserve"><value>ابزارها</value></data>
    <data name="mnuOpenFile" xml:space="preserve"><value>بازکردن پرونده ویدئویی ...</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>گزینه‌ها</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>ترجیحات ...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>رویداد بعدی</value></data>
@@ -195,7 +216,6 @@
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>مجموع میکرو ثانیه‌ها</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>یکصدم دقیقه</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>ده هزارم ساعت</value></data>
-   
    
    
    

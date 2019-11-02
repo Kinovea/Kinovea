@@ -399,7 +399,7 @@ namespace Kinovea.Root
         {
             mnuFile.Text = RootLang.mnuFile;
             mnuOpenFile.Text = RootLang.mnuOpenFile;
-            mnuOpenReplayWatcher.Text = "Open replay folder observer...";
+            mnuOpenReplayWatcher.Text = RootLang.mnuOpenReplayWatcher;
             mnuHistory.Text = RootLang.mnuHistory;
             mnuHistoryReset.Text = RootLang.mnuHistoryReset;
             mnuQuit.Text = RootLang.Generic_Quit;
@@ -420,7 +420,6 @@ namespace Kinovea.Root
             mnuLanguages.Text = RootLang.mnuLanguages;
             mnuPreferences.Text = RootLang.mnuPreferences;
             mnuTimecode.Text = RootLang.mnuTimeFormat;
-            //mnuTimecodeFrames.Text = RootLang.TimeCodeFormat_Frames;
 
             mnuTimecodeClassic.Text = "[h:][mm:]ss.xx[x]";
             mnuTimecodeClassic.Image = Properties.Resources.timecode;

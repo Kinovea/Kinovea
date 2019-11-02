@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Година</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Месец</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Дан</value></data>
@@ -105,12 +107,29 @@
    <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve"><value>Camera alias</value></data>
    <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>Подешен број слика у секунди</value></data>
    <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>Примљен број слика у секунди</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>Контекст промељиве</value></data>
    <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>Контекст</value></data>
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Macro</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Меморија</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Меморија резервисана за хватање бафера: {0} MB.</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Прикажи цртеже док видео репродукује</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Аутоматско откривање</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Пребаци на режим за анализу</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Број датотека у историји:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Подразумевани формат слика:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Језик:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>И</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>Видео</value></data>
    <data name="mnuTools" xml:space="preserve"><value>Алати</value></data>
    <data name="mnuOpenFile" xml:space="preserve"><value>Отвори видео датотеку...</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Опције</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Жељене опције...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Поновити радњу</value></data>
@@ -195,7 +216,6 @@
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Укупно микросекунди</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Стоти део минуте</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет стотинки сата</value></data>
-   
    
    
    

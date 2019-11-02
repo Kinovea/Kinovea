@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>År</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Månad</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dag</value></data>
@@ -108,9 +110,26 @@
    
    
    
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Minne</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Minne som tilldelats upptagen buffer: {0} MB.</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Visa ritningar när video spelas</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatisk igenkänning</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Byt till analysverktyg</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Antal filer i historik:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Original bildformat:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Språk:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Och</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
    
    <data name="mnuOpenFile" xml:space="preserve"><value>Öppna videofil...</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Alternativ</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Inställningar...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Gör om</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundradels minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>tiotusendels timme</value></data>
-   
    
    
    

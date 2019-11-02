@@ -110,7 +110,26 @@
    
    
    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Vis tegninger samtidig meg videoavspilling</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatisk valg</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Bytt til Analyse modus</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Antall filer i historielisten:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard bildeformat:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Språk:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Og</value></data>
@@ -184,6 +204,7 @@
    
    
    <data name="mnuOpenFile" xml:space="preserve"><value>Åpne videofil...</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Alternativer</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Instillinger...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Gjør om</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundredels minutt</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Titusendedels time</value></data>
-   
    
    
    

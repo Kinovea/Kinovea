@@ -170,7 +170,7 @@ namespace Kinovea.Root
             int videoFormat = (int)capturePathConfiguration.VideoFormat;
             cmbVideoFormat.SelectedIndex = ((int)videoFormat < cmbVideoFormat.Items.Count) ? (int)videoFormat : 0;
 
-            lblUncompressedVideoFormat.Text = "Uncompressed video format:"; //RootLang.dlgPreferences_Capture_lblVideoFormat;
+            lblUncompressedVideoFormat.Text = RootLang.dlgPreferences_Capture_lblUncompressedVideoFormat;
             cmbUncompressedVideoFormat.Items.Add("MKV");
             cmbUncompressedVideoFormat.Items.Add("AVI");
             int uncompressedVideoFormat = (int)capturePathConfiguration.UncompressedVideoFormat;
@@ -206,24 +206,22 @@ namespace Kinovea.Root
             tabRecording.Text = RootLang.dlgPreferences_Capture_Recording;
 
             grpRecordingMode.Text = RootLang.dlgPreferences_Capture_RecordingMode;
-            //rbRecordingDisplay.Text = RootLang.dlgPreferences_Capture_RecordingMode_Display;
-            //rbRecordingCamera.Text = RootLang.dlgPreferences_Capture_RecordingMode_Camera;
-            rbRecordingCamera.Text = "Camera: records real time frames.";
-            rbRecordingDelayed.Text = "Delayed: records delayed frames."; 
+            rbRecordingCamera.Text = RootLang.dlgPreferences_Capture_RecordingMode_Camera;
+            rbRecordingDelayed.Text = RootLang.dlgPreferences_Capture_RecordingMode_Display;
             rbRecordingScheduled.Text = "Scheduled: records delayed frames at stop."; 
-            chkUncompressedVideo.Text = "Record uncompressed video";
+            chkUncompressedVideo.Text = RootLang.dlgPreferences_Capture_chkUncompressedVideo;
 
             rbRecordingCamera.Checked = recordingMode == CaptureRecordingMode.Camera;
             rbRecordingDelayed.Checked = recordingMode == CaptureRecordingMode.Delay;
             rbRecordingScheduled.Checked = recordingMode == CaptureRecordingMode.Scheduled;
             chkUncompressedVideo.Checked = saveUncompressedVideo;
 
-            chkIgnoreOverwriteWarning.Text = "Ignore file overwrite warning";
+            chkIgnoreOverwriteWarning.Text = RootLang.dlgPreferences_Capture_chkIgnoreOverwrite;
             chkIgnoreOverwriteWarning.Checked = ignoreOverwriteWarning;
 
-            gbHighspeedCameras.Text = "High speed cameras";
-            lblReplacementThreshold.Text = "Framerate replacement threshold (fps):";
-            lblReplacementFramerate.Text = "Replacement framerate (fps):";
+            gbHighspeedCameras.Text = RootLang.dlgPreferences_Capture_gbHighspeedCameras;
+            lblReplacementThreshold.Text = RootLang.dlgPreferences_Capture_lblReplacementThreshold;
+            lblReplacementFramerate.Text = RootLang.dlgPreferences_Capture_lblReplacementValue;
             nudReplacementThreshold.Value = (decimal)replacementFramerateThreshold;
             nudReplacementFramerate.Value = (decimal)replacementFramerate;
             // Tooltip: Starting at this capture framerate, videos will be created with the replacement framerate in their metadata.
@@ -275,9 +273,9 @@ namespace Kinovea.Root
 
         private void InitPageAutomation()
         {
-            tabAutomation.Text = "Automation";
-            chkEnableAudioTrigger.Text = "Enable audio trigger";
-            lblInputDevice.Text = "Input device:";
+            tabAutomation.Text = RootLang.dlgPreferences_Capture_tabAutomation; 
+            chkEnableAudioTrigger.Text = RootLang.dlgPreferences_Capture_chkEnableAudioTrigger;
+            lblInputDevice.Text = RootLang.dlgPreferences_Capture_lblInputDevice;
             audioInputDevices = AudioInputLevelMonitor.GetDevices();
             if (audioInputDevices.Count > 0)
             {
@@ -295,19 +293,19 @@ namespace Kinovea.Root
                     cmbInputDevice.SelectedIndex = 0;
             }
 
-            lblAudioTriggerThreshold.Text = "Trigger threshold:";
+            lblAudioTriggerThreshold.Text = RootLang.dlgPreferences_Capture_lblTriggerThreshold;
             vumeter.Threshold = audioTriggerThreshold;
             vumeter.DecibelRange = decibelRange;
             nudAudioTriggerThreshold.Value = (decimal)vumeter.ThresholdLinear * decibelRange;
             nudAudioTriggerThreshold.Maximum = decibelRange;
 
-            lblRecordingTime.Text = "Stop recording by duration (s):";
+            lblRecordingTime.Text = RootLang.dlgPreferences_Capture_lblStopRecordingByDuration;
             nudRecordingTime.Value = (decimal)recordingSeconds;
             
             chkEnableAudioTrigger.Checked = enableAudioTrigger;
             EnableDisableAudioTrigger();
 
-            lblPostRecordCommand.Text = "Post recording command:";
+            lblPostRecordCommand.Text = RootLang.dlgPreferences_Capture_lblPostRecordingCommand; 
             tbPostRecordCommand.Text = postRecordCommand;
         }
 

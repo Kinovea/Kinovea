@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>年</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>月</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>日</value></data>
@@ -108,9 +110,26 @@
    
    
    
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>メモリー</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>キャプチャバッファー用メモリー: {0} MB.</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>ビデオ再生中にドローイングを表示する</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>自動検出</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>分析モードに変更</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>履歴上のファイル数:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>デフォルト画像フォーマット:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>言語:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>&amp;</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>ビデオ</value></data>
    
    <data name="mnuOpenFile" xml:space="preserve"><value>ビデオファイルを開く…</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>オプション</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>設定…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>やり直し</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>1/100分</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>1/10,000時間</value></data>
-   
    
    
    

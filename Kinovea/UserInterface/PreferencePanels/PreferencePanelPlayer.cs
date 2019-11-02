@@ -130,7 +130,7 @@ namespace Kinovea.Root
         {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
             chkDeinterlace.Text = RootLang.dlgPreferences_Player_DeinterlaceByDefault;
-            chkDetectImageSequences.Text = "Import image sequences as videos";
+            chkDetectImageSequences.Text = RootLang.dlgPreferences_Player_ImportImageSequences;
             chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
             chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
 
@@ -148,14 +148,12 @@ namespace Kinovea.Root
             lblTimeMarkersFormat.Text = RootLang.dlgPreferences_Player_UnitTime;
             //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
             cmbTimeCodeFormat.Items.Add("[h:][mm:]ss.xx[x]");
-            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
-            cmbTimeCodeFormat.Items.Add("Frame number");
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Milliseconds);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Microseconds);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
-            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
-            cmbTimeCodeFormat.Items.Add("[h:][mm:]ss.xx[x] + Frame number");
+            cmbTimeCodeFormat.Items.Add("[h:][mm:]ss.xx[x] + " + RootLang.TimeCodeFormat_Frames);
 #if DEBUG
             cmbTimeCodeFormat.Items.Add("Normalized");
             cmbTimeCodeFormat.Items.Add("Timestamps");

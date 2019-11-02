@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>연도</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>월</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>일</value></data>
@@ -108,9 +110,26 @@
    
    
    
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>메모리</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>캡처 버퍼에 메모리 할당됨:{0}</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>비디오 재생시 그림 보이기</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>자동 탐지</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>분석 모드로 전환</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>히스토리 파일 수:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>기본 이미지 형식:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>언어:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>그리고</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>비디오</value></data>
    
    <data name="mnuOpenFile" xml:space="preserve"><value>비디오 파일 열기…</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>선택 사항들</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>선호 사항들</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>다시 함</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>일분을 백 등분한 시간</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>한 시간을 만 등분한 시간</value></data>
-   
    
    
    

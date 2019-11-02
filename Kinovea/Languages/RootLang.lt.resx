@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Metai</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mėnuo</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Diena</value></data>
@@ -108,9 +110,26 @@
    
    
    
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Atmintis</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Užimta atminties įrašymo buferiui: {0} MB.</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Rodyti piešinius rodant vaizdą</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatinis aptikimas</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Pereitį į analizavimo rėžimą</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Dokumentų kiekis atmintyje:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Numatytasis paveikslėlio formatas:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Kalba:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Ir</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>Vaizdas</value></data>
    
    <data name="mnuOpenFile" xml:space="preserve"><value>Atidaryti vaizdo dokumentą...</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Nustatymai</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Nuostatos...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Veiksmas pirmyn</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Šimtosios minutės</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dešimt tūkstantoji valandos</value></data>
-   
    
    
    

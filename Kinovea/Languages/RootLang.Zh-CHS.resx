@@ -110,7 +110,26 @@
    
    
    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>当播放视频的时候显示绘制信息</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>自动识别</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>当以下情况切换至分析模式</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>历史文件显示个数:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>默认图像显示格式:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>语言:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>和</value></data>
@@ -184,6 +204,7 @@
    
    
    <data name="mnuOpenFile" xml:space="preserve"><value>打开视频文件...</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>选项</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>首选项...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>重做</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>百分钟</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>万分之一小时</value></data>
-   
    
    
    

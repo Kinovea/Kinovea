@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Yıl</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Ay</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Gün</value></data>
@@ -108,9 +110,26 @@
    
    
    
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Bellek</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Capture tamponu için ayrılmış bellek: {0} MB.</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Video oynatılırken çizimleri göster</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Otomatik Bulma</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Analiz Moduna Geç</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Geçmişteki dosya sayısı:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Öntanımlı imaj formatı:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Dil:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Ve</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
    
    <data name="mnuOpenFile" xml:space="preserve"><value>Video Dosyasını Aç...</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Seçenekler</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Tercihler...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Yinele</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Bir dakikanın yüzdesi</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin on bindesi</value></data>
-   
    
    
    

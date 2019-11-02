@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Rok</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Měsíc</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Den</value></data>
@@ -108,9 +110,26 @@
    
    
    
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Paměť</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Alokovaná paměť pro záznam: {0} MB</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Zobrazit nákres při přehrávání videa</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Autodetekce</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Přepnout do módu analýzy</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Počet souborů v historii:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Přednastavený formát obrazu:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Jazyk</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>a</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
    
    <data name="mnuOpenFile" xml:space="preserve"><value>Otevřít video soubor…</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Možnosti</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Preference…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Zrušit zpět</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Setina minuty</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Desetitisícina hodiny</value></data>
-   
    
    
    

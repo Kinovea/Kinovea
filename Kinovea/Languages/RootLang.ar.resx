@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>سنة</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>شهر</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>يوم</value></data>
@@ -105,12 +107,29 @@
    <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve"><value>الاسم المستعار للكاميرا</value></data>
    <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>تهيئة معدل الكادرات</value></data>
    <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>معدل الكادرات المستلمة</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>متغيرات السياق</value></data>
    <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>السياق</value></data>
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>ماكرو</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>الذاكرة</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>الذاكرة المخصصة للالتقاط المؤقت: {0} ميغابايت</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>اظهار الرسومات عند تشغيل الفيديو</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>اكتشاف تلقائي</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>التبديل الي وضع التحليل</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>عدد الملفات في سجل التصفح:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>تهيئة الصورة الافتراضية:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>اللغة:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>و</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>فيديو</value></data>
    <data name="mnuTools" xml:space="preserve"><value>الادوات</value></data>
    <data name="mnuOpenFile" xml:space="preserve"><value>فتح ملف فيديو...</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>الخيارات</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>التفضيلات...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>عوده</value></data>
@@ -195,7 +216,6 @@
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>مجموع ميكروثانية</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>مائة في الدقيقة</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>عشرة آلاف في الساعة</value></data>
-   
    
    
    

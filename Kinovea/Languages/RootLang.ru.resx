@@ -81,7 +81,7 @@
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>Общие</value></data>
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Воспроизвести</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Клавиатура</value></data>
-   <data name="dlgPreferences_Drawings_chkAllowMultipleInstances" xml:space="preserve"><value>Позволить множественную установку Kinovea</value></data>
+   <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve"><value>Позволить множественную установку Kinovea</value></data>
    
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Левое</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Правое</value></data>
@@ -92,9 +92,11 @@
    <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Название видеофайла</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Формат изображения:</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Формат видео:</value></data>
+   
+   
    <data name="dlgPreferences_Capture_Recording" xml:space="preserve"><value>Запись</value></data>
    <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Режим съемки и задержки</value></data>
-   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Камера: запись потока видео непосредственно с камеры</value></data>
+   
    <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Дисплей: непосредственная запись с экрана</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Год</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Месяц</value></data>
@@ -105,11 +107,27 @@
    <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve"><value>Наименование камеры</value></data>
    <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>Конфигурация частоты кадров</value></data>
    <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>Полученная частота кадров</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>Контекстные переменные</value></data>
    <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>Контекст</value></data>
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Макро</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Память</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Выделенная память для съемки в буфер : {0} MB.</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Показывать рисунки во время воспроизведения видео</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Разрешить фильтрацию координат</value></data>
    
@@ -117,6 +135,7 @@
    <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Видимый на протяжении всего видео</value></data>
    <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Эффект выцветания при удалении от кадра на котором они были добавлены</value></data>
    <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>Количество кадров при эффекте выцветания рисунка: {0}</value></data>
+   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Выполнять деинтерлейсинг при открытии нового видео</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Обновлять изображение во время движения курсора</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Выровнять скорость при сравнении видео</value></data>
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Автоматическое определение</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Перейти в режим анализа</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Число файлов в истории</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Формат изображения по умолчанию</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Язык</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>И</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>Видео</value></data>
    <data name="mnuTools" xml:space="preserve"><value>Инструменты</value></data>
    <data name="mnuOpenFile" xml:space="preserve"><value>Открыть видеофайл</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Настройки</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Предпочтение</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Повтор</value></data>
@@ -195,7 +216,6 @@
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Микросекунды всего</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Сотые минуты</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десятитысячные часа</value></data>
-   
    
    
    

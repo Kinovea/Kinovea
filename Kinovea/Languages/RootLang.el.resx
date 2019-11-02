@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Έτος</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Μήνας</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Ημέρα</value></data>
@@ -108,9 +110,26 @@
    
    
    
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Μνήμη</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Προσδιορισμένη ενδιάμεση μνήμη αποτύπωσης: {0} MB.</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Απεικόνηση σχεδίων κατά την αναπαραγωγή</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Αυτόματη Ανίχνευση</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Αλλαγή σε Τρόπο Ανάλυσης</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Αριθμός αρχείων στο Ιστορικό:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Προκαθορισμένη μορφή εικόνας:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Γλώσσα:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Και</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>Βίντεο</value></data>
    
    <data name="mnuOpenFile" xml:space="preserve"><value>Άνοιγμα Αρχείου Video…</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Επιλογές</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Προτιμήσεις…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Επανάληψη</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Εκατοστό του Λεπτού</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Δεκάδες Χιλιοστά της ώρας</value></data>
-   
    
    
    

@@ -107,9 +107,9 @@ namespace Kinovea.Root
             SelectCurrentLanguage();
             cmbHistoryCount.SelectedIndex = maxRecentFiles;
 
-            chkAllowMultipleInstances.Text = RootLang.dlgPreferences_Drawings_chkAllowMultipleInstances;
+            chkAllowMultipleInstances.Text = RootLang.dlgPreferences_General_chkAllowMultipleInstances;
             chkAllowMultipleInstances.Checked = allowMultipleInstances;
-            chkInstancesPreferences.Text = "Instances have their own preferences";
+            chkInstancesPreferences.Text = RootLang.dlgPreferences_General_InstancesHaveOwnPreferences;
             chkInstancesPreferences.Checked = instancesOwnPreferences;
             chkInstancesPreferences.Enabled = allowMultipleInstances;
 

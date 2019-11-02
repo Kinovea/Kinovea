@@ -96,6 +96,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>År</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Måned</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dag</value></data>
@@ -108,9 +110,26 @@
    
    
    
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Hukommelse</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Hukommelsesallokering til optagebuffer: {0} MB.</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Vis tegning når video kører</value></data>
+   
    
    
    
@@ -125,6 +144,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Auto detektering</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Skift til analyse mode</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Antal filer i historik:</value></data>
+   
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Standard billedformat:</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Sprog:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Og</value></data>
@@ -184,6 +204,7 @@
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
    
    <data name="mnuOpenFile" xml:space="preserve"><value>Åben videofil…</value></data>
+   
    <data name="mnuOptions" xml:space="preserve"><value>Valgmuligheder</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Indstillinger…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Annuller Fortryd</value></data>
@@ -195,7 +216,6 @@
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>1/100 minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>10/1000 time</value></data>
-   
    
    
    
