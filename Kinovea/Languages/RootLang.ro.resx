@@ -189,16 +189,12 @@
    <data name="mnuRedo" xml:space="preserve"><value>Refă</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Vizionare</value></data>
    <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Explorator fişiere</value></data>
-   <data name="mnuTutorialVideos" xml:space="preserve"><value>Tutoriale video...</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Anulează</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clasic (h:mm:ss:sutimi)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numărul imaginilor</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total în milisecunde</value></data>
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sutimi de minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zece miimi de oră</value></data>
-   <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Markeri timp</value></data>
-   <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clasic+Numarul cadrelor</value></data>
    
    
    

@@ -76,9 +76,10 @@
    <data name="mnuAddShortcut" xml:space="preserve"><value>Ajouter un raccourci</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Ajouter aux raccourcis</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Effacer le raccourci</value></data>
-   <data name="mnuVideoLocate" xml:space="preserve"><value>Trouver le fichier dans l'Explorateur Windows</value></data>
+   <data name="mnuVideoLocate" xml:space="preserve"><value>Trouver dans l'Explorateur Windows</value></data>
    <data name="mnuVideoDelete" xml:space="preserve"><value>Supprimer le fichier</value></data>
-   <data name="Tooltip_ImportToCaptureHistory" xml:space="preserve"><value>Importer des fichiers dans l'historique de capture</value></data>
+   <data name="mnuOpenAsReplayWatcher" xml:space="preserve"><value>Ouvrir comme observateur de dossier de relecture</value></data>
+   <data name="ForgetCustomSettings" xml:space="preserve"><value>Oublier les paramètres personalisés</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuler</value></data>
    <data name="Generic_Open" xml:space="preserve"><value>Ouvrir</value></data>
    <data name="tabExplorer" xml:space="preserve"><value>Explorateur</value></data>

@@ -71,9 +71,8 @@ def generate_resource_accessor(module, target):
 # -------------------------------------------------------------------------------
 # Program Entry point.
 saxon = '"C:\\Program Files\\Saxonica\\SaxonHE9.6N\\bin\\Transform.exe"'
-resgen = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\resgen.exe"'
-#resgen = '.\\resgen.exe'
-al = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\al.exe"'
+resgen = '"C:\\Program Files (x86)\\Microsoft SDKs\Windows\\v10.0A\\bin\\NETFX 4.8 Tools\\resgen.exe"'
+al = '"C:\\Program Files (x86)\\Microsoft SDKs\Windows\\v10.0A\\bin\\NETFX 4.8 Tools\\al.exe"'
 
 
 print("Cleanup")
@@ -86,7 +85,7 @@ for pattern in patterns:
         os.remove(file)
 
 # 0. Extract content.xml from the OpenOffice document.
-z = zipfile.ZipFile("Kinovea-l14n-rev0020.ods", "r")
+z = zipfile.ZipFile("Kinovea-l14n-rev0021.ods", "r")
 z.extract("content.xml")
 
 print("\nGenerate all Resx, first pass.")

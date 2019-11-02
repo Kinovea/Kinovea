@@ -189,16 +189,12 @@
    <data name="mnuRedo" xml:space="preserve"><value>Rehacer</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Vista</value></data>
    <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Explorador De Archivos</value></data>
-   <data name="mnuTutorialVideos" xml:space="preserve"><value>Videotutoriales...</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Cancelar</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clasico (h:mm:ss:centésimos)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de Cuadros</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total en milisegundos</value></data>
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centésimas de un minuto</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Diez milésimas de una hora</value></data>
-   <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
-   <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clásico + Número de imágenes</value></data>
    
    
    

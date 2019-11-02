@@ -400,3 +400,5 @@ MigrationBackup/
 /Localization/WorkingDirectory/sr-Latn-CS/Kinovea.resources.dll
 /Localization/WorkingDirectory/sr-Latn-CS/Kinovea.ScreenManager.resources.dll
 /Localization/WorkingDirectory/sr-Latn-CS/Kinovea.Updater.resources.dll
+/Localization/WorkingDirectory/.idea/*
+/Kinovea-*.zip

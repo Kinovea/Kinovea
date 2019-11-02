@@ -189,16 +189,12 @@
    <data name="mnuRedo" xml:space="preserve"><value>Zrušit zpět</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Zobrazení</value></data>
    <data name="mnuToggleFileExplorer" xml:space="preserve"><value>File Explorer</value></data>
-   <data name="mnuTutorialVideos" xml:space="preserve"><value>Videotutoriály…</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Zpět</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klasické (h:mm:ss:setiny)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Číslo snímku</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Celkem milisekund</value></data>
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Setina minuty</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Desetitisícina hodiny</value></data>
-   <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Časová razítka</value></data>
-   <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasické zobarzení + číslo snímku</value></data>
    
    
    

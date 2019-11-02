@@ -189,16 +189,12 @@
    <data name="mnuRedo" xml:space="preserve"><value>Toista</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Näytä</value></data>
    <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Tiedostopuu</value></data>
-   <data name="mnuTutorialVideos" xml:space="preserve"><value>Video-ohjeet...</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Palauta</value></data>
-   <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassinen (t:mm:ss:sadasosat)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kehysnumerointi</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Kokonaisaika millisekunnit</value></data>
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sadasosaminuutti</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tunnin kymmenestuhannesosa</value></data>
-   <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Aikaleimat</value></data>
-   <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klassinen + kuvanumeroinnit</value></data>
    
    
    

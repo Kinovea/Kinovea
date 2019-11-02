@@ -336,14 +336,14 @@ namespace Kinovea.FileBrowser
 
             // Menus
             mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
-            mnuOpenAsReplayWatcher.Text = "Open as replay folder observer";
-            mnuLocateFolder.Text = "Locate in Windows Explorer";
+            mnuOpenAsReplayWatcher.Text = FileBrowserLang.mnuOpenAsReplayWatcher;
+            mnuLocateFolder.Text = FileBrowserLang.mnuVideoLocate;
             mnuDeleteShortcut.Text = FileBrowserLang.mnuDeleteShortcut;
             mnuLaunch.Text = FileBrowserLang.Generic_Open;
-            mnuLocate.Text = "Locate in Windows Explorer"; //FileBrowserLang.mnuVideoLocate;
+            mnuLocate.Text = FileBrowserLang.mnuVideoLocate;
             mnuDelete.Text = FileBrowserLang.mnuVideoDelete;
             mnuCameraLaunch.Text = FileBrowserLang.Generic_Open;
-            mnuCameraForget.Text = "Forget custom settings";
+            mnuCameraForget.Text = FileBrowserLang.ForgetCustomSettings;
 
             // ToolTips
             ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
