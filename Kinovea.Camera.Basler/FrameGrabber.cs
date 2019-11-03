@@ -96,10 +96,7 @@ namespace Kinovea.Camera.Basler
             firstOpen = false;
 
             // Get the configured framerate for recording support.
-            if (Pylon.DeviceFeatureIsReadable(deviceHandle, "ResultingFrameRateAbs"))
-                resultingFramerate = (float)Pylon.DeviceGetFloatFeature(deviceHandle, "ResultingFrameRateAbs");
-            else if (Pylon.DeviceFeatureIsReadable(deviceHandle, "ResultingFrameRate"))
-                resultingFramerate = (float)Pylon.DeviceGetFloatFeature(deviceHandle, "ResultingFrameRate");
+            resultingFramerate = PylonHelper.GetResultingFramerate(deviceHandle);
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
             string streamFormatSymbol = specific.StreamFormat;

@@ -166,5 +166,15 @@ namespace Kinovea.Camera.Basler
                    pixelType == EPylonPixelType.PixelType_BayerGR8 ||
                    pixelType == EPylonPixelType.PixelType_BayerRG8;
         }
+
+        public static float GetResultingFramerate(PYLON_DEVICE_HANDLE deviceHandle)
+        {
+            if (Pylon.DeviceFeatureIsReadable(deviceHandle, "ResultingFrameRateAbs"))
+                return (float)Pylon.DeviceGetFloatFeature(deviceHandle, "ResultingFrameRateAbs");
+            else if (Pylon.DeviceFeatureIsReadable(deviceHandle, "ResultingFrameRate"))
+                return (float)Pylon.DeviceGetFloatFeature(deviceHandle, "ResultingFrameRate");
+
+            return 0;
+        }
     }
 }

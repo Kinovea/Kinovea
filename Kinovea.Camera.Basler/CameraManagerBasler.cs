@@ -252,7 +252,13 @@ namespace Kinovea.Camera.Basler
                     string format = info.StreamFormat;
                     int width = int.Parse(info.CameraProperties["width"].CurrentValue, CultureInfo.InvariantCulture);
                     int height = int.Parse(info.CameraProperties["height"].CurrentValue, CultureInfo.InvariantCulture);
-                    double framerate = double.Parse(info.CameraProperties["framerate"].CurrentValue, CultureInfo.InvariantCulture);
+                    double framerate = 0;
+
+                    // The configured framerate is always between 0 and 10000, but the actual resulting framerate can be obtained.
+                    if (info.Handle != null && info.Handle.IsValid)
+                        framerate = PylonHelper.GetResultingFramerate(info.Handle);
+                    else
+                        framerate = double.Parse(info.CameraProperties["framerate"].CurrentValue, CultureInfo.InvariantCulture);
 
                     result = string.Format("{0} - {1}×{2} @ {3:0.##} fps ({4}).", alias, width, height, framerate, format);
                 }
