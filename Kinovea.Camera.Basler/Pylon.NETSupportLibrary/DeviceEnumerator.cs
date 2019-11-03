@@ -23,7 +23,7 @@ namespace PylonC.NETSupportLibrary
             /* Create a list for the device data. */
             List<Device> list = new List<Device>();
 
-            /* Enumerate all camera devices. You must call 
+            /* Enumerate all camera devices. You must call
             PylonEnumerateDevices() before creating a device. */
             uint count = Pylon.EnumerateDevices();
 
@@ -39,7 +39,7 @@ namespace PylonC.NETSupportLibrary
                 device.Name = Pylon.DeviceInfoGetPropertyValueByName(hDi, Pylon.cPylonDeviceInfoFriendlyNameKey);
                 /* Get the serial number */
                 device.FullName = Pylon.DeviceInfoGetPropertyValueByName(hDi, Pylon.cPylonDeviceInfoFullNameKey );
-                /* Set the index. */ 
+                /* Set the index. */
                 device.Index = i;
 
                 /* Create tooltip */
@@ -58,7 +58,7 @@ namespace PylonC.NETSupportLibrary
                     }
                 }
                 device.Tooltip = tooltip;
-                /* Add to the list. */ 
+                /* Add to the list. */
                 list.Add(device);
             }
             return list;

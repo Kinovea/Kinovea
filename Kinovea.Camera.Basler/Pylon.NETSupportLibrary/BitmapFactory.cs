@@ -61,7 +61,7 @@ namespace PylonC.NETSupportLibrary
 
             /* Lock the bitmap's bits. */
             BitmapData bmpData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
-            /* Get the pointer to the bitmap's buffer. */            
+            /* Get the pointer to the bitmap's buffer. */
             IntPtr ptrBmp = bmpData.Scan0;
             /* Compute the width of a line of the image data. */
             int imageStride = GetStride(width, color);

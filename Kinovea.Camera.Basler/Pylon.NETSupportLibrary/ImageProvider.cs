@@ -468,6 +468,9 @@ namespace PylonC.NETSupportLibrary
              still be valid if the last grab has thrown an exception). */
             m_hConverter.SetInvalid();
 
+            /* Start the image acquisition engine. */
+            Pylon.StreamGrabberStartStreamingIfMandatory(m_hGrabber);
+
             /* Let the camera acquire images. */
             Pylon.DeviceExecuteCommandFeature(m_hDevice, "AcquisitionStart");
         }
@@ -641,6 +644,9 @@ namespace PylonC.NETSupportLibrary
             /*  ... Stop the camera. */
             Pylon.DeviceExecuteCommandFeature(m_hDevice, "AcquisitionStop");
 
+            /* ... Stop the image acquisition engine. */
+            Pylon.StreamGrabberStopStreamingIfMandatory(m_hGrabber);
+
             /* Destroy the format converter if one was used. */
             if (m_hConverter.IsValid)
             {
@@ -656,9 +662,9 @@ namespace PylonC.NETSupportLibrary
                 m_convertedBuffers = null;
             }
 
-            /* ... We must issue a cancel call to ensure that all pending m_buffers are put into the
+            /* ... We must issue a flush call to ensure that all pending m_buffers are put into the
                stream grabber's output queue. */
-            Pylon.StreamGrabberCancelGrab(m_hGrabber);
+            Pylon.StreamGrabberFlushBuffersToOutput(m_hGrabber);
 
             /* ... The m_buffers can now be retrieved from the stream grabber. */
             {
