@@ -83,6 +83,8 @@ namespace Kinovea.Camera.FrameGenerator
             cameraProperties = CameraPropertyManager.Read(specific);
             PopulateStreamFormat();
             PopulateCameraControls();
+            this.Text = CameraLang.FormConfiguration_Title;
+            btnApply.Text = CameraLang.Generic_Apply;
         }
 
         void BtnIconClick(object sender, EventArgs e)

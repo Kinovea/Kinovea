@@ -103,6 +103,8 @@ namespace Kinovea.Camera.IDS
                 specificChanged = true;
 
             Populate();
+            this.Text = CameraLang.FormConfiguration_Title;
+            btnApply.Text = CameraLang.Generic_Apply;
         }
 
         private void Populate()
@@ -172,7 +174,10 @@ namespace Kinovea.Camera.IDS
         private void RemoveCameraControls()
         {
             foreach (var pair in propertiesControls)
+            {
+                pair.Value.ValueChanged -= cpvCameraControl_ValueChanged;
                 gbProperties.Controls.Remove(pair.Value);
+            }
 
             propertiesControls.Clear();
         }

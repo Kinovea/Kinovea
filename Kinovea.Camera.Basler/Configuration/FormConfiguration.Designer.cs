@@ -49,6 +49,8 @@ namespace Kinovea.Camera.Basler
         private void InitializeComponent()
         {
       this.gbProperties = new System.Windows.Forms.GroupBox();
+      this.lblResultingFramerateValue = new System.Windows.Forms.Label();
+      this.lblResultingFramerate = new System.Windows.Forms.Label();
       this.cmbBayer8Conversion = new System.Windows.Forms.ComboBox();
       this.lblBayerConversion = new System.Windows.Forms.Label();
       this.lblAuto = new System.Windows.Forms.Label();
@@ -59,6 +61,7 @@ namespace Kinovea.Camera.Basler
       this.lblSystemName = new System.Windows.Forms.Label();
       this.btnIcon = new System.Windows.Forms.Button();
       this.btnApply = new System.Windows.Forms.Button();
+      this.btnReconnect = new System.Windows.Forms.Button();
       this.gbProperties.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.SuspendLayout();
@@ -68,6 +71,8 @@ namespace Kinovea.Camera.Basler
       this.gbProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.gbProperties.Controls.Add(this.lblResultingFramerateValue);
+      this.gbProperties.Controls.Add(this.lblResultingFramerate);
       this.gbProperties.Controls.Add(this.cmbBayer8Conversion);
       this.gbProperties.Controls.Add(this.lblBayerConversion);
       this.gbProperties.Controls.Add(this.lblAuto);
@@ -75,9 +80,37 @@ namespace Kinovea.Camera.Basler
       this.gbProperties.Controls.Add(this.lblColorSpace);
       this.gbProperties.Location = new System.Drawing.Point(12, 94);
       this.gbProperties.Name = "gbProperties";
-      this.gbProperties.Size = new System.Drawing.Size(434, 275);
+      this.gbProperties.Size = new System.Drawing.Size(434, 322);
       this.gbProperties.TabIndex = 80;
       this.gbProperties.TabStop = false;
+      // 
+      // lblResultingFramerateValue
+      // 
+      this.lblResultingFramerateValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblResultingFramerateValue.AutoSize = true;
+      this.lblResultingFramerateValue.BackColor = System.Drawing.Color.Transparent;
+      this.lblResultingFramerateValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblResultingFramerateValue.ForeColor = System.Drawing.Color.Black;
+      this.lblResultingFramerateValue.Location = new System.Drawing.Point(154, 284);
+      this.lblResultingFramerateValue.Name = "lblResultingFramerateValue";
+      this.lblResultingFramerateValue.Size = new System.Drawing.Size(13, 13);
+      this.lblResultingFramerateValue.TabIndex = 105;
+      this.lblResultingFramerateValue.Text = "0";
+      this.lblResultingFramerateValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // lblResultingFramerate
+      // 
+      this.lblResultingFramerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblResultingFramerate.AutoSize = true;
+      this.lblResultingFramerate.BackColor = System.Drawing.Color.Transparent;
+      this.lblResultingFramerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblResultingFramerate.ForeColor = System.Drawing.Color.Black;
+      this.lblResultingFramerate.Location = new System.Drawing.Point(21, 284);
+      this.lblResultingFramerate.Name = "lblResultingFramerate";
+      this.lblResultingFramerate.Size = new System.Drawing.Size(101, 13);
+      this.lblResultingFramerate.TabIndex = 104;
+      this.lblResultingFramerate.Text = "Resulting framerate:";
+      this.lblResultingFramerate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // cmbBayer8Conversion
       // 
@@ -194,19 +227,31 @@ namespace Kinovea.Camera.Basler
       // 
       this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnApply.Location = new System.Drawing.Point(349, 375);
+      this.btnApply.Location = new System.Drawing.Point(349, 422);
       this.btnApply.Name = "btnApply";
       this.btnApply.Size = new System.Drawing.Size(99, 24);
       this.btnApply.TabIndex = 200;
       this.btnApply.Text = "Apply";
       this.btnApply.UseVisualStyleBackColor = true;
       // 
+      // btnReconnect
+      // 
+      this.btnReconnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnReconnect.Location = new System.Drawing.Point(244, 422);
+      this.btnReconnect.Name = "btnReconnect";
+      this.btnReconnect.Size = new System.Drawing.Size(99, 24);
+      this.btnReconnect.TabIndex = 203;
+      this.btnReconnect.Text = "Reconnect";
+      this.btnReconnect.UseVisualStyleBackColor = true;
+      this.btnReconnect.Click += new System.EventHandler(this.BtnReconnect_Click);
+      // 
       // FormConfiguration
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(458, 411);
+      this.ClientSize = new System.Drawing.Size(458, 458);
+      this.Controls.Add(this.btnReconnect);
       this.Controls.Add(this.btnApply);
       this.Controls.Add(this.groupBox2);
       this.Controls.Add(this.gbProperties);
@@ -217,6 +262,7 @@ namespace Kinovea.Camera.Basler
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Camera configuration";
       this.gbProperties.ResumeLayout(false);
+      this.gbProperties.PerformLayout();
       this.groupBox2.ResumeLayout(false);
       this.groupBox2.PerformLayout();
       this.ResumeLayout(false);
@@ -233,5 +279,8 @@ namespace Kinovea.Camera.Basler
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.ComboBox cmbBayer8Conversion;
         private System.Windows.Forms.Label lblBayerConversion;
+        private System.Windows.Forms.Button btnReconnect;
+        private System.Windows.Forms.Label lblResultingFramerateValue;
+        private System.Windows.Forms.Label lblResultingFramerate;
     }
 }

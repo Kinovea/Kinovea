@@ -59,7 +59,7 @@ namespace Kinovea.Camera.Basler
 
         public static void Write(PYLON_DEVICE_HANDLE deviceHandle, CameraProperty property)
         {
-            if (!property.Supported || string.IsNullOrEmpty(property.Identifier))
+            if (!property.Supported || string.IsNullOrEmpty(property.Identifier) || !deviceHandle.IsValid)
                 return;
 
             // If "auto" flag is OFF we should write it first. On some cameras the value is not writable until the corresponding auto flag is off.
