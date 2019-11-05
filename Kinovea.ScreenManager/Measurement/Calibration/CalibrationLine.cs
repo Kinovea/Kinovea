@@ -36,7 +36,10 @@ namespace Kinovea.ScreenManager
     public class CalibrationLine : ICalibrator
     {
         private PointF origin;
-        private float scale = 1.0f;
+        private float scale = 1.0f; // Baked transform.
+        private float length; // Real-world reference length.
+        private PointF a;       // Image coordinates of the line (undistorted space).
+        private PointF b;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         #region ICalibrator
@@ -66,18 +69,52 @@ namespace Kinovea.ScreenManager
             origin = p;
         }
         #endregion
-        
-        
-        public void Initialize(float ratio)
+
+        /// <summary>
+        /// Initialize the mapping.
+        /// length: Real world length of the reference line.
+        /// a, b: Image coordinates of the reference line.
+        /// </summary>
+        public void Initialize(float length, PointF a, PointF b)
         {
-            scale = ratio;
+            this.length = length;
+            this.a = a;
+            this.b = b;
+
+            float pixelLength = GeometryHelper.GetDistance(a, b);
+            scale = length / pixelLength;
+        }
+
+        /// <summary>
+        /// Updates the calibration coordinate system without changing the real-world scale of the segment, nor the user-defined origin.
+        /// a, b: Image coordinates of the reference segment.
+        /// </summary>
+        public void Update(PointF a, PointF b)
+        {
+            if (length == 0)
+            {
+                return;
+            }
+
+            this.a = a;
+            this.b = b;
+            float pixelLength = GeometryHelper.GetDistance(a, b);
+            scale = length / pixelLength;
         }
         
         #region Serialization
         public void WriteXml(XmlWriter w)
         {
+            //w.WriteElementString("Scale", string.Format(CultureInfo.InvariantCulture, "{0}", scale));
+
+            w.WriteElementString("Length", XmlHelper.WriteFloat(length));
+
+            w.WriteStartElement("Segment");
+            w.WriteElementString("A", XmlHelper.WritePointF(a));
+            w.WriteElementString("B", XmlHelper.WritePointF(b));
+            w.WriteEndElement();
+
             w.WriteElementString("Origin", XmlHelper.WritePointF(origin));
-            w.WriteElementString("Scale", string.Format(CultureInfo.InvariantCulture, "{0}", scale));
         }
         public void ReadXml(XmlReader r, PointF scaling)
         {
@@ -87,12 +124,22 @@ namespace Kinovea.ScreenManager
             {
                 switch(r.Name)
                 {
+                    case "Length":
+                        length = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        break;
+                    case "Segment":
+                        ParseSegment(r, scaling);
+                        break;
                     case "Origin":
                         origin = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         origin = origin.Scale(scaling.X, scaling.Y);
                         break;
                     case "Scale":
-                        scale = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        // Import and convert older format.
+                        float bakedScale = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        length = 1.0f;
+                        a = PointF.Empty;
+                        b = new PointF(0, 1.0f / bakedScale);
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
@@ -101,6 +148,36 @@ namespace Kinovea.ScreenManager
                 }
             }
             
+            r.ReadEndElement();
+
+            // Update mapping.
+            float pixelLength = GeometryHelper.GetDistance(a, b);
+            scale = length / pixelLength;
+        }
+
+        private void ParseSegment(XmlReader r, PointF scale)
+        {
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "A":
+                        a = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    case "B":
+                        b = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+
+            //.Scale(scale.X, scale.Y);
+
             r.ReadEndElement();
         }
         #endregion

@@ -123,6 +123,7 @@ namespace Kinovea.ScreenManager
         private CalibrationLine calibrationLine = new CalibrationLine();
         private CalibrationPlane calibrationPlane = new CalibrationPlane();
         private DistortionHelper distortionHelper = new DistortionHelper();
+        private Guid calibrationDrawingId;
         private Size imageSize;
         private CoordinateSystemGrid coordinateSystemGrid;
         private LengthUnit lengthUnit = LengthUnit.Pixels;
@@ -219,33 +220,45 @@ namespace Kinovea.ScreenManager
         }
 
         #region Methods specific to a calibration technique
-        public void CalibrationByLine_Initialize(float ratio)
+        public void CalibrationByLine_Initialize(Guid id, float length, PointF a, PointF b)
         {
-            calibrationLine.Initialize(ratio);
+            PointF aRectif = distortionHelper.Undistort(a);
+            PointF bRectif = distortionHelper.Undistort(b);
+
+            calibrationDrawingId = id;
+            calibrationLine.Initialize(length, aRectif, bRectif);
             AfterCalibrationChanged();
         }
-        public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
-        {
-            QuadrilateralF undistorted = new QuadrilateralF(
-                distortionHelper.Undistort(quadImage.A),
-                distortionHelper.Undistort(quadImage.B),
-                distortionHelper.Undistort(quadImage.C),
-                distortionHelper.Undistort(quadImage.D));
 
+        public void CalibrationByLine_Update(Guid id, PointF a, PointF b)
+        {
+            if (calibratorType != CalibratorType.Line || id != this.calibrationDrawingId)
+                return;
+
+            PointF aRectif = distortionHelper.Undistort(a);
+            PointF bRectif = distortionHelper.Undistort(b);
+            calibrationLine.Update(aRectif, bRectif);
+            AfterCalibrationChanged();
+        }
+
+        public void CalibrationByPlane_Initialize(Guid id, SizeF size, QuadrilateralF quadImage)
+        {
+            calibrationDrawingId = id;
+            QuadrilateralF undistorted = distortionHelper.Undistort(quadImage);
             calibrationPlane.Initialize(size, undistorted);
             AfterCalibrationChanged();
         }
-        public void CalibrationByPlane_Update(QuadrilateralF quadImage)
-        {
-            QuadrilateralF undistorted = new QuadrilateralF(
-                distortionHelper.Undistort(quadImage.A),
-                distortionHelper.Undistort(quadImage.B),
-                distortionHelper.Undistort(quadImage.C),
-                distortionHelper.Undistort(quadImage.D));
 
+        public void CalibrationByPlane_Update(Guid id, QuadrilateralF quadImage)
+        {
+            if (calibratorType != CalibratorType.Plane || id != calibrationDrawingId)
+                return;
+
+            QuadrilateralF undistorted = distortionHelper.Undistort(quadImage);
             calibrationPlane.Update(undistorted);
             AfterCalibrationChanged();
         }
+
         public SizeF CalibrationByPlane_GetRectangleSize()
         {
             // Real size of the calibration rectangle. Used to populate the calibration dialog.
@@ -548,6 +561,8 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
 
+            w.WriteElementString("CalibrationDrawingId", calibrationDrawingId.ToString());
+            
             w.WriteStartElement("Unit");
             w.WriteAttributeString("Abbreviation", GetLengthAbbreviation());
             w.WriteString(lengthUnit.ToString());
@@ -573,6 +588,12 @@ namespace Kinovea.ScreenManager
                         calibratorType = CalibratorType.Line;
                         calibrator = calibrationLine;
                         calibrationLine.ReadXml(r, scale);
+                        break;
+                    case "CalibrationDrawingId":
+                        Guid result;
+                        bool parsed = Guid.TryParse(r.ReadElementContentAsString(), out result);
+                        if (parsed)
+                            calibrationDrawingId = result;
                         break;
                     case "Unit":
                         lengthUnit = (LengthUnit) Enum.Parse(typeof(LengthUnit), r.ReadElementContentAsString());

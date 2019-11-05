@@ -280,7 +280,7 @@ namespace Kinovea.ScreenManager
                 if (!styleHelper.Perspective)
                 {
                     quadImage.Translate(dx, dy);
-                    CalibrationHelper.CalibrationByPlane_Update(quadImage);
+                    CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
                 }
             }
             
@@ -304,7 +304,7 @@ namespace Kinovea.ScreenManager
             }
             
             SignalAllTrackablePointsMoved();
-            CalibrationHelper.CalibrationByPlane_Update(quadImage);
+            CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
         }
         public override PointF GetCopyPoint()
         {
@@ -460,7 +460,7 @@ namespace Kinovea.ScreenManager
             quadImage[p] = new PointF(value.X, value.Y);
 
             projectiveMapping.Update(quadPlane, quadImage);
-            CalibrationHelper.CalibrationByPlane_Update(quadImage);
+            CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
             planeIsConvex = quadImage.IsConvex;
         }
         private void SignalAllTrackablePointsMoved()

@@ -111,17 +111,10 @@ namespace Kinovea.ScreenManager
                 float length = (float)nudMeasure.Value;
                 if (length <= 0)
                     return;
-
-                PointF a = calibrationHelper.DistortionHelper.Undistort(line.A);
-                PointF b = calibrationHelper.DistortionHelper.Undistort(line.B);
-                float pixelLength = GeometryHelper.GetDistance(a, b);
-
-
-                float ratio = length / pixelLength;
                 
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Line);
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
-                calibrationHelper.CalibrationByLine_Initialize(ratio);
+                calibrationHelper.CalibrationByLine_Initialize(line.Id, length, line.A, line.B);
             }
             catch
             {

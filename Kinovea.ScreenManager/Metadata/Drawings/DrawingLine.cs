@@ -290,11 +290,14 @@ namespace Kinovea.ScreenManager
                     miniLabel.SetLabel(point);
                     break;
             }
+
+            CalibrationHelper.CalibrationByLine_Update(Id, points["a"], points["b"]);
         }
         public override void MoveDrawing(float dx, float dy, Keys modifiers, bool zooming)
         {
             points["a"] = points["a"].Translate(dx, dy);
             points["b"] = points["b"].Translate(dx, dy);
+            CalibrationHelper.CalibrationByLine_Update(Id, points["a"], points["b"]);
             SignalAllTrackablePointsMoved();
         }
         public override PointF GetCopyPoint()
@@ -455,6 +458,7 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
+            CalibrationHelper.CalibrationByLine_Update(Id, points["a"], points["b"]);
         }
         private void SignalAllTrackablePointsMoved()
         {

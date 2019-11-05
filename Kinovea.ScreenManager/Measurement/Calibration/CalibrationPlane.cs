@@ -33,6 +33,8 @@ namespace Kinovea.ScreenManager
     /// 
     /// Calibration by plane uses a user-specified quadrilateral defining a rectangle on the ground or wall,
     /// and maps the image coordinates with the system defined by the rectangle.
+    /// We keep a separate user-defined world origin, that is expressed in the real-world coordinate system defined by the rectangle.
+    /// The rectangle itself is referred to as the "Calibration" coordinate system.
     /// </summary>
     public class CalibrationPlane : ICalibrator
     {
@@ -154,6 +156,10 @@ namespace Kinovea.ScreenManager
             valid = quadImage.IsConvex;
         }
 
+        /// <summary>
+        /// Updates the calibration coordinate system without changing the real-world scale of the rectangle or the user-defined origin.
+        /// </summary>
+        /// <param name="quadImage">Image coordinates of the reference rectangle.</param>
         public void Update(QuadrilateralF quadImage)
         {
             if (!initialized || size.IsEmpty)
