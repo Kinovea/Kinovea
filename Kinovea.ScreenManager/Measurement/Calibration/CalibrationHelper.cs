@@ -241,6 +241,11 @@ namespace Kinovea.ScreenManager
             AfterCalibrationChanged();
         }
 
+        public CalibrationLine CalibrationByLine_GetCalibrator()
+        {
+            return calibrationLine;
+        }
+
         public void CalibrationByPlane_Initialize(Guid id, SizeF size, QuadrilateralF quadImage)
         {
             calibrationDrawingId = id;
@@ -268,6 +273,7 @@ namespace Kinovea.ScreenManager
         {
             return calibrationPlane.Valid;
         }
+        
         public CalibrationPlane CalibrationByPlane_GetCalibrator()
         {
             return calibrationPlane;

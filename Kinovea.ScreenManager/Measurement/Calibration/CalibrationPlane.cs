@@ -66,14 +66,12 @@ namespace Kinovea.ScreenManager
         }
         
         private bool initialized;
-        private SizeF size;
+        private SizeF size;         // Real-world reference rectangle size.
         private QuadrilateralF quadImage = new QuadrilateralF();
         private bool valid;
         private ProjectiveMapping mapping = new ProjectiveMapping();
+        private PointF origin;      // User-defined origin, in calibrated plane coordinate system.
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
-        // Origin of world expressed in calibration coordinates.
-        private PointF origin;
         
         #region ICalibrator
         /// <summary>
@@ -127,22 +125,11 @@ namespace Kinovea.ScreenManager
             return mapping.Forward(v);
         }
 
-
-        private PointF CalibratedToWorld(PointF p)
-        {
-            return new PointF(- origin.X + p.X, origin.Y - p.Y);
-        }
-
-        private PointF WorldToCalibrated(PointF p)
-        {
-            return new PointF(origin.X + p.X, origin.Y - p.Y);
-        }
-        
         /// <summary>
         /// Initialize the projective mapping.
+        /// size: Real world dimension of the reference rectangle.
+        /// quadImage: Image coordinates of the reference rectangle.
         /// </summary>
-        /// <param name="size">Real world dimension of the reference rectangle.</param>
-        /// <param name="quadImage">Image coordinates of the reference rectangle.</param>
         public void Initialize(SizeF size, QuadrilateralF quadImage)
         {
             PointF originImage = initialized ? Untransform(PointF.Empty) : quadImage.D;
@@ -172,7 +159,17 @@ namespace Kinovea.ScreenManager
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
             valid = quadImage.IsConvex;
         }
-        
+
+        private PointF CalibratedToWorld(PointF p)
+        {
+            return new PointF(p.X - origin.X, -p.Y + origin.Y);
+        }
+
+        private PointF WorldToCalibrated(PointF p)
+        {
+            return new PointF(origin.X + p.X, origin.Y - p.Y);
+        }
+
         #region Serialization
         public void WriteXml(XmlWriter w)
         {

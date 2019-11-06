@@ -39,36 +39,63 @@ namespace Kinovea.ScreenManager
             // The clip window is an inflated version of the image to account for distortion.
             RectangleF clipWindow = imageBounds.CenteredScale(1.3f);
 
-            // Create a fake plane to act as the user-defined projected plane.
-            QuadrilateralF quadImage = new QuadrilateralF(imageBounds.Deflate(2.0f));
-            PointF a = calibrationHelper.GetPointFromRectified(quadImage.A);
-            PointF b = calibrationHelper.GetPointFromRectified(quadImage.B);
-            PointF d = calibrationHelper.GetPointFromRectified(quadImage.D);
-            RectangleF plane = new RectangleF(0, 0, b.X - a.X, a.Y - d.Y);
+            CalibrationLine calibrator = calibrationHelper.CalibrationByLine_GetCalibrator();
+            RectangleF plane = new RectangleF(PointF.Empty, calibrator.Size);
 
-            // Define the extended plane (for vanishing point replacement and drawing stop condition) as the reprojection of the whole image.
-            QuadrilateralF extendedPlane = ReprojectImageBounds(calibrationHelper, new QuadrilateralF(imageBounds));
+            int targetSteps = 15;
+            //float stepVertical = 1.0f;
+            float step = 1.0f;
             
-            CalibrationPlane calibrator = new CalibrationPlane();
-            calibrator.Initialize(plane.Size, quadImage);
+            QuadrilateralF extendedPlane;
+            bool orthogonal = true;
+            QuadrilateralF quadImageBounds = new QuadrilateralF(imageBounds);
+            PointF a = calibrationHelper.GetPointFromRectified(quadImageBounds.A);
+            PointF b = calibrationHelper.GetPointFromRectified(quadImageBounds.B);
+            PointF c = calibrationHelper.GetPointFromRectified(quadImageBounds.C);
+            PointF d = calibrationHelper.GetPointFromRectified(quadImageBounds.D);
+            extendedPlane = new QuadrilateralF(a, b, c, d);
+
+            QuadrilateralF quadImage = calibrator.QuadImage;
+
+            float projectedWidthLength = GeometryHelper.GetDistance(quadImage.A, quadImage.B);
+            float scaledTargetHorizontal = targetSteps / (calibrationHelper.ImageSize.Width / projectedWidthLength);
+            step = RangeHelper.FindUsableStepSize(plane.Width, scaledTargetHorizontal);
+
+            CalibrationPlane calibratorPlane = new CalibrationPlane();
+            calibratorPlane.Initialize(plane.Size, quadImage);
             PointF originImage = calibrationHelper.GetOrigin();
             PointF originRectified = originImage;
             if (calibrationHelper.DistortionHelper != null && calibrationHelper.DistortionHelper.Initialized)
                 originRectified = calibrationHelper.DistortionHelper.Undistort(originImage);
 
-            calibrator.SetOrigin(originRectified);
-            
-            // From this point on we are mostly in the same situation as for plane calibration.
-            
-            // stepping size is the same in both directions.
-            int targetSteps = 15;
-            float width = extendedPlane.B.X - extendedPlane.A.X;
-            float step = RangeHelper.FindUsableStepSize(width, targetSteps);
+            calibratorPlane.SetOrigin(originRectified);
 
-            CreateVerticalGridLines(grid, 0, -step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
-            CreateVerticalGridLines(grid, step, step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
-            CreateHorizontalGridLines(grid, 0, -step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
-            CreateHorizontalGridLines(grid, step, step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
+            // From this point on we are mostly in the same situation as for plane calibration.
+            // Vertical lines.
+            PointF yVanish = new PointF(0, float.MinValue);
+            bool yVanishVisible = false;
+            Vector3 yv = calibratorPlane.Project(new Vector3(0, 1, 0));
+            if (yv.Z != 0)
+            {
+                yVanish = new PointF(yv.X / yv.Z, yv.Y / yv.Z);
+                yVanishVisible = clipWindow.Contains(yVanish);
+            }
+
+            CreateVerticalGridLines(grid, 0, -step, calibratorPlane, clipWindow, plane, extendedPlane, orthogonal, yVanishVisible, yVanish);
+            CreateVerticalGridLines(grid, step, step, calibratorPlane, clipWindow, plane, extendedPlane, orthogonal, yVanishVisible, yVanish);
+
+            // Horizontal lines
+            PointF xVanish = new PointF(float.MinValue, 0);
+            bool xVanishVisible = false;
+            Vector3 xv = calibratorPlane.Project(new Vector3(1, 0, 0));
+            if (xv.Z != 0)
+            {
+                xVanish = new PointF(xv.X / xv.Z, xv.Y / xv.Z);
+                xVanishVisible = clipWindow.Contains(xVanish);
+            }
+
+            CreateHorizontalGridLines(grid, 0, -step, calibratorPlane, clipWindow, plane, extendedPlane, orthogonal, xVanishVisible, xVanish);
+            CreateHorizontalGridLines(grid, step, step, calibratorPlane, clipWindow, plane, extendedPlane, orthogonal, xVanishVisible, xVanish);
 
             return grid;
         }
@@ -80,7 +107,6 @@ namespace Kinovea.ScreenManager
             RectangleF clipWindow = imageBounds;
 
             CalibrationPlane calibrator = calibrationHelper.CalibrationByPlane_GetCalibrator();
-
             RectangleF plane = new RectangleF(PointF.Empty, calibrator.Size);
 
             int targetSteps = 15;
