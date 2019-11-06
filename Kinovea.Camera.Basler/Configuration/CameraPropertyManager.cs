@@ -177,29 +177,37 @@ namespace Kinovea.Camera.Basler
             NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
             NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, symbol);
             if (!nodeHandle.IsValid)
+            {
+                log.WarnFormat("Could not read Basler property {0}: node handle is not valid. (The property is not supported).", symbol);
                 return p;
+            }
 
             EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
             if (accessMode == EGenApiAccessMode._UndefinedAccesMode || accessMode == EGenApiAccessMode.NA || 
                 accessMode == EGenApiAccessMode.NI || accessMode == EGenApiAccessMode.WO)
+            {
+                log.WarnFormat("Could not read Basler property {0}: Access mode not supported. (The property is not readable).", symbol);
                 return p;
-
-            p.Supported = true;
-            p.ReadOnly = accessMode != EGenApiAccessMode.RW;
+            }
 
             EGenApiNodeType type = GenApi.NodeGetType(nodeHandle);
             if (type != EGenApiNodeType.IntegerNode)
+            {
+                log.WarnFormat("Could not read Basler property {0}: the node is of the wrong type. Expected: Integer. Received:{1}", symbol, type.ToString());
                 return p;
+            }
 
+            p.Supported = true;
             p.Type = CameraPropertyType.Integer;
+            p.ReadOnly = accessMode != EGenApiAccessMode.RW;
 
             long min = GenApi.IntegerGetMin(nodeHandle);
             long max = GenApi.IntegerGetMax(nodeHandle);
             long step = GenApi.IntegerGetInc(nodeHandle);
             EGenApiRepresentation repr = GenApi.IntegerGetRepresentation(nodeHandle);
-            
+
             // Fix values that should be log.
-            double range = Math.Log(max - min, 10);
+            double range = Math.Log10(max) - Math.Log10(min);
             if (range > 4 && repr == EGenApiRepresentation.Linear)
                 repr = EGenApiRepresentation.Logarithmic;
 
@@ -222,21 +230,29 @@ namespace Kinovea.Camera.Basler
             NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
             NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, symbol);
             if (!nodeHandle.IsValid)
+            {
+                log.WarnFormat("Could not read Basler property {0}: node handle is not valid. (The property is not supported).", symbol);
                 return p;
+            }
 
             EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
             if (accessMode == EGenApiAccessMode._UndefinedAccesMode || accessMode == EGenApiAccessMode.NA ||
                 accessMode == EGenApiAccessMode.NI || accessMode == EGenApiAccessMode.WO)
+            {
+                log.WarnFormat("Could not read Basler property {0}: Access mode not supported. (The property is not readable).", symbol);
                 return p;
-
-            p.Supported = true;
-            p.ReadOnly = accessMode != EGenApiAccessMode.RW;
+            }
 
             EGenApiNodeType type = GenApi.NodeGetType(nodeHandle);
             if (type != EGenApiNodeType.FloatNode)
+            {
+                log.WarnFormat("Could not read Basler property {0}: the node is of the wrong type. Expected: Float. Received:{1}", symbol, type.ToString());
                 return p;
+            }
 
+            p.Supported = true;
             p.Type = CameraPropertyType.Float;
+            p.ReadOnly = accessMode != EGenApiAccessMode.RW;
 
             double min = GenApi.FloatGetMin(nodeHandle);
             double max = GenApi.FloatGetMax(nodeHandle);
@@ -268,21 +284,29 @@ namespace Kinovea.Camera.Basler
             NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
             NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, symbol);
             if (!nodeHandle.IsValid)
+            {
+                log.WarnFormat("Could not read Basler property {0}: node handle is not valid. (The property is not supported).", symbol);
                 return p;
+            }
 
             EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
             if (accessMode == EGenApiAccessMode._UndefinedAccesMode || accessMode == EGenApiAccessMode.NA ||
                 accessMode == EGenApiAccessMode.NI || accessMode == EGenApiAccessMode.WO)
+            {
+                log.WarnFormat("Could not read Basler property {0}: Access mode not supported. (The property is not readable).", symbol);
                 return p;
-
-            p.Supported = true;
-            p.ReadOnly = accessMode != EGenApiAccessMode.RW;
+            }
 
             EGenApiNodeType type = GenApi.NodeGetType(nodeHandle);
             if (type != EGenApiNodeType.BooleanNode)
+            {
+                log.WarnFormat("Could not read Basler property {0}: the node is of the wrong type. Expected: Boolean. Received:{1}", symbol, type.ToString());
                 return p;
+            }
 
+            p.Supported = true;
             p.Type = CameraPropertyType.Boolean;
+            p.ReadOnly = accessMode != EGenApiAccessMode.RW;
 
             bool currentValue = GenApi.BooleanGetValue(nodeHandle);
 

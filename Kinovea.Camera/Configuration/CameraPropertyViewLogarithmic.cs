@@ -54,6 +54,7 @@ namespace Kinovea.Camera
             logMapper = new LogarithmicMapper(minValue, maxValue, sliderMin, sliderMax);
 
             double value = double.Parse(prop.CurrentValue, CultureInfo.InvariantCulture);
+            value = Math.Min(maxValue, Math.Max(minValue, value));
             int sliderValue = logMapper.Map((int)value);
 
             updatingValue = true;
