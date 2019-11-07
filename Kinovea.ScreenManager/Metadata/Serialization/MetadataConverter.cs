@@ -44,11 +44,17 @@ namespace Kinovea.ScreenManager
             settings.Indent = true;
 
             XmlNode formatNode = kvaDoc.DocumentElement.SelectSingleNode("descendant::FormatVersion");
+            if (formatNode == null)
+            {
+                log.ErrorFormat("The format node couldn't be found. No conversion will be attempted.");
+                return result;
+            }
+
             double format;
             bool read = double.TryParse(formatNode.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out format);
             if (!read)
             {
-                log.ErrorFormat("The format couldn't be read. No conversion will be attempted. Read:{0}", formatNode.InnerText);
+                log.ErrorFormat("The format couldn't be parsed. No conversion will be attempted. Read:{0}", formatNode.InnerText);
                 return result;
             }
 
