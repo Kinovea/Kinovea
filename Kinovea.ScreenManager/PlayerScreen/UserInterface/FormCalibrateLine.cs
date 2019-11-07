@@ -97,7 +97,7 @@ namespace Kinovea.ScreenManager
 
             if (!calibrated)
             {
-                nudMeasure.Value = 50;
+                nudMeasure.Value = 100;
                 cbUnit.SelectedIndex = (int)LengthUnit.Centimeters;
             }
         }
