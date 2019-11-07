@@ -57,26 +57,21 @@ namespace Kinovea.ScreenManager
             get { return vertices[3]; }
             set { vertices[3] = value;}
         }
-        public PointF this [int corner]
+        public PointF this [int vertex]
         {
-            get { return vertices[corner]; }
-            set { vertices[corner] = value; }
+            get { return vertices[vertex]; }
+            set { vertices[vertex] = value; }
         }
         public bool IsConvex
         {
             get { return IsQuadConvex(); }
         }
-        public bool IsRectangle
+
+        public bool IsAxisAlignedRectangle
         {
             get { return (A.Y == B.Y && B.X == C.X && C.Y == D.Y && D.X == A.X); }
         }
-        public static QuadrilateralF UnitSquare
-        {
-            get 
-            { 
-                return new QuadrilateralF(1, 1);
-            }
-        }
+        
         public static QuadrilateralF CenteredUnitSquare
         {
             get
@@ -88,6 +83,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         public static readonly QuadrilateralF Empty = new QuadrilateralF();
+        public static readonly QuadrilateralF UnitSquare = new QuadrilateralF(1, 1);
         private PointF[] vertices = new PointF[4];
         private const double radToDeg = 180D / Math.PI;
         #endregion

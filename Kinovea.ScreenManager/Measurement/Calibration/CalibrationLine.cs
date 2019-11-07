@@ -26,7 +26,7 @@ using System.Drawing.Drawing2D;
 
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
     /// <summary>
     /// Packages necessary info for the calibration by line.

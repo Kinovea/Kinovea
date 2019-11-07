@@ -64,36 +64,59 @@ namespace Kinovea.ScreenManager
         {
             get { return mapping; }
         }
+
+        public bool Perspective
+        {
+            get { return perspective; }
+        }
         
         private bool initialized;
         private SizeF size;         // Real-world reference rectangle size.
         private QuadrilateralF quadImage = new QuadrilateralF();
         private bool valid;
+        private bool perspective;
         private ProjectiveMapping mapping = new ProjectiveMapping();
         private PointF origin;      // User-defined origin, in calibrated plane coordinate system.
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         #region ICalibrator
         /// <summary>
-        /// Takes a point in image coordinates and gives it back in real world coordinates.
+        /// Takes a point in image space and returns it world space, assuming static origin.
         /// </summary>
         public PointF Transform(PointF p)
         {
-            if(!initialized)
+            if (!initialized)
                 return p;
-            
-            return CalibratedToWorld(mapping.Backward(p));
+
+            return CalibratedToWorld(mapping.Backward(p), origin);
         }
-        
+
+        /// <summary>
+        /// Takes a point and origin in image space and returns it world space.
+        /// </summary>
+        public PointF Transform(PointF p, PointF originImage)
+        {
+            if (!initialized)
+                return p;
+
+            PointF origin = mapping.Backward(originImage);
+            return CalibratedToWorld(mapping.Backward(p), origin);
+        }
+
         /// <summary>
         /// Takes a point in real world coordinates and gives it back in image coordinates.
         /// </summary>
         public PointF Untransform(PointF p)
         {
-            if(!initialized)
+            return Untransform(p, origin);
+        }
+
+        public PointF Untransform(PointF p, PointF origin)
+        {
+            if (!initialized)
                 return p;
 
-            return mapping.Forward(WorldToCalibrated(p));
+            return mapping.Forward(WorldToCalibrated(p, origin));
         }
 
         /// <summary>
@@ -104,7 +127,7 @@ namespace Kinovea.ScreenManager
             if (!initialized)
                 return new Vector3(p.X, p.Y, 1.0f);
 
-            PointF c = WorldToCalibrated(p);
+            PointF c = WorldToCalibrated(p, origin);
             Vector3 v = new Vector3(c.X, c.Y, 1.0f);
 
             return mapping.Forward(v);
@@ -115,6 +138,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void SetOrigin(PointF p)
         {
+            if (!initialized)
+                return;
+
             origin = mapping.Backward(p);
         }
 
@@ -122,31 +148,50 @@ namespace Kinovea.ScreenManager
 
         public Vector3 Project(Vector3 v)
         {
+            if (!initialized)
+                return new Vector3();
+
             return mapping.Forward(v);
         }
 
         /// <summary>
-        /// Initialize the projective mapping.
+        /// Initialize the projective mapping from a quadrilateral.
         /// size: Real world dimension of the reference rectangle.
         /// quadImage: Image coordinates of the reference rectangle.
         /// </summary>
-        public void Initialize(SizeF size, QuadrilateralF quadImage)
+        public void Initialize(SizeF sizeWorld, QuadrilateralF quadImage)
         {
-            PointF originImage = initialized ? Untransform(PointF.Empty) : quadImage.D;
+            //PointF originImage = initialized ? Untransform(PointF.Empty) : quadImage.D;
+            PointF originImage = quadImage.D;
             
-            this.size = size;
+            this.size = sizeWorld;
             this.quadImage = quadImage.Clone();
             mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
-            SetOrigin(originImage);
+            origin = mapping.Backward(originImage);
             this.initialized = true;
 
             valid = quadImage.IsConvex;
+            perspective = !quadImage.IsAxisAlignedRectangle;
+        }
+
+        /// <summary>
+        /// Initialize the projective mapping from a line.
+        /// length: Real world length of the line.
+        /// a, b: Image coordinates of the line vertices.
+        /// </summary>
+        public void Initialize(float lengthWorld, PointF startImage, PointF endImage)
+        {
+            QuadrilateralF quadImage = MakeQuad(startImage, endImage);
+            SizeF sizeWorld = new SizeF(lengthWorld, lengthWorld);
+
+            Initialize(sizeWorld, quadImage);
+            perspective = false;
         }
 
         /// <summary>
         /// Updates the calibration coordinate system without changing the real-world scale of the rectangle or the user-defined origin.
+        /// Quadrilateral variant.
         /// </summary>
-        /// <param name="quadImage">Image coordinates of the reference rectangle.</param>
         public void Update(QuadrilateralF quadImage)
         {
             if (!initialized || size.IsEmpty)
@@ -160,18 +205,44 @@ namespace Kinovea.ScreenManager
             valid = quadImage.IsConvex;
         }
 
-        private PointF CalibratedToWorld(PointF p)
+        /// <summary>
+        /// Updates the calibration coordinate system without changing the real-world scale of the rectangle or the user-defined origin.
+        /// Line variant.
+        /// </summary>
+        public void Update(PointF startImage, PointF endImage)
+        {
+            Update(MakeQuad(startImage, endImage));
+        }
+
+        private PointF CalibratedToWorld(PointF p, PointF origin)
         {
             return new PointF(p.X - origin.X, -p.Y + origin.Y);
         }
 
-        private PointF WorldToCalibrated(PointF p)
+        private PointF WorldToCalibrated(PointF p, PointF origin)
         {
             return new PointF(origin.X + p.X, origin.Y - p.Y);
         }
 
+        /// <summary>
+        /// Build a quadrilateral from a single line.
+        /// The quadrilateral will be a square with the original line at the bottom edge.
+        /// </summary>
+        private QuadrilateralF MakeQuad(PointF start, PointF end)
+        {
+            // Rebuild a quadrilateral as a square, assuming the passed line is the bottom edge, left to right.
+            // The base quadrilateral is defined as ABCD going CW from top-left, 
+            // the line is making up the DC vector which will map to the +X axis.
+            PointF d = start;
+            PointF c = end;
+            PointF a = new PointF(d.X + (c.Y - d.Y), d.Y - (c.X - d.X));
+            PointF b = new PointF(a.X + (c.X - d.X), a.Y + (c.Y - d.Y));
+
+            return new QuadrilateralF(a, b, c, d);
+        }
+
         #region Serialization
-        public void WriteXml(XmlWriter w)
+        public void WritePlaneXml(XmlWriter w)
         {
             w.WriteElementString("Size", XmlHelper.WriteSizeF(size));
             
@@ -184,11 +255,24 @@ namespace Kinovea.ScreenManager
 
             WritePointF(w, "Origin", origin);
         }
+
+        public void WriteLineXml(XmlWriter w)
+        {
+            w.WriteElementString("Length", XmlHelper.WriteFloat(size.Width));
+
+            w.WriteStartElement("Segment");
+            w.WriteElementString("A", XmlHelper.WritePointF(quadImage.D));
+            w.WriteElementString("B", XmlHelper.WritePointF(quadImage.C));
+            w.WriteEndElement();
+
+            WritePointF(w, "Origin", origin);
+        }
+
         private void WritePointF(XmlWriter w, string name, PointF p)
         {
             w.WriteElementString(name, XmlHelper.WritePointF(p));
         }
-        public void ReadXml(XmlReader r, PointF scale)
+        public void ReadPlaneXml(XmlReader r, PointF scale)
         {
             r.ReadStartElement();
             
@@ -200,7 +284,7 @@ namespace Kinovea.ScreenManager
                         size = XmlHelper.ParseSizeF(r.ReadElementContentAsString());
                         break;
                     case "Quadrilateral":
-                        ParseQuadrilateral(r, scale);
+                        quadImage = ParseQuadrilateral(r, scale);
                         break;
                     case "Origin":
                         origin = XmlHelper.ParsePointF(r.ReadElementContentAsString());
@@ -218,11 +302,63 @@ namespace Kinovea.ScreenManager
             valid = quadImage.IsConvex;
             initialized = true;
         }
-        private void ParseQuadrilateral(XmlReader r, PointF scale)
+
+        public void ReadLineXml(XmlReader r, PointF scaling)
         {
             r.ReadStartElement();
-            
-            while(r.NodeType == XmlNodeType.Element)
+            float length = 0;
+            SegmentF line = SegmentF.Empty;
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "Length":
+                        length = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        break;
+                    case "Segment":
+                        line = ParseSegment(r, scaling);
+                        break;
+                    case "Origin":
+                        origin = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        if (float.IsNaN(origin.X) || float.IsNaN(origin.Y))
+                            origin = PointF.Empty;
+
+                        origin = origin.Scale(scaling.X, scaling.Y);
+                        break;
+                    case "Scale":
+                        // Import and convert older format.
+                        float bakedScale = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        length = 1.0f;
+                        line = new SegmentF(PointF.Empty, new PointF(0, 1.0f / bakedScale));
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+
+            r.ReadEndElement();
+
+            // Update mapping.
+            size = new SizeF(length, length);
+            quadImage = MakeQuad(line.Start, line.End);
+
+            mapping.Update(new QuadrilateralF(size.Width, size.Height), quadImage);
+            valid = quadImage.IsConvex;
+            initialized = true;
+        }
+
+        private QuadrilateralF ParseQuadrilateral(XmlReader r, PointF scale)
+        {
+            r.ReadStartElement();
+            PointF a = PointF.Empty;
+            PointF b = PointF.Empty;
+            PointF c = PointF.Empty;
+            PointF d = PointF.Empty;
+
+            while (r.NodeType == XmlNodeType.Element)
             {
                 switch(r.Name)
                 {
@@ -245,9 +381,44 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            quadImage.Scale(scale.X, scale.Y);
+            QuadrilateralF quad = new QuadrilateralF(a, b, c, d);
+            quad.Scale(scale.X, scale.Y);
 
             r.ReadEndElement();
+
+            return quad;
+        }
+
+        private SegmentF ParseSegment(XmlReader r, PointF scale)
+        {
+            r.ReadStartElement();
+            PointF a = PointF.Empty;
+            PointF b = PointF.Empty;
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "A":
+                        a = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    case "B":
+                        b = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+
+            //.Scale(scale.X, scale.Y);
+
+            SegmentF segment = new SegmentF(a, b);
+
+            r.ReadEndElement();
+
+            return segment;
         }
         #endregion
     }

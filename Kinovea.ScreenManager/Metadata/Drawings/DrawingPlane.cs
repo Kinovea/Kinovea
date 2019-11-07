@@ -164,7 +164,7 @@ namespace Kinovea.ScreenManager
 
             QuadrilateralF quad = transformer.Transform(quadImage);
 
-            bool drawEdgesOnly = !planeIsConvex || (!styleHelper.Perspective && !quadImage.IsRectangle);
+            bool drawEdgesOnly = !planeIsConvex || (!styleHelper.Perspective && !quadImage.IsAxisAlignedRectangle);
             
             using(penEdges = styleHelper.GetPen(opacityFactor, 1.0))
             using(SolidBrush br = styleHelper.GetBrush(opacityFactor))

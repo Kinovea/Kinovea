@@ -254,6 +254,8 @@ namespace Kinovea.ScreenManager
             if(showGrid || showGraduations || showAxis)
             {
                 CoordinateSystemGrid grid = CalibrationHelper.GetCoordinateSystemGrid();
+                if (grid == null)
+                    return -1;
 
                 if (grid.HorizontalAxis != null && IsPointOnRectifiedLine(point, grid.HorizontalAxis.Start, grid.HorizontalAxis.End, distorter, transformer))
                     result = 2;
