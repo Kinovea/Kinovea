@@ -153,6 +153,10 @@ namespace Kinovea.Camera.IDS
             try
             {
                 camera.Acquisition.Capture();
+
+                grabbing = true;
+                if (GrabbingStatusChanged != null)
+                    GrabbingStatusChanged(this, EventArgs.Empty);
             }
             catch (Exception e)
             {
