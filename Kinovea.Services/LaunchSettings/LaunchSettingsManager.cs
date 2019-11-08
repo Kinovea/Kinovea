@@ -30,27 +30,19 @@ namespace Kinovea.Services
     /// </summary>
     public static class LaunchSettingsManager
     {
-        public static List<IScreenDescription> ScreenDescriptions
-        {
-            get { return screenDescriptions; }
-        }
+        public static List<IScreenDescription> ScreenDescriptions { get; } = new List<IScreenDescription>();
 
-        public static bool ShowExplorer { get ; set; }
+        public static bool ShowExplorer { get; set; } = true;
 
-        static LaunchSettingsManager()
-        {
-            ShowExplorer = true;
-        }
-        
-        private static List<IScreenDescription> screenDescriptions = new List<IScreenDescription>();
-        
+        public static string Name { get; set; }
+
         public static void ClearScreenDescriptions()
         {
-            screenDescriptions.Clear();
+            ScreenDescriptions.Clear();
         }
         public static void AddScreenDescription(IScreenDescription screenDescription)
         {
-            screenDescriptions.Add(screenDescription);
+            ScreenDescriptions.Add(screenDescription);
         }
     }
 }

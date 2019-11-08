@@ -30,7 +30,7 @@ namespace Kinovea.Services
         public static string ApplicationName { get { return "Kinovea";}}
         public static bool Experimental { get { return true;}}
         
-        public static int InstanceNumber { get; private set; }
+        public static string InstanceName { get; private set; }
 
         public static string Version { get; private set; }
         public static bool Is32bit { get; private set; }
@@ -42,10 +42,10 @@ namespace Kinovea.Services
         {
             get
             {
-                if (!instanceConfigured || InstanceNumber < 2 || !PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
+                if (!instanceConfigured || string.IsNullOrEmpty(InstanceName) || !PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
                     return SettingsDirectory + "Preferences.xml";
                 else
-                    return SettingsDirectory + string.Format("Preferences.{0}.xml", InstanceNumber);
+                    return SettingsDirectory + string.Format("Preferences.{0}.xml", InstanceName);
             }
         }
         public static string TempDirectory { get; private set; }
@@ -91,10 +91,25 @@ namespace Kinovea.Services
             RemoteHelpIndex = Experimental ? "http://www.kinovea.org/setup/updatebeta.xml" : "http://www.kinovea.org/setup/update.xml";
         }
 
+        /// <summary>
+        /// Setup the name of the instance. Used for the window title and to select a preferences profile.
+        /// </summary>
         public static void ConfigureInstance()
         {
-            Process[] instances = Process.GetProcessesByName("Kinovea");
-            InstanceNumber = instances.Length;
+            if (!string.IsNullOrEmpty(LaunchSettingsManager.Name))
+            {
+                InstanceName = LaunchSettingsManager.Name;
+            }
+            else
+            {
+                Process[] instances = Process.GetProcessesByName("Kinovea");
+                int instanceNumber = instances.Length;
+                if (instanceNumber == 1)
+                    InstanceName = null;
+                else
+                    InstanceName = instanceNumber.ToString();
+            }
+
             instanceConfigured = true;
         }
         

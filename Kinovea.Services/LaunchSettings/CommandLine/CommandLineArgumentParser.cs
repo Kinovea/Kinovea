@@ -86,94 +86,48 @@ namespace Bsc
         /// <param name="optionalParameters">
         /// The list of the optional parameters with their default values.
         /// </param>
-        public static void DefineOptionalParameter(string[] optionalParameters)
+        public static void DefineOptionalParameter(Dictionary<string, string> options)
         {
             CommandLineArgumentParser.optionalParameters = new Dictionary<string, string>();
 
-            foreach (string param in optionalParameters)
+            foreach (var pair in options)
             {
-                string[] tokens = param.Split('=');
-
-                if (tokens.Length != 2)
-                {
-                    string errorMessage = "Error: The optional command line parameter '" + param + "' has wrong format.\n Expeted param=value.";
-                    throw new CommandLineArgumentException(errorMessage);
-                }
-
-                tokens[0] = tokens[0].Trim();
-                if (string.IsNullOrEmpty(tokens[0]))
-                {
-                    string errorMessage = "Error: The optional command line parameter '" + param + "' has empty name.";
-                    throw new CommandLineArgumentException(errorMessage);
-                }
-
-                tokens[1] = tokens[1].Trim();
-                if (string.IsNullOrEmpty(tokens[1]))
-                {
-                    string errorMessage = "Error: The optional command line parameter '" + param + "' has no value.";
-                }
-
-                CommandLineArgumentParser.optionalParameters.Add(tokens[0], tokens[1]);
-            }
-        }
-
-        /// <summary>
-        /// Define the optional parameters. The parameters must be provided with their
-        /// default values.
-        /// </summary>
-        /// <param name="optionalParameters">
-        /// The list of the optional parameters with their default values.
-        /// </param>
-        public static void DefineOptionalParameter(KeyValuePair<string, string>[] optionalParameters)
-        {
-            CommandLineArgumentParser.optionalParameters = new Dictionary<string, string>();
-
-            foreach (KeyValuePair<string, string> param in optionalParameters)
-            {
-                string key = param.Key;
+                string key = pair.Key;
                 key = key.Trim();
-
-                string value = param.Value;
-                value = value.Trim();
 
                 if (string.IsNullOrEmpty(key))
                 {
-                    string errorMessage = "Error: The name of the optional parameter '" + param.Key + "' is empty.";
+                    string errorMessage = "Error: an optional command line parameter has no name.";
                     throw new CommandLineArgumentException(errorMessage);
                 }
 
-                if (string.IsNullOrEmpty(value))
-                {
-                    string errorMessage = "Error: The value of the optional parameter '" + param.Key + "' is empty.";
-                    throw new CommandLineArgumentException(errorMessage);
-                }
-
-                CommandLineArgumentParser.optionalParameters.Add(param.Key, param.Value);
+                string value = pair.Value.Trim();
+                CommandLineArgumentParser.optionalParameters.Add(key, value);
             }
         }
-        
+
         /// <summary>
         /// Defines the supported command line switches. Switch is a parameter
         /// without value. When provided it is used to switch on a given feature or
         /// functionality provided by the application. For example a switch for tracing.
         /// </summary>
         /// <param name="switches"></param>
-        public static void DefineSwitches(string[] switches)
+        public static void DefineSwitches(List<string> switches)
         {
-            CommandLineArgumentParser.switches = new Dictionary<string, bool>(switches.Length);
+            CommandLineArgumentParser.switches = new Dictionary<string, bool>(switches.Count);
 
-            foreach (string sw in switches)
+            foreach (string switchKey in switches)
             {
-                string temp = sw;
-                temp = temp.Trim();
+                string key = switchKey;
+                key = key.Trim();
 
-                if (string.IsNullOrEmpty(temp))
+                if (string.IsNullOrEmpty(key))
                 {
-                    string errorMessage = "Error: The switch '" + sw + "' is empty.";
+                    string errorMessage = "Error: A switch is empty.";
                     throw new CommandLineArgumentException(errorMessage);
                 }
 
-                CommandLineArgumentParser.switches.Add(temp, false);
+                CommandLineArgumentParser.switches.Add(key, false);
             }
         }
 
