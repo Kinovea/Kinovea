@@ -532,13 +532,21 @@ namespace Kinovea.FileBrowser
             if(e.Button != MouseButtons.Right)
                 return;
             
-            if(currentExptreeItem == null || !etShortcuts.IsOnSelectedItem(e.Location) || currentExptreeItem.Path.StartsWith("::"))
+            try
             {
-                mnuDeleteShortcut.Visible = false;	
-                mnuAddToShortcuts.Visible = false;
-                mnuOpenAsReplayWatcher.Visible = false;
-                mnuLocateFolder.Visible = false;
-                return;
+                if(currentExptreeItem == null || !etShortcuts.IsOnSelectedItem(e.Location) || currentExptreeItem.Path.StartsWith("::"))
+                {
+                    mnuDeleteShortcut.Visible = false;	
+                    mnuAddToShortcuts.Visible = false;
+                    mnuOpenAsReplayWatcher.Visible = false;
+                    mnuLocateFolder.Visible = false;
+                    return;
+                }
+    
+            }
+            catch (Exception exp)
+            {
+                log.ErrorFormat(exp.Message);
             }
             
             bool known = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(currentShortcutItem.Path);
