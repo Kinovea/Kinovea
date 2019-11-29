@@ -607,7 +607,9 @@ namespace Kinovea.ScreenManager
             double monitorFramerate = GetMonitorFramerate();
 
             double slowFramerate = Math.Min(displayFramerate, monitorFramerate);
-            slowFramerate = Math.Min(slowFramerate, cameraGrabber.Framerate);
+            if (cameraGrabber.Framerate != 0)
+                slowFramerate = Math.Min(slowFramerate, cameraGrabber.Framerate);
+            
             slowFramerate = Math.Max(slowFramerate, 1);
 
             displayTimer.Interval = (int)(1000.0 / slowFramerate);
