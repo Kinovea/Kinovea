@@ -60,7 +60,8 @@ namespace Kinovea.ScreenManager
       this.toolTips = new System.Windows.Forms.ToolTip(this.components);
       this.infobarCapture = new Kinovea.ScreenManager.InfobarCapture();
       this.sldrRefreshRate = new Kinovea.ScreenManager.SliderLinear();
-      this.sldrDelay = new Kinovea.ScreenManager.SliderLogScale();
+      //this.sldrDelay = new Kinovea.ScreenManager.SliderLogScale();
+      this.sldrDelay = new Kinovea.ScreenManager.SliderLinear();
       this.fnbVideo = new Kinovea.ScreenManager.FilenameBox();
       this.fnbImage = new Kinovea.ScreenManager.FilenameBox();
       this.pnlControls.SuspendLayout();
@@ -471,7 +472,8 @@ namespace Kinovea.ScreenManager
 
         }
         private System.Windows.Forms.Label lblCameraInfo;
-        private Kinovea.ScreenManager.SliderLogScale sldrDelay;
+        //private Kinovea.ScreenManager.SliderLogScale sldrDelay;
+        private Kinovea.ScreenManager.SliderLinear sldrDelay;
         private Kinovea.ScreenManager.FilenameBox fnbImage;
         private Kinovea.ScreenManager.FilenameBox fnbVideo;
         private System.Windows.Forms.Button btnFoldCapturedVideosPanel;
