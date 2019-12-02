@@ -414,7 +414,8 @@ namespace Kinovea.ScreenManager
       this.sldrDelay.Maximum = 100D;
       this.sldrDelay.Minimum = 0D;
       this.sldrDelay.Name = "sldrDelay";
-      this.sldrDelay.Size = new System.Drawing.Size(184, 23);
+      //this.sldrDelay.Size = new System.Drawing.Size(184, 23);
+      this.sldrDelay.Size = new System.Drawing.Size(368, 23);
       this.sldrDelay.TabIndex = 43;
       this.sldrDelay.Text = "sliderLogScale1";
       this.sldrDelay.Value = 0D;

@@ -326,6 +326,7 @@ namespace Kinovea.ScreenManager
 
             double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
             int frames = (int)Math.Round((double)nudDelay.Value * framerate);
+            //sldrDelay.ChangeDelay(frames);
             sldrDelay.Value = frames;
             sldrDelay.Invalidate();
         }
@@ -499,7 +500,8 @@ namespace Kinovea.ScreenManager
                 case CaptureScreenCommands.IncreaseDelay:
                     if (delayCompositeType == DelayCompositeType.Basic)
                     {
-                        sldrDelay.Value = sldrDelay.Value + 1;
+                        //sldrDelay.Value = sldrDelay.Value + 1;
+                        sldrDelay.Force(sldrDelay.Value + 1);
                         sldrDelay.Invalidate();
                     }
                     else if (delayCompositeType == DelayCompositeType.SlowMotion)
@@ -511,7 +513,8 @@ namespace Kinovea.ScreenManager
                 case CaptureScreenCommands.DecreaseDelay:
                     if (delayCompositeType == DelayCompositeType.Basic)
                     {
-                        sldrDelay.Value = sldrDelay.Value - 1;
+                        //sldrDelay.Value = sldrDelay.Value - 1;
+                        sldrDelay.Force(sldrDelay.Value - 1);
                         sldrDelay.Invalidate();
                     }
                     else if (delayCompositeType == DelayCompositeType.SlowMotion)
