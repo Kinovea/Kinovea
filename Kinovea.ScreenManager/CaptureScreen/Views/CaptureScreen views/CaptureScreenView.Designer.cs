@@ -60,7 +60,6 @@ namespace Kinovea.ScreenManager
       this.toolTips = new System.Windows.Forms.ToolTip(this.components);
       this.infobarCapture = new Kinovea.ScreenManager.InfobarCapture();
       this.sldrRefreshRate = new Kinovea.ScreenManager.SliderLinear();
-      //this.sldrDelay = new Kinovea.ScreenManager.SliderLogScale();
       this.sldrDelay = new Kinovea.ScreenManager.SliderLinear();
       this.fnbVideo = new Kinovea.ScreenManager.FilenameBox();
       this.fnbImage = new Kinovea.ScreenManager.FilenameBox();
@@ -417,7 +416,7 @@ namespace Kinovea.ScreenManager
       //this.sldrDelay.Size = new System.Drawing.Size(184, 23);
       this.sldrDelay.Size = new System.Drawing.Size(368, 23);
       this.sldrDelay.TabIndex = 43;
-      this.sldrDelay.Text = "sliderLogScale1";
+      this.sldrDelay.Text = "sliderLinear1";
       this.sldrDelay.Value = 0D;
       // 
       // fnbVideo

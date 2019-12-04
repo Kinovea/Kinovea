@@ -60,6 +60,10 @@ namespace Kinovea.ScreenManager
         private double delaySeconds;
         private int delayFrames;
         private float refreshRate;
+        /// <summary>
+        /// Flag to cancel the ValueChanged event for the Nud.
+        /// </summary>
+        private bool NudDelay_cancelEvent;
         #endregion
 
         public CaptureScreenView(CaptureScreen presenter)
@@ -324,11 +328,15 @@ namespace Kinovea.ScreenManager
             if (nudDelay.Maximum == 0)
                 return;
 
+            if (NudDelay_cancelEvent)
+            {
+                NudDelay_cancelEvent = false;
+                return;
+            }
+
             double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
-            int frames = (int)Math.Round((double)nudDelay.Value * framerate);
-            //sldrDelay.ChangeDelay(frames);
-            sldrDelay.Value = frames;
-            sldrDelay.Invalidate();
+            double frames = Math.Round((double)nudDelay.Value * framerate);
+            sldrDelay.Force(frames);
         }
         private void SldrRefreshRate_ValueChanged(object sender, EventArgs e)
         {
@@ -406,7 +414,10 @@ namespace Kinovea.ScreenManager
         {
             lblDelay.Text = ScreenManagerLang.lblDelay_Text;
             if (delaySeconds >= (double)nudDelay.Minimum && delaySeconds <= (double)nudDelay.Maximum)
+            {
+                NudDelay_cancelEvent = true;
                 nudDelay.Value = (decimal)delaySeconds;
+            }
         }
         private void UpdateSlomoRefreshRateLabel()
         {
@@ -500,9 +511,7 @@ namespace Kinovea.ScreenManager
                 case CaptureScreenCommands.IncreaseDelay:
                     if (delayCompositeType == DelayCompositeType.Basic)
                     {
-                        //sldrDelay.Value = sldrDelay.Value + 1;
                         sldrDelay.Force(sldrDelay.Value + 1);
-                        sldrDelay.Invalidate();
                     }
                     else if (delayCompositeType == DelayCompositeType.SlowMotion)
                     {
@@ -513,9 +522,7 @@ namespace Kinovea.ScreenManager
                 case CaptureScreenCommands.DecreaseDelay:
                     if (delayCompositeType == DelayCompositeType.Basic)
                     {
-                        //sldrDelay.Value = sldrDelay.Value - 1;
                         sldrDelay.Force(sldrDelay.Value - 1);
-                        sldrDelay.Invalidate();
                     }
                     else if (delayCompositeType == DelayCompositeType.SlowMotion)
                     {
