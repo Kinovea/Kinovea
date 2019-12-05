@@ -60,10 +60,7 @@ namespace Kinovea.ScreenManager
         private double delaySeconds;
         private int delayFrames;
         private float refreshRate;
-        /// <summary>
-        /// Flag to cancel the ValueChanged event for the Nud.
-        /// </summary>
-        private bool NudDelay_cancelEvent;
+        private bool delayUpdating;
         #endregion
 
         public CaptureScreenView(CaptureScreen presenter)
@@ -321,6 +318,12 @@ namespace Kinovea.ScreenManager
         }
         private void SldrDelay_ValueChanged(object sender, EventArgs e)
         {
+            if (!delayUpdating && nudDelay.Maximum != 0)
+            {
+                // recalculate nud value and update nud
+                double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
+                nudDelay.Value = (decimal)(sldrDelay.Value / framerate);
+            }
             presenter.View_DelayChanged(sldrDelay.Value);
         }
         private void NudDelay_ValueChanged(object sender, EventArgs e)
@@ -328,15 +331,11 @@ namespace Kinovea.ScreenManager
             if (nudDelay.Maximum == 0)
                 return;
 
-            if (NudDelay_cancelEvent)
-            {
-                NudDelay_cancelEvent = false;
-                return;
-            }
-
             double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
             double frames = Math.Round((double)nudDelay.Value * framerate);
+            delayUpdating = true;
             sldrDelay.Force(frames);
+            delayUpdating = false;
         }
         private void SldrRefreshRate_ValueChanged(object sender, EventArgs e)
         {
@@ -413,11 +412,6 @@ namespace Kinovea.ScreenManager
         private void UpdateDelayLabel()
         {
             lblDelay.Text = ScreenManagerLang.lblDelay_Text;
-            if (delaySeconds >= (double)nudDelay.Minimum && delaySeconds <= (double)nudDelay.Maximum)
-            {
-                NudDelay_cancelEvent = true;
-                nudDelay.Value = (decimal)delaySeconds;
-            }
         }
         private void UpdateSlomoRefreshRateLabel()
         {
