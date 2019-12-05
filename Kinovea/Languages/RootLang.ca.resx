@@ -72,15 +72,15 @@
    </resheader>
    <data name="dlgAbout_Translation" xml:space="preserve"><value>Traducció</value></data>
    <data name="dlgAbout_License" xml:space="preserve"><value>Llicència</value></data>
-   <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Fonaments</value></data>
+   <data name="dlgAbout_BuildingBlocks" xml:space="preserve"><value>Llibreries</value></data>
    <data name="dlgAbout_Citation" xml:space="preserve"><value>Citació</value></data>
    <data name="dlgPreferences_tabCapture" xml:space="preserve"><value>Capturar</value></data>
    <data name="dlgPreferences_tabDrawings" xml:space="preserve"><value>Dibuixos</value></data>
    <data name="dlgPreferences_tabGeneral" xml:space="preserve"><value>General</value></data>
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Reproducció</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Teclat</value></data>
-   
-   
+   <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve"><value>Permetre múltiples instàncies del Kinovea</value></data>
+   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Mostrar fotogrames per segon (fps)</value></data>
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Esquerra</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Dreta</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Arrel:</value></data>
@@ -89,13 +89,13 @@
    <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve"><value>Noms de les imatges</value></data>
    <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Noms dels vídeos</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Format d'imatge</value></data>
-   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Format de video</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Format de vídeo</value></data>
+   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve"><value>Format de vídeo no comprimit</value></data>
+   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve"><value>Enregistrant un vídeo no comprimit</value></data>
+   <data name="dlgPreferences_Capture_Recording" xml:space="preserve"><value>Enregistrant</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Mode de registre i retard</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Càmera: Enregistra fotogrames en temps real.</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Retard: Enregistra fotogrames retardats</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Any</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mes</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dia</value></data>
@@ -105,36 +105,36 @@
    <data name="dlgPreferences_Capture_PatternCameraAlias" xml:space="preserve"><value>Sobrenom de la càmera</value></data>
    <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>Nombre d'imatges per segon configurat</value></data>
    <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>Nombre d'imatges per segon rebudes</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve"><value>Seqüència d’escapada</value></data>
+   <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve"><value>Directori d’enregistrament</value></data>
+   <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve"><value>Nom del fitxer enregistrat</value></data>
+   <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve"><value>Data (AAAAMMDD)</value></data>
+   <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve"><value>Temps (HHMMDD)</value></data>
+   <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve"><value>Data i temps (AAAAMMDD-HHMMSS)</value></data>
    <data name="dlgPreferences_Capture_ContextVariables" xml:space="preserve"><value>Variables contextuals</value></data>
    <data name="dlgPreferences_Capture_Context" xml:space="preserve"><value>Contexte</value></data>
    <data name="dlgPreferences_Capture_Macro" xml:space="preserve"><value>Macro</value></data>
    <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memòria</value></data>
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memòria reservada per la la memòria cau : {0} MB</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve"><value>Ignorar l’advertència de sobrescriptura de fitxer</value></data>
+   <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve"><value>Càmeres d’alta velocitat</value></data>
+   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve"><value>Llindar de la taxa de fotogrames de substitució</value></data>
+   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve"><value>Taxa de fotogrames de substitució (fps):</value></data>
+   <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve"><value>Automatització</value></data>
+   <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve"><value>Activar disparador per so</value></data>
+   <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve"><value>Dispositiu d’entrada</value></data>
+   <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve"><value>Llindar del disparador</value></data>
+   <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Aturar l’enregistrament per temps(s)</value></data>
+   <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve"><value>Comanda post enregistrament</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Mostra els dibuixos mentre el video es reprodueix</value></data>
-   
-   
-   
-   
-   
-   
-   
-   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Desentrellaçar sempre que s'obri un nou video</value></data>
+   <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Activar el filtrat de coordenades</value></data>
+   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve"><value>Activar les eines del mode de depuració</value></data>
+   <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Opacitat per defecte dels dibuixos nous:</value></data>
+   <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Visible pel vídeo sencer</value></data>
+   <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Fade in/out al voltant del fotograma on s’ha afegit</value></data>
+   <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>Nombre de fotogrames pel fade in/out del dibuix: {0}</value></data>
+   <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve"><value>Importar seqüència d’imatges com a vídeo</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Desentrellaçar sempre que s'obri un nou vídeo</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Actualitzar la imatge mentre es mou el cursor de temps</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Enllaçar les barres de velocitats en la comparació de videos</value></data>
    <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Forçar 16:9</value></data>
@@ -142,7 +142,7 @@
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Detecció automàtica</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Canviar a Mode d'Anàlisis</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Nombre d'arxius a l'historial</value></data>
-   
+   <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Les instàncies tenen les seves pròpies preferències</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Format d'imatge per defecte</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Idioma</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>I</value></data>
