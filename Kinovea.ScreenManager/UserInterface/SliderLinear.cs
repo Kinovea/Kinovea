@@ -61,6 +61,7 @@ namespace Kinovea.ScreenManager
             set 
             {
                 val = Math.Min(Math.Max(value, min), max);
+
                 Remap();
             }
         }

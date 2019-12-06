@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
       this.toolTips = new System.Windows.Forms.ToolTip(this.components);
       this.infobarCapture = new Kinovea.ScreenManager.InfobarCapture();
       this.sldrRefreshRate = new Kinovea.ScreenManager.SliderLinear();
-      this.sldrDelay = new Kinovea.ScreenManager.SliderLogScale();
+      this.sldrDelay = new Kinovea.ScreenManager.SliderLinear();
       this.fnbVideo = new Kinovea.ScreenManager.FilenameBox();
       this.fnbImage = new Kinovea.ScreenManager.FilenameBox();
       this.pnlControls.SuspendLayout();
@@ -413,9 +413,10 @@ namespace Kinovea.ScreenManager
       this.sldrDelay.Maximum = 100D;
       this.sldrDelay.Minimum = 0D;
       this.sldrDelay.Name = "sldrDelay";
-      this.sldrDelay.Size = new System.Drawing.Size(184, 23);
+      //this.sldrDelay.Size = new System.Drawing.Size(184, 23);
+      this.sldrDelay.Size = new System.Drawing.Size(368, 23);
       this.sldrDelay.TabIndex = 43;
-      this.sldrDelay.Text = "sliderLogScale1";
+      this.sldrDelay.Text = "sliderLinear1";
       this.sldrDelay.Value = 0D;
       // 
       // fnbVideo
@@ -471,7 +472,8 @@ namespace Kinovea.ScreenManager
 
         }
         private System.Windows.Forms.Label lblCameraInfo;
-        private Kinovea.ScreenManager.SliderLogScale sldrDelay;
+        //private Kinovea.ScreenManager.SliderLogScale sldrDelay;
+        private Kinovea.ScreenManager.SliderLinear sldrDelay;
         private Kinovea.ScreenManager.FilenameBox fnbImage;
         private Kinovea.ScreenManager.FilenameBox fnbVideo;
         private System.Windows.Forms.Button btnFoldCapturedVideosPanel;
