@@ -412,13 +412,6 @@ namespace Kinovea.ScreenManager
         {
             DelayChanged(value);
         }
-        public void View_RefreshRateChanged(float value)
-        {
-            RefreshRateChanged(value);
-        }
-        public void View_ForceDelaySynchronization()
-        {
-        }
         public void View_SnapshotAsked()
         {
             MakeSnapshot();
@@ -1425,12 +1418,6 @@ namespace Kinovea.ScreenManager
                 viewportController.Bitmap = delayed;
                 viewportController.Refresh();
             }
-        }
-        
-        private void RefreshRateChanged(float rate)
-        {
-            rate = Math.Max(rate, 0.01f);
-            view.UpdateSlomoRefreshRate(rate);
         }
         
         private void UpdateDelayMaxAge()
