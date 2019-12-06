@@ -408,9 +408,9 @@ namespace Kinovea.ScreenManager
 
             ToggleConnection();
         }
-        public void View_DelayChanged(double value)
+        public void View_DelayChanged(double delayFrames)
         {
-            DelayChanged(value);
+            DelayChanged(delayFrames);
         }
         public void View_SnapshotAsked()
         {
@@ -1409,7 +1409,6 @@ namespace Kinovea.ScreenManager
         private void DelayChanged(double age)
         {
             this.delay = (int)Math.Round(age);
-            view.UpdateDelay(AgeToSeconds(delay), delay);
             
             // Force a refresh if we are not connected to the camera to enable "pause and browse".
             if (cameraLoaded && !cameraConnected)

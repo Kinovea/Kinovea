@@ -57,8 +57,6 @@ namespace Kinovea.ScreenManager
         private bool recording;
         private bool grabbing;
         private DelayCompositeType delayCompositeType = DelayCompositeType.Basic;
-        private double delaySeconds;
-        private int delayFrames;
         private bool delayUpdating;
         #endregion
 
@@ -92,7 +90,7 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             capturedFilesView.RefreshUICulture();
-            UpdateDelayLabel();
+            lblDelay.Text = ScreenManagerLang.lblDelay_Text;
             ReloadTooltipsCulture();
         }
         
@@ -182,12 +180,6 @@ namespace Kinovea.ScreenManager
             btnSettings.Enabled = !recording;
             fnbImage.Enabled = !recording;
             fnbVideo.Enabled = !recording;
-        }
-        public void UpdateDelay(double delaySeconds, int delayFrames)
-        {
-            this.delaySeconds = delaySeconds;
-            this.delayFrames = delayFrames;
-            UpdateDelayLabel();
         }
         public void UpdateDelayMax(double delaySeconds, int delayFrames)
         {
@@ -284,6 +276,7 @@ namespace Kinovea.ScreenManager
                 double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
                 nudDelay.Value = (decimal)(sldrDelay.Value / framerate);
             }
+
             presenter.View_DelayChanged(sldrDelay.Value);
         }
         private void NudDelay_ValueChanged(object sender, EventArgs e)
@@ -355,10 +348,6 @@ namespace Kinovea.ScreenManager
                 pnlDrawingToolsBar.Top = pnlControls.Top - pnlDrawingToolsBar.Height;
                 pnlViewport.Height = pnlControls.Top - pnlViewport.Top;
             }
-        }
-        private void UpdateDelayLabel()
-        {
-            lblDelay.Text = ScreenManagerLang.lblDelay_Text;
         }
         private void ReloadTooltipsCulture()
         {
