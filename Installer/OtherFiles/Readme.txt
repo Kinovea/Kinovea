@@ -1,5 +1,5 @@
 
-Kinovea 0.9.1 - TBD.
+Kinovea 0.9.1 - 2019-12.
 
 Kinovea is an open source solution for capturing, studying and annotating videos.
 Use it for sport coaching, performance analysis, podiatrics, animation commenting, ergonomics engineering and more...
@@ -36,7 +36,7 @@ Communication channels:
 Changelog:
 ----------
 
-0.9.1 - TBD.
+0.9.1 - 2019-12.
     Added - Farsi locale.
     Added - Capture: audio trigger.
     Added - Capture: stop recording by time.
@@ -57,6 +57,7 @@ Changelog:
     Improved - Capture: IDS module now supports "Sensor Raw 8", "Pixel clock" and "Gain boost" properties.
     Improved - Capture: IDS module configuration dialog can import external parameter files.
     Improved - Capture: IDS module was updated to uEye 4.92.3.
+    Improved - Capture: Basler module now shows "Resulting framerate".
     Improved - Capture: Basler module was updated to Pylon 6.0.
     Improved - Capture: option to adjust the threshold and replacement framerate for high speed capture.
     Improved - Capture: display of percentage of "load" for performance feedback.
@@ -71,7 +72,7 @@ Changelog:
     Improved - Annotations: custom tools now supports combinations of options per primitive and hidden options.
     Improved - Annotations: the coordinate system menu is now a proper toggle.
     Improved - Folder selection dialogs were replaced with more usable ones.
-    Improved - Kinovea instances are numbered sequentially and can have their own preferences.
+    Improved - Kinovea instances can have custom names, defaults to sequential numbers, and can have their own preferences.
     Improved - Loading of the user interface after reboot was improved.
     Fixed - Files with negative start time could not be read.
     Fixed - Support of login/password in IP camera module was broken.
@@ -83,9 +84,10 @@ Changelog:
     Fixed - Rafale export dialog could crash.
     Fixed - Resizing screens and using the delay slider caused flashing and flickering issues.
     Fixed - The style and behavior of the record button on the dual capture controls was broken.
-    Fixed - The timecode format shown a wrong value when the fractional part rounded up to 100 hundredth of a second.
+    Fixed - The timecode format showed a wrong value when the fractional part rounded up to 100 hundredth of a second.
     Fixed - The heuristic to load videos or cameras into existing screens was not consistent.
     Fixed - In the IDS configuration dialog, auto-gain and auto-exposure were always disabled.
+    Fixed - In the Basler module, gain property could be disabled even if the camera supported it.
     Fixed - The aspect ratio of thumbnails for key images was wrong.
     Fixed - The coordinates of points and circle was wrong when the coordinate system itself was tracked.
     Fixed - Dual export was broken when the total image width was not a multiple of 4.
