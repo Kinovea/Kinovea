@@ -408,16 +408,9 @@ namespace Kinovea.ScreenManager
 
             ToggleConnection();
         }
-        public void View_DelayChanged(double value)
+        public void View_DelayChanged(double delayFrames)
         {
-            DelayChanged(value);
-        }
-        public void View_RefreshRateChanged(float value)
-        {
-            RefreshRateChanged(value);
-        }
-        public void View_ForceDelaySynchronization()
-        {
+            DelayChanged(delayFrames);
         }
         public void View_SnapshotAsked()
         {
@@ -607,7 +600,9 @@ namespace Kinovea.ScreenManager
             double monitorFramerate = GetMonitorFramerate();
 
             double slowFramerate = Math.Min(displayFramerate, monitorFramerate);
-            slowFramerate = Math.Min(slowFramerate, cameraGrabber.Framerate);
+            if (cameraGrabber.Framerate != 0)
+                slowFramerate = Math.Min(slowFramerate, cameraGrabber.Framerate);
+            
             slowFramerate = Math.Max(slowFramerate, 1);
 
             displayTimer.Interval = (int)(1000.0 / slowFramerate);
@@ -1414,7 +1409,6 @@ namespace Kinovea.ScreenManager
         private void DelayChanged(double age)
         {
             this.delay = (int)Math.Round(age);
-            view.UpdateDelay(AgeToSeconds(delay), delay);
             
             // Force a refresh if we are not connected to the camera to enable "pause and browse".
             if (cameraLoaded && !cameraConnected)
@@ -1423,12 +1417,6 @@ namespace Kinovea.ScreenManager
                 viewportController.Bitmap = delayed;
                 viewportController.Refresh();
             }
-        }
-        
-        private void RefreshRateChanged(float rate)
-        {
-            rate = Math.Max(rate, 0.01f);
-            view.UpdateSlomoRefreshRate(rate);
         }
         
         private void UpdateDelayMaxAge()

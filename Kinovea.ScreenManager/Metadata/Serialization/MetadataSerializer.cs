@@ -150,18 +150,18 @@ namespace Kinovea.ScreenManager
         #region load
         private void ImportKVA(string source, bool isFile)
         {
-            string kva = MetadataConverter.Convert(source, isFile);
-
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
-            settings.IgnoreWhitespace = true;
-            settings.CloseInput = true;
-
             XmlReader reader = null;
 
             try
             {
+                string kva = MetadataConverter.Convert(source, isFile);
+
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.IgnoreComments = true;
+                settings.IgnoreProcessingInstructions = true;
+                settings.IgnoreWhitespace = true;
+                settings.CloseInput = true;
+
                 reader = isFile ? XmlReader.Create(kva, settings) : XmlReader.Create(new StringReader(kva), settings);
                 Load(reader);
             }

@@ -33,6 +33,11 @@ namespace Kinovea.Services
 {
     public class CommandLineArgumentManager
     {
+        #region Native methods
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        private static extern bool AttachConsole(int dwProcessId);
+        #endregion
+
         #region Members
         private static CommandLineArgumentManager instance = null;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -54,19 +59,18 @@ namespace Kinovea.Services
         }
         private void InitializeCommandLineParser()
         {
-            string[] optional = new string[]
-            {
-                "-file = none",
-                "-speed = 100"
-            };
-            
-            string[] switches = new string[]
-            {
-                "-stretch",
-                "-noexp"
-            };
+            Dictionary<string, string> options = new Dictionary<string, string>();
+            options.Add("-name", "");
+            options.Add("-workspace", "");
+            options.Add("-video", "");
+            options.Add("-speed", "100");
+            CommandLineArgumentParser.DefineOptionalParameter(options);
 
-            CommandLineArgumentParser.DefineOptionalParameter(optional);
+            // Note: it doesn't make sense to define flags that default to true.
+            // The default is that the flag is not set, so false.
+            List<string> switches = new List<string>();
+            switches.Add("-stretch");
+            switches.Add("-hideExplorer");
             CommandLineArgumentParser.DefineSwitches(switches);
         }
 
@@ -90,7 +94,7 @@ namespace Kinovea.Services
                     }
                     else if(File.Exists(arguments[0]))
                     {
-                        // Special case for dragging a file on kinovea.exe icon or starting with a workspace.
+                        // Special case for dragging a file on top of the program icon or starting with a workspace.
                         if (Path.GetExtension(arguments[0]).ToLower() == ".xml")
                         {
                             Workspace workspace = new Workspace();
@@ -115,22 +119,49 @@ namespace Kinovea.Services
                 else
                 {
                     CommandLineArgumentParser.ParseArguments(arguments);
-                    
-                    // TODO: check coherence.
-                    ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
-                    sdp.FullPath = CommandLineArgumentParser.GetParamValue("-file");
-                    string strSpeed = CommandLineArgumentParser.GetParamValue("-speed");
-                    double speed;
-                    bool read = double.TryParse(strSpeed, NumberStyles.Any, CultureInfo.InvariantCulture, out speed);
-                    if (read)
-                        speed = Math.Max(Math.Min(200, speed), 1);
-                    else
-                        speed = 100;
-                    sdp.SpeedPercentage = speed;
-                    sdp.Stretch = CommandLineArgumentParser.IsSwitchOn("-stretch");
-                    
-                    LaunchSettingsManager.AddScreenDescription(sdp);
-                    LaunchSettingsManager.ShowExplorer = !CommandLineArgumentParser.IsSwitchOn("-noexp");
+
+                    string name = CommandLineArgumentParser.GetParamValue("-name");
+                    bool hideExplorer = CommandLineArgumentParser.IsSwitchOn("-hideExplorer");
+                    string workspace = CommandLineArgumentParser.GetParamValue("-workspace");
+                    string video = CommandLineArgumentParser.GetParamValue("-video");
+                    string speed = CommandLineArgumentParser.GetParamValue("-speed");
+                    bool stretch = CommandLineArgumentParser.IsSwitchOn("-stretch");
+
+                    // General program state.
+                    if (!string.IsNullOrEmpty(name))
+                        LaunchSettingsManager.Name = name;
+
+                    LaunchSettingsManager.ShowExplorer = !hideExplorer;
+
+                    // Workspace.
+                    if (!string.IsNullOrEmpty(workspace))
+                    {
+                        Workspace w = new Workspace();
+                        bool loaded = w.Load(workspace);
+                        if (loaded)
+                        {
+                            foreach (IScreenDescription screen in w.Screens)
+                                LaunchSettingsManager.AddScreenDescription(screen);
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(video))
+                    {
+                        // Manual description.
+                        ScreenDescriptionPlayback sdp = new ScreenDescriptionPlayback();
+                        sdp.FullPath = video;
+
+                        double speedValue;
+                        bool parsed = double.TryParse(speed, NumberStyles.Any, CultureInfo.InvariantCulture, out speedValue);
+                        if (parsed)
+                            speedValue = Math.Max(1, Math.Min(200, speedValue));
+                        else
+                            speedValue = 100;
+
+                        sdp.SpeedPercentage = speedValue;
+                        sdp.Stretch = stretch;
+
+                        LaunchSettingsManager.AddScreenDescription(sdp);
+                    }
                 }
             }
             catch (CommandLineArgumentException e)
@@ -142,22 +173,25 @@ namespace Kinovea.Services
         }
         private static void PrintUsage()
         {
-            // Doesn't work ?
+            AttachConsole(-1);
+
             Console.WriteLine();
             Console.WriteLine("USAGE:");
             Console.WriteLine("kinovea.exe");
-            Console.WriteLine("    [-file <path>] [-speed <0-200>] [-noexp] [-stretch]");
+            Console.WriteLine("    [-name <string>] [-hideExplorer] [-workspace <path>] [-video <path>] [-speed <0-200>] [-stretch]");
             Console.WriteLine();
             Console.WriteLine("OPTIONS:");
-            Console.WriteLine("  -file: complete path of a video to launch; default: 'unknown'.");
-            Console.WriteLine("  -speed: percentage of original speed to play the video; default: 100.");
-            Console.WriteLine("  -stretch: The video will be expanded to the screen size; default: false.");
-            Console.WriteLine("  -noexp: The file explorer will not be visible; default: false.");
+            Console.WriteLine("  -name: name of this instance of Kinovea. Used in the window title and to select a preference file.");
+            Console.WriteLine("  -hideExplorer: The explorer panel will not be visible. Default: false.");
+            Console.WriteLine("  -workspace: path to a Kinovea workspace XML file. This overrides other video options.");
+            Console.WriteLine("  -video: path to a video to load.");
+            Console.WriteLine("  -speed: playback speed to play the video at, as a percentage of its original framerate. Default: 100.");
+            Console.WriteLine("  -stretch: the video will be expanded to fit the screen size. Default: false.");
             Console.WriteLine();
             Console.WriteLine("EXAMPLES:");
-            Console.WriteLine("1. > kinovea.exe -file test.mkv -speed 50");
-            Console.WriteLine();
-            Console.WriteLine("2. > kinovea.exe -file test.mkv -stretch -noexp");
+            Console.WriteLine("1. > kinovea.exe -name Replay -workspace myReplayWorkspace.xml");
+            Console.WriteLine("2. > kinovea.exe -video test.mkv -stretch");
+            Console.WriteLine("3. > kinovea.exe -video test.mkv -speed 50");
         }
     }
 }

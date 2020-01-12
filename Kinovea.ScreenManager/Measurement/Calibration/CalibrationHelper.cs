@@ -26,9 +26,9 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// CalibrationHelper encapsulates informations used for pixels to real world calculations.
+    /// CalibrationHelper encapsulates information used for pixels to real world calculations.
     /// The user can specify the real distance of a Line drawing and a coordinate system.
-    /// We also keep the length units and the preferred unit for speeds.
+    /// We also keep the preferred units.
     /// </summary>
     public class CalibrationHelper
     {

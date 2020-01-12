@@ -57,9 +57,6 @@ namespace Kinovea.Camera
         /// </summary>
         public int Map(int dataValue)
         {
-            if (dataValue < minData || dataValue > maxData)
-                throw new ArgumentOutOfRangeException();
-
             double shifted = (double)dataValue - minData;
 
             if (shifted == 0)
@@ -75,8 +72,7 @@ namespace Kinovea.Camera
         /// </summary>
         public int Unmap(int proxyValue)
         {
-            if (proxyValue < minProxy || proxyValue > maxProxy)
-                throw new ArgumentOutOfRangeException();
+            proxyValue = (int)Math.Min(maxProxy, Math.Max(minProxy, proxyValue));
 
             double shifted = (double)proxyValue - minProxy;
 

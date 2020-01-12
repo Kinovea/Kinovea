@@ -113,7 +113,7 @@ namespace Kinovea.Root
             chkInstancesPreferences.Checked = instancesOwnPreferences;
             chkInstancesPreferences.Enabled = allowMultipleInstances;
 
-            if (Software.InstanceNumber > 1 && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
+            if (!string.IsNullOrEmpty(Software.InstanceName) && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
             {
                 // These options are only read from the master prefs, 
                 // so there is no point allowing the user to change them here.

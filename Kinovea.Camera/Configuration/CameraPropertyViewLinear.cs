@@ -49,7 +49,7 @@ namespace Kinovea.Camera
             int min = (int)double.Parse(prop.Minimum, CultureInfo.InvariantCulture);
             int max = (int)double.Parse(prop.Maximum, CultureInfo.InvariantCulture);
             int value = (int)double.Parse(prop.CurrentValue, CultureInfo.InvariantCulture);
-            value = Math.Min(Math.Max(value, min), max);
+            value = Math.Min(max, Math.Max(min, value));
             
             updatingValue = true;
             nud.Minimum = min;

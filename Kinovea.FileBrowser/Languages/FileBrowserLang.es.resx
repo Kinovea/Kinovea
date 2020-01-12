@@ -72,23 +72,23 @@
    </resheader>
    <data name="lblFolders" xml:space="preserve"><value>Carpetas:</value></data>
    <data name="lblVideoFiles" xml:space="preserve"><value>Archivos de Video:</value></data>
-   
+   <data name="lblCaptureHistory" xml:space="preserve"><value>Historial de capturas:</value></data>
    <data name="mnuAddShortcut" xml:space="preserve"><value>Añadir atajo</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Añadir a atajos</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Borrar atajo</value></data>
-   
-   
-   
-   
+   <data name="mnuVideoLocate" xml:space="preserve"><value>Buscar en Windows Explorer</value></data>
+   <data name="mnuVideoDelete" xml:space="preserve"><value>Borrar archivo</value></data>
+   <data name="mnuOpenAsReplayWatcher" xml:space="preserve"><value>Abrir como observador de carpeta de reproducción</value></data>
+   <data name="ForgetCustomSettings" xml:space="preserve"><value>Olvidar los parámetros personalizados</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
-   
+   <data name="Generic_Open" xml:space="preserve"><value>Abrir</value></data>
    <data name="tabExplorer" xml:space="preserve"><value>Explorador</value></data>
    <data name="tabShortcuts" xml:space="preserve"><value>Atajos</value></data>
-   
-   
-   
-   
-   
+   <data name="FormCameraWizard_Title" xml:space="preserve"><value>Conexión manual</value></data>
+   <data name="FormCameraWizard_CameraType" xml:space="preserve"><value>Tipo de cámara</value></data>
+   <data name="FormCameraWizard_Parameters" xml:space="preserve"><value>Parámetros</value></data>
+   <data name="FormCameraWizard_Test" xml:space="preserve"><value>Test</value></data>
+   <data name="FormCameraWizard_Create" xml:space="preserve"><value>Crear cámara</value></data>
    
    
 </root>

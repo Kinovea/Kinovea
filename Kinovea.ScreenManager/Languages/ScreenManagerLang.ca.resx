@@ -77,15 +77,15 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Anar al fotograma anterior en ambdós vídeos</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reproduir | Pausar ambdós vídeos</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Afegir un dibuix</value></data>
-   
+   <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>Modificar el dibuix</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Esborrar dibuix</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Esborrar un fotograma clau</value></data>
    <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Desar el vídeo</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>Anàlisi de ddades</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Diagrama de dispersió</value></data>
-   
-   
-   
+   <data name="DataAnalysis_LinearKinematics" xml:space="preserve"><value>Cinemàtica lineal</value></data>
+   <data name="DataAnalysis_AngularKinematics" xml:space="preserve"><value>Cinemàtica angular</value></data>
+   <data name="DataAnalysis_AngleAngleDiagrams" xml:space="preserve"><value>Diagrames Angle-angle</value></data>
    <data name="DataAnalysis_PagePlot" xml:space="preserve"><value>Gràfica</value></data>
    <data name="DataAnalysis_Labels" xml:space="preserve"><value>Etiquetas</value></data>
    <data name="DataAnalysis_Title" xml:space="preserve"><value>Títol:</value></data>
@@ -101,15 +101,15 @@
    <data name="DataAnalysis_ExportData" xml:space="preserve"><value>Exportar les dades</value></data>
    <data name="DataAnalysis_DataSource" xml:space="preserve"><value>Orígen de les dades</value></data>
    <data name="DataAnalysis_DataLabel" xml:space="preserve"><value>Dades:</value></data>
-   
-   
-   
-   
+   <data name="DataAnalysis_TimeModel" xml:space="preserve"><value>Temps :</value></data>
+   <data name="DataAnalysis_TimeModel_Absolute" xml:space="preserve"><value>Absolut</value></data>
+   <data name="DataAnalysis_TimeModel_Relative" xml:space="preserve"><value>Relatiu</value></data>
+   <data name="DataAnalysis_TimeModel_Normalized" xml:space="preserve"><value>Normalitzat</value></data>
    <data name="DataAnalysis_AngularPosition" xml:space="preserve"><value>Angle</value></data>
-   
-   
-   
-   
+   <data name="DataAnalysis_TotalAngularDisplacement" xml:space="preserve"><value>Desplaçament total</value></data>
+   <data name="DataAnalysis_TangentialVelocity" xml:space="preserve"><value>Velocitat tangencial</value></data>
+   <data name="DataAnalysis_TangentialAcceleration" xml:space="preserve"><value>Acceleració tangencial</value></data>
+   <data name="DataAnalysis_ResultantLinearAcceleration" xml:space="preserve"><value>Acceleració resultant</value></data>
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Colors</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Perfil de colors</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Restablir el perfil de colors per defecte</value></data>
@@ -144,9 +144,9 @@
    <data name="dlgConfigureTrajectory_ExtraData_VerticalPosition" xml:space="preserve"><value>Posició vertical</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalPosition" xml:space="preserve"><value>Posició horitzontal</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distància total</value></data>
-   
-   
-   
+   <data name="dlgConfigureTrajectory_ExtraData_DistanceToOrigin" xml:space="preserve"><value>Distància a l’origen</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalHorizontalDisplacement" xml:space="preserve"><value>Desplaçament horitzontal total</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalVerticalDisplacement" xml:space="preserve"><value>Desplaçament vertical total</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Velocitat</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_VerticalVelocity" xml:space="preserve"><value>Velocitat vertical</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_HorizontalVelocity" xml:space="preserve"><value>Velocitat horitzontal</value></data>
@@ -157,11 +157,11 @@
    <data name="dlgConfigureTrajectory_ExtraData_AngularVelocity" xml:space="preserve"><value>Velocitat angular</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_AngularAcceleration" xml:space="preserve"><value>Acceleració angular</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_CentripetalAcceleration" xml:space="preserve"><value>Acceleració centrípeta</value></data>
-   
-   
-   
-   
-   
+   <data name="ExtraData_Length" xml:space="preserve"><value>Longitut</value></data>
+   <data name="ExtraData_Center" xml:space="preserve"><value>Centre</value></data>
+   <data name="ExtraData_Radius" xml:space="preserve"><value>Radi</value></data>
+   <data name="ExtraData_Diameter" xml:space="preserve"><value>Diàmetre</value></data>
+   <data name="ExtraData_Circumference" xml:space="preserve"><value>Circumferència</value></data>
    <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>Seguiment</value></data>
    <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>Finestra de l'objecte:</value></data>
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Finestra de cerca:</value></data>
@@ -208,7 +208,7 @@
    <data name="DrawingName_ArrowPolyline" xml:space="preserve"><value>Fletxa – Polilínea</value></data>
    <data name="DrawingName_ArrowPolylineDash" xml:space="preserve"><value>Fletxa – Polilínia puntejada</value></data>
    <data name="DrawingName_ArrowPolylineSquiggly" xml:space="preserve"><value>Fletxa – Polilínia ziga-zaga</value></data>
-   
+   <data name="DrawingName_CSVL" xml:space="preserve"><value>Línia vertical sacra central</value></data>
    <data name="DrawingName_Polyline" xml:space="preserve"><value>Polilínia</value></data>
    <data name="DrawingName_DistortionGrid" xml:space="preserve"><value>Graella de distorsió</value></data>
    <data name="DrawingName_Goniometer" xml:space="preserve"><value>Goniòmetre</value></data>
@@ -225,15 +225,15 @@
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>Graella de test de càmera</value></data>
    <data name="DrawingName_Grid" xml:space="preserve"><value>Graella</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Graella de perspectiva</value></data>
-   
-   
-   
+   <data name="DrawingName_Rectangle" xml:space="preserve"><value>Rectangle</value></data>
+   <data name="DrawingName_Trajectory" xml:space="preserve"><value>Trajectòria</value></data>
+   <data name="DrawingName_Curve" xml:space="preserve"><value>Corba</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobreescriure l'arixiu</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>L'arxiu {0} ja existeix.\n Voleu reemplaçar-lo?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nom d'arxiu invàlid</value></data>
    <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>El nom d'arxiu contè caràcters invàlids.\ Un nom d'arxiu no pot contenir cap dels següents caràcters:\n \ / : * ? " &lt; &gt;</value></data>
-   
-   
+   <data name="Error_Capture_DirectoryNotCreated_Title" xml:space="preserve"><value>Directori no creat</value></data>
+   <data name="Error_Capture_DirectoryNotCreated_Text" xml:space="preserve"><value>El directori de captura no s’ha pogut crear.\nComproveu que apunta a una ubicació válida.</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – No s'ha pogut crear la presentació</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Una presentació és una seqüència de fotogrames clau desats en format de vídeo.\n Si us plau afegeix alguns fotogrames clau abans de generar la presentació.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – No s'ha pogut crear el vídeo.</value></data>
@@ -252,8 +252,8 @@
    <data name="Generic_Apply" xml:space="preserve"><value>Aplicar</value></data>
    <data name="Generic_ArrowPicker" xml:space="preserve"><value>Fletxes :</value></data>
    <data name="Generic_Curved" xml:space="preserve"><value>Corba:</value></data>
-   
-   
+   <data name="Generic_Perspective" xml:space="preserve"><value>Perspectiva:</value></data>
+   <data name="Generic_Clock" xml:space="preserve"><value>Rellotge:</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Tancar</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color :</value></data>
@@ -276,9 +276,9 @@
    <data name="Generic_Import" xml:space="preserve"><value>Importar</value></data>
    <data name="Generic_Restore" xml:space="preserve"><value>Restaurar paràmetres per defecte</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Sortir</value></data>
-   
-   
-   
+   <data name="Generic_Cut" xml:space="preserve"><value>Tallar</value></data>
+   <data name="Generic_Copy" xml:space="preserve"><value>Copiar</value></data>
+   <data name="Generic_Paste" xml:space="preserve"><value>Enganxar</value></data>
    <data name="FileProperty_Size" xml:space="preserve"><value>Mesura</value></data>
    <data name="FileProperty_Framerate" xml:space="preserve"><value>Freqüència d'imatges</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>Duració</value></data>
@@ -288,9 +288,9 @@
    <data name="FileFilter_SaveImage" xml:space="preserve"><value>Imatges JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Imatges PNG (*.png)|*.png|Imatges Bitmap (*.bmp)|*.bmp</value></data>
    <data name="FileFilter_ImportReference" xml:space="preserve"><value>Tots els formats suportats(*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="FileFilter_Spreadsheet" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Texte (*.txt)|*.txt;</value></data>
-   
+   <data name="FileFilter_KVA_All" xml:space="preserve"><value>Tots els formats suportats</value></data>
    <data name="FileFilter_KVA_kva" xml:space="preserve"><value>Anàlisis de vídeo de Kinovea (*.kva)</value></data>
-   
+   <data name="FileFilter_KVA_srt" xml:space="preserve"><value>Subtítols (*.srt)</value></data>
    <data name="FileFilter_SaveVideo" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Els fotogrames clau han estat modificats:\nVoleu desar-los abans de tancar?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Els fotogrames clau no s'han desat</value></data>
@@ -329,8 +329,8 @@
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Esborrar</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Esborrar la trajectòria després d'aquest Punt.</value></data>
    <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Esborrar tota la trajectòria</value></data>
-   
-   
+   <data name="mnuDrawingTrackingStart" xml:space="preserve"><value>Iniciar seguiment</value></data>
+   <data name="mnuDrawingTrackingStop" xml:space="preserve"><value>Finalitzar seguiment</value></data>
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Dues pantalles de Captura</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Una pantalla de captura i una pantalla de reproducció</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Dues pantalles de reproducció</value></data>
@@ -343,21 +343,21 @@
    <data name="mnuFormatAuto" xml:space="preserve"><value>Detecció automàtica</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Forçar 4:3</value></data>
    <data name="mnuFormatForce169" xml:space="preserve"><value>Forçar 16:9</value></data>
-   
-   
-   
-   
-   
+   <data name="mnuRotation" xml:space="preserve"><value>Rotació de l’imatge</value></data>
+   <data name="mnuRotation0" xml:space="preserve"><value>Sense rotació</value></data>
+   <data name="mnuRotation90" xml:space="preserve"><value>90º horari</value></data>
+   <data name="mnuRotation180" xml:space="preserve"><value>180º</value></data>
+   <data name="mnuRotation270" xml:space="preserve"><value>90º antihorari</value></data>
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Anar a l'imatge clau</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Amagar</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Explorador d'arxius</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importar una imatge...</value></data>
-   
-   
-   
+   <data name="mnuSignedAngle" xml:space="preserve"><value>Angle amb signe</value></data>
+   <data name="mnuCounterClockwise" xml:space="preserve"><value>Antihorari</value></data>
+   <data name="mnuSupplementaryAngle" xml:space="preserve"><value>Angle suplementari</value></data>
    <data name="mnuFlipHorizontally" xml:space="preserve"><value>Reflexa horitzontalment</value></data>
    <data name="mnuFlipVertically" xml:space="preserve"><value>Reflexa verticalment</value></data>
-   
+   <data name="mnuLoadAnalysis" xml:space="preserve"><value>Carrega anotacions...</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Passar a zoom directe</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Sortir del mode lupa</value></data>
@@ -366,10 +366,10 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Una pantalla de reproducció</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Reprodueix | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reprendre l'edició de la trajectòria</value></data>
-   
+   <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Marcar el temps actual com a origen de temps</value></data>
    <data name="mnuOpenVideo" xml:space="preserve"><value>Obrir un arxiu de video</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tots els fitxers (*.*)|*.*</value></data>
-   
+   <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Obrir observador de carpeta de reproducció</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Desar</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar la mesura...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar...</value></data>
@@ -392,13 +392,13 @@
    <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Finalitzar la polilínia aquí</value></data>
    <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Finalitzar la polilínia al punt anterior</value></data>
    <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Tancar aquest menú</value></data>
-   
-   
-   
-   
-   
-   
-   
+   <data name="mnuCutDrawing" xml:space="preserve"><value>Tallar dibuix</value></data>
+   <data name="mnuCopyDrawing" xml:space="preserve"><value>copiar dibuix</value></data>
+   <data name="mnuPasteDrawing" xml:space="preserve"><value>Enganxar dibuix</value></data>
+   <data name="mnuSetStyleAsDefault" xml:space="preserve"><value>Estableix com a estil per defecte</value></data>
+   <data name="mnuPasteImage" xml:space="preserve"><value>Enganxar la imatge de del portaretalls</value></data>
+   <data name="mnuShowArrow" xml:space="preserve"><value>Mostrar fletxa</value></data>
+   <data name="mnuShowCircleCenter" xml:space="preserve"><value>Mostrar el centre del cercle</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Colors emprats recentment:</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Buit</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pausa</value></data>

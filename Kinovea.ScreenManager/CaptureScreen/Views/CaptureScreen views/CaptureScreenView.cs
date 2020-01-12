@@ -57,36 +57,19 @@ namespace Kinovea.ScreenManager
         private bool recording;
         private bool grabbing;
         private DelayCompositeType delayCompositeType = DelayCompositeType.Basic;
-        private double delaySeconds;
-        private int delayFrames;
-        private float refreshRate;
+        private bool delayUpdating;
         #endregion
 
         public CaptureScreenView(CaptureScreen presenter)
         {
             InitializeComponent();
             lblCameraTitle.Text = "";
-            lblCameraInfo.Text = "";
             this.presenter = presenter;
             ToggleCapturedVideosPanel();
             sldrDelay.ValueChanged += SldrDelay_ValueChanged;
-            sldrRefreshRate.ValueChanged += SldrRefreshRate_ValueChanged;
-
-            lblRefreshRate.Location = lblDelay.Location;
-            sldrRefreshRate.Top = sldrDelay.Top + 3;
-            sldrRefreshRate.Left = sldrDelay.Left - 15;
-            sldrRefreshRate.Width = sldrDelay.Width / 2;
-            sldrRefreshRate.Minimum = 0;
-            sldrRefreshRate.Maximum = 100;
-            sldrRefreshRate.Value = 100;
-            sldrRefreshRate.Sticky = true;
-            sldrRefreshRate.StickyValue = 50;
+            
             nudDelay.Minimum = 0;
             nudDelay.Maximum = 100;
-            btnSlomoSync.Top = sldrRefreshRate.Top - 5;
-            btnSlomoSync.Left = sldrRefreshRate.Right + 15;
-            lblSlomoSync.Top = lblRefreshRate.Top;
-            lblSlomoSync.Left = btnSlomoSync.Right - 2;
 
             ConfigureDisplayControl(delayCompositeType);
 
@@ -107,8 +90,7 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             capturedFilesView.RefreshUICulture();
-            UpdateDelayLabel();
-            UpdateSlomoRefreshRateLabel();
+            lblDelay.Text = ScreenManagerLang.lblDelay_Text;
             ReloadTooltipsCulture();
         }
         
@@ -199,12 +181,6 @@ namespace Kinovea.ScreenManager
             fnbImage.Enabled = !recording;
             fnbVideo.Enabled = !recording;
         }
-        public void UpdateDelay(double delaySeconds, int delayFrames)
-        {
-            this.delaySeconds = delaySeconds;
-            this.delayFrames = delayFrames;
-            UpdateDelayLabel();
-        }
         public void UpdateDelayMax(double delaySeconds, int delayFrames)
         {
             if (delayFrames <= 0)
@@ -221,15 +197,6 @@ namespace Kinovea.ScreenManager
             sldrDelay.Maximum = (double)delayFrames;
             nudDelay.Minimum = 0;
             nudDelay.Maximum = (decimal)delaySeconds;
-        }
-        public void UpdateSlomoRefreshRate(float refreshRate)
-        {
-            this.refreshRate = refreshRate;
-            UpdateSlomoRefreshRateLabel();
-        }
-        public void UpdateSlomoCountdown(double countdown)
-        {
-            lblSlomoSync.Text = string.Format("{0:0.00}", countdown);
         }
         public void UpdateNextImageFilename(string filename)
         {
@@ -260,26 +227,12 @@ namespace Kinovea.ScreenManager
 
             sldrDelay.Visible = false;
             lblDelay.Visible = false;
-            sldrRefreshRate.Visible = false;
-            lblRefreshRate.Visible = false;
-            btnSlomoSync.Visible = false;
-            lblSlomoSync.Visible = false;
-
-            sldrRefreshRate.Enabled = true;
-            lblRefreshRate.Enabled = true;
-            lblSlomoSync.Enabled = true;
-
+            
             switch (type)
             {
                 case DelayCompositeType.Basic:
                     sldrDelay.Visible = true;
                     lblDelay.Visible = true;
-                    break;
-                case DelayCompositeType.SlowMotion:
-                    sldrRefreshRate.Visible = true;
-                    lblRefreshRate.Visible = true;
-                    btnSlomoSync.Visible = true;
-                    lblSlomoSync.Visible = true;
                     break;
                 default:
                     break;
@@ -317,6 +270,13 @@ namespace Kinovea.ScreenManager
         }
         private void SldrDelay_ValueChanged(object sender, EventArgs e)
         {
+            if (!delayUpdating && nudDelay.Maximum != 0)
+            {
+                // recalculate nud value and update nud
+                double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
+                nudDelay.Value = (decimal)(sldrDelay.Value / framerate);
+            }
+
             presenter.View_DelayChanged(sldrDelay.Value);
         }
         private void NudDelay_ValueChanged(object sender, EventArgs e)
@@ -325,18 +285,10 @@ namespace Kinovea.ScreenManager
                 return;
 
             double framerate = sldrDelay.Maximum / (double)nudDelay.Maximum;
-            int frames = (int)Math.Round((double)nudDelay.Value * framerate);
-            sldrDelay.Value = frames;
-            sldrDelay.Invalidate();
-        }
-        private void SldrRefreshRate_ValueChanged(object sender, EventArgs e)
-        {
-            float value = (float)(sldrRefreshRate.Value / 100.0f);
-            presenter.View_RefreshRateChanged(value);
-        }
-        private void btnSlomoSync_Click(object sender, EventArgs e)
-        {
-            presenter.View_ForceDelaySynchronization();
+            double frames = Math.Round((double)nudDelay.Value * framerate);
+            delayUpdating = true;
+            sldrDelay.Force(frames);
+            delayUpdating = false;
         }
         private void BtnSettingsClick(object sender, EventArgs e)
         {
@@ -374,10 +326,6 @@ namespace Kinovea.ScreenManager
         {
             presenter.View_ToggleRecording();
         }
-        private void btnConfigureComposite_Click(object sender, EventArgs e)
-        {
-            presenter.View_ConfigureComposite();
-        }
         #endregion
         
         #region Private methods (pure Form logic)
@@ -401,17 +349,6 @@ namespace Kinovea.ScreenManager
                 pnlViewport.Height = pnlControls.Top - pnlViewport.Top;
             }
         }
-        private void UpdateDelayLabel()
-        {
-            lblDelay.Text = ScreenManagerLang.lblDelay_Text;
-            if (delaySeconds >= (double)nudDelay.Minimum && delaySeconds <= (double)nudDelay.Maximum)
-                nudDelay.Value = (decimal)delaySeconds;
-        }
-        private void UpdateSlomoRefreshRateLabel()
-        {
-            string formattedSpeed = string.Format("{0}%", Math.Round(refreshRate * 100));
-            lblRefreshRate.Text = string.Format(ScreenManagerLang.lblSpeedTuner_Text, formattedSpeed);
-        }
         private void ReloadTooltipsCulture()
         {
             toolTips.SetToolTip(btnSettings, ScreenManagerLang.ToolTip_ConfigureCamera);
@@ -426,13 +363,6 @@ namespace Kinovea.ScreenManager
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_PauseCamera);
             else
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
-        }
-        private void ChangeSpeed(int change)
-        {
-            if (change == 0)
-                return;
-
-            sldrRefreshRate.StepJump(change / 100.0f);
         }
         #endregion
 
@@ -499,25 +429,13 @@ namespace Kinovea.ScreenManager
                 case CaptureScreenCommands.IncreaseDelay:
                     if (delayCompositeType == DelayCompositeType.Basic)
                     {
-                        sldrDelay.Value = sldrDelay.Value + 1;
-                        sldrDelay.Invalidate();
-                    }
-                    else if (delayCompositeType == DelayCompositeType.SlowMotion)
-                    {
-                        ChangeSpeed(25);
-                        sldrRefreshRate.Invalidate();
+                        sldrDelay.Force(sldrDelay.Value + 1);
                     }
                     break;
                 case CaptureScreenCommands.DecreaseDelay:
                     if (delayCompositeType == DelayCompositeType.Basic)
                     {
-                        sldrDelay.Value = sldrDelay.Value - 1;
-                        sldrDelay.Invalidate();
-                    }
-                    else if (delayCompositeType == DelayCompositeType.SlowMotion)
-                    {
-                        ChangeSpeed(-25);
-                        sldrRefreshRate.Invalidate();
+                        sldrDelay.Force(sldrDelay.Value - 1);
                     }
                     break;
                 case CaptureScreenCommands.Close:

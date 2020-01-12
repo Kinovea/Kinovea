@@ -61,8 +61,12 @@ namespace Kinovea.Root
             if (!firstInstance && !PreferencesManager.GeneralPreferences.AllowMultipleInstances)
                 return;
 
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+                CommandLineArgumentManager.Instance.ParseArguments(args);
+
             Software.ConfigureInstance();
-            if (!firstInstance && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
+            if (!string.IsNullOrEmpty(LaunchSettingsManager.Name) && PreferencesManager.GeneralPreferences.InstancesOwnPreferences)
                 PreferencesManager.Initialize();
 
             log.Debug("Application level initialisations.");
@@ -74,7 +78,7 @@ namespace Kinovea.Root
             splashForm.Show();
             splashForm.Update();
 
-            RootKernel kernel = new RootKernel(firstInstance);
+            RootKernel kernel = new RootKernel();
             kernel.Prepare();
             
             log.Debug("Closing splash screen.");

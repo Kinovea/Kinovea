@@ -86,12 +86,12 @@
    <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve"><value>Exposició (µs):</value></data>
    <data name="FormConfiguration_Properties_Gain" xml:space="preserve"><value>Guany:</value></data>
    <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>Focus:</value></data>
-   
+   <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve"><value>Conversio al format baiesià</value></data>
    <data name="FormConfiguration_Auto" xml:space="preserve"><value>Auto</value></data>
    <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve"><value>Pàgines de propietats</value></data>
    <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve"><value>S'ha produït un error intentant mostrar la pàgina de propietats de {0}.</value></data>
-   
-   
+   <data name="FormConfiguration_Reconnect" xml:space="preserve"><value>Reconnectar</value></data>
+   <data name="FormConfiguration_ImportParameters" xml:space="preserve"><value>Importar paràmetres</value></data>
    <data name="FormConfiguration_Test" xml:space="preserve"><value>Test</value></data>
    <data name="FormConnectionWizard_Network" xml:space="preserve"><value>Xarxa</value></data>
    <data name="FormConnectionWizard_Host" xml:space="preserve"><value>Màquina (Adreça IP)</value></data>

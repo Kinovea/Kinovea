@@ -35,13 +35,8 @@ namespace Kinovea.ScreenManager
         private void InitializeComponent()
         {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CaptureScreenView));
       this.pnlControls = new System.Windows.Forms.Panel();
       this.nudDelay = new System.Windows.Forms.NumericUpDown();
-      this.btnConfigureComposite = new System.Windows.Forms.Button();
-      this.lblSlomoSync = new System.Windows.Forms.Label();
-      this.btnSlomoSync = new System.Windows.Forms.Button();
-      this.lblRefreshRate = new System.Windows.Forms.Label();
       this.pnlCaptureDock = new System.Windows.Forms.Panel();
       this.btnGrab = new System.Windows.Forms.Button();
       this.btnSettings = new System.Windows.Forms.Button();
@@ -53,21 +48,18 @@ namespace Kinovea.ScreenManager
       this.btnClose = new System.Windows.Forms.Button();
       this.btnIcon = new System.Windows.Forms.Button();
       this.lblCameraTitle = new System.Windows.Forms.Label();
-      this.lblCameraInfo = new System.Windows.Forms.Label();
       this.pnlViewport = new System.Windows.Forms.Panel();
       this.pnlDrawingToolsBar = new System.Windows.Forms.Panel();
       this.btnFoldCapturedVideosPanel = new System.Windows.Forms.Button();
       this.toolTips = new System.Windows.Forms.ToolTip(this.components);
       this.infobarCapture = new Kinovea.ScreenManager.InfobarCapture();
-      this.sldrRefreshRate = new Kinovea.ScreenManager.SliderLinear();
-      this.sldrDelay = new Kinovea.ScreenManager.SliderLogScale();
+      this.sldrDelay = new Kinovea.ScreenManager.SliderLinear();
       this.fnbVideo = new Kinovea.ScreenManager.FilenameBox();
       this.fnbImage = new Kinovea.ScreenManager.FilenameBox();
       this.pnlControls.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudDelay)).BeginInit();
       this.pnlCaptureDock.SuspendLayout();
       this.pnlTitle.SuspendLayout();
-      this.pnlViewport.SuspendLayout();
       this.pnlDrawingToolsBar.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -75,11 +67,6 @@ namespace Kinovea.ScreenManager
       // 
       this.pnlControls.BackColor = System.Drawing.Color.WhiteSmoke;
       this.pnlControls.Controls.Add(this.nudDelay);
-      this.pnlControls.Controls.Add(this.btnConfigureComposite);
-      this.pnlControls.Controls.Add(this.lblSlomoSync);
-      this.pnlControls.Controls.Add(this.btnSlomoSync);
-      this.pnlControls.Controls.Add(this.lblRefreshRate);
-      this.pnlControls.Controls.Add(this.sldrRefreshRate);
       this.pnlControls.Controls.Add(this.sldrDelay);
       this.pnlControls.Controls.Add(this.fnbVideo);
       this.pnlControls.Controls.Add(this.fnbImage);
@@ -100,65 +87,6 @@ namespace Kinovea.ScreenManager
       this.nudDelay.Size = new System.Drawing.Size(52, 20);
       this.nudDelay.TabIndex = 48;
       this.nudDelay.ValueChanged += new System.EventHandler(this.NudDelay_ValueChanged);
-      // 
-      // btnConfigureComposite
-      // 
-      this.btnConfigureComposite.BackColor = System.Drawing.Color.Transparent;
-      this.btnConfigureComposite.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnConfigureComposite.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnConfigureComposite.FlatAppearance.BorderSize = 0;
-      this.btnConfigureComposite.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-      this.btnConfigureComposite.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnConfigureComposite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnConfigureComposite.Image = ((System.Drawing.Image)(resources.GetObject("btnConfigureComposite.Image")));
-      this.btnConfigureComposite.Location = new System.Drawing.Point(805, 12);
-      this.btnConfigureComposite.MinimumSize = new System.Drawing.Size(30, 25);
-      this.btnConfigureComposite.Name = "btnConfigureComposite";
-      this.btnConfigureComposite.Size = new System.Drawing.Size(30, 25);
-      this.btnConfigureComposite.TabIndex = 44;
-      this.btnConfigureComposite.UseVisualStyleBackColor = false;
-      this.btnConfigureComposite.Visible = false;
-      this.btnConfigureComposite.Click += new System.EventHandler(this.btnConfigureComposite_Click);
-      // 
-      // lblSlomoSync
-      // 
-      this.lblSlomoSync.AutoSize = true;
-      this.lblSlomoSync.BackColor = System.Drawing.Color.Transparent;
-      this.lblSlomoSync.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblSlomoSync.Location = new System.Drawing.Point(699, 66);
-      this.lblSlomoSync.Name = "lblSlomoSync";
-      this.lblSlomoSync.Size = new System.Drawing.Size(10, 12);
-      this.lblSlomoSync.TabIndex = 47;
-      this.lblSlomoSync.Text = "0";
-      // 
-      // btnSlomoSync
-      // 
-      this.btnSlomoSync.BackColor = System.Drawing.Color.Transparent;
-      this.btnSlomoSync.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.btnSlomoSync.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.btnSlomoSync.FlatAppearance.BorderSize = 0;
-      this.btnSlomoSync.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-      this.btnSlomoSync.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-      this.btnSlomoSync.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-      this.btnSlomoSync.Image = global::Kinovea.ScreenManager.Properties.Capture.slomo_sync;
-      this.btnSlomoSync.Location = new System.Drawing.Point(807, 38);
-      this.btnSlomoSync.MinimumSize = new System.Drawing.Size(30, 25);
-      this.btnSlomoSync.Name = "btnSlomoSync";
-      this.btnSlomoSync.Size = new System.Drawing.Size(30, 25);
-      this.btnSlomoSync.TabIndex = 46;
-      this.btnSlomoSync.UseVisualStyleBackColor = false;
-      this.btnSlomoSync.Click += new System.EventHandler(this.btnSlomoSync_Click);
-      // 
-      // lblRefreshRate
-      // 
-      this.lblRefreshRate.AutoSize = true;
-      this.lblRefreshRate.BackColor = System.Drawing.Color.Transparent;
-      this.lblRefreshRate.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblRefreshRate.Location = new System.Drawing.Point(721, 66);
-      this.lblRefreshRate.Name = "lblRefreshRate";
-      this.lblRefreshRate.Size = new System.Drawing.Size(59, 12);
-      this.lblRefreshRate.TabIndex = 45;
-      this.lblRefreshRate.Text = "Speed: 100%";
       // 
       // pnlCaptureDock
       // 
@@ -327,24 +255,12 @@ namespace Kinovea.ScreenManager
       this.lblCameraTitle.Text = "Camera title";
       this.lblCameraTitle.Click += new System.EventHandler(this.LblCameraInfoClick);
       // 
-      // lblCameraInfo
-      // 
-      this.lblCameraInfo.AutoSize = true;
-      this.lblCameraInfo.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.lblCameraInfo.Location = new System.Drawing.Point(29, 25);
-      this.lblCameraInfo.Name = "lblCameraInfo";
-      this.lblCameraInfo.Size = new System.Drawing.Size(63, 13);
-      this.lblCameraInfo.TabIndex = 5;
-      this.lblCameraInfo.Text = "Camera info";
-      this.lblCameraInfo.Click += new System.EventHandler(this.LblCameraInfoClick);
-      // 
       // pnlViewport
       // 
       this.pnlViewport.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pnlViewport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
-      this.pnlViewport.Controls.Add(this.lblCameraInfo);
       this.pnlViewport.Location = new System.Drawing.Point(0, 25);
       this.pnlViewport.MinimumSize = new System.Drawing.Size(345, 25);
       this.pnlViewport.Name = "pnlViewport";
@@ -392,20 +308,6 @@ namespace Kinovea.ScreenManager
       this.infobarCapture.TabIndex = 0;
       this.infobarCapture.Visible = false;
       // 
-      // sldrRefreshRate
-      // 
-      this.sldrRefreshRate.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.sldrRefreshRate.Location = new System.Drawing.Point(701, 40);
-      this.sldrRefreshRate.Maximum = 100D;
-      this.sldrRefreshRate.Minimum = 0D;
-      this.sldrRefreshRate.Name = "sldrRefreshRate";
-      this.sldrRefreshRate.Size = new System.Drawing.Size(100, 23);
-      this.sldrRefreshRate.Sticky = false;
-      this.sldrRefreshRate.StickyValue = 0D;
-      this.sldrRefreshRate.TabIndex = 44;
-      this.sldrRefreshRate.Text = "sliderLinear1";
-      this.sldrRefreshRate.Value = 0D;
-      // 
       // sldrDelay
       // 
       this.sldrDelay.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -413,9 +315,11 @@ namespace Kinovea.ScreenManager
       this.sldrDelay.Maximum = 100D;
       this.sldrDelay.Minimum = 0D;
       this.sldrDelay.Name = "sldrDelay";
-      this.sldrDelay.Size = new System.Drawing.Size(184, 23);
+      this.sldrDelay.Size = new System.Drawing.Size(189, 23);
+      this.sldrDelay.Sticky = false;
+      this.sldrDelay.StickyValue = 0D;
       this.sldrDelay.TabIndex = 43;
-      this.sldrDelay.Text = "sliderLogScale1";
+      this.sldrDelay.Text = "sliderLinear1";
       this.sldrDelay.Value = 0D;
       // 
       // fnbVideo
@@ -464,14 +368,12 @@ namespace Kinovea.ScreenManager
       this.pnlCaptureDock.ResumeLayout(false);
       this.pnlTitle.ResumeLayout(false);
       this.pnlTitle.PerformLayout();
-      this.pnlViewport.ResumeLayout(false);
-      this.pnlViewport.PerformLayout();
       this.pnlDrawingToolsBar.ResumeLayout(false);
       this.ResumeLayout(false);
 
         }
-        private System.Windows.Forms.Label lblCameraInfo;
-        private Kinovea.ScreenManager.SliderLogScale sldrDelay;
+        //private Kinovea.ScreenManager.SliderLogScale sldrDelay;
+        private Kinovea.ScreenManager.SliderLinear sldrDelay;
         private Kinovea.ScreenManager.FilenameBox fnbImage;
         private Kinovea.ScreenManager.FilenameBox fnbVideo;
         private System.Windows.Forms.Button btnFoldCapturedVideosPanel;
@@ -489,12 +391,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnGrab;
         private System.Windows.Forms.Panel pnlCaptureDock;
         private System.Windows.Forms.Button btnIcon;
-        private System.Windows.Forms.Button btnConfigureComposite;
         private System.Windows.Forms.ToolTip toolTips;
-        private System.Windows.Forms.Label lblRefreshRate;
-        private SliderLinear sldrRefreshRate;
-        private System.Windows.Forms.Label lblSlomoSync;
-        private System.Windows.Forms.Button btnSlomoSync;
         private InfobarCapture infobarCapture;
         private System.Windows.Forms.NumericUpDown nudDelay;
     }

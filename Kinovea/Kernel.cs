@@ -100,12 +100,8 @@ namespace Kinovea.Root
         #endregion
 
         #region Constructor
-        public RootKernel(bool firstInstance)
+        public RootKernel()
         {
-            var args = Environment.GetCommandLineArgs();
-            if (args.Length > 1)
-                CommandLineArgumentManager.Instance.ParseArguments(args);
-
             log.Debug("Loading video readers.");
             List<Type> videoReaders = new List<Type>();
             videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
@@ -128,7 +124,7 @@ namespace Kinovea.Root
             ToolManager.LoadTools();
 
             BuildSubTree();
-            mainWindow = new KinoveaMainWindow(this, firstInstance);
+            mainWindow = new KinoveaMainWindow(this);
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
             NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
             NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;

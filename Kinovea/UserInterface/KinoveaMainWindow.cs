@@ -49,16 +49,16 @@ namespace Kinovea.Root
         #endregion
 
         #region Constructor
-        public KinoveaMainWindow(RootKernel rootKernel, bool firstInstance)
+        public KinoveaMainWindow(RootKernel rootKernel)
         {
-            log.Debug("Create main UI window.");
+            log.Debug("Creating main UI window.");
 
             this.rootKernel = rootKernel;
             InitializeComponent();
 
             string title = " Kinovea";
-            if (!firstInstance)
-                title += string.Format(" [{0}]", Software.InstanceNumber);
+            if (!string.IsNullOrEmpty(Software.InstanceName))
+                title += string.Format(" [{0}]", Software.InstanceName);
 
             this.Text = title;
             supervisorView = new SupervisorUserInterface(rootKernel);

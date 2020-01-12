@@ -72,35 +72,35 @@
    </resheader>
    <data name="Generic_Apply" xml:space="preserve"><value>Aplicar</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="FormHandshakeResult_Title" xml:space="preserve"><value>Test de conexión</value></data>
+   <data name="FormHandshakeResult_Failure_Title" xml:space="preserve"><value>Fallo del test de conexión</value></data>
+   <data name="FormHandshakeResult_Failure_Message" xml:space="preserve"><value>Ocurrió un error durante el test de conexión</value></data>
+   <data name="FormIconPicker_Title" xml:space="preserve"><value>iconos</value></data>
+   <data name="FormConfiguration_Title" xml:space="preserve"><value>Configuración de la camara</value></data>
+   <data name="FormConfiguration_Properties_StreamFormat" xml:space="preserve"><value>Formato del flujo:</value></data>
+   <data name="FormConfiguration_Properties_ImageSize" xml:space="preserve"><value>Tamaño de la imagen</value></data>
+   <data name="FormConfiguration_Properties_ImageWidth" xml:space="preserve"><value>Ancho:</value></data>
+   <data name="FormConfiguration_Properties_ImageHeight" xml:space="preserve"><value>Alto:</value></data>
+   <data name="FormConfiguration_Properties_Framerate" xml:space="preserve"><value>Tasa de fotogramas:</value></data>
+   <data name="FormConfiguration_Properties_Exposure" xml:space="preserve"><value>Exposición:</value></data>
+   <data name="FormConfiguration_Properties_ExposureMicro" xml:space="preserve"><value>Esposición (µs):</value></data>
+   <data name="FormConfiguration_Properties_Gain" xml:space="preserve"><value>Ganancia:</value></data>
+   <data name="FormConfiguration_Properties_Focus" xml:space="preserve"><value>Foco:</value></data>
+   <data name="FormConfiguration_Properties_BayerFormatConversion" xml:space="preserve"><value>Conversión de formato baiesiano</value></data>
+   <data name="FormConfiguration_Auto" xml:space="preserve"><value>Auto</value></data>
+   <data name="FormConfiguration_DevicePropertyPages" xml:space="preserve"><value>Páginas de propiedades del dispositivo</value></data>
+   <data name="FormConfiguration_DevicePropertyPages_Error" xml:space="preserve"><value>Ocurrió un error mientras se intentaba mostrar la página de propiedades del dispositivo {0}.</value></data>
+   <data name="FormConfiguration_Reconnect" xml:space="preserve"><value>Reconectar</value></data>
+   <data name="FormConfiguration_ImportParameters" xml:space="preserve"><value>Importar parámetros</value></data>
+   <data name="FormConfiguration_Test" xml:space="preserve"><value>Test</value></data>
+   <data name="FormConnectionWizard_Network" xml:space="preserve"><value>Red</value></data>
+   <data name="FormConnectionWizard_Host" xml:space="preserve"><value>Anfitrión (dirección IP)</value></data>
+   <data name="FormConnectionWizard_Port" xml:space="preserve"><value>Puerto</value></data>
+   <data name="FormConnectionWizard_Format" xml:space="preserve"><value>Formato</value></data>
+   <data name="FormConnectionWizard_Authentication" xml:space="preserve"><value>Autenticación</value></data>
+   <data name="FormConnectionWizard_User" xml:space="preserve"><value>Usuario</value></data>
+   <data name="FormConnectionWizard_Password" xml:space="preserve"><value>Contraseña</value></data>
+   <data name="FormConnectionWizard_URL" xml:space="preserve"><value>URL final</value></data>
    
    
 </root>

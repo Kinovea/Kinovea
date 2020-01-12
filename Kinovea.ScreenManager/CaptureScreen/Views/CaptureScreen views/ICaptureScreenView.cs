@@ -52,13 +52,9 @@ namespace Kinovea.ScreenManager
         void UpdateLoadStatus(float load);
         void UpdateGrabbingStatus(bool grabbing);
         void UpdateRecordingStatus(bool recording);
-        void UpdateDelay(double delaySeconds, int delayFrames);
         void UpdateDelayMax(double delaySeconds, int delayFrames);
-        void UpdateSlomoRefreshRate(float rate);
-        void UpdateSlomoCountdown(double countdown);
         void UpdateNextImageFilename(string filename);
         void UpdateNextVideoFilename(string filename);
-        
         void Toast(string message, int duration);
     }
 }
