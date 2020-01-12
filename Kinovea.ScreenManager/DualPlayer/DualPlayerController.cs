@@ -596,7 +596,7 @@ namespace Kinovea.ScreenManager
         {
             log.DebugFormat("Resetting time origins. [0]:{0}, [1]{1}", players[0].LocalTime, players[1].LocalTime);
             players[0].LocalTimeOriginPhysical = players[0].LocalTime;
-            players[1].LocalTimeOriginPhysical = players[0].LocalTime;
+            players[1].LocalTimeOriginPhysical = players[1].LocalTime;
 
             commonTimeline.Initialize(players[0], players[1]);
             currentTime = commonTimeline.GetCommonTime(players[0], players[0].LocalTime);
