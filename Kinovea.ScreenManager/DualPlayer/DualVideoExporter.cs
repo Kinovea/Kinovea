@@ -22,6 +22,7 @@ namespace Kinovea.ScreenManager
         private CommonTimeline commonTimeline;
         private PlayerScreen leftPlayer;
         private PlayerScreen rightPlayer;
+        private double fileFrameInterval;
         private string dualSaveFileName;
         private bool dualSaveCancelled;
         private bool merging;
@@ -37,6 +38,11 @@ namespace Kinovea.ScreenManager
             this.leftPlayer = leftPlayer;
             this.rightPlayer = rightPlayer;
             this.merging = merging;
+
+            // During saving we move through the common timeline by a time unit based on framerate and high speed factor, but not based on user custom slow motion factor.
+            // For the framerate saved in the file metadata we take user custom slow motion into account and not high speed factor.
+            fileFrameInterval = Math.Max(leftPlayer.FrameInterval, rightPlayer.FrameInterval);
+            fileFrameInterval = Math.Max(fileFrameInterval, 10);
 
             dualSaveFileName = GetFilename(leftPlayer, rightPlayer);
             if (string.IsNullOrEmpty(dualSaveFileName))
@@ -105,13 +111,10 @@ namespace Kinovea.ScreenManager
             {
                 ReferenceSize = composite.Size
             };
-            
-            double frameInterval = (double)commonTimeline.FrameTime / 1000;
-            frameInterval = Math.Max(frameInterval, 10);
 
             string formatString = FilenameHelper.GetFormatString(dualSaveFileName);
 
-            SaveResult result = videoFileWriter.OpenSavingContext(dualSaveFileName, info, formatString, frameInterval);
+            SaveResult result = videoFileWriter.OpenSavingContext(dualSaveFileName, info, formatString, fileFrameInterval);
 
             if (result != SaveResult.Success)
             {

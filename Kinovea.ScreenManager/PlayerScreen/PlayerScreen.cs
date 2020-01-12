@@ -232,12 +232,15 @@ namespace Kinovea.ScreenManager
                 view.TimeOriginUpdatedFromSync();
             }
         }
-         
+
+        /// <summary>
+        /// Returns the interval between frames in milliseconds, taking slow motion slider into account.
+        /// This is suitable for a playback timer or metadata in saved file.
+        /// </summary>
         public double FrameInterval
         {
             get 
             { 
-                // Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
                 if (frameServer.Loaded && frameServer.VideoReader.Info.FrameIntervalMilliseconds > 0)
                     return view.FrameInterval;
                 else
