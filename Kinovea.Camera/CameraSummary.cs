@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using Kinovea.Video;
 
 namespace Kinovea.Camera
 {
@@ -34,10 +35,11 @@ namespace Kinovea.Camera
         public Bitmap Icon { get; private set; }
         public Rectangle DisplayRectangle { get; set; }
         public CaptureAspectRatio AspectRatio { get; private set; }
+        public ImageRotation Rotation { get; private set; }
         public object Specific { get; private set;}
         public CameraManager Manager { get; private set;}
         
-        public CameraSummary(string alias, string name, string identifier, Bitmap icon, Rectangle displayRectangle, CaptureAspectRatio aspectRatio, object specific, CameraManager manager)
+        public CameraSummary(string alias, string name, string identifier, Bitmap icon, Rectangle displayRectangle, CaptureAspectRatio aspectRatio, ImageRotation rotation, object specific, CameraManager manager)
         {
             this.Alias = alias;
             this.Name = name;
@@ -45,6 +47,7 @@ namespace Kinovea.Camera
             this.Icon = icon;
             this.DisplayRectangle = displayRectangle;
             this.AspectRatio = aspectRatio;
+            this.Rotation = rotation;
             this.Specific = specific;
             this.Manager = manager;
         }
@@ -66,6 +69,11 @@ namespace Kinovea.Camera
                 return;
                 
             this.AspectRatio = aspectRatio;
+        }
+
+        public void UpdateRotation(ImageRotation rotation)
+        {
+            this.Rotation = rotation;
         }
         
         public void UpdateSpecific(object specific)

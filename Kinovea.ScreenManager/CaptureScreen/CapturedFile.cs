@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.Video;
 using System;
 using System.Drawing;
 using System.IO;
@@ -57,7 +58,7 @@ namespace Kinovea.ScreenManager
         private bool video;
         private bool disposed = false;
 
-        public CapturedFile(string filepath, Bitmap image, bool video)
+        public CapturedFile(string filepath, Bitmap image, bool video, ImageRotation rotation)
         {
             time = DateTime.Now;
             this.filepath = filepath;

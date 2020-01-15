@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
             connected = false;
         }
 
-        public SaveResult StartRecord(string filepath, double interval, int age)
+        public SaveResult StartRecord(string filepath, double interval, int age, ImageRotation rotation)
         {
             if (consumerRealtime == null && consumerDelayer == null)
                 throw new InvalidProgramException();
@@ -104,13 +104,13 @@ namespace Kinovea.ScreenManager
             SaveResult result;
             if (consumerRealtime != null)
             {
-                result = consumerRealtime.StartRecord(filepath, interval);
+                result = consumerRealtime.StartRecord(filepath, interval, rotation);
                 if (result == SaveResult.Success)
                     consumerRealtime.Activate();
             }
             else
             {
-                result = consumerDelayer.StartRecord(filepath, interval, age);
+                result = consumerDelayer.StartRecord(filepath, interval, age, rotation);
             }
 
             return result;

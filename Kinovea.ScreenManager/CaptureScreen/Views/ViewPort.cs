@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.Video;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,8 +37,8 @@ namespace Kinovea.ScreenManager
     {
         #region Members
         private ViewportController controller;
-        private Size imageSize;             // Original image size. (Reference size).
-        private Rectangle displayRectangle; // Position and size of the region of the viewport where we draw the image.
+        private Size referenceSize;             // Original image size after optional rotation.
+        private Rectangle displayRectangle;     // Position and size of the region of the viewport where we draw the image.
         private ImageManipulator manipulator = new ImageManipulator();
         private ZoomHelper zoomHelper = new ZoomHelper();
         private bool mirrored = false;
@@ -63,9 +64,9 @@ namespace Kinovea.ScreenManager
             toaster = new MessageToaster(this);
         }
         
-        public void InitializeDisplayRectangle(Rectangle saved, Size imageSize)
+        public void InitializeDisplayRectangle(Rectangle saved, Size referenceSize)
         {
-            this.imageSize = imageSize;
+            this.referenceSize = referenceSize;
             InitializeDisplayRectangle(saved);
             ForceZoomValue();
         }
@@ -147,9 +148,9 @@ namespace Kinovea.ScreenManager
         }
         private void DrawKVA(Graphics canvas)
         {
-            if(imageSize.Width != 0)
+            if(referenceSize.Width != 0)
             {
-                float zoom = (float)displayRectangle.Size.Width / imageSize.Width;
+                float zoom = (float)displayRectangle.Size.Width / referenceSize.Width;
                 controller.DrawKVA(canvas, displayRectangle.Location, zoom);
             }
         }
@@ -208,7 +209,7 @@ namespace Kinovea.ScreenManager
             Point mouse = this.PointToClient(Control.MousePosition);
             if(displayRectangle.Contains(mouse))
             {
-                manipulator.Expand(imageSize, displayRectangle, this.Size);
+                manipulator.Expand(referenceSize, displayRectangle, this.Size);
                 displayRectangle = manipulator.DisplayRectangle;
                 AfterDisplayRectangleChanged();
                 ForceZoomValue();
@@ -260,7 +261,7 @@ namespace Kinovea.ScreenManager
 
         private void AfterZoomChanged(Point location)
         {
-            RecomputeDisplayRectangle(imageSize, displayRectangle, location);
+            RecomputeDisplayRectangle(referenceSize, displayRectangle, location);
             ToastZoom();
         }
         
@@ -284,7 +285,7 @@ namespace Kinovea.ScreenManager
             // The display rectangle has changed size outside the context of zoom (e.g: dragging corners).
             // Recompute the current zoom value to keep it in sync.
             float oldZoom = zoomHelper.Value;
-            float newZoom = (float)displayRectangle.Size.Width / imageSize.Width;
+            float newZoom = (float)displayRectangle.Size.Width / referenceSize.Width;
             
             zoomHelper.Value = newZoom;
             
@@ -295,7 +296,7 @@ namespace Kinovea.ScreenManager
         
         private void InitializeDisplayRectangle(Rectangle saved)
         {
-            displayRectangle = saved.Size == Size.Empty ? UIHelper.RatioStretch(imageSize, this.Size) : saved;
+            displayRectangle = saved.Size == Size.Empty ? UIHelper.RatioStretch(referenceSize, this.Size) : saved;
             AfterDisplayRectangleChanged();
         }
         
@@ -315,7 +316,7 @@ namespace Kinovea.ScreenManager
         private void AfterDisplayRectangleChanged()
         {
             // Force aspect ratio to match original size.
-            double aspectRatio = (double)imageSize.Width / imageSize.Height;
+            double aspectRatio = (double)referenceSize.Width / referenceSize.Height;
             displayRectangle.Width = (int)Math.Round((double)displayRectangle.Height * aspectRatio);
 
             resizers[0].Location = new Point(displayRectangle.Left - resizerOffset, displayRectangle.Top - resizerOffset);
@@ -386,7 +387,7 @@ namespace Kinovea.ScreenManager
             if(manipulator.Started)
             {
                 bool sticky = true;
-                manipulator.Move(e.Location, sticky, this.Size, imageSize);
+                manipulator.Move(e.Location, sticky, this.Size, referenceSize);
                 displayRectangle = manipulator.DisplayRectangle;
                 AfterDisplayRectangleChanged();
                 return;

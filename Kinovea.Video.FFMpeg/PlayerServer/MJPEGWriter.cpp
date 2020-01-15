@@ -47,7 +47,7 @@ MJPEGWriter::!MJPEGWriter()
 /// MJPEGWriter::OpenSavingContext
 /// Open a saving context and configure it with default parameters.
 ///</summary>
-SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, String^ _formatString, ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval)
+SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, String^ _formatString, ImageFormat _imageFormat, bool _uncompressed, double _fFramesInterval, double _fFileFramesInterval, ImageRotation rotation)
 {
     //---------------------------------------------------------------------------------------------------
     // Set the saving context up.
@@ -137,6 +137,22 @@ SaveResult MJPEGWriter::OpenSavingContext(String^ _filePath, VideoInfo _info, St
 
         m_SavingContext->pOutputVideoStream->id = m_SavingContext->pOutputFormatContext->nb_streams - 1;
 
+        switch (rotation)
+        {
+        case ImageRotation::Rotate90:
+            av_dict_set(&m_SavingContext->pOutputVideoStream->metadata, "rotate", "90", 0);
+            break;
+        case ImageRotation::Rotate180:
+            av_dict_set(&m_SavingContext->pOutputVideoStream->metadata, "rotate", "180", 0);
+            break;
+        case ImageRotation::Rotate270:
+            av_dict_set(&m_SavingContext->pOutputVideoStream->metadata, "rotate", "270", 0);
+            break;
+        case ImageRotation::Rotate0:
+        default:
+            break;
+        }
+        
         // 6. Configure encoder.
         if(!SetupEncoder(m_SavingContext, _imageFormat))
         {

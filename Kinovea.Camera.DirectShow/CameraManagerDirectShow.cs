@@ -31,6 +31,7 @@ using System.Linq;
 using AForge.Video.DirectShow;
 using Kinovea.Services;
 using System.Text.RegularExpressions;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -65,6 +66,7 @@ namespace Kinovea.Camera.DirectShow
         private HashSet<string> blacklist = new HashSet<string>();
         private Regex idsPattern = new Regex(@"^UI\d{3,4}");
         private Regex baslerPattern = new Regex(@"^Basler GenICam");
+        private Regex dahengPattern = new Regex(@"^Daheng Imaging");
         private Control dummy = new Control();
         #endregion
         
@@ -102,6 +104,7 @@ namespace Kinovea.Camera.DirectShow
                 SpecificInfo specific = null;
                 Rectangle displayRectangle = Rectangle.Empty;
                 CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
+                ImageRotation rotation = ImageRotation.Rotate0;
                 
                 if(blurbs != null)
                 {
@@ -115,7 +118,8 @@ namespace Kinovea.Camera.DirectShow
                         displayRectangle = blurb.DisplayRectangle;
                         if(!string.IsNullOrEmpty(blurb.AspectRatio))
                             aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
-                        
+                        if (!string.IsNullOrEmpty(blurb.Rotation))
+                            rotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), blurb.Rotation);
                         specific = SpecificInfoDeserialize(blurb.Specific);
                         VendorHelper.IdentifyModel(identifier);
                         break;
@@ -125,7 +129,7 @@ namespace Kinovea.Camera.DirectShow
                 if(icon == null)
                     icon = SelectDefaultIcon(identifier);
                 
-                CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, icon, displayRectangle, aspectRatio, specific, this);
+                CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, icon, displayRectangle, aspectRatio, rotation, specific, this);
                 summaries.Add(summary);
                 
                 if(cached)
@@ -178,7 +182,7 @@ namespace Kinovea.Camera.DirectShow
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
             string specific = SpecificInfoSerialize(summary);
-            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), specific);
+            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), summary.Rotation.ToString(), specific);
             return blurb;
         }
         
@@ -318,6 +322,14 @@ namespace Kinovea.Camera.DirectShow
             // IDS uEye.
             Match matchIDS = idsPattern.Match(name);
             if (matchIDS.Success)
+            {
+                blacklist.Add(name);
+                return true;
+            }
+
+            // Daheng Imaging
+            Match matchDaheng = dahengPattern.Match(name);
+            if (matchDaheng.Success)
             {
                 blacklist.Add(name);
                 return true;

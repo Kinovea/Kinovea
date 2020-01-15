@@ -24,6 +24,7 @@ using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -130,9 +131,9 @@ namespace Kinovea.ScreenManager
             bitmap = null;
         }
 
-        public void InitializeDisplayRectangle(Rectangle displayRectangle, Size size)
+        public void InitializeDisplayRectangle(Rectangle displayRectangle, Size referenceSize)
         {
-            view.InitializeDisplayRectangle(displayRectangle, size);
+            view.InitializeDisplayRectangle(displayRectangle, referenceSize);
         }
         
         public void SetMirrored(bool value)

@@ -101,8 +101,8 @@ namespace Kinovea.ScreenManager
         }
         public override ImageRotation ImageRotation
         {
-            get { return ImageRotation.Rotate0; }
-            set { }
+            get { return cameraSummary == null ? ImageRotation.Rotate0 : cameraSummary.Rotation; }
+            set { ChangeRotation(value); }
         }
         public override Demosaicing Demosaicing
         {
@@ -549,13 +549,13 @@ namespace Kinovea.ScreenManager
             metadata.PostSetupCapture();
 
             AllocateDelayer();
-
-            SanityCheckDisplayRectangle(cameraSummary, imageDescriptor.Width, imageDescriptor.Height);
+            bool sideways = ImageRotation == ImageRotation.Rotate90 || ImageRotation == ImageRotation.Rotate270;
+            Size referenceSize = sideways ? new Size(imageDescriptor.Height, imageDescriptor.Width) : new Size(imageDescriptor.Width, imageDescriptor.Height);
+            SanityCheckDisplayRectangle(cameraSummary, referenceSize);
             
             // Make sure the viewport will not use the bitmap allocated by the consumerDisplay as it is about to be disposed.
             viewportController.ForgetBitmap();
-            viewportController.InitializeDisplayRectangle(cameraSummary.DisplayRectangle, new Size(imageDescriptor.Width, imageDescriptor.Height));
-
+            viewportController.InitializeDisplayRectangle(cameraSummary.DisplayRectangle, referenceSize);
 
             // The behavior of how we pull frames from the pipeline, push them to the delayer, record them to disk and display them is dependent 
             // on the recording mode (even while not recording). The recoring mode does not change for the camera connection session. 
@@ -625,12 +625,12 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Ensure the display rectangle has a matching aspect ratio to the incoming images.
         /// </summary>
-        private void SanityCheckDisplayRectangle(CameraSummary summary, int width, int height)
+        private void SanityCheckDisplayRectangle(CameraSummary summary, Size referenceSize)
         {
             // The display rectangle can change its size based on user zoom, 
             // but the image size can be modified from the outside in some scenarios.
             double dspAR = (double)summary.DisplayRectangle.Width / summary.DisplayRectangle.Height;
-            double camAR = (double)width / height;
+            double camAR = (double)referenceSize.Width / referenceSize.Height;
             int expectedWidth = (int)Math.Round(summary.DisplayRectangle.Height * camAR);
 
             double epsilon = 1;
@@ -809,7 +809,19 @@ namespace Kinovea.ScreenManager
             Disconnect();
             Connect();
         }
-        
+
+        private void ChangeRotation(ImageRotation rotation)
+        {
+            if (rotation == cameraSummary.Rotation)
+                return;
+
+            cameraSummary.UpdateRotation(rotation);
+            cameraSummary.UpdateDisplayRectangle(Rectangle.Empty);
+
+            Disconnect();
+            Connect();
+        }
+
         private CaptureAspectRatio Convert(ImageAspectRatio aspectRatio)
         {
             switch(aspectRatio)
@@ -873,7 +885,7 @@ namespace Kinovea.ScreenManager
                 delayer.Push(freshFrame);
             }
             
-            Bitmap delayed = delayer.GetWeak(delay);
+            Bitmap delayed = delayer.GetWeak(delay, ImageRotation);
             if (delayed != null)
             {
                 viewportController.ForgetBitmap();
@@ -1016,7 +1028,7 @@ namespace Kinovea.ScreenManager
             if (!cameraLoaded)
                 return;
 
-            Bitmap bitmap = delayer.GetWeak(delay);
+            Bitmap bitmap = delayer.GetWeak(delay, ImageRotation);
             if (bitmap == null)
                 return;
 
@@ -1208,8 +1220,8 @@ namespace Kinovea.ScreenManager
             }
 
             log.DebugFormat("--------------------------------------------------");
-            log.DebugFormat("Starting recording. Recording mode: {0}, Compression: {1}. Image size: {2}x{3} px.", 
-                recordingMode, !PreferencesManager.CapturePreferences.SaveUncompressedVideo, imageDescriptor.Width, imageDescriptor.Height);
+            log.DebugFormat("Starting recording. Recording mode: {0}, Compression: {1}. Image size: {2}x{3} px. Rotation: {4}",
+                recordingMode, !PreferencesManager.CapturePreferences.SaveUncompressedVideo, imageDescriptor.Width, imageDescriptor.Height, ImageRotation);
             log.DebugFormat("Nominal framerate: {0:0.###} fps, Received framerate: {1:0.###} fps, Display framerate: {2:0.###} fps.", 
                 cameraGrabber.Framerate, pipelineManager.Frequency, 1000.0f / displayTimer.Interval);
             
@@ -1223,7 +1235,7 @@ namespace Kinovea.ScreenManager
             }
 
             double interval = 1000.0 / framerate;
-            result = pipelineManager.StartRecord(path, interval, delay);
+            result = pipelineManager.StartRecord(path, interval, delay, ImageRotation);
             recording = result == SaveResult.Success;
             
             if(recording)
@@ -1350,7 +1362,7 @@ namespace Kinovea.ScreenManager
             if(!capturedFiles.HasThumbnails)
                 view.ShowThumbnails();
             
-            capturedFiles.AddFile(filepath, image, video);
+            capturedFiles.AddFile(filepath, image, video, ImageRotation);
         }
         #endregion
 
@@ -1413,7 +1425,7 @@ namespace Kinovea.ScreenManager
             // Force a refresh if we are not connected to the camera to enable "pause and browse".
             if (cameraLoaded && !cameraConnected)
             {
-                Bitmap delayed = delayer.GetWeak(delay);
+                Bitmap delayed = delayer.GetWeak(delay, ImageRotation);
                 viewportController.Bitmap = delayed;
                 viewportController.Refresh();
             }

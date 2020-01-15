@@ -1300,7 +1300,9 @@ namespace Kinovea.ScreenManager
         }
         private void ConfigureImageRotationMenus(AbstractScreen screen)
         {
-            bool canChangeImageRotation = screen != null && screen.Full && screen is PlayerScreen && ((PlayerScreen)screen).FrameServer.VideoReader.CanChangeImageRotation;
+            bool screenIsFull = screen != null && screen.Full;
+            bool playerCanChangeRotation = screenIsFull && screen is PlayerScreen && ((PlayerScreen)screen).FrameServer.VideoReader.CanChangeImageRotation;
+            bool canChangeImageRotation = screenIsFull && (screen is CaptureScreen || playerCanChangeRotation);
             mnuRotation.Enabled = canChangeImageRotation;
             mnuRotation0.Enabled = canChangeImageRotation;
             mnuRotation90.Enabled = canChangeImageRotation;

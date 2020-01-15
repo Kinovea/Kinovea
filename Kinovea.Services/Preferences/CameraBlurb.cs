@@ -39,9 +39,10 @@ namespace Kinovea.Services
         public Bitmap Icon { get; private set;}
         public Rectangle DisplayRectangle { get; private set; }
         public string AspectRatio { get; private set;}
+        public string Rotation { get; private set; }
         public string Specific { get; private set;}
         
-        public CameraBlurb(string cameraType, string identifier, string alias, Bitmap icon, Rectangle displayRectangle, string aspectRatio, string specific)
+        public CameraBlurb(string cameraType, string identifier, string alias, Bitmap icon, Rectangle displayRectangle, string aspectRatio, string rotation, string specific)
         {
             this.CameraType = cameraType;
             this.Identifier = identifier;
@@ -49,6 +50,7 @@ namespace Kinovea.Services
             this.Icon = icon;
             this.DisplayRectangle = displayRectangle;
             this.AspectRatio = aspectRatio;
+            this.Rotation = rotation;
             this.Specific = specific;
         }
         
@@ -63,8 +65,9 @@ namespace Kinovea.Services
             writer.WriteElementString("DisplayRectangle", displayRectangle);
             
             writer.WriteElementString("AspectRatio", AspectRatio);
-            
-            if(!string.IsNullOrEmpty(Specific))
+            writer.WriteElementString("Rotation", Rotation);
+
+            if (!string.IsNullOrEmpty(Specific))
             {
                 writer.WriteStartElement("Specific");
                 writer.WriteRaw(Specific);
@@ -80,7 +83,8 @@ namespace Kinovea.Services
             string alias = "";
             Bitmap icon = null;
             Rectangle displayRectangle = Rectangle.Empty;
-            string aspectRatio = "";
+            string aspectRatio = "Auto";
+            string rotation = "Rotate0";
             string specific = "";
             
             while(reader.NodeType == XmlNodeType.Element)
@@ -105,6 +109,9 @@ namespace Kinovea.Services
                 case "AspectRatio":
                     aspectRatio = reader.ReadElementContentAsString();
                     break;
+                case "Rotation":
+                    rotation = reader.ReadElementContentAsString();
+                    break;
                 case "Specific":
                     specific = reader.ReadInnerXml();
                     break;
@@ -116,7 +123,7 @@ namespace Kinovea.Services
             
             reader.ReadEndElement();  
             
-            return new CameraBlurb(cameraType, identifier, alias, icon, displayRectangle, aspectRatio, specific);
+            return new CameraBlurb(cameraType, identifier, alias, icon, displayRectangle, aspectRatio, rotation, specific);
         }
     }
 }

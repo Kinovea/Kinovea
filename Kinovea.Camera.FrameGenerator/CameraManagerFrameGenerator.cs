@@ -88,9 +88,12 @@ namespace Kinovea.Camera.FrameGenerator
                 CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
                 if (!string.IsNullOrEmpty(blurb.AspectRatio))
                     aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
+                ImageRotation rotation = ImageRotation.Rotate0;
+                if (!string.IsNullOrEmpty(blurb.Rotation))
+                    rotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), blurb.Rotation);
                 object specific = SpecificInfoDeserialize(blurb.Specific);
 
-                CameraSummary summary = new CameraSummary(alias, defaultName, identifier, icon, displayRectangle, aspectRatio, specific, this);
+                CameraSummary summary = new CameraSummary(alias, defaultName, identifier, icon, displayRectangle, aspectRatio, rotation, specific, this);
                 summaries.Add(summary);
             }
 
@@ -116,7 +119,7 @@ namespace Kinovea.Camera.FrameGenerator
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
             string specific = SpecificInfoSerialize(summary);
-            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), specific);
+            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), summary.Rotation.ToString(), specific);
             return blurb;
         }
 
@@ -175,7 +178,7 @@ namespace Kinovea.Camera.FrameGenerator
 
         public CameraSummary GetDefaultCameraSummary(string id)
         {
-            return new CameraSummary(defaultAlias, defaultName, id, defaultIcon, Rectangle.Empty, CaptureAspectRatio.Auto, null, this);
+            return new CameraSummary(defaultAlias, defaultName, id, defaultIcon, Rectangle.Empty, CaptureAspectRatio.Auto, ImageRotation.Rotate0, null, this);
         }
 
         private void SnapshotRetriever_CameraThumbnailProduced(object sender, CameraThumbnailProducedEventArgs e)

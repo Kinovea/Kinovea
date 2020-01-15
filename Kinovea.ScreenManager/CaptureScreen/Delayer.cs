@@ -190,7 +190,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Get the frame from `age` frames ago as an RGB24 Bitmap. Do not wait for it and returns null if it's not available. 
         /// </summary>
-        public Bitmap GetWeak(int age)
+        public Bitmap GetWeak(int age, ImageRotation rotation)
         {
             //----------------------------------------------------
             // Runs in the UI thread, to get the image to display.
@@ -227,6 +227,21 @@ namespace Kinovea.ScreenManager
                             BitmapHelper.FillFromJPEG(copy, rect, tempJpeg, frame.Buffer, frame.PayloadLength, pitch);
                             break;
                     }
+
+                    switch (rotation)
+                    {
+                        case ImageRotation.Rotate90:
+                            copy.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                            break;
+                        case ImageRotation.Rotate180:
+                            copy.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                            break;
+                        case ImageRotation.Rotate270:
+                            copy.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 catch
                 {
@@ -235,7 +250,6 @@ namespace Kinovea.ScreenManager
                 finally
                 {
                     Monitor.Exit(lockerFrame);
-                    
                 }
             }
 

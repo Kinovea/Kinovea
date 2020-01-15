@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
             this.imageDescriptor = imageDescriptor;
         }
 
-        public SaveResult StartRecord(string filename, double interval)
+        public SaveResult StartRecord(string filename, double interval, ImageRotation rotation)
         {
             //-----------------------
             // Runs on the UI thread.
@@ -93,7 +93,7 @@ namespace Kinovea.ScreenManager
 
             log.DebugFormat("Frame budget for writer [{0}]: {1:0.000} ms.", shortId, interval);
 
-            SaveResult result = writer.OpenSavingContext(filename, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval);
+            SaveResult result = writer.OpenSavingContext(filename, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval, rotation);
 
             recording = true;
 

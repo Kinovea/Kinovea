@@ -27,6 +27,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.IDS
 {
@@ -113,6 +114,7 @@ namespace Kinovea.Camera.IDS
                 SpecificInfo specific = new SpecificInfo();
                 Rectangle displayRectangle = Rectangle.Empty;
                 CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
+                ImageRotation rotation = ImageRotation.Rotate0;
                 deviceIds[identifier] = device.DeviceID;
                 
                 if(blurbs != null)
@@ -127,7 +129,8 @@ namespace Kinovea.Camera.IDS
                         displayRectangle = blurb.DisplayRectangle;
                         if(!string.IsNullOrEmpty(blurb.AspectRatio))
                             aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
-                        
+                        if (!string.IsNullOrEmpty(blurb.Rotation))
+                            rotation = (ImageRotation)Enum.Parse(typeof(ImageRotation), blurb.Rotation);
                         specific = SpecificInfoDeserialize(blurb.Specific);
                         break;
                     }
@@ -135,7 +138,7 @@ namespace Kinovea.Camera.IDS
 
                 icon = icon ?? defaultIcon;
             
-                CameraSummary summary = new CameraSummary(alias, device.Model, identifier, icon, displayRectangle, aspectRatio, specific, this);
+                CameraSummary summary = new CameraSummary(alias, device.Model, identifier, icon, displayRectangle, aspectRatio, rotation, specific, this);
 
                 summaries.Add(summary);
                 found.Add(summary);
@@ -180,7 +183,7 @@ namespace Kinovea.Camera.IDS
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
             string specific = SpecificInfoSerialize(summary);
-            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), specific);
+            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), summary.Rotation.ToString(), specific);
             return blurb;
         }
         
