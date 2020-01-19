@@ -150,9 +150,11 @@ namespace Kinovea.Camera.Basler
 
         private void LogError(Exception e, string additionalErrorMessage)
         {
-            log.ErrorFormat("Error received trying to get a thumbnail for {0}", summary.Alias);
+            log.ErrorFormat("Camera {0} failure during thumbnail capture.", summary.Alias);
             log.Error(e.ToString());
-            log.Error(additionalErrorMessage);
+
+            if (!string.IsNullOrEmpty(additionalErrorMessage))
+                log.Error(additionalErrorMessage);
         }
 
         #region Camera events

@@ -123,7 +123,8 @@ namespace Kinovea.Camera.IDS
                     {
                         if(blurb.CameraType != this.CameraType || blurb.Identifier != identifier)
                             continue;
-                            
+                        
+                        // We already know this camera, restore the user custom values.
                         alias = blurb.Alias;
                         icon = blurb.Icon ?? defaultIcon;
                         displayRectangle = blurb.DisplayRectangle;

@@ -140,7 +140,8 @@ namespace Kinovea.Camera.Basler
                     {
                         if(blurb.CameraType != this.CameraType || blurb.Identifier != identifier)
                             continue;
-                            
+
+                        // We already know this camera, restore the user custom values.
                         alias = blurb.Alias;
                         icon = blurb.Icon ?? defaultIcon;
                         displayRectangle = blurb.DisplayRectangle;
@@ -263,7 +264,7 @@ namespace Kinovea.Camera.Basler
                     int height = int.Parse(info.CameraProperties["height"].CurrentValue, CultureInfo.InvariantCulture);
                     double framerate = 0;
 
-                    // The configured framerate is always between 0 and 10000, but the actual resulting framerate can be obtained.
+                    // The configured framerate is always between 0 and 100 000, but the actual resulting framerate can be obtained.
                     if (info.Handle != null && info.Handle.IsValid)
                         framerate = PylonHelper.GetResultingFramerate(info.Handle);
                     else
