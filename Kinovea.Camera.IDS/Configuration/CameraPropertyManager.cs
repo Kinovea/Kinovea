@@ -20,7 +20,6 @@ namespace Kinovea.Camera.IDS
             Dictionary<string, CameraProperty> properties = new Dictionary<string, CameraProperty>();
             
             // Retrieve camera properties that we support.
-            // TODO: some models may not support the basic set of properties we want to expose here.
             ReadSize(camera, properties);
             ReadPixelClock(camera, properties);
             ReadFramerate(camera, properties);
