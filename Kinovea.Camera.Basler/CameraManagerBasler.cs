@@ -222,7 +222,8 @@ namespace Kinovea.Camera.Basler
                 return false;
 
             FormConfiguration form = new FormConfiguration(summary, disconnect, connect);
-            if(form.ShowDialog() == DialogResult.OK)
+            FormsHelper.Locate(form);
+            if (form.ShowDialog() == DialogResult.OK)
             {
                 if(form.AliasChanged)
                     summary.UpdateAlias(form.Alias, form.PickedIcon);

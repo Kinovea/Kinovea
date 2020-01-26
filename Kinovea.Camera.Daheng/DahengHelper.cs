@@ -84,5 +84,65 @@ namespace Kinovea.Camera.Daheng
             }
             return bIsPixelFormat8;
         }
+
+        public static bool IsColor(IGXFeatureControl featureControl)
+        {
+            bool result = false;
+            if (featureControl.IsImplemented("PixelColorFilter"))
+            {
+                string pixelColorFilter = featureControl.GetEnumFeature("PixelColorFilter").GetValue();
+                if (pixelColorFilter != "None")
+                    result = true;
+            }
+
+            return result;
+        }
+
+        private static void ContinuousOrOnce(IGXFeatureControl featureControl, string identifier)
+        {
+            if (featureControl == null)
+                return;
+
+            bool implemented = featureControl.IsImplemented(identifier);
+            bool readable = featureControl.IsReadable(identifier);
+            bool writeable = featureControl.IsWritable(identifier);
+
+            if (implemented && readable && writeable)
+            {
+                string currentValue = featureControl.GetEnumFeature(identifier).GetValue().ToString();
+                if (currentValue == "Off")
+                    featureControl.GetEnumFeature(identifier).SetValue("Once");
+            }
+        }
+
+        public static void AfterOpen(IGXFeatureControl featureControl)
+        {
+            if (featureControl == null)
+                return;
+
+            featureControl.GetEnumFeature("AcquisitionMode").SetValue("Continuous");
+            featureControl.GetEnumFeature("TriggerMode").SetValue("Off");
+
+            // Force white balance at least once.
+            ContinuousOrOnce(featureControl, "BalanceWhiteAuto");
+
+            // This will allow the camera to send the max bandwidth it can, possibly saturating the link.
+            featureControl.GetEnumFeature("DeviceLinkThroughputLimitMode").SetValue("Off");
+
+            // Make sure the user's custom framerate is respected.
+            featureControl.GetEnumFeature("AcquisitionFrameRateMode").SetValue("On");
+        }
+
+        public static double GetResultingFramerate(IGXDevice device)
+        {
+            if (device == null)
+                return 0;
+
+            IGXFeatureControl featureControl = device.GetRemoteFeatureControl();
+            if (featureControl == null)
+                return 0;
+
+            return featureControl.GetFloatFeature("CurrentAcquisitionFrameRate").GetValue();
+        }
     }
 }

@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Collections.Generic;
+using GxIAPINET;
 
 namespace Kinovea.Camera.Daheng
 {
@@ -30,8 +31,11 @@ namespace Kinovea.Camera.Daheng
     /// </summary>
     public class SpecificInfo
     {
+        // The camera object is kept here for convenience. It is used to find back the camera from the configuration dialog which is spawned by generic code.
+        // This member is not serialized into the specific info XML.
+        public IGXDevice Device { get; set; }
+
         public Dictionary<string, CameraProperty> CameraProperties { get; set; }
-        //public int StreamFormat { get; set; }
 
         public SpecificInfo()
         {

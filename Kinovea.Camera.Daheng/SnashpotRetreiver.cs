@@ -70,21 +70,11 @@ namespace Kinovea.Camera.Daheng
             {
                 device = igxFactory.OpenDeviceBySN(summary.Identifier, GX_ACCESS_MODE.GX_ACCESS_EXCLUSIVE);
                 featureControl = device.GetRemoteFeatureControl();
+                DahengHelper.AfterOpen(featureControl);
 
                 width = (int)featureControl.GetIntFeature("Width").GetValue();
                 height = (int)featureControl.GetIntFeature("Height").GetValue();
-                if (featureControl.IsImplemented("PixelColorFilter"))
-                {
-                    string pixelColorFilter = featureControl.GetEnumFeature("PixelColorFilter").GetValue();
-                    if (pixelColorFilter != "None")
-                        isColor = true;
-                }
-
-                if (featureControl != null)
-                {
-                    featureControl.GetEnumFeature("AcquisitionMode").SetValue("Continuous");
-                    featureControl.GetEnumFeature("TriggerMode").SetValue("Off");
-                }
+                isColor = DahengHelper.IsColor(featureControl);
 
                 stream = device.OpenStream(0);
             }

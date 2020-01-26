@@ -76,25 +76,17 @@ namespace Kinovea.Camera.Daheng
         {
             Open();
 
+            if (device == null || featureControl == null)
+                return ImageDescriptor.Invalid;
+
             firstOpen = false;
+            resultingFramerate = (float)DahengHelper.GetResultingFramerate(device);
 
             width = (int)featureControl.GetIntFeature("Width").GetValue();
             height = (int)featureControl.GetIntFeature("Height").GetValue();
-            if (featureControl.IsImplemented("PixelColorFilter"))
-            {
-                string pixelColorFilter = featureControl.GetEnumFeature("PixelColorFilter").GetValue();
-                if (pixelColorFilter != "None")
-                    isColor = true;
-            }
-
-            if (featureControl != null)
-            {
-                featureControl.GetEnumFeature("AcquisitionMode").SetValue("Continuous");
-                featureControl.GetEnumFeature("TriggerMode").SetValue("Off");
-            }
+            isColor = DahengHelper.IsColor(featureControl);
 
             ImageFormat format = ImageFormat.RGB24;
-
             incomingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
             incomingBuffer = new byte[incomingBufferSize];
 
@@ -116,15 +108,13 @@ namespace Kinovea.Camera.Daheng
 
         public void Start()
         {
-            if (device == null || stream == null)
+            if (device == null || stream == null || featureControl == null)
                 return;
 
             stream.RegisterCaptureCallback(this, stream_OnFrame);
             stream.StartGrab();
+            featureControl.GetCommandFeature("AcquisitionStart").Execute();
             grabbing = true;
-
-            if (featureControl != null)
-                featureControl.GetCommandFeature("AcquisitionStart").Execute();
 
             if (GrabbingStatusChanged != null)
                 GrabbingStatusChanged(this, EventArgs.Empty);
@@ -197,10 +187,48 @@ namespace Kinovea.Camera.Daheng
             if (device != null)
                 Close();
 
-            device = igxFactory.OpenDeviceBySN(summary.Identifier, GX_ACCESS_MODE.GX_ACCESS_EXCLUSIVE);
-            featureControl = device.GetRemoteFeatureControl();
+            bool open = false;
+            try
+            {
+                device = igxFactory.OpenDeviceBySN(summary.Identifier, GX_ACCESS_MODE.GX_ACCESS_EXCLUSIVE);
+                featureControl = device.GetRemoteFeatureControl();
+                DahengHelper.AfterOpen(featureControl);
+                open = true;
+            }
+            catch
+            {
+                log.DebugFormat("Could not open Daheng device.");
+            }
 
-            stream = device.OpenStream(0);
+            if (!open)
+                return;
+
+            SpecificInfo specific = summary.Specific as SpecificInfo;
+            if (specific == null)
+                return;
+
+            // Store the camera object into the specific info so that we can retrieve device informations from the configuration dialog.
+            specific.Device = device;
+
+            if (firstOpen)
+            {
+                // Grab current values.
+                Dictionary<string, CameraProperty> cameraProperties = CameraPropertyManager.Read(device);
+                specific.CameraProperties = cameraProperties;
+            }
+            else
+            {
+                CameraPropertyManager.WriteCriticalProperties(device, specific.CameraProperties);
+            }
+
+            try
+            {
+                stream = device.OpenStream(0);
+            }
+            catch
+            {
+                log.DebugFormat("Could not start Daheng device.");
+            }
         }
 
         private void ComputeDataRate(int bytes)

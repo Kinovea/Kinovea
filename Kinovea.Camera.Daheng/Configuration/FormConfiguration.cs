@@ -23,12 +23,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Kinovea.Camera;
-using PylonC.NET;
 using Kinovea.Services;
 using Kinovea.Camera.Languages;
 using System.Globalization;
+using GxIAPINET;
 
-namespace Kinovea.Camera.Basler
+namespace Kinovea.Camera.Daheng
 {
     public partial class FormConfiguration : Form
     {
@@ -52,27 +52,15 @@ namespace Kinovea.Camera.Basler
             get { return specificChanged; }
         }
 
-        public GenApiEnum SelectedStreamFormat
-        {
-            get { return selectedStreamFormat; }
-        }
-
-        public Bayer8Conversion Bayer8Conversion
-        {
-            get { return bayer8Conversion; }
-        }
-        
         public Dictionary<string, CameraProperty> CameraProperties
         {
             get { return cameraProperties; }
         } 
-        
+
         private CameraSummary summary;
-        private PYLON_DEVICE_HANDLE deviceHandle;
+        private IGXDevice device;
         private bool iconChanged;
         private bool specificChanged;
-        private GenApiEnum selectedStreamFormat;
-        private Bayer8Conversion bayer8Conversion;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private Dictionary<string, AbstractCameraPropertyView> propertiesControls = new Dictionary<string, AbstractCameraPropertyView>();
         private Action disconnect;
@@ -95,38 +83,19 @@ namespace Kinovea.Camera.Basler
             btnReconnect.Text = CameraLang.FormConfiguration_Reconnect;
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
-            if (specific == null || specific.Handle == null || !specific.Handle.IsValid)
+            if (specific == null || specific.Device == null)
                 return;
 
-            deviceHandle = specific.Handle;
-            cameraProperties = CameraPropertyManager.Read(specific.Handle, summary.Identifier);
+            device = specific.Device;
+            cameraProperties = CameraPropertyManager.Read(device);
             if (cameraProperties.Count != specific.CameraProperties.Count)
-                specificChanged = true;
+               specificChanged = true;
 
-            bayer8Conversion = specific.Bayer8Conversion;
+            PopulateCameraControls();
 
-            Populate();
             this.Text = CameraLang.FormConfiguration_Title;
             btnApply.Text = CameraLang.Generic_Apply;
             UpdateResultingFramerate();
-        }
-        
-        private void Populate()
-        {
-            try
-            {
-                PopulateStreamFormat();
-                PopulateBayerConversion();
-                PopulateCameraControls();
-            }
-            catch
-            {
-                string error = PylonHelper.GetLastError();
-                if (string.IsNullOrEmpty(error))
-                    error = "Unknown";
-
-                log.ErrorFormat("Error while populating configuration options. Pylon error: {0}", error);
-            }
         }
         
         private void BtnIconClick(object sender, EventArgs e)
@@ -142,67 +111,14 @@ namespace Kinovea.Camera.Basler
             fip.Dispose();
         }
 
-        private void PopulateStreamFormat()
-        {
-            lblColorSpace.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
-
-            bool readable = Pylon.DeviceFeatureIsReadable(deviceHandle, "PixelFormat");
-            if (!readable)
-            {
-                cmbFormat.Enabled = false;
-                return;
-            }
-
-            List<GenApiEnum> streamFormats = PylonHelper.ReadEnum(deviceHandle, "PixelFormat");
-            if (streamFormats == null)
-            {
-                cmbFormat.Enabled = false;
-                return;
-            }
-
-            string currentValue = Pylon.DeviceFeatureToString(deviceHandle, "PixelFormat");
-            cmbFormat.Items.Clear();
-
-            foreach (GenApiEnum streamFormat in streamFormats)
-            {
-                cmbFormat.Items.Add(streamFormat);
-                if (currentValue == streamFormat.Symbol)
-                {
-                    selectedStreamFormat = streamFormat;
-                    cmbFormat.SelectedIndex = cmbFormat.Items.Count - 1;
-                }
-            }
-        }
-
-        private void PopulateBayerConversion()
-        {
-            cmbBayer8Conversion.Items.Clear();
-
-            lblBayerConversion.Text = CameraLang.FormConfiguration_Properties_BayerFormatConversion;
-            cmbBayer8Conversion.Items.Add("Raw");
-            cmbBayer8Conversion.Items.Add("Mono");
-            cmbBayer8Conversion.Items.Add("Color");
-            cmbBayer8Conversion.SelectedIndex = (int)bayer8Conversion;
-            
-            SetBayerComboVisibility();
-        }
-
-        private void SetBayerComboVisibility()
-        {
-            EPylonPixelType pixelType = Pylon.PixelTypeFromString(selectedStreamFormat.Symbol);
-            bool isBayer8 = PylonHelper.IsBayer8(pixelType);
-            cmbBayer8Conversion.Enabled = isBayer8;
-            lblBayerConversion.Enabled = isBayer8;
-        }
-
         private void PopulateCameraControls()
         {
             int top = lblAuto.Bottom;
-            AddCameraProperty("width", CameraLang.FormConfiguration_Properties_ImageWidth, top);
-            AddCameraProperty("height", CameraLang.FormConfiguration_Properties_ImageHeight, top + 30);
-            AddCameraProperty("framerate", CameraLang.FormConfiguration_Properties_Framerate, top + 60);
-            AddCameraProperty("exposure", CameraLang.FormConfiguration_Properties_ExposureMicro, top + 90);
-            AddCameraProperty("gain", CameraLang.FormConfiguration_Properties_Gain, top + 120);
+            AddCameraProperty("Width", CameraLang.FormConfiguration_Properties_ImageWidth, top);
+            AddCameraProperty("Height", CameraLang.FormConfiguration_Properties_ImageHeight, top + 30);
+            AddCameraProperty("AcquisitionFrameRate", CameraLang.FormConfiguration_Properties_Framerate, top + 60);
+            AddCameraProperty("ExposureTime", CameraLang.FormConfiguration_Properties_ExposureMicro, top + 90);
+            AddCameraProperty("Gain", CameraLang.FormConfiguration_Properties_Gain, top + 120);
         }
 
         private void RemoveCameraControls()
@@ -262,50 +178,17 @@ namespace Kinovea.Camera.Basler
             if (string.IsNullOrEmpty(key) || !cameraProperties.ContainsKey(key))
                 return;
 
-            CameraPropertyManager.Write(deviceHandle, cameraProperties[key]);
+            CameraPropertyManager.Write(device, control.Property);
             UpdateResultingFramerate();
             specificChanged = true;
-        }
-        
-        private void cmbFormat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            GenApiEnum selected = cmbFormat.SelectedItem as GenApiEnum;
-            if (selected == null || selectedStreamFormat.Symbol == selected.Symbol)
-                return;
-
-            selectedStreamFormat = selected;
-            specificChanged = true;
-            UpdateResultingFramerate();
-            SetBayerComboVisibility();
-        }
-
-        private void cmbBayerConversion_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            EPylonPixelType pixelType = Pylon.PixelTypeFromString(selectedStreamFormat.Symbol);
-            bool isBayer8 = PylonHelper.IsBayer8(pixelType);
-
-            Bayer8Conversion selected = (Bayer8Conversion)cmbBayer8Conversion.SelectedIndex;
-            if (selected == bayer8Conversion)
-                return;
-
-            bayer8Conversion = (Bayer8Conversion)cmbBayer8Conversion.SelectedIndex;
-            specificChanged = true;
-            UpdateResultingFramerate();
         }
 
         private void BtnReconnect_Click(object sender, EventArgs e)
         {
-            if (SelectedStreamFormat == null)
-            {
-                // This happens when we load the config window and the camera isn't connected.
-                return;
-            }
-
             SpecificInfo info = summary.Specific as SpecificInfo;
             if (info == null)
                 return;
 
-            info.StreamFormat = this.SelectedStreamFormat.Symbol;
             info.CameraProperties = this.CameraProperties;
             summary.UpdateDisplayRectangle(Rectangle.Empty);
             CameraTypeManager.UpdatedCameraSummary(summary);
@@ -314,11 +197,11 @@ namespace Kinovea.Camera.Basler
             connect();
 
             SpecificInfo specific = summary.Specific as SpecificInfo;
-            if (specific == null || specific.Handle == null || !specific.Handle.IsValid)
+            if (specific == null || specific.Device == null)
                 return;
 
-            deviceHandle = specific.Handle;
-            cameraProperties = CameraPropertyManager.Read(specific.Handle, summary.Identifier);
+            device = specific.Device;
+            cameraProperties = CameraPropertyManager.Read(device);
 
             RemoveCameraControls();
             PopulateCameraControls();
@@ -327,19 +210,20 @@ namespace Kinovea.Camera.Basler
 
         private void UpdateResultingFramerate()
         {
-            float resultingFramerate = PylonHelper.GetResultingFramerate(deviceHandle);
+            float resultingFramerate = (float)DahengHelper.GetResultingFramerate(device);
             lblResultingFramerateValue.Text = string.Format("{0:0.##}", resultingFramerate);
 
             bool discrepancy = false;
-            if (cameraProperties.ContainsKey("framerate") && cameraProperties["framerate"].Supported)
+            if (cameraProperties.ContainsKey("AcquisitionFrameRate") && cameraProperties["AcquisitionFrameRate"].Supported)
             {
                 float framerate;
-                bool parsed = float.TryParse(cameraProperties["framerate"].CurrentValue, NumberStyles.Any, CultureInfo.InvariantCulture, out framerate);
+                bool parsed = float.TryParse(cameraProperties["AcquisitionFrameRate"].CurrentValue, NumberStyles.Any, CultureInfo.InvariantCulture, out framerate);
                 if (parsed && Math.Abs(framerate - resultingFramerate) > 1)
                     discrepancy = true;
             }
 
             lblResultingFramerateValue.ForeColor = discrepancy ? Color.Red : Color.Black;
         }
+
     }
 }

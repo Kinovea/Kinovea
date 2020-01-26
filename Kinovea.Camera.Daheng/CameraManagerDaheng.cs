@@ -11,6 +11,7 @@ using GxIAPINET;
 using System.Xml;
 using System.IO;
 using System.Threading;
+using System.Globalization;
 
 namespace Kinovea.Camera.Daheng
 {
@@ -175,15 +176,68 @@ namespace Kinovea.Camera.Daheng
 
         public override bool Configure(CameraSummary summary)
         {
-            return false;
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
+        }
+
+        public override bool Configure(CameraSummary summary, Action disconnect, Action connect)
+        {
+            bool needsReconnection = false;
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if (info == null)
+                return false;
+
+            FormConfiguration form = new FormConfiguration(summary, disconnect, connect);
+            FormsHelper.Locate(form);
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                if (form.AliasChanged)
+                    summary.UpdateAlias(form.Alias, form.PickedIcon);
+
+                if (form.SpecificChanged)
+                {
+                    info.CameraProperties = form.CameraProperties;
+
+                    summary.UpdateDisplayRectangle(Rectangle.Empty);
+                    needsReconnection = true;
+                }
+
+                CameraTypeManager.UpdatedCameraSummary(summary);
+            }
+
+            form.Dispose();
+            return needsReconnection;
         }
 
         public override string GetSummaryAsText(CameraSummary summary)
         {
             string result = "";
             string alias = summary.Alias;
-            result = string.Format("{0}", alias);
+            SpecificInfo info = summary.Specific as SpecificInfo;
+
+            try
+            {
+                if (info != null &&
+                    info.CameraProperties.ContainsKey("Width") &&
+                    info.CameraProperties.ContainsKey("Height") &&
+                    info.CameraProperties.ContainsKey("AcquisitionFrameRate"))
+                {
+                    int width = int.Parse(info.CameraProperties["Width"].CurrentValue, CultureInfo.InvariantCulture);
+                    int height = int.Parse(info.CameraProperties["Height"].CurrentValue, CultureInfo.InvariantCulture);
+                    double framerate = DahengHelper.GetResultingFramerate(info.Device);
+                    if (framerate == 0)
+                        framerate = double.Parse(info.CameraProperties["AcquisitionFrameRate"].CurrentValue, CultureInfo.InvariantCulture);
+
+                    result = string.Format("{0} - {1}×{2} @ {3:0.##} fps.", alias, width, height, framerate);
+                }
+                else
+                {
+                    result = string.Format("{0}", alias);
+                }
+            }
+            catch
+            {
+                result = string.Format("{0}", alias);
+            }
 
             return result;
         }
@@ -250,8 +304,6 @@ namespace Kinovea.Camera.Daheng
                     cameraProperties.Add(key, property);
                 }
 
-                //info.StreamFormat = streamFormat;
-                //info.Bayer8Conversion = bayer8Conversion;
                 info.CameraProperties = cameraProperties;
             }
             catch (Exception e)
@@ -270,14 +322,6 @@ namespace Kinovea.Camera.Daheng
 
             XmlDocument doc = new XmlDocument();
             XmlElement xmlRoot = doc.CreateElement("Daheng");
-
-            //XmlElement xmlStreamFormat = doc.CreateElement("StreamFormat");
-            //xmlStreamFormat.InnerText = info.StreamFormat;
-            //xmlRoot.AppendChild(xmlStreamFormat);
-
-            //XmlElement xmlBayer8Conversion = doc.CreateElement("Bayer8Conversion");
-            //xmlBayer8Conversion.InnerText = info.Bayer8Conversion.ToString().ToLower();
-            //xmlRoot.AppendChild(xmlBayer8Conversion);
 
             XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
 
