@@ -18,11 +18,12 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static string Convert(string kva, bool isFile)
+        public static string Convert(string kva, bool isFile, out bool relativeTrajectories)
         {
             // the kva parameter can either be a filepath or the xml string. 
             // We return the same kind of string as passed in.
             string result = kva;
+            relativeTrajectories = false;
 
             XmlDocument kvaDoc = new XmlDocument();
             try
@@ -61,6 +62,7 @@ namespace Kinovea.ScreenManager
             if (format < 2.0 && format >= 1.3)
             {
                 log.DebugFormat("Older format detected ({0}). Starting conversion", format);
+                relativeTrajectories = true;
 
                 try
                 {

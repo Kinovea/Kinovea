@@ -1419,6 +1419,20 @@ namespace Kinovea.ScreenManager
             trackView = memoTrackView;
             name = memoLabel;
         }
+
+        public void FixRelativeTrajectories()
+        {
+            if (positions.Count == 0)
+                return;
+
+            // Used when importing an old KVA file from 0.8.15.
+            // We used to store trajectory time relatively to the start of the trajectory, now we use absolute time.
+            // It's very complicated to do that kind of arithmetic in the XSLT converter so we do it here.
+            foreach (var position in positions)
+                position.T += beginTimeStamp;
+
+            endTimeStamp += beginTimeStamp;
+        }
         public PointF GetPosition(long timestamp)
         {
             int index = FindClosestPoint(timestamp);

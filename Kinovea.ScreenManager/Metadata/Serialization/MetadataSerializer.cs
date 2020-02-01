@@ -121,7 +121,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static string ExtractFullPath(string source)
         {
-            string kva = MetadataConverter.Convert(source, true);
+            bool relativeTrajectories;
+            string kva = MetadataConverter.Convert(source, true, out relativeTrajectories);
 
             XmlDocument doc = new XmlDocument();
             doc.Load(kva);
@@ -154,7 +155,8 @@ namespace Kinovea.ScreenManager
 
             try
             {
-                string kva = MetadataConverter.Convert(source, isFile);
+                bool relativeTrajectories;
+                string kva = MetadataConverter.Convert(source, isFile, out relativeTrajectories);
 
                 XmlReaderSettings settings = new XmlReaderSettings();
                 settings.IgnoreComments = true;
@@ -164,6 +166,8 @@ namespace Kinovea.ScreenManager
 
                 reader = isFile ? XmlReader.Create(kva, settings) : XmlReader.Create(new StringReader(kva), settings);
                 Load(reader);
+                if (relativeTrajectories)
+                    metadata.FixRelativeTrajectories();
             }
             catch (Exception e)
             {

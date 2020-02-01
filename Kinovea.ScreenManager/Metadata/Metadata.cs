@@ -884,6 +884,11 @@ namespace Kinovea.ScreenManager
             foreach (DrawingTrack t in Tracks())
                 t.CalibrationChanged();
         }
+        public void FixRelativeTrajectories()
+        {
+            foreach (DrawingTrack t in Tracks())
+                t.FixRelativeTrajectories();
+        }
         public void AllDrawingTextToNormalMode()
         {
             foreach (DrawingText label in Labels())

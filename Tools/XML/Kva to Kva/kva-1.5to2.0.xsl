@@ -10,7 +10,7 @@
     2019-04-02 - Update to calibration, tracks and drawings for 0.8.27 flavor.
     2011-08-06 - Initial converter. Styles are not converted.
 
-    TODO: Convert time of track points from relative to absolute.
+    Note: Conversion of track points from relative time to absolute time is done in the main codebase.
 -->
 
 <xsl:template match="/">
