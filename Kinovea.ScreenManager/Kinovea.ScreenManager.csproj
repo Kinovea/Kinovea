@@ -442,10 +442,10 @@
     <Compile Include="Measurement\Tracking\TrackStatus.cs" />
     <Compile Include="Measurement\Tracking\TrackView.cs" />
     <Compile Include="Metadata\DrawingManager\TrackManager.cs" />
-    <Compile Include="PlayerScreen\UserInterface\FormCalibrateDistortion.cs">
+    <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormCalibrateDistortion.Designer.cs">
+    <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.Designer.cs">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.cs">
@@ -933,7 +933,7 @@
     <EmbeddedResource Include="Measurement\Plotting\FormMultiTrajectoryAnalysis.resx">
       <DependentUpon>FormMultiTrajectoryAnalysis.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibrateDistortion.resx">
+    <EmbeddedResource Include="Measurement\LensDistortion\FormCalibrateDistortion.resx">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormRafaleExport.resx">

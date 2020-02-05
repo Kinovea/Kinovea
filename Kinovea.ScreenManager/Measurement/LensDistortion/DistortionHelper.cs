@@ -45,9 +45,28 @@ namespace Kinovea.ScreenManager
 
         public void Initialize(DistortionParameters parameters, Size imageSize)
         {
-            this.parameters = parameters;
+            if (parameters.Cx == 0 && parameters.Cy == 0)
+            {
+                // Camera intrinsics based on Blender values for Go Pro Hero 3.
+                double focalLengthMillimeters = 2.77;
+                double sensorWidthMillimeters = 6.160;
+
+                double ratio = imageSize.Width / sensorWidthMillimeters;
+                double fx = focalLengthMillimeters * ratio;
+                double fy = fx;
+                double cx = imageSize.Width / 2.0;
+                double cy = imageSize.Height / 2.0;
+
+                DistortionParameters params2 = new DistortionParameters(parameters.K1, parameters.K2, parameters.K3, parameters.P1, parameters.P2, fx, fy, cx, cy);
+                this.parameters = params2;
+            }
+            else
+            {
+                this.parameters = parameters;
+            }
+
             this.imageSize = imageSize;
-            icp = parameters.IntrinsicCameraParameters;
+            icp = this.parameters.IntrinsicCameraParameters;
             initialized = true;
         }
 
@@ -86,31 +105,41 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public PointF Distort(PointF point)
         {
+            PointF result = point;
+
             if (!initialized)
-                return point;
+                return result;
 
-            // Ref:
-            // http://docs.opencv.org/modules/imgproc/doc/geometric_transformations.html#cv.InitUndistortRectifyMap
+            try
+            {
+                // Ref:
+                // http://docs.opencv.org/modules/imgproc/doc/geometric_transformations.html#cv.InitUndistortRectifyMap
 
-            // To relative coordinates
-            double x = (point.X - parameters.Cx) / parameters.Fx;
-            double y = (point.Y - parameters.Cy) / parameters.Fy;
+                // To relative coordinates
+                double x = (point.X - parameters.Cx) / parameters.Fx;
+                double y = (point.Y - parameters.Cy) / parameters.Fy;
 
-            double r2 = x * x + y * y;
+                double r2 = x * x + y * y;
 
-            //radial distorsion
-            double xDistort = x * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 + parameters.K3 * r2 * r2 * r2);
-            double yDistort = y * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 + parameters.K3 * r2 * r2 * r2);
-            
-            //tangential distorsion
-            xDistort = xDistort + (2 * parameters.P1 * x * y + parameters.P2 * (r2 + 2 * x * x));
-            yDistort = yDistort + (parameters.P1 * (r2 + 2 * y * y) + 2 * parameters.P2 * x * y);
+                //radial distorsion
+                double xDistort = x * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 + parameters.K3 * r2 * r2 * r2);
+                double yDistort = y * (1 + parameters.K1 * r2 + parameters.K2 * r2 * r2 + parameters.K3 * r2 * r2 * r2);
 
-            // To absolute coordinates.
-            xDistort = xDistort * parameters.Fx + parameters.Cx;
-            yDistort = yDistort * parameters.Fy + parameters.Cy;
+                //tangential distorsion
+                xDistort = xDistort + (2 * parameters.P1 * x * y + parameters.P2 * (r2 + 2 * x * x));
+                yDistort = yDistort + (parameters.P1 * (r2 + 2 * y * y) + 2 * parameters.P2 * x * y);
 
-            PointF result = new PointF((float)xDistort, (float)yDistort);
+                // To absolute coordinates.
+                xDistort = xDistort * parameters.Fx + parameters.Cx;
+                yDistort = yDistort * parameters.Fy + parameters.Cy;
+
+                result = new PointF((float)xDistort, (float)yDistort);
+            }
+            catch
+            {
+                result = point;
+            }
+
             return result;
         }
 
@@ -218,9 +247,9 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Builds a full scale image with a distorted grid pattern.
         /// </summary>
-        public Bitmap GetDistortionGrid(Color background, Color foreground, int steps)
+        public Bitmap GetDistortionGrid(Color color, int lineSize, int divisions)
         {
-            Bitmap bmp = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format24bppRgb);
+            Bitmap bmp = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format32bppPArgb);
             
             if (!initialized)
                 return bmp;
@@ -230,17 +259,13 @@ namespace Kinovea.ScreenManager
             g.CompositingQuality = CompositingQuality.HighQuality;
             g.SmoothingMode = SmoothingMode.AntiAlias; 
             
-            SolidBrush b = new SolidBrush(background);
-            g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
-            b.Dispose();
+            Pen p = new Pen(color, lineSize);
 
-            Pen p = new Pen(foreground, 1);
-
-            float stepWidth = (float)imageSize.Width / steps;
-            float stepHeight = (float)imageSize.Height / steps;
+            float stepWidth = (float)imageSize.Width / divisions;
+            float stepHeight = (float)imageSize.Height / divisions;
 
             // Verticals
-            for (int i = 0; i <= steps; i++)
+            for (int i = 0; i <= divisions; i++)
             {
                 int col = (int)Math.Min(imageSize.Width - 1, Math.Round(i * stepWidth));
 
@@ -252,7 +277,7 @@ namespace Kinovea.ScreenManager
             }
 
             // Horizontals
-            for (int i = 0; i <= steps; i++)
+            for (int i = 0; i <= divisions; i++)
             {
                 int row = (int)Math.Min(imageSize.Height - 1, Math.Round(i * stepHeight));
                 
