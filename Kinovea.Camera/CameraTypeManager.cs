@@ -201,15 +201,22 @@ namespace Kinovea.Camera
 
             if (manager.Enabled)
             {
-                if (manager.SanityCheck())
+                try
                 {
-                    manager.CameraThumbnailProduced += CameraManager_CameraThumbnailProduced;
-                    cameraManagers.Add(manager);
-                    log.InfoFormat("Initialized {0} camera manager.", manager.CameraTypeFriendlyName);
+                    if (manager.SanityCheck())
+                    {
+                        manager.CameraThumbnailProduced += CameraManager_CameraThumbnailProduced;
+                        cameraManagers.Add(manager);
+                        log.InfoFormat("Initialized {0} camera manager.", manager.CameraTypeFriendlyName);
+                    }
+                    else
+                    {
+                        log.InfoFormat("{0} camera manager failed sanity check.", manager.CameraTypeFriendlyName);
+                    }
                 }
-                else
+                catch (FileNotFoundException)
                 {
-                    log.InfoFormat("{0} camera manager failed sanity check.", manager.CameraTypeFriendlyName);
+                    log.InfoFormat("{0} camera manager is missing dependencies.", manager.CameraTypeFriendlyName);
                 }
             }
             else
