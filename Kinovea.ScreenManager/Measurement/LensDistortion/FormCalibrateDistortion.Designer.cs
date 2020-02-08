@@ -59,8 +59,8 @@
       this.mnuImportAgisoft = new System.Windows.Forms.ToolStripMenuItem();
       this.mnuDefault = new System.Windows.Forms.ToolStripMenuItem();
       this.mnuQuit = new System.Windows.Forms.ToolStripMenuItem();
-      this.pnlPreview = new System.Windows.Forms.Panel();
       this.grpAppearance = new System.Windows.Forms.GroupBox();
+      this.pnlPreview = new Kinovea.ScreenManager.PanelDoubleBuffer();
       this.grpDistortionCoefficients.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudP2)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudP1)).BeginInit();
@@ -499,19 +499,6 @@
       this.mnuQuit.Size = new System.Drawing.Size(153, 22);
       this.mnuQuit.Text = "Quit";
       // 
-      // pnlPreview
-      // 
-      this.pnlPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.pnlPreview.BackColor = System.Drawing.Color.DimGray;
-      this.pnlPreview.Location = new System.Drawing.Point(206, 42);
-      this.pnlPreview.Name = "pnlPreview";
-      this.pnlPreview.Size = new System.Drawing.Size(794, 526);
-      this.pnlPreview.TabIndex = 0;
-      this.pnlPreview.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlPreview_Paint);
-      this.pnlPreview.Resize += new System.EventHandler(this.pnlPreview_Resize);
-      // 
       // grpAppearance
       // 
       this.grpAppearance.Location = new System.Drawing.Point(16, 354);
@@ -521,12 +508,26 @@
       this.grpAppearance.TabStop = false;
       this.grpAppearance.Text = "Appearance";
       // 
+      // pnlPreview
+      // 
+      this.pnlPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.pnlPreview.BackColor = System.Drawing.Color.DimGray;
+      this.pnlPreview.Location = new System.Drawing.Point(206, 43);
+      this.pnlPreview.Name = "pnlPreview";
+      this.pnlPreview.Size = new System.Drawing.Size(794, 525);
+      this.pnlPreview.TabIndex = 48;
+      this.pnlPreview.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlPreview_Paint);
+      this.pnlPreview.Resize += new System.EventHandler(this.pnlPreview_Resize);
+      // 
       // FormCalibrateDistortion
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
       this.ClientSize = new System.Drawing.Size(1008, 610);
+      this.Controls.Add(this.pnlPreview);
       this.Controls.Add(this.grpAppearance);
       this.Controls.Add(this.grpIntrinsics);
       this.Controls.Add(this.grpDistortionCoefficients);
@@ -534,7 +535,6 @@
       this.Controls.Add(this.btnOK);
       this.Controls.Add(this.btnCancel);
       this.Controls.Add(this.menuStrip1);
-      this.Controls.Add(this.pnlPreview);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
       this.MainMenuStrip = this.menuStrip1;
       this.MaximizeBox = false;
@@ -585,7 +585,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuImportAgisoft;
         private System.Windows.Forms.ToolStripMenuItem mnuDefault;
         private System.Windows.Forms.ToolStripMenuItem mnuQuit;
-        private System.Windows.Forms.Panel pnlPreview;
         private System.Windows.Forms.NumericUpDown nudK1;
         private System.Windows.Forms.NumericUpDown nudK3;
         private System.Windows.Forms.NumericUpDown nudK2;
@@ -596,5 +595,6 @@
         private System.Windows.Forms.NumericUpDown nudFy;
         private System.Windows.Forms.NumericUpDown nudFx;
         private System.Windows.Forms.GroupBox grpAppearance;
+        private PanelDoubleBuffer pnlPreview;
     }
 }

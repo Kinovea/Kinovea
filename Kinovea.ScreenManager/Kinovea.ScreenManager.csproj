@@ -467,6 +467,9 @@
     <Compile Include="PlayerScreen\UserInterface\InfobarPlayer.Designer.cs">
       <DependentUpon>InfobarPlayer.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerScreen\UserInterface\PanelDoubleBuffer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\Player.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
