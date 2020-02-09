@@ -36,6 +36,8 @@ namespace Kinovea.ScreenManager
             write("P1", p.P1);
             write("P2", p.P2);
 
+            write("PixelsPerMM", p.PixelsPerMillimeter);
+
             w.WriteEndElement();
         }
 
@@ -44,15 +46,16 @@ namespace Kinovea.ScreenManager
             r.ReadStartElement();
 
             Size size = inputSize;
+            double pixelsPerMillimeter = 0;
+            double fx = 1;
+            double fy = 1;
+            double cx = 0;
+            double cy = 0;
             double k1 = 0;
             double k2 = 0;
             double k3 = 0;
             double p1 = 0;
             double p2 = 0;
-            double fx = 1;
-            double fy = 1;
-            double cx = 0;
-            double cy = 0;
 
             while (r.NodeType == XmlNodeType.Element)
             {
@@ -60,6 +63,9 @@ namespace Kinovea.ScreenManager
                 {
                     case "ImageSize":
                         size = XmlHelper.ParseSize(r.ReadElementContentAsString());
+                        break;
+                    case "PixelsPerMM":
+                        pixelsPerMillimeter = r.ReadElementContentAsDouble();
                         break;
                     case "Fx":
                         fx = r.ReadElementContentAsDouble();
@@ -97,6 +103,9 @@ namespace Kinovea.ScreenManager
 
             r.ReadEndElement();
 
+            if (pixelsPerMillimeter == 0)
+                pixelsPerMillimeter = size.Width / DistortionParameters.defaultSensorWidth;
+
             if (inputSize.Width != size.Width || inputSize.Height != size.Height)
             {
                 double xFactor = (double)inputSize.Width / size.Width;
@@ -108,7 +117,7 @@ namespace Kinovea.ScreenManager
                 cy *= yFactor;
             }
 
-            DistortionParameters parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy);
+            DistortionParameters parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, pixelsPerMillimeter);
             return parameters;
         }
 

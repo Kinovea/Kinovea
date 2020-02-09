@@ -45,7 +45,9 @@ namespace Kinovea.ScreenManager
                     cy *= yFactor;
                 }
 
-                parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy);
+                double pixelsPerMillemeters = imageSize.Width / DistortionParameters.defaultSensorWidth;
+
+                parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy, pixelsPerMillemeters);
             }
             catch
             {

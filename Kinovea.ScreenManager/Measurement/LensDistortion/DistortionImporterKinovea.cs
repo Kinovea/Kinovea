@@ -19,7 +19,7 @@ namespace Kinovea.ScreenManager
             if(!File.Exists(path))
                 return null;
 
-            DistortionParameters parameters = null;
+            DistortionParameters parameters = new DistortionParameters(imageSize);
             
             try
             {

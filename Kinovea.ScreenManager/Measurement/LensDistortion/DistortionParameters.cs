@@ -59,6 +59,8 @@ namespace Kinovea.ScreenManager
             set { p2 = value; Build(); }
         }
 
+        public double PixelsPerMillimeter { get; set; }
+
         public IntrinsicCameraParameters IntrinsicCameraParameters { get; private set; }
         
         // Default camera intrinsics based on Blender values for Go Pro Hero 3.
@@ -76,9 +78,9 @@ namespace Kinovea.ScreenManager
         private double p2;
 
         /// <summary>
-        /// Constructor used when the parameters are fitted internally.
+        /// Constructor used when the parameters are fit internally.
         /// </summary>
-        public DistortionParameters(IntrinsicCameraParameters icp)
+        public DistortionParameters(IntrinsicCameraParameters icp, Size imageSize)
         {
             this.IntrinsicCameraParameters = icp;
 
@@ -92,23 +94,27 @@ namespace Kinovea.ScreenManager
             k3 = icp.DistortionCoeffs[4, 0];
             p1 = icp.DistortionCoeffs[2, 0];
             p2 = icp.DistortionCoeffs[3, 0];
+
+            PixelsPerMillimeter = imageSize.Width / defaultSensorWidth;
         }
 
         /// <summary>
         /// Constructor used when reading existing data.
         /// </summary>
-        public DistortionParameters(double k1, double k2, double k3, double p1, double p2, double fx, double fy, double cx, double cy)
+        public DistortionParameters(double k1, double k2, double k3, double p1, double p2, double fx, double fy, double cx, double cy, double pixelsPerMillimeter)
         {
-            this.Fx = fx;
-            this.Fy = fy;
-            this.Cx = cx;
-            this.Cy = cy;
+            this.fx = fx;
+            this.fy = fy;
+            this.cx = cx;
+            this.cy = cy;
             
-            this.K1 = k1;
-            this.K2 = k2;
-            this.K3 = k3;
-            this.P1 = p1;
-            this.P2 = p2;
+            this.k1 = k1;
+            this.k2 = k2;
+            this.k3 = k3;
+            this.p1 = p1;
+            this.p2 = p2;
+
+            this.PixelsPerMillimeter = pixelsPerMillimeter;
             
             Build();
         }
@@ -118,9 +124,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public DistortionParameters(Size imageSize)
         {
-            double ratio = imageSize.Width / defaultSensorWidth;
+            PixelsPerMillimeter = imageSize.Width / defaultSensorWidth;
             
-            fx = defaultFocalLength * ratio;
+            fx = defaultFocalLength * PixelsPerMillimeter;
             fy = fx;
             cx = imageSize.Width / 2.0;
             cy = imageSize.Height / 2.0;

@@ -37,9 +37,12 @@ namespace Kinovea.ScreenManager
                 distortionParameters = new DistortionParameters(calibrationHelper.ImageSize);
             else
                 distortionParameters = calibrationHelper.DistortionHelper.Parameters;
-                
+
             distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
             calibrator = new CameraCalibrator(points, calibrationHelper.ImageSize);
+            
+            sensorWidth = calibrationHelper.ImageSize.Width / distortionParameters.PixelsPerMillimeter;
+            focalLength = distortionParameters.Fx / distortionParameters.PixelsPerMillimeter;
 
             InitializeComponent();
             LocalizeForm();
@@ -54,7 +57,7 @@ namespace Kinovea.ScreenManager
             mnuQuit.Click += (s, e) => Close();
 
             btnCalibrate.Enabled = calibrator.Valid;
-            RecomputePhysicalParameters();
+            PopulatePhysicalParameters();
             PopulateValues();
             UpdateDistortionGrid();
         }
@@ -105,7 +108,7 @@ namespace Kinovea.ScreenManager
             int lastEditorBottom = 10;
             foreach (AbstractStyleElement styleElement in style.Elements.Values)
             {
-                styleElement.ValueChanged += element_ValueChanged;
+                styleElement.ValueChanged += styleElement_ValueChanged;
 
                 Button btn = new Button();
                 btn.Image = styleElement.Icon;
@@ -167,9 +170,14 @@ namespace Kinovea.ScreenManager
 
             distortionParameters = calibrator.Calibrate();
             distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
-            RecomputePhysicalParameters();
-            UpdateDistortionGrid();
+
+            // Physical parameters are arbitrary here, as the fit algorithm is independent from them.
+            sensorWidth = DistortionParameters.defaultSensorWidth;
+            focalLength = distortionParameters.Fx / distortionParameters.PixelsPerMillimeter;
+            
+            PopulatePhysicalParameters();
             PopulateValues();
+            UpdateDistortionGrid();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -194,7 +202,12 @@ namespace Kinovea.ScreenManager
             {
                 distortionParameters = dp;
                 distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
-                RecomputePhysicalParameters();
+
+                // Physical parameters depend on the imported ratio.
+                sensorWidth = calibrationHelper.ImageSize.Width / distortionParameters.PixelsPerMillimeter;
+                focalLength = distortionParameters.Fx / distortionParameters.PixelsPerMillimeter;
+
+                PopulatePhysicalParameters();
                 PopulateValues();
                 UpdateDistortionGrid();
             }
@@ -204,7 +217,12 @@ namespace Kinovea.ScreenManager
         {
             distortionParameters = new DistortionParameters(calibrationHelper.ImageSize);
             distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
-            RecomputePhysicalParameters();
+
+            // Physical parameters are the defaults.
+            sensorWidth = DistortionParameters.defaultSensorWidth;
+            focalLength = distortionParameters.Fx / distortionParameters.PixelsPerMillimeter;
+
+            PopulatePhysicalParameters();
             PopulateValues();
             UpdateDistortionGrid();
         }
@@ -239,7 +257,12 @@ namespace Kinovea.ScreenManager
             {
                 distortionParameters = dp;
                 distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
-                RecomputePhysicalParameters();
+
+                // Physical parameters are the defaults.
+                sensorWidth = DistortionParameters.defaultSensorWidth;
+                focalLength = distortionParameters.Fx / distortionParameters.PixelsPerMillimeter;
+
+                PopulatePhysicalParameters();
                 PopulateValues();
                 UpdateDistortionGrid();
             }
@@ -274,7 +297,8 @@ namespace Kinovea.ScreenManager
             distortionParameters.P1 = (double)nudP1.Value;
             distortionParameters.P2 = (double)nudP2.Value;
 
-            distortionParameters.Fx = (double)nudFx.Value;
+            // Fx is a special case as it is linked to Focal length in mm, it has its own handler.
+
             distortionParameters.Fy = (double)nudFy.Value;
             distortionParameters.Cx = (double)nudCx.Value;
             distortionParameters.Cy = (double)nudCy.Value;
@@ -282,7 +306,7 @@ namespace Kinovea.ScreenManager
             UpdateDistortionGrid();
         }
 
-        private void element_ValueChanged(object sender, EventArgs e)
+        private void styleElement_ValueChanged(object sender, EventArgs e)
         {
             UpdateDistortionGrid();
         }
@@ -294,9 +318,9 @@ namespace Kinovea.ScreenManager
 
             double sensorWidth = (double)nudSensorWidth.Value;
             double focalLength = (double)nudFocalLength.Value;
-            double pixelsPerMillimeter = calibrationHelper.ImageSize.Width / sensorWidth;
+            distortionParameters.PixelsPerMillimeter = calibrationHelper.ImageSize.Width / sensorWidth;
 
-            distortionParameters.Fx = focalLength * pixelsPerMillimeter;
+            distortionParameters.Fx = focalLength * distortionParameters.PixelsPerMillimeter;
             distortionParameters.Fy = distortionParameters.Fx;
 
             manualUpdate = true;
@@ -313,18 +337,16 @@ namespace Kinovea.ScreenManager
                 return;
 
             distortionParameters.Fx = (double)nudFx.Value;
+            focalLength = distortionParameters.Fx / distortionParameters.PixelsPerMillimeter;
 
-            RecomputePhysicalParameters();
+            PopulatePhysicalParameters();
             UpdateDistortionGrid();
         }
 
-        private void RecomputePhysicalParameters()
+        private void PopulatePhysicalParameters()
         { 
-            // Recompute physical focal length based on sensor width.
-            double pixelsPerMillimeter = calibrationHelper.ImageSize.Width / sensorWidth;
-            focalLength = distortionParameters.Fx / pixelsPerMillimeter;
-            
             manualUpdate = true;
+            nudSensorWidth.Value = (decimal)sensorWidth;
             nudFocalLength.Value = (decimal)focalLength;
             manualUpdate = false;
         }
