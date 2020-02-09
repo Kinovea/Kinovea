@@ -99,7 +99,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private QuadrilateralF quadImage = QuadrilateralF.UnitSquare;           // Quadrilateral defined by user in image space.
+        private QuadrilateralF quadImage = QuadrilateralF.GetUnitSquare();      // Quadrilateral defined by user in image space.
         private QuadrilateralF quadPlane;                                       // Corresponding rectangle in plane system.
         private ProjectiveMapping projectiveMapping = new ProjectiveMapping();  // maps quadImage to quadPlane and back.
         private float planeWidth;                                               // width and height of rectangle in plane system.

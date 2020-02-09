@@ -82,8 +82,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        public static readonly QuadrilateralF Empty = new QuadrilateralF();
-        public static readonly QuadrilateralF UnitSquare = new QuadrilateralF(1, 1);
         private PointF[] vertices = new PointF[4];
         private const double radToDeg = 180D / Math.PI;
         #endregion
@@ -114,6 +112,16 @@ namespace Kinovea.ScreenManager
             B = new PointF(rect.Right, rect.Top);
             C = new PointF(rect.Right, rect.Bottom);
             D = new PointF(rect.Left, rect.Bottom);
+        }
+
+        public static QuadrilateralF GetEmpty()
+        {
+            return new QuadrilateralF();
+        }
+
+        public static QuadrilateralF GetUnitSquare()
+        {
+            return new QuadrilateralF(1, 1);
         }
 
         #region Public methods
@@ -233,6 +241,9 @@ namespace Kinovea.ScreenManager
         }
         public RectangleF GetBoundingBox()
         {
+            if (IsEmpty())
+                return RectangleF.Empty;
+
             float top = float.MaxValue;
             float left = float.MaxValue;
             float bottom = float.MinValue;
@@ -247,6 +258,11 @@ namespace Kinovea.ScreenManager
             }
             
             return new RectangleF(left, top, right - left, bottom - top);
+        }
+
+        public bool IsEmpty()
+        {
+            return A == C;
         }
 
         public override int GetHashCode()

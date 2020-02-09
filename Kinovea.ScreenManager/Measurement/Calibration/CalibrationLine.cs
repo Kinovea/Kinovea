@@ -51,8 +51,8 @@ namespace Kinovea.ScreenManager.Deprecated
         {
             get
             {
-                if (quadImage == QuadrilateralF.Empty)
-                    return new QuadrilateralF(new Rectangle(0, 0, 100, 100));
+                if (quadImage.IsEmpty())
+                    return new QuadrilateralF(100, 100);
 
                 return quadImage;
             }
@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager.Deprecated
         //---------------------------------------------
 
         private float length;       // Real-world reference length.
-        private QuadrilateralF quadImage = QuadrilateralF.Empty;
+        private QuadrilateralF quadImage = QuadrilateralF.GetEmpty();
         private float scale = 1.0f; // Baked transform image to calibrated plane. aka: Real world units per pixel.
         private PointF a;           // Image coordinates of the line in image space (undistorted).
         private PointF b;
