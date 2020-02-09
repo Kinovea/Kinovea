@@ -121,7 +121,7 @@ namespace Kinovea.ScreenManager
         private bool trackingUpdate;
 
         private const int defaultBackgroundAlpha = 92;
-        private const int gridAlpha = 128;
+        private const int gridAlpha = 255;
         private const int textMargin = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
