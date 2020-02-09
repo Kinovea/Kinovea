@@ -23,6 +23,9 @@ namespace Kinovea.ScreenManager
         private bool manualUpdate;
         private DrawingStyle style = new DrawingStyle();
         private StyleHelper styleHelper = new StyleHelper();
+        private DistortionParameters distortionParameters;
+        private double sensorWidth = DistortionParameters.defaultSensorWidth;
+        private double focalLength = DistortionParameters.defaultFocalLength;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public FormCalibrateDistortion(Bitmap currentImage, List<List<PointF>> points, CalibrationHelper calibrationHelper)
@@ -31,10 +34,11 @@ namespace Kinovea.ScreenManager
             this.calibrationHelper = calibrationHelper;
 
             if (calibrationHelper.DistortionHelper == null || !calibrationHelper.DistortionHelper.Initialized)
-                distorter.Initialize(DistortionParameters.Default, calibrationHelper.ImageSize);
+                distortionParameters = new DistortionParameters(calibrationHelper.ImageSize);
             else
-                distorter.Initialize(calibrationHelper.DistortionHelper.Parameters, calibrationHelper.ImageSize);
-
+                distortionParameters = calibrationHelper.DistortionHelper.Parameters;
+                
+            distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
             calibrator = new CameraCalibrator(points, calibrationHelper.ImageSize);
 
             InitializeComponent();
@@ -50,7 +54,9 @@ namespace Kinovea.ScreenManager
             mnuQuit.Click += (s, e) => Close();
 
             btnCalibrate.Enabled = calibrator.Valid;
-            Populate();
+            RecomputePhysicalParameters();
+            PopulateValues();
+            UpdateDistortionGrid();
         }
 
         private void LocalizeForm()
@@ -126,29 +132,32 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void Populate()
+        private void PopulateValues()
         {
             manualUpdate = true;
             try
             {
-                DistortionParameters p = distorter.Parameters;
-                nudFx.Value = (decimal)p.Fx;
-                nudFy.Value = (decimal)p.Fy;
-                nudCx.Value = (decimal)p.Cx;
-                nudCy.Value = (decimal)p.Cy;
-                nudK1.Value = (decimal)p.K1;
-                nudK2.Value = (decimal)p.K2;
-                nudK3.Value = (decimal)p.K3;
-                nudP1.Value = (decimal)p.P1;
-                nudP2.Value = (decimal)p.P2;
+                nudSensorWidth.Value = (decimal)sensorWidth;
+                nudFocalLength.Value = (decimal)focalLength;
+
+                nudFx.Value = (decimal)distortionParameters.Fx;
+                nudFy.Value = (decimal)distortionParameters.Fy;
+                nudCx.Value = (decimal)distortionParameters.Cx;
+                nudCy.Value = (decimal)distortionParameters.Cy;
+                
+                nudK1.Value = (decimal)distortionParameters.K1;
+                nudK2.Value = (decimal)distortionParameters.K2;
+                nudK3.Value = (decimal)distortionParameters.K3;
+                nudP1.Value = (decimal)distortionParameters.P1;
+                nudP2.Value = (decimal)distortionParameters.P2;
             }
             catch (Exception e)
             {
+                // A value is out of range of the control.
                 log.ErrorFormat("Error while populating lens distortion parameters. {0}", e.Message);
             }
 
             manualUpdate = false;
-            UpdateDistortion();
         }
 
         private void btnCalibrate_Click(object sender, EventArgs e)
@@ -156,10 +165,11 @@ namespace Kinovea.ScreenManager
             if (!calibrator.Valid)
                 return;
 
-            DistortionParameters parameters = calibrator.Calibrate();
-            distorter.Initialize(parameters, calibrationHelper.ImageSize);
-            
-            Populate();
+            distortionParameters = calibrator.Calibrate();
+            distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
+            RecomputePhysicalParameters();
+            UpdateDistortionGrid();
+            PopulateValues();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -179,20 +189,24 @@ namespace Kinovea.ScreenManager
             if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
                 return;
 
-            DistortionParameters parameters = DistortionImporterKinovea.Import(openFileDialog.FileName, calibrationHelper.ImageSize);
-
-            if (parameters != null)
+            DistortionParameters dp = DistortionImporterKinovea.Import(openFileDialog.FileName, calibrationHelper.ImageSize);
+            if (dp != null)
             {
-                distorter.Initialize(parameters, calibrationHelper.ImageSize);
-                Populate();
+                distortionParameters = dp;
+                distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
+                RecomputePhysicalParameters();
+                PopulateValues();
+                UpdateDistortionGrid();
             }
         }
 
         private void RestoreDefaults()
         {
-            DistortionParameters parameters = DistortionParameters.Default;
-            distorter.Initialize(parameters, calibrationHelper.ImageSize);
-            Populate();
+            distortionParameters = new DistortionParameters(calibrationHelper.ImageSize);
+            distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
+            RecomputePhysicalParameters();
+            PopulateValues();
+            UpdateDistortionGrid();
         }
 
         private void Save()
@@ -220,12 +234,14 @@ namespace Kinovea.ScreenManager
             if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
                 return;
 
-            DistortionParameters parameters = DistortionImporterAgisoft.Import(openFileDialog.FileName, calibrationHelper.ImageSize);
-
-            if (parameters != null)
+            DistortionParameters dp = DistortionImporterAgisoft.Import(openFileDialog.FileName, calibrationHelper.ImageSize);
+            if (dp != null)
             {
-                distorter.Initialize(parameters, calibrationHelper.ImageSize);
-                Populate();
+                distortionParameters = dp;
+                distorter.Initialize(distortionParameters, calibrationHelper.ImageSize);
+                RecomputePhysicalParameters();
+                PopulateValues();
+                UpdateDistortionGrid();
             }
         }
 
@@ -252,31 +268,69 @@ namespace Kinovea.ScreenManager
             if (manualUpdate)
                 return;
 
-            UpdateDistortion();
+            distortionParameters.K1 = (double)nudK1.Value;
+            distortionParameters.K2 = (double)nudK2.Value;
+            distortionParameters.K3 = (double)nudK3.Value;
+            distortionParameters.P1 = (double)nudP1.Value;
+            distortionParameters.P2 = (double)nudP2.Value;
+
+            distortionParameters.Fx = (double)nudFx.Value;
+            distortionParameters.Fy = (double)nudFy.Value;
+            distortionParameters.Cx = (double)nudCx.Value;
+            distortionParameters.Cy = (double)nudCy.Value;
+
+            UpdateDistortionGrid();
         }
 
         private void element_ValueChanged(object sender, EventArgs e)
         {
-            UpdateDistortion();
+            UpdateDistortionGrid();
+        }
+        
+        private void physicalParameters_ValueChanged(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            double sensorWidth = (double)nudSensorWidth.Value;
+            double focalLength = (double)nudFocalLength.Value;
+            double pixelsPerMillimeter = calibrationHelper.ImageSize.Width / sensorWidth;
+
+            distortionParameters.Fx = focalLength * pixelsPerMillimeter;
+            distortionParameters.Fy = distortionParameters.Fx;
+
+            manualUpdate = true;
+            nudFx.Value = (decimal)distortionParameters.Fx;
+            nudFy.Value = (decimal)distortionParameters.Fy;
+            manualUpdate = false;
+
+            UpdateDistortionGrid();
         }
 
-        private void UpdateDistortion()
+        private void nudFx_ValueChanged(object sender, EventArgs e)
+        {
+            if (manualUpdate)
+                return;
+
+            distortionParameters.Fx = (double)nudFx.Value;
+
+            RecomputePhysicalParameters();
+            UpdateDistortionGrid();
+        }
+
+        private void RecomputePhysicalParameters()
         { 
-            // Update distorter.
-            double k1 = (double)nudK1.Value;
-            double k2 = (double)nudK2.Value;
-            double k3 = (double)nudK3.Value;
-            double p1 = (double)nudP1.Value;
-            double p2 = (double)nudP2.Value;
+            // Recompute physical focal length based on sensor width.
+            double pixelsPerMillimeter = calibrationHelper.ImageSize.Width / sensorWidth;
+            focalLength = distortionParameters.Fx / pixelsPerMillimeter;
+            
+            manualUpdate = true;
+            nudFocalLength.Value = (decimal)focalLength;
+            manualUpdate = false;
+        }
 
-            double fx = (double)nudFx.Value;
-            double fy = (double)nudFy.Value;
-            double cx = (double)nudCx.Value;
-            double cy = (double)nudCy.Value;
-
-            DistortionParameters parameters = new DistortionParameters(k1, k2, k3, p1, p2, fx, fy, cx, cy);
-            distorter.Initialize(parameters, calibrationHelper.ImageSize);
-
+        private void UpdateDistortionGrid()
+        {
             // Update the grid bitmap and the preview.
             bmpGrid = distorter.GetDistortionGrid(styleHelper.Color, styleHelper.LineSize, styleHelper.GridDivisions);
             pnlPreview.Invalidate();

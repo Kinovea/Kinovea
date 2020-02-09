@@ -46,24 +46,9 @@ namespace Kinovea.ScreenManager
         public void Initialize(DistortionParameters parameters, Size imageSize)
         {
             if (parameters.Cx == 0 && parameters.Cy == 0)
-            {
-                // Camera intrinsics based on Blender values for Go Pro Hero 3.
-                double focalLengthMillimeters = 2.77;
-                double sensorWidthMillimeters = 6.160;
-
-                double ratio = imageSize.Width / sensorWidthMillimeters;
-                double fx = focalLengthMillimeters * ratio;
-                double fy = fx;
-                double cx = imageSize.Width / 2.0;
-                double cy = imageSize.Height / 2.0;
-
-                DistortionParameters params2 = new DistortionParameters(parameters.K1, parameters.K2, parameters.K3, parameters.P1, parameters.P2, fx, fy, cx, cy);
-                this.parameters = params2;
-            }
+                this.parameters = new DistortionParameters(imageSize);
             else
-            {
                 this.parameters = parameters;
-            }
 
             this.imageSize = imageSize;
             icp = this.parameters.IntrinsicCameraParameters;

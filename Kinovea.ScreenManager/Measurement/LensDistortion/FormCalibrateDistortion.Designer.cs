@@ -43,6 +43,10 @@
       this.lblK1 = new System.Windows.Forms.Label();
       this.nudK1 = new System.Windows.Forms.NumericUpDown();
       this.grpIntrinsics = new System.Windows.Forms.GroupBox();
+      this.nudFocalLength = new System.Windows.Forms.NumericUpDown();
+      this.lblFocalLength = new System.Windows.Forms.Label();
+      this.nudSensorWidth = new System.Windows.Forms.NumericUpDown();
+      this.lblSensorWidth = new System.Windows.Forms.Label();
       this.nudCy = new System.Windows.Forms.NumericUpDown();
       this.nudCx = new System.Windows.Forms.NumericUpDown();
       this.nudFy = new System.Windows.Forms.NumericUpDown();
@@ -68,6 +72,8 @@
       ((System.ComponentModel.ISupportInitialize)(this.nudK2)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudK1)).BeginInit();
       this.grpIntrinsics.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudFocalLength)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudSensorWidth)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudCy)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudCx)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudFy)).BeginInit();
@@ -121,9 +127,9 @@
       this.grpDistortionCoefficients.Controls.Add(this.lblK2);
       this.grpDistortionCoefficients.Controls.Add(this.lblK1);
       this.grpDistortionCoefficients.Controls.Add(this.nudK1);
-      this.grpDistortionCoefficients.Location = new System.Drawing.Point(16, 183);
+      this.grpDistortionCoefficients.Location = new System.Drawing.Point(16, 255);
       this.grpDistortionCoefficients.Name = "grpDistortionCoefficients";
-      this.grpDistortionCoefficients.Size = new System.Drawing.Size(184, 165);
+      this.grpDistortionCoefficients.Size = new System.Drawing.Size(219, 165);
       this.grpDistortionCoefficients.TabIndex = 35;
       this.grpDistortionCoefficients.TabStop = false;
       this.grpDistortionCoefficients.Text = "Distortion coefficients";
@@ -136,7 +142,7 @@
             0,
             0,
             196608});
-      this.nudP2.Location = new System.Drawing.Point(100, 130);
+      this.nudP2.Location = new System.Drawing.Point(134, 130);
       this.nudP2.Maximum = new decimal(new int[] {
             2,
             0,
@@ -160,7 +166,7 @@
             0,
             0,
             196608});
-      this.nudP1.Location = new System.Drawing.Point(100, 104);
+      this.nudP1.Location = new System.Drawing.Point(134, 104);
       this.nudP1.Maximum = new decimal(new int[] {
             2,
             0,
@@ -184,7 +190,7 @@
             0,
             0,
             196608});
-      this.nudK3.Location = new System.Drawing.Point(100, 78);
+      this.nudK3.Location = new System.Drawing.Point(134, 78);
       this.nudK3.Maximum = new decimal(new int[] {
             2,
             0,
@@ -208,7 +214,7 @@
             0,
             0,
             196608});
-      this.nudK2.Location = new System.Drawing.Point(100, 52);
+      this.nudK2.Location = new System.Drawing.Point(134, 52);
       this.nudK2.Maximum = new decimal(new int[] {
             2,
             0,
@@ -277,7 +283,7 @@
             0,
             0,
             196608});
-      this.nudK1.Location = new System.Drawing.Point(100, 26);
+      this.nudK1.Location = new System.Drawing.Point(134, 26);
       this.nudK1.Maximum = new decimal(new int[] {
             2,
             0,
@@ -295,6 +301,10 @@
       // 
       // grpIntrinsics
       // 
+      this.grpIntrinsics.Controls.Add(this.nudFocalLength);
+      this.grpIntrinsics.Controls.Add(this.lblFocalLength);
+      this.grpIntrinsics.Controls.Add(this.nudSensorWidth);
+      this.grpIntrinsics.Controls.Add(this.lblSensorWidth);
       this.grpIntrinsics.Controls.Add(this.nudCy);
       this.grpIntrinsics.Controls.Add(this.nudCx);
       this.grpIntrinsics.Controls.Add(this.nudFy);
@@ -305,20 +315,66 @@
       this.grpIntrinsics.Controls.Add(this.lblFx);
       this.grpIntrinsics.Location = new System.Drawing.Point(16, 36);
       this.grpIntrinsics.Name = "grpIntrinsics";
-      this.grpIntrinsics.Size = new System.Drawing.Size(184, 141);
+      this.grpIntrinsics.Size = new System.Drawing.Size(219, 213);
       this.grpIntrinsics.TabIndex = 36;
       this.grpIntrinsics.TabStop = false;
       this.grpIntrinsics.Text = "Camera intrinsics";
       // 
-      // nudCy
+      // nudFocalLength
       // 
-      this.nudCy.DecimalPlaces = 3;
-      this.nudCy.Increment = new decimal(new int[] {
+      this.nudFocalLength.DecimalPlaces = 3;
+      this.nudFocalLength.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            196608});
-      this.nudCy.Location = new System.Drawing.Point(100, 104);
+            131072});
+      this.nudFocalLength.Location = new System.Drawing.Point(134, 54);
+      this.nudFocalLength.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+      this.nudFocalLength.Name = "nudFocalLength";
+      this.nudFocalLength.Size = new System.Drawing.Size(70, 20);
+      this.nudFocalLength.TabIndex = 51;
+      this.nudFocalLength.ValueChanged += new System.EventHandler(this.physicalParameters_ValueChanged);
+      // 
+      // lblFocalLength
+      // 
+      this.lblFocalLength.AutoSize = true;
+      this.lblFocalLength.Location = new System.Drawing.Point(18, 56);
+      this.lblFocalLength.Name = "lblFocalLength";
+      this.lblFocalLength.Size = new System.Drawing.Size(96, 13);
+      this.lblFocalLength.TabIndex = 50;
+      this.lblFocalLength.Text = "Focal length (mm) :";
+      // 
+      // nudSensorWidth
+      // 
+      this.nudSensorWidth.DecimalPlaces = 3;
+      this.nudSensorWidth.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+      this.nudSensorWidth.Location = new System.Drawing.Point(134, 28);
+      this.nudSensorWidth.Name = "nudSensorWidth";
+      this.nudSensorWidth.Size = new System.Drawing.Size(70, 20);
+      this.nudSensorWidth.TabIndex = 49;
+      this.nudSensorWidth.ValueChanged += new System.EventHandler(this.physicalParameters_ValueChanged);
+      // 
+      // lblSensorWidth
+      // 
+      this.lblSensorWidth.AutoSize = true;
+      this.lblSensorWidth.Location = new System.Drawing.Point(18, 30);
+      this.lblSensorWidth.Name = "lblSensorWidth";
+      this.lblSensorWidth.Size = new System.Drawing.Size(99, 13);
+      this.lblSensorWidth.TabIndex = 48;
+      this.lblSensorWidth.Text = "Sensor width (mm) :";
+      // 
+      // nudCy
+      // 
+      this.nudCy.DecimalPlaces = 3;
+      this.nudCy.Location = new System.Drawing.Point(134, 179);
       this.nudCy.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -337,12 +393,7 @@
       // nudCx
       // 
       this.nudCx.DecimalPlaces = 3;
-      this.nudCx.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-      this.nudCx.Location = new System.Drawing.Point(100, 78);
+      this.nudCx.Location = new System.Drawing.Point(134, 153);
       this.nudCx.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -361,12 +412,7 @@
       // nudFy
       // 
       this.nudFy.DecimalPlaces = 3;
-      this.nudFy.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-      this.nudFy.Location = new System.Drawing.Point(100, 50);
+      this.nudFy.Location = new System.Drawing.Point(134, 125);
       this.nudFy.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -380,12 +426,7 @@
       // nudFx
       // 
       this.nudFx.DecimalPlaces = 3;
-      this.nudFx.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-      this.nudFx.Location = new System.Drawing.Point(100, 24);
+      this.nudFx.Location = new System.Drawing.Point(134, 99);
       this.nudFx.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -394,12 +435,12 @@
       this.nudFx.Name = "nudFx";
       this.nudFx.Size = new System.Drawing.Size(70, 20);
       this.nudFx.TabIndex = 43;
-      this.nudFx.ValueChanged += new System.EventHandler(this.parameters_ValueChanged);
+      this.nudFx.ValueChanged += new System.EventHandler(this.nudFx_ValueChanged);
       // 
       // lblCy
       // 
       this.lblCy.AutoSize = true;
-      this.lblCy.Location = new System.Drawing.Point(18, 106);
+      this.lblCy.Location = new System.Drawing.Point(18, 181);
       this.lblCy.Name = "lblCy";
       this.lblCy.Size = new System.Drawing.Size(24, 13);
       this.lblCy.TabIndex = 8;
@@ -408,7 +449,7 @@
       // lblCx
       // 
       this.lblCx.AutoSize = true;
-      this.lblCx.Location = new System.Drawing.Point(18, 80);
+      this.lblCx.Location = new System.Drawing.Point(18, 155);
       this.lblCx.Name = "lblCx";
       this.lblCx.Size = new System.Drawing.Size(24, 13);
       this.lblCx.TabIndex = 7;
@@ -417,7 +458,7 @@
       // lblFy
       // 
       this.lblFy.AutoSize = true;
-      this.lblFy.Location = new System.Drawing.Point(18, 52);
+      this.lblFy.Location = new System.Drawing.Point(18, 127);
       this.lblFy.Name = "lblFy";
       this.lblFy.Size = new System.Drawing.Size(21, 13);
       this.lblFy.TabIndex = 6;
@@ -426,7 +467,7 @@
       // lblFx
       // 
       this.lblFx.AutoSize = true;
-      this.lblFx.Location = new System.Drawing.Point(18, 26);
+      this.lblFx.Location = new System.Drawing.Point(18, 101);
       this.lblFx.Name = "lblFx";
       this.lblFx.Size = new System.Drawing.Size(21, 13);
       this.lblFx.TabIndex = 5;
@@ -501,9 +542,9 @@
       // 
       // grpAppearance
       // 
-      this.grpAppearance.Location = new System.Drawing.Point(16, 354);
+      this.grpAppearance.Location = new System.Drawing.Point(16, 426);
       this.grpAppearance.Name = "grpAppearance";
-      this.grpAppearance.Size = new System.Drawing.Size(184, 141);
+      this.grpAppearance.Size = new System.Drawing.Size(219, 141);
       this.grpAppearance.TabIndex = 47;
       this.grpAppearance.TabStop = false;
       this.grpAppearance.Text = "Appearance";
@@ -514,9 +555,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pnlPreview.BackColor = System.Drawing.Color.DimGray;
-      this.pnlPreview.Location = new System.Drawing.Point(206, 43);
+      this.pnlPreview.Location = new System.Drawing.Point(241, 43);
       this.pnlPreview.Name = "pnlPreview";
-      this.pnlPreview.Size = new System.Drawing.Size(794, 525);
+      this.pnlPreview.Size = new System.Drawing.Size(759, 525);
       this.pnlPreview.TabIndex = 48;
       this.pnlPreview.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlPreview_Paint);
       this.pnlPreview.Resize += new System.EventHandler(this.pnlPreview_Resize);
@@ -550,6 +591,8 @@
       ((System.ComponentModel.ISupportInitialize)(this.nudK1)).EndInit();
       this.grpIntrinsics.ResumeLayout(false);
       this.grpIntrinsics.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudFocalLength)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudSensorWidth)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudCy)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudCx)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudFy)).EndInit();
@@ -596,5 +639,9 @@
         private System.Windows.Forms.NumericUpDown nudFx;
         private System.Windows.Forms.GroupBox grpAppearance;
         private PanelDoubleBuffer pnlPreview;
+        private System.Windows.Forms.NumericUpDown nudFocalLength;
+        private System.Windows.Forms.Label lblFocalLength;
+        private System.Windows.Forms.NumericUpDown nudSensorWidth;
+        private System.Windows.Forms.Label lblSensorWidth;
     }
 }
