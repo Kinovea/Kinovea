@@ -370,16 +370,16 @@ namespace Kinovea.ScreenManager
                 switch(r.Name)
                 {
                     case "A":
-                        quadImage.A = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        a = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         break;
                     case "B":
-                        quadImage.B = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        b = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         break;
                     case "C":
-                        quadImage.C = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        c = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         break;
                     case "D":
-                        quadImage.D = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        d = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
