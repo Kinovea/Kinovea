@@ -237,7 +237,6 @@ namespace Kinovea.ScreenManager
             PointF c = end;
             PointF a = new PointF(d.X + (c.Y - d.Y), d.Y - (c.X - d.X));
             PointF b = new PointF(a.X + (c.X - d.X), a.Y + (c.Y - d.Y));
-
             return new QuadrilateralF(a, b, c, d);
         }
 
@@ -320,6 +319,7 @@ namespace Kinovea.ScreenManager
                         line = ParseSegment(r, scaling);
                         break;
                     case "Origin":
+                        // Import from older format.
                         origin = XmlHelper.ParsePointF(r.ReadElementContentAsString());
                         if (float.IsNaN(origin.X) || float.IsNaN(origin.Y))
                             origin = PointF.Empty;
@@ -327,10 +327,17 @@ namespace Kinovea.ScreenManager
                         origin = origin.Scale(scaling.X, scaling.Y);
                         break;
                     case "Scale":
-                        // Import and convert older format.
+                        // Import and convert from older format.
+                        // Create a fake line of 100 px horizontal at the origin.
                         float bakedScale = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
-                        length = 1.0f;
-                        line = new SegmentF(PointF.Empty, new PointF(0, 1.0f / bakedScale));
+                        float lengthPixels = 100;
+                        PointF start = origin;
+                        PointF end = origin.Translate(lengthPixels, 0);
+                        line = new SegmentF(start, end);
+                        length = lengthPixels * bakedScale;
+                        
+                        // The actual origin should be expressed in the calibrated plane coordinate system, which has its true origin at the A point of the quad.
+                        origin = new PointF(0, length);
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
