@@ -267,12 +267,15 @@ namespace Kinovea.ScreenManager
 
         public override int GetHashCode()
         {
-            int iHash = 0;
-            iHash ^= A.GetHashCode();
-            iHash ^= B.GetHashCode();
-            iHash ^= C.GetHashCode();
-            iHash ^= D.GetHashCode();
-            return iHash;
+            // XORing all the GetHashCode naively returns 0 for all rectangles.
+            unchecked
+            {
+                int hash = A.GetHashCode() << 17;
+                hash ^= B.GetHashCode() >> 26;
+                hash ^= C.GetHashCode() << 6;
+                hash ^= D.GetHashCode() >> 25;
+                return hash;
+            }
         } 
         
         #endregion
