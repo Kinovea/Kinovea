@@ -55,7 +55,6 @@ namespace Kinovea.ScreenManager
                 iHash ^= clockOriginTimestamp.GetHashCode();
 
                 iHash ^= styleHelper.ContentHash;
-                iHash ^= label.GetHashCode();
                 iHash ^= showLabel.GetHashCode();
     
                 return iHash;
@@ -100,6 +99,10 @@ namespace Kinovea.ScreenManager
                     contextMenu.AddRange(new ToolStripItem[] { mnuVisibility, mnuStart, mnuStop });
                 }
 
+                mnuShowLabel.Text = "Show label";
+                mnuShowLabel.Checked = showLabel;
+                contextMenu.Add(mnuShowLabel);
+
                 return contextMenu;
             }
         }
@@ -126,7 +129,6 @@ namespace Kinovea.ScreenManager
         private long stopCountingTimestamp;          	// chrono stops counting. 
         private long clockOriginTimestamp;              // time origin for clock mode.
         private string timecode;
-        private string label;
         private bool showLabel;
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();
@@ -142,10 +144,11 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuHideAfter = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowAfter = new ToolStripMenuItem();
 
-        //private ToolStripMenuItem mnuHide = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMarkOrigin = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
 
         private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -173,7 +176,6 @@ namespace Kinovea.ScreenManager
             style = preset.Clone();
             BindStyle();
             
-            label = "";
             showLabel = true;
             
             // We use the InfosFading utility to fade the chrono away.
@@ -200,6 +202,8 @@ namespace Kinovea.ScreenManager
             mnuStart.Click += mnuStart_Click;
             mnuStop.Click += mnuStop_Click;
             mnuMarkOrigin.Click += mnuMarkOrigin_Click;
+
+            mnuShowLabel.Click += mnuShowLabel_Click;
         }
 
         public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
@@ -241,17 +245,17 @@ namespace Kinovea.ScreenManager
                 RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
                 canvas.DrawString(text, fontText, brushText, rect.Location);
 
-                if (showLabel && label.Length > 0)
+                if (showLabel && name.Length > 0)
                 {
                     using (Font fontLabel = styleHelper.GetFont((float)transformer.Scale * 0.5f))
                     {
                         // Note: the alignment here assumes fixed margins of the rounded rectangle class.
-                        SizeF lblTextSize = canvas.MeasureString(label, fontLabel);
+                        SizeF lblTextSize = canvas.MeasureString(name, fontLabel);
                         int labelRoundingRadius = fontLabel.Height / 3;
                         int top = rect.Location.Y - (int)lblTextSize.Height - roundingRadius - labelRoundingRadius;
                         Rectangle lblRect = new Rectangle(rect.Location.X, top, (int)lblTextSize.Width, (int)lblTextSize.Height);
                         RoundedRectangle.Draw(canvas, lblRect, brushBack, labelRoundingRadius, true, false, null);
-                        canvas.DrawString(label, fontLabel, brushText, lblRect.Location);
+                        canvas.DrawString(name, fontLabel, brushText, lblRect.Location);
                     }
                 }
             }
@@ -330,7 +334,6 @@ namespace Kinovea.ScreenManager
             {
                 // Label
                 w.WriteStartElement("Label");
-                w.WriteElementString("Text", label);
                 w.WriteElementString("Show", showLabel.ToString().ToLower());
                 w.WriteEndElement();
 
@@ -443,8 +446,14 @@ namespace Kinovea.ScreenManager
             {
                 switch(xmlReader.Name)
                 {
+                    // In older versions chronos used to have a label property. It was later merged with the general name property of drawings.
+                    // 0.8.27 should already store the label in the name property.
+                    // For older formats we import it here.
+                    // The current format doesn't export this "Text" tag at all.
                     case "Text":
-                        label = xmlReader.ReadElementContentAsString();
+                        string label = xmlReader.ReadElementContentAsString();
+                        if (!string.IsNullOrEmpty(label) && label != name)
+                            name = label;
                         break;
                     case "Show":
                         showLabel = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
@@ -517,6 +526,12 @@ namespace Kinovea.ScreenManager
             clockOriginTimestamp = CurrentTimestampFromMenu(sender);
             InvalidateFromMenu(sender);
         }
+
+        private void mnuShowLabel_Click(object sender, EventArgs e)
+        {
+            showLabel = !mnuShowLabel.Checked;
+            InvalidateFromMenu(sender);
+        }
         #endregion
 
         #region Lower level helpers
@@ -531,7 +546,7 @@ namespace Kinovea.ScreenManager
         {
             using(Font f = styleHelper.GetFont(0.5F))
             {
-                SizeF size = TextHelper.MeasureString(label, f);
+                SizeF size = TextHelper.MeasureString(name, f);
                 lblBackground.Rectangle = new RectangleF(
                     mainBackground.X, mainBackground.Y - lblBackground.Rectangle.Height, size.Width + 11, size.Height);
             }
