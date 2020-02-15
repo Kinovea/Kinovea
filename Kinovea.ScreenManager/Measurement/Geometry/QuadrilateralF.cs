@@ -29,9 +29,9 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// A class representing a quadrilateral, with some helper methods.
-    /// The corners can be accessed via ABCD properties, the indexer or the enumerator.
+    /// The vertices can be accessed via ABCD properties, the indexer or the enumerator.
     /// When using the indexer, A=0, B=1, C=2, D=3.
-    /// Points are defined clockwise, "A" being top left.
+    /// Vertices are defined clockwise, "A" being top left.
     /// Note that unlike Rectangle, this is a reference type.
     /// </summary>
     public class QuadrilateralF : IEnumerable
@@ -39,44 +39,39 @@ namespace Kinovea.ScreenManager
         #region Properties
         public PointF A
         {
-            get { return corners[0]; }
-            set { corners[0] = value;}
+            get { return vertices[0]; }
+            set { vertices[0] = value;}
         }
         public PointF B
         {
-            get { return corners[1]; }
-            set { corners[1] = value;}
+            get { return vertices[1]; }
+            set { vertices[1] = value;}
         }
         public PointF C
         {
-            get { return corners[2]; }
-            set { corners[2] = value;}
+            get { return vertices[2]; }
+            set { vertices[2] = value;}
         }
         public PointF D
         {
-            get { return corners[3]; }
-            set { corners[3] = value;}
+            get { return vertices[3]; }
+            set { vertices[3] = value;}
         }
-        public PointF this [int corner]
+        public PointF this [int vertex]
         {
-            get { return corners[corner]; }
-            set { corners[corner] = value; }
+            get { return vertices[vertex]; }
+            set { vertices[vertex] = value; }
         }
         public bool IsConvex
         {
             get { return IsQuadConvex(); }
         }
-        public bool IsRectangle
+
+        public bool IsAxisAlignedRectangle
         {
             get { return (A.Y == B.Y && B.X == C.X && C.Y == D.Y && D.X == A.X); }
         }
-        public static QuadrilateralF UnitSquare
-        {
-            get 
-            { 
-                return new QuadrilateralF(1, 1);
-            }
-        }
+        
         public static QuadrilateralF CenteredUnitSquare
         {
             get
@@ -85,9 +80,9 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-        
+
         #region Members
-        private PointF[] corners = new PointF[4];
+        private PointF[] vertices = new PointF[4];
         private const double radToDeg = 180D / Math.PI;
         #endregion
         
@@ -119,14 +114,24 @@ namespace Kinovea.ScreenManager
             D = new PointF(rect.Left, rect.Bottom);
         }
 
+        public static QuadrilateralF GetEmpty()
+        {
+            return new QuadrilateralF();
+        }
+
+        public static QuadrilateralF GetUnitSquare()
+        {
+            return new QuadrilateralF(1, 1);
+        }
+
         #region Public methods
         public void Translate(float x, float y)
         {
-            corners = corners.Select( p => p.Translate(x,y)).ToArray();
+            vertices = vertices.Select( p => p.Translate(x,y)).ToArray();
         }
         public void Scale(float x, float y)
         {
-            corners = corners.Select(p => p.Scale(x, y)).ToArray();
+            vertices = vertices.Select(p => p.Scale(x, y)).ToArray();
         }
         public void Expand(float width, float height)
         {
@@ -214,7 +219,7 @@ namespace Kinovea.ScreenManager
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddPolygon(corners.ToArray());
+                areaPath.AddPolygon(vertices.ToArray());
                 using(Region r = new Region(areaPath))
                 {
                     hit = r.IsVisible(point);
@@ -228,38 +233,49 @@ namespace Kinovea.ScreenManager
         }
         public IEnumerator GetEnumerator()
         {
-            return corners.GetEnumerator();
+            return vertices.GetEnumerator();
         }
         public PointF[] ToArray()
         {
-            return corners.ToArray();
+            return vertices.ToArray();
         }
         public RectangleF GetBoundingBox()
         {
+            if (IsEmpty())
+                return RectangleF.Empty;
+
             float top = float.MaxValue;
             float left = float.MaxValue;
             float bottom = float.MinValue;
             float right = float.MinValue;
             
-            foreach(PointF corner in corners)
+            foreach(PointF vertex in vertices)
             {
-                top = Math.Min(top, corner.Y);
-                left = Math.Min(left, corner.X);
-                bottom = Math.Max(bottom, corner.Y);
-                right = Math.Max(right, corner.X);
+                top = Math.Min(top, vertex.Y);
+                left = Math.Min(left, vertex.X);
+                bottom = Math.Max(bottom, vertex.Y);
+                right = Math.Max(right, vertex.X);
             }
             
             return new RectangleF(left, top, right - left, bottom - top);
         }
 
+        public bool IsEmpty()
+        {
+            return A == C;
+        }
+
         public override int GetHashCode()
         {
-            int iHash = 0;
-            iHash ^= A.GetHashCode();
-            iHash ^= B.GetHashCode();
-            iHash ^= C.GetHashCode();
-            iHash ^= D.GetHashCode();
-            return iHash;
+            // XORing all the GetHashCode naively returns 0 for all rectangles.
+            unchecked
+            {
+                int hash = A.GetHashCode() << 17;
+                hash ^= B.GetHashCode() >> 26;
+                hash ^= C.GetHashCode() << 6;
+                hash ^= D.GetHashCode() >> 25;
+                return hash;
+            }
         } 
         
         #endregion

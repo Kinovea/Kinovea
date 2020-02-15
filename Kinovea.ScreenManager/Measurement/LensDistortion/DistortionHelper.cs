@@ -179,6 +179,9 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Returns an undistorted quadrilateral.
+        /// </summary>
         public QuadrilateralF Undistort(QuadrilateralF quad)
         {
             return new QuadrilateralF(

@@ -145,7 +145,7 @@ namespace Kinovea.ScreenManager
                 drawingPlane.UpdateMapping(size);
                 
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Plane);
-                calibrationHelper.CalibrationByPlane_Initialize(size, drawingPlane.QuadImage);
+                calibrationHelper.CalibrationByPlane_Initialize(drawingPlane.Id, size, drawingPlane.QuadImage);
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
             }
             catch

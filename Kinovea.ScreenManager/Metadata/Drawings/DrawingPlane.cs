@@ -99,7 +99,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private QuadrilateralF quadImage = QuadrilateralF.UnitSquare;           // Quadrilateral defined by user in image space.
+        private QuadrilateralF quadImage = QuadrilateralF.GetUnitSquare();      // Quadrilateral defined by user in image space.
         private QuadrilateralF quadPlane;                                       // Corresponding rectangle in plane system.
         private ProjectiveMapping projectiveMapping = new ProjectiveMapping();  // maps quadImage to quadPlane and back.
         private float planeWidth;                                               // width and height of rectangle in plane system.
@@ -164,7 +164,7 @@ namespace Kinovea.ScreenManager
 
             QuadrilateralF quad = transformer.Transform(quadImage);
 
-            bool drawEdgesOnly = !planeIsConvex || (!styleHelper.Perspective && !quadImage.IsRectangle);
+            bool drawEdgesOnly = !planeIsConvex || (!styleHelper.Perspective && !quadImage.IsAxisAlignedRectangle);
             
             using(penEdges = styleHelper.GetPen(opacityFactor, 1.0))
             using(SolidBrush br = styleHelper.GetBrush(opacityFactor))
@@ -280,7 +280,7 @@ namespace Kinovea.ScreenManager
                 if (!styleHelper.Perspective)
                 {
                     quadImage.Translate(dx, dy);
-                    CalibrationHelper.CalibrationByPlane_Update(quadImage);
+                    CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
                 }
             }
             
@@ -304,7 +304,7 @@ namespace Kinovea.ScreenManager
             }
             
             SignalAllTrackablePointsMoved();
-            CalibrationHelper.CalibrationByPlane_Update(quadImage);
+            CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
         }
         public override PointF GetCopyPoint()
         {
@@ -460,7 +460,7 @@ namespace Kinovea.ScreenManager
             quadImage[p] = new PointF(value.X, value.Y);
 
             projectiveMapping.Update(quadPlane, quadImage);
-            CalibrationHelper.CalibrationByPlane_Update(quadImage);
+            CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);
             planeIsConvex = quadImage.IsConvex;
         }
         private void SignalAllTrackablePointsMoved()

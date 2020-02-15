@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         // Core
-        private QuadrilateralF quadImage = QuadrilateralF.UnitSquare;
+        private QuadrilateralF quadImage = QuadrilateralF.GetUnitSquare();
         private bool initializing = true;
         // Decoration
         private StyleHelper styleHelper = new StyleHelper();

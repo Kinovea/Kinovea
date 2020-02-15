@@ -238,6 +238,10 @@ namespace Kinovea.Services
             return rect;
         }
 
+        public static string WriteFloat(float value)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0}", value);
+        }
         public static string WritePointF(PointF point)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0};{1}", point.X, point.Y);

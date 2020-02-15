@@ -22,10 +22,11 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.Xml;
+using System.Drawing.Drawing2D;
 
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
     /// <summary>
     /// Packages necessary info for the calibration by line.
@@ -33,51 +34,172 @@ namespace Kinovea.ScreenManager
     /// Calibration by line uses a user-specified line that maps real world distance with pixel distance,
     /// and a coordinate system origin.
     /// </summary>
-    public class CalibrationLine : ICalibrator
+    public class CalibrationLine : ICalibrator
     {
-        private PointF origin;
-        private float scale = 1.0f;
+        public SizeF Size
+        {
+            get
+            {
+                if (length == 0)
+                    return new SizeF(100, 100);
+
+                return new SizeF(length, length);
+            }
+        }
+
+        public QuadrilateralF QuadImage
+        {
+            get
+            {
+                if (quadImage.IsEmpty())
+                    return new QuadrilateralF(100, 100);
+
+                return quadImage;
+            }
+        }
+
+        //---------------------------------------------
+        // "Image" coordinate system has origin at top left and has Y-down.
+        // "Calibrated plane" coordinate system has its origin at the A point of the line, is scaled and rotated and has Y-up.
+        // "World" coordinate system has origin at user-defined point and is Y-up.
+        //---------------------------------------------
+
+        private float length;       // Real-world reference length.
+        private QuadrilateralF quadImage = QuadrilateralF.GetEmpty();
+        private float scale = 1.0f; // Baked transform image to calibrated plane. aka: Real world units per pixel.
+        private PointF a;           // Image coordinates of the line in image space (undistorted).
+        private PointF b;
+        private PointF origin;      // User-defined origin, in calibrated plane coordinate system.
+        private Matrix m = new Matrix();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+
         #region ICalibrator
+        /// <summary>
+        /// Takes a point in image space and returns it in world space.
+        /// </summary>
         public PointF Transform(PointF p)
         {
-            PointF p2 = new PointF(p.X - origin.X, - (p.Y - origin.Y));
+            return CalibratedToWorld(ImageToCalibrated(p), origin);
+        }
+
+        /// <summary>
+        /// Takes a point and origin in image space and returns it in world space.
+        /// </summary>
+        public PointF Transform(PointF p, PointF originInImage)
+        {
+            PointF origin = ImageToCalibrated(originInImage);
+            return CalibratedToWorld(ImageToCalibrated(p), origin);
+        }
+
+        /// <summary>
+        /// Takes a point in real world coordinates and gives it back in image coordinates.
+        /// </summary>
+        public PointF Untransform(PointF p)
+        {
+            return CalibratedToImage(WorldToCalibrated(p, origin));
+        }
+
+        /// <summary>
+        /// Takes a point in image coordinates to act as the origin of the current coordinate system.
+        /// </summary>
+        public void SetOrigin(PointF p)
+        {
+            origin = ImageToCalibrated(p);
+        }
+        #endregion
+
+        /// <summary>
+        /// Initialize the mapping.
+        /// length: Real world length of the reference line.
+        /// a, b: Image coordinates of the reference line.
+        /// </summary>
+        public void Initialize(float length, PointF a, PointF b)
+        {
+            this.length = length;
+            this.a = a;
+            this.b = b;
+
+            float pixelLength = GeometryHelper.GetDistance(a, b);
+            scale = length / pixelLength;
+            SetOrigin(a);
+
+            UpdateQuadImage(a, b);
+        }
+
+        /// <summary>
+        /// Updates the calibration coordinate system without changing the real-world scale of the segment, nor the user-defined origin.
+        /// a, b: Image coordinates of the reference segment.
+        /// </summary>
+        public void Update(PointF a, PointF b)
+        {
+            if (length == 0)
+                return;
+
+            this.a = a;
+            this.b = b;
+            float pixelLength = GeometryHelper.GetDistance(a, b);
+            scale = length / pixelLength;
+
+            UpdateQuadImage(a, b);
+        }
+
+        /// <summary>
+        /// Maps a point from image to calibrated plane coordinates.
+        /// </summary>
+        private PointF ImageToCalibrated(PointF p)
+        {
+            PointF p2 = new PointF(p.X - a.X, -(p.Y - a.Y));
             p2 = p2.Scale(scale, scale);
             return p2;
         }
 
-        public PointF Transform(PointF p, PointF origin)
+        /// <summary>
+        /// Maps a point from calibrated plane to image coordinates.
+        /// </summary>
+        private PointF CalibratedToImage(PointF p)
         {
-            PointF p2 = new PointF(p.X - origin.X, -(p.Y - origin.Y));
-            p2 = p2.Scale(scale, scale);
+            PointF p2 = p.Scale(1 / scale, 1 / scale);
+            p2 = new PointF(a.X + p2.X, a.Y - p2.Y);
             return p2;
         }
-       
-        public PointF Untransform(PointF p)
+
+        // Calibrated plane to world space.
+        private PointF CalibratedToWorld(PointF p, PointF origin)
         {
-            PointF p2 = p.Scale(1/scale, 1/scale);
-            p2 = new PointF(p2.X + origin.X, origin.Y - p2.Y);
+            PointF p2 = new PointF(p.X - origin.X, p.Y - origin.Y);
             return p2;
         }
-        
-        public void SetOrigin(PointF p)
+
+        // World space to calibrated plane.
+        private PointF WorldToCalibrated(PointF p, PointF origin)
         {
-            origin = p;
+            PointF p2 = new PointF(origin.X + p.X, origin.Y + p.Y);
+            return p2;
         }
-        #endregion
-        
-        
-        public void Initialize(float ratio)
+
+        /// <summary>
+        /// Rebuild a quadrilateral to help drawing the coordinate system.
+        /// </summary>
+        private void UpdateQuadImage(PointF a, PointF b)
         {
-            scale = ratio;
+            PointF c = new PointF(a.X + (b.Y - a.Y), a.Y - (b.X - a.X));
+            PointF d = new PointF(c.X + (b.X - a.X), c.Y + (b.Y - a.Y));
+            quadImage = new QuadrilateralF(c, d, b, a);
         }
-        
+
         #region Serialization
         public void WriteXml(XmlWriter w)
         {
+            //w.WriteElementString("Scale", string.Format(CultureInfo.InvariantCulture, "{0}", scale));
+
+            w.WriteElementString("Length", XmlHelper.WriteFloat(length));
+
+            w.WriteStartElement("Segment");
+            w.WriteElementString("A", XmlHelper.WritePointF(a));
+            w.WriteElementString("B", XmlHelper.WritePointF(b));
+            w.WriteEndElement();
+
             w.WriteElementString("Origin", XmlHelper.WritePointF(origin));
-            w.WriteElementString("Scale", string.Format(CultureInfo.InvariantCulture, "{0}", scale));
         }
         public void ReadXml(XmlReader r, PointF scaling)
         {
@@ -87,12 +209,25 @@ namespace Kinovea.ScreenManager
             {
                 switch(r.Name)
                 {
+                    case "Length":
+                        length = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        break;
+                    case "Segment":
+                        ParseSegment(r, scaling);
+                        break;
                     case "Origin":
                         origin = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        if (float.IsNaN(origin.X) || float.IsNaN(origin.Y))
+                            origin = PointF.Empty;
+
                         origin = origin.Scale(scaling.X, scaling.Y);
                         break;
                     case "Scale":
-                        scale = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        // Import and convert older format.
+                        float bakedScale = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        length = 1.0f;
+                        a = PointF.Empty;
+                        b = new PointF(0, 1.0f / bakedScale);
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
@@ -101,6 +236,36 @@ namespace Kinovea.ScreenManager
                 }
             }
             
+            r.ReadEndElement();
+
+            // Update mapping.
+            float pixelLength = GeometryHelper.GetDistance(a, b);
+            scale = length / pixelLength;
+        }
+
+        private void ParseSegment(XmlReader r, PointF scale)
+        {
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                switch (r.Name)
+                {
+                    case "A":
+                        a = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    case "B":
+                        b = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+
+            //.Scale(scale.X, scale.Y);
+
             r.ReadEndElement();
         }
         #endregion

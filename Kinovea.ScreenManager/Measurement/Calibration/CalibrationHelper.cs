@@ -26,9 +26,9 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// CalibrationHelper encapsulates informations used for pixels to real world calculations.
+    /// CalibrationHelper encapsulates information used for pixels to real world calculations.
     /// The user can specify the real distance of a Line drawing and a coordinate system.
-    /// We also keep the length units and the preferred unit for speeds.
+    /// We also keep the preferred units.
     /// </summary>
     public class CalibrationHelper
     {
@@ -120,9 +120,9 @@ namespace Kinovea.ScreenManager
         private bool initialized;
         private CalibratorType calibratorType = CalibratorType.Line;
         private ICalibrator calibrator;
-        private CalibrationLine calibrationLine = new CalibrationLine();
         private CalibrationPlane calibrationPlane = new CalibrationPlane();
         private DistortionHelper distortionHelper = new DistortionHelper();
+        private Guid calibrationDrawingId;
         private Size imageSize;
         private CoordinateSystemGrid coordinateSystemGrid;
         private LengthUnit lengthUnit = LengthUnit.Pixels;
@@ -144,25 +144,31 @@ namespace Kinovea.ScreenManager
             angleUnit = PreferencesManager.PlayerPreferences.AngleUnit;
             angularVelocityUnit = PreferencesManager.PlayerPreferences.AngularVelocityUnit;
             angularAccelerationUnit = PreferencesManager.PlayerPreferences.AngularAccelerationUnit;
-            calibrator = calibrationLine;
+            calibrator = calibrationPlane;
         }
         #endregion
         
+        /// <summary>
+        /// Initialize calibration space after a change in image size.
+        /// </summary>
         public void Initialize(Size imageSize, Func<long, PointF> getCalibrationOrigin)
         {
             this.imageSize = imageSize;
-            SetOrigin(imageSize.Center());
             this.getCalibrationOrigin = getCalibrationOrigin;
+            Reset();
             initialized = true;
-            ComputeCoordinateSystemGrid();
         }
 
         public void Reset()
         {
-            SetOrigin(imageSize.Center());
             calibratorType = CalibratorType.Line;
-            calibrationLine = new CalibrationLine();
-            calibrator = calibrationLine;
+            calibrationPlane = new CalibrationPlane();
+
+            PointF center = imageSize.Center();
+            calibrationPlane.Initialize(100, center, new PointF(center.X + 100, center.Y));
+
+            //SetOrigin(imageSize.Center());
+            calibrator = calibrationPlane;
 
             distortionHelper = new DistortionHelper();
 
@@ -196,16 +202,6 @@ namespace Kinovea.ScreenManager
             // Used by calibration dialogs to force a calibration method for further computations.
             // Each time the user calibrates, we switch to the method he just used.
             calibratorType = type;
-
-            switch (type)
-            {
-                case CalibratorType.Line:
-                    calibrator = calibrationLine;
-                    break;
-                case CalibratorType.Plane:
-                    calibrator = calibrationPlane;
-                    break;
-            }
         }
         
         public CoordinateSystemGrid GetCoordinateSystemGrid()
@@ -219,33 +215,49 @@ namespace Kinovea.ScreenManager
         }
 
         #region Methods specific to a calibration technique
-        public void CalibrationByLine_Initialize(float ratio)
+        public void CalibrationByLine_Initialize(Guid id, float length, PointF a, PointF b)
         {
-            calibrationLine.Initialize(ratio);
+            calibrationDrawingId = id;
+            PointF aRectif = distortionHelper.Undistort(a);
+            PointF bRectif = distortionHelper.Undistort(b);
+            calibrationPlane.Initialize(length, aRectif, bRectif);
             AfterCalibrationChanged();
         }
-        public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
-        {
-            QuadrilateralF undistorted = new QuadrilateralF(
-                distortionHelper.Undistort(quadImage.A),
-                distortionHelper.Undistort(quadImage.B),
-                distortionHelper.Undistort(quadImage.C),
-                distortionHelper.Undistort(quadImage.D));
 
+        public void CalibrationByLine_Update(Guid id, PointF a, PointF b)
+        {
+            if (calibratorType != CalibratorType.Line || id != this.calibrationDrawingId)
+                return;
+
+            PointF aRectif = distortionHelper.Undistort(a);
+            PointF bRectif = distortionHelper.Undistort(b);
+            calibrationPlane.Update(aRectif, bRectif);
+            AfterCalibrationChanged();
+        }
+
+        public CalibrationPlane CalibrationByLine_GetCalibrator()
+        {
+            return calibrationPlane;
+        }
+
+        public void CalibrationByPlane_Initialize(Guid id, SizeF size, QuadrilateralF quadImage)
+        {
+            calibrationDrawingId = id;
+            QuadrilateralF undistorted = distortionHelper.Undistort(quadImage);
             calibrationPlane.Initialize(size, undistorted);
             AfterCalibrationChanged();
         }
-        public void CalibrationByPlane_Update(QuadrilateralF quadImage)
-        {
-            QuadrilateralF undistorted = new QuadrilateralF(
-                distortionHelper.Undistort(quadImage.A),
-                distortionHelper.Undistort(quadImage.B),
-                distortionHelper.Undistort(quadImage.C),
-                distortionHelper.Undistort(quadImage.D));
 
+        public void CalibrationByPlane_Update(Guid id, QuadrilateralF quadImage)
+        {
+            if (calibratorType != CalibratorType.Plane || id != calibrationDrawingId)
+                return;
+
+            QuadrilateralF undistorted = distortionHelper.Undistort(quadImage);
             calibrationPlane.Update(undistorted);
             AfterCalibrationChanged();
         }
+
         public SizeF CalibrationByPlane_GetRectangleSize()
         {
             // Real size of the calibration rectangle. Used to populate the calibration dialog.
@@ -255,6 +267,7 @@ namespace Kinovea.ScreenManager
         {
             return calibrationPlane.Valid;
         }
+        
         public CalibrationPlane CalibrationByPlane_GetCalibrator()
         {
             return calibrationPlane;
@@ -290,7 +303,7 @@ namespace Kinovea.ScreenManager
                 return GetPoint(p);
 
             PointF origin = getCalibrationOrigin(time);
-            return calibrationLine.Transform(distortionHelper.Undistort(p), origin);
+            return calibrationPlane.Transform(distortionHelper.Undistort(p), origin);
         }
 
         /// <summary>
@@ -538,16 +551,18 @@ namespace Kinovea.ScreenManager
             if(calibratorType == CalibratorType.Line)
             {
                 w.WriteStartElement("CalibrationLine");
-                calibrationLine.WriteXml(w);
+                calibrationPlane.WriteLineXml(w);
                 w.WriteEndElement();
             }
             else if(calibratorType == CalibratorType.Plane)
             {   
                 w.WriteStartElement("CalibrationPlane");                
-                calibrationPlane.WriteXml(w);
+                calibrationPlane.WritePlaneXml(w);
                 w.WriteEndElement();
             }
 
+            w.WriteElementString("CalibrationDrawingId", calibrationDrawingId.ToString());
+            
             w.WriteStartElement("Unit");
             w.WriteAttributeString("Abbreviation", GetLengthAbbreviation());
             w.WriteString(lengthUnit.ToString());
@@ -566,13 +581,21 @@ namespace Kinovea.ScreenManager
                     case "CalibrationPlane":
                         calibratorType = CalibratorType.Plane;
                         calibrator = calibrationPlane;
-                        calibrationPlane.ReadXml(r, scale);
+                        calibrationPlane.ReadPlaneXml(r, scale);
                         ComputeCoordinateSystemGrid();
                         break;
                     case "CalibrationLine":
                         calibratorType = CalibratorType.Line;
-                        calibrator = calibrationLine;
-                        calibrationLine.ReadXml(r, scale);
+                        //calibrator = calibrationLine;
+                        calibrator = calibrationPlane;
+                        calibrationPlane.ReadLineXml(r, scale);
+                        //calibrationLine.ReadXml(r, scale);
+                        break;
+                    case "CalibrationDrawingId":
+                        Guid result;
+                        bool parsed = Guid.TryParse(r.ReadElementContentAsString(), out result);
+                        if (parsed)
+                            calibrationDrawingId = result;
                         break;
                     case "Unit":
                         lengthUnit = (LengthUnit) Enum.Parse(typeof(LengthUnit), r.ReadElementContentAsString());

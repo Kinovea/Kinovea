@@ -20,57 +20,7 @@ namespace Kinovea.ScreenManager
         
         public static CoordinateSystemGrid Find(CalibrationHelper calibrationHelper)
         {
-            switch(calibrationHelper.CalibratorType)
-            {
-                case CalibratorType.Line:
-                    return FindForLineCalibration(calibrationHelper);
-                case CalibratorType.Plane:
-                    return FindForPlaneCalibration(calibrationHelper);
-            }
-
-            return null;
-        }
-
-        private static CoordinateSystemGrid FindForLineCalibration(CalibrationHelper calibrationHelper)
-        {
-            CoordinateSystemGrid grid = new CoordinateSystemGrid();
-            RectangleF imageBounds = new RectangleF(PointF.Empty, calibrationHelper.ImageSize);
-            
-            // The clip window is an inflated version of the image to account for distortion.
-            RectangleF clipWindow = imageBounds.CenteredScale(1.3f);
-
-            // Create a fake plane to act as the user-defined projected plane.
-            QuadrilateralF quadImage = new QuadrilateralF(imageBounds.Deflate(2.0f));
-            PointF a = calibrationHelper.GetPointFromRectified(quadImage.A);
-            PointF b = calibrationHelper.GetPointFromRectified(quadImage.B);
-            PointF d = calibrationHelper.GetPointFromRectified(quadImage.D);
-            RectangleF plane = new RectangleF(0, 0, b.X - a.X, a.Y - d.Y);
-
-            // Define the extended plane (for vanishing point replacement and drawing stop condition) as the reprojection of the whole image.
-            QuadrilateralF extendedPlane = ReprojectImageBounds(calibrationHelper, new QuadrilateralF(imageBounds));
-            
-            CalibrationPlane calibrator = new CalibrationPlane();
-            calibrator.Initialize(plane.Size, quadImage);
-            PointF originImage = calibrationHelper.GetOrigin();
-            PointF originRectified = originImage;
-            if (calibrationHelper.DistortionHelper != null && calibrationHelper.DistortionHelper.Initialized)
-                originRectified = calibrationHelper.DistortionHelper.Undistort(originImage);
-
-            calibrator.SetOrigin(originRectified);
-            
-            // From this point on we are mostly in the same situation as for plane calibration.
-            
-            // stepping size is the same in both directions.
-            int targetSteps = 15;
-            float width = extendedPlane.B.X - extendedPlane.A.X;
-            float step = RangeHelper.FindUsableStepSize(width, targetSteps);
-
-            CreateVerticalGridLines(grid, 0, -step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
-            CreateVerticalGridLines(grid, step, step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
-            CreateHorizontalGridLines(grid, 0, -step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
-            CreateHorizontalGridLines(grid, step, step, calibrator, clipWindow, plane, extendedPlane, true, false, PointF.Empty);
-
-            return grid;
+            return FindForPlaneCalibration(calibrationHelper);
         }
 
         private static CoordinateSystemGrid FindForPlaneCalibration(CalibrationHelper calibrationHelper)
@@ -80,7 +30,6 @@ namespace Kinovea.ScreenManager
             RectangleF clipWindow = imageBounds;
 
             CalibrationPlane calibrator = calibrationHelper.CalibrationByPlane_GetCalibrator();
-
             RectangleF plane = new RectangleF(PointF.Empty, calibrator.Size);
 
             int targetSteps = 15;
@@ -91,7 +40,7 @@ namespace Kinovea.ScreenManager
             QuadrilateralF extendedPlane;
             bool orthogonal;
 
-            if (!calibrator.QuadImage.IsRectangle)
+            if (!calibrator.QuadImage.IsAxisAlignedRectangle)
             {
                 // If perspective plane, define as 2n times the nominal plane centered on origin.
                 orthogonal = false;
@@ -114,7 +63,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                // If flat plane (and no distortion) we know there is no way to get any vanishing point inside the image, 
+                // If flat plane we know there is no way to get any vanishing point inside the image, 
                 // so we can safely use the whole image reprojection as an extended plane.
                 orthogonal = true;
                 QuadrilateralF quadImageBounds = new QuadrilateralF(imageBounds);
@@ -366,7 +315,7 @@ namespace Kinovea.ScreenManager
 
         private static QuadrilateralF GetRandomQuadrilateral(Rectangle window)
         {
-            // A corner in each quadrant.
+            // A vertex in each quadrant.
             // Does not guarantee convexity nor non-colinearity.
             PointF a = GetRandomPoint(window.Left, window.Left + window.Width / 2, window.Top, window.Top + window.Height / 2);
             PointF b = GetRandomPoint(window.Left + window.Width / 2, window.Right, window.Top, window.Top + window.Height / 2);
