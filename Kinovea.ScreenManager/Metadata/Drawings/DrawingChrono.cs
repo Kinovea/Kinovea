@@ -176,8 +176,6 @@ namespace Kinovea.ScreenManager
             style = preset.Clone();
             BindStyle();
             
-            showLabel = true;
-            
             // We use the InfosFading utility to fade the chrono away.
             // The refererence frame will be the frame at which fading start.
             // Must be updated on "Hide" menu.
