@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="CameraManagerDaheng.cs" />
     <Compile Include="Configuration\CameraPropertyManager.cs" />
+    <Compile Include="Configuration\DahengStreamFormat.cs" />
     <Compile Include="Configuration\FormConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>

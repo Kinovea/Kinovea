@@ -37,8 +37,11 @@ namespace Kinovea.Camera.Daheng
 
         public Dictionary<string, CameraProperty> CameraProperties { get; set; }
 
+        public DahengStreamFormat StreamFormat { get; set; }
+
         public SpecificInfo()
         {
+            StreamFormat = DahengStreamFormat.None;
             CameraProperties = new Dictionary<string, CameraProperty>();
         }
     }

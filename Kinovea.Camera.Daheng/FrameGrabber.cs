@@ -44,6 +44,7 @@ namespace Kinovea.Camera.Daheng
         private bool grabbing;
         private bool firstOpen = true;
         private float resultingFramerate = 0;
+        private DahengStreamFormat currentStreamFormat = DahengStreamFormat.RGB;
         private Finishline finishline = new Finishline();
         private Stopwatch swDataRate = new Stopwatch();
         private Averager dataRateAverager = new Averager(0.02);
@@ -84,9 +85,7 @@ namespace Kinovea.Camera.Daheng
 
             width = (int)featureControl.GetIntFeature("Width").GetValue();
             height = (int)featureControl.GetIntFeature("Height").GetValue();
-            isColor = DahengHelper.IsColor(featureControl);
-
-            ImageFormat format = ImageFormat.RGB24;
+            ImageFormat format = DahengHelper.ConvertImageFormat(currentStreamFormat);
             incomingBufferSize = ImageFormatHelper.ComputeBufferSize(width, height, format);
             incomingBuffer = new byte[incomingBufferSize];
 
@@ -209,16 +208,24 @@ namespace Kinovea.Camera.Daheng
 
             // Store the camera object into the specific info so that we can retrieve device informations from the configuration dialog.
             specific.Device = device;
-
+            isColor = DahengHelper.IsColor(featureControl);
+            
             if (firstOpen)
             {
+                // Always default to RGB24 for color cameras and Y800 for mono cameras.
+                // Raw mode will have to be switched explicitly everytime for now.
+                currentStreamFormat = isColor ? DahengStreamFormat.RGB : DahengStreamFormat.Mono;
+
                 // Grab current values.
                 Dictionary<string, CameraProperty> cameraProperties = CameraPropertyManager.Read(device);
                 specific.CameraProperties = cameraProperties;
+                specific.StreamFormat = currentStreamFormat;
             }
             else
             {
                 CameraPropertyManager.WriteCriticalProperties(device, specific.CameraProperties);
+                if (specific.StreamFormat != currentStreamFormat)
+                    currentStreamFormat = specific.StreamFormat;
             }
 
             try
@@ -256,12 +263,22 @@ namespace Kinovea.Camera.Daheng
                     {
                         if (isColor)
                         {
-                            IntPtr buffer = objIBaseData.ConvertToRGB24(emValidBits, GX_BAYER_CONVERT_TYPE_LIST.GX_RAW2RGB_NEIGHBOUR, true);
-
-                            FillRGB24(buffer);
+                            if (currentStreamFormat == DahengStreamFormat.RGB)
+                            {
+                                IntPtr buffer = objIBaseData.ConvertToRGB24(emValidBits, GX_BAYER_CONVERT_TYPE_LIST.GX_RAW2RGB_NEIGHBOUR, true);
+                                FillRGB24(buffer);
+                            }
+                            else if (currentStreamFormat == DahengStreamFormat.Raw)
+                            {
+                                IntPtr bufferRaw = objIBaseData.ConvertToRaw8(emValidBits);
+                                FillY800(bufferRaw);
+                            }
                         }
                         else
                         {
+                            IntPtr buffer = objIBaseData.GetBuffer();
+                            FillY800(buffer);
+
                             //IntPtr pBufferMono = IntPtr.Zero;
                             //if (IsPixelFormat8(objIBaseData.GetPixelFormat()))
                             //{
@@ -289,6 +306,20 @@ namespace Kinovea.Camera.Daheng
             {
                 IntPtr ptrDst = (IntPtr)p;
                 NativeMethods.memcpy(ptrDst.ToPointer(), buffer.ToPointer(), width * 3 * height);
+            }
+
+            ComputeDataRate(incomingBufferSize);
+
+            if (FrameProduced != null)
+                FrameProduced(this, new FrameProducedEventArgs(incomingBuffer, incomingBufferSize));
+        }
+
+        private unsafe void FillY800(IntPtr buffer)
+        {
+            fixed (byte* p = incomingBuffer)
+            {
+                IntPtr ptrDst = (IntPtr)p;
+                NativeMethods.memcpy(ptrDst.ToPointer(), buffer.ToPointer(), width * height);
             }
 
             ComputeDataRate(incomingBufferSize);

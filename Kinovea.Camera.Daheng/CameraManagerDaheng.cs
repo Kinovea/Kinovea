@@ -195,6 +195,7 @@ namespace Kinovea.Camera.Daheng
 
                 if (form.SpecificChanged)
                 {
+                    info.StreamFormat = form.SelectedStreamFormat;
                     info.CameraProperties = form.CameraProperties;
 
                     summary.UpdateDisplayRectangle(Rectangle.Empty);

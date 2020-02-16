@@ -52,15 +52,22 @@ namespace Kinovea.Camera.Daheng
             get { return specificChanged; }
         }
 
+        public DahengStreamFormat SelectedStreamFormat
+        {
+            get { return selectedStreamFormat; }
+        }
+
         public Dictionary<string, CameraProperty> CameraProperties
         {
             get { return cameraProperties; }
         } 
 
         private CameraSummary summary;
-        private IGXDevice device;
         private bool iconChanged;
         private bool specificChanged;
+        private IGXDevice device;
+        private IGXFeatureControl featureControl;
+        private DahengStreamFormat selectedStreamFormat;
         private Dictionary<string, CameraProperty> cameraProperties = new Dictionary<string, CameraProperty>();
         private Dictionary<string, AbstractCameraPropertyView> propertiesControls = new Dictionary<string, AbstractCameraPropertyView>();
         private Action disconnect;
@@ -87,10 +94,23 @@ namespace Kinovea.Camera.Daheng
                 return;
 
             device = specific.Device;
+
+            try
+            {
+                featureControl = device.GetRemoteFeatureControl();
+            }
+            catch
+            {
+            }
+
+            if (featureControl == null)
+                return;
+
             cameraProperties = CameraPropertyManager.Read(device);
             if (cameraProperties.Count != specific.CameraProperties.Count)
                specificChanged = true;
 
+            PopulateStreamFormat();
             PopulateCameraControls();
 
             this.Text = CameraLang.FormConfiguration_Title;
@@ -109,6 +129,36 @@ namespace Kinovea.Camera.Daheng
             }
             
             fip.Dispose();
+        }
+
+        private void PopulateStreamFormat()
+        {
+            
+            lblColorSpace.Text = CameraLang.FormConfiguration_Properties_StreamFormat;
+
+            IGXFeatureControl featureControl = device.GetRemoteFeatureControl();
+            if (featureControl == null)
+                return;
+
+            SpecificInfo specific = summary.Specific as SpecificInfo;
+            List<DahengStreamFormat> streamFormats = DahengHelper.GetSupportedStreamFormats(featureControl);
+            cmbFormat.Items.Clear();
+
+            foreach (DahengStreamFormat streamFormat in streamFormats)
+            {
+                cmbFormat.Items.Add(streamFormat);
+                if (streamFormat == specific.StreamFormat)
+                {
+                    selectedStreamFormat = streamFormat;
+                    cmbFormat.SelectedIndex = cmbFormat.Items.Count - 1;
+                }
+            }
+
+            if (cmbFormat.SelectedIndex < 0)
+            {
+                selectedStreamFormat = (DahengStreamFormat)cmbFormat.Items[0];
+                cmbFormat.SelectedIndex = 0;
+            }
         }
 
         private void PopulateCameraControls()
@@ -183,12 +233,23 @@ namespace Kinovea.Camera.Daheng
             specificChanged = true;
         }
 
+        private void cmbFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DahengStreamFormat selected = (DahengStreamFormat)cmbFormat.SelectedItem;
+            if (selectedStreamFormat == selected)
+                return;
+
+            selectedStreamFormat = selected;
+            specificChanged = true;
+        }
+
         private void BtnReconnect_Click(object sender, EventArgs e)
         {
             SpecificInfo info = summary.Specific as SpecificInfo;
             if (info == null)
                 return;
 
+            info.StreamFormat = this.selectedStreamFormat;
             info.CameraProperties = this.CameraProperties;
             summary.UpdateDisplayRectangle(Rectangle.Empty);
             CameraTypeManager.UpdatedCameraSummary(summary);
@@ -203,6 +264,7 @@ namespace Kinovea.Camera.Daheng
             device = specific.Device;
             cameraProperties = CameraPropertyManager.Read(device);
 
+            PopulateStreamFormat();
             RemoveCameraControls();
             PopulateCameraControls();
             UpdateResultingFramerate();

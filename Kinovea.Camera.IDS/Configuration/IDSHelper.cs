@@ -63,7 +63,7 @@ namespace Kinovea.Camera.IDS
         {
             uEye.Defines.ColorMode colorMode;
             camera.PixelFormat.Get(out colorMode);
-            return GetImageFormat(colorMode);
+            return ConvertImageFormat(colorMode);
         }
 
         public static float GetFramerate(uEye.Camera camera)
@@ -73,7 +73,7 @@ namespace Kinovea.Camera.IDS
             return (float)currentValue;
         }
 
-        private static ImageFormat GetImageFormat(uEye.Defines.ColorMode colorMode)
+        private static ImageFormat ConvertImageFormat(uEye.Defines.ColorMode colorMode)
         {
             ImageFormat format = ImageFormat.None;
 

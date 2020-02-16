@@ -161,7 +161,6 @@ namespace Kinovea.Camera.IDS
         private void PopulateCameraControls()
         {
             int top = lblAuto.Bottom;
-            
             AddCameraProperty("width", CameraLang.FormConfiguration_Properties_ImageWidth, top);
             AddCameraProperty("height", CameraLang.FormConfiguration_Properties_ImageHeight, top + 30);
             AddCameraProperty("pixelclock", "Pixel clock (MHz):", top + 60);

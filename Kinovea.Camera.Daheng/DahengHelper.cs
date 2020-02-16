@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GxIAPINET;
+using Kinovea.Video;
 
 namespace Kinovea.Camera.Daheng
 {
@@ -98,6 +99,39 @@ namespace Kinovea.Camera.Daheng
             return result;
         }
 
+        public static List<DahengStreamFormat> GetSupportedStreamFormats(IGXFeatureControl featureControl)
+        {
+            List<DahengStreamFormat> list = new List<DahengStreamFormat>();
+            if (IsColor(featureControl))
+            {
+                list.Add(DahengStreamFormat.RGB);
+                list.Add(DahengStreamFormat.Raw);
+            }
+            else
+            {
+                list.Add(DahengStreamFormat.Mono);
+            }
+
+            return list;
+        }
+
+        public static ImageFormat ConvertImageFormat(DahengStreamFormat format)
+        {
+            switch (format)
+            {
+                case DahengStreamFormat.RGB:
+                    return ImageFormat.RGB24;
+                case DahengStreamFormat.Mono:
+                case DahengStreamFormat.Raw:
+                default:
+                    return ImageFormat.Y800;
+            }
+        }
+
+        /// <summary>
+        /// Make sure the feature is triggered at least once, 
+        /// either it's currently in continuous mode or we trigger it manually.
+        /// </summary>
         private static void ContinuousOrOnce(IGXFeatureControl featureControl, string identifier)
         {
             if (featureControl == null)

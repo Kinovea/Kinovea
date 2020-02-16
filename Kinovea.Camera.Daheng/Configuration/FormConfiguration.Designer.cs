@@ -49,6 +49,8 @@ namespace Kinovea.Camera.Daheng
         private void InitializeComponent()
         {
       this.gbProperties = new System.Windows.Forms.GroupBox();
+      this.cmbFormat = new System.Windows.Forms.ComboBox();
+      this.lblColorSpace = new System.Windows.Forms.Label();
       this.lblResultingFramerateValue = new System.Windows.Forms.Label();
       this.lblResultingFramerate = new System.Windows.Forms.Label();
       this.lblAuto = new System.Windows.Forms.Label();
@@ -67,14 +69,40 @@ namespace Kinovea.Camera.Daheng
       this.gbProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.gbProperties.Controls.Add(this.cmbFormat);
+      this.gbProperties.Controls.Add(this.lblColorSpace);
       this.gbProperties.Controls.Add(this.lblResultingFramerateValue);
       this.gbProperties.Controls.Add(this.lblResultingFramerate);
       this.gbProperties.Controls.Add(this.lblAuto);
       this.gbProperties.Location = new System.Drawing.Point(12, 94);
       this.gbProperties.Name = "gbProperties";
-      this.gbProperties.Size = new System.Drawing.Size(434, 259);
+      this.gbProperties.Size = new System.Drawing.Size(434, 293);
       this.gbProperties.TabIndex = 80;
       this.gbProperties.TabStop = false;
+      // 
+      // cmbFormat
+      // 
+      this.cmbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbFormat.FormattingEnabled = true;
+      this.cmbFormat.Location = new System.Drawing.Point(214, 19);
+      this.cmbFormat.Name = "cmbFormat";
+      this.cmbFormat.Size = new System.Drawing.Size(144, 21);
+      this.cmbFormat.TabIndex = 106;
+      this.cmbFormat.SelectedIndexChanged += new System.EventHandler(this.cmbFormat_SelectedIndexChanged);
+      // 
+      // lblColorSpace
+      // 
+      this.lblColorSpace.BackColor = System.Drawing.Color.Transparent;
+      this.lblColorSpace.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblColorSpace.ForeColor = System.Drawing.Color.Black;
+      this.lblColorSpace.Location = new System.Drawing.Point(21, 19);
+      this.lblColorSpace.Name = "lblColorSpace";
+      this.lblColorSpace.Size = new System.Drawing.Size(187, 23);
+      this.lblColorSpace.TabIndex = 107;
+      this.lblColorSpace.Text = "Stream format:";
+      this.lblColorSpace.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // lblResultingFramerateValue
       // 
@@ -83,7 +111,7 @@ namespace Kinovea.Camera.Daheng
       this.lblResultingFramerateValue.BackColor = System.Drawing.Color.Transparent;
       this.lblResultingFramerateValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblResultingFramerateValue.ForeColor = System.Drawing.Color.Black;
-      this.lblResultingFramerateValue.Location = new System.Drawing.Point(154, 221);
+      this.lblResultingFramerateValue.Location = new System.Drawing.Point(154, 255);
       this.lblResultingFramerateValue.Name = "lblResultingFramerateValue";
       this.lblResultingFramerateValue.Size = new System.Drawing.Size(13, 13);
       this.lblResultingFramerateValue.TabIndex = 105;
@@ -97,7 +125,7 @@ namespace Kinovea.Camera.Daheng
       this.lblResultingFramerate.BackColor = System.Drawing.Color.Transparent;
       this.lblResultingFramerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblResultingFramerate.ForeColor = System.Drawing.Color.Black;
-      this.lblResultingFramerate.Location = new System.Drawing.Point(21, 221);
+      this.lblResultingFramerate.Location = new System.Drawing.Point(21, 255);
       this.lblResultingFramerate.Name = "lblResultingFramerate";
       this.lblResultingFramerate.Size = new System.Drawing.Size(101, 13);
       this.lblResultingFramerate.TabIndex = 104;
@@ -110,7 +138,7 @@ namespace Kinovea.Camera.Daheng
       this.lblAuto.BackColor = System.Drawing.Color.Transparent;
       this.lblAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblAuto.ForeColor = System.Drawing.Color.Black;
-      this.lblAuto.Location = new System.Drawing.Point(384, 19);
+      this.lblAuto.Location = new System.Drawing.Point(384, 53);
       this.lblAuto.Name = "lblAuto";
       this.lblAuto.Size = new System.Drawing.Size(47, 23);
       this.lblAuto.TabIndex = 101;
@@ -172,7 +200,7 @@ namespace Kinovea.Camera.Daheng
       // 
       this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.btnApply.Location = new System.Drawing.Point(349, 359);
+      this.btnApply.Location = new System.Drawing.Point(349, 393);
       this.btnApply.Name = "btnApply";
       this.btnApply.Size = new System.Drawing.Size(99, 24);
       this.btnApply.TabIndex = 200;
@@ -182,7 +210,7 @@ namespace Kinovea.Camera.Daheng
       // btnReconnect
       // 
       this.btnReconnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnReconnect.Location = new System.Drawing.Point(244, 359);
+      this.btnReconnect.Location = new System.Drawing.Point(244, 393);
       this.btnReconnect.Name = "btnReconnect";
       this.btnReconnect.Size = new System.Drawing.Size(99, 24);
       this.btnReconnect.TabIndex = 203;
@@ -195,7 +223,7 @@ namespace Kinovea.Camera.Daheng
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(458, 395);
+      this.ClientSize = new System.Drawing.Size(458, 429);
       this.Controls.Add(this.btnReconnect);
       this.Controls.Add(this.btnApply);
       this.Controls.Add(this.groupBox2);
@@ -223,5 +251,7 @@ namespace Kinovea.Camera.Daheng
         private System.Windows.Forms.Button btnReconnect;
         private System.Windows.Forms.Label lblResultingFramerateValue;
         private System.Windows.Forms.Label lblResultingFramerate;
+        private System.Windows.Forms.ComboBox cmbFormat;
+        private System.Windows.Forms.Label lblColorSpace;
     }
 }
