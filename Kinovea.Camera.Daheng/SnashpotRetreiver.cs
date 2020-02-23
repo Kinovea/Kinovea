@@ -214,17 +214,8 @@ namespace Kinovea.Camera.Daheng
                         }
                         else
                         {
-                            //IntPtr pBufferMono = IntPtr.Zero;
-                            //if (IsPixelFormat8(objIBaseData.GetPixelFormat()))
-                            //{
-                            //    pBufferMono = objIBaseData.GetBuffer();
-                            //}
-                            //else
-                            //{
-                            //    pBufferMono = objIBaseData.ConvertToRaw8(emValidBits);
-                            //}
-
-                            //Marshal.Copy(pBufferMono, m_byMonoBuffer, 0, width * height);
+                            IntPtr buffer = objIBaseData.GetBuffer();
+                            FillY800(buffer);
                         }
                     }
                 }
@@ -249,6 +240,46 @@ namespace Kinovea.Camera.Daheng
                 int stride = rect.Width * 3;
                 NativeMethods.memcpy(bmpData.Scan0.ToPointer(), buffer.ToPointer(), stride * height);
 
+                int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Video.ImageFormat.RGB24);
+                imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while copying bitmaps. {0}", e.Message);
+            }
+            finally
+            {
+                if (bmpData != null)
+                    image.UnlockBits(bmpData);
+            }
+        }
+
+        private unsafe void FillY800(IntPtr buffer)
+        {
+            image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            Rectangle rect = new Rectangle(0, 0, width, height);
+            BitmapData bmpData = null;
+
+            try
+            {
+                bmpData = image.LockBits(rect, ImageLockMode.WriteOnly, image.PixelFormat);
+                int dstOffset = bmpData.Stride - (rect.Width * 3);
+
+                byte* src = (byte*)buffer.ToPointer();
+                byte* dst = (byte*)bmpData.Scan0.ToPointer();
+
+                for (int i = 0; i < rect.Height; i++)
+                {
+                    for (int j = 0; j < rect.Width; j++)
+                    {
+                        dst[0] = dst[1] = dst[2] = *src;
+                        src++;
+                        dst += 3;
+                    }
+
+                    dst += dstOffset;
+                }
+                
                 int bufferSize = ImageFormatHelper.ComputeBufferSize(width, height, Video.ImageFormat.RGB24);
                 imageDescriptor = new ImageDescriptor(Video.ImageFormat.RGB24, image.Width, image.Height, true, bufferSize);
             }
