@@ -273,6 +273,13 @@ namespace Kinovea.Camera.Daheng
         private void UpdateResultingFramerate()
         {
             float resultingFramerate = (float)DahengHelper.GetResultingFramerate(device);
+            if (resultingFramerate == 0)
+            {
+                lblResultingFramerate.Visible = false;
+                lblResultingFramerateValue.Visible = false;
+                return;
+            }
+
             lblResultingFramerateValue.Text = string.Format("{0:0.##}", resultingFramerate);
 
             bool discrepancy = false;

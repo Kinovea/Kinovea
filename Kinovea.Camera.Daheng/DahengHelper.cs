@@ -161,10 +161,12 @@ namespace Kinovea.Camera.Daheng
             ContinuousOrOnce(featureControl, "BalanceWhiteAuto");
 
             // This will allow the camera to send the max bandwidth it can, possibly saturating the link.
-            featureControl.GetEnumFeature("DeviceLinkThroughputLimitMode").SetValue("Off");
+            if (featureControl.IsImplemented("DeviceLinkThroughputLimitMode") && featureControl.IsWritable("DeviceLinkThroughputLimitMode"))
+                featureControl.GetEnumFeature("DeviceLinkThroughputLimitMode").SetValue("Off");
 
             // Make sure the user's custom framerate is respected.
-            featureControl.GetEnumFeature("AcquisitionFrameRateMode").SetValue("On");
+            if (featureControl.IsImplemented("AcquisitionFrameRateMode") && featureControl.IsWritable("AcquisitionFrameRateMode"))
+                featureControl.GetEnumFeature("AcquisitionFrameRateMode").SetValue("On");
         }
 
         public static double GetResultingFramerate(IGXDevice device)
@@ -176,7 +178,14 @@ namespace Kinovea.Camera.Daheng
             if (featureControl == null)
                 return 0;
 
-            return featureControl.GetFloatFeature("CurrentAcquisitionFrameRate").GetValue();
+            string identifier = "CurrentAcquisitionFrameRate";
+            bool implemented = featureControl.IsImplemented(identifier);
+            bool readable = featureControl.IsReadable(identifier);
+
+            if (!implemented || !readable)
+                return 0;
+
+            return featureControl.GetFloatFeature(identifier).GetValue();
         }
     }
 }
