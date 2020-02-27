@@ -80,10 +80,10 @@ namespace Kinovea.Camera.Daheng
 
             // We need to write all the properties again from here, since the range of possible values depends on image size.
             if (properties.ContainsKey("Width"))
-                WriteInt(featureControl, properties["Width"]);
+                WriteSize(featureControl, properties["Width"], "OffsetX");
 
             if (properties.ContainsKey("Height"))
-                WriteInt(featureControl, properties["Height"]);
+                WriteSize(featureControl, properties["Height"], "OffsetY");
 
             if (properties.ContainsKey("ExposureTime"))
                 WriteFloat(featureControl, properties["ExposureTime"]);
@@ -281,6 +281,39 @@ namespace Kinovea.Camera.Daheng
                 value = value - remainder + step;
 
             featureControl.GetIntFeature(property.Identifier).SetValue(value);
+        }
+
+        private static void WriteSize(IGXFeatureControl featureControl, CameraProperty property, string identifierOffset)
+        {
+            bool writeable = featureControl.IsWritable(property.Identifier);
+            if (!writeable)
+                return;
+
+            int value = int.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+            int min = int.Parse(property.Minimum, CultureInfo.InvariantCulture);
+            int max = int.Parse(property.Maximum, CultureInfo.InvariantCulture);
+            int step = int.Parse(property.Step, CultureInfo.InvariantCulture);
+
+            int remainder = (value - min) % step;
+            if (remainder != 0)
+                value = value - remainder + step;
+
+            featureControl.GetIntFeature(property.Identifier).SetValue(value);
+
+            // Centering of the ROI.
+            bool writeableOffset = featureControl.IsWritable(identifierOffset);
+            if (!writeableOffset)
+                return;
+
+            int offset = (max - value) / 2;
+            int minOffset = (int)featureControl.GetIntFeature(identifierOffset).GetMin();
+            int stepOffset = (int)featureControl.GetIntFeature(identifierOffset).GetInc();
+
+            int remainderOffset = (offset - minOffset) % stepOffset;
+            if (remainderOffset != 0)
+                offset = offset - remainderOffset + stepOffset;
+
+            featureControl.GetIntFeature(identifierOffset).SetValue(offset);
         }
     }
 }
