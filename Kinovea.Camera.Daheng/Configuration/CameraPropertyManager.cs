@@ -25,8 +25,8 @@ namespace Kinovea.Camera.Daheng
             IGXFeatureControl featureControl = device.GetRemoteFeatureControl();
 
             // Retrieve camera properties we support.
-            ReadSize(featureControl, properties, "Width");
-            ReadSize(featureControl, properties, "Height");
+            ReadSize(featureControl, properties, "Width", "WidthMax");
+            ReadSize(featureControl, properties, "Height", "HeightMax");
             ReadFramerate(featureControl, properties);
             ReadExposure(featureControl, properties);
             ReadGain(featureControl, properties);
@@ -95,11 +95,14 @@ namespace Kinovea.Camera.Daheng
                 WriteFloat(featureControl, properties["Gain"]);
         }
 
-        private static void ReadSize(IGXFeatureControl featureControl, Dictionary<string, CameraProperty> properties, string identifier)
+        private static void ReadSize(IGXFeatureControl featureControl, Dictionary<string, CameraProperty> properties, string identifier, string identifierMax)
         {
             bool isImplemented = featureControl.IsImplemented(identifier);
             bool isReadable = featureControl.IsReadable(identifier);
             bool isWriteable = featureControl.IsWritable(identifier);
+
+            bool isImplementedMax = featureControl.IsImplemented(identifierMax);
+            bool isReadableMax = featureControl.IsReadable(identifierMax);
 
             CameraProperty p = new CameraProperty();
             p.Identifier = identifier;
@@ -114,6 +117,9 @@ namespace Kinovea.Camera.Daheng
             double min = featureControl.GetIntFeature(identifier).GetMin();
             double max = featureControl.GetIntFeature(identifier).GetMax();
             double step = featureControl.GetIntFeature(identifier).GetInc();
+
+            if (isImplementedMax && isReadableMax)
+                max = featureControl.GetIntFeature(identifierMax).GetValue();
 
             p.Minimum = min.ToString(CultureInfo.InvariantCulture);
             p.Maximum = max.ToString(CultureInfo.InvariantCulture);
@@ -286,7 +292,8 @@ namespace Kinovea.Camera.Daheng
         private static void WriteSize(IGXFeatureControl featureControl, CameraProperty property, string identifierOffset)
         {
             bool writeable = featureControl.IsWritable(property.Identifier);
-            if (!writeable)
+            bool writeableOffset = featureControl.IsWritable(identifierOffset);
+            if (!writeable || !writeableOffset)
                 return;
 
             int value = int.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
@@ -298,13 +305,6 @@ namespace Kinovea.Camera.Daheng
             if (remainder != 0)
                 value = value - remainder + step;
 
-            featureControl.GetIntFeature(property.Identifier).SetValue(value);
-
-            // Centering of the ROI.
-            bool writeableOffset = featureControl.IsWritable(identifierOffset);
-            if (!writeableOffset)
-                return;
-
             int offset = (max - value) / 2;
             int minOffset = (int)featureControl.GetIntFeature(identifierOffset).GetMin();
             int stepOffset = (int)featureControl.GetIntFeature(identifierOffset).GetInc();
@@ -313,7 +313,18 @@ namespace Kinovea.Camera.Daheng
             if (remainderOffset != 0)
                 offset = offset - remainderOffset + stepOffset;
 
-            featureControl.GetIntFeature(identifierOffset).SetValue(offset);
+            // We need to be careful not to write the value if it doesn't fit, due to the offset.
+            int currentValue = (int)featureControl.GetIntFeature(property.Identifier).GetValue();
+            if (value > currentValue)
+            {
+                featureControl.GetIntFeature(identifierOffset).SetValue(offset);
+                featureControl.GetIntFeature(property.Identifier).SetValue(value);
+            }
+            else
+            {
+                featureControl.GetIntFeature(property.Identifier).SetValue(value);
+                featureControl.GetIntFeature(identifierOffset).SetValue(offset);
+            }
         }
     }
 }
