@@ -97,18 +97,19 @@ namespace Kinovea.Camera.Daheng
 
         private static void ReadSize(IGXFeatureControl featureControl, Dictionary<string, CameraProperty> properties, string identifier, string identifierMax)
         {
-            bool isImplemented = featureControl.IsImplemented(identifier);
-            bool isReadable = featureControl.IsReadable(identifier);
-            bool isWriteable = featureControl.IsWritable(identifier);
-
-            bool isImplementedMax = featureControl.IsImplemented(identifierMax);
-            bool isReadableMax = featureControl.IsReadable(identifierMax);
-
             CameraProperty p = new CameraProperty();
             p.Identifier = identifier;
-            p.Supported = isImplemented && isReadable;
-            p.ReadOnly = !isWriteable;
+            p.Supported = false;
             p.Type = CameraPropertyType.Integer;
+
+            bool isImplemented = featureControl.IsImplemented(identifier);
+            if (!isImplemented)
+                return;
+
+            // We don't test for writeable as it's dynamic depending on the camera status.
+            bool isReadable = featureControl.IsReadable(identifier);
+            p.Supported = isReadable;
+            p.ReadOnly = false;
 
             if (!p.Supported)
                 return;
@@ -118,7 +119,7 @@ namespace Kinovea.Camera.Daheng
             double max = featureControl.GetIntFeature(identifier).GetMax();
             double step = featureControl.GetIntFeature(identifier).GetInc();
 
-            if (isImplementedMax && isReadableMax)
+            if (featureControl.IsImplemented(identifierMax) && featureControl.IsReadable(identifierMax))
                 max = featureControl.GetIntFeature(identifierMax).GetValue();
 
             p.Minimum = min.ToString(CultureInfo.InvariantCulture);
@@ -133,17 +134,19 @@ namespace Kinovea.Camera.Daheng
         private static CameraProperty ReadFramerate(IGXFeatureControl featureControl, Dictionary<string, CameraProperty> properties)
         {
             string identifier = "AcquisitionFrameRate";
-            bool isImplemented = featureControl.IsImplemented(identifier);
-            bool isReadable = featureControl.IsReadable(identifier);
-            bool isWriteable = featureControl.IsWritable(identifier);
-
             CameraProperty p = new CameraProperty();
             p.Identifier = identifier;
-            p.Supported = isImplemented && isReadable;
-
-            p.ReadOnly = !isWriteable;
+            p.Supported = false;
             p.Type = CameraPropertyType.Float;
 
+            bool isImplemented = featureControl.IsImplemented(identifier);
+            if (!isImplemented)
+                return p;
+
+            bool isReadable = featureControl.IsReadable(identifier);
+            bool isWriteable = featureControl.IsWritable(identifier);
+            p.ReadOnly = !isWriteable;
+            p.Supported = isReadable;
             if (!p.Supported)
                 return p;
 
@@ -170,15 +173,19 @@ namespace Kinovea.Camera.Daheng
         private static CameraProperty ReadExposure(IGXFeatureControl featureControl, Dictionary<string, CameraProperty> properties)
         {
             string identifier = "ExposureTime";
-            bool isImplemented = featureControl.IsImplemented(identifier);
-            bool isReadable = featureControl.IsReadable(identifier);
-            
             CameraProperty p = new CameraProperty();
             p.Identifier = identifier;
-            p.Supported = isImplemented && isReadable;
-            p.ReadOnly = false;
+            p.Supported = false;
             p.Type = CameraPropertyType.Float;
 
+            bool isImplemented = featureControl.IsImplemented(identifier);
+            if (!isImplemented)
+                return p;
+
+            bool isReadable = featureControl.IsReadable(identifier);
+            bool isWriteable = featureControl.IsWritable(identifier);
+            p.ReadOnly = !isWriteable;
+            p.Supported = isReadable;
             if (!p.Supported)
                 return p;
 
@@ -213,19 +220,22 @@ namespace Kinovea.Camera.Daheng
         private static CameraProperty ReadGain(IGXFeatureControl featureControl, Dictionary<string, CameraProperty> properties)
         {
             string identifier = "Gain";
-            bool isImplemented = featureControl.IsImplemented(identifier);
-            bool isReadable = featureControl.IsReadable(identifier);
-
             CameraProperty p = new CameraProperty();
             p.Identifier = identifier;
-            p.Supported = isImplemented && isReadable;
-            p.ReadOnly = false;
+            p.Supported = false;
             p.Type = CameraPropertyType.Float;
 
+            bool isImplemented = featureControl.IsImplemented(identifier);
+            if (!isImplemented)
+                return p;
+
+            bool isReadable = featureControl.IsReadable(identifier);
+            bool isWriteable = featureControl.IsWritable(identifier);
+            p.ReadOnly = !isWriteable;
+            p.Supported = isReadable;
             if (!p.Supported)
                 return p;
 
-            // All values are already in microseconds.
             double value = featureControl.GetFloatFeature(identifier).GetValue();
             double min = featureControl.GetFloatFeature(identifier).GetMin();
             double max = featureControl.GetFloatFeature(identifier).GetMax();
@@ -255,6 +265,9 @@ namespace Kinovea.Camera.Daheng
 
         private static void WriteFloat(IGXFeatureControl featureControl, CameraProperty property)
         {
+            if (property.ReadOnly)
+                return;
+
             // Commit the auto property first, to flip writeability of the master.
             if (property.CanBeAutomatic)
             {
@@ -274,6 +287,9 @@ namespace Kinovea.Camera.Daheng
 
         private static void WriteInt(IGXFeatureControl featureControl, CameraProperty property)
         {
+            if (property.ReadOnly)
+                return;
+
             bool writeable = featureControl.IsWritable(property.Identifier);
             if (!writeable)
                 return;
@@ -291,6 +307,9 @@ namespace Kinovea.Camera.Daheng
 
         private static void WriteSize(IGXFeatureControl featureControl, CameraProperty property, string identifierOffset)
         {
+            if (property.ReadOnly)
+                return;
+
             bool writeable = featureControl.IsWritable(property.Identifier);
             bool writeableOffset = featureControl.IsWritable(identifierOffset);
             if (!writeable || !writeableOffset)
