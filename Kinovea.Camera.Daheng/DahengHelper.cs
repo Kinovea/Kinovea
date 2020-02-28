@@ -180,9 +180,11 @@ namespace Kinovea.Camera.Daheng
 
             string identifier = "CurrentAcquisitionFrameRate";
             bool implemented = featureControl.IsImplemented(identifier);
+            if (!implemented)
+                return 0;
+            
             bool readable = featureControl.IsReadable(identifier);
-
-            if (!implemented || !readable)
+            if (!readable)
                 return 0;
 
             return featureControl.GetFloatFeature(identifier).GetValue();
