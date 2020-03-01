@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.1</FormatVersion>
+  <Id>2cb37792-a7c9-4bc6-b2ef-dfc79f8371b7</Id>
+  <Name>Equus</Name>
+  <DisplayName>DrawingName_equus</DisplayName>
+  
+  <!-- Data -->
+  <Points>
+    <Point name="Scapula" value="122;75" color="#FD160E" />
+    <Point name="Shoulder" value="53;179" color="#FF9028" />
+    <Point name="Elbow" value="99;265" color="#FFEA30" />
+    <Point name="Knee" value="94;415" color="#7FFF30" />
+    <Point name="Fetlock-front" value="92;520" color="#2DFFD1" />
+    <Point name="Hoof-front" value="64;560" color="#35BFFF" />
+    <Point name="Pelvis" value="404;72" color="#FD160E" />
+    <Point name="Hip" value="489;139" color="#FF32A3" />
+    <Point name="Stifle" value="474;275" color="#DB3FFF" />
+    <Point name="Hock" value="575;405" color="#6A26FF" />
+    <Point name="Fetlock-back" value="588;519" color="#264AFF" />
+    <Point name="Hoof-back" value="566;574" color="#28D0FF" />
+  </Points>
+  <Segments>
+    <Segment name="0-1" point1="0" point2="1" style="Solid" width="4" color="#FF9028"/>
+    <Segment name="1-2" point1="1" point2="2" style="Solid" width="4" color="#FFEA30" />
+    <Segment name="2-3" point1="2" point2="3" style="Solid" width="4" color="#7FFF30" />
+    <Segment name="3-4" point1="3" point2="4" style="Solid" width="4" color="#2DFFD1" />
+    <Segment name="4-5" point1="4" point2="5" style="Solid" width="4" color="#35BFFF" />
+    <Segment name="0-6" point1="0" point2="6" style="Solid" width="4" color="#FD160E" />
+    <Segment name="6-7" point1="6" point2="7" style="Solid" width="4" color="#FF32A3" />
+    <Segment name="7-8" point1="7" point2="8" style="Solid" width="4" color="#DB3FFF" />
+    <Segment name="8-9" point1="8" point2="9" style="Solid" width="4" color="#6A26FF" />
+    <Segment name="9-10" point1="9" point2="10" style="Solid" width="4" color="#264AFF" />
+    <Segment name="10-11" point1="10" point2="11" style="Solid" width="4" color="#28D0FF" />
+  </Segments>
+
+  <!-- Interaction -->
+  <Handles>
+    <Handle type="Point" name="Scapula" reference="0" color="#FD160E" trackable="true" />
+    <Handle type="Point" name="Shoulder" reference="1" color="#FF9028" trackable="true" />
+    <Handle type="Point" name="Elbow" reference="2" color="#FFEA30" trackable="true" />
+    <Handle type="Point" name="Knee" reference="3" color="#7FFF30" trackable="true" />
+    <Handle type="Point" name="Fetlock-front" reference="4" color="#2DFFD1" trackable="true" />
+    <Handle type="Point" name="Hoof-front" reference="5" color="#35BFFF" trackable="true" />
+    <Handle type="Point" name="Pelvis" reference="6" color="#FD160E" trackable="true" />
+    <Handle type="Point" name="Hip" reference="7" color="#FF32A3" trackable="true" />
+    <Handle type="Point" name="Stifle" reference="8" color="#DB3FFF" trackable="true" />
+    <Handle type="Point" name="Hock" reference="9" color="#6A26FF" trackable="true" />
+    <Handle type="Point" name="Fetlock-back" reference="10" color="#264AFF" trackable="true" />
+    <Handle type="Point" name="Hoof-back" reference="11" color="#28D0FF" trackable="true" />
+  </Handles>
+
+</KinoveaPostureTool>

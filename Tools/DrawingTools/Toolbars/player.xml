@@ -17,6 +17,8 @@
     <subentry name="Genu" />
     <subentry name="Posture" />
     <subentry name="CSVL" />
+    <subentry name="Canis" />
+    <subentry name="Equus" />
   </entry>
   <entry name="Line">
     <subentry name="Curve" />
