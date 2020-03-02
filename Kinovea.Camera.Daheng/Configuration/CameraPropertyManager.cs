@@ -182,9 +182,9 @@ namespace Kinovea.Camera.Daheng
             if (!isImplemented)
                 return p;
 
+            // We can't know if the feature is writeable at this point. Assume it is and test before write.
             bool isReadable = featureControl.IsReadable(identifier);
-            bool isWriteable = featureControl.IsWritable(identifier);
-            p.ReadOnly = !isWriteable;
+            p.ReadOnly = false;
             p.Supported = isReadable;
             if (!p.Supported)
                 return p;
@@ -204,13 +204,14 @@ namespace Kinovea.Camera.Daheng
 
             string autoIdentifier = "ExposureAuto";
             p.AutomaticIdentifier = autoIdentifier;
-            p.CanBeAutomatic = featureControl.IsImplemented(autoIdentifier) && featureControl.IsReadable(autoIdentifier) && featureControl.IsWritable(autoIdentifier);
-            if (p.CanBeAutomatic)
+            p.CanBeAutomatic = featureControl.IsImplemented(autoIdentifier);
+            p.Automatic = false;
+            if (p.CanBeAutomatic && featureControl.IsReadable(autoIdentifier))
             {
                 string autoValue = featureControl.GetEnumFeature(autoIdentifier).GetValue();
                 p.Automatic = autoValue == "Continuous";
             }
-
+            
             if (properties != null)
                 properties.Add(p.Identifier, p);
 
@@ -230,8 +231,7 @@ namespace Kinovea.Camera.Daheng
                 return p;
 
             bool isReadable = featureControl.IsReadable(identifier);
-            bool isWriteable = featureControl.IsWritable(identifier);
-            p.ReadOnly = !isWriteable;
+            p.ReadOnly = false;
             p.Supported = isReadable;
             if (!p.Supported)
                 return p;
@@ -250,8 +250,9 @@ namespace Kinovea.Camera.Daheng
 
             string autoIdentifier = "GainAuto";
             p.AutomaticIdentifier = autoIdentifier;
-            p.CanBeAutomatic = featureControl.IsImplemented(autoIdentifier) && featureControl.IsReadable(autoIdentifier) && featureControl.IsWritable(autoIdentifier);
-            if (p.CanBeAutomatic)
+            p.CanBeAutomatic = featureControl.IsImplemented(autoIdentifier);
+            p.Automatic = false;
+            if (p.CanBeAutomatic && featureControl.IsReadable(autoIdentifier))
             {
                 string autoValue = featureControl.GetEnumFeature(autoIdentifier).GetValue();
                 p.Automatic = autoValue == "Continuous";
@@ -268,41 +269,17 @@ namespace Kinovea.Camera.Daheng
             if (property.ReadOnly)
                 return;
 
-            // Commit the auto property first, to flip writeability of the master.
-            if (property.CanBeAutomatic)
-            {
-                if (property.Automatic)
-                    featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue("Continuous");
-                else
-                    featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue("Off");
-            }
+            // If auto is ON, we need to set it off before the main prop to make it writeable.
+            // If auto is OFF, we need to set it ON after the main prop, otherwise it gets turned Off automatically.
+            if (property.CanBeAutomatic && property.Automatic && featureControl.IsWritable(property.AutomaticIdentifier))
+                featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue("Continuous");
 
-            bool writeable = featureControl.IsWritable(property.Identifier);
-            if (!writeable)
-                return;
-            
             float value = float.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-            featureControl.GetFloatFeature(property.Identifier).SetValue(value);
-        }
+            if (featureControl.IsWritable(property.Identifier))
+                featureControl.GetFloatFeature(property.Identifier).SetValue(value);
 
-        private static void WriteInt(IGXFeatureControl featureControl, CameraProperty property)
-        {
-            if (property.ReadOnly)
-                return;
-
-            bool writeable = featureControl.IsWritable(property.Identifier);
-            if (!writeable)
-                return;
-
-            int value = int.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-            int min = int.Parse(property.Minimum, CultureInfo.InvariantCulture);
-            int step = int.Parse(property.Step, CultureInfo.InvariantCulture);
-
-            int remainder = (value - min) % step;
-            if (remainder != 0)
-                value = value - remainder + step;
-
-            featureControl.GetIntFeature(property.Identifier).SetValue(value);
+            if (property.CanBeAutomatic && !property.Automatic && featureControl.IsWritable(property.AutomaticIdentifier))
+                featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue("Off");
         }
 
         private static void WriteSize(IGXFeatureControl featureControl, CameraProperty property, string identifierOffset)
