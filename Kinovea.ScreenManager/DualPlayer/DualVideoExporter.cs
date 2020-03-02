@@ -42,8 +42,7 @@ namespace Kinovea.ScreenManager
             // During saving we move through the common timeline by a time unit based on framerate and high speed factor, but not based on user custom slow motion factor.
             // For the framerate saved in the file metadata we take user custom slow motion into account and not high speed factor.
             fileFrameInterval = Math.Max(leftPlayer.FrameInterval, rightPlayer.FrameInterval);
-            fileFrameInterval = Math.Max(fileFrameInterval, 10);
-
+            
             dualSaveFileName = GetFilename(leftPlayer, rightPlayer);
             if (string.IsNullOrEmpty(dualSaveFileName))
                 return;
