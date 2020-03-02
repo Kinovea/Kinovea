@@ -69,6 +69,7 @@ namespace Kinovea.Camera.Daheng
             try
             {
                 device = igxFactory.OpenDeviceBySN(summary.Identifier, GX_ACCESS_MODE.GX_ACCESS_EXCLUSIVE);
+                
                 featureControl = device.GetRemoteFeatureControl();
                 DahengHelper.AfterOpen(featureControl);
 
@@ -90,6 +91,15 @@ namespace Kinovea.Camera.Daheng
         /// </summary>
         public void Run(object data)
         {
+            if (device == null || stream == null)
+            {
+                Close();
+                if (CameraThumbnailProduced != null)
+                    CameraThumbnailProduced(this, new CameraThumbnailProducedEventArgs(summary, null, ImageDescriptor.Invalid, true, false));
+
+                return;
+            }
+
             Thread.CurrentThread.Name = string.Format("{0} thumbnailer", summary.Alias);
             log.DebugFormat("Starting {0} for thumbnail.", summary.Alias);
 
@@ -185,7 +195,7 @@ namespace Kinovea.Camera.Daheng
         private void LogError(Exception e, string additionalErrorMessage)
         {
             log.ErrorFormat("Camera {0} failure during thumbnail capture.", summary.Alias);
-            log.Error(e.ToString());
+            log.Error(e.Message);
 
             if (!string.IsNullOrEmpty(additionalErrorMessage))
                 log.Error(additionalErrorMessage);
