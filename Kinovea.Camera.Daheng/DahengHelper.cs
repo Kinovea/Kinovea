@@ -12,6 +12,7 @@ namespace Kinovea.Camera.Daheng
     {
         private const uint PIXEL_FORMATE_BIT = 0x00FF0000;                    ///<For the current data format and operation to get the current data bits
         private const uint GX_PIXEL_8BIT = 0x00080000;                        ///<8 bit data image format
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Get the best 8 bit by GX_PIXEL_FORMAT_ENTRY
@@ -165,6 +166,10 @@ namespace Kinovea.Camera.Daheng
                 featureControl.GetEnumFeature("DeviceLinkThroughputLimitMode").SetValue("Off");
 
             // Make sure the user's custom framerate is respected.
+            // With AcquisitionFrameRateMode OFF, the framerate is automatically set to the max value possible.
+            // This means it goes up when we decrease the image size, but it also means it can't be set lower than the max.
+            // With AcquisitionFrameRateMode ON, the value of AcquisitionFrameRate is used and respected, 
+            // with the only drawback that it won't automatically increase when we lower framerate or decrease size.
             if (featureControl.IsImplemented("AcquisitionFrameRateMode") && featureControl.IsWritable("AcquisitionFrameRateMode"))
                 featureControl.GetEnumFeature("AcquisitionFrameRateMode").SetValue("On");
         }
@@ -178,16 +183,24 @@ namespace Kinovea.Camera.Daheng
             if (featureControl == null)
                 return 0;
 
-            string identifier = "CurrentAcquisitionFrameRate";
-            bool implemented = featureControl.IsImplemented(identifier);
-            if (!implemented)
-                return 0;
+            try
+            {
+                string identifier = "CurrentAcquisitionFrameRate";
+                bool implemented = featureControl.IsImplemented(identifier);
+                if (!implemented)
+                    return 0;
             
-            bool readable = featureControl.IsReadable(identifier);
-            if (!readable)
-                return 0;
+                bool readable = featureControl.IsReadable(identifier);
+                if (!readable)
+                    return 0;
 
-            return featureControl.GetFloatFeature(identifier).GetValue();
+                return featureControl.GetFloatFeature(identifier).GetValue();
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while reading current acquisition framerate. {0}", e.Message);
+                return 0;
+            }
         }
     }
 }
