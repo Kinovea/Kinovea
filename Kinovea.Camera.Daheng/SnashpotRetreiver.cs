@@ -119,7 +119,6 @@ namespace Kinovea.Camera.Daheng
 
             waitHandle.WaitOne(timeoutGrabbing, false);
 
-            Stop();
             Close();
 
             if (CameraThumbnailProduced != null)
@@ -135,35 +134,14 @@ namespace Kinovea.Camera.Daheng
             waitHandle.Set();
         }
 
-        private void Stop()
-        {
-            if (device == null)
-                return;
-
-            try
-            {
-                if (featureControl != null)
-                {
-                    featureControl.GetCommandFeature("AcquisitionStop").Execute();
-                }
-
-                if (stream != null)
-                {
-                    stream.StopGrab();
-                    stream.UnregisterCaptureCallback();
-                }
-            }
-            catch (Exception e)
-            {
-                LogError(e, null);
-            }
-        }
-
         private void Close()
         {
             if (device == null)
                 return;
 
+            // Stop everything and destroy resources.
+
+            // Stop acquisition.
             try
             {
                 if (featureControl != null)
@@ -171,7 +149,15 @@ namespace Kinovea.Camera.Daheng
                     featureControl.GetCommandFeature("AcquisitionStop").Execute();
                     featureControl = null;
                 }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+            }
 
+            // Close stream.
+            try
+            {
                 if (stream != null)
                 {
                     stream.StopGrab();
@@ -179,16 +165,28 @@ namespace Kinovea.Camera.Daheng
                     stream.Close();
                     stream = null;
                 }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+            }
 
+            // Close device.
+            try
+            {
                 if (device != null)
                 {
                     device.Close();
                     device = null;
+
+                    SpecificInfo specific = summary.Specific as SpecificInfo;
+                    if (specific != null && specific.Device != null)
+                        specific.Device = null;
                 }
             }
             catch (Exception e)
             {
-                LogError(e, null);
+                log.Error(e.Message);
             }
         }
 

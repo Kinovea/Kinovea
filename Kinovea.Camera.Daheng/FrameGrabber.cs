@@ -121,16 +121,23 @@ namespace Kinovea.Camera.Daheng
 
         public void Stop()
         {
+            // Pause the grabbing without destroying the resources.
+
             if (device == null)
                 return;
 
             try
             {
                 if (featureControl != null)
-                {
                     featureControl.GetCommandFeature("AcquisitionStop").Execute();
-                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+            }
 
+            try
+            {
                 if (stream != null)
                 {
                     stream.StopGrab();
@@ -139,7 +146,7 @@ namespace Kinovea.Camera.Daheng
             }
             catch (Exception e)
             {
-                log.ErrorFormat(e.Message);
+                log.Error(e.Message);
             }
 
             grabbing = false;
@@ -152,6 +159,9 @@ namespace Kinovea.Camera.Daheng
             if (device == null)
                 return;
 
+            // Stop everything and destroy resources.
+
+            // Stop acquisition.
             try
             {
                 if (featureControl != null)
@@ -159,7 +169,15 @@ namespace Kinovea.Camera.Daheng
                     featureControl.GetCommandFeature("AcquisitionStop").Execute();
                     featureControl = null;
                 }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+            }
 
+            // Close stream.
+            try
+            {
                 if (stream != null)
                 {
                     stream.StopGrab();
@@ -167,16 +185,28 @@ namespace Kinovea.Camera.Daheng
                     stream.Close();
                     stream = null;
                 }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message);
+            }
 
+            // Close device.
+            try
+            {
                 if (device != null)
                 {
                     device.Close();
                     device = null;
+
+                    SpecificInfo specific = summary.Specific as SpecificInfo;
+                    if (specific != null && specific.Device != null)
+                        specific.Device = null;
                 }
             }
             catch (Exception e)
             {
-                log.ErrorFormat(e.Message);
+                log.Error(e.Message);
             }
         }
         #endregion
@@ -234,7 +264,7 @@ namespace Kinovea.Camera.Daheng
             }
             catch
             {
-                log.DebugFormat("Could not start Daheng device.");
+                log.Debug("Could not start Daheng device.");
             }
         }
 
