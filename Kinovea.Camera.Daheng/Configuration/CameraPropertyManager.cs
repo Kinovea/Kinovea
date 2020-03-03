@@ -144,8 +144,7 @@ namespace Kinovea.Camera.Daheng
                 return p;
 
             bool isReadable = featureControl.IsReadable(identifier);
-            bool isWriteable = featureControl.IsWritable(identifier);
-            p.ReadOnly = !isWriteable;
+            p.ReadOnly = false;
             p.Supported = isReadable;
             if (!p.Supported)
                 return p;
@@ -163,7 +162,20 @@ namespace Kinovea.Camera.Daheng
 
             double range = Math.Log10(max) - Math.Log10(min);
             p.Representation = (range >= 4) ? CameraPropertyRepresentation.LogarithmicSlider : CameraPropertyRepresentation.LinearSlider;
+
+            // AcquisitionFrameRateMode=Off: the framerate is automatically set to the max value possible.
+            // AcquisitionFrameRateMode=On: use the custom framerate set by the user in AcquisitionFrameRate.
             
+            string autoIdentifier = "AcquisitionFrameRateMode";
+            p.AutomaticIdentifier = autoIdentifier;
+            p.CanBeAutomatic = featureControl.IsImplemented(autoIdentifier);
+            p.Automatic = false;
+            if (p.CanBeAutomatic && featureControl.IsReadable(autoIdentifier))
+            {
+                string autoValue = featureControl.GetEnumFeature(autoIdentifier).GetValue();
+                p.Automatic = autoValue == GetAutoTrue(autoIdentifier);
+            }
+
             if (properties != null)
                 properties.Add(p.Identifier, p);
 
@@ -189,7 +201,6 @@ namespace Kinovea.Camera.Daheng
             if (!p.Supported)
                 return p;
 
-            // All values are already in microseconds.
             double value = featureControl.GetFloatFeature(identifier).GetValue();
             double min = featureControl.GetFloatFeature(identifier).GetMin();
             double max = featureControl.GetFloatFeature(identifier).GetMax();
@@ -209,7 +220,7 @@ namespace Kinovea.Camera.Daheng
             if (p.CanBeAutomatic && featureControl.IsReadable(autoIdentifier))
             {
                 string autoValue = featureControl.GetEnumFeature(autoIdentifier).GetValue();
-                p.Automatic = autoValue == "Continuous";
+                p.Automatic = autoValue == GetAutoTrue(autoIdentifier);
             }
             
             if (properties != null)
@@ -255,7 +266,7 @@ namespace Kinovea.Camera.Daheng
             if (p.CanBeAutomatic && featureControl.IsReadable(autoIdentifier))
             {
                 string autoValue = featureControl.GetEnumFeature(autoIdentifier).GetValue();
-                p.Automatic = autoValue == "Continuous";
+                p.Automatic = autoValue == GetAutoTrue(autoIdentifier);
             }
 
             if (properties != null)
@@ -269,17 +280,20 @@ namespace Kinovea.Camera.Daheng
             if (property.ReadOnly)
                 return;
 
-            // If auto is ON, we need to set it off before the main prop to make it writeable.
-            // If auto is OFF, we need to set it ON after the main prop, otherwise it gets turned Off automatically.
-            if (property.CanBeAutomatic && property.Automatic && featureControl.IsWritable(property.AutomaticIdentifier))
-                featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue("Continuous");
+            // If auto is switching OFF, we need to set it off before the main prop to make it writeable.
+            // If auto is switching ON, we need to set it ON after the main prop, otherwise it gets turned Off automatically.
+            string currentAutoValue = featureControl.GetEnumFeature(property.AutomaticIdentifier).GetValue();
+            bool currentAuto = currentAutoValue == GetAutoTrue(property.AutomaticIdentifier);
+
+            if (property.CanBeAutomatic && currentAuto && !property.Automatic && featureControl.IsWritable(property.AutomaticIdentifier))
+                featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue(GetAutoFalse(property.AutomaticIdentifier));
 
             float value = float.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             if (featureControl.IsWritable(property.Identifier))
                 featureControl.GetFloatFeature(property.Identifier).SetValue(value);
 
-            if (property.CanBeAutomatic && !property.Automatic && featureControl.IsWritable(property.AutomaticIdentifier))
-                featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue("Off");
+            if (property.CanBeAutomatic && !currentAuto && property.Automatic && featureControl.IsWritable(property.AutomaticIdentifier))
+                featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue(GetAutoTrue(property.AutomaticIdentifier));
         }
 
         private static void WriteSize(IGXFeatureControl featureControl, CameraProperty property, string identifierOffset)
@@ -320,6 +334,32 @@ namespace Kinovea.Camera.Daheng
             {
                 featureControl.GetIntFeature(property.Identifier).SetValue(value);
                 featureControl.GetIntFeature(identifierOffset).SetValue(offset);
+            }
+        }
+        
+        private static string GetAutoTrue(string identifier)
+        {
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateMode":
+                    return "Off";
+                case "ExposureAuto":
+                case "GainAuto":
+                default:
+                    return "Continuous";
+            }
+        }
+
+        private static string GetAutoFalse(string identifier)
+        {
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateMode":
+                    return "On";
+                case "ExposureAuto":
+                case "GainAuto":
+                default:
+                    return "Off";
             }
         }
     }

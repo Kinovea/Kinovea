@@ -164,14 +164,6 @@ namespace Kinovea.Camera.Daheng
             // This will allow the camera to send the max bandwidth it can, possibly saturating the link.
             if (featureControl.IsImplemented("DeviceLinkThroughputLimitMode") && featureControl.IsWritable("DeviceLinkThroughputLimitMode"))
                 featureControl.GetEnumFeature("DeviceLinkThroughputLimitMode").SetValue("Off");
-
-            // Make sure the user's custom framerate is respected.
-            // With AcquisitionFrameRateMode OFF, the framerate is automatically set to the max value possible.
-            // This means it goes up when we decrease the image size, but it also means it can't be set lower than the max.
-            // With AcquisitionFrameRateMode ON, the value of AcquisitionFrameRate is used and respected, 
-            // with the only drawback that it won't automatically increase when we lower framerate or decrease size.
-            if (featureControl.IsImplemented("AcquisitionFrameRateMode") && featureControl.IsWritable("AcquisitionFrameRateMode"))
-                featureControl.GetEnumFeature("AcquisitionFrameRateMode").SetValue("On");
         }
 
         public static double GetResultingFramerate(IGXDevice device)
