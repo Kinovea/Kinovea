@@ -449,6 +449,12 @@
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.Designer.cs">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureVisibility.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureVisibility.Designer.cs">
+      <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -939,6 +945,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Measurement\LensDistortion\FormCalibrateDistortion.resx">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureVisibility.resx">
+      <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormRafaleExport.resx">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>

@@ -330,8 +330,11 @@ namespace Kinovea.ScreenManager
         private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
         private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSetStyleAsDefault = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuAlwaysVisible = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuVisibility = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuVisibilityAlways = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuVisibilityDefault = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuVisibilityCustom = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuVisibilityConfigure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGotoKeyframe = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDrawingTracking = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDrawingTrackingConfigure = new ToolStripMenuItem();
@@ -1096,7 +1099,7 @@ namespace Kinovea.ScreenManager
             mnuSavePic.Image = Properties.Resources.picture_save;
             mnuCloseScreen.Click += btnClose_Click;
             mnuCloseScreen.Image = Properties.Resources.film_close3;
-            popMenu.Items.AddRange(new ToolStripItem[] 
+            popMenu.Items.AddRange(new ToolStripItem[]
             {
                 mnuTimeOrigin, mnuDirectTrack, new ToolStripSeparator(),
                 mnuCopyPic, mnuPastePic, mnuPasteDrawing, new ToolStripSeparator(),
@@ -1109,10 +1112,24 @@ namespace Kinovea.ScreenManager
             mnuConfigureDrawing.Image = Properties.Drawings.configure;
             mnuSetStyleAsDefault.Click += new EventHandler(mnuSetStyleAsDefault_Click);
             mnuSetStyleAsDefault.Image = Resources.SwatchIcon3;
-            mnuAlwaysVisible.Click += mnuAlwaysVisible_Click;
-            mnuAlwaysVisible.Image = Properties.Drawings.persistence;
-            mnuConfigureOpacity.Click += new EventHandler(mnuConfigureOpacity_Click);
-            mnuConfigureOpacity.Image = Properties.Drawings.persistence;
+
+            mnuVisibility.Image = Properties.Drawings.persistence;
+            mnuVisibilityAlways.Image = Properties.Drawings.persistence;
+            mnuVisibilityDefault.Image = Properties.Drawings.persistence;
+            mnuVisibilityCustom.Image = Properties.Drawings.persistence;
+            mnuVisibilityAlways.Click += mnuVisibilityAlways_Click;
+            mnuVisibilityDefault.Click += mnuVisibilityDefault_Click;
+            mnuVisibilityCustom.Click += mnuVisibilityCustom_Click;
+            mnuVisibilityConfigure.Click += mnuVisibilityConfigure_Click;
+            mnuVisibility.DropDownItems.AddRange(new ToolStripItem[]
+            {
+                mnuVisibilityAlways,
+                mnuVisibilityDefault,
+                mnuVisibilityCustom,
+                new ToolStripSeparator(),
+                mnuVisibilityConfigure
+            });
+
             mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
             mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
 
@@ -2601,8 +2618,11 @@ namespace Kinovea.ScreenManager
             // 2. Drawings context menu.
             mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
-            mnuAlwaysVisible.Text = ScreenManagerLang.dlgConfigureFading_chkAlwaysVisible;
-            mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
+            mnuVisibility.Text = ScreenManagerLang.Generic_Opacity;
+            mnuVisibilityAlways.Text = ScreenManagerLang.dlgConfigureFading_chkAlwaysVisible;
+            mnuVisibilityDefault.Text = "Default fading";
+            mnuVisibilityCustom.Text = "Custom fading";
+            mnuVisibilityConfigure.Text = "Configure custom fading";
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
             mnuCutDrawing.Text = ScreenManagerLang.Generic_Cut;
             mnuCutDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CutDrawing);
@@ -3066,23 +3086,25 @@ namespace Kinovea.ScreenManager
             {
                 mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
                 popMenu.Items.Add(mnuConfigureDrawing);
-                
+
                 mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
                 popMenu.Items.Add(mnuSetStyleAsDefault);
             }
-            
-            if(PreferencesManager.PlayerPreferences.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
+
+            if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
             {
-                mnuAlwaysVisible.Checked = drawing.InfosFading.AlwaysVisible;
-                popMenu.Items.Add(mnuAlwaysVisible);
+                mnuVisibilityDefault.Checked = drawing.InfosFading.UseDefault;
+                mnuVisibilityAlways.Checked = !drawing.InfosFading.UseDefault && drawing.InfosFading.AlwaysVisible;
+                mnuVisibilityCustom.Checked = !drawing.InfosFading.UseDefault && !drawing.InfosFading.AlwaysVisible;
+                popMenu.Items.Add(mnuVisibility);
             }
-            
-            if((drawing.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
+
+            if ((drawing.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
             {
-                popMenu.Items.Add(mnuConfigureOpacity);
+                popMenu.Items.Add(mnuVisibility);
             }
-            
-            if((drawing.Caps & DrawingCapabilities.Track) == DrawingCapabilities.Track)
+
+            if ((drawing.Caps & DrawingCapabilities.Track) == DrawingCapabilities.Track)
             {
                 bool tracked = ToggleTrackingCommand.CurrentState(drawing);
                 mnuDrawingTrackingStart.Visible = !tracked;
@@ -4204,27 +4226,56 @@ namespace Kinovea.ScreenManager
 
             UpdateCursor();
         }
-        private void mnuAlwaysVisible_Click(object sender, EventArgs e)
+        private void mnuVisibilityAlways_Click(object sender, EventArgs e)
         {
-            mnuAlwaysVisible.Checked = !mnuAlwaysVisible.Checked;
+            mnuVisibilityAlways.Checked = true;
+            mnuVisibilityDefault.Checked = false;
+            mnuVisibilityCustom.Checked = false;
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
             Guid managerId = m_FrameServer.Metadata.FindManagerId(drawing);
             HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, managerId, drawing.Id, drawing.Name, SerializationFilter.Fading);
+            drawing.InfosFading.AlwaysVisible = true;
             drawing.InfosFading.UseDefault = false;
-            drawing.InfosFading.AlwaysVisible = mnuAlwaysVisible.Checked;
             m_FrameServer.HistoryStack.PushNewCommand(memento);
             DoInvalidate();
         }
-        private void mnuConfigureOpacity_Click(object sender, EventArgs e)
+        private void mnuVisibilityDefault_Click(object sender, EventArgs e)
         {
+            mnuVisibilityAlways.Checked = false;
+            mnuVisibilityDefault.Checked = true;
+            mnuVisibilityCustom.Checked = false;
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-            
-            formConfigureOpacity fco = new formConfigureOpacity(drawing, pbSurfaceScreen);
-            FormsHelper.Locate(fco);
-            fco.ShowDialog();
-            fco.Dispose();
+            Guid managerId = m_FrameServer.Metadata.FindManagerId(drawing);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, managerId, drawing.Id, drawing.Name, SerializationFilter.Fading);
+            drawing.InfosFading.AlwaysVisible = false;
+            drawing.InfosFading.UseDefault = true;
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
             DoInvalidate();
         }
+        private void mnuVisibilityCustom_Click(object sender, EventArgs e)
+        {
+            mnuVisibilityAlways.Checked = false;
+            mnuVisibilityDefault.Checked = false;
+            mnuVisibilityCustom.Checked = true;
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+            Guid managerId = m_FrameServer.Metadata.FindManagerId(drawing);
+            HistoryMemento memento = new HistoryMementoModifyDrawing(m_FrameServer.Metadata, managerId, drawing.Id, drawing.Name, SerializationFilter.Fading);
+            drawing.InfosFading.AlwaysVisible = false;
+            drawing.InfosFading.UseDefault = false;
+            m_FrameServer.HistoryStack.PushNewCommand(memento);
+            DoInvalidate();
+        }
+        private void mnuVisibilityConfigure_Click(object sender, EventArgs e)
+        {
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+
+            FormConfigureVisibility f = new FormConfigureVisibility(drawing, pbSurfaceScreen);
+            FormsHelper.Locate(f);
+            f.ShowDialog();
+            f.Dispose();
+            DoInvalidate();
+        }
+
         private void mnuGotoKeyframe_Click(object sender, EventArgs e)
         {
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;

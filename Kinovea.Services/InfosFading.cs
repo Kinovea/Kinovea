@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
+using System.Globalization;
 using System.Xml;
 
 namespace Kinovea.Services
@@ -183,10 +184,11 @@ namespace Kinovea.Services
         public void WriteXml(XmlWriter w)
         {
             w.WriteElementString("Enabled", enabled.ToString().ToLower());
-            w.WriteElementString("Frames", fadingFrames.ToString());
-            w.WriteElementString("OpaqueFrames", opaqueFrames.ToString());
-            w.WriteElementString("AlwaysVisible", alwaysVisible.ToString().ToLower());
             w.WriteElementString("UseDefault", useDefault.ToString().ToLower());
+            w.WriteElementString("AlwaysVisible", alwaysVisible.ToString().ToLower());
+            w.WriteElementString("MasterFactor", masterFactor.ToString(CultureInfo.InvariantCulture));
+            w.WriteElementString("OpaqueFrames", opaqueFrames.ToString());
+            w.WriteElementString("Frames", fadingFrames.ToString());
         }
         public void ReadXml(XmlReader xmlReader)
         {
@@ -199,17 +201,20 @@ namespace Kinovea.Services
                     case "Enabled":
                         enabled = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
-                    case "Frames":
-                        fadingFrames = xmlReader.ReadElementContentAsInt();
-                        break;
-                    case "OpaqueFrames":
-                        opaqueFrames = xmlReader.ReadElementContentAsInt();
-                        break;
                     case "UseDefault":
                         useDefault = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
                         break;
                     case "AlwaysVisible":
                         alwaysVisible = XmlHelper.ParseBoolean(xmlReader.ReadElementContentAsString());
+                        break;
+                    case "MasterFactor":
+                        masterFactor = float.Parse(xmlReader.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        break;
+                    case "OpaqueFrames":
+                        opaqueFrames = xmlReader.ReadElementContentAsInt();
+                        break;
+                    case "Frames":
+                        fadingFrames = xmlReader.ReadElementContentAsInt();
                         break;
                     default:
                         string unparsed = xmlReader.ReadOuterXml();
