@@ -118,15 +118,15 @@ namespace Kinovea.Root
         {
             tabPersistence.Text = ScreenManagerLang.Generic_Opacity;
             lblDefaultOpacity.Text = RootLang.dlgPreferences_Drawings_lblDefaultOpacity;
-            rbAlwaysVisible.Text = RootLang.dlgPreferences_Drawings_rbAlwaysVisible;
-            rbFading.Text = RootLang.dlgPreferences_Drawings_rbFading;
-            
-            rbAlwaysVisible.Checked = defaultFading.AlwaysVisible;
-            rbFading.Checked = !defaultFading.AlwaysVisible;
-            trkFadingFrames.Maximum = PreferencesManager.PlayerPreferences.MaxFading;
-            trkFadingFrames.Value = Math.Min(defaultFading.FadingFrames, trkFadingFrames.Maximum);
-            
-            lblFadingFrames.Text = string.Format(RootLang.dlgPreferences_Drawings_lblFadingFrames, trkFadingFrames.Value);
+            chkAlwaysVisible.Text = RootLang.dlgPreferences_Drawings_rbAlwaysVisible;
+            lblMax.Text = "Maximum opacity (%):";
+            lblOpaque.Text = "Opaque duration (frames):";
+            lblFading.Text = "Fading duration (frames):";
+
+            chkAlwaysVisible.Checked = defaultFading.AlwaysVisible;
+            nudMax.Value = (decimal)(defaultFading.MasterFactor * 100);
+            nudOpaque.Value = (decimal)defaultFading.OpaqueFrames;
+            nudFading.Value = (decimal)defaultFading.FadingFrames;
         }
         private void InitPageTracking()
         {
@@ -167,16 +167,24 @@ namespace Kinovea.Root
         #endregion
 
         #region Opacity
-        private void rbOpacity_CheckedChanged(object sender, EventArgs e)
+        private void chkAlwaysVisible_CheckedChanged(object sender, EventArgs e)
         {
-            defaultFading.AlwaysVisible = rbAlwaysVisible.Checked;
-            lblFadingFrames.Enabled = !rbAlwaysVisible.Checked;
-            trkFadingFrames.Enabled = !rbAlwaysVisible.Checked;
+            defaultFading.AlwaysVisible = chkAlwaysVisible.Checked;
         }
-        private void trkFading_ValueChanged(object sender, EventArgs e)
+
+        private void nudMax_ValueChanged(object sender, EventArgs e)
         {
-            lblFadingFrames.Text = string.Format(RootLang.dlgPreferences_Drawings_lblFadingFrames, trkFadingFrames.Value);
-            defaultFading.FadingFrames = trkFadingFrames.Value;
+            defaultFading.MasterFactor = (float)nudMax.Value / 100;
+        }
+
+        private void nudOpaque_ValueChanged(object sender, EventArgs e)
+        {
+            defaultFading.OpaqueFrames = (int)nudOpaque.Value;
+        }
+
+        private void nudFading_ValueChanged(object sender, EventArgs e)
+        {
+            defaultFading.FadingFrames = (int)nudFading.Value;
         }
         #endregion
 
@@ -250,7 +258,5 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(defaultFading);
             PreferencesManager.PlayerPreferences.TrackingProfile = trackingProfile;
         }
-
-        
     }
 }

@@ -54,11 +54,7 @@ namespace Kinovea.Root
       this.chkEnableFiltering = new System.Windows.Forms.CheckBox();
       this.chkDrawOnPlay = new System.Windows.Forms.CheckBox();
       this.tabPersistence = new System.Windows.Forms.TabPage();
-      this.rbFading = new System.Windows.Forms.RadioButton();
-      this.rbAlwaysVisible = new System.Windows.Forms.RadioButton();
       this.lblDefaultOpacity = new System.Windows.Forms.Label();
-      this.lblFadingFrames = new System.Windows.Forms.Label();
-      this.trkFadingFrames = new System.Windows.Forms.TrackBar();
       this.tabTracking = new System.Windows.Forms.TabPage();
       this.lblDescription = new System.Windows.Forms.Label();
       this.cmbSearchWindowUnit = new System.Windows.Forms.ComboBox();
@@ -71,11 +67,20 @@ namespace Kinovea.Root
       this.label4 = new System.Windows.Forms.Label();
       this.tbBlockWidth = new System.Windows.Forms.TextBox();
       this.lblObjectWindow = new System.Windows.Forms.Label();
+      this.nudFading = new System.Windows.Forms.NumericUpDown();
+      this.nudOpaque = new System.Windows.Forms.NumericUpDown();
+      this.nudMax = new System.Windows.Forms.NumericUpDown();
+      this.lblOpaque = new System.Windows.Forms.Label();
+      this.lblFading = new System.Windows.Forms.Label();
+      this.lblMax = new System.Windows.Forms.Label();
+      this.chkAlwaysVisible = new System.Windows.Forms.CheckBox();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
       this.tabPersistence.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.trkFadingFrames)).BeginInit();
       this.tabTracking.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudFading)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudOpaque)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudMax)).BeginInit();
       this.SuspendLayout();
       // 
       // tabSubPages
@@ -138,11 +143,14 @@ namespace Kinovea.Root
       // 
       // tabPersistence
       // 
-      this.tabPersistence.Controls.Add(this.rbFading);
-      this.tabPersistence.Controls.Add(this.rbAlwaysVisible);
+      this.tabPersistence.Controls.Add(this.chkAlwaysVisible);
+      this.tabPersistence.Controls.Add(this.nudFading);
+      this.tabPersistence.Controls.Add(this.nudOpaque);
+      this.tabPersistence.Controls.Add(this.nudMax);
+      this.tabPersistence.Controls.Add(this.lblOpaque);
+      this.tabPersistence.Controls.Add(this.lblFading);
+      this.tabPersistence.Controls.Add(this.lblMax);
       this.tabPersistence.Controls.Add(this.lblDefaultOpacity);
-      this.tabPersistence.Controls.Add(this.lblFadingFrames);
-      this.tabPersistence.Controls.Add(this.trkFadingFrames);
       this.tabPersistence.Location = new System.Drawing.Point(4, 22);
       this.tabPersistence.Name = "tabPersistence";
       this.tabPersistence.Padding = new System.Windows.Forms.Padding(3);
@@ -150,30 +158,6 @@ namespace Kinovea.Root
       this.tabPersistence.TabIndex = 1;
       this.tabPersistence.Text = "Opacity";
       this.tabPersistence.UseVisualStyleBackColor = true;
-      // 
-      // rbFading
-      // 
-      this.rbFading.AutoSize = true;
-      this.rbFading.Location = new System.Drawing.Point(45, 76);
-      this.rbFading.Name = "rbFading";
-      this.rbFading.Size = new System.Drawing.Size(233, 17);
-      this.rbFading.TabIndex = 58;
-      this.rbFading.TabStop = true;
-      this.rbFading.Text = "Fade in/out of the frame they were added to";
-      this.rbFading.UseVisualStyleBackColor = true;
-      this.rbFading.CheckedChanged += new System.EventHandler(this.rbOpacity_CheckedChanged);
-      // 
-      // rbAlwaysVisible
-      // 
-      this.rbAlwaysVisible.AutoSize = true;
-      this.rbAlwaysVisible.Location = new System.Drawing.Point(45, 53);
-      this.rbAlwaysVisible.Name = "rbAlwaysVisible";
-      this.rbAlwaysVisible.Size = new System.Drawing.Size(146, 17);
-      this.rbAlwaysVisible.TabIndex = 57;
-      this.rbAlwaysVisible.TabStop = true;
-      this.rbAlwaysVisible.Text = "Visible for the entire video";
-      this.rbAlwaysVisible.UseVisualStyleBackColor = true;
-      this.rbAlwaysVisible.CheckedChanged += new System.EventHandler(this.rbOpacity_CheckedChanged);
       // 
       // lblDefaultOpacity
       // 
@@ -183,28 +167,6 @@ namespace Kinovea.Root
       this.lblDefaultOpacity.TabIndex = 56;
       this.lblDefaultOpacity.Text = "Default opacity of new drawings:";
       this.lblDefaultOpacity.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // lblFadingFrames
-      // 
-      this.lblFadingFrames.Location = new System.Drawing.Point(79, 96);
-      this.lblFadingFrames.Name = "lblFadingFrames";
-      this.lblFadingFrames.Size = new System.Drawing.Size(328, 32);
-      this.lblFadingFrames.TabIndex = 52;
-      this.lblFadingFrames.Text = "Number of frames to fade in/out: 20.";
-      this.lblFadingFrames.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // trkFadingFrames
-      // 
-      this.trkFadingFrames.BackColor = System.Drawing.Color.White;
-      this.trkFadingFrames.Location = new System.Drawing.Point(73, 131);
-      this.trkFadingFrames.Maximum = 200;
-      this.trkFadingFrames.Minimum = 1;
-      this.trkFadingFrames.Name = "trkFadingFrames";
-      this.trkFadingFrames.Size = new System.Drawing.Size(279, 45);
-      this.trkFadingFrames.TabIndex = 54;
-      this.trkFadingFrames.TickFrequency = 5;
-      this.trkFadingFrames.Value = 5;
-      this.trkFadingFrames.ValueChanged += new System.EventHandler(this.trkFading_ValueChanged);
       // 
       // tabTracking
       // 
@@ -322,6 +284,94 @@ namespace Kinovea.Root
       this.lblObjectWindow.TabIndex = 56;
       this.lblObjectWindow.Text = "Object window :";
       // 
+      // nudFading
+      // 
+      this.nudFading.Location = new System.Drawing.Point(264, 167);
+      this.nudFading.Maximum = new decimal(new int[] {
+            250,
+            0,
+            0,
+            0});
+      this.nudFading.Name = "nudFading";
+      this.nudFading.Size = new System.Drawing.Size(52, 20);
+      this.nudFading.TabIndex = 64;
+      this.nudFading.ValueChanged += new System.EventHandler(this.nudFading_ValueChanged);
+      // 
+      // nudOpaque
+      // 
+      this.nudOpaque.Location = new System.Drawing.Point(264, 132);
+      this.nudOpaque.Maximum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+      this.nudOpaque.Name = "nudOpaque";
+      this.nudOpaque.Size = new System.Drawing.Size(52, 20);
+      this.nudOpaque.TabIndex = 63;
+      this.nudOpaque.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.nudOpaque.ValueChanged += new System.EventHandler(this.nudOpaque_ValueChanged);
+      // 
+      // nudMax
+      // 
+      this.nudMax.Location = new System.Drawing.Point(264, 98);
+      this.nudMax.Name = "nudMax";
+      this.nudMax.Size = new System.Drawing.Size(52, 20);
+      this.nudMax.TabIndex = 62;
+      this.nudMax.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+      this.nudMax.ValueChanged += new System.EventHandler(this.nudMax_ValueChanged);
+      // 
+      // lblOpaque
+      // 
+      this.lblOpaque.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.lblOpaque.Location = new System.Drawing.Point(53, 128);
+      this.lblOpaque.Name = "lblOpaque";
+      this.lblOpaque.Size = new System.Drawing.Size(194, 25);
+      this.lblOpaque.TabIndex = 61;
+      this.lblOpaque.Text = "Opaque duration (frames):";
+      this.lblOpaque.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // lblFading
+      // 
+      this.lblFading.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.lblFading.Location = new System.Drawing.Point(53, 163);
+      this.lblFading.Name = "lblFading";
+      this.lblFading.Size = new System.Drawing.Size(153, 25);
+      this.lblFading.TabIndex = 60;
+      this.lblFading.Text = "Fading duration (frames):";
+      this.lblFading.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // lblMax
+      // 
+      this.lblMax.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.lblMax.Location = new System.Drawing.Point(53, 94);
+      this.lblMax.Name = "lblMax";
+      this.lblMax.Size = new System.Drawing.Size(153, 25);
+      this.lblMax.TabIndex = 59;
+      this.lblMax.Text = "Maximum opacity (%):";
+      this.lblMax.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // chkAlwaysVisible
+      // 
+      this.chkAlwaysVisible.AutoSize = true;
+      this.chkAlwaysVisible.Location = new System.Drawing.Point(56, 65);
+      this.chkAlwaysVisible.Name = "chkAlwaysVisible";
+      this.chkAlwaysVisible.Size = new System.Drawing.Size(91, 17);
+      this.chkAlwaysVisible.TabIndex = 65;
+      this.chkAlwaysVisible.Text = "Always visible";
+      this.chkAlwaysVisible.UseVisualStyleBackColor = true;
+      this.chkAlwaysVisible.CheckedChanged += new System.EventHandler(this.chkAlwaysVisible_CheckedChanged);
+      // 
       // PreferencePanelDrawings
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -334,17 +384,17 @@ namespace Kinovea.Root
       this.tabGeneral.PerformLayout();
       this.tabPersistence.ResumeLayout(false);
       this.tabPersistence.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.trkFadingFrames)).EndInit();
       this.tabTracking.ResumeLayout(false);
       this.tabTracking.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.nudFading)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudOpaque)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudMax)).EndInit();
       this.ResumeLayout(false);
 
 		}
 		private System.Windows.Forms.TabControl tabSubPages;
 		private System.Windows.Forms.TabPage tabGeneral;
 		private System.Windows.Forms.TabPage tabPersistence;
-		private System.Windows.Forms.TrackBar trkFadingFrames;
-		private System.Windows.Forms.Label lblFadingFrames;
 		private System.Windows.Forms.CheckBox chkDrawOnPlay;
         private System.Windows.Forms.TabPage tabTracking;
         private System.Windows.Forms.TextBox tbSearchHeight;
@@ -358,10 +408,15 @@ namespace Kinovea.Root
         private System.Windows.Forms.ComboBox cmbSearchWindowUnit;
         private System.Windows.Forms.ComboBox cmbBlockWindowUnit;
         private System.Windows.Forms.Label lblDescription;
-        private System.Windows.Forms.RadioButton rbFading;
-        private System.Windows.Forms.RadioButton rbAlwaysVisible;
         private System.Windows.Forms.Label lblDefaultOpacity;
         private System.Windows.Forms.CheckBox chkEnableFiltering;
         private System.Windows.Forms.CheckBox chkCustomToolsDebug;
+        private System.Windows.Forms.CheckBox chkAlwaysVisible;
+        private System.Windows.Forms.NumericUpDown nudFading;
+        private System.Windows.Forms.NumericUpDown nudOpaque;
+        private System.Windows.Forms.NumericUpDown nudMax;
+        private System.Windows.Forms.Label lblOpaque;
+        private System.Windows.Forms.Label lblFading;
+        private System.Windows.Forms.Label lblMax;
     }
 }
