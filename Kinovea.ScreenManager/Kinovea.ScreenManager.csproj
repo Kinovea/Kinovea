@@ -715,12 +715,6 @@
     <Compile Include="PlayerScreen\UserInterface\FormCalibrateLine.Designer.cs">
       <DependentUpon>FormCalibrateLine.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureOpacity.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureOpacity.Designer.cs">
-      <DependentUpon>FormConfigureOpacity.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureSpeed.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -990,9 +984,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibrateLine.resx">
       <DependentUpon>FormCalibrateLine.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureOpacity.resx">
-      <DependentUpon>FormConfigureOpacity.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar.resx">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
