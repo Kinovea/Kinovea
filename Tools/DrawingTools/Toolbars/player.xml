@@ -9,10 +9,9 @@
   <entry name="Pencil" />
   <entry name="HumanModel">
     <subentry name="HumanModel2" />
-    <subentry name="OpenPoseBody25" />
+    <!--subentry name="OpenPoseBody25" /-->
     <subentry name="Bikefit" />
     <subentry name="Archery" />
-    <subentry name="HorizontalDistance" />
     <subentry name="Profile" />
     <subentry name="Genu" />
     <subentry name="Posture" />
@@ -25,6 +24,7 @@
     <subentry name="Polyline" />
     <subentry name="Rectangle" />
     <subentry name="Circle" />
+    <subentry name="HorizontalDistance" />
   </entry>
   <entry name="Arrow">
     <subentry name="ArrowDash" />
