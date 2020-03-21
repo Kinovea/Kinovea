@@ -27,6 +27,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
@@ -215,6 +216,7 @@ namespace Kinovea.ScreenManager
                 DrawSegments(penEdge, basePenEdgeColor, alpha, canvas, transformer, points);
                 DrawCircles(penEdge, basePenEdgeColor, alpha, canvas, transformer, points);
                 DrawAngles(penEdge, basePenEdgeColor, brushFill, baseBrushFillColor, alpha, alphaBackground, opacity, canvas, transformer, points);
+                DrawPolylines(penEdge, basePenEdgeColor, alpha, canvas, transformer, points);
                 DrawPoints(brushHandle, baseBrushHandleColor, alpha, canvas, transformer, points);
 
                 DrawComputedPoints(penEdge, basePenEdgeColor, brushHandle, baseBrushHandleColor, alpha, opacity, canvas, transformer);
@@ -670,6 +672,26 @@ namespace Kinovea.ScreenManager
             penEdge.Width = 1;
             penEdge.Color = basePenEdgeColor;
         }
+
+        private void DrawPolylines(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
+        {
+            foreach (GenericPosturePolyline polyline in genericPosture.Polylines)
+            {
+                if (!IsActive(polyline.OptionGroup))
+                    continue;
+
+                penEdge.Width = polyline.Width;
+                penEdge.DashStyle = Convert(polyline.Style);
+                penEdge.Color = polyline.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, polyline.Color);
+
+                PointF[] path = polyline.Points.Select(i => i >= 0 ? points[i] : GetComputedPoint(i, transformer)).ToArray();
+                canvas.DrawCurve(penEdge, path);
+            }
+
+            penEdge.Color = basePenEdgeColor;
+            penEdge.StartCap = LineCap.NoAnchor;
+            penEdge.EndCap = LineCap.NoAnchor;
+        }
         private void DrawDistances(SolidBrush brushFill, Color baseBrushFillColor, int alphaBackground, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
             foreach(GenericPostureDistance distance in genericPosture.Distances)
@@ -929,7 +951,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
             
-            if(hit)
+            if (hit)
                 return true;
             
             foreach(GenericPostureAbstractHitZone hitZone in genericPosture.HitZones)
@@ -939,7 +961,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
                 
-            if(hit)
+            if (hit)
                 return true;
             
             foreach(GenericPostureCircle circle in genericPosture.Circles)
@@ -949,13 +971,23 @@ namespace Kinovea.ScreenManager
                     break;
             }
             
-            if(hit)
+            if (hit)
                 return true;
             
             foreach(GenericPostureSegment segment in genericPosture.Segments)
             {
                 hit = IsPointOnSegment(segment, point, transformer);
                 if(hit)
+                    break;
+            }
+
+            if (hit)
+                return true;
+
+            foreach (GenericPosturePolyline polyline in genericPosture.Polylines)
+            {
+                hit = IsPointOnPolyline(polyline, point, transformer);
+                if (hit)
                     break;
             }
             
@@ -1000,6 +1032,15 @@ namespace Kinovea.ScreenManager
             {
                 path.AddLine(start, end);
                 return HitTester.HitTest(path, point, segment.Width, false, transformer);
+            }
+        }
+        private bool IsPointOnPolyline(GenericPosturePolyline polyline, PointF point, IImageToViewportTransformer transformer)
+        {
+            using (GraphicsPath path = new GraphicsPath())
+            {
+                PointF[] points = polyline.Points.Select(i => genericPosture.PointList[i]).ToArray();
+                path.AddCurve(points);
+                return HitTester.HitTest(path, point, polyline.Width, false, transformer);
             }
         }
         private bool IsPointInsideCircle(GenericPostureCircle circle, PointF point, IImageToViewportTransformer transformer)

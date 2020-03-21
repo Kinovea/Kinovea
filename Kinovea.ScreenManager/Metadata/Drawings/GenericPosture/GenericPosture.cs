@@ -48,6 +48,9 @@ namespace Kinovea.ScreenManager
 
         public List<GenericPosturePoint> Points { get; private set; }
         public List<GenericPostureSegment> Segments { get; private set;}
+
+        public List<GenericPosturePolyline> Polylines { get; private set; }
+        
         public List<GenericPostureCircle> Circles { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
 
@@ -88,6 +91,7 @@ namespace Kinovea.ScreenManager
             Segments = new List<GenericPostureSegment>();
             Circles = new List<GenericPostureCircle>();
             Angles = new List<GenericPostureAngle>();
+            Polylines = new List<GenericPosturePolyline>();
 
             Handles = new List<GenericPostureHandle>();
             HitZones = new List<GenericPostureAbstractHitZone>();
@@ -225,7 +229,9 @@ namespace Kinovea.ScreenManager
     					case "Angles":
     						ParseAngles(r);
     						break;
-
+                        case "Polylines":
+                            ParsePolylines(r);
+                            break;
                         // Interaction section
     					case "Handles":
     						ParseHandles(r);
@@ -403,6 +409,25 @@ namespace Kinovea.ScreenManager
                 }
             }
             
+            r.ReadEndElement();
+        }
+        private void ParsePolylines(XmlReader r)
+        {
+            r.ReadStartElement();
+
+            while (r.NodeType == XmlNodeType.Element)
+            {
+                if (r.Name == "Polyline")
+                {
+                    Polylines.Add(new GenericPosturePolyline(r));
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
+            }
+
             r.ReadEndElement();
         }
         #endregion
