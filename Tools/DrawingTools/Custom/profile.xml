@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.1</FormatVersion>
+  <Id>5472e69d-a305-40f7-ad06-dc64f82fd629</Id>
+  <Name>Profile</Name>
+  <DisplayName>DrawingName_crossfit</DisplayName>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADWSURBVDhPY/j//z8DDDclWzPgw8hqYWy4ZpAAFs0J
+    QDE/mDipBsgBNX4G4v9AbAkyhFQDtkM1LyXHBbFQzW+BtBC615Bdgi0M7IAaPkENiMIWqIQMuAXV/AdI
+    bwHiHCAGhQc8kAkZ0AxU/AFqCCgAYfgBkO2BHpj4olEUqBjkha1A/AtqUCkpBrABFVcD8TeoZhCdRKwB
+    rkCFN5CcvwLIlsYWnRiJA6qoBKr5FZDuIzoakZKzIlogoiRznLGAZAAP0IA0IG4B4mnkuABrriSYF7Ap
+    ICQGAJJoJ2qW4Q5fAAAAAElFTkSuQmCC
+  </Icon>
+  
+  <!-- Data -->
+  <Points>
+    <Point name="Cervical" value="109;12" />
+    <Point name="Thoracic" value="95;57" />
+    <Point name="Lumbar" value="113;109" />
+    <Point name="Sacral" value="105;169" />
+    <Point name="Pelvis" value="105;208" />
+    <Point name="Femur" value="105;245" />
+    <Point name="Knee" value="120;346" />
+    <Point name="Ankle" value="89;435" />
+    <Point name="Toe" value="111;451" />
+  </Points>
+
+  <Polylines>
+    <Polyline name="Spinal cord" points="0;1;2;3" style="Solid" width="4" color="#22AD48" />
+  </Polylines>
+  <Circles>
+    <Circle center="4" radius="22" style="Solid" width="4" color="#7D42AA"/>
+  </Circles>
+  <Segments>
+    <Segment name="Femur" point1="5" point2="6" style="Solid" width="4" color="#496DC6" />
+    <Segment name="Leg" point1="6" point2="7" style="Solid" width="4" color="#C44A5E" />
+    <Segment name="Foot" point1="7" point2="8" style="Solid" width="4" color="#C18057" />
+  </Segments>
+
+  <!-- Interaction -->
+  <Handles>
+    <Handle type="Point" name="Cervical" reference="0" color="#22AD48" trackable="true" />
+    <Handle type="Point" name="Thoracic" reference="1" color="#22AD48" trackable="true" />
+    <Handle type="Point" name="Lumbar" reference="2" color="#22AD48" trackable="true" />
+    <Handle type="Point" name="Sacral" reference="3" color="#22AD48" trackable="true" />
+    <Handle type="Point" name="Femur" reference="5" color="#496DC6" trackable="true" />
+    <Handle type="Point" name="Knee" reference="6" color="#496DC6" trackable="true" />
+    <Handle type="Point" name="Ankle" reference="7" color="#C44A5E" trackable="true" />
+    <Handle type="Point" name="Toe" reference="8" color="#C18057" trackable="true" />
+    <Handle type="Circle" reference="0"/>
+  </Handles>
+
+</KinoveaPostureTool>
