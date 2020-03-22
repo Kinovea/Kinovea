@@ -653,6 +653,11 @@ namespace Kinovea.ScreenManager
             keyframe.AddDrawing(drawing);
             drawing.InfosFading.ReferenceTimestamp = keyframe.Position;
             drawing.InfosFading.AverageTimeStampsPerFrame = averageTimeStampsPerFrame;
+            if (captureKVA)
+            {
+                drawing.InfosFading.UseDefault = false;
+                drawing.InfosFading.AlwaysVisible = true;
+            }
 
             SelectKeyframe(keyframe);
             SelectDrawing(drawing);
