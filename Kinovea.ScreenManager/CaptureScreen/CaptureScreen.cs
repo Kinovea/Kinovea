@@ -929,12 +929,6 @@ namespace Kinovea.ScreenManager
             
             LoadCompanionKVA();
             
-            if(metadata.Count == 0)
-            {
-                Keyframe kf = new Keyframe(0, "capture", metadata);
-                metadata.AddKeyframe(kf);
-            }
-            
             metadataRenderer = new MetadataRenderer(metadata);
             metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
             
@@ -943,6 +937,7 @@ namespace Kinovea.ScreenManager
         }
         private void LoadCompanionKVA()
         {
+            // Note: anything after the first keyframe will be ignored.
             string startupFile = Path.Combine(Software.SettingsDirectory, "capture.kva");
             LoadKVA(startupFile);
         }

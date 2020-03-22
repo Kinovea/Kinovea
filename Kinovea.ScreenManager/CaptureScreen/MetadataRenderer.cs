@@ -67,6 +67,6 @@ namespace Kinovea.ScreenManager
             foreach (Keyframe keyframe in metadata.Keyframes)
                 foreach (AbstractDrawing drawing in keyframe.Drawings)
                     drawing.Draw(canvas, distorter, transformer, drawing == metadata.HitDrawing, timestamp);
-            }
+        }
     }
 }

@@ -194,7 +194,6 @@ namespace Kinovea.ScreenManager
             }
 
             fcd.Dispose();
-            
         }
         
         public void DeselectTool()
@@ -219,7 +218,13 @@ namespace Kinovea.ScreenManager
 
             if(editingLabel)
                 return;
-                
+
+            if(metadata.Count == 0)
+            {
+                Keyframe kf = new Keyframe(0, "", metadata);
+                metadata.AddKeyframe(kf);
+            }
+
             AddDrawing(imagePoint, keyframeIndex, timestampPerFrame, transformer);
         }
         
