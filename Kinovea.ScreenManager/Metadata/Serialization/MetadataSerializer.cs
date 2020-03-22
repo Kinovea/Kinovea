@@ -364,21 +364,21 @@ namespace Kinovea.ScreenManager
                 (inputFileName == Path.GetFileNameWithoutExtension(metadata.FullPath)))
                 return inputTimestamp;
 
+            double averageTimestampsPerFrame = metadata.AverageTimeStampsPerSecond / (1000.0 / metadata.UserInterval);
+            
             // Different contexts or different files.
             // We use the relative positions and adapt the context.
-            long outputTimestamp = 0;
-            int frameNumber;
-
+            long outputTimestamp;
             if (relative)
             {
-                frameNumber = (int)(inputTimestamp / inputAverageTimeStampsPerFrame);
-                outputTimestamp = (int)(frameNumber * metadata.AverageTimeStampsPerFrame);
+                int frameNumber = (int)(inputTimestamp / inputAverageTimeStampsPerFrame);
+                outputTimestamp = (int)(frameNumber * averageTimestampsPerFrame);
             }
             else
             {
                 long start = Math.Max(inputSelectionStart, inputFirstTimeStamp);
-                frameNumber = (int)((inputTimestamp - start) / inputAverageTimeStampsPerFrame);
-                outputTimestamp = (int)(frameNumber * metadata.AverageTimeStampsPerFrame) + metadata.FirstTimeStamp;
+                int frameNumber = (int)((inputTimestamp - start) / inputAverageTimeStampsPerFrame);
+                outputTimestamp =(int)Math.Round(frameNumber * averageTimestampsPerFrame) + metadata.FirstTimeStamp;
             }
             
             return outputTimestamp;

@@ -618,7 +618,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Capture framerate
-        public static double FileFrameInterval(double interval)
+        public static double ComputeFileFrameInterval(double interval)
         {
             // If the capture happens too fast or too slow for a regular player, set the video metadata to a more sensible framerate.
             // This avoids erratic playback because the player can't cope with the framerate, drawback: prevents review in real time.

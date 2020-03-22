@@ -1229,6 +1229,10 @@ namespace Kinovea.ScreenManager
                     framerate = 25;
             }
 
+            // We must save the KVA before the end of the recording for it to get picked up by replay observers.
+            // Let's save it right now, before we start collecting frames, to avoid any further pressure on the machine during recording.
+            SaveKva(path);
+            
             double interval = 1000.0 / framerate;
             result = pipelineManager.StartRecord(path, interval, delay, ImageRotation);
             recording = result == SaveResult.Success;
@@ -1320,6 +1324,33 @@ namespace Kinovea.ScreenManager
 
             if (RecordingStopped != null)
                 RecordingStopped(this, EventArgs.Empty);
+        }
+
+        private void SaveKva(string path)
+        {
+            // Updates to the KVA before saving.
+            double fpsDiff = Math.Abs(1.0 - (pipelineManager.Frequency / cameraGrabber.Framerate));
+            bool setCaptureFramerate = fpsDiff > 0.01 && fpsDiff < 0.5;
+            metadata.CalibrationHelper.CaptureFramesPerSecond = setCaptureFramerate ? pipelineManager.Frequency : cameraGrabber.Framerate;
+            double userInterval = 1000.0 / cameraGrabber.Framerate;
+            metadata.UserInterval = CalibrationHelper.ComputeFileFrameInterval(userInterval);
+
+            // Keep at least microsecond precision on the timestamp coordinates, to avoid misalignment of the zeroeth frame.
+            metadata.AverageTimeStampsPerFrame = (int)Math.Floor(metadata.UserInterval * 1000.0f);
+
+            // Set the time origin to match the real time of the recording trigger.
+            // This will also help synchronizing videos with different delays.
+            metadata.TimeOrigin = 0;
+            if (recordingMode == CaptureRecordingMode.Delay && delay > 0)
+                metadata.TimeOrigin = delay * metadata.AverageTimeStampsPerFrame;
+            
+            // Only save the kva if there is interesting information that can't be found from the video file alone.
+            if (setCaptureFramerate || metadata.TimeOrigin != 0 || metadata.Count > 0)
+            {
+                MetadataSerializer serializer = new MetadataSerializer();
+                string kvaFilename = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".kva";
+                serializer.SaveToFile(metadata, kvaFilename);
+            }
         }
 
         private void ExecutePostCaptureCommand(string command, string path)

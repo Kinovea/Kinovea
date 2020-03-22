@@ -269,19 +269,22 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            // timestamp to milliseconds. (Needed for most formats)
-            double correctedTPS = videoReader.Info.FrameIntervalMilliseconds * videoReader.Info.AverageTimeStampsPerSeconds / metadata.UserInterval;
-            double seconds = (double)actualTimestamps / correctedTPS;
-            double milliseconds = 1000 * (seconds / metadata.HighSpeedFactor);
+            // TODO: use double for info.AverageTimestampsPerFrame.
+            double averageTimestampsPerFrame = videoReader.Info.AverageTimeStampsPerSeconds / videoReader.Info.FramesPerSeconds;
+
+            int frames = 0;
+            if (averageTimestampsPerFrame != 0)
+                frames = (int)Math.Round(actualTimestamps / averageTimestampsPerFrame);
+
+            if (type == TimeType.Duration)
+                frames++;
+             
+            double milliseconds = frames * videoReader.Info.FrameIntervalMilliseconds / metadata.HighSpeedFactor;
 
             double framerate = 1000.0 / metadata.UserInterval * metadata.HighSpeedFactor;
             double framerateMagnitude = Math.Log10(framerate);
             int precision = (int)Math.Ceiling(framerateMagnitude);
             
-            int frames = 0;
-            if (videoReader.Info.AverageTimeStampsPerFrame != 0)
-                frames = (int)((double)actualTimestamps / videoReader.Info.AverageTimeStampsPerFrame);
-
             string frameString = String.Format("{0}", frames);
             string outputTimeCode;
 
@@ -318,11 +321,12 @@ namespace Kinovea.ScreenManager
                     outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
                     break;
                 case TimecodeFormat.Normalized:
-                    long duration = videoReader.Info.DurationTimeStamps - videoReader.Info.AverageTimeStampsPerFrame;
-                    double totalFrames = (double)duration / videoReader.Info.AverageTimeStampsPerFrame;
+                    // 1.0 is the coordinate of the last frame.
+                    double duration = videoReader.Info.DurationTimeStamps - averageTimestampsPerFrame;
+                    double totalFrames = duration / averageTimestampsPerFrame;
                     int magnitude = (int)Math.Ceiling(Math.Log10(totalFrames));
                     string outputFormat = string.Format("{{0:0.{0}}}", new string('0', magnitude));
-                    double normalized = (double)actualTimestamps / duration;
+                    double normalized = actualTimestamps / duration;
                     outputTimeCode = String.Format(outputFormat, normalized);
                     break;
                 case TimecodeFormat.Timestamps:

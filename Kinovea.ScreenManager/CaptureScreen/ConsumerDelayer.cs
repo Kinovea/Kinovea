@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
 
             bool uncompressed = PreferencesManager.CapturePreferences.SaveUncompressedVideo && delayerImageDescriptor.Format != Video.ImageFormat.JPEG;
             string formatString = FilenameHelper.GetFormatStringCapture(uncompressed);
-            double fileInterval = CalibrationHelper.FileFrameInterval(interval);
+            double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
 
             log.DebugFormat("Frame budget for writer [{0}]: {1:0.000} ms.", shortId, interval);
             SaveResult result = writer.OpenSavingContext(filename, info, formatString, delayerImageDescriptor.Format, uncompressed, interval, fileInterval, rotation);
