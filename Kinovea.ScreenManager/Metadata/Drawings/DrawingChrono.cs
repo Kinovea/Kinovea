@@ -318,9 +318,8 @@ namespace Kinovea.ScreenManager
                 {
                     // Spreadsheet support
                     string userDuration = "0";
-                    if (startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
-                        userDuration = parentMetadata.TimeCodeBuilder(stopCountingTimestamp - startCountingTimestamp, TimeType.Duration, TimecodeFormat.Unknown, false);
-
+                    if (!styleHelper.Clock && startCountingTimestamp != long.MaxValue && stopCountingTimestamp != long.MaxValue)
+                        userDuration = parentMetadata.TimeCodeBuilder(stopCountingTimestamp - startCountingTimestamp, TimeType.Absolute, TimecodeFormat.Unknown, false);
                     w.WriteElementString("UserDuration", userDuration);
                 }
 
@@ -578,8 +577,7 @@ namespace Kinovea.ScreenManager
                 durationTimestamps = currentTimestamp - startCountingTimestamp;
             }
 
-            return parentMetadata.TimeCodeBuilder(durationTimestamps, TimeType.Duration, TimecodeFormat.Unknown, true);
-            
+            return parentMetadata.TimeCodeBuilder(durationTimestamps, TimeType.Absolute, TimecodeFormat.Unknown, true);
         }
         #endregion
     }
