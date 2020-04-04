@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem menuShowGrid = new ToolStripMenuItem();
         private ToolStripMenuItem menuShowGraduations = new ToolStripMenuItem();
         private ToolStripMenuItem menuHide = new ToolStripMenuItem();
-
+        
         private bool trackingUpdate;
 
         private const int defaultBackgroundAlpha = 92;
@@ -299,10 +299,7 @@ namespace Kinovea.ScreenManager
         {
             return points;
         }
-        public void SetTracking(bool tracking)
-        {
-        }
-        public void SetTrackablePointValue(string name, PointF value)
+        public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
         {
             /// Called by the trackability manager after a Track() call.
             /// The value of the trackable point should be updated inside the drawing so the 

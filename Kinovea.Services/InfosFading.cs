@@ -229,6 +229,9 @@ namespace Kinovea.Services
         }
         #endregion
 
+        /// <summary>
+        /// Returns the opacity based on the fading configuration and the drawing insertion time.
+        /// </summary>
         public double GetOpacityFactor(long timestamp)
         {
             if (useDefault)
@@ -240,6 +243,29 @@ namespace Kinovea.Services
             {
                 return ComputeOpacityFactor(referenceTimestamp, timestamp, alwaysVisible, opaqueFrames, fadingFrames, masterFactor);
             }
+        }
+
+        /// <summary>
+        /// Returns an opacity suitable for trackable drawings.
+        /// The relative timestamps is the time distance between the current video time and the closest tracked value.
+        /// The goal is to have fading around tracked values, unless overriden by the custom mode.
+        /// </summary>
+        public double GetOpacityTrackable(long relativeTimestamps, long currentTimestamp)
+        {
+            // Opacity based on the drawing insertion frame.
+            double baselineOpacity = GetOpacityFactor(currentTimestamp);
+
+            // Negative relative time means the drawing has no tracking data whatsoever.
+            if (relativeTimestamps < 0)
+                return baselineOpacity;
+
+            // Fading based on distance to the closest tracked frame.
+            long fadingTimestamps = fadingFrames * averageTimeStampsPerFrame;
+            double relativeOpacity = 1.0f - ((float)relativeTimestamps / (float)fadingTimestamps);
+            relativeOpacity = Math.Max(0, relativeOpacity) * masterFactor;
+
+            // Take the max, in order to honor the "Always visible" mode as well as opaque sections that go beyond the end of the tracked section.
+            return Math.Max(baselineOpacity, relativeOpacity);
         }
 
         public bool IsVisible(long referenceTimestamp, long testTimestamp, int visibleFrames)

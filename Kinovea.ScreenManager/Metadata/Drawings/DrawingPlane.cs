@@ -105,8 +105,8 @@ namespace Kinovea.ScreenManager
         private float planeWidth;                                               // width and height of rectangle in plane system.
         private float planeHeight;
         private bool planeIsConvex = true;
-        
-        private bool tracking;
+
+        private long trackingTimestamps = -1;
         
         private InfosFading infosFading;
         private StyleHelper styleHelper = new StyleHelper();
@@ -158,8 +158,8 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
-            if(opacityFactor <= 0)
+            double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
+            if (opacityFactor <= 0)
                return;
 
             QuadrilateralF quad = transformer.Transform(quadImage);
@@ -247,7 +247,8 @@ namespace Kinovea.ScreenManager
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
-            if(infosFading.GetOpacityFactor(currentTimestamp) <= 0)
+            double opacity = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
+            if (opacity <= 0)
                 return -1;
             
             for(int i = 0; i < 4; i++)
@@ -450,14 +451,11 @@ namespace Kinovea.ScreenManager
             
             return points;
         }
-        public void SetTracking(bool tracking)
-        {
-            this.tracking = tracking;
-        }
-        public void SetTrackablePointValue(string name, PointF value)
+        public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
         {
             int p = int.Parse(name);
             quadImage[p] = new PointF(value.X, value.Y);
+            this.trackingTimestamps = trackingTimestamps;
 
             projectiveMapping.Update(quadPlane, quadImage);
             CalibrationHelper.CalibrationByPlane_Update(Id, quadImage);

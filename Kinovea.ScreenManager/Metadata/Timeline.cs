@@ -32,6 +32,9 @@ namespace Kinovea.ScreenManager
     {
         private SortedList<long, T> frames = new SortedList<long, T>();
         
+        /// <summary>
+        /// Adds an entry to the timeline.
+        /// </summary>
         public void Insert(long time, T value)
         {
             if(frames.ContainsKey(time))
@@ -40,6 +43,10 @@ namespace Kinovea.ScreenManager
                 frames.Add(time, value);    
         }
         
+        /// <summary>
+        /// Returns the entry closest to the requested time.
+        /// Does not modify the timeline.
+        /// </summary>
         public T ClosestFrom(long time)
         {
             if(frames.Count == 0)

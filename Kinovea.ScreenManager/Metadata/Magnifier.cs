@@ -198,10 +198,7 @@ namespace Kinovea.ScreenManager
         {
             return points;
         }
-        public void SetTracking(bool tracking)
-        {
-        }
-        public void SetTrackablePointValue(string name, PointF value)
+        public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");

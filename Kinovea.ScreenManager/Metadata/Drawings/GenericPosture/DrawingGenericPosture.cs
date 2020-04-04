@@ -131,7 +131,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Guid toolId;
-        private bool tracking;
+        private long trackingTimestamps = -1;
         private PointF origin;
         private GenericPosture genericPosture;
         private List<AngleHelper> angles = new List<AngleHelper>();
@@ -189,11 +189,7 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
-        
-            if(tracking)
-                opacity = 1.0;
-            
+            double opacity = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
             if (opacity <= 0)
                 return;
             
@@ -202,7 +198,7 @@ namespace Kinovea.ScreenManager
             int alpha = (int)(opacity * 255);
             alpha = Math.Max(0, Math.Min(255, alpha));
 
-            int alphaBackground = (int)(opacity*defaultBackgroundAlpha);
+            int alphaBackground = (int)(opacity * defaultBackgroundAlpha);
             alphaBackground = Math.Max(0, Math.Min(255, alphaBackground));
             
             using(Pen penEdge = styleHelper.GetBackgroundPen(alpha))
@@ -231,7 +227,8 @@ namespace Kinovea.ScreenManager
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
-            if (!tracking && infosFading.GetOpacityFactor(currentTimestamp) <= 0)
+            double opacity = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
+            if (opacity <= 0)
                return -1;
             
             for(int i = 0; i<genericPosture.Handles.Count;i++)
@@ -452,13 +449,10 @@ namespace Kinovea.ScreenManager
         {
             return genericPosture.GetTrackablePoints();
         }
-        public void SetTracking(bool tracking)
-        {
-            this.tracking = tracking;
-        }
-        public void SetTrackablePointValue(string name, PointF value)
+        public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
         {
             genericPosture.SetTrackablePointValue(name, value, CalibrationHelper);
+            this.trackingTimestamps = trackingTimestamps;
         }
         private void SignalAllTrackablePointsMoved()
         {

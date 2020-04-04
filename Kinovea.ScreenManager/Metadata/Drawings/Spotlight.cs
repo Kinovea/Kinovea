@@ -55,7 +55,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private long position;
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
-        private bool tracking;
+        private long trackingTimestamps = -1;
         private int radius;
         private Rectangle rescaledRect;
         private static readonly int minimalRadius = 10;
@@ -91,11 +91,7 @@ namespace Kinovea.ScreenManager
         {
             // Add the shape of this spotlight to the global mask for the frame.
             // The dim rectangle is added separately in Spotlights class.
-            double opacityFactor = infosFading.GetOpacityFactor(timestamp);
-            
-            if(tracking)
-                opacityFactor = 1.0;
-            
+            double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, timestamp);
             if(opacityFactor <= 0)
                 return 0;
             
@@ -111,12 +107,8 @@ namespace Kinovea.ScreenManager
         public void Draw(Graphics canvas, long timestamp)
         {
             // This just draws the border.
-            double opacityFactor = infosFading.GetOpacityFactor(timestamp);
-            
-            if(tracking)
-                opacityFactor = 1.0;
-            
-            if(opacityFactor <= 0)
+            double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, timestamp);
+            if (opacityFactor <= 0)
                 return;
         
             Color colorPenBorder = Color.FromArgb((int)((double)255 * opacityFactor), Color.White);
@@ -126,12 +118,12 @@ namespace Kinovea.ScreenManager
                 canvas.DrawEllipse(penBorder, rescaledRect);
             }
         }
-        public int HitTest(PointF point, long timeStamp, IImageToViewportTransformer transformer)
+        public int HitTest(PointF point, long timestamp, IImageToViewportTransformer transformer)
         {
             // Hit Result: -1: miss, 0: on object, 1 on handle.
             int result = -1;
-            double opacity = infosFading.GetOpacityFactor(timeStamp);
-            if(tracking || opacity > 0)
+            double opacity = infosFading.GetOpacityTrackable(trackingTimestamps, timestamp);
+            if(opacity > 0)
             {
                 if(IsPointOnHandler(point, transformer))
                     result = 1;
@@ -168,16 +160,13 @@ namespace Kinovea.ScreenManager
         {
             return points;
         }
-        public void SetTracking(bool tracking)
-        {
-            this.tracking = tracking;
-        }
-        public void SetTrackablePointValue(string name, PointF value)
+        public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
+            this.trackingTimestamps = trackingTimestamps;
         }
         private void SignalTrackablePointMoved()
         {

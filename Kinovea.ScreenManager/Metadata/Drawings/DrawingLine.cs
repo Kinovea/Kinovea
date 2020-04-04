@@ -109,7 +109,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
-        private bool tracking;
+        private long trackingTimestamps = -1;
         private bool initializing = true;
         private bool measureInitialized;
 
@@ -165,11 +165,7 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
-            
-            if(tracking)
-                opacityFactor = 1.0;
-            
+            double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
             if(opacityFactor <= 0)
                 return;
 
@@ -248,9 +244,8 @@ namespace Kinovea.ScreenManager
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
             int result = -1;
-            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
-            
-            if (tracking || opacity > 0)
+            double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
+            if (opacityFactor > 0)
             {
                 if(trackExtraData != TrackExtraData.None && miniLabel.HitTest(point, transformer))
                     result = 3;
@@ -452,16 +447,14 @@ namespace Kinovea.ScreenManager
         {
             return points;
         }
-        public void SetTracking(bool tracking)
-        {
-            this.tracking = tracking;
-        }
-        public void SetTrackablePointValue(string name, PointF value)
+        public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
+            this.trackingTimestamps = trackingTimestamps;
+
             if (CalibrationHelper != null)
                 CalibrationHelper.CalibrationByLine_Update(Id, points["a"], points["b"]);
         }

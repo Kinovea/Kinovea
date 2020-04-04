@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
-        private bool tracking;
+        private long trackingTimestamps = -1;
         private bool measureInitialized;
         private MiniLabel miniLabel;
         private TrackExtraData trackExtraData = TrackExtraData.None;
@@ -143,11 +143,7 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
-            
-            if(tracking)
-                opacityFactor = 1.0;
-            
+            double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
             if(opacityFactor <= 0)
                 return;
             
@@ -184,8 +180,8 @@ namespace Kinovea.ScreenManager
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
-            double opacity = infosFading.GetOpacityFactor(currentTimestamp);
-            if (tracking || opacity > 0)
+            double opacity = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
+            if (opacity > 0)
             {
                 if(trackExtraData != TrackExtraData.None && miniLabel.HitTest(point, transformer))
                     result = 1;
@@ -314,16 +310,17 @@ namespace Kinovea.ScreenManager
         {
             return points;
         }
-        public void SetTracking(bool tracking)
+        public void SetTracked(bool tracked)
         {
-            this.tracking = tracking;
+            //this.tracked = tracked;
         }
-        public void SetTrackablePointValue(string name, PointF value)
+        public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
+            this.trackingTimestamps = trackingTimestamps;
             miniLabel.SetAttach(points["0"], true);
         }
         private void SignalTrackablePointMoved()

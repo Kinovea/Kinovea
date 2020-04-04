@@ -30,19 +30,27 @@ namespace Kinovea.ScreenManager
         Guid Id { get; }
         string Name { get; }
         Color Color { get; }
-
         TrackingProfile CustomTrackingProfile { get; }
         
         Dictionary<string, PointF> GetTrackablePoints();
-        void SetTracking(bool tracking);
+
+        // Note:
+        // Trackable drawings that support fading will also store a member named "trackingTimestamps".
+        // This is the time distance between the current time and the time of the closest tracked value.
+        // A value of -1 indicates the drawing has no tracking data.
+        // This is used to handle opacity for tracked drawings.
 
         /// <summary>
         /// Called by the trackability manager after a Track() call.
         /// The value of the trackable point should be updated inside the drawing so the 
         /// drawing reflects the new coordinate.
+        /// trackingTimestamps indicates the distance between the current video time and the closest entry in the timeline.
         /// </summary>
-        void SetTrackablePointValue(string name, PointF value);
+        void SetTrackablePointValue(string name, PointF value, long trackingTimestamps);
         
+        /// <summary>
+        /// Event raised by trackable drawings when the points are moved manually.
+        /// </summary>
         event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
     }
 }

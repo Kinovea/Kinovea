@@ -36,9 +36,23 @@ namespace Kinovea.ScreenManager
     public class TrackablePoint
     {
         #region Properties
+
+        /// <summary>
+        /// Position at the closest entry we could find in the timeline, for the current video time.
+        /// This should be updated at each frame whether tracking is active or not.
+        /// </summary>
         public PointF CurrentValue
         {
             get { return currentValue; }
+        }
+
+        /// <summary>
+        /// Distance in timestamps between the current video time and the time of the closest tracked value.
+        /// This is used by drawings to change opacity based on whether the drawing has tracking data at this time or not.
+        /// </summary>
+        public long TimeDifference
+        {
+            get { return timeDifference; }
         }
         public int ContentHash
         {
@@ -66,6 +80,7 @@ namespace Kinovea.ScreenManager
         
         private bool isTracking;
         private PointF currentValue;
+        private long timeDifference = -1;
         private TrackingContext context;
         private TrackerParameters trackerParameters;
         private Timeline<TrackFrame> trackTimeline = new Timeline<TrackFrame>();
@@ -82,7 +97,7 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-        /// Value adjusted by user.
+        /// Value adjusted manually by the user.
         /// </summary>
         public void SetUserValue(PointF value)
         {
@@ -91,6 +106,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             currentValue = value;
+            timeDifference = 0;
 
             if (!isTracking)
             {
@@ -121,11 +137,15 @@ namespace Kinovea.ScreenManager
 
             if (closestFrame == null)
             {
+                // Not a single entry in the timeline.
+                // Most likely this drawing has never been activated for tracking so far.
                 currentValue = nonTrackingValue;
+                timeDifference = -1;
 
                 if (isTracking)
                 {
                     trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.Manual));
+                    timeDifference = 0;
                 }
                 
                 return isTracking;
@@ -133,32 +153,51 @@ namespace Kinovea.ScreenManager
 
             if (closestFrame.Template == null)
             {
-                // We may not have the template if the timeline was imported from KVA.
+                // This point has entries in the timeline but doesn't have the corresponding image pattern.
+                // This happen when the timeline is imported from a KVA.
                 currentValue = closestFrame.Location;
+                timeDifference = Math.Abs(context.Time - closestFrame.Time);
 
                 if (isTracking)
+                {
+                    // Make sure we extract the pattern and update the entry at this time.
+                    // Note: the position we are using could come from a different time. 
+                    // But since we are actively tracking we need to end up adding an entry at this time.
+                    // But since we don't have any specific template to look for, we will just create an entry at the same location.
+                    // If we are on the right time, perfect. If not, it will use the location from the closest and comit it to this time.
+                    // When the user switched tracking ON for this drawing, they saw where the point was.
+                    // If they moved it manually before changing frame, it will be handled in SetUserValue.
+                    // If not, it means they are content with the position it has and thus this insertion is correct.
                     trackTimeline.Insert(context.Time, CreateTrackFrame(closestFrame.Location, closestFrame.PositionningSource));
+                    timeDifference = 0;
+                }
 
                 return isTracking;
             }
 
             if(closestFrame.Time == context.Time)
             {
+                // We found an entry at the exact time requested.
                 currentValue = closestFrame.Location;
+                timeDifference = 0;
                 return false;
             }
 
             if (!isTracking)
             {
+                // We did not find the exact requested time in the timeline, and we are not currently tracking.
                 currentValue = closestFrame.Location;
+                timeDifference = Math.Abs(context.Time - closestFrame.Time);
                 return false;
             }
 
+            // We did not find the exact requested time in the timeline, but tracking is active so let's look for the pattern.
             TrackResult result = Tracker.Track(trackerParameters.SearchWindow, closestFrame, context.Image);
 
             if(result.Similarity >= trackerParameters.SimilarityThreshold)
             {
                 currentValue = result.Location;
+                timeDifference = 0;
                 
                 if(result.Similarity > trackerParameters.TemplateUpdateThreshold)
                 {
@@ -175,7 +214,9 @@ namespace Kinovea.ScreenManager
             }
             else
             {
+                // Tracking failure.
                 currentValue = closestFrame.Location;
+                timeDifference = Math.Abs(context.Time - closestFrame.Time);
                 inserted = false;
             }
 
@@ -195,6 +236,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             currentValue = closestFrame.Location;
+            timeDifference = Math.Abs(context.Time - closestFrame.Time);
             trackTimeline.Insert(context.Time, CreateTrackFrame(currentValue, PositionningSource.ForcedClosest));
         }
         
@@ -213,6 +255,7 @@ namespace Kinovea.ScreenManager
             if(!isTracking)
             {
                 currentValue = nonTrackingValue;
+                timeDifference = long.MaxValue;
                 return false;
             }
 
@@ -309,6 +352,11 @@ namespace Kinovea.ScreenManager
                 r.ReadEndElement();
         }
 
+        /// <summary>
+        /// Creates a timeline entry (TrackFrame) from an existing location.
+        /// Does not perform any tracking.
+        /// Extracts the pattern from the image.
+        /// </summary>
         private TrackFrame CreateTrackFrame(PointF location, PositionningSource positionningSource)
         {
             Rectangle region = location.Box(trackerParameters.BlockWindow).ToRectangle();

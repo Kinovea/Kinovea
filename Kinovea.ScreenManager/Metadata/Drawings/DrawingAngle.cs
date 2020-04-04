@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
-        private bool tracking;
+        private long trackingTimestamps = -1;
         private bool initializing = true;
         
         private AngleHelper angleHelper = new AngleHelper();
@@ -160,11 +160,7 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing Implementation
         public override void Draw(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
-            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
-            
-            if(tracking)
-                opacityFactor = 1.0;
-            
+            double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
             if (opacityFactor <= 0)
                 return;
             
@@ -206,8 +202,8 @@ namespace Kinovea.ScreenManager
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;
-            
-            if (tracking || infosFading.GetOpacityFactor(currentTimestamp) > 0)
+            double opacityFactor = infosFading.GetOpacityTrackable(trackingTimestamps, currentTimestamp);
+            if (opacityFactor > 0)
             {
                 if (HitTester.HitTest(points["o"], point, transformer))
                     result = 1;
@@ -387,16 +383,13 @@ namespace Kinovea.ScreenManager
         {
             return points;
         }
-        public void SetTracking(bool tracking)
-        {
-            this.tracking = tracking;
-        }
-        public void SetTrackablePointValue(string name, PointF value)
+        public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
         {
             if(!points.ContainsKey(name))
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
+            this.trackingTimestamps = trackingTimestamps;
         }
         private void SignalAllTrackablePointsMoved()
         {

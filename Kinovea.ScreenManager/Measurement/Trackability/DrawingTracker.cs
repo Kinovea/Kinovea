@@ -130,13 +130,12 @@ namespace Kinovea.ScreenManager
         public void Track(TrackingContext context)
         {
             // This is where we would spawn new threads for each tracking.
-            // TODO: Extract the bitmapdata once and pass it to all.
             Dictionary<string, bool> insertionMap = new Dictionary<string, bool>();
             bool atLeastOneInserted = false;
             foreach(KeyValuePair<string, TrackablePoint> pair in trackablePoints)
             {
                 bool inserted = pair.Value.Track(context);
-                drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue);
+                drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
 
                 insertionMap[pair.Key] = inserted;
                 if (inserted)
@@ -169,13 +168,10 @@ namespace Kinovea.ScreenManager
             foreach (KeyValuePair<string, TrackablePoint> pair in trackablePoints)
             {
                 bool inserted = pair.Value.SetTracking(isTracking);
-                
                 insertionMap[pair.Key] = inserted;
                 if (inserted)
                     atLeastOneInserted = true;
             }
-            
-            drawing.SetTracking(isTracking);
 
             if (atLeastOneInserted)
                 FixTimelineSync(insertionMap);
@@ -196,7 +192,7 @@ namespace Kinovea.ScreenManager
 
                 // Force insert using closest existing value.
                 pair.Value.ForceInsertClosestLocation();
-                drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue);
+                drawing.SetTrackablePointValue(pair.Key, pair.Value.CurrentValue, pair.Value.TimeDifference);
             }
         }
 
