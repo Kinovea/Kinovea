@@ -177,6 +177,7 @@
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "FormConfigureVisibility";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
       this.Text = "FormConfigureVisibility";
       this.grpConfig.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.nudFading)).EndInit();

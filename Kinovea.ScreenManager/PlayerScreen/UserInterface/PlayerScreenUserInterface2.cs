@@ -1117,6 +1117,7 @@ namespace Kinovea.ScreenManager
             mnuVisibilityAlways.Image = Properties.Drawings.persistence;
             mnuVisibilityDefault.Image = Properties.Drawings.persistence;
             mnuVisibilityCustom.Image = Properties.Drawings.persistence;
+            mnuVisibilityConfigure.Image = Properties.Drawings.configure;
             mnuVisibilityAlways.Click += mnuVisibilityAlways_Click;
             mnuVisibilityDefault.Click += mnuVisibilityDefault_Click;
             mnuVisibilityCustom.Click += mnuVisibilityCustom_Click;
@@ -4228,6 +4229,9 @@ namespace Kinovea.ScreenManager
         }
         private void mnuVisibilityAlways_Click(object sender, EventArgs e)
         {
+            if (mnuVisibilityAlways.Checked)
+                return;
+
             mnuVisibilityAlways.Checked = true;
             mnuVisibilityDefault.Checked = false;
             mnuVisibilityCustom.Checked = false;
@@ -4241,6 +4245,9 @@ namespace Kinovea.ScreenManager
         }
         private void mnuVisibilityDefault_Click(object sender, EventArgs e)
         {
+            if (mnuVisibilityDefault.Checked)
+                return;
+
             mnuVisibilityAlways.Checked = false;
             mnuVisibilityDefault.Checked = true;
             mnuVisibilityCustom.Checked = false;
@@ -4254,6 +4261,12 @@ namespace Kinovea.ScreenManager
         }
         private void mnuVisibilityCustom_Click(object sender, EventArgs e)
         {
+            if (mnuVisibilityCustom.Checked)
+            {
+                mnuVisibilityConfigure_Click(sender, e);
+                return;
+            }
+            
             mnuVisibilityAlways.Checked = false;
             mnuVisibilityDefault.Checked = false;
             mnuVisibilityCustom.Checked = true;
@@ -4264,6 +4277,9 @@ namespace Kinovea.ScreenManager
             drawing.InfosFading.UseDefault = false;
             m_FrameServer.HistoryStack.PushNewCommand(memento);
             DoInvalidate();
+
+            // Go to configuration immediately.
+            mnuVisibilityConfigure_Click(sender, e);
         }
         private void mnuVisibilityConfigure_Click(object sender, EventArgs e)
         {
@@ -4296,15 +4312,6 @@ namespace Kinovea.ScreenManager
             CheckCustomDecodingSize(true);
             ShowNextFrame(m_iCurrentPosition, true);
             ToggleTrackingCommand.Execute(drawing);
-
-            // Force always visible to make sure we continue seeing the drawing during tracking.
-            bool tracked = ToggleTrackingCommand.CurrentState(drawing);
-            if (tracked && (drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading)
-            {
-                drawing.InfosFading.UseDefault = false;
-                drawing.InfosFading.AlwaysVisible = true;
-            }
-            
             RefreshImage();
         }
 
