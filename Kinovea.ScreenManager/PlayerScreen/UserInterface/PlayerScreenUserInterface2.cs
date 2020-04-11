@@ -2153,12 +2153,16 @@ namespace Kinovea.ScreenManager
 
             // Stretch factor, zoom, or container size have been updated, update the rendering and decoding sizes.
             // During the process, stretch and fill may be forced to different values.
-            bool scalable = m_FrameServer.VideoReader.CanScaleIndefinitely;
+            // Custom scaling vs decoding modes:
+            // - We try to decode the images at the smallest size possible.
+            // - Some states of the applications like tracking prevent this, this is stored in m_bEnableCustomDecodingSize.
+            // - Some decoding modes also prevent changing the decoding size, this is set in scalable here.
+            bool scalable = m_FrameServer.VideoReader.CanScaleIndefinitely || m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering;
             m_viewportManipulator.Manipulate(panelCenter.Size, targetStretch, m_fill, m_FrameServer.ImageTransform.Zoom, m_bEnableCustomDecodingSize, scalable);
             pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
             pbSurfaceScreen.Location = m_viewportManipulator.RenderingLocation;
             m_FrameServer.ImageTransform.Stretch = m_viewportManipulator.Stretch;
-
+            m_FrameServer.ImageTransform.DecodingScale = m_viewportManipulator.PreferredDecodingScale;
             ReplaceResizers();
         }
         private void ReplaceResizers()
@@ -2300,7 +2304,7 @@ namespace Kinovea.ScreenManager
             // The boolean will later be used each time we attempt to change decoding size in StretchSqueezeSurface.
             // This is not concerned with decoding mode (prebuffering, caching, etc.) as this will be checked inside the reader.
             bool wasCustomDecodingSize = m_bEnableCustomDecodingSize;
-            m_bEnableCustomDecodingSize = !m_FrameServer.Metadata.Tracking && !_forceDisable;
+            m_bEnableCustomDecodingSize = !_forceDisable && !m_FrameServer.Metadata.Tracking;
 
             if (wasCustomDecodingSize && !m_bEnableCustomDecodingSize)
             {

@@ -103,6 +103,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Compute the rendering size, rendering location, and update the stretch factor if the original one doesn't fit in the container.
         /// The stretch factor is how much the user want to stretch the image and is based on image corner manipulation. It can go either way of 1.0f.
+        /// The stretch factor is independent from the zoom, which is only the magnification inside the image.
         /// </summary>
         private void ComputeRenderingSize(bool sideway, Size _containerSize, double _stretchFactor, bool _fillContainer)
         {
@@ -139,14 +140,14 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void ComputeDecodingSize(bool sideway, Size _containerSize, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
         {
-            // Updates the following globals: decodingSize, mayDrawUnscaled, renderingZoomFactor.
+            // Updates the following globals: preferredDecodingSize, mayDrawUnscaled, renderingZoomFactor.
             // Note: the decoding size doesn't care about rotation, as the pipeline is read > scale > rotate.
             Size aspectRatioSize = reader.Info.AspectRatioSize;
             Size unrotatedRenderingSize = renderingSize;
             if (sideway)
                 unrotatedRenderingSize = new Size(renderingSize.Height, renderingSize.Width);
 
-            if (!_enableCustomDecodingSize)
+            if (!_enableCustomDecodingSize || !_scalable)
             {
                 preferredDecodingSize = aspectRatioSize;
                 mayDrawUnscaled = false;
@@ -172,16 +173,15 @@ namespace Kinovea.ScreenManager
                     // We don't actually care if the scaled image fits in the container as we are not rendering it fully anyway, 
                     // but we use the container size as an upper boundary to what we allow the decoding size to be, 
                     // in order not to put too much load on the decoder.
-                    if (!_scalable && !zoomDecodingSizeRotated.FitsIn(_containerSize) && !zoomDecodingSize.FitsIn(aspectRatioSize))
-                    {
-                        // The max allowed decoding size is somewhat arbitrary, we could also use _containerSize at right ratio.
-                        preferredDecodingSize = aspectRatioSize;
-                        mayDrawUnscaled = false;
-                    }
-                    else
+                    if (zoomDecodingSizeRotated.FitsIn(_containerSize) || zoomDecodingSize.FitsIn(aspectRatioSize))
                     {
                         preferredDecodingSize = zoomDecodingSize;
                         mayDrawUnscaled = !sideway;
+                    }
+                    else
+                    {
+                        preferredDecodingSize = aspectRatioSize;
+                        mayDrawUnscaled = false;
                     }
                 }
             }
