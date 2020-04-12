@@ -2140,7 +2140,6 @@ namespace Kinovea.ScreenManager
             // (We might want to wait the end of a resizing process for example.).
             // Similarly, we don't update the rendering zoom factor, so that during resizing process,
             // the zoom window is still computed based on the current decoding size.
-
             if (!m_FrameServer.Loaded)
                 return;
 
@@ -2157,12 +2156,13 @@ namespace Kinovea.ScreenManager
             // - We try to decode the images at the smallest size possible.
             // - Some states of the applications like tracking prevent this, this is stored in m_bEnableCustomDecodingSize.
             // - Some decoding modes also prevent changing the decoding size, this is set in scalable here.
+            // Note: do not update decoding scale here, as this function is called during stretching of the rendering surface, 
+            // while the decoding size isn't updated. 
             bool scalable = m_FrameServer.VideoReader.CanScaleIndefinitely || m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering;
             m_viewportManipulator.Manipulate(panelCenter.Size, targetStretch, m_fill, m_FrameServer.ImageTransform.Zoom, m_bEnableCustomDecodingSize, scalable);
             pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
             pbSurfaceScreen.Location = m_viewportManipulator.RenderingLocation;
             m_FrameServer.ImageTransform.Stretch = m_viewportManipulator.Stretch;
-            m_FrameServer.ImageTransform.DecodingScale = m_viewportManipulator.PreferredDecodingScale;
             ReplaceResizers();
         }
         private void ReplaceResizers()
@@ -4659,12 +4659,13 @@ namespace Kinovea.ScreenManager
         }
         private void AfterZoomChange()
         {
+            m_FrameServer.ImageTransform.DecodingScale = m_viewportManipulator.PreferredDecodingScale;
+
             m_FrameServer.ImageTransform.UpdateZoomWindow();
             m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.ZoomWindow.Location);
             ToastZoom();
             UpdateCursor();
             ReportForSyncMerge();
-            
             ResizeUpdate(true);
         }
         #endregion
