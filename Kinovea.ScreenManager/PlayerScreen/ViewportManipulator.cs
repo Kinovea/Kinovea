@@ -80,17 +80,20 @@ namespace Kinovea.ScreenManager
         /// - original size, aspectratio size, reference size, 
         /// - container size, zoom factor, stretch factor.
         /// </summary>
-        public void Manipulate(Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
+        public void Manipulate(bool finished, Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
         {
             // One of the constraint has changed, recompute the sizes.
             bool sideway = reader.Info.ImageRotation == ImageRotation.Rotate90 || reader.Info.ImageRotation == ImageRotation.Rotate270;
             ComputeRenderingSize(sideway, _containerSize, _stretchFactor, _fillContainer);
 
+            // If the manipulation is not finished, we are in the process of scaling the rendering surface.
+            // During this period the decoding size doesn't change.
+            if (!finished)
+                return;
+            
             ComputeDecodingSize(sideway, _containerSize, _zoomFactor, _enableCustomDecodingSize, _scalable);
 
-            // Decoding scale
-            //
-            // Used to find the final zoom window in the received images.
+            // Decoding scale is used to find the final zoom window in the received images.
             // It is the factor to apply to the zoom window in the reference image to get the zoom window in the decoded images.
             //
             // Subtle: this is not the same as rendering size / reference size, because when there is zoom and stretch we can 

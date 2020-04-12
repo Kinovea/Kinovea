@@ -30,10 +30,9 @@ namespace Kinovea.ScreenManager
     /// Note : This is not the coordinate system that the user can adjust for distance calculations, that one is PlayerScreen/CalibrationHelper.cs.
     /// 
     /// Includes : 
-    /// - stretching, image may be stretched or squeezed relative to the original.
-    /// - zooming, the actual view may be a sub window of the original image.
+    /// - stretching: the rectangle where the image is displayed may be stretched or squeezed relative to the original size.
+    /// - zooming: the region of interest may be a sub window of the original image.
     /// 
-
     /// 
     /// The class will keep track of the current changes relatively to the 
     /// reference image size and provide conversion routines.
@@ -45,7 +44,6 @@ namespace Kinovea.ScreenManager
     /// The rendering surface also has its own size that can be changed by user stretching.
     /// 
     /// The image aspect ratio is never altered. Skew is not supported.
-    /// TODO: replace all these special cases with matrix maths.
     /// TODO: merge with ImageToViewportTransformer.
     /// </summary>
     public class ImageTransform : IImageToViewportTransformer

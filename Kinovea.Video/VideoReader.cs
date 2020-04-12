@@ -257,7 +257,7 @@ namespace Kinovea.Video
         /// <summary>
         /// Ask the reader to provide its images at a specific size.
         /// Not necessarily honored by the reader.
-        /// Return true if the size was changed.
+        /// Returns true if the change was accepted or not required.
         /// </summary>
         public virtual bool ChangeDecodingSize(Size size)
         {

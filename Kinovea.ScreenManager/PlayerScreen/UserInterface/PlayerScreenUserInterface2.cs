@@ -2133,7 +2133,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Auto Stretch & Manual Resize
-        private void StretchSqueezeSurface()
+        private void StretchSqueezeSurface(bool finished)
         {
             // Compute the rendering size, and the corresponding optimal decoding size.
             // We don't ask the VideoReader to update its decoding size here.
@@ -2159,9 +2159,10 @@ namespace Kinovea.ScreenManager
             // Note: do not update decoding scale here, as this function is called during stretching of the rendering surface, 
             // while the decoding size isn't updated. 
             bool scalable = m_FrameServer.VideoReader.CanScaleIndefinitely || m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.PreBuffering;
-            m_viewportManipulator.Manipulate(panelCenter.Size, targetStretch, m_fill, m_FrameServer.ImageTransform.Zoom, m_bEnableCustomDecodingSize, scalable);
-            pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
+            m_viewportManipulator.Manipulate(finished, panelCenter.Size, targetStretch, m_fill, m_FrameServer.ImageTransform.Zoom, m_bEnableCustomDecodingSize, scalable);
+            
             pbSurfaceScreen.Location = m_viewportManipulator.RenderingLocation;
+            pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
             m_FrameServer.ImageTransform.Stretch = m_viewportManipulator.Stretch;
             ReplaceResizers();
         }
@@ -2271,22 +2272,22 @@ namespace Kinovea.ScreenManager
         {
             ResizeUpdate(true);
         }
-        private void ResizeUpdate(bool _finished)
+        private void ResizeUpdate(bool finished)
         {
             if (!m_FrameServer.Loaded)
                 return;
 
-            StretchSqueezeSurface();
+            StretchSqueezeSurface(finished);
 
-            if (_finished)
+            if (finished)
             {
-                // Update the decoding size. 
-                // This may clear and restart the prebuffering. 
+                // Update the decoding size at the file reader level. 
+                // This may clear and restart the prebuffering.
                 // It may not be honored by the video reader.
                 if (m_FrameServer.VideoReader.CanChangeDecodingSize)
                 {
-                    bool changed = m_FrameServer.VideoReader.ChangeDecodingSize(m_viewportManipulator.PreferredDecodingSize);
-                    if (changed)
+                    bool accepted = m_FrameServer.VideoReader.ChangeDecodingSize(m_viewportManipulator.PreferredDecodingSize);
+                    if (accepted)
                         m_FrameServer.ImageTransform.DecodingScale = m_viewportManipulator.PreferredDecodingScale;
                 }
                 m_FrameServer.Metadata.ResizeFinished();
@@ -4659,8 +4660,6 @@ namespace Kinovea.ScreenManager
         }
         private void AfterZoomChange()
         {
-            m_FrameServer.ImageTransform.DecodingScale = m_viewportManipulator.PreferredDecodingScale;
-
             m_FrameServer.ImageTransform.UpdateZoomWindow();
             m_PointerTool.SetZoomLocation(m_FrameServer.ImageTransform.ZoomWindow.Location);
             ToastZoom();
