@@ -276,7 +276,7 @@ namespace Kinovea.ScreenManager
 
         public void AudioInputThresholdPassed()
         {
-            if (!recording)
+            if (cameraConnected && !recording)
                 ToggleRecording();
         }
 
@@ -1161,7 +1161,7 @@ namespace Kinovea.ScreenManager
         
         private void StartRecording()
         {
-            if (!cameraLoaded || !cameraConnected || recording)
+            if (!cameraLoaded || recording)
                 return;
 
             string root;
@@ -1195,6 +1195,7 @@ namespace Kinovea.ScreenManager
             if (!OverwriteCheck(path))
                 return;
 
+            // Stop any current recording.
             switch (recordingMode)
             {
                 case CaptureRecordingMode.Camera:
@@ -1233,31 +1234,38 @@ namespace Kinovea.ScreenManager
             // Let's save it right now, before we start collecting frames, to avoid any further pressure on the machine during recording.
             SaveKva(path);
             
-            double interval = 1000.0 / framerate;
-            result = pipelineManager.StartRecord(path, interval, delay, ImageRotation);
-            recording = result == SaveResult.Success;
-            
-            if(recording)
+            if (cameraConnected)
             {
-                recordingStart = DateTime.Now;
-                stopwatchRecording.Restart();
+                double interval = 1000.0 / framerate;
+                result = pipelineManager.StartRecord(path, interval, delay, ImageRotation);
+                recording = result == SaveResult.Success;
+            
+                if(recording)
+                {
+                    recordingStart = DateTime.Now;
+                    stopwatchRecording.Restart();
                 
-                view.UpdateRecordingStatus(recording);
-                view.Toast(ScreenManagerLang.Toast_StartRecord, 1000);
+                    view.UpdateRecordingStatus(recording);
+                    view.Toast(ScreenManagerLang.Toast_StartRecord, 1000);
 
-                if (RecordingStarted != null)
-                    RecordingStarted(this, EventArgs.Empty);
+                    if (RecordingStarted != null)
+                        RecordingStarted(this, EventArgs.Empty);
+                }
+                else
+                {
+                    //DisplayError(result);
+                }
             }
             else
             {
-                //DisplayError(result);
+                SaveBuffer(path, uncompressed);
             }
         }
 
         private void StopRecording()
         {
-            if(!cameraLoaded || !recording)
-               return;
+            if (!cameraLoaded || !recording)
+                return;
 
             log.DebugFormat("Stopping recording.");
 
@@ -1282,16 +1290,21 @@ namespace Kinovea.ScreenManager
             {
                 throw new NotImplementedException();
             }
-            
+
             recording = false;
             string dropMessage = string.Format("Dropped frames: {0}.", pipelineManager.Drops);
             if (pipelineManager.Drops > 0)
                 log.Warn(dropMessage);
             else
                 log.Debug(dropMessage);
-            
+
             view.Toast(ScreenManagerLang.Toast_StopRecord, 750);
 
+            AfterStopRecording(finalFilename);
+        }
+
+        private void AfterStopRecording(string finalFilename)
+        { 
             if (recordingThumbnail != null)
             {
                 AddCapturedFile(finalFilename, recordingThumbnail, true);
@@ -1326,6 +1339,9 @@ namespace Kinovea.ScreenManager
                 RecordingStopped(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Save a KVA file along the recorded video.
+        /// </summary>
         private void SaveKva(string path)
         {
             // Updates to the KVA before saving.
@@ -1340,8 +1356,9 @@ namespace Kinovea.ScreenManager
 
             // Set the time origin to match the real time of the recording trigger.
             // This will also help synchronizing videos with different delays.
+            // If the camera isn't currently streaming we are in "pause & browse" mode and delay isn't relevant.
             metadata.TimeOrigin = 0;
-            if (recordingMode == CaptureRecordingMode.Delay && delay > 0)
+            if (cameraConnected && recordingMode == CaptureRecordingMode.Delay && delay > 0)
                 metadata.TimeOrigin = delay * metadata.AverageTimeStampsPerFrame;
             
             // Only save the kva if there is interesting information that can't be found from the video file alone.
@@ -1353,6 +1370,68 @@ namespace Kinovea.ScreenManager
             }
         }
 
+        /// <summary>
+        /// Save the delay buffer to a file.
+        /// </summary>
+        private void SaveBuffer(string path, bool uncompressed)
+        {
+            //------------------------------------------------------------------
+            // "Pause & Browse" scenario. The user has paused the camera stream and is browsing the recently buffered action.
+            // If they hit record now, we record the content of the buffer to storage as fast as possible.
+            // This is similar to the Scheduled recording mode but manually triggered.
+            // The active delay is ignored.
+            // The frequency of the buffer and thus the resulting file depends on the recording mode: 
+            // Camera (low frequency), Delay/Scheduled (high frequency).
+            //------------------------------------------------------------------
+
+            // TODO:
+            // Use a background worker, a progress bar, and allow cancellation.
+            log.DebugFormat("Manual scheduled recording: saving delay buffer content.");
+
+            MJPEGWriter writer = new MJPEGWriter();
+            VideoInfo info = new VideoInfo();
+            info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
+
+            double framerate = GetDelayBufferFramerate();
+            if (framerate == 0)
+                framerate = 25;
+
+            double interval = 1000.0 / framerate;
+            string formatString = FilenameHelper.GetFormatStringCapture(uncompressed);
+            double fileInterval = CalibrationHelper.ComputeFileFrameInterval(interval);
+            SaveResult openResult = writer.OpenSavingContext(path, info, formatString, imageDescriptor.Format, uncompressed, interval, fileInterval, ImageRotation);
+
+            if (openResult != SaveResult.Success)
+                return;
+
+            // Loop through the delay buffer and save the frames to storage.
+            // Figure the section of the buffer to record, based on the maximum recording duration allowed.
+            int maxAge = delayer.FullCapacity - 1;
+            int minAge = 0;
+            float maxSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
+            if (maxSeconds > 0)
+                maxAge = Math.Min(maxAge, SecondsToAge(maxSeconds) - 1);
+
+            Frame delayedFrame = new Frame(imageDescriptor.BufferSize);
+            for (int age = maxAge; age >= minAge; age--)
+            {
+                if (recordingThumbnail == null)
+                {
+                    Bitmap delayed = delayer.GetWeak(age, ImageRotation);
+                    if (delayed != null)
+                        recordingThumbnail = BitmapHelper.Copy(delayed);
+                }
+
+                bool copied = delayer.GetStrong(age, delayedFrame);
+                if (copied)
+                    writer.SaveFrame(imageDescriptor.Format, delayedFrame.Buffer, delayedFrame.PayloadLength, imageDescriptor.TopDown);
+            }
+
+            writer.CloseSavingContext(true);
+            writer.Dispose();
+
+            AfterStopRecording(path);
+        }
         private void ExecutePostCaptureCommand(string command, string path)
         {
             // Build replacement context.
@@ -1471,17 +1550,35 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private double AgeToSeconds(int age)
         {
-            if (cameraGrabber == null || !cameraLoaded || age == 0)
+            double framerate = GetDelayBufferFramerate();
+            if (framerate == 0 || age == 0)
+                return 0;
+
+            return age / framerate;
+        }
+
+        /// <summary>
+        /// Returns the number of frames of age corresponding to a delay in seconds.
+        /// This is used to convert the max recording time into a position in the delay buffer.
+        /// </summary>
+        private int SecondsToAge(float seconds)
+        {
+            double framerate = GetDelayBufferFramerate();
+            if (framerate == 0 || seconds == 0)
+                return 0;
+
+            return (int)Math.Floor(seconds * framerate);
+        }
+
+        private double GetDelayBufferFramerate()
+        {
+            if (cameraGrabber == null || !cameraLoaded)
                 return 0;
 
             if (recordingMode == CaptureRecordingMode.Camera)
             {
                 // In recording mode "camera" we don't really care about the delayer, and we just feed it at display fps.
-                double framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
-                if (framerate == 0)
-                    return 0;
-
-                return age / framerate;
+                return PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
             }
             else
             {
@@ -1494,10 +1591,7 @@ namespace Kinovea.ScreenManager
                 if (framerate == 0)
                     framerate = PreferencesManager.CapturePreferences.DisplaySynchronizationFramerate;
 
-                if (framerate == 0)
-                    return 0;
-
-                return age / framerate;
+                return framerate;
             }
         }
         #endregion

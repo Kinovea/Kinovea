@@ -153,13 +153,11 @@ namespace Kinovea.ScreenManager
             {
                 btnGrab.Image = Properties.Capture.grab_pause;
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_PauseCamera);
-                btnRecord.Enabled = true;
             }
             else
             {
                 btnGrab.Image = Properties.Capture.grab_start;
                 toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_StartCamera);
-                btnRecord.Enabled = false;
             }
         }
         public void UpdateRecordingStatus(bool recording)

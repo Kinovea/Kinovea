@@ -23,6 +23,14 @@ namespace Kinovea.ScreenManager
         {
             get { return Math.Max(fullCapacity - reserveCapacity, 0); }
         }
+        public int FullCapacity
+        {
+            get { return fullCapacity; }
+        }
+        public int CurrentPosition
+        {
+            get { return currentPosition; }
+        }
         #endregion
 
         #region Members
@@ -188,7 +196,7 @@ namespace Kinovea.ScreenManager
         }
 
         /// <summary>
-        /// Get the frame from `age` frames ago as an RGB24 Bitmap. Do not wait for it and returns null if it's not available. 
+        /// Get the frame from `age` frames ago as an RGB24 Bitmap, correctly oriented. Do not wait for it and returns null if it's not available. 
         /// </summary>
         public Bitmap GetWeak(int age, ImageRotation rotation)
         {
