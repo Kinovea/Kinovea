@@ -544,18 +544,18 @@ namespace Kinovea.ScreenManager
         }
         private int GetCoordFromTimestamp(long timestamp)
         {
-            return minimumPixel + Rescale(timestamp - minimum, maximum - minimum, maxWidthPixel);
+            return minimumPixel + (int)Rescale(timestamp - minimum, maximum - minimum, maxWidthPixel);
         }
         private long GetTimestampFromCoord(int pos)
         {
             return minimum + Rescale(pos - minimumPixel, maxWidthPixel, maximum - minimum);
         }
-        private int Rescale(long oldValue, long oldMax, long newMax)
+        private long Rescale(long oldValue, long oldMax, long newMax)
         {
-            if(oldMax > 0)
-                return (int)(Math.Round((double)((double)oldValue * (double)newMax) / (double)oldMax));
-            else
+            if (oldMax <= 0)
                 return 0;
+            
+            return (long)(Math.Round((double)oldValue / (double)oldMax * (double)newMax));
         }
         #endregion
     }
