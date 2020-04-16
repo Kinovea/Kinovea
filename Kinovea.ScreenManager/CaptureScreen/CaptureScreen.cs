@@ -1406,7 +1406,7 @@ namespace Kinovea.ScreenManager
 
             // Loop through the delay buffer and save the frames to storage.
             // Figure the section of the buffer to record, based on the maximum recording duration allowed.
-            int maxAge = delayer.FullCapacity - 1;
+            int maxAge = delayer.SafeCapacity - 1;
             int minAge = 0;
             float maxSeconds = PreferencesManager.CapturePreferences.CaptureAutomationConfiguration.RecordingSeconds;
             if (maxSeconds > 0)
