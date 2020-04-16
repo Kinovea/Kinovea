@@ -1474,7 +1474,7 @@ namespace Kinovea.ScreenManager
         #region Delayer
         /// <summary>
         /// Allocates or reallocates the delay buffer.
-        /// This must be done each time the image descriptor changes or when available memory changes.
+        /// This must be done each time the image descriptor, or available memory or framerate changes.
         /// </summary>
         private bool AllocateDelayer()
         {
@@ -1488,7 +1488,11 @@ namespace Kinovea.ScreenManager
             availableMemory -= (imageDescriptor.BufferSize * 8);
 
             if (!delayer.NeedsReallocation(imageDescriptor, availableMemory))
+            {
+                // Make sure the delay UI agrees with the framerate.
+                UpdateDelayMaxAge();
                 return true;
+            }
 
             if ((recordingMode == CaptureRecordingMode.Delay || recordingMode == CaptureRecordingMode.Scheduled) && 
                 consumerDelayer != null && consumerDelayer.Active)
@@ -1509,6 +1513,7 @@ namespace Kinovea.ScreenManager
                 if (consumerDelayer.Active)
                 {
                     log.ErrorFormat("Failure to deactivate consumer delayer before memory re-allocation.");
+                    UpdateDelayMaxAge();
                     return false;
                 }
             }
