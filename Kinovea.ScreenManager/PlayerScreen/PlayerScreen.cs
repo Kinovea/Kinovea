@@ -569,6 +569,8 @@ namespace Kinovea.ScreenManager
 
         public override void LoadKVA(string path)
         {
+            view.StopPlaying();
+
             MetadataSerializer s = new MetadataSerializer();
             s.Load(frameServer.Metadata, path, true);
         }
