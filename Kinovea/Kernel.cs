@@ -446,7 +446,7 @@ namespace Kinovea.Root
             
             string filename = FilePicker.OpenVideo();
             if (!string.IsNullOrEmpty(filename))
-                OpenFileFromPath(filename);
+                OpenFromPath(filename);
         }
         private void mnuOpenReplayWatcherOnClick(object sender, EventArgs e)
         {
@@ -456,15 +456,7 @@ namespace Kinovea.Root
             if (path == null || !Directory.Exists(Path.GetDirectoryName(path)))
                 return;
 
-            ScreenDescriptionPlayback screenDescription = new ScreenDescriptionPlayback();
-            screenDescription.FullPath = path;
-            screenDescription.IsReplayWatcher = true;
-            screenDescription.Stretch = true;
-            screenDescription.Autoplay = true;
-            screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
-            LoaderVideo.LoadVideoInScreen(screenManager, path, screenDescription);
-
-            screenManager.OrganizeScreens();
+            OpenFromPath(path);
         }
 
         private void mnuHistoryResetOnClick(object sender, EventArgs e)
@@ -645,42 +637,64 @@ namespace Kinovea.Root
         
         private void NotificationCenter_RecentFilesChanged(object sender, EventArgs e)
         {
-            List<string> recentFiles = PreferencesManager.FileExplorerPreferences.RecentFiles;
-            int maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
-            
             mnuHistory.DropDownItems.Clear();
-            
-            if(recentFiles == null)
+
+
+            int maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
+            List<string> recentFiles = PreferencesManager.FileExplorerPreferences.RecentFiles;
+            List<string> recentWatchers = PreferencesManager.FileExplorerPreferences.RecentWatchers;
+            if ((recentFiles == null || recentFiles.Count == 0) && 
+                (recentWatchers == null || recentFiles.Count == 0))
             {
                 mnuHistory.Enabled = false;
                 return;
             }
-            
-            int added = 0;
-            int current = 0;
-            while(added < maxRecentFiles && current < recentFiles.Count)
-            {
-                string file = recentFiles[current++];
 
-                if(string.IsNullOrEmpty(file) || !File.Exists(file))
+            int addedFiles = FillHistoryDropDown(maxRecentFiles, recentFiles, true);
+            if (addedFiles > 0)
+                mnuHistory.DropDownItems.Add(new ToolStripSeparator());
+
+            int addedWatchers = FillHistoryDropDown(maxRecentFiles, recentWatchers, false);
+            if (addedWatchers > 0)
+                mnuHistory.DropDownItems.Add(new ToolStripSeparator());
+
+            bool added = addedFiles + addedWatchers > 0;
+            if (added)
+                mnuHistory.DropDownItems.Add(mnuHistoryReset);
+
+            mnuHistory.Enabled = added;
+        }
+
+        private int FillHistoryDropDown(int maxRecentFiles, List<string> recentFiles, bool isFile)
+        {
+            if (maxRecentFiles == 0 || recentFiles == null || recentFiles.Count == 0)
+                return 0;
+
+            int added = 0;
+            foreach (string file in recentFiles)
+            {
+                if (added >= maxRecentFiles)
+                    break;
+
+                if (string.IsNullOrEmpty(file))
                     continue;
-                
+
+                if ((isFile && !File.Exists(file)) ||
+                    (!isFile && !Directory.Exists(Path.GetDirectoryName(file))))
+                {
+                        continue;
+                }
+
                 ToolStripMenuItem menu = new ToolStripMenuItem();
-                menu.Image = Properties.Resources.film_small;
-                menu.Text = Path.GetFileName(file);
-                menu.Click += (s, evt) => OpenFileFromPath(file);
-                
+                menu.Image = isFile ? Properties.Resources.film_small : Properties.Resources.user_detective;
+                menu.Text = file;
+                menu.Click += (s, evt) => OpenFromPath(file);
+
                 mnuHistory.DropDownItems.Add(menu);
                 added++;
             }
-            
-            if(added > 0)
-            {
-                mnuHistory.DropDownItems.Add(new ToolStripSeparator());
-                mnuHistory.DropDownItems.Add(mnuHistoryReset);
-            }
-            
-            mnuHistory.Enabled = added > 0;
+
+            return added;
         }
 
         private void NotificationCenter_FullscreenToggle(object sender, EventArgs e)
@@ -699,16 +713,33 @@ namespace Kinovea.Root
         }
        
         #region Lower Level Methods
-        private void OpenFileFromPath(string filePath)
+        private void OpenFromPath(string path)
         {
-            if (File.Exists(filePath))
+            if (Path.GetFileName(path).Contains("*"))
             {
-                LoaderVideo.LoadVideoInScreen(screenManager, filePath, -1);
+                // Replay watcher.
+                ScreenDescriptionPlayback screenDescription = new ScreenDescriptionPlayback();
+                screenDescription.FullPath = path;
+                screenDescription.IsReplayWatcher = true;
+                screenDescription.Stretch = true;
+                screenDescription.Autoplay = true;
+                screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
+                LoaderVideo.LoadVideoInScreen(screenManager, path, screenDescription);
+
                 screenManager.OrganizeScreens();
             }
             else
             {
-                MessageBox.Show(ScreenManagerLang.LoadMovie_FileNotOpened, ScreenManagerLang.LoadMovie_Error, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                // Normal file.
+                if (File.Exists(path))
+                {
+                    LoaderVideo.LoadVideoInScreen(screenManager, path, -1);
+                    screenManager.OrganizeScreens();
+                }
+                else
+                {
+                    MessageBox.Show(ScreenManagerLang.LoadMovie_FileNotOpened, ScreenManagerLang.LoadMovie_Error, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
             }
         }
         private string GetLocalizedHelpResource(bool manual)

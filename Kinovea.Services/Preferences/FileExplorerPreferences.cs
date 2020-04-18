@@ -66,6 +66,11 @@ namespace Kinovea.Services
             get { return recentFiles;}
         }
 
+        public List<string> RecentWatchers
+        {
+            get { return recentWatchers; }
+        }
+
         public List<string> RecentCapturedFiles
         {
             get { return recentCapturedFiles; }
@@ -116,6 +121,7 @@ namespace Kinovea.Services
         private int maxRecentFiles = 10;
         private int maxRecentCapturedFiles = 10;
         private List<string> recentFiles = new List<string>();
+        private List<string> recentWatchers = new List<string>();
         private List<string> recentCapturedFiles = new List<string>();
         private int explorerFilesSplitterDistance = 350;
         private int shortcutsFilesSplitterDistance = 350;
@@ -132,9 +138,16 @@ namespace Kinovea.Services
             NotificationCenter.RaiseRecentFilesChanged(this);
         }
 
+        public void AddRecentWatcher(string file)
+        {
+            PreferencesManager.UpdateRecents(file, recentWatchers, maxRecentFiles);
+            NotificationCenter.RaiseRecentFilesChanged(this);
+        }
+
         public void ResetRecentFiles()
         {
             recentFiles.Clear();
+            recentWatchers.Clear();
             NotificationCenter.RaiseRecentFilesChanged(this);
         }
 
@@ -155,8 +168,15 @@ namespace Kinovea.Services
         {
             for (int i = recentFiles.Count - 1; i >= 0; i--)
             {
-                if (!File.Exists(recentFiles[i]))
+                if (Path.GetFileName(recentFiles[i]).Contains("*"))
+                {
+                    if (!Directory.Exists(Path.GetDirectoryName(recentFiles[i])))
+                        recentFiles.RemoveAt(i);
+                }
+                else if (!File.Exists(recentFiles[i]))
+                {
                     recentFiles.RemoveAt(i);
+                }
             }
         }
         
@@ -195,6 +215,7 @@ namespace Kinovea.Services
         {
             writer.WriteElementString("MaxRecentFiles", maxRecentFiles.ToString());
             WriteRecents(writer, recentFiles, maxRecentFiles, "RecentFiles", "RecentFile");
+            WriteRecents(writer, recentWatchers, maxRecentFiles, "RecentWatchers", "RecentWatcher");
 
             writer.WriteElementString("MaxRecentCapturedFiles", maxRecentCapturedFiles.ToString());
             WriteRecents(writer, recentCapturedFiles, maxRecentCapturedFiles, "RecentCapturedFiles", "RecentCapturedFile");
@@ -260,6 +281,9 @@ namespace Kinovea.Services
                         break;
                     case "RecentFiles":
                         ParseRecentFiles(reader, recentFiles, "RecentFile");
+                        break;
+                    case "RecentWatchers":
+                        ParseRecentFiles(reader, recentWatchers, "RecentWatcher");
                         break;
                     case "MaxRecentCapturedFiles":
                         maxRecentCapturedFiles = reader.ReadElementContentAsInt();

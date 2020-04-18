@@ -82,6 +82,14 @@ namespace Kinovea.ScreenManager
 
                 LoadVideo(playerScreen, path, screenDescription);
 
+                bool prefsNeedSaving = false;
+                if (screenDescription != null && screenDescription.IsReplayWatcher)
+                {
+                    PreferencesManager.FileExplorerPreferences.AddRecentWatcher(path);
+                    PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
+                    prefsNeedSaving = true;
+                }
+
                 if (playerScreen.FrameServer.Loaded)
                 {
                     NotificationCenter.RaiseFileOpened(null, path);
@@ -92,15 +100,17 @@ namespace Kinovea.ScreenManager
                         // The actual file is the latest file in the folder this was computed right before loading.
                         string actualPath = FilesystemHelper.GetMostRecentFile(Path.GetDirectoryName(path));
                         PreferencesManager.FileExplorerPreferences.AddRecentFile(actualPath);
-                        PreferencesManager.FileExplorerPreferences.LastReplayFolder = path;
                     }
                     else
                     {
                         PreferencesManager.FileExplorerPreferences.AddRecentFile(path);
                     }
 
-                    PreferencesManager.Save();
+                    prefsNeedSaving = true;
                 }
+
+                if (prefsNeedSaving)
+                    PreferencesManager.Save();
 
                 manager.OrganizeScreens();
                 manager.OrganizeCommonControls();
