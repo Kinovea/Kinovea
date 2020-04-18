@@ -191,10 +191,13 @@ namespace Kinovea.ScreenManager
             sldrDelay.Enabled = true;
             nudDelay.Enabled = true;
 
-            // If the delayer was not allocated, fake a number so that we have a slider stuck at the 0th image.
             sldrDelay.Maximum = (double)delayFrames;
             nudDelay.Minimum = 0;
             nudDelay.Maximum = (decimal)delaySeconds;
+
+            // Force back the current user value.
+            // This ensures the coherence of the delay in seconds and in frames after a change in camera framerate.
+            NudDelay_ValueChanged(nudDelay, EventArgs.Empty);
         }
         public void UpdateNextImageFilename(string filename)
         {
