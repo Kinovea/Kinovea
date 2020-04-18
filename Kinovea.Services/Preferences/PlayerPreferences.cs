@@ -105,15 +105,15 @@ namespace Kinovea.Services
             get { return syncLockSpeed;}
             set { syncLockSpeed = value;}
         }
+        public Color BackgroundColor
+        {
+            get { return backgroundColor; }
+            set { backgroundColor = value; }
+        }
         public InfosFading DefaultFading
         {
             get { return defaultFading; }
             set { defaultFading = value; }
-        }
-        public int MaxFading
-        {
-            get { return maxFading; }
-            set { maxFading = value; }
         }
         public bool DrawOnPlay
         {
@@ -180,7 +180,8 @@ namespace Kinovea.Services
         private int workingZoneSeconds = 12;
         private int workingZoneMemory = 512;
         private InfosFading defaultFading = new InfosFading();
-        private int maxFading = 200;
+        private Color backgroundColor = Color.FromArgb(128, 255, 255, 255);
+        private Color defaultBackgroundColor = Color.FromArgb(0, 255, 255, 255);
         private bool drawOnPlay = true;
         private List<Color> recentColors = new List<Color>();
         private int maxRecentColors = 12;
@@ -217,12 +218,12 @@ namespace Kinovea.Services
             writer.WriteElementString("SyncLockSpeed", syncLockSpeed ? "true" : "false");
             writer.WriteElementString("ImageFormat", imageFormat.ToString());
             writer.WriteElementString("VideoFormat", videoFormat.ToString());
+            writer.WriteElementString("Background", XmlHelper.WriteColor(backgroundColor, true));
             
             writer.WriteStartElement("InfoFading");
             defaultFading.WriteXml(writer);
             writer.WriteEndElement();
             
-            writer.WriteElementString("MaxFading", maxFading.ToString());
             writer.WriteElementString("DrawOnPlay", drawOnPlay ? "true" : "false");
             
             if(recentColors.Count > 0)
@@ -308,11 +309,11 @@ namespace Kinovea.Services
                     case "VideoFormat":
                         videoFormat = (KinoveaVideoFormat)Enum.Parse(typeof(KinoveaVideoFormat), reader.ReadElementContentAsString());
                         break;
+                    case "Background":
+                        backgroundColor = XmlHelper.ParseColor(reader.ReadElementContentAsString(), defaultBackgroundColor);
+                        break;
                     case "InfoFading":
                         defaultFading.ReadXml(reader);
-                        break;
-                    case "MaxFading":
-                        maxFading = reader.ReadElementContentAsInt();
                         break;
                     case "DrawOnPlay":
                         drawOnPlay = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());

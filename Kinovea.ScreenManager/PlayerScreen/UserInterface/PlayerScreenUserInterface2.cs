@@ -3454,6 +3454,8 @@ namespace Kinovea.ScreenManager
 
             m_TimeWatcher.LogTime("Before DrawImage");
 
+            Rectangle rDst = m_FrameServer.Metadata.Mirrored ? new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height) : new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
+            
             if (m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
             {
                 // Source image should be at the right size, unless it has been temporarily disabled.
@@ -3478,12 +3480,6 @@ namespace Kinovea.ScreenManager
                 {
                     // Image was decoded at customized size, but can't be rendered unscaled.
                     // TODO: integrate the mirror flag into the ImageTransform.
-                    Rectangle rDst;
-                    if (m_FrameServer.Metadata.Mirrored)
-                        rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
-                    else
-                        rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
-
                     Rectangle rSrc;
                     if (_transform.Zooming)
                         rSrc = _transform.ZoomWindowInDecodedImage;
@@ -3504,12 +3500,6 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    Rectangle rDst;
-                    if (m_FrameServer.Metadata.Mirrored)
-                        rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
-                    else
-                        rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
-
                     Rectangle rSrc;
                     if (_transform.Zooming)
                         rSrc = _transform.ZoomWindowInDecodedImage;
@@ -3531,6 +3521,15 @@ namespace Kinovea.ScreenManager
                 // not the option in this screen.)
                 Rectangle rSyncDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
                 g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
+            }
+
+            // Background fader.
+            Color backgroundColor = PreferencesManager.PlayerPreferences.BackgroundColor;
+            if (backgroundColor.A != 0)
+            {
+                SolidBrush brush = new SolidBrush(backgroundColor);
+                g.FillRectangle(brush, rDst);
+                brush.Dispose();
             }
 
             if ((m_bIsCurrentlyPlaying && PreferencesManager.PlayerPreferences.DrawOnPlay) || !m_bIsCurrentlyPlaying)
