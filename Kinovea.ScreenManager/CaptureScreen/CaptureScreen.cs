@@ -1347,9 +1347,11 @@ namespace Kinovea.ScreenManager
             // Updates to the KVA before saving.
             double fpsDiff = Math.Abs(1.0 - (pipelineManager.Frequency / cameraGrabber.Framerate));
             bool setCaptureFramerate = fpsDiff > 0.01 && fpsDiff < 0.5;
+
             metadata.CalibrationHelper.CaptureFramesPerSecond = setCaptureFramerate ? pipelineManager.Frequency : cameraGrabber.Framerate;
             double userInterval = 1000.0 / cameraGrabber.Framerate;
             metadata.UserInterval = CalibrationHelper.ComputeFileFrameInterval(userInterval);
+            bool setUserInterval = userInterval != metadata.UserInterval;
 
             // Keep at least microsecond precision on the timestamp coordinates, to avoid misalignment of the zeroeth frame.
             metadata.AverageTimeStampsPerFrame = (int)Math.Floor(metadata.UserInterval * 1000.0f);
@@ -1362,7 +1364,7 @@ namespace Kinovea.ScreenManager
                 metadata.TimeOrigin = delay * metadata.AverageTimeStampsPerFrame;
             
             // Only save the kva if there is interesting information that can't be found from the video file alone.
-            if (setCaptureFramerate || metadata.TimeOrigin != 0 || metadata.Count > 0)
+            if (setCaptureFramerate || setUserInterval || metadata.TimeOrigin != 0 || metadata.Count > 0)
             {
                 MetadataSerializer serializer = new MetadataSerializer();
                 string kvaFilename = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".kva";
