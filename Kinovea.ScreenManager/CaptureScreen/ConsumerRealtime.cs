@@ -18,11 +18,6 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ConsumerRealtime : AbstractConsumer
     {
-        public string Filename
-        {
-            get { return filename; }
-        }
-
         public bool Recording
         {
             get { return recording; }

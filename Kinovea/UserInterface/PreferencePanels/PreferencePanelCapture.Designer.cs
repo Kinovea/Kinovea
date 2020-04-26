@@ -68,9 +68,9 @@ namespace Kinovea.Root
       this.lblReplacementFramerate = new System.Windows.Forms.Label();
       this.nudReplacementThreshold = new System.Windows.Forms.NumericUpDown();
       this.lblReplacementThreshold = new System.Windows.Forms.Label();
-      this.rbRecordingScheduled = new System.Windows.Forms.RadioButton();
       this.grpRecordingMode = new System.Windows.Forms.GroupBox();
       this.rbRecordingDelayed = new System.Windows.Forms.RadioButton();
+      this.rbRecordingScheduled = new System.Windows.Forms.RadioButton();
       this.rbRecordingCamera = new System.Windows.Forms.RadioButton();
       this.tabImageNaming = new System.Windows.Forms.TabPage();
       this.grpRightImage = new System.Windows.Forms.GroupBox();
@@ -303,7 +303,6 @@ namespace Kinovea.Root
       // tabRecording
       // 
       this.tabRecording.Controls.Add(this.gbHighspeedCameras);
-      this.tabRecording.Controls.Add(this.rbRecordingScheduled);
       this.tabRecording.Controls.Add(this.grpRecordingMode);
       this.tabRecording.Location = new System.Drawing.Point(4, 22);
       this.tabRecording.Name = "tabRecording";
@@ -319,7 +318,7 @@ namespace Kinovea.Root
       this.gbHighspeedCameras.Controls.Add(this.lblReplacementFramerate);
       this.gbHighspeedCameras.Controls.Add(this.nudReplacementThreshold);
       this.gbHighspeedCameras.Controls.Add(this.lblReplacementThreshold);
-      this.gbHighspeedCameras.Location = new System.Drawing.Point(6, 100);
+      this.gbHighspeedCameras.Location = new System.Drawing.Point(6, 113);
       this.gbHighspeedCameras.Name = "gbHighspeedCameras";
       this.gbHighspeedCameras.Size = new System.Drawing.Size(470, 94);
       this.gbHighspeedCameras.TabIndex = 41;
@@ -385,25 +384,14 @@ namespace Kinovea.Root
       this.lblReplacementThreshold.TabIndex = 53;
       this.lblReplacementThreshold.Text = "Framerate replacement threshold:";
       // 
-      // rbRecordingScheduled
-      // 
-      this.rbRecordingScheduled.AutoSize = true;
-      this.rbRecordingScheduled.Location = new System.Drawing.Point(244, 273);
-      this.rbRecordingScheduled.Name = "rbRecordingScheduled";
-      this.rbRecordingScheduled.Size = new System.Drawing.Size(232, 17);
-      this.rbRecordingScheduled.TabIndex = 40;
-      this.rbRecordingScheduled.TabStop = true;
-      this.rbRecordingScheduled.Text = "Scheduled: records delayed frames on stop.";
-      this.rbRecordingScheduled.UseVisualStyleBackColor = true;
-      this.rbRecordingScheduled.Visible = false;
-      // 
       // grpRecordingMode
       // 
       this.grpRecordingMode.Controls.Add(this.rbRecordingDelayed);
+      this.grpRecordingMode.Controls.Add(this.rbRecordingScheduled);
       this.grpRecordingMode.Controls.Add(this.rbRecordingCamera);
       this.grpRecordingMode.Location = new System.Drawing.Point(6, 6);
       this.grpRecordingMode.Name = "grpRecordingMode";
-      this.grpRecordingMode.Size = new System.Drawing.Size(470, 88);
+      this.grpRecordingMode.Size = new System.Drawing.Size(470, 101);
       this.grpRecordingMode.TabIndex = 40;
       this.grpRecordingMode.TabStop = false;
       this.grpRecordingMode.Text = "Recording mode";
@@ -411,7 +399,7 @@ namespace Kinovea.Root
       // rbRecordingDelayed
       // 
       this.rbRecordingDelayed.AutoSize = true;
-      this.rbRecordingDelayed.Location = new System.Drawing.Point(20, 52);
+      this.rbRecordingDelayed.Location = new System.Drawing.Point(20, 25);
       this.rbRecordingDelayed.Name = "rbRecordingDelayed";
       this.rbRecordingDelayed.Size = new System.Drawing.Size(228, 17);
       this.rbRecordingDelayed.TabIndex = 39;
@@ -420,10 +408,22 @@ namespace Kinovea.Root
       this.rbRecordingDelayed.UseVisualStyleBackColor = true;
       this.rbRecordingDelayed.CheckedChanged += new System.EventHandler(this.radioRecordingMode_CheckedChanged);
       // 
+      // rbRecordingScheduled
+      // 
+      this.rbRecordingScheduled.AutoSize = true;
+      this.rbRecordingScheduled.Location = new System.Drawing.Point(20, 48);
+      this.rbRecordingScheduled.Name = "rbRecordingScheduled";
+      this.rbRecordingScheduled.Size = new System.Drawing.Size(221, 17);
+      this.rbRecordingScheduled.TabIndex = 40;
+      this.rbRecordingScheduled.TabStop = true;
+      this.rbRecordingScheduled.Text = "Buffered: records delayed frames on stop.";
+      this.rbRecordingScheduled.UseVisualStyleBackColor = true;
+      this.rbRecordingScheduled.CheckedChanged += new System.EventHandler(this.radioRecordingMode_CheckedChanged);
+      // 
       // rbRecordingCamera
       // 
       this.rbRecordingCamera.AutoSize = true;
-      this.rbRecordingCamera.Location = new System.Drawing.Point(20, 25);
+      this.rbRecordingCamera.Location = new System.Drawing.Point(20, 71);
       this.rbRecordingCamera.Name = "rbRecordingCamera";
       this.rbRecordingCamera.Size = new System.Drawing.Size(227, 17);
       this.rbRecordingCamera.TabIndex = 38;
@@ -1155,7 +1155,6 @@ namespace Kinovea.Root
       this.tabMemory.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).EndInit();
       this.tabRecording.ResumeLayout(false);
-      this.tabRecording.PerformLayout();
       this.gbHighspeedCameras.ResumeLayout(false);
       this.gbHighspeedCameras.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.nudReplacementFramerate)).EndInit();

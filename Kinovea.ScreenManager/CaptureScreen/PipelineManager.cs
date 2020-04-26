@@ -27,13 +27,18 @@ namespace Kinovea.ScreenManager
             get { return pipeline == null ? 0 : pipeline.Frequency; }
         }
 
+        public string Path
+        {
+            get { return filepath; }
+        }
+
         private bool connected;
         private FramePipeline pipeline;
         private IFrameProducer producer;
         private ConsumerRealtime consumerRealtime;
         private ConsumerDelayer consumerDelayer;
         private List<IFrameConsumer> consumers = new List<IFrameConsumer>();
-
+        private string filepath;
         public void Connect(ImageDescriptor imageDescriptor, IFrameProducer producer, ConsumerDisplay consumerDisplay, ConsumerRealtime consumerRealtime)
         {
             // At that point the consumer threads are already started.
@@ -42,6 +47,7 @@ namespace Kinovea.ScreenManager
             this.producer = producer;
             this.consumerRealtime = consumerRealtime;
             this.consumerDelayer = null;
+            this.filepath = null;
 
             consumerDisplay.SetImageDescriptor(imageDescriptor);
             consumerRealtime.SetImageDescriptor(imageDescriptor);
@@ -59,6 +65,7 @@ namespace Kinovea.ScreenManager
             this.producer = producer;
             this.consumerRealtime = null;
             this.consumerDelayer = consumerDelayer;
+            this.filepath = null;
 
             consumerDisplay.SetImageDescriptor(imageDescriptor);
             consumerDelayer.SetImageDescriptor(imageDescriptor);
@@ -93,6 +100,11 @@ namespace Kinovea.ScreenManager
             pipeline.Teardown();
 
             connected = false;
+        }
+
+        public void SetRecordingPath(string filepath)
+        {
+            this.filepath = filepath;
         }
 
         public SaveResult StartRecord(string filepath, double interval, int age, ImageRotation rotation)

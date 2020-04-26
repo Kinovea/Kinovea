@@ -19,11 +19,6 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ConsumerDelayer : AbstractConsumer
     {
-        public string Filename
-        {
-            get { return filename; }
-        }
-
         public bool Recording
         {
             get { return recording; }
