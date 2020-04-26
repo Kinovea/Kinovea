@@ -83,28 +83,42 @@ namespace Kinovea.ScreenManager
             if (!VideoTypeManager.IsSupported(Path.GetExtension(e.FullPath)))
                 return;
 
+            log.DebugFormat("Replay watcher received an event: {0}, filename:{1}.", e.ChangeType, e.Name);
+
             if (e.FullPath == currentFile)
             {
+                // Special case where the user is overwriting the currently loaded file.
                 // In this case we can't use the normal heuristic of trying to get exclusive access on the file,
                 // because the player screen itself already has the file opened.
 
                 // First of all we need to stop the player from playing the file as it's reading frames from disk (no caching).
                 dummy.BeginInvoke((Action)delegate { player.StopPlaying(); });
-                
+
                 // We normally receive only two events. One at start and one on close.
                 overwriteEventCount++;
                 if (overwriteEventCount >= 2)
                 {
+                    log.DebugFormat("Loading overwritten video.");
                     overwriteEventCount = 0;
                     dummy.BeginInvoke((Action)delegate { LoadVideo(e.FullPath); });
+                }
+                else
+                {
+                    log.DebugFormat("The file was just created, it is not ready to be loaded yet.");
                 }
             }
             else
             {
                 if (FilesystemHelper.CanRead(e.FullPath))
+                {
+                    log.DebugFormat("Loading video.");
                     dummy.BeginInvoke((Action)delegate { LoadVideo(e.FullPath); });
+                }
+                else
+                {
+                    log.DebugFormat("The file is still being written.");
+                }
             }
-            
         }
 
         public void Close()
