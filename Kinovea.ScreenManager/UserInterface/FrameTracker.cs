@@ -276,22 +276,20 @@ namespace Kinovea.ScreenManager
                 return;
             
             Point mouseCoords = this.PointToClient(Cursor.Position);
+            int x = Math.Min(Math.Max(mouseCoords.X, minimumPixel), maximumPixel);
             
-            if ((mouseCoords.X > minimumPixel) && (mouseCoords.X < maximumPixel))
+            pixelPosition = x - halfCursorWidth;
+            Invalidate();
+            invalidateAsked = true;
+            
+            if (PositionChanging != null)
             {
-                pixelPosition = mouseCoords.X - halfCursorWidth;
+                position = GetTimestampFromCoord(pixelPosition + halfCursorWidth);
+                PositionChanging(this, new PositionChangedEventArgs(position));
+            }
+            else
+            {
                 Invalidate();
-                invalidateAsked = true;
-            
-                if (PositionChanging != null)
-                {
-                    position = GetTimestampFromCoord(pixelPosition + halfCursorWidth);
-                    PositionChanging(this, new PositionChangedEventArgs(position));
-                }
-                else
-                {
-                    Invalidate();
-                }
             }
         }
         private void FrameTracker_MouseUp(object sender, MouseEventArgs e)
@@ -301,16 +299,14 @@ namespace Kinovea.ScreenManager
                 return;
             
             Point mouseCoords = this.PointToClient(Cursor.Position);
-            
-            if ((mouseCoords.X > minimumPixel) && (mouseCoords.X < maximumPixel))
-            {
-                pixelPosition = mouseCoords.X - halfCursorWidth;
-                Invalidate();
-                if (PositionChanged != null)
-                { 
-                    position = GetTimestampFromCoord(pixelPosition + halfCursorWidth);
-                    PositionChanged(this, new PositionChangedEventArgs(position));
-                }
+            int x = Math.Min(Math.Max(mouseCoords.X, minimumPixel), maximumPixel);
+
+            pixelPosition = x - halfCursorWidth;
+            Invalidate();
+            if (PositionChanged != null)
+            { 
+                position = GetTimestampFromCoord(pixelPosition + halfCursorWidth);
+                PositionChanged(this, new PositionChangedEventArgs(position));
             }
         }
         private void FrameTracker_Resize(object sender, EventArgs e)
