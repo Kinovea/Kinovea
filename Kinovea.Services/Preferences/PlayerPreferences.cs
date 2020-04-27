@@ -180,7 +180,7 @@ namespace Kinovea.Services
         private int workingZoneSeconds = 12;
         private int workingZoneMemory = 512;
         private InfosFading defaultFading = new InfosFading();
-        private Color backgroundColor = Color.FromArgb(128, 255, 255, 255);
+        private Color backgroundColor = Color.FromArgb(0, 255, 255, 255);
         private Color defaultBackgroundColor = Color.FromArgb(0, 255, 255, 255);
         private bool drawOnPlay = true;
         private List<Color> recentColors = new List<Color>();
