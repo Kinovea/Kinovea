@@ -122,8 +122,8 @@ namespace Kinovea.ScreenManager
                 int waveInDevices = WaveIn.DeviceCount;
                 for (int i = 0; i < waveInDevices; i++)
                 {
-                    WaveInCapabilities caps = WaveIn.GetCapabilities(i);
-                    if (caps.ProductGuid.ToString() == id)
+                    WaveInCapabilities wic = WaveIn.GetCapabilities(i);
+                    if (wic.ProductName == id)
                     {
                         deviceNumber = i;
                         break;
@@ -137,10 +137,10 @@ namespace Kinovea.ScreenManager
                 waveIn.StartRecording();
                 started = true;
             
-                WaveInCapabilities deviceInfo = WaveIn.GetCapabilities(waveIn.DeviceNumber);
-                currentDeviceId = deviceInfo.ProductGuid.ToString();
+                WaveInCapabilities wic = WaveIn.GetCapabilities(waveIn.DeviceNumber);
+                currentDeviceId = wic.ProductName;
 
-                log.DebugFormat("Audio input level monitor started: {0}", deviceInfo.ProductName);
+                log.DebugFormat("Audio input level monitor started: {0}", wic.ProductName);
             }
             catch(Exception e)
             {
@@ -177,7 +177,7 @@ namespace Kinovea.ScreenManager
 
             currentDeviceId = null;
 
-            if (changeDeviceAsked && !string.IsNullOrEmpty(nextDeviceId) && nextDeviceId != Guid.Empty.ToString())
+            if (changeDeviceAsked && !string.IsNullOrEmpty(nextDeviceId))
             {
                 // This happens when we want to switch from one device to another.
                 // Now that we know the recording has properly stopped, we can restart it on the new device.

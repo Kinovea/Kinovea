@@ -78,6 +78,7 @@ namespace Kinovea.Root
         private string postRecordCommand;
         private float replacementFramerateThreshold;
         private float replacementFramerate;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Construction & Initialization
@@ -284,7 +285,11 @@ namespace Kinovea.Root
                 for (int i = 0; i < audioInputDevices.Count; i++)
                 {
                     cmbInputDevice.Items.Add(audioInputDevices[i]);
-                    if (Guid.Equals(audioInputDevices[i].WaveInCapabilities.ProductGuid, new Guid(audioInputDevice)))
+
+                    var wic = audioInputDevices[i].WaveInCapabilities;
+                    log.DebugFormat("{0}: ProductGuid:{1}, ProductName:{2}", i, wic.ProductGuid, wic.ProductName);
+
+                    if (wic.ProductName == audioInputDevice)
                         preferredIndex = i;
                 }
 
@@ -499,7 +504,7 @@ namespace Kinovea.Root
             AudioInputDevice selected = cmbInputDevice.SelectedItem as AudioInputDevice;
             if (selected != null)
             {
-                audioInputDevice = selected.WaveInCapabilities.ProductGuid.ToString();
+                audioInputDevice = selected.WaveInCapabilities.ProductName;
                 
                 if (enableAudioTrigger)
                     inputMonitor.Start(audioInputDevice);
