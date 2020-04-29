@@ -131,14 +131,22 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            waveIn.DeviceNumber = deviceNumber;
-            started = true;
-            waveIn.StartRecording();
+            try
+            {
+                waveIn.DeviceNumber = deviceNumber;
+                waveIn.StartRecording();
+                started = true;
+            
+                WaveInCapabilities deviceInfo = WaveIn.GetCapabilities(waveIn.DeviceNumber);
+                currentDeviceId = deviceInfo.ProductGuid.ToString();
 
-            WaveInCapabilities deviceInfo = WaveIn.GetCapabilities(waveIn.DeviceNumber);
-            currentDeviceId = deviceInfo.ProductGuid.ToString();
-
-            log.DebugFormat("Audio input level monitor started: {0}", deviceInfo.ProductName);
+                log.DebugFormat("Audio input level monitor started: {0}", deviceInfo.ProductName);
+            }
+            catch(Exception e)
+            {
+                log.ErrorFormat("The microphone is not available. {0}", e.Message);
+                currentDeviceId = null;
+            }
         }
 
         public void Stop()
