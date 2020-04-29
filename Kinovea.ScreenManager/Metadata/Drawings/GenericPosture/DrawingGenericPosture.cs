@@ -156,7 +156,7 @@ namespace Kinovea.ScreenManager
             this.origin = origin;
             this.genericPosture = posture;
             if(genericPosture != null)
-                Init();
+                InitOptionMenus();
             
             // Decoration and binding to mini editors.
             styleHelper.Bicolor = new Bicolor(Color.Empty);
@@ -332,7 +332,7 @@ namespace Kinovea.ScreenManager
             SignalAllTrackablePointsMoved();
 
             if (genericPosture != null)
-                Init();
+                InitOptionMenus();
             else
                 genericPosture = new GenericPosture("", true, false);
         }
@@ -403,9 +403,6 @@ namespace Kinovea.ScreenManager
         #region IScalable implementation
         public void Scale(Size imageSize)
         {
-            if(genericPosture.FromKVA)
-                return;
-            
             // The coordinates are defined in a reference image of 800x600 (could be inside the posture file).
             // We scale the positions and angle radius according to the actual image size.
             // We also translate the whole drawing so that the first point lies at the cursor.
@@ -417,6 +414,23 @@ namespace Kinovea.ScreenManager
             float dx = 0;
             float dy = 0;
 
+            // Angles and circle radii need to be scaled every time.
+            // For loading from KVA, this will restore the initial scaling from when the tool was first added.
+            for (int i = 0; i < genericPosture.Angles.Count; i++)
+            {
+                genericPosture.Angles[i].Radius = (int)(genericPosture.Angles[i].Radius * ratio);
+                genericPosture.Angles[i].TextDistance = (int)(genericPosture.Angles[i].TextDistance * ratio);
+            }
+
+            InitAngles();
+            
+            for (int i = 0; i < genericPosture.Circles.Count; i++)
+                genericPosture.Circles[i].Radius = (int)(genericPosture.Circles[i].Radius * ratio);
+
+            if (genericPosture.FromKVA)
+                return;
+
+            // Setup the initial point list.
             if (genericPosture.PointList.Count > 0)
             {
                 PointF scaled = genericPosture.PointList[0].Scale(ratio, ratio);
@@ -426,13 +440,6 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < genericPosture.PointList.Count; i++)
                 genericPosture.PointList[i] = genericPosture.PointList[i].Scale(ratio, ratio).Translate(dx, dy);
-            
-            for(int i = 0; i < genericPosture.Circles.Count; i++)
-                genericPosture.Circles[i].Radius = (int)(genericPosture.Circles[i].Radius * ratio);
-            
-            for(int i = 0; i<genericPosture.Angles.Count;i++)
-                genericPosture.Angles[i].Radius = (int)(genericPosture.Angles[i].Radius * ratio);
-                
         }
         #endregion
         
@@ -823,11 +830,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Lower level helpers
-        private void Init()
-        {
-            InitAngles();
-            InitOptionMenus();
-        }
         private void InitOptionMenus()
         {
             // Options
@@ -857,6 +859,7 @@ namespace Kinovea.ScreenManager
         }
         private void InitAngles()
         {
+            angles.Clear();
             for (int i = 0; i < genericPosture.Angles.Count; i++)
                 angles.Add(new AngleHelper(genericPosture.Angles[i].TextDistance, genericPosture.Angles[i].Radius, genericPosture.Angles[i].Tenth, genericPosture.Angles[i].Symbol));
         }
