@@ -655,7 +655,7 @@ namespace Kinovea.ScreenManager
             int index = Handles[handleIndex].Reference;
             trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), PointList[index]));
         }
-        public void SetTrackablePointValue(string name, PointF value, CalibrationHelper calibrationHelper)
+        public void SetTrackablePointValue(string name, PointF value, CalibrationHelper calibrationHelper, EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
         {
             // Value coming from tracking.
             int pointIndex = int.Parse(name);
@@ -663,7 +663,14 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             int handleIndex = Handles.FindIndex((h) => h.Reference == pointIndex);
+
+            // Honor the constraint system.
+            // Tracking can move the endpoint of a horizontal slide arbitrarily and we force it back.
             GenericPostureConstraintEngine.MoveHandle(this, calibrationHelper, handleIndex, value, Keys.None);
+
+            // Store the final position into the tracking timeline for proper kinematics.
+            if (PointList[pointIndex] != value && trackablePointMoved != null)
+                SignalTrackablePointMoved(handleIndex, trackablePointMoved);
         }
         #endregion
 

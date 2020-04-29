@@ -451,7 +451,7 @@ namespace Kinovea.ScreenManager
         }
         public void SetTrackablePointValue(string name, PointF value, long trackingTimestamps)
         {
-            genericPosture.SetTrackablePointValue(name, value, CalibrationHelper);
+            genericPosture.SetTrackablePointValue(name, value, CalibrationHelper, TrackablePointMoved);
             this.trackingTimestamps = trackingTimestamps;
         }
         private void SignalAllTrackablePointsMoved()
