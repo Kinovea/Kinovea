@@ -56,14 +56,13 @@ Changelog:
     Improved - Annotations: trackable drawings are now opaque only on their tracked frames.
     Fixed - Zooming was broken in some corner cases.
     Fixed - Video comparison was broken when one of the videos was over 35 minutes.
-    Fixed - File names with characters not present in the system default code page was not supported.
+    Fixed - File names with characters not present in the system default code page were not supported.
     Fixed - Importing time origin from KVA files could yield wrong value.
     Fixed - The precision of time display was not good in some cases.
     Fixed - The visibility of the label of chronometer was broken.
     Fixed - The synchronization button was broken.
-    Fixed - There was an unecessary hard coded limit of 100fps when saving dual video.
-    Fixed - Converting trajectory data from files created in 0.8.15 was broken. 
-    Fixed - Converting line calibration from files created in 0.8.15 was broken.
+    Fixed - There was an unnecessary hard coded limit of 100fps when saving dual video.
+    Fixed - Converting trajectory data from files created in 0.8.15 was broken.
     Fixed - The delay slider value and framerate were wrong after changing the camera framerate.
     Fixed - Opening a KVA via open video while the previous video was running could cause a crash.
 
