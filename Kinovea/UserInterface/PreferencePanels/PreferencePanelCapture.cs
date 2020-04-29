@@ -276,6 +276,7 @@ namespace Kinovea.Root
             tabAutomation.Text = RootLang.dlgPreferences_Capture_tabAutomation; 
             chkEnableAudioTrigger.Text = RootLang.dlgPreferences_Capture_chkEnableAudioTrigger;
             lblInputDevice.Text = RootLang.dlgPreferences_Capture_lblInputDevice;
+
             audioInputDevices = AudioInputLevelMonitor.GetDevices();
             if (audioInputDevices.Count > 0)
             {
@@ -499,7 +500,9 @@ namespace Kinovea.Root
             if (selected != null)
             {
                 audioInputDevice = selected.WaveInCapabilities.ProductGuid.ToString();
-                inputMonitor.Start(audioInputDevice);
+                
+                if (enableAudioTrigger)
+                    inputMonitor.Start(audioInputDevice);
             }
             else
             {
