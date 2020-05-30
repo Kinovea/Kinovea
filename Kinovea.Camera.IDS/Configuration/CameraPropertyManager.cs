@@ -50,6 +50,10 @@ namespace Kinovea.Camera.IDS
                 return null;
         }
 
+        /// <summary>
+        /// Commit value of properties that can be written during streaming and don't require a reconnect to be applied.
+        /// This is used by the configuration, to update the image while configuring.
+        /// </summary>
         public static void Write(uEye.Camera camera, long deviceId, CameraProperty property)
         {
             if (!property.Supported || string.IsNullOrEmpty(property.Identifier))
@@ -92,8 +96,9 @@ namespace Kinovea.Camera.IDS
         }
 
         /// <summary>
-        /// Writes the set of properties that can only be written when the device is opened but not streaming.
-        /// It is assumed that the device is in the correct state when the function is called.
+        /// Commit value of all properties.
+        /// This is used when reconnecting after the configuration was changed.
+        /// It is assumed that when this is called the device is open but not streaming.
         /// </summary>
         public static void WriteCriticalProperties(uEye.Camera camera, Dictionary<string, CameraProperty> properties)
         {

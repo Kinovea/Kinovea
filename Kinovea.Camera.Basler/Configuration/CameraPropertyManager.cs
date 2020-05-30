@@ -39,7 +39,6 @@ namespace Kinovea.Camera.Basler
 
             // Camera properties in Kinovea combine the value and the "auto" flag.
             // We potentially need to read several Basler camera properties to create one Kinovea camera property.
-            // Furthermore, some properties name or type depends on whether the camera is USB or GigE.
             ReadFramerate(deviceHandle, properties);
             ReadExposure(deviceHandle, properties);
             ReadGain(deviceHandle, properties);
@@ -47,74 +46,56 @@ namespace Kinovea.Camera.Basler
             return properties;
         }
 
+        /// <summary>
+        /// Commit value of properties that can be written during streaming and don't require a reconnect to be applied.
+        /// This is used by the configuration, to update the image while configuring.
+        /// </summary>
         public static void Write(PYLON_DEVICE_HANDLE deviceHandle, CameraProperty property)
         {
             if (!property.Supported || string.IsNullOrEmpty(property.Identifier) || !deviceHandle.IsValid)
                 return;
 
-            // If "auto" flag is OFF we should write it first. On some cameras the value is not writable until the corresponding auto flag is off.
-            // If it's ON (continuous), it doesn't matter as our value will be overwritten soon anyway.
-            if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
-            {
-                string enumValue = property.Automatic ? "Continuous" : "Off";
-                PylonHelper.WriteEnum(deviceHandle, property.AutomaticIdentifier, enumValue);
-            }
-
-            NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
-            NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, property.Identifier);
-            if (!nodeHandle.IsValid)
-                return;
-
-            EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
-            if (accessMode != EGenApiAccessMode.RW)
-            {
-                if (!string.IsNullOrEmpty(property.AutomaticIdentifier) && !property.Automatic)
-                {
-                    log.ErrorFormat("Error while writing Basler Pylon GenICam property {0}.", property.Identifier);
-                    log.ErrorFormat("The property is not writable.");
-                }
-
-                return;
-            }
-
             try
             {
-                switch (property.Type)
+                switch (property.Identifier)
                 {
-                    case CameraPropertyType.Integer:
-                        {
-                            long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-                            long step = long.Parse(property.Step, CultureInfo.InvariantCulture);
-                            long remainder = value % step;
-                            if (remainder > 0)
-                                value = value - remainder;
-
-                            GenApi.IntegerSetValue(nodeHandle, value);
-                            break;
-                        }
-                    case CameraPropertyType.Float:
-                        {
-                            double max = GenApi.FloatGetMax(nodeHandle);
-                            double min = GenApi.FloatGetMin(nodeHandle);
-                            double value = double.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-                            value = Math.Min(Math.Max(value, min), max);
-
-                            GenApi.FloatSetValue(nodeHandle, value);
-                            break;
-                        }
-                    case CameraPropertyType.Boolean:
-                        {
-                            bool value = bool.Parse(property.CurrentValue);
-                            GenApi.BooleanSetValue(nodeHandle, value);
-                            break;
-                        }
+                    case "AcquisitionFrameRateEnable":
+                    case "AcquisitionFrameRate":
+                    case "AcquisitionFrameRateAbs":
+                    case "ExposureTime":
+                    case "ExposureTimeAbs":
+                    case "Gain":
+                    case "GainRaw":
+                        WriteProperty(deviceHandle, property);
+                        break;
+                    case "Width":
+                    case "Height":
+                        // Do nothing. These properties must be changed from WriteCriticalProperties below.
+                        break;
                     default:
+                        log.ErrorFormat("Basler  property not supported: {0}.", property.Identifier);
                         break;
                 }
             }
-            catch
+            catch (Exception e)
             {
-                log.ErrorFormat("Error while writing Basler Pylon GenICam property {0}.", property.Identifier);
+                log.ErrorFormat("Error while writing Basler property {0}. {1}", property.Identifier, e.Message);
+            }
+        }
+
+        public static void WriteCriticalProperties(PYLON_DEVICE_HANDLE deviceHandle, Dictionary<string, CameraProperty> properties)
+        {
+            if (properties == null || properties.Count == 0)
+                return;
+
+            foreach (var pair in properties)
+            {
+                if (pair.Key == "width")
+                    WriteSize(deviceHandle, pair.Value, "OffsetX");
+                else if (pair.Key == "height")
+                    WriteSize(deviceHandle, pair.Value, "OffsetY");
+                else
+                    WriteProperty(deviceHandle, pair.Value);
             }
         }
 
@@ -183,9 +164,10 @@ namespace Kinovea.Camera.Basler
                 return p;
             }
 
+            // We don't test for writeable as it's usually dynamic depending on the camera status.
             p.Supported = true;
             p.Type = CameraPropertyType.Integer;
-            p.ReadOnly = accessMode != EGenApiAccessMode.RW;
+            p.ReadOnly = false;
 
             long min = GenApi.IntegerGetMin(nodeHandle);
             long max = GenApi.IntegerGetMax(nodeHandle);
@@ -300,6 +282,133 @@ namespace Kinovea.Camera.Basler
             p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
 
             return p;
+        }
+
+        /// <summary>
+        /// Write either width or height as a centered region of interest.
+        /// </summary>
+        private static void WriteSize(PYLON_DEVICE_HANDLE deviceHandle, CameraProperty property, string identifierOffset)
+        {
+            if (property.ReadOnly)
+                return;
+
+            NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
+            NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, property.Identifier);
+            NODE_HANDLE nodeHandleOffset = GenApi.NodeMapGetNode(nodeMapHandle, identifierOffset);
+            if (!nodeHandle.IsValid || !nodeHandleOffset.IsValid)
+                return;
+
+            EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
+            EGenApiAccessMode accessModeOffset = GenApi.NodeGetAccessMode(nodeHandleOffset);
+            if (accessMode != EGenApiAccessMode.RW || accessModeOffset != EGenApiAccessMode.RW)
+                return;
+
+            int value = int.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+            int min = int.Parse(property.Minimum, CultureInfo.InvariantCulture);
+            int max = int.Parse(property.Maximum, CultureInfo.InvariantCulture);
+            int step = int.Parse(property.Step, CultureInfo.InvariantCulture);
+
+            int remainder = (value - min) % step;
+            if (remainder != 0)
+                value = value - remainder + step;
+
+            int offset = (max - value) / 2;
+            int minOffset = (int)GenApi.IntegerGetMin(nodeHandleOffset);
+            int stepOffset = (int)GenApi.IntegerGetInc(nodeHandleOffset);
+
+            int remainderOffset = (offset - minOffset) % stepOffset;
+            if (remainderOffset != 0)
+                offset = offset - remainderOffset + stepOffset;
+
+            // We need to be careful with the order and not write a value that doesn't fit due to the offset, or vice versa.
+            int currentValue = (int)GenApi.IntegerGetValue(nodeHandle);
+            if (value > currentValue)
+            {
+                GenApi.IntegerSetValue(nodeHandleOffset, offset);
+                GenApi.IntegerSetValue(nodeHandle, value);
+            }
+            else
+            {
+                GenApi.IntegerSetValue(nodeHandle, value);
+                GenApi.IntegerSetValue(nodeHandleOffset, offset);
+            }
+        }
+
+        /// <summary>
+        /// Write generic property with optional auto flag.
+        /// </summary>
+        private static void WriteProperty(PYLON_DEVICE_HANDLE deviceHandle, CameraProperty property)
+        {
+            if (property.ReadOnly)
+                return;
+
+            // Switch OFF the auto flag if needed, to be able to write the main property.
+            bool currentAuto = false;
+            if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
+            {
+                GenApiEnum currentAutoValue = PylonHelper.ReadEnumCurrentValue(deviceHandle, property.AutomaticIdentifier);
+                currentAuto = currentAutoValue != null && currentAutoValue.Symbol == "Continuous";
+
+                if (property.CanBeAutomatic && currentAuto && !property.Automatic)
+                    PylonHelper.WriteEnum(deviceHandle, property.AutomaticIdentifier, "Off");
+            }
+
+            // At this point the auto flag is off.
+            NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
+            NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, property.Identifier);
+            if (!nodeHandle.IsValid)
+                return;
+
+            EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
+            if (accessMode != EGenApiAccessMode.RW)
+                return;
+
+            try
+            {
+                switch (property.Type)
+                {
+                    case CameraPropertyType.Integer:
+                        {
+                            long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+                            long step = long.Parse(property.Step, CultureInfo.InvariantCulture);
+                            long remainder = value % step;
+                            if (remainder > 0)
+                                value = value - remainder;
+
+                            GenApi.IntegerSetValue(nodeHandle, value);
+                            break;
+                        }
+                    case CameraPropertyType.Float:
+                        {
+                            double max = GenApi.FloatGetMax(nodeHandle);
+                            double min = GenApi.FloatGetMin(nodeHandle);
+                            double value = double.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+                            value = Math.Min(Math.Max(value, min), max);
+
+                            GenApi.FloatSetValue(nodeHandle, value);
+                            break;
+                        }
+                    case CameraPropertyType.Boolean:
+                        {
+                            bool value = bool.Parse(property.CurrentValue);
+                            GenApi.BooleanSetValue(nodeHandle, value);
+                            break;
+                        }
+                    default:
+                        break;
+                }
+            }
+            catch
+            {
+                log.ErrorFormat("Error while writing Basler Pylon GenICam property {0}.", property.Identifier);
+            }
+
+            // Finally, switch ON the auto flag if needed.
+            if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
+            {
+                if (property.CanBeAutomatic && property.Automatic)
+                    PylonHelper.WriteEnum(deviceHandle, property.AutomaticIdentifier, "Continuous");
+            }
         }
 
         private static CameraPropertyRepresentation ConvertRepresentation(EGenApiRepresentation representation)

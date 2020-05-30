@@ -34,6 +34,10 @@ namespace Kinovea.Camera.Daheng
             return properties;
         }
 
+        /// <summary>
+        /// Commit value of properties that can be written during streaming and don't require a reconnect to be applied.
+        /// This is used by the configuration, to update the image while configuring.
+        /// </summary>
         public static void Write(IGXDevice device, CameraProperty property)
         {
             if (!property.Supported || string.IsNullOrEmpty(property.Identifier))
@@ -71,6 +75,11 @@ namespace Kinovea.Camera.Daheng
             }
         }
 
+        /// <summary>
+        /// Commit value of all properties.
+        /// This is used when reconnecting after the configuration was changed.
+        /// It is assumed that when this is called the device is open but not streaming.
+        /// </summary>
         public static void WriteCriticalProperties(IGXDevice device, Dictionary<string, CameraProperty> properties)
         {
             if (properties == null || properties.Count == 0)
@@ -78,7 +87,7 @@ namespace Kinovea.Camera.Daheng
 
             IGXFeatureControl featureControl = device.GetRemoteFeatureControl();
 
-            // We need to write all the properties again from here, since the range of possible values depends on image size.
+            // Start with image size since the range of possible values depends on it.
             if (properties.ContainsKey("Width"))
                 WriteSize(featureControl, properties["Width"], "OffsetX");
 
@@ -280,8 +289,8 @@ namespace Kinovea.Camera.Daheng
             if (property.ReadOnly)
                 return;
 
-            // If auto is switching OFF, we need to set it off before the main prop to make it writeable.
-            // If auto is switching ON, we need to set it ON after the main prop, otherwise it gets turned Off automatically.
+            // If auto is being switched OFF, we need to set it OFF before the main prop to make the main prop writeable.
+            // If auto is being switched ON, we need to set it ON after the main prop, otherwise it gets turned OFF automatically.
             string currentAutoValue = featureControl.GetEnumFeature(property.AutomaticIdentifier).GetValue();
             bool currentAuto = currentAutoValue == GetAutoTrue(property.AutomaticIdentifier);
 
@@ -296,6 +305,9 @@ namespace Kinovea.Camera.Daheng
                 featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue(GetAutoTrue(property.AutomaticIdentifier));
         }
 
+        /// <summary>
+        /// Write either width or height as centered region of interest.
+        /// </summary>
         private static void WriteSize(IGXFeatureControl featureControl, CameraProperty property, string identifierOffset)
         {
             if (property.ReadOnly)
@@ -323,7 +335,7 @@ namespace Kinovea.Camera.Daheng
             if (remainderOffset != 0)
                 offset = offset - remainderOffset + stepOffset;
 
-            // We need to be careful not to write the value if it doesn't fit, due to the offset.
+            // We need to be careful with the order and not write a value that doesn't fit due to the offset, or vice versa.
             int currentValue = (int)featureControl.GetIntFeature(property.Identifier).GetValue();
             if (value > currentValue)
             {

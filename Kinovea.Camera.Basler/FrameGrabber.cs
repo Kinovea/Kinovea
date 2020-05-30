@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Timers;
 using System.Runtime.InteropServices;
@@ -249,41 +250,18 @@ namespace Kinovea.Camera.Basler
 
             // Store the handle into the specific info so that we can retrieve device informations from the configuration dialog.
             specific.Handle = deviceHandle;
-
             GenApiEnum currentStreamFormat = PylonHelper.ReadEnumCurrentValue(deviceHandle, "PixelFormat");
 
-            // Some properties can only be changed when the camera is opened but not streaming.
-            // We store them in the summary when coming back from FormConfiguration, and we write them to the camera here.
-            // Only do this if it's not the first time we open the camera, to respect any change that could have been done outside Kinovea.
-            if (!firstOpen)
+            if (firstOpen)
             {
-                if (specific.StreamFormat != currentStreamFormat.Symbol)
-                    PylonHelper.WriteEnum(deviceHandle, "PixelFormat", specific.StreamFormat);
-
-                if (specific.CameraProperties != null && specific.CameraProperties.ContainsKey("framerate"))
-                {
-                    if (specific.CameraProperties.ContainsKey("enableFramerate") && specific.CameraProperties["enableFramerate"].Supported)
-                    {
-                        bool enabled = bool.Parse(specific.CameraProperties["enableFramerate"].CurrentValue);
-                        if (!enabled && !specific.CameraProperties["enableFramerate"].ReadOnly)
-                        {
-                            specific.CameraProperties["enableFramerate"].CurrentValue = "true";
-                            CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["enableFramerate"]);
-                        }
-                    }
-
-                    CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["framerate"]);
-                }
-
-                if (specific.CameraProperties != null && specific.CameraProperties.ContainsKey("width") && specific.CameraProperties.ContainsKey("height"))
-                {
-                    CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["width"]);
-                    CameraPropertyManager.Write(deviceHandle, specific.CameraProperties["height"]);
-                }
+                specific.StreamFormat = currentStreamFormat.Symbol;
             }
             else
             {
-                specific.StreamFormat = currentStreamFormat.Symbol;
+                if (specific.StreamFormat != currentStreamFormat.Symbol)
+                    PylonHelper.WriteEnum(deviceHandle, "PixelFormat", specific.StreamFormat);
+                
+                CameraPropertyManager.WriteCriticalProperties(deviceHandle, specific.CameraProperties);
             }
         }
 
