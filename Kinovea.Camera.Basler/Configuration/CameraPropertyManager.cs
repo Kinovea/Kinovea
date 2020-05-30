@@ -83,6 +83,22 @@ namespace Kinovea.Camera.Basler
             }
         }
 
+        /// <summary>
+        /// Push values from XML based simple properties into current list of properties.
+        /// </summary>
+        public static void MergeProperties(Dictionary<string, CameraProperty> dest, Dictionary<string, CameraProperty> source)
+        {
+            // This is used to import values from simple XML based representation into properties instances.
+            foreach (var pair in source)
+            {
+                if (!dest.ContainsKey(pair.Key))
+                    continue;
+
+                dest[pair.Key].Automatic = pair.Value.Automatic;
+                dest[pair.Key].CurrentValue = pair.Value.CurrentValue;
+            }
+        }
+
         public static void WriteCriticalProperties(PYLON_DEVICE_HANDLE deviceHandle, Dictionary<string, CameraProperty> properties)
         {
             if (properties == null || properties.Count == 0)

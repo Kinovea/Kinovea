@@ -219,13 +219,6 @@ namespace Kinovea.Camera.Basler
 
         private void Open()
         {
-            // Unlike in the DirectShow module, we do not backup and restore camera configuration.
-            // If the user configured the camera outside of Kinovea we respect the new settings.
-            // Two reasons:
-            // 1. In DirectShow we must do the backup/restore to work around drivers that inadvertently reset the camera properties.
-            // 2. Industrial cameras have many properties that won't be configurable in Kinovea 
-            // so the user is more likely to configure the camera from the outside.
-
             if (grabbing)
                 Stop();
 
@@ -252,15 +245,26 @@ namespace Kinovea.Camera.Basler
             specific.Handle = deviceHandle;
             GenApiEnum currentStreamFormat = PylonHelper.ReadEnumCurrentValue(deviceHandle, "PixelFormat");
 
+            if (!string.IsNullOrEmpty(specific.StreamFormat) && specific.StreamFormat != currentStreamFormat.Symbol)
+                PylonHelper.WriteEnum(deviceHandle, "PixelFormat", specific.StreamFormat);
+
+            // The bayer conversion mode will be set during Prepare().
+
             if (firstOpen)
             {
-                specific.StreamFormat = currentStreamFormat.Symbol;
+                // Restore camera parameters from the XML blurb.
+                // Regular properties, including image size.
+                // First we read the current properties from the API to get fully formed properties.
+                // We merge the values saved in the XML into the properties.
+                // (The restoration from the XML doesn't create fully formed properties, it just contains the values).
+                // Then commit the properties to the camera.
+                Dictionary<string, CameraProperty> cameraProperties = CameraPropertyManager.Read(deviceHandle, summary.Identifier);
+                CameraPropertyManager.MergeProperties(cameraProperties, specific.CameraProperties);
+                specific.CameraProperties = cameraProperties;
+                CameraPropertyManager.WriteCriticalProperties(deviceHandle, specific.CameraProperties);
             }
             else
             {
-                if (specific.StreamFormat != currentStreamFormat.Symbol)
-                    PylonHelper.WriteEnum(deviceHandle, "PixelFormat", specific.StreamFormat);
-                
                 CameraPropertyManager.WriteCriticalProperties(deviceHandle, specific.CameraProperties);
             }
         }

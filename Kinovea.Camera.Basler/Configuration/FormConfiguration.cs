@@ -306,6 +306,7 @@ namespace Kinovea.Camera.Basler
                 return;
 
             info.StreamFormat = this.SelectedStreamFormat.Symbol;
+            info.Bayer8Conversion = this.Bayer8Conversion;
             info.CameraProperties = this.CameraProperties;
             summary.UpdateDisplayRectangle(Rectangle.Empty);
             CameraTypeManager.UpdatedCameraSummary(summary);
