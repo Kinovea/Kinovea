@@ -382,7 +382,7 @@ namespace Kinovea.Camera.Basler
             xmlRoot.AppendChild(xmlStreamFormat);
 
             XmlElement xmlBayer8Conversion = doc.CreateElement("Bayer8Conversion");
-            xmlBayer8Conversion.InnerText = info.Bayer8Conversion.ToString().ToLower();
+            xmlBayer8Conversion.InnerText = info.Bayer8Conversion.ToString();
             xmlRoot.AppendChild(xmlBayer8Conversion);
             
             XmlElement xmlCameraProperties = doc.CreateElement("CameraProperties");
