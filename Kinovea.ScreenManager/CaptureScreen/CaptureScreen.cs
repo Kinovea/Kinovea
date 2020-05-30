@@ -627,6 +627,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void SanityCheckDisplayRectangle(CameraSummary summary, Size referenceSize)
         {
+            if (summary.DisplayRectangle.IsEmpty)
+                return;
+
             // The display rectangle can change its size based on user zoom, 
             // but the image size can be modified from the outside in some scenarios.
             double dspAR = (double)summary.DisplayRectangle.Width / summary.DisplayRectangle.Height;

@@ -68,6 +68,9 @@ namespace Kinovea.ScreenManager
         {
             this.referenceSize = referenceSize;
             InitializeDisplayRectangle(saved);
+            if (displayRectangle != saved)
+                controller.UpdateDisplayRectangle(displayRectangle);
+            
             ForceZoomValue();
         }
         
@@ -296,7 +299,24 @@ namespace Kinovea.ScreenManager
         
         private void InitializeDisplayRectangle(Rectangle saved)
         {
-            displayRectangle = saved.Size == Size.Empty ? UIHelper.RatioStretch(referenceSize, this.Size) : saved;
+            if (saved.Size == Size.Empty)
+            {
+                if (referenceSize.FitsIn(this.Size))
+                {
+                    int left = (this.Size.Width - referenceSize.Width) / 2;
+                    int top = (this.Size.Height - referenceSize.Height) / 2;
+                    displayRectangle = new Rectangle(left, top, referenceSize.Width, referenceSize.Height);
+                }
+                else
+                {
+                    displayRectangle = UIHelper.RatioStretch(referenceSize, this.Size);
+                }
+            }
+            else
+            {
+                displayRectangle = saved;
+            }
+
             AfterDisplayRectangleChanged();
         }
         
