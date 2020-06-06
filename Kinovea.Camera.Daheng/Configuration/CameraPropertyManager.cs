@@ -169,6 +169,7 @@ namespace Kinovea.Camera.Daheng
             p.Maximum = max.ToString(CultureInfo.InvariantCulture);
             p.Step = step.ToString(CultureInfo.InvariantCulture);
 
+            // Fix values that should be log.
             double range = Math.Log10(max) - Math.Log10(min);
             p.Representation = (range >= 4) ? CameraPropertyRepresentation.LogarithmicSlider : CameraPropertyRepresentation.LinearSlider;
 
@@ -289,20 +290,29 @@ namespace Kinovea.Camera.Daheng
             if (property.ReadOnly)
                 return;
 
-            // If auto is being switched OFF, we need to set it OFF before the main prop to make the main prop writeable.
-            // If auto is being switched ON, we need to set it ON after the main prop, otherwise it gets turned OFF automatically.
-            string currentAutoValue = featureControl.GetEnumFeature(property.AutomaticIdentifier).GetValue();
-            bool currentAuto = currentAutoValue == GetAutoTrue(property.AutomaticIdentifier);
+            // Switch OFF the auto flag if needed, to be able to write the main property.
+            if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
+            {
+                if (featureControl.IsImplemented(property.AutomaticIdentifier))
+                {
+                    string currentAutoValue = featureControl.GetEnumFeature(property.AutomaticIdentifier).GetValue();
+                    bool currentAuto = currentAutoValue == GetAutoTrue(property.AutomaticIdentifier);
+                    if (property.CanBeAutomatic && currentAuto && !property.Automatic && featureControl.IsWritable(property.AutomaticIdentifier))
+                        featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue(GetAutoFalse(property.AutomaticIdentifier));
+                }
+            }
 
-            if (property.CanBeAutomatic && currentAuto && !property.Automatic && featureControl.IsWritable(property.AutomaticIdentifier))
-                featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue(GetAutoFalse(property.AutomaticIdentifier));
-
+            // At this point the auto flag is off. Write the main property.
             float value = float.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             if (featureControl.IsWritable(property.Identifier))
                 featureControl.GetFloatFeature(property.Identifier).SetValue(value);
 
-            if (property.CanBeAutomatic && !currentAuto && property.Automatic && featureControl.IsWritable(property.AutomaticIdentifier))
-                featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue(GetAutoTrue(property.AutomaticIdentifier));
+            // Finally, switch ON the auto flag if needed.
+            if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
+            {
+                if (featureControl.IsImplemented(property.AutomaticIdentifier) && property.CanBeAutomatic && property.Automatic && featureControl.IsWritable(property.AutomaticIdentifier))
+                    featureControl.GetEnumFeature(property.AutomaticIdentifier).SetValue(GetAutoTrue(property.AutomaticIdentifier));
+            }
         }
 
         /// <summary>
@@ -349,6 +359,9 @@ namespace Kinovea.Camera.Daheng
             }
         }
         
+        /// <summary>
+        /// Returns the string representation corresponding to when the property is automatically set.
+        /// </summary>
         private static string GetAutoTrue(string identifier)
         {
             switch (identifier)
@@ -362,6 +375,9 @@ namespace Kinovea.Camera.Daheng
             }
         }
 
+        /// <summary>
+        /// Returns the string representation corresponding to when the property is not automatically set.
+        /// </summary>
         private static string GetAutoFalse(string identifier)
         {
             switch (identifier)
