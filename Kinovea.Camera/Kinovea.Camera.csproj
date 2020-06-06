@@ -195,6 +195,7 @@
       <DependentUpon>FormIconPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\CameraLang.ar.resx" />
+    <EmbeddedResource Include="Languages\CameraLang.bg.resx" />
     <EmbeddedResource Include="Languages\CameraLang.ca.resx" />
     <EmbeddedResource Include="Languages\CameraLang.cs.resx" />
     <EmbeddedResource Include="Languages\CameraLang.da.resx" />

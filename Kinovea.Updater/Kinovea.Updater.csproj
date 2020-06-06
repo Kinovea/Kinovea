@@ -208,6 +208,7 @@
       <DependentUpon>UpdateDialog2.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Languages\UpdaterLang.ar.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.bg.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.ca.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.cs.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.da.resx" />
@@ -293,9 +294,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">
-  <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />
-  <PropertyGroup>
-    <TargetFrameworkSDKToolsDirectory>$(TargetFrameworkSDKToolsDirectory)$(PlatformTarget)\</TargetFrameworkSDKToolsDirectory>
-  </PropertyGroup>
-</Target>
+    <Message Text="Adjusting SDK tools directory to use x64 version of AL.EXE" />
+    <PropertyGroup>
+      <TargetFrameworkSDKToolsDirectory>$(TargetFrameworkSDKToolsDirectory)$(PlatformTarget)\</TargetFrameworkSDKToolsDirectory>
+    </PropertyGroup>
+  </Target>
 </Project>

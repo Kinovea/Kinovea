@@ -910,6 +910,7 @@
       <DependentUpon>InfobarCapture.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.ar.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.bg.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.ca.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.cs.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.da.resx" />

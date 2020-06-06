@@ -85,7 +85,7 @@ for pattern in patterns:
         os.remove(file)
 
 # 0. Extract content.xml from the OpenOffice document.
-z = zipfile.ZipFile("Kinovea-l14n-rev0021.ods", "r")
+z = zipfile.ZipFile("Kinovea-l14n-rev0022.ods", "r")
 z.extract("content.xml")
 
 print("\nGenerate all Resx, first pass.")
