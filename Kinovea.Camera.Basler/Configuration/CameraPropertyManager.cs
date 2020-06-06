@@ -34,8 +34,8 @@ namespace Kinovea.Camera.Basler
             if (device == null)
                 return properties;
 
-            properties.Add("width", ReadIntegerProperty(deviceHandle, "Width"));
-            properties.Add("height", ReadIntegerProperty(deviceHandle, "Height"));
+            properties.Add("width", ReadIntegerProperty(deviceHandle, "Width", "WidthMax"));
+            properties.Add("height", ReadIntegerProperty(deviceHandle, "Height", "HeightMax"));
 
             // Camera properties in Kinovea combine the value and the "auto" flag.
             // We potentially need to read several Basler camera properties to create one Kinovea camera property.
@@ -59,7 +59,6 @@ namespace Kinovea.Camera.Basler
             {
                 switch (property.Identifier)
                 {
-                    case "AcquisitionFrameRateEnable":
                     case "AcquisitionFrameRate":
                     case "AcquisitionFrameRateAbs":
                     case "ExposureTime":
@@ -115,44 +114,115 @@ namespace Kinovea.Camera.Basler
             }
         }
 
-        private static void ReadFramerate(PYLON_DEVICE_HANDLE deviceHandle, Dictionary<string, CameraProperty> properties)
+        private static CameraProperty ReadFramerate(PYLON_DEVICE_HANDLE deviceHandle, Dictionary<string, CameraProperty> properties)
         {
-            properties.Add("enableFramerate", ReadBooleanProperty(deviceHandle, "AcquisitionFrameRateEnable"));
+            CameraProperty p = new CameraProperty();
+            p.Identifier = "AcquisitionFrameRate";
+            p.Supported = false;
+            p.Type = CameraPropertyType.Float;
 
-            CameraProperty prop = ReadFloatProperty(deviceHandle, "AcquisitionFrameRate");
-            if (!prop.Supported)
-                prop = ReadFloatProperty(deviceHandle, "AcquisitionFrameRateAbs");
+            NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
+            NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, p.Identifier);
+            if (!nodeHandle.IsValid)
+            {
+                p.Identifier = "AcquisitionFrameRateAbs";
+                nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, p.Identifier);
+                if (!nodeHandle.IsValid)
+                    return p;
+            }
 
-            properties.Add("framerate", prop);
+            EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
+            if (accessMode == EGenApiAccessMode._UndefinedAccesMode || accessMode == EGenApiAccessMode.NA ||
+                accessMode == EGenApiAccessMode.NI || accessMode == EGenApiAccessMode.WO)
+            {
+                log.WarnFormat("Could not read Basler property {0}: Access mode not supported. (The property is not readable).", p.Identifier);
+                return p;
+            }
+
+            EGenApiNodeType type = GenApi.NodeGetType(nodeHandle);
+            if (type != EGenApiNodeType.FloatNode)
+            {
+                log.WarnFormat("Could not read Basler property {0}: the node is of the wrong type. Expected: Float. Received:{1}", p.Identifier, type.ToString());
+                return p;
+            }
+
+            p.ReadOnly = false;
+            p.Supported = true;
+
+            double currentValue = GenApi.FloatGetValue(nodeHandle);
+            double min = GenApi.FloatGetMin(nodeHandle);
+            double max = GenApi.FloatGetMax(nodeHandle);
+            double step = 1.0;
+            min = Math.Max(1.0, min);
+
+            p.Minimum = min.ToString(CultureInfo.InvariantCulture);
+            p.Maximum = max.ToString(CultureInfo.InvariantCulture);
+            p.CurrentValue = currentValue.ToString(CultureInfo.InvariantCulture);
+            p.Step = step.ToString(CultureInfo.InvariantCulture);
+            
+            // Fix values that should be log.
+            double range = Math.Log10(max) - Math.Log10(min);
+            p.Representation = (range >= 4) ? CameraPropertyRepresentation.LogarithmicSlider : CameraPropertyRepresentation.LinearSlider;
+
+            // AcquisitionFrameRateEnable=false: the framerate is automatically set to the max value possible.
+            // AcquisitionFrameRateEnable=true: use the custom framerate set by the user in AcquisitionFrameRate.
+
+            string autoIdentifier = "AcquisitionFrameRateEnable";
+            p.AutomaticIdentifier = autoIdentifier;
+            NODE_HANDLE nodeHandleAuto = GenApi.NodeMapGetNode(nodeMapHandle, autoIdentifier);
+            p.CanBeAutomatic = nodeHandleAuto.IsValid && GenApi.NodeIsWritable(nodeHandleAuto);
+            p.Automatic = false;
+            if (p.CanBeAutomatic)
+            {
+                string currentAutoValue = GenApi.BooleanGetValue(nodeHandleAuto).ToString(CultureInfo.InvariantCulture).ToLower();
+                p.Automatic = currentAutoValue == GetAutoTrue(autoIdentifier);
+            }
+
+            if (properties != null)
+                properties.Add("framerate", p);
+
+            return p;
         }
 
         private static void ReadExposure(PYLON_DEVICE_HANDLE deviceHandle, Dictionary<string, CameraProperty> properties)
         {
-            CameraProperty prop = ReadFloatProperty(deviceHandle, "ExposureTime");
-            if (!prop.Supported)
-                prop = ReadFloatProperty(deviceHandle, "ExposureTimeAbs");
+            CameraProperty p = ReadFloatProperty(deviceHandle, "ExposureTime");
+            if (!p.Supported)
+                p = ReadFloatProperty(deviceHandle, "ExposureTimeAbs");
 
-            prop.CanBeAutomatic = true;
-            prop.AutomaticIdentifier = "ExposureAuto";
-            GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, prop.AutomaticIdentifier);
-            prop.Automatic = auto != null && auto.Symbol == "Continuous";
-            properties.Add("exposure", prop);
+            string autoIdentifier = "ExposureAuto";
+            p.AutomaticIdentifier = autoIdentifier;
+            GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, p.AutomaticIdentifier);
+            p.CanBeAutomatic = auto != null;
+            p.Automatic = false;
+            if (p.CanBeAutomatic && !string.IsNullOrEmpty(auto.Symbol))
+            {
+                p.Automatic = auto.Symbol == GetAutoTrue(autoIdentifier);
+            }
+
+            properties.Add("exposure", p);
         }
 
         private static void ReadGain(PYLON_DEVICE_HANDLE deviceHandle, Dictionary<string, CameraProperty> properties)
         {
-            CameraProperty prop = ReadFloatProperty(deviceHandle, "Gain");
-            if (!prop.Supported)
-                prop = ReadIntegerProperty(deviceHandle, "GainRaw");
+            CameraProperty p = ReadFloatProperty(deviceHandle, "Gain");
+            if (!p.Supported)
+                p = ReadIntegerProperty(deviceHandle, "GainRaw", null);
 
-            prop.CanBeAutomatic = true;
-            prop.AutomaticIdentifier = "GainAuto";
-            GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, prop.AutomaticIdentifier);
-            prop.Automatic = auto != null && auto.Symbol == "Continuous";
-            properties.Add("gain", prop);
+            string autoIdentifier = "GainAuto";
+            p.AutomaticIdentifier = autoIdentifier;
+            GenApiEnum auto = PylonHelper.ReadEnumCurrentValue(deviceHandle, p.AutomaticIdentifier);
+            p.CanBeAutomatic = auto != null;
+            p.Automatic = false;
+            if (p.CanBeAutomatic && !string.IsNullOrEmpty(auto.Symbol))
+            {
+                p.Automatic = auto.Symbol == GetAutoTrue(autoIdentifier);
+            }
+
+            properties.Add("gain", p);
         }
 
-        private static CameraProperty ReadIntegerProperty(PYLON_DEVICE_HANDLE deviceHandle, string symbol)
+        private static CameraProperty ReadIntegerProperty(PYLON_DEVICE_HANDLE deviceHandle, string symbol, string symbolMax)
         {
             CameraProperty p = new CameraProperty();
             p.Identifier = symbol;
@@ -185,17 +255,23 @@ namespace Kinovea.Camera.Basler
             p.Type = CameraPropertyType.Integer;
             p.ReadOnly = false;
 
+            long currentValue = GenApi.IntegerGetValue(nodeHandle);
             long min = GenApi.IntegerGetMin(nodeHandle);
             long max = GenApi.IntegerGetMax(nodeHandle);
             long step = GenApi.IntegerGetInc(nodeHandle);
             EGenApiRepresentation repr = GenApi.IntegerGetRepresentation(nodeHandle);
+            
+            if (!string.IsNullOrEmpty(symbolMax))
+            {
+                NODE_HANDLE nodeHandleMax = GenApi.NodeMapGetNode(nodeMapHandle, symbolMax);
+                if (nodeHandleMax.IsValid)
+                    max = GenApi.IntegerGetValue(nodeHandleMax);
+            }
 
             // Fix values that should be log.
             double range = Math.Log10(max) - Math.Log10(min);
             if (range > 4 && repr == EGenApiRepresentation.Linear)
                 repr = EGenApiRepresentation.Logarithmic;
-
-            long currentValue = GenApi.IntegerGetValue(nodeHandle);
 
             p.Minimum = min.ToString(CultureInfo.InvariantCulture);
             p.Maximum = max.ToString(CultureInfo.InvariantCulture);
@@ -319,25 +395,22 @@ namespace Kinovea.Camera.Basler
             if (accessMode != EGenApiAccessMode.RW || accessModeOffset != EGenApiAccessMode.RW)
                 return;
 
-            int value = int.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-            int min = int.Parse(property.Minimum, CultureInfo.InvariantCulture);
-            int max = int.Parse(property.Maximum, CultureInfo.InvariantCulture);
-            int step = int.Parse(property.Step, CultureInfo.InvariantCulture);
+            long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
+            long min = GenApi.IntegerGetMin(nodeHandle);
+            long max = GenApi.IntegerGetMax(nodeHandle);
+            long step = GenApi.IntegerGetInc(nodeHandle);
+            value = FixValue(value, min, max, step);
 
-            int remainder = (value - min) % step;
-            if (remainder != 0)
-                value = value - remainder + step;
+            long offset = (max - value) / 2;
+            long minOffset = GenApi.IntegerGetMin(nodeHandleOffset);
+            long stepOffset = GenApi.IntegerGetInc(nodeHandleOffset);
 
-            int offset = (max - value) / 2;
-            int minOffset = (int)GenApi.IntegerGetMin(nodeHandleOffset);
-            int stepOffset = (int)GenApi.IntegerGetInc(nodeHandleOffset);
-
-            int remainderOffset = (offset - minOffset) % stepOffset;
+            long remainderOffset = (offset - minOffset) % stepOffset;
             if (remainderOffset != 0)
                 offset = offset - remainderOffset + stepOffset;
 
             // We need to be careful with the order and not write a value that doesn't fit due to the offset, or vice versa.
-            int currentValue = (int)GenApi.IntegerGetValue(nodeHandle);
+            long currentValue = GenApi.IntegerGetValue(nodeHandle);
             if (value > currentValue)
             {
                 GenApi.IntegerSetValue(nodeHandleOffset, offset);
@@ -358,19 +431,22 @@ namespace Kinovea.Camera.Basler
             if (property.ReadOnly)
                 return;
 
+            NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
+
             // Switch OFF the auto flag if needed, to be able to write the main property.
-            bool currentAuto = false;
             if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
             {
-                GenApiEnum currentAutoValue = PylonHelper.ReadEnumCurrentValue(deviceHandle, property.AutomaticIdentifier);
-                currentAuto = currentAutoValue != null && currentAutoValue.Symbol == "Continuous";
-
-                if (property.CanBeAutomatic && currentAuto && !property.Automatic)
-                    PylonHelper.WriteEnum(deviceHandle, property.AutomaticIdentifier, "Off");
+                NODE_HANDLE nodeHandleAuto = GenApi.NodeMapGetNode(nodeMapHandle, property.AutomaticIdentifier);
+                if (nodeHandleAuto.IsValid)
+                {
+                    bool writeable = GenApi.NodeIsWritable(nodeHandleAuto);
+                    bool currentAuto = ReadAuto(nodeHandleAuto, property.AutomaticIdentifier);
+                    if (writeable && property.CanBeAutomatic && currentAuto && !property.Automatic)
+                        WriteAuto(nodeHandleAuto, property.AutomaticIdentifier, false);
+                }
             }
 
-            // At this point the auto flag is off.
-            NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
+            // At this point the auto flag is off. Write the main property.
             NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, property.Identifier);
             if (!nodeHandle.IsValid)
                 return;
@@ -386,21 +462,19 @@ namespace Kinovea.Camera.Basler
                     case CameraPropertyType.Integer:
                         {
                             long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-                            long step = long.Parse(property.Step, CultureInfo.InvariantCulture);
-                            long remainder = value % step;
-                            if (remainder > 0)
-                                value = value - remainder;
-
+                            long min = GenApi.IntegerGetMin(nodeHandle);
+                            long max = GenApi.IntegerGetMax(nodeHandle);
+                            long step = GenApi.IntegerGetInc(nodeHandle);
+                            value = FixValue(value, min, max, step);
                             GenApi.IntegerSetValue(nodeHandle, value);
                             break;
                         }
                     case CameraPropertyType.Float:
                         {
-                            double max = GenApi.FloatGetMax(nodeHandle);
-                            double min = GenApi.FloatGetMin(nodeHandle);
                             double value = double.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
-                            value = Math.Min(Math.Max(value, min), max);
-
+                            double min = GenApi.FloatGetMin(nodeHandle);
+                            double max = GenApi.FloatGetMax(nodeHandle);
+                            value = FixValue(value, min, max);
                             GenApi.FloatSetValue(nodeHandle, value);
                             break;
                         }
@@ -422,9 +496,26 @@ namespace Kinovea.Camera.Basler
             // Finally, switch ON the auto flag if needed.
             if (!string.IsNullOrEmpty(property.AutomaticIdentifier))
             {
-                if (property.CanBeAutomatic && property.Automatic)
-                    PylonHelper.WriteEnum(deviceHandle, property.AutomaticIdentifier, "Continuous");
+                NODE_HANDLE nodeHandleAuto = GenApi.NodeMapGetNode(nodeMapHandle, property.AutomaticIdentifier);
+                if (nodeHandleAuto.IsValid && GenApi.NodeIsWritable(nodeHandleAuto) && property.CanBeAutomatic && property.Automatic)
+                    WriteAuto(nodeHandleAuto, property.AutomaticIdentifier, true);
             }
+        }
+
+        private static long FixValue(long value, long min, long max, long step)
+        {
+            value = Math.Min(max, Math.Max(min, value));
+
+            long remainder = value % step;
+            if (remainder > 0)
+                value = value - remainder;
+
+            return value;
+        }
+
+        private static double FixValue(double value, double min, double max)
+        {
+            return Math.Min(max, Math.Max(min, value));
         }
 
         private static CameraPropertyRepresentation ConvertRepresentation(EGenApiRepresentation representation)
@@ -446,7 +537,83 @@ namespace Kinovea.Camera.Basler
             }
         }
         
+        /// <summary>
+        /// Read the auto property value and put it into a boolean.
+        /// </summary>
+        private static bool ReadAuto(NODE_HANDLE nodeHandle, string identifier)
+        {
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateEnable":
+                    {
+                        string currentAutoValue = GenApi.BooleanGetValue(nodeHandle).ToString(CultureInfo.InvariantCulture).ToLower();
+                        return currentAutoValue == GetAutoTrue(identifier);
+                    }
+                case "GainAuto":
+                case "ExposureAuto":
+                default:
+                    {
+                        string currentAutoValue = GenApi.NodeToString(nodeHandle);
+                        return currentAutoValue == GetAutoTrue(identifier);
+                    }
+            }
+        }
 
-    
+        /// <summary>
+        /// Takes a boolean of whether auto is ON or OFF, convert it to the correct representation and write it in the auto property.
+        /// </summary>
+        private static void WriteAuto(NODE_HANDLE nodeHandle, string identifier, bool isAuto)
+        {
+            string newValue = isAuto ? GetAutoTrue(identifier) : GetAutoFalse(identifier);
+
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateEnable":
+                    {
+                        bool newValueBool = bool.Parse(newValue);
+                        GenApi.BooleanSetValue(nodeHandle, newValueBool);
+                        break;
+                    }
+                case "GainAuto":
+                case "ExposureAuto":
+                default:
+                    {
+                        PylonHelper.WriteEnum(nodeHandle, identifier, newValue);
+                        break;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// Returns a string representation of the value of the auto property corresponding to when the main property IS automatically set.
+        /// </summary>
+        private static string GetAutoTrue(string identifier)
+        {
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateEnable":
+                    return "false";
+                case "GainAuto":
+                case "ExposureAuto":
+                default:
+                    return "Continuous";
+            }
+        }
+
+        /// <summary>
+        /// Returns a string representation of the value of the auto property corresponding to when the main property is NOT automatically set.
+        /// </summary>
+        private static string GetAutoFalse(string identifier)
+        {
+            switch (identifier)
+            {
+                case "AcquisitionFrameRateEnable":
+                    return "true";
+                case "GainAuto":
+                case "ExposureAuto":
+                default:
+                    return "Off";
+            }
+        }
     }
 }

@@ -125,6 +125,11 @@ namespace Kinovea.Camera.Basler
         {
             NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
             NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, enumerationName);
+            WriteEnum(nodeHandle, enumerationName, enumerationValue);
+        }
+
+        public static void WriteEnum(NODE_HANDLE nodeHandle, string enumerationName, string enumerationValue)
+        {
             if (!nodeHandle.IsValid)
                 return;
 
