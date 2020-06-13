@@ -96,6 +96,7 @@
    <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Modo de registro y retraso</value></data>
    <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Cámara: registra fotogramas en tiempo real</value></data>
    <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Retrasado: registra fotogramas atrasados</value></data>
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Año</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mes</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Día</value></data>
@@ -136,7 +137,7 @@
    <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve"><value>Importar secuencia de imágenes como video</value></data>
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Siempre desentrelazar al abrir un vídeo nuevo</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Actualizar la imagen durante el movimiento del cursor</value></data>
-   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Vincular los deslizadores de velocidad al comparar videos.</value></data>
+   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Vincular los deslizadores de velocidad al comparar videos</value></data>
    <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Forzar 16:9</value></data>
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Forzar 4:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Detección automática</value></data>

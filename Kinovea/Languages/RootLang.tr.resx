@@ -96,6 +96,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Yıl</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Ay</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Gün</value></data>

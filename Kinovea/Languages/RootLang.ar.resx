@@ -96,6 +96,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>سنة</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>شهر</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>يوم</value></data>

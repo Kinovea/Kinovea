@@ -96,6 +96,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>År</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Måned</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dag</value></data>
@@ -134,7 +135,7 @@
    
    
    
-   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Altid deinterlace når ny video åbnes.</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Altid deinterlace når ny video åbnes</value></data>
    
    
    <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Gennemtving 16:9 format</value></data>

@@ -140,6 +140,7 @@
    
    
    
+   
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Przejdź do trybu Analizy</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Liczba plików w historii :</value></data>
    

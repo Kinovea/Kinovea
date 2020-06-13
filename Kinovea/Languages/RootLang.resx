@@ -96,6 +96,7 @@
    <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Recording mode and delay</value></data>
    <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Camera: records real time frames.</value></data>
    <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Delayed: records delayed frames.</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve"><value>Scheduled: records delayed frames at stop.</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Year</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Month</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Day</value></data>
@@ -134,9 +135,9 @@
    <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Fade in/out around the frame they were added to</value></data>
    <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>Number of frames to fade in/out the drawing: {0}</value></data>
    <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve"><value>Import image sequences as videos</value></data>
-   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Always deinterlace when opening a new video.</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Always deinterlace when opening a new video</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Update image during time cursor movement</value></data>
-   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Link speed sliders when comparing videos.</value></data>
+   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Link speed sliders when comparing videos</value></data>
    <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Force 16:9</value></data>
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Force 4:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Auto Detection</value></data>

@@ -79,6 +79,9 @@ namespace Kinovea.ScreenManager
             grpDistortionCoefficients.Text = ScreenManagerLang.dlgCameraCalibration_DistortionCoefficients;
             grpIntrinsics.Text = ScreenManagerLang.dlgCameraCalibration_CameraIntrinsics;
             grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
+
+            lblSensorWidth.Text = ScreenManagerLang.dlgCameraCalibration_lblSensorWidth;
+            lblFocalLength.Text = ScreenManagerLang.dlgCameraCalibration_lblFocalLength;
         }
 
         private void SetupStyle()

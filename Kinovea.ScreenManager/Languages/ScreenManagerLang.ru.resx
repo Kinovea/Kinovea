@@ -118,8 +118,9 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Конфигурация инструментов рисования</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Имя</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Всегда видимый</value></data>
-   <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Настройка прозрачности</value></data>
-   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Прозрачность : {0:0}%</value></data>
+   
+   
+   
    <data name="dlgTimebase_Title" xml:space="preserve"><value>Конфигурация времени видео</value></data>
    <data name="dlgTimebase_GroupCapture" xml:space="preserve"><value>Высокоскоростная камера</value></data>
    <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Частота съемки:</value></data>
@@ -129,7 +130,6 @@
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Эта опция определяет частоту воспроизведения видео в программе Kinovea. Используйте эту опцию когда видео содержит ошибочную информацию о файле или Kinovea не может прочитать эту информацию.</value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Сброс параметров</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Конфигурация инструментов траектории</value></data>
-   <data name="dlgConfigureTrajectory_LabelVisibility" xml:space="preserve"><value>Видимость:</value></data>
    <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>Завершить</value></data>
    <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve"><value>Одна секунда</value></data>
    <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve"><value>Только метка</value></data>
@@ -202,6 +202,8 @@
    <data name="dlgCameraCalibration_Distortion" xml:space="preserve"><value>Искажение</value></data>
    <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve"><value>Загрузить профиль калибровки камеры</value></data>
    <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Сохранить профиль калибровки камеры</value></data>
+   
+   
    <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Стрелка пунтирная</value></data>
    <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Стрелка зигзагом</value></data>
    <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Стрелка с кривой линией</value></data>
@@ -264,6 +266,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Размер шрифта:</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Ширина:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Непрозрачность</value></data>
+   <data name="Generic_Visibility" xml:space="preserve"><value>Видимость</value></data>
    <data name="Generic_Options" xml:space="preserve"><value>Опции</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Размер:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Сохранить</value></data>
@@ -321,6 +324,11 @@
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Отменить границы исследуемого интервала</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Запустить секундомер</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Остановить секундомер</value></data>
+   
+   
+   
+   
+   
    <data name="mnuCloseScreen" xml:space="preserve"><value>Закрыть этот экран</value></data>
    <data name="mnuCopyToClipboard" xml:space="preserve"><value>Копировать в буфер обмена</value></data>
    <data name="mnuCopyImageToClipboard" xml:space="preserve"><value>Копировать изображение в буфер обмена</value></data>
@@ -367,6 +375,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Воспроизведение Пауза</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Повторное определение пути</value></data>
    
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Открыть видео файл</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Все файлы (*.*)|*.*</value></data>
    
@@ -392,6 +401,9 @@
    <data name="mnuPolyline_FinishHere" xml:space="preserve"><value>Итоговая ломаная линия здесь</value></data>
    <data name="mnuPolyline_FinishAtPrevious" xml:space="preserve"><value>Итоговая ломаная линия предыдущей точки</value></data>
    <data name="mnuPolyline_CloseMenu" xml:space="preserve"><value>Закрыть это меню</value></data>
+   
+   
+   
    
    
    
@@ -460,6 +472,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Файл</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Дата:</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Текущие проекты были не сохранены должным образом, но могут быть восстановлены:</value></data>
+   
    
    
    

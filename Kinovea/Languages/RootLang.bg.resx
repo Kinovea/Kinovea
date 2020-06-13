@@ -96,6 +96,7 @@
    <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Режим на заснемане и забавяне</value></data>
    
    <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Дисплей: запис от екрана</value></data>
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Година</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Месец</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Ден</value></data>

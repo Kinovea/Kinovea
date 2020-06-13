@@ -96,6 +96,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Anno</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mese</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Giorno</value></data>

@@ -118,8 +118,9 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Konfigurovat nákres</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Vždy viditelné</value></data>
-   <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Konfigurovat opacitu</value></data>
-   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacita: {0:0}%</value></data>
+   
+   
+   
    
    
    
@@ -128,7 +129,6 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Reset</value></data>
-   
    
    
    
@@ -223,6 +223,8 @@
    
    
    
+   
+   
    <data name="DrawingName_Grid" xml:space="preserve"><value>Mřížka</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektivní mřížka</value></data>
    
@@ -264,6 +266,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Velikost fontu:</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Šířka:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacita</value></data>
+   
    <data name="Generic_Options" xml:space="preserve"><value>Možnosti</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Velikost:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Uložit</value></data>
@@ -321,6 +324,11 @@
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Odemčít hranice pracovní oblasti</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Stopky - start</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stopky - konec</value></data>
+   
+   
+   
+   
+   
    <data name="mnuCloseScreen" xml:space="preserve"><value>Zavřít tuto obrazovku</value></data>
    
    
@@ -367,6 +375,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Přehrát I Pozastavit</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Restart trasování</value></data>
    
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Otevřít video soubor</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Všechny soubory (*.*)|*.*</value></data>
    
@@ -384,6 +393,9 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Zobrazit/Skrýt ovládací prvky</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Trasování</value></data>
+   
+   
+   
    
    
    
@@ -455,6 +467,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Celkový přehled</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Zpětné přehrávání…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast….</value></data>
+   
    
    
    

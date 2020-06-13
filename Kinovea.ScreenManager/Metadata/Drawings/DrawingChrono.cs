@@ -81,15 +81,15 @@ namespace Kinovea.ScreenManager
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
 
-                mnuVisibility.Text = "Visibility";
-                mnuHideBefore.Text = "Hide before this point";
-                mnuShowBefore.Text = "Show before this point";
-                mnuHideAfter.Text = "Hide after this point";
-                mnuShowAfter.Text = "Show after this point";
+                mnuVisibility.Text = ScreenManagerLang.Generic_Visibility;
+                mnuHideBefore.Text = ScreenManagerLang.mnuHideBefore;
+                mnuShowBefore.Text = ScreenManagerLang.mnuShowBefore;
+                mnuHideAfter.Text = ScreenManagerLang.mnuHideAfter;
+                mnuShowAfter.Text = ScreenManagerLang.mnuShowAfter;
 
                 if (styleHelper.Clock)
                 {
-                    mnuMarkOrigin.Text = "Mark current time as time origin for this clock";
+                    mnuMarkOrigin.Text = ScreenManagerLang.mnuMarkTimeAsOriginClock;
                     contextMenu.AddRange(new ToolStripItem[] { mnuVisibility, mnuMarkOrigin });
                 }
                 else
@@ -99,7 +99,7 @@ namespace Kinovea.ScreenManager
                     contextMenu.AddRange(new ToolStripItem[] { mnuVisibility, mnuStart, mnuStop });
                 }
 
-                mnuShowLabel.Text = "Show label";
+                mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
                 mnuShowLabel.Checked = showLabel;
                 contextMenu.Add(mnuShowLabel);
 

@@ -96,6 +96,7 @@
    <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Mode de registre i retard</value></data>
    <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Càmera: Enregistra fotogrames en temps real.</value></data>
    <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Retard: Enregistra fotogrames retardats</value></data>
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Any</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mes</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dia</value></data>

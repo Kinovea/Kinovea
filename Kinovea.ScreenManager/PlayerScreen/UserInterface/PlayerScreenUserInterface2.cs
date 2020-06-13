@@ -2624,11 +2624,11 @@ namespace Kinovea.ScreenManager
             // 2. Drawings context menu.
             mnuConfigureDrawing.Text = ScreenManagerLang.Generic_ConfigurationElipsis;
             mnuSetStyleAsDefault.Text = ScreenManagerLang.mnuSetStyleAsDefault;
-            mnuVisibility.Text = ScreenManagerLang.Generic_Opacity;
+            mnuVisibility.Text = ScreenManagerLang.Generic_Visibility;
             mnuVisibilityAlways.Text = ScreenManagerLang.dlgConfigureFading_chkAlwaysVisible;
-            mnuVisibilityDefault.Text = "Default fading";
-            mnuVisibilityCustom.Text = "Custom fading";
-            mnuVisibilityConfigure.Text = "Configure custom fading";
+            mnuVisibilityDefault.Text = ScreenManagerLang.mnuVisibilityDefault;
+            mnuVisibilityCustom.Text = ScreenManagerLang.mnuVisibilityCustom;
+            mnuVisibilityConfigure.Text = ScreenManagerLang.mnuVisibilityConfigure;
             mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
             mnuCutDrawing.Text = ScreenManagerLang.Generic_Cut;
             mnuCutDrawing.ShortcutKeys = HotkeySettingsManager.GetMenuShortcut("PlayerScreen", (int)PlayerScreenCommands.CutDrawing);

@@ -34,10 +34,10 @@ namespace Kinovea.ScreenManager
 
         private void Populate()
         {
-            this.Text = "   " + ScreenManagerLang.dlgConfigureOpacity_Title;
-            lblMax.Text = "Maximum opacity (%):";
-            lblOpaque.Text = "Opaque duration (frames):";
-            lblFading.Text = "Fading duration (frames):";
+            this.Text = "   " + ScreenManagerLang.mnuVisibilityConfigure;
+            lblMax.Text = ScreenManagerLang.dlgConfigureOpacity_lblMax;
+            lblOpaque.Text = ScreenManagerLang.dlgConfigureOpacity_lblOpaque;
+            lblFading.Text = ScreenManagerLang.dlgConfigureOpacity_lblFading;
 
             try
             {

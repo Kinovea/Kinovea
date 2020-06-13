@@ -96,6 +96,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Ano</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mês</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dia</value></data>
@@ -134,7 +135,7 @@
    
    
    
-   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Sempre desentrelaçar ao abrir um novo vídeo.</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Sempre desentrelaçar ao abrir um novo vídeo</value></data>
    
    
    <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Forçar formato 16:9</value></data>

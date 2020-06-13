@@ -457,6 +457,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scheduled: records delayed frames at stop..
+        /// </summary>
+        public static string dlgPreferences_Capture_RecordingMode_Scheduled {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_RecordingMode_Scheduled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Right.
         /// </summary>
         public static string dlgPreferences_Capture_Right {
@@ -664,7 +673,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Always deinterlace when opening a new video..
+        ///   Looks up a localized string similar to Always deinterlace when opening a new video.
         /// </summary>
         public static string dlgPreferences_Player_DeinterlaceByDefault {
             get {
@@ -772,7 +781,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Link speed sliders when comparing videos..
+        ///   Looks up a localized string similar to Link speed sliders when comparing videos.
         /// </summary>
         public static string dlgPreferences_Player_SyncLockSpeeds {
             get {

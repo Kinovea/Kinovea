@@ -197,7 +197,7 @@ namespace Kinovea.ScreenManager
             grpIdentification.Text = ScreenManagerLang.dlgConfigureDrawing_Name;
 
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
-            lblView.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelVisibility;
+            lblView.Text = ScreenManagerLang.Generic_Visibility + " :";
 
             lblMarker.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelMarker;
             lblExtra.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelExtraData;

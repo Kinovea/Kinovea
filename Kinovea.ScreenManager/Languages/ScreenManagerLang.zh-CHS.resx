@@ -127,8 +127,8 @@
    
    
    
-   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>重设</value></data>
    
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>重设</value></data>
    
    
    
@@ -223,6 +223,8 @@
    
    
    
+   
+   
    <data name="DrawingName_Grid" xml:space="preserve"><value>网格</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>透视网格</value></data>
    
@@ -262,6 +264,7 @@
    
    
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>字体大小</value></data>
+   
    
    
    <data name="Generic_Options" xml:space="preserve"><value>选项</value></data>
@@ -321,6 +324,11 @@
    <data name="LockSelectionUnlock" xml:space="preserve"><value>解锁工作区界限</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>开始数秒</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>停止数秒</value></data>
+   
+   
+   
+   
+   
    <data name="mnuCloseScreen" xml:space="preserve"><value>关闭这个屏幕</value></data>
    
    
@@ -367,6 +375,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>播放|暂停</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>重启路径</value></data>
    
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>打开视频文件</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>所有文件 (*.*)|*.*</value></data>
    
@@ -384,6 +393,9 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>显示/隐藏 常见控制</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>跟踪路径</value></data>
+   
+   
+   
    
    
    
@@ -455,6 +467,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>马赛克...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>反向...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>自动对比度...</value></data>
+   
    
    
    

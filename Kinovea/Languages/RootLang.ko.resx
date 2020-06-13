@@ -96,6 +96,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>연도</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>월</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>일</value></data>
@@ -134,7 +135,7 @@
    
    
    
-   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>새 비디오를 열때 항상 디인터레이싱을 가능하게 함.</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>새 비디오를 열때 항상 디인터레이싱을 가능하게 함</value></data>
    
    
    <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>16:9로 만듬</value></data>

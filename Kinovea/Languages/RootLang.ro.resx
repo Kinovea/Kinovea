@@ -96,6 +96,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Anul</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Luna</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Ziua</value></data>

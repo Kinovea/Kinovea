@@ -119,9 +119,9 @@ namespace Kinovea.Root
             tabPersistence.Text = ScreenManagerLang.Generic_Opacity;
             lblDefaultOpacity.Text = RootLang.dlgPreferences_Drawings_lblDefaultOpacity;
             chkAlwaysVisible.Text = RootLang.dlgPreferences_Drawings_rbAlwaysVisible;
-            lblMax.Text = "Maximum opacity (%):";
-            lblOpaque.Text = "Opaque duration (frames):";
-            lblFading.Text = "Fading duration (frames):";
+            lblMax.Text = ScreenManagerLang.dlgConfigureOpacity_lblMax;
+            lblOpaque.Text = ScreenManagerLang.dlgConfigureOpacity_lblOpaque;
+            lblFading.Text = ScreenManagerLang.dlgConfigureOpacity_lblFading;
 
             chkAlwaysVisible.Checked = defaultFading.AlwaysVisible;
             nudMax.Value = (decimal)(defaultFading.MasterFactor * 100);

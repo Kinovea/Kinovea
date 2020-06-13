@@ -96,6 +96,7 @@
    <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>حالت ضبط و تاخیر</value></data>
    
    <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>نمایش: آنچه که در نمایشکر نشان داده می‌شود به صورت جاری ضبط می‌شود</value></data>
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>سال</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>ماه</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>روز</value></data>

@@ -118,8 +118,9 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Zeichnung konfigurieren</value></data>
    
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>immer sichtbar</value></data>
-   <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Deckkraft</value></data>
-   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Deckkraft: {0:0}%</value></data>
+   
+   
+   
    
    
    
@@ -128,7 +129,6 @@
    
    
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Zurücksetzen</value></data>
-   
    
    
    
@@ -223,6 +223,8 @@
    
    
    
+   
+   
    <data name="DrawingName_Grid" xml:space="preserve"><value>Raster</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektivenraster</value></data>
    
@@ -264,6 +266,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Schriftgröße:</value></data>
    
    <data name="Generic_Opacity" xml:space="preserve"><value>Deckkraft</value></data>
+   
    <data name="Generic_Options" xml:space="preserve"><value>Optionen</value></data>
    
    <data name="Generic_Save" xml:space="preserve"><value>Speichern</value></data>
@@ -321,6 +324,11 @@
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Arbeitsbereichsgrenzen verändern</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Starte Stoppuhr</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stoppuhr anhalten</value></data>
+   
+   
+   
+   
+   
    <data name="mnuCloseScreen" xml:space="preserve"><value>Fenster schließen</value></data>
    
    
@@ -367,6 +375,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Abspielen | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Trajektorien-Editor neu starten</value></data>
    
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Videodatei öffnen</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle Dateien (*.*)|*.*</value></data>
    
@@ -384,6 +393,9 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Zeige/Verstecke Standardauswahlwerkzeuge</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Verfolge Trajektorien</value></data>
+   
+   
+   
    
    
    
@@ -455,6 +467,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Übersicht</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invers</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Autokontrast...</value></data>
+   
    
    
    

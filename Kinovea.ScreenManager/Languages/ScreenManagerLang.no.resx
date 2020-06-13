@@ -127,8 +127,8 @@
    
    
    
-   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Tilbakestill</value></data>
    
+   <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Tilbakestill</value></data>
    
    
    
@@ -223,6 +223,8 @@
    
    
    
+   
+   
    <data name="DrawingName_Grid" xml:space="preserve"><value>Rutenett</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Perspektiv Rutenett</value></data>
    
@@ -262,6 +264,7 @@
    
    
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Skriftstørrelse:</value></data>
+   
    
    
    <data name="Generic_Options" xml:space="preserve"><value>Alternativer</value></data>
@@ -321,6 +324,11 @@
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Åpne arbeidssonegrensene</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Start stoppeklokke</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Stop stoppeklokke</value></data>
+   
+   
+   
+   
+   
    <data name="mnuCloseScreen" xml:space="preserve"><value>Lukk vindu</value></data>
    
    
@@ -367,6 +375,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Spill av | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Start bane på nytt Editor</value></data>
    
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Åpne videofil</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle filer (*.*)|*.*</value></data>
    
@@ -384,6 +393,9 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Vis/Skjul Standardverktøy</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Følg banen</value></data>
+   
+   
+   
    
    
    
@@ -455,6 +467,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
+   
    
    
    

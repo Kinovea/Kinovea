@@ -118,8 +118,9 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurar el dibuix</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Nom</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Sempre visible</value></data>
-   <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configurar l'opacitat</value></data>
-   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacitat : {0:0}%</value></data>
+   
+   
+   
    <data name="dlgTimebase_Title" xml:space="preserve"><value>Configurar la velocitat del vídeo</value></data>
    <data name="dlgTimebase_GroupCapture" xml:space="preserve"><value>Càmera d'alta velocitat</value></data>
    <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Freqüència de captura</value></data>
@@ -129,7 +130,6 @@
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Aquesta opció estableix els fotogrames per segon usats pel Kinovea per reproduir el vídeo. Useu-la quan el vídeo contingui el paràmetre de fotogrames per segon erroni o quan el Kinovea no pugui llegir-lo.</value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Restablir</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurar l'eina de trajectòria</value></data>
-   <data name="dlgConfigureTrajectory_LabelVisibility" xml:space="preserve"><value>Visibilitat:</value></data>
    <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>Complert</value></data>
    <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve"><value>Un segon</value></data>
    <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve"><value>Només etiquetes</value></data>
@@ -202,6 +202,8 @@
    <data name="dlgCameraCalibration_Distortion" xml:space="preserve"><value>Distorsió</value></data>
    <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve"><value>Carregar un perfil de calibratge</value></data>
    <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Desar el perfil de calibratge</value></data>
+   
+   
    <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Fletxa – Puntejada</value></data>
    <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Fletxa – Ziga-zaga</value></data>
    <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Fletxa – Corba</value></data>
@@ -264,6 +266,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Mida de la font :</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Amplada:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacitat</value></data>
+   <data name="Generic_Visibility" xml:space="preserve"><value>Visibilitat</value></data>
    <data name="Generic_Options" xml:space="preserve"><value>Opcions</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Mida :</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Desar</value></data>
@@ -321,6 +324,11 @@
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Desbloqueja els límits de la zona de treball</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Inicia el Cronòmetre</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Atura el Cronòmetre</value></data>
+   
+   
+   
+   
+   
    <data name="mnuCloseScreen" xml:space="preserve"><value>Tanca aquesta finestra</value></data>
    <data name="mnuCopyToClipboard" xml:space="preserve"><value>Copiar al porta-retalls</value></data>
    <data name="mnuCopyImageToClipboard" xml:space="preserve"><value>Copiar l'imatge al porta-retalls</value></data>
@@ -367,6 +375,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Reprodueix | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reprendre l'edició de la trajectòria</value></data>
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Marcar el temps actual com a origen de temps</value></data>
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Obrir un arxiu de video</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tots els fitxers (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Obrir observador de carpeta de reproducció</value></data>
@@ -396,6 +405,9 @@
    <data name="mnuCopyDrawing" xml:space="preserve"><value>copiar dibuix</value></data>
    <data name="mnuPasteDrawing" xml:space="preserve"><value>Enganxar dibuix</value></data>
    <data name="mnuSetStyleAsDefault" xml:space="preserve"><value>Estableix com a estil per defecte</value></data>
+   
+   
+   
    <data name="mnuPasteImage" xml:space="preserve"><value>Enganxar la imatge de del portaretalls</value></data>
    <data name="mnuShowArrow" xml:space="preserve"><value>Mostrar fletxa</value></data>
    <data name="mnuShowCircleCenter" xml:space="preserve"><value>Mostrar el centre del cercle</value></data>
@@ -460,6 +472,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Arxiu</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Data</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Els següents projectes no han estat desats però poden ser recuperats:</value></data>
+   
    
    
    

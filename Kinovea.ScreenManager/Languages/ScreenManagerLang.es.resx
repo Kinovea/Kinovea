@@ -118,8 +118,9 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurar el dibujo</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Nombre</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Siempre Visible</value></data>
-   <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configurar la opacidad</value></data>
-   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacidad : {0:0}%</value></data>
+   
+   
+   
    <data name="dlgTimebase_Title" xml:space="preserve"><value>Configuración de la velocidad de video</value></data>
    <data name="dlgTimebase_GroupCapture" xml:space="preserve"><value>Cámaras de alta velocidad</value></data>
    <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Framerate de captura</value></data>
@@ -129,7 +130,6 @@
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Esta opción define la tasa de fotogramas usada por Kinovea para reproducir el video. Úsela cuando el video contenga una tasa incorrecta o Kinovea no pueda leerla.</value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Restaurar</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurar herramienta de trayectoria</value></data>
-   <data name="dlgConfigureTrajectory_LabelVisibility" xml:space="preserve"><value>Visibilidad:</value></data>
    <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>Completo</value></data>
    <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve"><value>Un segundo</value></data>
    <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve"><value>Únicamente etiquetas</value></data>
@@ -202,6 +202,8 @@
    <data name="dlgCameraCalibration_Distortion" xml:space="preserve"><value>Distorsión</value></data>
    <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve"><value>Cargar perfil de calibración de la cámara</value></data>
    <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Guardar perfil de calibración de la cámara</value></data>
+   
+   
    <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Flecha – Discontínua</value></data>
    <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Flecha – Ondulada</value></data>
    <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Flecha – Curva</value></data>
@@ -264,6 +266,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Tamaño de la fuente:</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Ancho:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacidad</value></data>
+   <data name="Generic_Visibility" xml:space="preserve"><value>Visibilidad</value></data>
    <data name="Generic_Options" xml:space="preserve"><value>Opciones</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Tamaño:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Guardar</value></data>
@@ -321,6 +324,11 @@
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Desbloquear la zona de trabajo </value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Iniciar el cronómetro</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Detener el cronómetro</value></data>
+   
+   
+   
+   
+   
    <data name="mnuCloseScreen" xml:space="preserve"><value>Cerrar la pantalla</value></data>
    <data name="mnuCopyToClipboard" xml:space="preserve"><value>Copiar al portapapeles</value></data>
    <data name="mnuCopyImageToClipboard" xml:space="preserve"><value>Copiar imagen al portapapeles</value></data>
@@ -367,6 +375,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Lectura | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reanudar la edición de la Trayectoria</value></data>
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Marcar tiempo actual como origen de tiempo</value></data>
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Abrir un video</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos los archivos (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Abrir observador de carpeta de reproducción</value></data>
@@ -396,6 +405,9 @@
    <data name="mnuCopyDrawing" xml:space="preserve"><value>Copiar dibujo</value></data>
    <data name="mnuPasteDrawing" xml:space="preserve"><value>Pegar dibujo</value></data>
    <data name="mnuSetStyleAsDefault" xml:space="preserve"><value>Establecer el estilo por defecto</value></data>
+   
+   
+   
    <data name="mnuPasteImage" xml:space="preserve"><value>Pegar imagen del portapapeles</value></data>
    <data name="mnuShowArrow" xml:space="preserve"><value>Mostar flecha</value></data>
    <data name="mnuShowCircleCenter" xml:space="preserve"><value>Mostrar el centro del círculo</value></data>
@@ -460,6 +472,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Archivo</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Fecha de creación</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Los siguientes proyectos no se guardaron correctamente pero pueden recuperarse:</value></data>
+   
    
    
    

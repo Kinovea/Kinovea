@@ -118,8 +118,9 @@
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurer le Dessin</value></data>
    <data name="dlgConfigureDrawing_Name" xml:space="preserve"><value>Nom</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Toujours Visible</value></data>
-   <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configurer l'opacité</value></data>
-   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacité : {0:0}%</value></data>
+   <data name="dlgConfigureOpacity_lblMax" xml:space="preserve"><value>Opacité maximale (%) :</value></data>
+   <data name="dlgConfigureOpacity_lblOpaque" xml:space="preserve"><value>Durée opaque (images) :</value></data>
+   <data name="dlgConfigureOpacity_lblFading" xml:space="preserve"><value>Durée du fondu (images) :</value></data>
    <data name="dlgTimebase_Title" xml:space="preserve"><value>Configurer le timing de la vidéo</value></data>
    <data name="dlgTimebase_GroupCapture" xml:space="preserve"><value>Camera haute vitesse</value></data>
    <data name="dlgTimebase_lblCapture" xml:space="preserve"><value>Fréquence de capture :</value></data>
@@ -129,7 +130,6 @@
    <data name="dlgTimebase_InfoUser" xml:space="preserve"><value>Cette option définit la fréquence de référence utilisée par Kinovea pour jouer la vidéo. À utiliser si la vidéo contient une mauvaise fréquence d'images ou si Kinovea ne peut pas la relire correctement.</value></data>
    <data name="dlgTimebase_ToolTip_Reset" xml:space="preserve"><value>Remettre à zéro</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configuration de l'outil trajectoire</value></data>
-   <data name="dlgConfigureTrajectory_LabelVisibility" xml:space="preserve"><value>Visibilité :</value></data>
    <data name="dlgConfigureTrajectory_VisibilityComplete" xml:space="preserve"><value>Complète</value></data>
    <data name="dlgConfigureTrajectory_VisibilityOneSecond" xml:space="preserve"><value>Une seconde</value></data>
    <data name="dlgConfigureTrajectory_VisibilityLabelOnly" xml:space="preserve"><value>Label uniquement</value></data>
@@ -202,6 +202,8 @@
    <data name="dlgCameraCalibration_Distortion" xml:space="preserve"><value>Distorsion</value></data>
    <data name="dlgCameraCalibration_OpenDialogTitle" xml:space="preserve"><value>Charger un profil de calibration</value></data>
    <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Sauver le profil de calibration</value></data>
+   <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve"><value>Largeur capteur (mm) :</value></data>
+   <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve"><value>Focale (mm) :</value></data>
    <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Flèche – Points tillés</value></data>
    <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Flèche – Zigzag</value></data>
    <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Flèche – Courbe</value></data>
@@ -264,6 +266,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Taille de la police :</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Épaisseur :</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacité</value></data>
+   <data name="Generic_Visibility" xml:space="preserve"><value>Visibilité</value></data>
    <data name="Generic_Options" xml:space="preserve"><value>Options</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Taille :</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Enregistrer</value></data>
@@ -321,6 +324,11 @@
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Dévérouiller les Bornes de la Zone de Travail</value></data>
    <data name="mnuChronoStart" xml:space="preserve"><value>Démarrer le Chronomètre</value></data>
    <data name="mnuChronoStop" xml:space="preserve"><value>Arrêter le Chronomètre</value></data>
+   <data name="mnuHideBefore" xml:space="preserve"><value>Cacher avant ce point</value></data>
+   <data name="mnuShowBefore" xml:space="preserve"><value>Montrer avant ce point</value></data>
+   <data name="mnuHideAfter" xml:space="preserve"><value>Cacher après ce point</value></data>
+   <data name="mnuShowAfter" xml:space="preserve"><value>Montrer après ce point</value></data>
+   <data name="mnuShowLabel" xml:space="preserve"><value>Montrer le label</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Fermer cet Écran</value></data>
    <data name="mnuCopyToClipboard" xml:space="preserve"><value>Copier vers le Presse-Papier</value></data>
    <data name="mnuCopyImageToClipboard" xml:space="preserve"><value>Copier l'image vers le Presse-Papier</value></data>
@@ -367,6 +375,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Lire | Pauser</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reprendre l'édition de la Trajectoire</value></data>
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Marquer le temps courant comme origine</value></data>
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Ouvrir une vidéo</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tous les fichiers (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Ouvrir un observateur de dossier de relecture…</value></data>
@@ -377,12 +386,12 @@
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afficher la mesure</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Terminer l'édition de la Trajectoire</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Référence d'observation</value></data>
-   <data name="mnuSwapScreens" xml:space="preserve"><value>Inverser les Emplacements des Vidéos</value></data>
+   <data name="mnuSwapScreens" xml:space="preserve"><value>Inverser l’emplacements des vidéos</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Supprimer</value></data>
    <data name="mnuThumbnailForget" xml:space="preserve"><value>Oublier les paramètres personalisés</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Renommer</value></data>
    <data name="mnuThumbnailLocate" xml:space="preserve"><value>Trouver le fichier dans l'Explorateur Windows</value></data>
-   <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Montrer/Cacher les Contrôles Communs</value></data>
+   <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Montrer ou cacher les contrôles communs</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Suivre la Trajectoire</value></data>
    <data name="mnuCoordinateSystem" xml:space="preserve"><value>Repère de coordonnées</value></data>
    <data name="mnuCoordinateSystemShowAxis" xml:space="preserve"><value>Axes</value></data>
@@ -395,7 +404,10 @@
    <data name="mnuCutDrawing" xml:space="preserve"><value>Couper le dessin</value></data>
    <data name="mnuCopyDrawing" xml:space="preserve"><value>Copier le dessin</value></data>
    <data name="mnuPasteDrawing" xml:space="preserve"><value>Coller le dessin</value></data>
-   <data name="mnuSetStyleAsDefault" xml:space="preserve"><value>Utiliser le style comme style par défaut</value></data>
+   <data name="mnuSetStyleAsDefault" xml:space="preserve"><value>Utiliser le style en tant que style par défaut</value></data>
+   <data name="mnuVisibilityDefault" xml:space="preserve"><value>Fondu par défaut</value></data>
+   <data name="mnuVisibilityCustom" xml:space="preserve"><value>Fondu personnalisé</value></data>
+   <data name="mnuVisibilityConfigure" xml:space="preserve"><value>Configurer le fondu personnalisé</value></data>
    <data name="mnuPasteImage" xml:space="preserve"><value>Coller l’image depuis le presse-papier</value></data>
    <data name="mnuShowArrow" xml:space="preserve"><value>Afficher la flèche</value></data>
    <data name="mnuShowCircleCenter" xml:space="preserve"><value>Afficher le centre du cercle</value></data>
@@ -460,6 +472,7 @@
    <data name="FormCrashRecovery_File" xml:space="preserve"><value>Fichier</value></data>
    <data name="FormCrashRecovery_Date" xml:space="preserve"><value>Date</value></data>
    <data name="FormCrashRecovery_Info" xml:space="preserve"><value>Les projets suivants n'ont pas été enregistré correctement mais peuvent être récupérés :</value></data>
+   
    
    
    

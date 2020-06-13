@@ -96,6 +96,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Rok</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Měsíc</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Den</value></data>
@@ -134,7 +135,7 @@
    
    
    
-   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Při otevření nového souboru vždy použít deinterlace.</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Při otevření nového souboru vždy použít deinterlace</value></data>
    
    
    <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Formát 16:9</value></data>

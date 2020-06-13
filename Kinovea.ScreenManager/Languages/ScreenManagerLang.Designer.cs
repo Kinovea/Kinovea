@@ -475,6 +475,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Focal length (mm):.
+        /// </summary>
+        public static string dlgCameraCalibration_lblFocalLength {
+            get {
+                return ResourceManager.GetString("dlgCameraCalibration_lblFocalLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sensor width (mm):.
+        /// </summary>
+        public static string dlgCameraCalibration_lblSensorWidth {
+            get {
+                return ResourceManager.GetString("dlgCameraCalibration_lblSensorWidth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Load camera calibration profile.
         /// </summary>
         public static string dlgCameraCalibration_OpenDialogTitle {
@@ -583,20 +601,29 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Opacity: {0:0}%.
+        ///   Looks up a localized string similar to Fading duration (frames):.
         /// </summary>
-        public static string dlgConfigureOpacity_lblValue {
+        public static string dlgConfigureOpacity_lblFading {
             get {
-                return ResourceManager.GetString("dlgConfigureOpacity_lblValue", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureOpacity_lblFading", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure Opacity.
+        ///   Looks up a localized string similar to Maximum opacity (%):.
         /// </summary>
-        public static string dlgConfigureOpacity_Title {
+        public static string dlgConfigureOpacity_lblMax {
             get {
-                return ResourceManager.GetString("dlgConfigureOpacity_Title", resourceCulture);
+                return ResourceManager.GetString("dlgConfigureOpacity_lblMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opaque duration (frames):.
+        /// </summary>
+        public static string dlgConfigureOpacity_lblOpaque {
+            get {
+                return ResourceManager.GetString("dlgConfigureOpacity_lblOpaque", resourceCulture);
             }
         }
         
@@ -786,15 +813,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string dlgConfigureTrajectory_LabelMarker {
             get {
                 return ResourceManager.GetString("dlgConfigureTrajectory_LabelMarker", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Visibility:.
-        /// </summary>
-        public static string dlgConfigureTrajectory_LabelVisibility {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_LabelVisibility", resourceCulture);
             }
         }
         
@@ -2113,6 +2131,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Visibility.
+        /// </summary>
+        public static string Generic_Visibility {
+            get {
+                return ResourceManager.GetString("Generic_Visibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key images have been modified.\nDo you want to save key images data before closing ?.
         /// </summary>
         public static string InfoBox_MetadataIsDirty_Text {
@@ -2662,6 +2689,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide after this point.
+        /// </summary>
+        public static string mnuHideAfter {
+            get {
+                return ResourceManager.GetString("mnuHideAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide before this point.
+        /// </summary>
+        public static string mnuHideBefore {
+            get {
+                return ResourceManager.GetString("mnuHideBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File Explorer.
         /// </summary>
         public static string mnuHome {
@@ -2721,6 +2766,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuMarkTimeAsOrigin {
             get {
                 return ResourceManager.GetString("mnuMarkTimeAsOrigin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark current time as time origin for this clock.
+        /// </summary>
+        public static string mnuMarkTimeAsOriginClock {
+            get {
+                return ResourceManager.GetString("mnuMarkTimeAsOriginClock", resourceCulture);
             }
         }
         
@@ -2905,6 +2959,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show after this point.
+        /// </summary>
+        public static string mnuShowAfter {
+            get {
+                return ResourceManager.GetString("mnuShowAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show arrow.
         /// </summary>
         public static string mnuShowArrow {
@@ -2914,11 +2977,29 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show before this point.
+        /// </summary>
+        public static string mnuShowBefore {
+            get {
+                return ResourceManager.GetString("mnuShowBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show circle center.
         /// </summary>
         public static string mnuShowCircleCenter {
             get {
                 return ResourceManager.GetString("mnuShowCircleCenter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show label.
+        /// </summary>
+        public static string mnuShowLabel {
+            get {
+                return ResourceManager.GetString("mnuShowLabel", resourceCulture);
             }
         }
         
@@ -3063,6 +3144,33 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuTwoPlayers {
             get {
                 return ResourceManager.GetString("mnuTwoPlayers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure custom fading.
+        /// </summary>
+        public static string mnuVisibilityConfigure {
+            get {
+                return ResourceManager.GetString("mnuVisibilityConfigure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom fading.
+        /// </summary>
+        public static string mnuVisibilityCustom {
+            get {
+                return ResourceManager.GetString("mnuVisibilityCustom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default fading.
+        /// </summary>
+        public static string mnuVisibilityDefault {
+            get {
+                return ResourceManager.GetString("mnuVisibilityDefault", resourceCulture);
             }
         }
         

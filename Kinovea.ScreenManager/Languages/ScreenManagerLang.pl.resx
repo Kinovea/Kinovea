@@ -223,6 +223,8 @@
    
    
    
+   
+   
    <data name="DrawingName_Grid" xml:space="preserve"><value>Siatka</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Widok 3D</value></data>
    
@@ -259,6 +261,7 @@
    
    <data name="Generic_Configuration" xml:space="preserve"><value>Konfiguracja</value></data>
    <data name="Generic_ConfigurationElipsis" xml:space="preserve"><value>Konfiguracja…</value></data>
+   
    
    
    
@@ -321,6 +324,11 @@
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Odblokuj granice obszaru roboczego</value></data>
    
    
+   
+   
+   
+   
+   
    <data name="mnuCloseScreen" xml:space="preserve"><value>Zamknij ten ekran</value></data>
    
    
@@ -367,6 +375,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Odtwarzaj | Pauza</value></data>
    
    
+   
    <data name="mnuOpenVideo" xml:space="preserve"><value>Otwórz plik wideo</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Wszystkie pliki (*.*)|*.*</value></data>
    
@@ -383,6 +392,9 @@
    
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Pokaż/Ukryj wspólne sterowanie</value></data>
+   
+   
+   
    
    
    
@@ -455,6 +467,7 @@
    
    
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Kontrast...</value></data>
+   
    
    
    

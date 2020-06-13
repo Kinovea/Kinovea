@@ -209,7 +209,7 @@ namespace Kinovea.Root
             grpRecordingMode.Text = RootLang.dlgPreferences_Capture_RecordingMode;
             rbRecordingCamera.Text = RootLang.dlgPreferences_Capture_RecordingMode_Camera;
             rbRecordingDelayed.Text = RootLang.dlgPreferences_Capture_RecordingMode_Display;
-            rbRecordingScheduled.Text = "Scheduled: records delayed frames at stop."; 
+            rbRecordingScheduled.Text = RootLang.dlgPreferences_Capture_RecordingMode_Scheduled; 
             chkUncompressedVideo.Text = RootLang.dlgPreferences_Capture_chkUncompressedVideo;
 
             rbRecordingCamera.Checked = recordingMode == CaptureRecordingMode.Camera;

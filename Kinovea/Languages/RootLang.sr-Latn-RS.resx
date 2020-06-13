@@ -96,6 +96,7 @@
    
    
    
+   
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Godina</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mesec</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Dan</value></data>
@@ -134,9 +135,9 @@
    
    
    
-   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Uvek raspleti kada otvaraš novi video.</value></data>
+   <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Uvek raspleti kada otvaraš novi video</value></data>
    
-   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Poveži brze klizače kada upoređuješ video zapise.</value></data>
+   <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Poveži brze klizače kada upoređuješ video zapise</value></data>
    <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Sila 16:9</value></data>
    <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Sila 14:3</value></data>
    <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatsko otkrivanje</value></data>
