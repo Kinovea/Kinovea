@@ -400,7 +400,7 @@
    <data name="mnuCutDrawing" xml:space="preserve"><value>Couper le dessin</value></data>
    <data name="mnuCopyDrawing" xml:space="preserve"><value>Copier le dessin</value></data>
    <data name="mnuPasteDrawing" xml:space="preserve"><value>Coller le dessin</value></data>
-   <data name="mnuSetStyleAsDefault" xml:space="preserve"><value>Utiliser le style en tant que style par défaut</value></data>
+   <data name="mnuSetStyleAsDefault" xml:space="preserve"><value>Utiliser en tant que style par défaut</value></data>
    <data name="mnuVisibilityDefault" xml:space="preserve"><value>Fondu par défaut</value></data>
    <data name="mnuVisibilityCustom" xml:space="preserve"><value>Fondu personnalisé</value></data>
    <data name="mnuVisibilityConfigure" xml:space="preserve"><value>Configurer le fondu personnalisé</value></data>

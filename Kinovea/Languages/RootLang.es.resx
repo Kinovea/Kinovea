@@ -80,7 +80,7 @@
    <data name="dlgPreferences_tabPlayback" xml:space="preserve"><value>Lectura</value></data>
    <data name="dlgPreferences_tabKeyboard" xml:space="preserve"><value>Teclado</value></data>
    <data name="dlgPreferences_General_chkAllowMultipleInstances" xml:space="preserve"><value>Permitir múltiples instancias de Kinovea</value></data>
-   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Mostrar los fotogramas por segundo (fps):</value></data>
+   <data name="dlgPreferences_Capture_lblForcedFramerate" xml:space="preserve"><value>Tasa de imágenes para mostrar (fps):</value></data>
    <data name="dlgPreferences_Capture_Left" xml:space="preserve"><value>Izquierda</value></data>
    <data name="dlgPreferences_Capture_Right" xml:space="preserve"><value>Derecha</value></data>
    <data name="dlgPreferences_Capture_Root" xml:space="preserve"><value>Raíz:</value></data>
@@ -88,15 +88,15 @@
    <data name="dlgPreferences_Capture_File" xml:space="preserve"><value>Archivo:</value></data>
    <data name="dlgPreferences_Capture_ImageNaming" xml:space="preserve"><value>Nombrar imagen</value></data>
    <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Nombrar video</value></data>
-   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Formato de imagen :</value></data>
-   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Formato de video :</value></data>
-   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve"><value>Formato de video no comprimido</value></data>
-   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve"><value>Registrar video no comprimido</value></data>
-   <data name="dlgPreferences_Capture_Recording" xml:space="preserve"><value>Registrando</value></data>
-   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Modo de registro y retraso</value></data>
-   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Cámara: registra fotogramas en tiempo real</value></data>
-   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Retrasado: registra fotogramas atrasados</value></data>
-   
+   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Formato de imagen:</value></data>
+   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Formato de video:</value></data>
+   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve"><value>Formato de video no comprimido:</value></data>
+   <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve"><value>Guardar videos no comprimidos</value></data>
+   <data name="dlgPreferences_Capture_Recording" xml:space="preserve"><value>Escritura</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Modo de escritura y retraso</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Cámara: guarda fotogramas en tiempo real.</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Retrasado: guarda fotogramas atrasados.</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve"><value>Retroactivo: guarda fotogramas cuando la grabación se detiene.</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Año</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mes</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Día</value></data>
@@ -107,8 +107,8 @@
    <data name="dlgPreferences_Capture_PatternConfiguredFramerate" xml:space="preserve"><value>Fotogramas por segundo configurados</value></data>
    <data name="dlgPreferences_Capture_PatternReceivedFramerate" xml:space="preserve"><value>Fotogramas por segundo recibidos</value></data>
    <data name="dlgPreferences_Capture_PatternEscape" xml:space="preserve"><value>Secuencia de escape</value></data>
-   <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve"><value>Directorio de registro</value></data>
-   <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve"><value>Nombre de archivo registrado</value></data>
+   <data name="dlgPreferences_Capture_PatternCaptureDirectory" xml:space="preserve"><value>Carpeta de grabación</value></data>
+   <data name="dlgPreferences_Capture_PatternCaptureFilename" xml:space="preserve"><value>Nombre de archivo grabado</value></data>
    <data name="dlgPreferences_Capture_PatternDate" xml:space="preserve"><value>Fecha (AAAAMMDD)</value></data>
    <data name="dlgPreferences_Capture_PatternTime" xml:space="preserve"><value>Tiempo (HHMMSS)</value></data>
    <data name="dlgPreferences_Capture_PatternDateTime" xml:space="preserve"><value>Fecha y tiempo (AAAAMMDD-HHMMSS)</value></data>
@@ -120,13 +120,13 @@
    <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve"><value>Ignorar advertencia de se sobreescritura</value></data>
    <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve"><value>Cámaras de alta velocidad</value></data>
    <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve"><value>Umbral de sustitución de fotogramas por segundo (fps):</value></data>
-   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve"><value>Fotogramas por segundo de sustitución</value></data>
+   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve"><value>Fotogramas por segundo de sustitución:</value></data>
    <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve"><value>Automatización</value></data>
    <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve"><value>Activar disparador por audio</value></data>
    <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve"><value>Dispositivo de entrada:</value></data>
    <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve"><value>Umbral del disparador:</value></data>
-   <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Parar la grabación por duración (s)</value></data>
-   <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve"><value>Comando post grabación</value></data>
+   <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Parar la grabación por duración (s):</value></data>
+   <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve"><value>Comando post grabación:</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Mostrar los dibujos durante la reproducción del vídeo</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Activar el filtrado de coordenadas</value></data>
    <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve"><value>Activar el modo de depuración de las herramientas personalizadas</value></data>
@@ -136,13 +136,13 @@
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Siempre desentrelazar al abrir un vídeo nuevo</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Actualizar la imagen durante el movimiento del cursor</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Vincular los deslizadores de velocidad al comparar videos</value></data>
-   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Cambiar A Modo Análisis</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Cambiar a Modo Análisis</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Número de archivos en historial:</value></data>
    <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Las instancias tienen sus propias preferencias</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Formato de imagen por defecto</value></data>
    <data name="dlgPreferences_Player_lblLanguages" xml:space="preserve"><value>Idioma:</value></data>
    <data name="dlgPreferences_Player_lblLogicAnd" xml:space="preserve"><value>Y</value></data>
-   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>La Zona De Trabajo tomará menos de {0} MB de Memoria.</value></data>
+   <data name="dlgPreferences_Player_lblWorkingZoneMemory" xml:space="preserve"><value>La Zona De Trabajo tomará menos de {0} MB de memoria.</value></data>
    <data name="dlgPreferences_Player_lblWorkingZoneSeconds" xml:space="preserve"><value>La Zona de Trabajo es menor a {0} segundos.</value></data>
    <data name="dlgPreferences_Drawings_lblFading" xml:space="preserve"><value>Por defecto, los dibujos permanecerán visibles durante {0} imágenes alrededor la imagen clave</value></data>
    <data name="dlgPreferences_Player_tabUnits" xml:space="preserve"><value>Unidades</value></data>

@@ -106,7 +106,7 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Log:.
+        ///   Looks up a localized string similar to Change log:.
         /// </summary>
         public static string Updater_LblChangeLog {
             get {

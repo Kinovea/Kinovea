@@ -165,11 +165,11 @@
    <data name="dlgConfigureTrajectory_Tracking" xml:space="preserve"><value>Tracking</value></data>
    <data name="dlgConfigureTrajectory_Tracking_ObjectWindow" xml:space="preserve"><value>Object window:</value></data>
    <data name="dlgConfigureTrajectory_Tracking_SearchWindow" xml:space="preserve"><value>Search window:</value></data>
-   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Real size of the segment :</value></data>
+   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Real size of the segment:</value></data>
    <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Line calibration</value></data>
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Plane calibration</value></data>
-   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duration on each key image : {0} hundredth of seconds.</value></data>
-   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duration of each key image : {0:0.00} seconds.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duration on each key image: {0} hundredth of seconds.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duration of each key image: {0:0.00} seconds.</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Original video with a pause on each key image</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video slideshow with only the key images.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Type of video</value></data>
@@ -178,7 +178,7 @@
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comments...</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Load annotations</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Export the key images.</value></data>
-   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Total : {0:0} images.</value></data>
+   <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Total: {0:0} images.</value></data>
    <data name="dlgRafaleExport_ExportAll" xml:space="preserve"><value>Export all images.</value></data>
    <data name="dlgRafaleExport_ExportFrameDecimation" xml:space="preserve"><value>Export one image every {0} images.</value></data>
    <data name="dlgRafaleExport_ExportTimeDecimationSeconds" xml:space="preserve"><value>Export one image every {0:0.00}s.</value></data>
@@ -243,8 +243,8 @@
    <data name="FormCameraAlias_Alias" xml:space="preserve"><value>Alias:</value></data>
    <data name="FormCameraAlias_Icon" xml:space="preserve"><value>Icon:</value></data>
    <data name="FormIconPicker_Title" xml:space="preserve"><value>Icons</value></data>
-   <data name="FormFileSave_Infos" xml:space="preserve"><value>Progress :</value></data>
-   <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exported images :</value></data>
+   <data name="FormFileSave_Infos" xml:space="preserve"><value>Progress:</value></data>
+   <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exported images:</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Exporting images...</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Progress</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Appearance</value></data>

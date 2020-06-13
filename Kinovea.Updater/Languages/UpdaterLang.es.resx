@@ -74,12 +74,12 @@
    <data name="Updater_Behind" xml:space="preserve"><value>¡Una nueva versión está disponible!</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versión actual:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Descargar</value></data>
-   <data name="Updater_InternetError" xml:space="preserve"><value>Un error ocurrió mientras se buscaban actualizaciones. Porfavor asegúrese que una conexión a Internet está disponible.</value></data>
-   <data name="Updater_LblChangeLog" xml:space="preserve"><value>Lista de Cambios:</value></data>
-   <data name="Updater_NewVersion" xml:space="preserve"><value>Nueva Versiòn</value></data>
+   <data name="Updater_InternetError" xml:space="preserve"><value>Un error ocurrió mientras se buscaban actualizaciones. Por favor asegúrese que una conexión a Internet está disponible.</value></data>
+   <data name="Updater_LblChangeLog" xml:space="preserve"><value>Lista de cambios:</value></data>
+   <data name="Updater_NewVersion" xml:space="preserve"><value>Nueva versión</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Salir</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Buscando nuevas versiones</value></data>
-   <data name="Updater_UpToDate" xml:space="preserve"><value>¡Su versión està actualizada!</value></data>
+   <data name="Updater_UpToDate" xml:space="preserve"><value>¡Su versión ya está actualizada!</value></data>
    
    
    

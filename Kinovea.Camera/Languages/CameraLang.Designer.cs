@@ -97,7 +97,7 @@ namespace Kinovea.Camera.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bayer format conversion.
+        ///   Looks up a localized string similar to Bayer format conversion:.
         /// </summary>
         public static string FormConfiguration_Properties_BayerFormatConversion {
             get {

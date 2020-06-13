@@ -457,7 +457,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled: records delayed frames at stop..
+        ///   Looks up a localized string similar to Retroactive: records frames when the capture stops..
         /// </summary>
         public static string dlgPreferences_Capture_RecordingMode_Scheduled {
             get {

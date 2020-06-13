@@ -96,7 +96,7 @@
    <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Recording mode and delay</value></data>
    <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Camera: records real time frames.</value></data>
    <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Delayed: records delayed frames.</value></data>
-   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve"><value>Scheduled: records delayed frames at stop.</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve"><value>Retroactive: records frames when the capture stops.</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Year</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Month</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Day</value></data>

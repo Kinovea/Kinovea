@@ -96,7 +96,7 @@
    <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Mode d’enregistrement et délai</value></data>
    <data name="dlgPreferences_Capture_RecordingMode_Camera" xml:space="preserve"><value>Camera : enregistre les images en temps réel.</value></data>
    <data name="dlgPreferences_Capture_RecordingMode_Display" xml:space="preserve"><value>Délai : enregistre les images avec délai.</value></data>
-   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve"><value>Planifié : enregistre les images avec délai après l’arrêt.</value></data>
+   <data name="dlgPreferences_Capture_RecordingMode_Scheduled" xml:space="preserve"><value>Rétroactif : enregistre les images lorsque la capture s’arrête.</value></data>
    <data name="dlgPreferences_Capture_PatternYear" xml:space="preserve"><value>Année</value></data>
    <data name="dlgPreferences_Capture_PatternMonth" xml:space="preserve"><value>Mois</value></data>
    <data name="dlgPreferences_Capture_PatternDay" xml:space="preserve"><value>Jour</value></data>

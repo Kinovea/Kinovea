@@ -592,7 +592,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Real size of the segment :.
+        ///   Looks up a localized string similar to Real size of the segment:.
         /// </summary>
         public static string dlgConfigureMeasure_lblRealSize {
             get {
@@ -916,7 +916,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duration on each key image : {0} hundredth of seconds..
+        ///   Looks up a localized string similar to Duration on each key image: {0} hundredth of seconds..
         /// </summary>
         public static string dlgDiapoExport_LabelFrequencyHundredth {
             get {
@@ -925,7 +925,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duration of each key image : {0:0.00} seconds..
+        ///   Looks up a localized string similar to Duration of each key image: {0:0.00} seconds..
         /// </summary>
         public static string dlgDiapoExport_LabelFrequencySeconds {
             get {
@@ -1042,7 +1042,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total : {0:0} images..
+        ///   Looks up a localized string similar to Total: {0:0} images..
         /// </summary>
         public static string dlgRafaleExport_LabelTotalFrames {
             get {
@@ -1780,7 +1780,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Progress :.
+        ///   Looks up a localized string similar to Progress:.
         /// </summary>
         public static string FormFileSave_Infos {
             get {
@@ -1789,7 +1789,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exported images :.
+        ///   Looks up a localized string similar to Exported images:.
         /// </summary>
         public static string FormFramesExport_Infos {
             get {

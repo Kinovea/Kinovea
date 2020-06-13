@@ -73,7 +73,7 @@
    <data name="lblFolders" xml:space="preserve"><value>Carpetas</value></data>
    <data name="lblVideoFiles" xml:space="preserve"><value>Archivos de video</value></data>
    <data name="lblCaptureHistory" xml:space="preserve"><value>Historial de capturas</value></data>
-   
+   <data name="lblCameras" xml:space="preserve"><value>Cámaras</value></data>
    <data name="mnuAddShortcut" xml:space="preserve"><value>Añadir atajo</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Añadir a atajos</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Borrar atajo</value></data>

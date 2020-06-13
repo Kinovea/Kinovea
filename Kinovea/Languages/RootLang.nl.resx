@@ -90,7 +90,7 @@
    <data name="dlgPreferences_Capture_VideoNaming" xml:space="preserve"><value>Video naamgeving</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Afbeeldingstype :</value></data>
    <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videotype :</value></data>
-   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve"><value>Ongecomprimeerd video format</value></data>
+   <data name="dlgPreferences_Capture_lblUncompressedVideoFormat" xml:space="preserve"><value>Ongecomprimeerd video format :</value></data>
    <data name="dlgPreferences_Capture_chkUncompressedVideo" xml:space="preserve"><value>Registreer ongecomprimeerde video</value></data>
    <data name="dlgPreferences_Capture_Recording" xml:space="preserve"><value>Opnemen</value></data>
    <data name="dlgPreferences_Capture_RecordingMode" xml:space="preserve"><value>Opname modus en vertraging</value></data>
@@ -119,8 +119,8 @@
    <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Toegewezen geheugen voor buffering van opname: {0} MB.</value></data>
    <data name="dlgPreferences_Capture_chkIgnoreOverwrite" xml:space="preserve"><value>Negeer waarschuwing bestandsoverschrijving</value></data>
    <data name="dlgPreferences_Capture_gbHighspeedCameras" xml:space="preserve"><value>Hogesnelheidscamera</value></data>
-   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve"><value>Framerate vervangingsgrenswaarde (fps)</value></data>
-   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve"><value>Vervanging framerate (fps)</value></data>
+   <data name="dlgPreferences_Capture_lblReplacementThreshold" xml:space="preserve"><value>Framerate vervangingsgrenswaarde (fps):</value></data>
+   <data name="dlgPreferences_Capture_lblReplacementValue" xml:space="preserve"><value>Vervanging framerate (fps):</value></data>
    <data name="dlgPreferences_Capture_tabAutomation" xml:space="preserve"><value>Automatisering</value></data>
    <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve"><value>Activeer inschakelen door audio</value></data>
    <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve"><value>Invoerapparaat:</value></data>

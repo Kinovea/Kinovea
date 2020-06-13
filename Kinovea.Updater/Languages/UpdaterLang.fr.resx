@@ -75,7 +75,7 @@
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Version Courante :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Télécharger</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Une erreur est survenue durant la vérification. Veuillez vous assurer que la connexion à Internet est opérationnelle.</value></data>
-   <data name="Updater_LblChangeLog" xml:space="preserve"><value>Liste de Changements :</value></data>
+   <data name="Updater_LblChangeLog" xml:space="preserve"><value>Liste de changements :</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Nouvelle version</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Quitter</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Vérification de mises à jour.</value></data>
