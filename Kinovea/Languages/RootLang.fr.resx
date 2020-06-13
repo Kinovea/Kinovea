@@ -125,22 +125,17 @@
    <data name="dlgPreferences_Capture_chkEnableAudioTrigger" xml:space="preserve"><value>Activer le déclenchement par l’audio</value></data>
    <data name="dlgPreferences_Capture_lblInputDevice" xml:space="preserve"><value>Périphérique d’entrée :</value></data>
    <data name="dlgPreferences_Capture_lblTriggerThreshold" xml:space="preserve"><value>Seuil de déclenchement :</value></data>
-   <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Arrêter l’enregistrement après une durée (s) :</value></data>
+   <data name="dlgPreferences_Capture_lblStopRecordingByDuration" xml:space="preserve"><value>Arrêter l’enregistrement après (s) :</value></data>
    <data name="dlgPreferences_Capture_lblPostRecordingCommand" xml:space="preserve"><value>Commande post-enregistrement :</value></data>
    <data name="dlgPreferences_Drawings_chkDrawOnPlay" xml:space="preserve"><value>Montrer les dessins pendant la lecture vidéo</value></data>
    <data name="dlgPreferences_Drawings_chkEnableFiltering" xml:space="preserve"><value>Activer le filtrage des coordonnées</value></data>
-   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve"><value>Activer le mode debug pour les outils personalisés</value></data>
+   <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve"><value>Activer le mode debug pour les outils personnalisés</value></data>
    <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Opacité par défaut pour les nouveaux dessins :</value></data>
    <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Visible pendant toute la durée de la vidéo</value></data>
-   <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Disparaissent autour de l’image à laquelle ils ont été ajouté</value></data>
-   <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>Nombre d’images couvrant la disparition du dessin : {0}</value></data>
    <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve"><value>Importer les séquences d’images en tant que vidéos</value></data>
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Toujours désentrelacer à l'ouverture d'une nouvelle vidéo</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Mettre à jour l'image pendant le déplacement du curseur de temps</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Lier les contrôles de vitesse lors de la comparaison de vidéos</value></data>
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Forcer 16:9</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Forcer 4:3</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Détection Automatique</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Bascule en mode Analyse</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Nombre de fichiers dans l'historique :</value></data>
    <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Les instances ont leurs propres préférences</value></data>
@@ -172,7 +167,7 @@
    <data name="dlgPreferences_Player_UnitsRevolutionsPerMinute" xml:space="preserve"><value>Révolutions par minute ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsDegreesPerSecondSquared" xml:space="preserve"><value>Degrés / seconde carrée ({0})</value></data>
    <data name="dlgPreferences_Player_UnitsRadiansPerSecondSquared" xml:space="preserve"><value>Radians / seconde carrée ({0})</value></data>
-   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve"><value>Unité de distance personalisée :</value></data>
+   <data name="dlgPreferences_Player_UnitsCustom" xml:space="preserve"><value>Unité de distance personnalisée :</value></data>
    <data name="dlgPreferences_Player_Tracking" xml:space="preserve"><value>Suivi</value></data>
    <data name="dlgPreferences_Player_TrackingDescription" xml:space="preserve"><value>Paramètres de suivi par défaut</value></data>
    <data name="dlgPreferences_Player_TrackingObjectWindow" xml:space="preserve"><value>Fenêtre de l'objet :</value></data>
@@ -185,11 +180,11 @@
    <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve"><value>Appliquer</value></data>
    <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve"><value>Supprimer</value></data>
    <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve"><value>Défaut</value></data>
-   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Chargement de l'Interface Graphique...</value></data>
+   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Chargement de l'interface graphique...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuler</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Quitter</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Enregistrer</value></data>
-   <data name="mnuAbout" xml:space="preserve"><value>À Propos de Kinovea…</value></data>
+   <data name="mnuAbout" xml:space="preserve"><value>À propos de Kinovea…</value></data>
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Ouvrir le dossier des logs…</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Édition</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Fichier</value></data>
@@ -197,7 +192,7 @@
    <data name="mnuHelp" xml:space="preserve"><value>Aide</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Aide de Kinovea…</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Récents</value></data>
-   <data name="mnuHistoryReset" xml:space="preserve"><value>Effacer l'Historique</value></data>
+   <data name="mnuHistoryReset" xml:space="preserve"><value>Effacer l'historique</value></data>
    <data name="mnuImage" xml:space="preserve"><value>Image</value></data>
    <data name="mnuLanguages" xml:space="preserve"><value>Langue</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Vidéo</value></data>
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Préférences…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Refaire</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Affichage</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Explorateur de Fichiers</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Annuler</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numéro d’image</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total en millisecondes</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Total en microsecondes</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centièmes de minute</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dix millièmes d'heure</value></data>
+   
    
    
    

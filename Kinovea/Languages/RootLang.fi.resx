@@ -133,14 +133,9 @@
    
    
    
-   
-   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Poista aina kuvien limitykset avattaessa uusi video</value></data>
    
    
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Pakota 16:9</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Pakota 4:3</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automaattinen havaitseminen</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Vaihda Analyysi-tilaan</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Historiassa näkyvien tiedostojen määrä:</value></data>
    
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Asetukset...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Toista</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Näytä</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Tiedostopuu</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Palauta</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kehysnumerointi</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Kokonaisaika millisekunnit</value></data>
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sadasosaminuutti</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tunnin kymmenestuhannesosa</value></data>
+   
    
    
    

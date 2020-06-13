@@ -2663,7 +2663,7 @@ namespace Kinovea.ScreenManager
         private void ReloadTooltipsCulture()
         {
             // Video controls
-            toolTips.SetToolTip(buttonPlay, ScreenManagerLang.ToolTip_Play);
+            toolTips.SetToolTip(buttonPlay, ScreenManagerLang.Generic_PlayPause);
             toolTips.SetToolTip(buttonGotoPrevious, ScreenManagerLang.ToolTip_Back);
             toolTips.SetToolTip(buttonGotoNext, ScreenManagerLang.ToolTip_Next);
             toolTips.SetToolTip(buttonGotoFirst, ScreenManagerLang.ToolTip_First);
@@ -2681,7 +2681,7 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.Generic_SaveImage);
             toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
             toolTips.SetToolTip(btnDiaporama, ScreenManagerLang.ToolTip_SaveDiaporama);
-            toolTips.SetToolTip(btnSaveVideo, ScreenManagerLang.dlgSaveVideoTitle);
+            toolTips.SetToolTip(btnSaveVideo, ScreenManagerLang.CommandSaveMovie_FriendlyName);
             toolTips.SetToolTip(btnPausedVideo, ScreenManagerLang.ToolTip_SavePausedVideo);
 
             // Working zone and sliders.

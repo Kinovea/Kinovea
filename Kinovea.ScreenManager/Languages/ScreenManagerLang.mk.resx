@@ -170,7 +170,6 @@
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Калибрација на рамнината</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Траење на секоја клучна слика : {0} стоти дел од секунда.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Траење на секоја клучна слика : {0:0.00} секунди.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Зачувај го видеото</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Оригинално видео со пауза на секоја клучна слика</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Видео слајд шоу само со клучни слики</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Тип на видео</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Ќе биде зачуван само описот на цртежите и други предмети од анализата. #Датотеката ќе може да биде внесена во видеото подоцна.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Зачувај го видеото со постојана анализа применета на видеото</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Анализата на предметите ќе биде видлива на сите плеери но нема да може да се модифицира. # Дополнително прикачените клучни слики нема да бидат зачувани.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Зачувај го видеото</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Зачувај ги податоците од клучните слики</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Зачувај секвенца</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Зачувај Видео</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Старт | Пауза</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Огледало</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Еден екран за снимање</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Еден екран за репродукција</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Старт | Пауза</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Рестартирај го изданието на патот</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Сите датотеки</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Зачувај...</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Мерка за калибрирање...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Калибрирај...</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Прикажи мерка</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Премини на крајот</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Лупа</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Оди на следниот фрејм</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Старт | Пауза</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Промени го режимот за повторување ( Еднаш | Јамка ) Моментален режим : Јамка</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Промени го режимот за повторување ( Еднаш | Јамка ) Моментален режим : Еднаш</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Зачувај секвенца од сликите</value></data>

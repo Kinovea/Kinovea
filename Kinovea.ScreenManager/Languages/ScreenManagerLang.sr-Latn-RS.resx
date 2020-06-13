@@ -170,7 +170,6 @@
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Ravna kalabracija</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Trajanje svake ključne slike: {0} stotinki sekunde.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Trajanje svake ključne slike: {0:0.00} sekundi .</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Sačuvaj video zapis</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Originalni video sa pauzom na svakoj ključnoj slici</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Projekcija video slajdova samo sa glavnim slikama.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tip video zapisa</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Samo opis crteža i analiza ostalih objekata biće sačuvani.#Datoteka se kasnije može uključiti u video zapis.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Sačuvajte video zapis sa analizom koja je trajno primenjena na video zapisu</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Analizirani objekti će biti vidljiv u svim programima za reprodukciju , ali se ne može modifikovati. # Dodatni komentari vezani za ključne slike neće biti sačuvani.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Sačuvaj video ...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Sačuvaj podatke ključne slike</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Redosled čuvanja</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Sačuvaj video</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Reprodukuj | Pauziraj</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Ogledalo</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Jedan ekran za snimanje</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Jedan ekran za reprodukovanje</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Reprodukuj | Pauziraj</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Ponovo pokreni putanju izdanja</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Sve datoteke (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Sačuvaj...</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibriši meru...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Kalibriši...</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Prikaži meru</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Pređi na Kraj</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Lupa</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Idi na sledeći okvir </value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Reprodukuj | Pauziraj</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Promenite režim ponavljanja ( jednom | petlja ) - Trenutni režim : petlja</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Promenite režim ponavljanja ( jednom | petlja ) - Trenutni režim : jednom</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Sačuvaj redosled slika</value></data>

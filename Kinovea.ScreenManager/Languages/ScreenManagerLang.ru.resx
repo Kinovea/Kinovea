@@ -170,7 +170,6 @@
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Калибровка плоскости</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Продолжительность каждого ключевого кадра : {0} сотые секунды</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Продолжительность каждого ключевого кадра : {0:0.00} секунды.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Сохранить видео</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Оригинальное видео с паузой на каждом ключевом кадре</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Видео слайдшоу из ключевых кадров</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Тип видео</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Будет сохранено только описание рисунков и других объектов анализа. # Этот файл может быть импортирован в видео позже.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Сохранить видео вместе с анализом</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Анализ объектов будет виден на всех плеерах, но не может быть изменен.# Дополнительные комментарии, присоединенные к ключевым изображения не будут сохранены.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Сохранить видео…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Сохранить ключевые кадры</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Сохранить последовательность</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Сохранить видео</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Калибрация камеры</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Коэффициенты искажения</value></data>
    <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve"><value>Внутренние настройки камеры</value></data>
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Воспроизвести | Пауза </value></data>
    <data name="FileProperty_Size" xml:space="preserve"><value>Размер</value></data>
    <data name="FileProperty_Framerate" xml:space="preserve"><value>Частота</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>Длительность</value></data>
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Зеркально</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Один экран съемки</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Один экран воспроизведения</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Воспроизведение Пауза</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Повторное определение пути</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Все файлы (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Сохранение…</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Калибровка измерений…</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Калибровка….</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Конфигурация времени видео…</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Отображение размерностей</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Перейти в конец</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Лупа</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Перейти к следующему кадру </value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Воспроизвести | Пауза </value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Изменить режим повтора (однократно | зациклить) - текущий режим : зациклить</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Изменить режим повтора (однократно | зациклить) - текущий режим : однократно</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Сохранить последовательность изображений</value></data>

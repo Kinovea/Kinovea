@@ -170,7 +170,6 @@
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>키 이미지'에서의 시간간격: {0} hundredth of seconds.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>매 '키 이미지'의 시간간격: {0:0.00} seconds.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>비디오 저장</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>각 '키 이미지'에서 멈추는 원래 비디오</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>키 이미지'만 사용한 슬라이드 쇼</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>비디오의 형태</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>그림과 다른 분석 개체들만 저장됨.#파일은 후에 비디오로 가져올 수 있음</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>비디오를 비디오에 영구적 분석을 적용하여 저장</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>분석개체들은 모든 재생기에서 보이지만 수정은 안됨.#'키 이미지'에 첨부된 주석은 저장되지 않음.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>비디오 저장…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>키 이미지'자료 저장</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>연속 이미지를 저장</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>비디오 저장</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>재생|멈춤</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>거울</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>하나의 캡처 화면</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>하나의 재생 화면</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>재생|멈춤</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>경로 편집 다시 시작</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>모든 파일들 (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>저장…</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>자를 측정함</value></data>
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>자 표시</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>끝으로 감</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>확대경</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>다음 프레임으로 감</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>재생|멈춤</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>반복모드 변경 (한번 | 루프 ) - 현재 모드 : 루프(Loop)</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>반복모드 변경 (한번 | 루프 ) - 현재 모드 : 한번(Once)</value></data>
    

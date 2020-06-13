@@ -170,7 +170,6 @@
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Anzeigedauer jedes Bildes : {0} Hundertstelsekunden</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Anzeigedauer jedes Bildes : {0:0.00} Sekunden</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Speichere Video</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Speichere ein Video mit Pause zwischen jedem Schlüsselbild</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Speichere eine Diashow aus den Schlüsselbildern</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Videotyp</value></data>
@@ -191,10 +190,8 @@
    
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Schlüsselbilddaten dauerhaft ins Video zeichnen.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Speichere Video oder Schlüsselbilddaten...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Speichere Schlüsselbilddaten</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Speichere Sequenz</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Speichere Video</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Abspielen | Pause</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Spiegel</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>1x Aufnahmefenster</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>1x Wiedergabefenster</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Abspielen | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Trajektorien-Editor neu starten</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle Dateien (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Speichere Video oder Schlüsselbilddaten...</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Messung kalibrieren</value></data>
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Messwert anzeigen</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>zum Ende</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Lupe</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>zum nächsten Bild</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Abspielen | Pause</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Abspielmodus ändern (Einmal | Schleife) – Aktueller Modus : Schleife</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Abspielmodus ändern (Einmal | Schleife) – Aktueller Modus : Einmal</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Bildsequenz speichern</value></data>

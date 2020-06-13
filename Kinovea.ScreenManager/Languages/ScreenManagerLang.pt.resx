@@ -80,7 +80,7 @@
    
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Apagar Desenho</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Remover um Quadro de Imagem</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Salvar o Vídeo</value></data>
+   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Salvar o vídeo</value></data>
    
    
    
@@ -170,7 +170,6 @@
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duração de cada Quadro de Imagem: {0} centésimos de segundos.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duração de cada Quadro de Imagem: {0:0.00} segundos.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salvar o Vídeo</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Video original com pausa em cada Quadro de Imagem.</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Apresentação em slides apenas com os Quadros de Imagem.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipo de video</value></data>
@@ -191,10 +190,8 @@
    
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Pintar dados dos quadros de imagens no vídeo permanentemente.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Salvar Vídeo ou Dados dos Quadros de Imagens...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Salvar Dados dos Quadros de Imagens</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Salvar Sequência</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salvar Vídeo</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Reproduzir | Pausar</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Espelhar</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Uma Tela de Captura</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Uma Tela de Reproduzir</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Reproduzir | Pausar</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reiniciar Edição do Caminho</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos os arquivos (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Salvar Vídeo ou Dados dos Quadros de Imagens...</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar a medida...</value></data>
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar Medida</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Pular para o Final</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Lupa</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Ir para o Próximo Quadro</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Reproduzir | Pausar</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Mudar o modo de repetição ( Uma vez | Loop ) - Modo atual: Loop</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Mudar o modo de repetição ( Uma vez | Loop ) - Modo atual: Uma vez</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Salvar uma Sequência de Imagens</value></data>

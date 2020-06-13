@@ -331,6 +331,7 @@ namespace Kinovea.FileBrowser
             etShortcuts.RootDisplayName = FileBrowserLang.tabShortcuts;
             
             tabPageCameras.Text = "";
+            label1.Text = FileBrowserLang.lblCameras;
             btnManual.Text = FileBrowserLang.FormCameraWizard_Title;
             lblCaptureHistory.Text = FileBrowserLang.lblCaptureHistory;
 

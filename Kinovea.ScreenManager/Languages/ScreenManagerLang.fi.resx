@@ -170,7 +170,6 @@
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Erilliskuvan kesto : {0} sadasosa sekuntia</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Erilliskuvan kesto: {0:0.00} sekuntia.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Tallenna video</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Alkuperäinen video tauotettuna jokaisen avainkuvan kohdalla</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Videodiaesitys vain avainkuvista.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Videon tyyppi</value></data>
@@ -191,10 +190,8 @@
    
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Maalaa avainkuvien tiedot pysyvästi videolle.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Tallenna video tai avainkuvien tiedot...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Tallenna avainkuvien tiedot</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Tallenna kuvausjakso</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Tallenna video</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Käynnistä | Pysäytä</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Peili</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Yksi kuvausnäyttö</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Yksi video/analyysinäyttö</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Käynnistä | Pysäytä</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Uudelleenkäynnistä liikeradan editointi</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Kaikki tiedostot (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Tallenna...</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Sulje mitta...</value></data>
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Näytä mitta</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Siirry loppuun</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Suurennuslasi</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Siirry seuraavaan kuvaan</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Käynnistä | Pysäytä</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Muuta toistoa ( Kerta | Jatkuva ) - Nykyinen: Jatkuva</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Muuta toistoa ( Kerta | Jatkuva ) - Nykyinen: Kerta</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Tallenna kuvasarja</value></data>

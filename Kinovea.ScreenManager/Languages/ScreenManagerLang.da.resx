@@ -170,7 +170,6 @@
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Kalibrering af plan</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Varighed af hvert nøglebilled: {0}/100 sek.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Varighed af hvert nøglebilled: {0:0.00} sek.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Gem video</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Original video med pause på hvert nøglebillede</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video slideshow kun med nøglebilleder</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Videotype</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Kun beskrivelse af tegninger og andre analyseobjekter vil blive gemt. #Filen kan importeres i en video senere.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Gem video, med permanent analyse</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Analyseobjekter vil være synlige i alle afspillere, men kan ikke ændres.#Ekstra kommentarer til nøglebilleder vil ikke blive gemt.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Gem Video…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Gem data for nøglebilleder</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Gem sekvens</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Gem Video</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Afspil | Pause</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Spejlvend</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>En optageskærm</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>En afspilningsskærm</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Afspil | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Genstart editering af spor</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle filtyper (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Gem…</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrer måling…</value></data>
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Hop til enden</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Forstør</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Gå til næste billede</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Afspil | Pause</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Ændre gentagelses måde (En gang | Loop) - Nuværende måde: Loop</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Ændre gentagelses måde (En gang | Loop) - Nuværende måde: En gang</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Gem en billedserie</value></data>

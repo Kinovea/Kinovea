@@ -133,14 +133,9 @@
    
    
    
-   
-   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Alltid deinterlace ved åpning av ny video</value></data>
    
    
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Bruk 16:9</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Bruk 4:3</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatisk valg</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Bytt til Analyse modus</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Antall filer i historielisten:</value></data>
    
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Instillinger...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Gjør om</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Se</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Utforsk fil</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Tilbake</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Bildenummer</value></data>
    
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundredels minutt</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Titusendedels time</value></data>
+   
    
    
    

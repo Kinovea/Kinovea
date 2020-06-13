@@ -170,7 +170,6 @@
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Výdrž na každé klíčové pozici : {0} setin sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Výdrž na každé klíčové pozici: {0:0.00} sekund</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Ulož video</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Originální video s pauzou na každé klíčové pozici.</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video slideshow pouze z klíčových pozic.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Typ videa</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Budou uloženy pouze popisy nákresů a ostatní objekty analýzy.#Soubor lze importovat do videa později. </value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Uložit video s analýzou trvale aplikovanou na video</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Objekty analýzy budou viditelné ve všech přehrávačích, ale nebude je možno modifikovat.#Zvláštní komentáře připojené ke klíčovým pozicím nebudou uloženy.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Uložit video…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Uložit data klíčových pozic</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Uložit sekvenci obrazů</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Uložit video</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Přehrát I Pozastavit </value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Zrcadlit</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>1 snímací obrazovka</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>1 obrazovka pro přehrávání</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Přehrát I Pozastavit</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Restart trasování</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Všechny soubory (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Uložit…</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrovat měření…</value></data>
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Zobrazit měření</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Přejít na konec</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Lupa</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Přejít na další snímek</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Přehrát I Pozastavit </value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Změňte režim opakování ( Jednou | Smyčka ) - Stávající režim: Smyčka</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Změňte režim opakování ( Jednou | Smyčka ) - Stávající režim: Jednou</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Uložit sekvenci obrazů</value></data>

@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using Kinovea.Root.Languages;
 using Kinovea.Root.Properties;
 using Kinovea.ScreenManager;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
 using System.Collections.Generic;
@@ -136,9 +137,9 @@ namespace Kinovea.Root
 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
             lblImageFormat.Text = RootLang.dlgPreferences_Player_lblImageFormat;
-            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Player_FormatAuto);
-            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Player_Format43);
-            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Player_Format169);
+            cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatAuto);
+            cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatForce43);
+            cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatForce169);
         }
 
         private void InitTabUnits()

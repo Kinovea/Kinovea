@@ -70,8 +70,9 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="lblFolders" xml:space="preserve"><value>Φάκελοι:</value></data>
-   <data name="lblVideoFiles" xml:space="preserve"><value>Αρχεία Video:</value></data>
+   <data name="lblFolders" xml:space="preserve"><value>Φάκελοι</value></data>
+   <data name="lblVideoFiles" xml:space="preserve"><value>Αρχεία Video</value></data>
+   
    
    <data name="mnuAddShortcut" xml:space="preserve"><value>Προσθήκη συντόμευσης</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Προσθήκη στις συντομεύσεις</value></data>

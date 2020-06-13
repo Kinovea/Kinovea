@@ -61,7 +61,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Synchronize Videos on the Current Frames.
+        ///   Looks up a localized string similar to Synchronize videos on the current frames..
         /// </summary>
         public static string btnSync_ToolTip {
             get {
@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go Back to Beginning for Both Videos.
+        ///   Looks up a localized string similar to Go back to the beginning of both videos..
         /// </summary>
         public static string buttonGotoFirst_ToolTip {
             get {
@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jump to End for Both Videos.
+        ///   Looks up a localized string similar to Go to the end of both videos..
         /// </summary>
         public static string buttonGotoLast_ToolTip {
             get {
@@ -88,7 +88,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to Next Frame for Both Videos.
+        ///   Looks up a localized string similar to Go to next frame for both videos..
         /// </summary>
         public static string buttonGotoNext_ToolTip {
             get {
@@ -97,7 +97,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to Previous Frame for Both Videos.
+        ///   Looks up a localized string similar to Go to previous frame for both videos..
         /// </summary>
         public static string buttonGotoPrevious_ToolTip {
             get {
@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Play | Pause Both Videos.
+        ///   Looks up a localized string similar to Play or pause both videos..
         /// </summary>
         public static string buttonPlay_ToolTip {
             get {
@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Drawing.
+        ///   Looks up a localized string similar to Add drawing.
         /// </summary>
         public static string CommandAddDrawing_FriendlyName {
             get {
@@ -124,7 +124,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete Drawing.
+        ///   Looks up a localized string similar to Delete drawing.
         /// </summary>
         public static string CommandDeleteDrawing_FriendlyName {
             get {
@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove a Key Image.
+        ///   Looks up a localized string similar to Remove a key image.
         /// </summary>
         public static string CommandDeleteKeyframe_FriendlyName {
             get {
@@ -142,7 +142,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Modify Drawing.
+        ///   Looks up a localized string similar to Modify drawing.
         /// </summary>
         public static string CommandModifyDrawing_FriendlyName {
             get {
@@ -151,7 +151,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Video.
+        ///   Looks up a localized string similar to Save video.
         /// </summary>
         public static string CommandSaveMovie_FriendlyName {
             get {
@@ -529,7 +529,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Color Profile....
+        ///   Looks up a localized string similar to Color profile....
         /// </summary>
         public static string dlgColorProfile_Title {
             get {
@@ -538,7 +538,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset to default Color Profile.
+        ///   Looks up a localized string similar to Reset to default color profile.
         /// </summary>
         public static string dlgColorProfile_ToolTip_DefaultProfile {
             get {
@@ -556,7 +556,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save color Profile.
+        ///   Looks up a localized string similar to Save color profile.
         /// </summary>
         public static string dlgColorProfile_ToolTip_SaveProfile {
             get {
@@ -574,7 +574,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure Drawing.
+        ///   Looks up a localized string similar to Configure drawing.
         /// </summary>
         public static string dlgConfigureDrawing_Title {
             get {
@@ -583,7 +583,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Always Visible.
+        ///   Looks up a localized string similar to Always visible.
         /// </summary>
         public static string dlgConfigureFading_chkAlwaysVisible {
             get {
@@ -916,7 +916,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duration on each Key Image : {0} hundredth of seconds..
+        ///   Looks up a localized string similar to Duration on each key image : {0} hundredth of seconds..
         /// </summary>
         public static string dlgDiapoExport_LabelFrequencyHundredth {
             get {
@@ -925,7 +925,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duration of each Key Image : {0:0.00} seconds..
+        ///   Looks up a localized string similar to Duration of each key image : {0:0.00} seconds..
         /// </summary>
         public static string dlgDiapoExport_LabelFrequencySeconds {
             get {
@@ -934,7 +934,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Original video with a pause on each Key Image.
+        ///   Looks up a localized string similar to Original video with a pause on each key image.
         /// </summary>
         public static string dlgDiapoExport_RadioPausedVideo {
             get {
@@ -943,7 +943,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Video slideshow with only the Key Images..
+        ///   Looks up a localized string similar to Video slideshow with only the key images..
         /// </summary>
         public static string dlgDiapoExport_RadioSlideshow {
             get {
@@ -952,16 +952,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Video.
-        /// </summary>
-        public static string dlgDiapoExport_Title {
-            get {
-                return ResourceManager.GetString("dlgDiapoExport_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save Data as a Spreadsheet Document.
+        ///   Looks up a localized string similar to Save the data as a spreadsheet document.
         /// </summary>
         public static string dlgExportSpreadsheet_Title {
             get {
@@ -988,7 +979,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load Key Images Data.
+        ///   Looks up a localized string similar to Load annotations.
         /// </summary>
         public static string dlgLoadAnalysis_Title {
             get {
@@ -1042,7 +1033,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export Key Images only..
+        ///   Looks up a localized string similar to Export the key images..
         /// </summary>
         public static string dlgRafaleExport_LabelKeyframesOnly {
             get {
@@ -1060,7 +1051,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save a Sequence of Images.
+        ///   Looks up a localized string similar to Save a sequence of images.
         /// </summary>
         public static string dlgRafaleExport_Title {
             get {
@@ -1069,7 +1060,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Take Slow Motion into account. (Current = .
+        ///   Looks up a localized string similar to Take slow motion into account. (Current = .
         /// </summary>
         public static string dlgSaveAnalysisOrVideo_CheckSlow {
             get {
@@ -1078,7 +1069,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Method.
+        ///   Looks up a localized string similar to Save method.
         /// </summary>
         public static string dlgSaveAnalysisOrVideo_GroupSaveMethod {
             get {
@@ -1087,7 +1078,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only the description of drawings and other analysis objects will be saved.#The file can be imported in a video later..
+        ///   Looks up a localized string similar to Only the annotations will be saved.#The file can be imported in a video later..
         /// </summary>
         public static string dlgSaveAnalysisOrVideo_HintAnalysis {
             get {
@@ -1096,7 +1087,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analysis objects will be visible in all players but not modifiable.#Extra comments attached to key images will not be saved..
+        ///   Looks up a localized string similar to The annotations will be visible in all players but not modifiable.#Extra comments attached to key images will not be saved..
         /// </summary>
         public static string dlgSaveAnalysisOrVideo_HintBlended {
             get {
@@ -1105,7 +1096,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save only the analysis.
+        ///   Looks up a localized string similar to Save only the annotations.
         /// </summary>
         public static string dlgSaveAnalysisOrVideo_RadioAnalysis {
             get {
@@ -1114,7 +1105,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save video with analysis permanently applied on the video.
+        ///   Looks up a localized string similar to Save video with annotations permanently applied on the video.
         /// </summary>
         public static string dlgSaveAnalysisOrVideo_RadioBlended {
             get {
@@ -1123,16 +1114,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Video....
-        /// </summary>
-        public static string dlgSaveAnalysisOrVideo_Title {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save Key Images Data.
+        ///   Looks up a localized string similar to Save annotations.
         /// </summary>
         public static string dlgSaveAnalysisTitle {
             get {
@@ -1141,20 +1123,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Sequence.
+        ///   Looks up a localized string similar to Save sequence.
         /// </summary>
         public static string dlgSaveSequenceTitle {
             get {
                 return ResourceManager.GetString("dlgSaveSequenceTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save Video.
-        /// </summary>
-        public static string dlgSaveVideoTitle {
-            get {
-                return ResourceManager.GetString("dlgSaveVideoTitle", resourceCulture);
             }
         }
         
@@ -1519,7 +1492,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kinovea - Cannot create Slideshow..
+        ///   Looks up a localized string similar to Kinovea - Cannot create the slideshow..
         /// </summary>
         public static string Error_SaveDiaporama {
             get {
@@ -1528,7 +1501,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Slideshow is a sequence of Key Images saved in video format.\n Please add some Key Images before generating the Slideshow..
+        ///   Looks up a localized string similar to A slideshow is a sequence of key images saved in video format.\n Please add some key images before generating the slideshow..
         /// </summary>
         public static string Error_SaveDiaporama_NoKeyframes {
             get {
@@ -1537,7 +1510,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to write file.\nMake sure you have the rights to write in the target folder and that the file is not currently used..
+        ///   Looks up a localized string similar to Unable to write file.\nMake sure you have the rights to write in the target folder and that the file not be currently used..
         /// </summary>
         public static string Error_SaveMovie_FileError {
             get {
@@ -1555,7 +1528,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kinovea - Unable to Save Video. .
+        ///   Looks up a localized string similar to Kinovea - Unable to save video. .
         /// </summary>
         public static string Error_SaveMovie_Title {
             get {
@@ -1816,7 +1789,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exported Images :.
+        ///   Looks up a localized string similar to Exported images :.
         /// </summary>
         public static string FormFramesExport_Infos {
             get {
@@ -1825,7 +1798,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exporting Images....
+        ///   Looks up a localized string similar to Exporting images....
         /// </summary>
         public static string FormFramesExport_Title {
             get {
@@ -2077,6 +2050,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Play | Pause.
+        /// </summary>
+        public static string Generic_PlayPause {
+            get {
+                return ResourceManager.GetString("Generic_PlayPause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quit.
         /// </summary>
         public static string Generic_Quit {
@@ -2167,7 +2149,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Common Controls :.
+        ///   Looks up a localized string similar to Common controls :.
         /// </summary>
         public static string lblInfo_Text {
             get {
@@ -2284,7 +2266,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure: Unable to open the file : unsupported video stream..
+        ///   Looks up a localized string similar to Failure: unable to open the file, unsupported video stream..
         /// </summary>
         public static string LoadMovie_CodecNotFound {
             get {
@@ -2293,7 +2275,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure: Unable to open the file : problem while initializing decoder..
+        ///   Looks up a localized string similar to Failure to open the file: problem while initializing decoder..
         /// </summary>
         public static string LoadMovie_CodecNotOpened {
             get {
@@ -2302,7 +2284,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure: Unable to open the file : file type is not supported..
+        ///   Looks up a localized string similar to Failure to open the file: file type is not supported..
         /// </summary>
         public static string LoadMovie_CodecNotSupported {
             get {
@@ -2311,7 +2293,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kinovea - Loading Error..
+        ///   Looks up a localized string similar to Kinovea – Loading error..
         /// </summary>
         public static string LoadMovie_Error {
             get {
@@ -2320,7 +2302,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure: Unable to open the file : file not found or empty..
+        ///   Looks up a localized string similar to Failure to open the file: file not found or empty..
         /// </summary>
         public static string LoadMovie_FileNotOpened {
             get {
@@ -2329,7 +2311,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure: Unable to open the file : inconsistencies found. Please check encoding process..
+        ///   Looks up a localized string similar to Failure to open the file: inconsistencies found. Please check encoding process..
         /// </summary>
         public static string LoadMovie_InconsistantMovieError {
             get {
@@ -2338,7 +2320,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure: Unable to open the file : stream information not found..
+        ///   Looks up a localized string similar to Failure to open the file: stream information not found..
         /// </summary>
         public static string LoadMovie_StreamInfoNotFound {
             get {
@@ -2347,7 +2329,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure: Unable to open the file : unknown error..
+        ///   Looks up a localized string similar to Failure to open the file: unknown error..
         /// </summary>
         public static string LoadMovie_UnkownError {
             get {
@@ -2356,7 +2338,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failure: Unable to open the file : video stream not found..
+        ///   Looks up a localized string similar to Failure to open the file: video stream not found..
         /// </summary>
         public static string LoadMovie_VideoStreamNotFound {
             get {
@@ -2365,7 +2347,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lock the Working Zone Boundaries.
+        ///   Looks up a localized string similar to Lock the Working Zone boundaries.
         /// </summary>
         public static string LockSelectionLock {
             get {
@@ -2374,7 +2356,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlock the Working Zone Boundaries.
+        ///   Looks up a localized string similar to Unlock the Working Zone boundaries.
         /// </summary>
         public static string LockSelectionUnlock {
             get {
@@ -2392,7 +2374,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start Stopwatch.
+        ///   Looks up a localized string similar to Start the stopwatch.
         /// </summary>
         public static string mnuChronoStart {
             get {
@@ -2401,7 +2383,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop Stopwatch.
+        ///   Looks up a localized string similar to Stop the stopwatch.
         /// </summary>
         public static string mnuChronoStop {
             get {
@@ -2410,7 +2392,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close This Screen.
+        ///   Looks up a localized string similar to Close this screen.
         /// </summary>
         public static string mnuCloseScreen {
             get {
@@ -2419,7 +2401,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure Path Display.
+        ///   Looks up a localized string similar to Configure path display.
         /// </summary>
         public static string mnuConfigureTrajectory {
             get {
@@ -2428,7 +2410,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Coordinate System.
+        ///   Looks up a localized string similar to Coordinate system.
         /// </summary>
         public static string mnuCoordinateSystem {
             get {
@@ -2536,7 +2518,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete Path after this Point.
+        ///   Looks up a localized string similar to Delete the path after this point.
         /// </summary>
         public static string mnuDeleteEndOfTrajectory {
             get {
@@ -2545,7 +2527,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete all the Path.
+        ///   Looks up a localized string similar to Delete all the path.
         /// </summary>
         public static string mnuDeleteTrajectory {
             get {
@@ -2590,7 +2572,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export to Spreadsheet.
+        ///   Looks up a localized string similar to Export to spreadsheet.
         /// </summary>
         public static string mnuExportSpreadsheet {
             get {
@@ -2635,7 +2617,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Image Format.
+        ///   Looks up a localized string similar to Image format.
         /// </summary>
         public static string mnuFormat {
             get {
@@ -2644,7 +2626,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Detection.
+        ///   Looks up a localized string similar to Auto detection.
         /// </summary>
         public static string mnuFormatAuto {
             get {
@@ -2671,7 +2653,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to Key Image.
+        ///   Looks up a localized string similar to Go to key image.
         /// </summary>
         public static string mnuGotoKeyframe {
             get {
@@ -2707,7 +2689,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File Explorer.
+        ///   Looks up a localized string similar to File explorer.
         /// </summary>
         public static string mnuHome {
             get {
@@ -2743,7 +2725,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switch to Direct Zoom.
+        ///   Looks up a localized string similar to Switch to direct zoom.
         /// </summary>
         public static string mnuMagnifierDirect {
             get {
@@ -2752,7 +2734,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close Magnifier.
+        ///   Looks up a localized string similar to Close magnifier.
         /// </summary>
         public static string mnuMagnifierQuit {
             get {
@@ -2788,7 +2770,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One Capture Screen.
+        ///   Looks up a localized string similar to One capture screen.
         /// </summary>
         public static string mnuOneCapture {
             get {
@@ -2797,7 +2779,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One Playback Screen.
+        ///   Looks up a localized string similar to One playback screen.
         /// </summary>
         public static string mnuOnePlayer {
             get {
@@ -2842,15 +2824,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Play | Pause.
-        /// </summary>
-        public static string mnuPlayPause {
-            get {
-                return ResourceManager.GetString("mnuPlayPause", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Close this menu.
         /// </summary>
         public static string mnuPolyline_CloseMenu {
@@ -2878,7 +2851,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restart Path Edition.
+        ///   Looks up a localized string similar to Restart path edition.
         /// </summary>
         public static string mnuRestartTracking {
             get {
@@ -2887,7 +2860,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Image Rotation.
+        ///   Looks up a localized string similar to Image rotation.
         /// </summary>
         public static string mnuRotation {
             get {
@@ -2896,7 +2869,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Rotation.
+        ///   Looks up a localized string similar to No rotation.
         /// </summary>
         public static string mnuRotation0 {
             get {
@@ -2914,7 +2887,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 90° Counter-clockwise.
+        ///   Looks up a localized string similar to 90° counter-clockwise.
         /// </summary>
         public static string mnuRotation270 {
             get {
@@ -2923,7 +2896,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 90° Clockwise.
+        ///   Looks up a localized string similar to 90° clockwise.
         /// </summary>
         public static string mnuRotation90 {
             get {
@@ -2937,15 +2910,6 @@ namespace Kinovea.ScreenManager.Languages {
         public static string mnuSave {
             get {
                 return ResourceManager.GetString("mnuSave", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Calibrate measure....
-        /// </summary>
-        public static string mnuSealMeasure {
-            get {
-                return ResourceManager.GetString("mnuSealMeasure", resourceCulture);
             }
         }
         
@@ -3004,7 +2968,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display Measure.
+        ///   Looks up a localized string similar to Display measure.
         /// </summary>
         public static string mnuShowMeasure {
             get {
@@ -3022,7 +2986,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to End Path Edition .
+        ///   Looks up a localized string similar to End path edition .
         /// </summary>
         public static string mnuStopTracking {
             get {
@@ -3049,7 +3013,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invert Videos Positions.
+        ///   Looks up a localized string similar to Invert screens.
         /// </summary>
         public static string mnuSwapScreens {
             get {
@@ -3103,7 +3067,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show/Hide Common Controls.
+        ///   Looks up a localized string similar to Show/Hide common controls.
         /// </summary>
         public static string mnuToggleCommonCtrls {
             get {
@@ -3112,7 +3076,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Track Path.
+        ///   Looks up a localized string similar to Track path.
         /// </summary>
         public static string mnuTrackTrajectory {
             get {
@@ -3121,7 +3085,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Two Capture Screens.
+        ///   Looks up a localized string similar to Two capture screens.
         /// </summary>
         public static string mnuTwoCaptures {
             get {
@@ -3130,7 +3094,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One Capture screen and one Playback screen.
+        ///   Looks up a localized string similar to One capture screen and one playback screen.
         /// </summary>
         public static string mnuTwoMixed {
             get {
@@ -3139,7 +3103,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Two Playback Screens.
+        ///   Looks up a localized string similar to Two playback screens.
         /// </summary>
         public static string mnuTwoPlayers {
             get {
@@ -3193,7 +3157,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Image Saved.
+        ///   Looks up a localized string similar to Image saved.
         /// </summary>
         public static string Toast_ImageSaved {
             get {
@@ -3238,7 +3202,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add a Key Image.
+        ///   Looks up a localized string similar to Add a key image.
         /// </summary>
         public static string ToolTip_AddKeyframe {
             get {
@@ -3247,7 +3211,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to Previous Frame.
+        ///   Looks up a localized string similar to Go to previous frame.
         /// </summary>
         public static string ToolTip_Back {
             get {
@@ -3256,7 +3220,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Color Profile.
+        ///   Looks up a localized string similar to Color profile.
         /// </summary>
         public static string ToolTip_ColorProfile {
             get {
@@ -3382,7 +3346,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go Back to Beginning.
+        ///   Looks up a localized string similar to Go to the beginning.
         /// </summary>
         public static string ToolTip_First {
             get {
@@ -3391,7 +3355,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jump to End.
+        ///   Looks up a localized string similar to Go to the end.
         /// </summary>
         public static string ToolTip_Last {
             get {
@@ -3409,7 +3373,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to Next Frame.
+        ///   Looks up a localized string similar to Go to next frame.
         /// </summary>
         public static string ToolTip_Next {
             get {
@@ -3427,16 +3391,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Play | Pause.
-        /// </summary>
-        public static string ToolTip_Play {
-            get {
-                return ResourceManager.GetString("ToolTip_Play", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Change Repeat Mode ( Once | Loop ) - Current Mode : Loop.
+        ///   Looks up a localized string similar to Change repeat mode ( Once | Loop ) - Current mode : Loop.
         /// </summary>
         public static string ToolTip_PlayingMode_Loop {
             get {
@@ -3445,7 +3400,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Repeat Mode ( Once | Loop ) - Current Mode : Once.
+        ///   Looks up a localized string similar to Change repeat mode ( Once | Loop ) - Current mode : Once.
         /// </summary>
         public static string ToolTip_PlayingMode_Once {
             get {
@@ -3454,7 +3409,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save a Sequence of Images.
+        ///   Looks up a localized string similar to Save a sequence of images.
         /// </summary>
         public static string ToolTip_Rafale {
             get {
@@ -3463,7 +3418,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset the Working Zone to Full Video.
+        ///   Looks up a localized string similar to Reset the Working Zone.
         /// </summary>
         public static string ToolTip_ResetWorkingZone {
             get {
@@ -3526,7 +3481,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save a slideshow from Key Images.
+        ///   Looks up a localized string similar to Save a slideshow from key images.
         /// </summary>
         public static string ToolTip_SaveDiaporama {
             get {
@@ -3544,7 +3499,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set the First Frame of Working Zone to the Current Frame.
+        ///   Looks up a localized string similar to Set the first frame of the Working Zone to the current frame.
         /// </summary>
         public static string ToolTip_SetHandlerLeft {
             get {
@@ -3553,7 +3508,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set the Last Frame of Working Zone to the Current Frame.
+        ///   Looks up a localized string similar to Set the last frame of the Working Zone to the current frame.
         /// </summary>
         public static string ToolTip_SetHandlerRight {
             get {
@@ -3562,7 +3517,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Comments.
+        ///   Looks up a localized string similar to Show comments.
         /// </summary>
         public static string ToolTip_ShowComments {
             get {
@@ -3625,7 +3580,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Levels....
+        ///   Looks up a localized string similar to Auto levels....
         /// </summary>
         public static string VideoFilterAutoLevels_FriendlyName {
             get {
@@ -3634,7 +3589,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Contrast....
+        ///   Looks up a localized string similar to Auto contrast....
         /// </summary>
         public static string VideoFilterContrast_FriendlyName {
             get {
@@ -3643,7 +3598,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edges Only....
+        ///   Looks up a localized string similar to Edges only....
         /// </summary>
         public static string VideoFilterEdgesOnly_FriendlyName {
             get {

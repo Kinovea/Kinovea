@@ -133,14 +133,9 @@
    
    
    
-   
-   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Sempre desentrelaçar ao abrir um novo vídeo</value></data>
    
    
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Forçar formato 16:9</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Forçar formato 4:3</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Auto Detecção</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Mudar para o Módulo de Análise</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Número de arquivos no histórico:</value></data>
    
@@ -197,7 +192,7 @@
    <data name="mnuHelp" xml:space="preserve"><value>Ajuda</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Ajuda do Kinovea...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Recentes</value></data>
-   <data name="mnuHistoryReset" xml:space="preserve"><value>Zerar Histórico</value></data>
+   <data name="mnuHistoryReset" xml:space="preserve"><value>Zerar histórico</value></data>
    <data name="mnuImage" xml:space="preserve"><value>Imagem</value></data>
    <data name="mnuLanguages" xml:space="preserve"><value>Idioma</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Preferências...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Refazer</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Visualizar</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Gerenciador de Arquivos</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Desfazer</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de Quadros</value></data>
+   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de quadros</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total em milisegundos</value></data>
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centésimos de minuto</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dez milésimos de uma hora</value></data>
+   
    
    
    

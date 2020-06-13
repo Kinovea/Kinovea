@@ -406,7 +406,7 @@ namespace Kinovea.Root
             mnuRedo.Text = RootLang.mnuRedo;
             
             mnuView.Text = RootLang.mnuScreens;
-            mnuToggleFileExplorer.Text = RootLang.mnuToggleFileExplorer;
+            mnuToggleFileExplorer.Text = ScreenManagerLang.mnuHome;
             mnuFullScreen.Text = RootLang.mnuFullScreen;
             
             mnuImage.Text = RootLang.mnuImage;

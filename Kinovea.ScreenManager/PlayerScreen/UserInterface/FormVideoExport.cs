@@ -78,7 +78,7 @@ namespace Kinovea.ScreenManager
         }
         private void InitCulture()
         {
-            this.Text = "   " + ScreenManagerLang.dlgSaveAnalysisOrVideo_Title;
+            this.Text = "   " + ScreenManagerLang.CommandSaveMovie_FriendlyName;
             groupSaveMethod.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupSaveMethod;            
             radioSaveBlended.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioBlended;
             tbSaveBlended.Lines = ScreenManagerLang.dlgSaveAnalysisOrVideo_HintBlended.Split('#');
@@ -171,7 +171,7 @@ namespace Kinovea.ScreenManager
             DialogResult result = DialogResult.Cancel;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = ScreenManagerLang.dlgSaveVideoTitle;
+            saveFileDialog.Title = ScreenManagerLang.CommandSaveMovie_FriendlyName;
             saveFileDialog.InitialDirectory = Path.GetDirectoryName(m_OriginalFilename);
             saveFileDialog.Filter = ScreenManagerLang.FileFilter_SaveVideo;
             saveFileDialog.FilterIndex = FilesystemHelper.GetFilterIndex(saveFileDialog.Filter, PreferencesManager.PlayerPreferences.VideoFormat);

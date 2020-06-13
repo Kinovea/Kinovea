@@ -80,7 +80,7 @@
    <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>Modificar Dibujo</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Borrar Diseño</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Remover Imagen Clave</value></data>
-   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Guardar Video</value></data>
+   <data name="CommandSaveMovie_FriendlyName" xml:space="preserve"><value>Guardar video</value></data>
    <data name="DataAnalysis" xml:space="preserve"><value>Análisis de datos</value></data>
    <data name="DataAnalysis_ScatterDiagram" xml:space="preserve"><value>Gráfico de dispersión</value></data>
    <data name="DataAnalysis_LinearKinematics" xml:space="preserve"><value>Cinemática lineal</value></data>
@@ -170,7 +170,6 @@
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Plano de calibración</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duración de cada diapositiva: {0} centésimas de segundo.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duración de cada diapositiva: {0:0.00} segundos.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Guardar Video</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Video inicial con una pausa en cada Imagen Clave</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Presentación de Diapositivas con las Imágenes Clave</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipo de vídeo</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Solo se guardará la descripción de los dibujos y otros objetos de análisis.#El archivo se puede importar posteriormente.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Incrustar permanentemente los datos de las imágenes clave sobre el vídeo</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Los objetos del análisis serán visibles en todos los reproductores pero no serán modificables.#Los comentarios extras de las imágenes clave no se guardarán.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Guardar el video y los datos de las imàgenes clave…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Guardar los datos de las imàgenes clave .</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Guardar la secuencia de imàgenes </value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Guardar el video.</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Calibración de la cámara</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Coeficientes de distorsión</value></data>
    <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve"><value>Intrínsecos de la cámara</value></data>
@@ -282,6 +279,7 @@
    <data name="Generic_Cut" xml:space="preserve"><value>Cortar</value></data>
    <data name="Generic_Copy" xml:space="preserve"><value>Copiar</value></data>
    <data name="Generic_Paste" xml:space="preserve"><value>Pegar</value></data>
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Lectura | Pausa</value></data>
    <data name="FileProperty_Size" xml:space="preserve"><value>Tamaño</value></data>
    <data name="FileProperty_Framerate" xml:space="preserve"><value>Tasa de fotogramas</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>Duración</value></data>
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Espejo</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Una pantalla de Captura de Video</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Una pantalla de Lectura</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Lectura | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reanudar la edición de la Trayectoria</value></data>
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Marcar tiempo actual como origen de tiempo</value></data>
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos los archivos (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Abrir observador de carpeta de reproducción</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Guardar el video o los datos de las imàgenes clave…</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Contrastar la medida</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar…</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configurar velocidad del video</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostar la medida</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Ir al final.</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Lupa</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Ir a la proxima imagen</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Lectura | Pausa</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Cambiar el Modo Repeticiòn ( Una vez | En Bucle ) - Moda Actual : En Bucle</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Cambiar el Modo Repeticiòn ( Una vez | En Bucle ) - Moda Actual : Una vez</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Guardar una secuencia de imagen </value></data>

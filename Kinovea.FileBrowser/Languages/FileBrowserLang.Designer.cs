@@ -133,7 +133,16 @@ namespace Kinovea.FileBrowser.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Capture history:.
+        ///   Looks up a localized string similar to Cameras.
+        /// </summary>
+        public static string lblCameras {
+            get {
+                return ResourceManager.GetString("lblCameras", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Capture history.
         /// </summary>
         public static string lblCaptureHistory {
             get {
@@ -142,7 +151,7 @@ namespace Kinovea.FileBrowser.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Folders:.
+        ///   Looks up a localized string similar to Folders.
         /// </summary>
         public static string lblFolders {
             get {
@@ -151,7 +160,7 @@ namespace Kinovea.FileBrowser.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Video files:.
+        ///   Looks up a localized string similar to Video files.
         /// </summary>
         public static string lblVideoFiles {
             get {

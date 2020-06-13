@@ -70,9 +70,10 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="lblFolders" xml:space="preserve"><value>Mappen:</value></data>
-   <data name="lblVideoFiles" xml:space="preserve"><value>Video bestanden:</value></data>
-   <data name="lblCaptureHistory" xml:space="preserve"><value>Opname geschiedenis :</value></data>
+   <data name="lblFolders" xml:space="preserve"><value>Mappen</value></data>
+   <data name="lblVideoFiles" xml:space="preserve"><value>Video bestanden</value></data>
+   <data name="lblCaptureHistory" xml:space="preserve"><value>Opname geschiedenis</value></data>
+   
    <data name="mnuAddShortcut" xml:space="preserve"><value>Voeg snelkoppeling toe</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Toevoegen aan snelkoppelingen</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Verwijder snelkoppeling</value></data>

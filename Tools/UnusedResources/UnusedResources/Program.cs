@@ -21,7 +21,7 @@ namespace UnusedResources
             // - Run tool again.
             
             string sourceDirectory = @"D:\dev\Joan\Multimedia\Video\Kinovea\Source\Kinovea";
-            string resultDirectory = @"D:\dev\Joan\Multimedia\Video\Kinovea\Source\Kinovea\Tools\UnusedResources\UnusedResources\Results-20191102";
+            string resultDirectory = @"D:\dev\Joan\Multimedia\Video\Kinovea\Source\Kinovea\Tools\UnusedResources\UnusedResources\Results-20200613";
             
             UnusedResourcesFinder finder = new UnusedResourcesFinder(sourceDirectory, resultDirectory);
 

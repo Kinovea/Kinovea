@@ -170,7 +170,6 @@
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Διάρκεια κάθε Βασικής εικόνας : {0} εκατοστά του δευτερολέπτου.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Διάρκεια κάθε Βασικής εικόνας : {0:0.00} δευτερόλεπτα.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Αποθήκευση Video</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Αρχικό video με παύση σε κάθε Βασική Εικόνα</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Προβολή-διαφανειών video με μόνο τις Βασικές εικόνες</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Τύπος Video</value></data>
@@ -191,10 +190,8 @@
    
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Μόνιμος Χρωματισμός βασικών εικόνων στο video.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Αποθήκευση video ή δεδομένων Βασικών Εικόνων…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Αποθήκευση Δεδομένων Βασικών Εικόνων</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Αποθήκευση Ακολουθίας</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Αποθήκευση Video</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Αναπαραγωγή | Παύση</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Καθρέφτης</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Μια οθόνη Αποτύπωσης</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Μια οθόνη Αναπαραγωγής</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Αναπαραγωγή | Παύση</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Επανεκκίνηση Έκδοσης Διαδρομής</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Όλα τα αρχεία (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Αποθήκευση…</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Μέτρηση σφραγίδας…</value></data>
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Απεικόνιση Μέτρησης</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Πήδημα στο Τέλος</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Μεγεθυντής</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Πήγαινε στο Επόμενο Πλαίσιο</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Αναπαραγωγή | Παύση</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Αλλαγή Τρόπου Επανάληψης (Μια Φορά | Κύκλος) - Παρόν τρόπος : Κύκλος</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Αλλαγή Τρόπου Επανάληψης (Μια Φορά | Κύκλος) - Παρόν τρόπος : Μια Φορά</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Αποθήκευση Ακολουθίας Εικόνων</value></data>

@@ -133,14 +133,9 @@
    
    
    
-   
-   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Yeni bir video açarken her zaman deinterlace et</value></data>
    
    
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>16:9'u Zorla</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>4:3'ü Zorla</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Otomatik Bulma</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Analiz Moduna Geç</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Geçmişteki dosya sayısı:</value></data>
    
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Tercihler...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Yinele</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Görünüm</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Dosya Gezgini</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Geri Al</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kare Sayıları</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Toplam milisaniye</value></data>
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Bir dakikanın yüzdesi</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin on bindesi</value></data>
+   
    
    
    

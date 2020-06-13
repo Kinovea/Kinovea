@@ -170,7 +170,6 @@
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Her bir Anahtar İmaj üzerinde geçen süre: saniyenin yüzde {0} sı.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Her bir Anahtar İmaj üzerinde geçen süre : {0:0.00} saniye.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Videoyu Kaydet</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Her bir Anahtar İmaj üzerinde duraklatma olan orijinal video</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Sadece Anahtar İmajları içeren Video slayt gösterisi</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Video tipi</value></data>
@@ -191,10 +190,8 @@
    
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Anahtar imaj verisini video üzerine kalıcı olarak kaydet.</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Video veya Anahtar İmaj Verisini Kaydet...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Anahtar İmaj Verisini Kaydet</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Sekans Kaydet</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Video Kaydet</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Oynat | Duraklat</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Ayna</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Bir Görüntü Yakalama Ekranı</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Bir Oynatma Ekranı</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Oynat | Duraklat</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Yol Düzenlemesini Baştan Başlat</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tüm Dosyalar (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Kaydet...</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Ölçümü Kalibre Et...</value></data>
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Ölçümü Göster</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Sona Atla</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Büyüteç</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Bir Sonraki Kareye Git</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Oynat | Duraklat</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Tekrarlama Modunu Değiştir ( Tek Sefer | Döngü ) - Geçerli Mod : Döngü</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Tekrarlama Modunu Değiştir ( Tek Sefer | Döngü ) - Geçerli Mod : Tek Sefer</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Bir İmaj Sekansı Kaydet</value></data>

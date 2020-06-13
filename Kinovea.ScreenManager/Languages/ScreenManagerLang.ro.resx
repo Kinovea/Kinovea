@@ -170,7 +170,6 @@
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durata fiecărui diapozitiv: {0} sutimi de secundă.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durata fiecărui diapozitiv : {0:0.00} secunde.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salvează fişier video</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Fisierul video original cu o pauza la fiecare cadru cheie</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Prezentare tip sideshow doar a cadrelor cheie</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipul fisierului video</value></data>
@@ -191,10 +190,8 @@
    
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Imprima permanent datele cadrelor cheie pe fisierul video</value></data>
    
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Salvează video sau cadre cheie...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Salvează datele cadrelor cheie</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Salvează Secvenţa</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salvează Video</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Rulează | Pauză</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Oglindă</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>O fereastră de captură</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>O fereastră de Rulare</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Rulează | Pauză</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Restartează ediţia traiectoriei</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Toate fişierele (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Salvează fişierul video sau datele cadrelor cheie...</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Calibreaza...</value></data>
    
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afiseaza indicator</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Mergi la sfârşit</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Lupă</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Mergi la următorul cadru</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Rulează | Pauză</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Schimbă modul de repetiţie ( O dată | Buclă ) - Mod curent : Buclă</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Schimbă modul de repetiţie ( O dată | Buclă ) - Mod curent : O dată</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Salvează o secvenţa de cadre</value></data>

@@ -133,14 +133,9 @@
    
    
    
-   
-   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Při otevření nového souboru vždy použít deinterlace</value></data>
    
    
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Formát 16:9</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Formát 4:3</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Autodetekce</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Přepnout do módu analýzy</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Počet souborů v historii:</value></data>
    
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Preference…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Zrušit zpět</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Zobrazení</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>File Explorer</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Zpět</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Číslo snímku</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Celkem milisekund</value></data>
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Setina minuty</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Desetitisícina hodiny</value></data>
+   
    
    
    

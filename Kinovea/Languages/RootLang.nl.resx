@@ -132,15 +132,10 @@
    <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve"><value>Schakel de modus voor persoonlijke gereedschappen in</value></data>
    <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Standaard doorzichtigheid voor nieuwe tekeningen:</value></data>
    <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Zichtbaar voor de hele video</value></data>
-   <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Fade in/uit rond het frame waar ze aan werden toegevoegd</value></data>
-   <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>Aantal frames van fade in/uit van tekening: {0}</value></data>
    <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve"><value>Importeer de opeenvolgende beelden als videos</value></data>
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Altijd de-interlace toepassen bij het openen van nieuwe video</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Aanpassen van afbeelding gedurende het bewegen van de cursor</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Verbind de snelheid-regelaars tijdens het vergelijken van de videos</value></data>
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Forceer 16:9</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Forceer 4:3</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatische Detectie</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Schakel naar Analyse-modus</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Aantal bestanden in historie:</value></data>
    <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Instanties hebben hun eigen voorkeuren</value></data>
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Voorkeuren…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Opnieuw</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Bekijk</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Bladeren</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Annuleer</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frame nummer</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Totaal millisecondes</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Totaal microsecondes</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hondersten van een minuut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een uur</value></data>
+   
    
    
    

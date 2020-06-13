@@ -132,15 +132,10 @@
    <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve"><value>Activar les eines del mode de depuració</value></data>
    <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Opacitat per defecte dels dibuixos nous:</value></data>
    <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Visible pel vídeo sencer</value></data>
-   <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Fade in/out al voltant del fotograma on s’ha afegit</value></data>
-   <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>Nombre de fotogrames pel fade in/out del dibuix: {0}</value></data>
    <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve"><value>Importar seqüència d’imatges com a vídeo</value></data>
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Desentrellaçar sempre que s'obri un nou vídeo</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Actualitzar la imatge mentre es mou el cursor de temps</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Enllaçar les barres de velocitats en la comparació de videos</value></data>
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Forçar 16:9</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Forçar 4:3</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Detecció automàtica</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Canviar a Mode d'Anàlisis</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Nombre d'arxius a l'historial</value></data>
    <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Les instàncies tenen les seves pròpies preferències</value></data>
@@ -197,7 +192,7 @@
    <data name="mnuHelp" xml:space="preserve"><value>Ajuda</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Ajuda del Kinovea</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Recents</value></data>
-   <data name="mnuHistoryReset" xml:space="preserve"><value>Reiniciar Historial</value></data>
+   <data name="mnuHistoryReset" xml:space="preserve"><value>Reiniciar historial</value></data>
    <data name="mnuImage" xml:space="preserve"><value>Imatge</value></data>
    <data name="mnuLanguages" xml:space="preserve"><value>Idioma</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Vídeo</value></data>
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Preferències...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Refer</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Veure</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Explorador d'arxius</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Desfer</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de fotogrames</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total en milisegons</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Total en microsegons</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centèssimes de minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Deumilèssimes d'hora</value></data>
+   
    
    
    

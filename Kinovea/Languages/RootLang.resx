@@ -132,16 +132,11 @@
    <data name="dlgPreferences_Drawings_chkCustomToolsDebugMode" xml:space="preserve"><value>Enable custom tools debug mode</value></data>
    <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Default opacity of new drawings:</value></data>
    <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Visible for the entire video</value></data>
-   <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Fade in/out around the frame they were added to</value></data>
-   <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>Number of frames to fade in/out the drawing: {0}</value></data>
    <data name="dlgPreferences_Player_ImportImageSequences" xml:space="preserve"><value>Import image sequences as videos</value></data>
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Always deinterlace when opening a new video</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Update image during time cursor movement</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Link speed sliders when comparing videos</value></data>
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Force 16:9</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Force 4:3</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Auto Detection</value></data>
-   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Switch To Analysis Mode</value></data>
+   <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Switch to Analysis mode</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Number of files in history:</value></data>
    <data name="dlgPreferences_General_InstancesHaveOwnPreferences" xml:space="preserve"><value>Instances have their own preferences</value></data>
    <data name="dlgPreferences_Player_lblImageFormat" xml:space="preserve"><value>Default aspect ratio:</value></data>
@@ -185,7 +180,7 @@
    <data name="dlgPreferences_Keyboard_btnApply" xml:space="preserve"><value>Apply</value></data>
    <data name="dlgPreferences_Keyboard_btnClear" xml:space="preserve"><value>Clear</value></data>
    <data name="dlgPreferences_Keyboard_btnDefault" xml:space="preserve"><value>Default</value></data>
-   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Loading User Interface…</value></data>
+   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Loading the user interface…</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancel</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Quit</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Save</value></data>
@@ -195,9 +190,9 @@
    <data name="mnuFile" xml:space="preserve"><value>File</value></data>
    <data name="mnuFullScreen" xml:space="preserve"><value>Full screen</value></data>
    <data name="mnuHelp" xml:space="preserve"><value>Help</value></data>
-   <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea Help...</value></data>
+   <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea help...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Recent</value></data>
-   <data name="mnuHistoryReset" xml:space="preserve"><value>Reset History</value></data>
+   <data name="mnuHistoryReset" xml:space="preserve"><value>Reset history</value></data>
    <data name="mnuImage" xml:space="preserve"><value>Image</value></data>
    <data name="mnuLanguages" xml:space="preserve"><value>Language</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>Video</value></data>
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Preferences…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Redo</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>View</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>File Explorer</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Undo</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frame number</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total milliseconds</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Total microseconds</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundredth of a minute</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Ten thousandth of an hour</value></data>
+   
    
    
    

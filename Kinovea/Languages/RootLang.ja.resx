@@ -133,14 +133,9 @@
    
    
    
-   
-   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>新しいビデオを開くときはインターレースを解除する</value></data>
    
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>ビデオを比較する際、スピードスライダーを連動させる</value></data>
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>16:9に変換</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>4:3に変換</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>自動検出</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>分析モードに変更</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>履歴上のファイル数:</value></data>
    
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>設定…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>やり直し</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>ビュー</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>ファイルエクスプローラー</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>元に戻す</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>フレーム数</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>合計ミリ秒</value></data>
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>1/100分</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>1/10,000時間</value></data>
+   
    
    
    

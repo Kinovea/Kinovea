@@ -170,7 +170,6 @@
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>خطة المعايرة</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>المدة في كل صورة رئيسية: {0} مائة من الثواني.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>مدة كل صورة رئيسية: {0: 0.00} ثواني.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>حفظ الفيديو</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>الفيديو الأصلي مع وقفة على كل صورة رئيسية</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>فيديو عرض الشرائح فقط مع الصور الرئيسية.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>نوع الفيديو</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>حفظ الرسومات والأشياء الأخرى المتعلقة بالتحليل فقط. # يمكن استيراد الملف الي الفيديو في وقت لاحق.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>حفظ الفيديو مع التحليل المطبق بشكل دائم على الفيديو</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>ادوات التحليل سوف تكون ظاهرة في جميع العروض ولكن غير قابلة للتعديل. التعليقات الاضافية المرفقة بالصور الرئيسية # لن يتم حفظها.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>حفظ الفيديو...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>حفظ بيانات الصور الرئيسية</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>حفظ التسلسل</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>حفظ الفيديو</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>معايرة الكاميرا</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>معاملات الاعوجاج</value></data>
    <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve"><value>متغيرات الكاميرا</value></data>
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>تشغيل | ايقاف</value></data>
    <data name="FileProperty_Size" xml:space="preserve"><value>حجم</value></data>
    <data name="FileProperty_Framerate" xml:space="preserve"><value>معدل الكادرات</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>المدة الزمنية</value></data>
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>مرآة</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>شاشة واحدة للالتقاط</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>شاشة واحدة للعرض</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>تشغيل | ايقاف</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>اعادة تحرير المسار</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>جميع الملفات (*. *)| *. *</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>حفظ...</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>معايرة قياس...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>معايرة...</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>اعدادات توقيت الفيديو ...</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>عرض القياس</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>القفز الى النهاية</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>مكبر</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>الذهاب إلى الكادر التالي</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>تشغيل | ايقاف</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>تغيير وضع التكرار (مرة واحدة | حلقة) - الوضع الحالي: حلقة</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>تغيير وضع التكرار (مرة واحدة | حلقة) - الوضع الحالي: مرة واحدة</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>حفظ تسلسل الصور</value></data>

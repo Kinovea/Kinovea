@@ -170,7 +170,6 @@
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>平面較正</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>各キーイメージの継続性 : {0} 1/100秒。</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>各キーイメージの継続性 : {0:0.00} 秒。 </value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>ビデオの保存</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>各キーイメージで一時停止したオリジナルビデオ</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>キーイメージのみのビデオスライドショー</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>ビデオの種類</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>ドローイングと分析された対象の内容のみを保存。#ファイルはのちにビデオにインポートできます。</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>分析結果をビデオに永続的に付与して保存</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>分析対象はすべてのプレーヤーで参照できますが、変更できません。#キーイメージに取り付けられたコメントは保存されません。</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>ビデオの保存</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>キーイメージデータの保存</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>シーケンスの保存</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>ビデオを保存</value></data>
    
    
    
@@ -282,6 +279,7 @@
    
    
    
+   <data name="Generic_PlayPause" xml:space="preserve"><value>再生 | 一時停止</value></data>
    
    
    
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>鏡</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>キャプチャスクリーン</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>プレイバックスクリーン</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>再生 | 一時停止</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>軌道の最終地点を再設定</value></data>
    
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>すべてのファイル (*.*)|*.*</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>保存…</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>計測値の較正…</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>較正…</value></data>
    
    <data name="mnuShowMeasure" xml:space="preserve"><value>計測値を表示</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>最後に進む</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>拡大</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>次のフレームへ</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>再生 | 一時停止</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>リピートモードの変更 (シングル | ループ ) - 現在のモード : ループ</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>リピートモードの変更 (シングル | ループ ) - 現在のモード : シングル</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>イメージシーケンスを保存</value></data>

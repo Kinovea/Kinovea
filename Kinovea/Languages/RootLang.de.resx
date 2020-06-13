@@ -133,14 +133,9 @@
    
    
    
-   
-   
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Beim Öffnen eines neuen Videos Deinterlace verwenden</value></data>
    
    
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>16:9 erzwingen</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>4:3 erzwingen</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Automatisch erkennen</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Wechseln zum Analyse-Modus</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Anzahl Dateien im Verlauf :</value></data>
    
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Einstellungen ...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Wiederholen</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Ansicht</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Datei Explorer</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Rückgängig</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Framenummer</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Millisekunden</value></data>
    
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundertstelminuten</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zehntausendstel einer Stunde</value></data>
+   
    
    
    

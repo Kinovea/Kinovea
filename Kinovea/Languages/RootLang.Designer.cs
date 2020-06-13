@@ -565,29 +565,11 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of frames to fade in/out the drawing: {0}.
-        /// </summary>
-        public static string dlgPreferences_Drawings_lblFadingFrames {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Drawings_lblFadingFrames", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Visible for the entire video.
         /// </summary>
         public static string dlgPreferences_Drawings_rbAlwaysVisible {
             get {
                 return ResourceManager.GetString("dlgPreferences_Drawings_rbAlwaysVisible", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fade in/out around the frame they were added to.
-        /// </summary>
-        public static string dlgPreferences_Drawings_rbFading {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Drawings_rbFading", resourceCulture);
             }
         }
         
@@ -682,34 +664,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force 16:9.
-        /// </summary>
-        public static string dlgPreferences_Player_Format169 {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Player_Format169", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Force 4:3.
-        /// </summary>
-        public static string dlgPreferences_Player_Format43 {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Player_Format43", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Auto Detection.
-        /// </summary>
-        public static string dlgPreferences_Player_FormatAuto {
-            get {
-                return ResourceManager.GetString("dlgPreferences_Player_FormatAuto", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Switch To Analysis Mode.
+        ///   Looks up a localized string similar to Switch to Analysis mode.
         /// </summary>
         public static string dlgPreferences_Player_GroupAnalysisMode {
             get {
@@ -1087,7 +1042,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading User Interface….
+        ///   Looks up a localized string similar to Loading the user interface….
         /// </summary>
         public static string dlgSplash_LoadInfos {
             get {
@@ -1177,7 +1132,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kinovea Help....
+        ///   Looks up a localized string similar to Kinovea help....
         /// </summary>
         public static string mnuHelpContents {
             get {
@@ -1195,7 +1150,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset History.
+        ///   Looks up a localized string similar to Reset history.
         /// </summary>
         public static string mnuHistoryReset {
             get {
@@ -1263,15 +1218,6 @@ namespace Kinovea.Root.Languages {
         public static string mnuTimeFormat {
             get {
                 return ResourceManager.GetString("mnuTimeFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File Explorer.
-        /// </summary>
-        public static string mnuToggleFileExplorer {
-            get {
-                return ResourceManager.GetString("mnuToggleFileExplorer", resourceCulture);
             }
         }
         

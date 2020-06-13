@@ -70,9 +70,10 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="lblFolders" xml:space="preserve"><value>Dossiers:</value></data>
-   <data name="lblVideoFiles" xml:space="preserve"><value>Fichiers Vidéo:</value></data>
-   <data name="lblCaptureHistory" xml:space="preserve"><value>Historique de capture :</value></data>
+   <data name="lblFolders" xml:space="preserve"><value>Dossiers</value></data>
+   <data name="lblVideoFiles" xml:space="preserve"><value>Fichiers vidéo</value></data>
+   <data name="lblCaptureHistory" xml:space="preserve"><value>Historique de capture</value></data>
+   <data name="lblCameras" xml:space="preserve"><value>Caméras</value></data>
    <data name="mnuAddShortcut" xml:space="preserve"><value>Ajouter un raccourci</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Ajouter aux raccourcis</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Effacer le raccourci</value></data>

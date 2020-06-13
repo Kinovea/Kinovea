@@ -170,7 +170,6 @@
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Vlak Calibratie</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duur van elke Kernbeeld :{0} hondersten van seconden.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duur van elk Kernbeeld :{0:0.00} seconden.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Bewaar video</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Originele video met een pauze op elk Kernbeeld</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video diashow met alleen de Kernbeelden.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Videotype</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Alleen de beschrijving van de tekeningen en andere onderdelen van de analyse worden opgeslagen.#Het bestand kan later in een video worden geïmporteerd.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Markeer permanent de Kernbeeld gegevens op de video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>De onderdelen van de analyse zijn zichtbaar in alle afspelers, maar niet meer bewerkbaar.# Extra commentaar, verbonden aan de Kernbeelden, wordt niet opgeslagen.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Bewaar video of Kernbeeldgegevens…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Bewaar Kernbeeldgegegevens.</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Bewaar beeldmateriaal</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Bewaar video</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Camera calibratie</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Distortie coëfficient</value></data>
    <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve"><value>Intrinsieke parameters van de camera</value></data>
@@ -282,6 +279,7 @@
    <data name="Generic_Cut" xml:space="preserve"><value>Knip</value></data>
    <data name="Generic_Copy" xml:space="preserve"><value>Kopieer</value></data>
    <data name="Generic_Paste" xml:space="preserve"><value>Plak</value></data>
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Speel | Pauze</value></data>
    <data name="FileProperty_Size" xml:space="preserve"><value>Grootte</value></data>
    <data name="FileProperty_Framerate" xml:space="preserve"><value>Framerate</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>Lengte</value></data>
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Spiegel</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Eén opname-scherm</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Eén afspeelscherm</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Afspelen | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Herstart Trajectpad Editor</value></data>
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Markeer huidige tijd als oorsprong</value></data>
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle bestanden (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Open de weergave van de herhalingenmap..</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Fixeer de afmeting</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibreer…</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configureer de videotiming…</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Toon afmeting</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Spring naar het eind</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Vergrootglas</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Ga naar volgende frame</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Speel | Pauze</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Verander herhalingsweergave ( Eenmaal | Herhaal ) - Huidige weergave : Herhaal</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Verander herhalingsweergave ( Enkel | Herhaal ) - Huidige weergave : Eenmaal</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Bewaar beeldmateriaal</value></data>

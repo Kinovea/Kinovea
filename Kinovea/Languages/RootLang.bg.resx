@@ -132,15 +132,10 @@
    
    <data name="dlgPreferences_Drawings_lblDefaultOpacity" xml:space="preserve"><value>Новите рисунки по подразбиране са непрозрачни</value></data>
    <data name="dlgPreferences_Drawings_rbAlwaysVisible" xml:space="preserve"><value>Видими през цялото видео</value></data>
-   <data name="dlgPreferences_Drawings_rbFading" xml:space="preserve"><value>Ефект на избледняване при изтриване от кадъра, от който преди това са взети</value></data>
-   <data name="dlgPreferences_Drawings_lblFadingFrames" xml:space="preserve"><value>Броят на кадрите с ефект на избледняване на картината: {0}</value></data>
    
    <data name="dlgPreferences_Player_DeinterlaceByDefault" xml:space="preserve"><value>Пренасочване при отваряне на нов видеоклип</value></data>
    <data name="dlgPreferences_Player_InteractiveFrameTracker" xml:space="preserve"><value>Обновете изображението, докато движите курсора</value></data>
    <data name="dlgPreferences_Player_SyncLockSpeeds" xml:space="preserve"><value>Подравнете скоростта при сравняване на видео</value></data>
-   <data name="dlgPreferences_Player_Format169" xml:space="preserve"><value>Формат 16:9</value></data>
-   <data name="dlgPreferences_Player_Format43" xml:space="preserve"><value>Формат 4:3</value></data>
-   <data name="dlgPreferences_Player_FormatAuto" xml:space="preserve"><value>Автоматично определяне</value></data>
    <data name="dlgPreferences_Player_GroupAnalysisMode" xml:space="preserve"><value>Премини в режим на анализ</value></data>
    <data name="dlgPreferences_General_lblHistoryCount" xml:space="preserve"><value>Брой файлове в историята</value></data>
    
@@ -206,13 +201,13 @@
    <data name="mnuPreferences" xml:space="preserve"><value>Избрано</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Повторение</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Вид</value></data>
-   <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Превключване</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Назад</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Брой кадри</value></data>
    <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Общо милисекунди</value></data>
    <data name="TimeCodeFormat_Microseconds" xml:space="preserve"><value>Общо микросекунди</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Стотици минути</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Десет хилядни часа</value></data>
+   
    
    
    

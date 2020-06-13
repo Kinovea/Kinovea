@@ -106,7 +106,7 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Log :.
+        ///   Looks up a localized string similar to Change Log:.
         /// </summary>
         public static string Updater_LblChangeLog {
             get {
@@ -115,7 +115,7 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Version.
+        ///   Looks up a localized string similar to New version.
         /// </summary>
         public static string Updater_NewVersion {
             get {
@@ -142,7 +142,7 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your version is up to date !.
+        ///   Looks up a localized string similar to Your version is up to date!.
         /// </summary>
         public static string Updater_UpToDate {
             get {

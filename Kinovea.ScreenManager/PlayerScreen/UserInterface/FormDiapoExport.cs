@@ -134,7 +134,7 @@ namespace Kinovea.ScreenManager
             Hide();
             
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = ScreenManagerLang.dlgSaveVideoTitle;
+            saveFileDialog.Title = ScreenManagerLang.CommandSaveMovie_FriendlyName;
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.Filter = ScreenManagerLang.FileFilter_SaveVideo;
             saveFileDialog.FilterIndex = 1;

@@ -170,7 +170,6 @@
    <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Calibració del pla</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duració de cada fotograma clau: {0} centèsima de segon.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duració de cada fotograma clau: {0:0.00} segons.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Desar el vídeo</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Vídeo original amb una pausa a cada fotograma clau</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Presentació amb només els fotogrames clau</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipus de vídeo</value></data>
@@ -191,10 +190,8 @@
    <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Només es desaran les descripcions dels dibuixos i altres objectes de l'anàlisi.# L'arxiu pot ser importat en un vídeo posteriorment</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Desar un vídeo amb l'anàlisi incrustat permanentment</value></data>
    <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Els objectes de l'anàlisi seran visibles en tots els reproductors però no seran modificables.# Els comentaris de les imatges clau no es desaran.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Desar el vídeo...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Desar les dades de les imatges clau</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Desar la seqüència d'imatges</value></data>
-   <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Desar el vídeo</value></data>
    <data name="dlgCameraCalibration_Title" xml:space="preserve"><value>Calibratge de la càmera</value></data>
    <data name="dlgCameraCalibration_DistortionCoefficients" xml:space="preserve"><value>Coeficients de distorsió</value></data>
    <data name="dlgCameraCalibration_CameraIntrinsics" xml:space="preserve"><value>Paràmetres intrínsecs</value></data>
@@ -282,6 +279,7 @@
    <data name="Generic_Cut" xml:space="preserve"><value>Tallar</value></data>
    <data name="Generic_Copy" xml:space="preserve"><value>Copiar</value></data>
    <data name="Generic_Paste" xml:space="preserve"><value>Enganxar</value></data>
+   <data name="Generic_PlayPause" xml:space="preserve"><value>Reproduir/Pausa</value></data>
    <data name="FileProperty_Size" xml:space="preserve"><value>Mesura</value></data>
    <data name="FileProperty_Framerate" xml:space="preserve"><value>Freqüència d'imatges</value></data>
    <data name="FileProperty_Duration" xml:space="preserve"><value>Duració</value></data>
@@ -372,7 +370,6 @@
    <data name="mnuMirror" xml:space="preserve"><value>Mirall</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Una pantalla de captura</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Una pantalla de reproducció</value></data>
-   <data name="mnuPlayPause" xml:space="preserve"><value>Reprodueix | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reprendre l'edició de la trajectòria</value></data>
    <data name="mnuMarkTimeAsOrigin" xml:space="preserve"><value>Marcar el temps actual com a origen de temps</value></data>
    
@@ -380,7 +377,6 @@
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tots els fitxers (*.*)|*.*</value></data>
    <data name="mnuOpenReplayWatcher" xml:space="preserve"><value>Obrir observador de carpeta de reproducció</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Desar</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar la mesura...</value></data>
    <data name="mnuCalibrate" xml:space="preserve"><value>Calibrar...</value></data>
    <data name="mnuTimebase" xml:space="preserve"><value>Configurar la velocitat del video</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar mesura</value></data>
@@ -437,7 +433,6 @@
    <data name="ToolTip_Last" xml:space="preserve"><value>Anar al final</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Lupa</value></data>
    <data name="ToolTip_Next" xml:space="preserve"><value>Ves al següent fotograma</value></data>
-   <data name="ToolTip_Play" xml:space="preserve"><value>Reproduir/Pausa</value></data>
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Canviar el mode de repetició (Una vegada/Cíclic) – Mode actual: Cíclic</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Canviar el mode de repetició (Una vegada/Cíclic) – Mode actual: Una vegada</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Desar una seqüència d'imatges</value></data>
