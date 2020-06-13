@@ -201,6 +201,7 @@
    <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Запамти профил калибрације камере</value></data>
    
    
+   <data name="DrawingName_Arrow" xml:space="preserve"><value>Стрелица</value></data>
    <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Стрелица – Испрекидана</value></data>
    <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Стрелица – Изувијана</value></data>
    <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Стрелица – Закривљена</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>Мрежа за проверу камере</value></data>
    <data name="DrawingName_Grid" xml:space="preserve"><value>Координантна мрежа</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Перспектива координантне мреже</value></data>
+   
    
    
    

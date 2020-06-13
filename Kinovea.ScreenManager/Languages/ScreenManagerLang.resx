@@ -201,6 +201,7 @@
    <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Save camera calibration profile</value></data>
    <data name="dlgCameraCalibration_lblSensorWidth" xml:space="preserve"><value>Sensor width (mm):</value></data>
    <data name="dlgCameraCalibration_lblFocalLength" xml:space="preserve"><value>Focal length (mm):</value></data>
+   <data name="DrawingName_Arrow" xml:space="preserve"><value>Arrow</value></data>
    <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Arrow – Dash</value></data>
    <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Arrow – Squiggly</value></data>
    <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Arrow – Curve</value></data>
@@ -227,6 +228,7 @@
    <data name="DrawingName_Rectangle" xml:space="preserve"><value>Rectangle</value></data>
    <data name="DrawingName_Trajectory" xml:space="preserve"><value>Trajectory</value></data>
    <data name="DrawingName_Curve" xml:space="preserve"><value>Curve</value></data>
+   <data name="DrawingName_Clock" xml:space="preserve"><value>Clock</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>File overwrite</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>The file {0} already exists.\nDo you want to replace it?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Invalid file name</value></data>

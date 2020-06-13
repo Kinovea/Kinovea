@@ -201,6 +201,7 @@
    <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>حفظ بروفايل معايرة الكاميرا</value></data>
    
    
+   <data name="DrawingName_Arrow" xml:space="preserve"><value>سهم</value></data>
    <data name="DrawingName_ArrowDash" xml:space="preserve"><value>سهم - خطوط مقطعة</value></data>
    <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>سهم - متعرج</value></data>
    <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>سهم - منحني</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>شبكة اختبار الكاميرا</value></data>
    <data name="DrawingName_Grid" xml:space="preserve"><value>شبكة</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>شبكة المنظور</value></data>
+   
    
    
    

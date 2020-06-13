@@ -1231,6 +1231,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Arrow.
+        /// </summary>
+        public static string DrawingName_Arrow {
+            get {
+                return ResourceManager.GetString("DrawingName_Arrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Arrow – Curve.
         /// </summary>
         public static string DrawingName_ArrowCurve {
@@ -1290,6 +1299,15 @@ namespace Kinovea.ScreenManager.Languages {
         public static string DrawingName_Bikefit {
             get {
                 return ResourceManager.GetString("DrawingName_Bikefit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clock.
+        /// </summary>
+        public static string DrawingName_Clock {
+            get {
+                return ResourceManager.GetString("DrawingName_Clock", resourceCulture);
             }
         }
         

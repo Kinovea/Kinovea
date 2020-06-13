@@ -201,6 +201,7 @@
    <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Bewaar het camera calibratie profiel</value></data>
    
    
+   <data name="DrawingName_Arrow" xml:space="preserve"><value>Pijl</value></data>
    <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Pijl - gestreept</value></data>
    <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Pijl - zigzag</value></data>
    <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Pijl - curve</value></data>
@@ -227,6 +228,7 @@
    <data name="DrawingName_Rectangle" xml:space="preserve"><value>Rechthoek</value></data>
    <data name="DrawingName_Trajectory" xml:space="preserve"><value>Trajectpad</value></data>
    <data name="DrawingName_Curve" xml:space="preserve"><value>Kromme</value></data>
+   <data name="DrawingName_Clock" xml:space="preserve"><value>Klok</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overschrijf bestand</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Het bestand {0} bestaat reeds.\nWilt u het vervangen?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Incorrecte bestandsnaam</value></data>

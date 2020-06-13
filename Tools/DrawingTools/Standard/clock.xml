@@ -3,7 +3,7 @@
   <FormatVersion>1.0</FormatVersion>
   <Id>fe07fc65-624f-4cce-8a4f-e166624c6deb</Id>
   <Name>Clock</Name>
-  <DisplayName>Clock</DisplayName>
+  <DisplayName>DrawingName_Clock</DisplayName>
   <Icon>clock_frame</Icon>
   <DrawingClass>DrawingChrono</DrawingClass>
   <Attached>false</Attached>

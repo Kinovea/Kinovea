@@ -222,8 +222,10 @@
    
    
    
+   
    <data name="DrawingName_Grid" xml:space="preserve"><value>Координатна мрежа</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Перспектива на координатната мрежа</value></data>
+   
    
    
    

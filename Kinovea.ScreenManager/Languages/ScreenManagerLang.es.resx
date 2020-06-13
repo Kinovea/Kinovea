@@ -201,6 +201,7 @@
    <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Guardar perfil de calibración de la cámara</value></data>
    
    
+   <data name="DrawingName_Arrow" xml:space="preserve"><value>Flecha</value></data>
    <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Flecha – Discontínua</value></data>
    <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Flecha – Ondulada</value></data>
    <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Flecha – Curva</value></data>
@@ -227,6 +228,7 @@
    <data name="DrawingName_Rectangle" xml:space="preserve"><value>Rectángulo</value></data>
    <data name="DrawingName_Trajectory" xml:space="preserve"><value>Trayectoria</value></data>
    <data name="DrawingName_Curve" xml:space="preserve"><value>Curva</value></data>
+   <data name="DrawingName_Clock" xml:space="preserve"><value>Reloj</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobrescribir archivo</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>El archivo {0} ya existe.\n¿Desea reemplazarlo ?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nombre de archivo no válido</value></data>

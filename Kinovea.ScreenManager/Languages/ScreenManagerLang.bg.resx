@@ -201,6 +201,7 @@
    <data name="dlgCameraCalibration_SaveDialogTitle" xml:space="preserve"><value>Съхрани калибрирания профил на камерата</value></data>
    
    
+   <data name="DrawingName_Arrow" xml:space="preserve"><value>Стрелка</value></data>
    <data name="DrawingName_ArrowDash" xml:space="preserve"><value>Пунктирана стрелка</value></data>
    <data name="DrawingName_ArrowSquiggly" xml:space="preserve"><value>Стрелка на зигзаг</value></data>
    <data name="DrawingName_ArrowCurve" xml:space="preserve"><value>Стрелка с крива линия</value></data>
@@ -224,6 +225,7 @@
    <data name="DrawingName_TestGrid" xml:space="preserve"><value>Решетка за тестване на камерата</value></data>
    <data name="DrawingName_Grid" xml:space="preserve"><value>Мрежа</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>Перспективна решетка</value></data>
+   
    
    
    

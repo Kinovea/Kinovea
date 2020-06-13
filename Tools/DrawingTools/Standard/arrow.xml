@@ -3,7 +3,7 @@
   <FormatVersion>1.0</FormatVersion>
   <Id>17690D41-6564-4AD2-BBE6-3697DA79ED53</Id>
   <Name>Arrow</Name>
-  <DisplayName>ToolTip_DrawingToolArrow</DisplayName>
+  <DisplayName>DrawingName_Arrow</DisplayName>
   <Icon>arrow</Icon>
   <DrawingClass>DrawingLine</DrawingClass>
   <Attached>true</Attached>

@@ -222,8 +222,10 @@
    
    
    
+   
    <data name="DrawingName_Grid" xml:space="preserve"><value>그리드</value></data>
    <data name="DrawingName_PerspectiveGrid" xml:space="preserve"><value>원근 그리드</value></data>
+   
    
    
    
