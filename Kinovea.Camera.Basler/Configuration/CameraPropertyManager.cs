@@ -103,6 +103,8 @@ namespace Kinovea.Camera.Basler
             if (properties == null || properties.Count == 0)
                 return;
 
+            WriteCenter(deviceHandle);
+
             foreach (var pair in properties)
             {
                 if (pair.Key == "width")
@@ -111,6 +113,30 @@ namespace Kinovea.Camera.Basler
                     WriteSize(deviceHandle, pair.Value, "OffsetY");
                 else
                     WriteProperty(deviceHandle, pair.Value);
+            }
+        }
+
+        private static void WriteCenter(PYLON_DEVICE_HANDLE deviceHandle)
+        {
+            // Force write the CenterX and CenterY properties if supported.
+            // https://docs.baslerweb.com/center-x-and-center-y.html
+            // This is apparently required in order for the MaxWidth/MaxHeight properties to behave correctly 
+            // and independently of the offset property.
+            // To summarize we use the following approach:
+            // 1. If CenterX/CenterY are supported properties, we use them and OffsetX/OffsetY will be automated by Pylon.
+            // 2. Otherwise we use manually write OffsetX/OffsetY to center the image.
+            NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
+            NODE_HANDLE nodeHandleX = GenApi.NodeMapGetNode(nodeMapHandle, "CenterX");
+            NODE_HANDLE nodeHandleY = GenApi.NodeMapGetNode(nodeMapHandle, "CenterY");
+            if (nodeHandleX.IsValid && nodeHandleY.IsValid)
+            {
+                EGenApiAccessMode accessModeOffsetX = GenApi.NodeGetAccessMode(nodeHandleX);
+                EGenApiAccessMode accessModeOffsetY = GenApi.NodeGetAccessMode(nodeHandleY);
+                if (accessModeOffsetX == EGenApiAccessMode.RW && accessModeOffsetY == EGenApiAccessMode.RW)
+                {
+                    GenApi.BooleanSetValue(nodeHandleX, true);
+                    GenApi.BooleanSetValue(nodeHandleY, true);
+                }
             }
         }
 
@@ -260,7 +286,6 @@ namespace Kinovea.Camera.Basler
             long max = GenApi.IntegerGetMax(nodeHandle);
             long step = GenApi.IntegerGetInc(nodeHandle);
             EGenApiRepresentation repr = GenApi.IntegerGetRepresentation(nodeHandle);
-            
             if (!string.IsNullOrEmpty(symbolMax))
             {
                 NODE_HANDLE nodeHandleMax = GenApi.NodeMapGetNode(nodeMapHandle, symbolMax);
@@ -386,40 +411,57 @@ namespace Kinovea.Camera.Basler
 
             NODEMAP_HANDLE nodeMapHandle = Pylon.DeviceGetNodeMap(deviceHandle);
             NODE_HANDLE nodeHandle = GenApi.NodeMapGetNode(nodeMapHandle, property.Identifier);
-            NODE_HANDLE nodeHandleOffset = GenApi.NodeMapGetNode(nodeMapHandle, identifierOffset);
-            if (!nodeHandle.IsValid || !nodeHandleOffset.IsValid)
+            if (!nodeHandle.IsValid)
                 return;
 
             EGenApiAccessMode accessMode = GenApi.NodeGetAccessMode(nodeHandle);
-            EGenApiAccessMode accessModeOffset = GenApi.NodeGetAccessMode(nodeHandleOffset);
-            if (accessMode != EGenApiAccessMode.RW || accessModeOffset != EGenApiAccessMode.RW)
+            if (accessMode != EGenApiAccessMode.RW)
                 return;
 
             long value = long.Parse(property.CurrentValue, CultureInfo.InvariantCulture);
             long min = GenApi.IntegerGetMin(nodeHandle);
             long max = GenApi.IntegerGetMax(nodeHandle);
             long step = GenApi.IntegerGetInc(nodeHandle);
+            
             value = FixValue(value, min, max, step);
-
-            long offset = (max - value) / 2;
-            long minOffset = GenApi.IntegerGetMin(nodeHandleOffset);
-            long stepOffset = GenApi.IntegerGetInc(nodeHandleOffset);
-
-            long remainderOffset = (offset - minOffset) % stepOffset;
-            if (remainderOffset != 0)
-                offset = offset - remainderOffset + stepOffset;
-
-            // We need to be careful with the order and not write a value that doesn't fit due to the offset, or vice versa.
-            long currentValue = GenApi.IntegerGetValue(nodeHandle);
-            if (value > currentValue)
+            
+            // Offset handling.
+            // Some cameras have a CenterX/CenterY property.
+            // When it is set, the offset is automatic and becomes read-only.
+            bool setOffset = false;
+            NODE_HANDLE nodeHandleOffset = GenApi.NodeMapGetNode(nodeMapHandle, identifierOffset);
+            if (nodeHandleOffset.IsValid)
             {
-                GenApi.IntegerSetValue(nodeHandleOffset, offset);
-                GenApi.IntegerSetValue(nodeHandle, value);
+                EGenApiAccessMode accessModeOffset = GenApi.NodeGetAccessMode(nodeHandleOffset);
+                if (accessModeOffset == EGenApiAccessMode.RW)
+                    setOffset = true;
+            }
+
+            if (setOffset)
+            {
+                long offset = (max - value) / 2;
+                long minOffset = GenApi.IntegerGetMin(nodeHandleOffset);
+                long stepOffset = GenApi.IntegerGetInc(nodeHandleOffset);
+                long remainderOffset = (offset - minOffset) % stepOffset;
+                if (remainderOffset != 0)
+                    offset = offset - remainderOffset + stepOffset;
+
+                // We need to be careful with the order and not write a value that doesn't fit due to the offset, or vice versa.
+                long currentValue = GenApi.IntegerGetValue(nodeHandle);
+                if (value > currentValue)
+                {
+                    GenApi.IntegerSetValue(nodeHandleOffset, offset);
+                    GenApi.IntegerSetValue(nodeHandle, value);
+                }
+                else
+                {
+                    GenApi.IntegerSetValue(nodeHandle, value);
+                    GenApi.IntegerSetValue(nodeHandleOffset, offset);
+                }
             }
             else
             {
                 GenApi.IntegerSetValue(nodeHandle, value);
-                GenApi.IntegerSetValue(nodeHandleOffset, offset);
             }
         }
 
