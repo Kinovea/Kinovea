@@ -70,11 +70,11 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnSync_ToolTip" xml:space="preserve"><value>Sincronizar Vídeos no Quadro atual.</value></data>
-   <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Voltar ao Início de Ambos os Vídeos.</value></data>
-   <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Pular para o Fim de Ambos os Vídeos.</value></data>
-   <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Ir para o Próximo Quadro de Ambos os Vídeos.</value></data>
-   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Voltar ao Quadro Anterior de Ambos os Vídeos.</value></data>
+   <data name="btnSync_ToolTip" xml:space="preserve"><value>Sincronizar Vídeos no Quadro atual</value></data>
+   <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Voltar ao Início de Ambos os Vídeos</value></data>
+   <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Pular para o Fim de Ambos os Vídeos</value></data>
+   <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Ir para o Próximo Quadro de Ambos os Vídeos</value></data>
+   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Voltar ao Quadro Anterior de Ambos os Vídeos</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reproduzir | Pausar Ambos os Videos</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Adicionar Desenho</value></data>
    

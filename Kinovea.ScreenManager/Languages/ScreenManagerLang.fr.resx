@@ -70,12 +70,12 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnSync_ToolTip" xml:space="preserve"><value>Synchroniser les vidéos sur les images courantes.</value></data>
-   <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Aller au début des deux vidéos.</value></data>
-   <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Aller à la fin des deux vidéos.</value></data>
-   <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Aller à l'image suivante pour les deux vidéos.</value></data>
-   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Aller à l'image précédente pour les deux vidéos.</value></data>
-   <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Lire ou mettre en pause les deux vidéos.</value></data>
+   <data name="btnSync_ToolTip" xml:space="preserve"><value>Synchroniser les vidéos sur les images courantes</value></data>
+   <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Aller au début des deux vidéos</value></data>
+   <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Aller à la fin des deux vidéos</value></data>
+   <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Aller à l'image suivante pour les deux vidéos</value></data>
+   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Aller à l'image précédente pour les deux vidéos</value></data>
+   <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Lire ou mettre en pause les deux vidéos</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Ajouter un dessin</value></data>
    <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>Modifier le dessin</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Effacer le dessin</value></data>

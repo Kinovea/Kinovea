@@ -61,7 +61,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Synchronize videos on the current frames..
+        ///   Looks up a localized string similar to Synchronize videos on the current frames.
         /// </summary>
         public static string btnSync_ToolTip {
             get {
@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go back to the beginning of both videos..
+        ///   Looks up a localized string similar to Go back to the beginning of both videos.
         /// </summary>
         public static string buttonGotoFirst_ToolTip {
             get {
@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to the end of both videos..
+        ///   Looks up a localized string similar to Go to the end of both videos.
         /// </summary>
         public static string buttonGotoLast_ToolTip {
             get {
@@ -88,7 +88,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to next frame for both videos..
+        ///   Looks up a localized string similar to Go to next frame for both videos.
         /// </summary>
         public static string buttonGotoNext_ToolTip {
             get {
@@ -97,7 +97,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to previous frame for both videos..
+        ///   Looks up a localized string similar to Go to previous frame for both videos.
         /// </summary>
         public static string buttonGotoPrevious_ToolTip {
             get {
@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Play or pause both videos..
+        ///   Looks up a localized string similar to Play or pause both videos.
         /// </summary>
         public static string buttonPlay_ToolTip {
             get {
@@ -2167,7 +2167,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Common controls :.
+        ///   Looks up a localized string similar to Joint controls :.
         /// </summary>
         public static string lblInfo_Text {
             get {

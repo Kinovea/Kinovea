@@ -70,12 +70,12 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="btnSync_ToolTip" xml:space="preserve"><value>Synchronize videos on the current frames.</value></data>
-   <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Go back to the beginning of both videos.</value></data>
-   <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Go to the end of both videos.</value></data>
-   <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Go to next frame for both videos.</value></data>
-   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Go to previous frame for both videos.</value></data>
-   <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Play or pause both videos.</value></data>
+   <data name="btnSync_ToolTip" xml:space="preserve"><value>Synchronize videos on the current frames</value></data>
+   <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Go back to the beginning of both videos</value></data>
+   <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Go to the end of both videos</value></data>
+   <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Go to next frame for both videos</value></data>
+   <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Go to previous frame for both videos</value></data>
+   <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Play or pause both videos</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Add drawing</value></data>
    <data name="CommandModifyDrawing_FriendlyName" xml:space="preserve"><value>Modify drawing</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Delete drawing</value></data>
@@ -298,7 +298,7 @@
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Key images have been modified.\nDo you want to save key images data before closing ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Key images data not saved</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Delay (s):</value></data>
-   <data name="lblInfo_Text" xml:space="preserve"><value>Common controls :</value></data>
+   <data name="lblInfo_Text" xml:space="preserve"><value>Joint controls :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duration</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Speed : {0}</value></data>
