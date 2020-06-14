@@ -1,5 +1,5 @@
 
-Kinovea 0.9.2 - (~2020-06).
+Kinovea 0.9.2 - 2020-06.
 
 Kinovea is an open source solution for capturing, studying and annotating videos.
 Use it for sport coaching, performance analysis, podiatrics, animation commenting, ergonomics engineering and more...
@@ -38,7 +38,8 @@ Communication channels:
 Changelog:
 ----------
 
-0.9.2 - TBD
+0.9.2 - June 2020.
+    Added - Bulgarian locale.
     Added - Capture: support for "Daheng Imaging" cameras.
     Added - Capture: "Scheduled" recording mode, saves the buffer only when recording stops.
     Added - Capture: Ability to record the buffer when the camera stream is paused.
@@ -46,22 +47,29 @@ Changelog:
     Improved - General: the list of recent files now also contains replay observers.
     Improved - Capture: image rotation is now supported in the display and in recorded videos.
     Improved - Capture: a KVA file is now saved with the captured video, providing capture framerate and time origin.
+    Improved - Capture: the Basler module now saves and restores properties.
+    Improved - Capture: the Basler module now centers the region of interest when not using the whole image size.
+    Improved - Capture: the Basler module now supports framerate auto checkbox.
     Improved - Playback: the lens distortion calibration tool is now interactive.
-    Improved - Playback: use current slow motion value when saving dual videos.
+    Improved - Playback: the current slow motion value is used when saving dual videos.
     Improved - Annotations: a new menu and dialog to configure fading per-drawing, with opaque section and max opacity.
     Improved - Annotations: the linear coordinate system responds to changes in the calibration object.
     Improved - Annotations: the linear coordinate system now supports rotation.
     Improved - Annotations: added polyline to custom tools.
     Improved - Annotations: replaced the profile custom tool.
     Improved - Annotations: trackable drawings are now opaque only on their tracked frames.
-    Fixed - Zooming was broken in some corner cases.
-    Fixed - Video comparison was broken when one of the videos was over 35 minutes.
     Fixed - File names with characters not present in the system default code page were not supported.
+    Fixed - Zooming was broken in some corner cases.
+    Fixed - Manually moving the frame tracker all the way to the left was broken for some videos.
+    Fixed - Disabling the microphone in Windows could cause a crash when opening the preferences dialog.
+    Fixed - The synchronization button was broken.
+    Fixed - Video comparison was broken when one of the videos was over 35 minutes.
+    Fixed - There was an unnecessary hard coded limit of 100fps when saving dual video.
+    Fixed - Custom tools with points that are both constrained and tracked were not working correctly.
+    Fixed - In custom tools with angles the custom distance of the angle label was not correct. 
     Fixed - Importing time origin from KVA files could yield wrong value.
     Fixed - The precision of time display was not good in some cases.
     Fixed - The visibility of the label of chronometer was broken.
-    Fixed - The synchronization button was broken.
-    Fixed - There was an unnecessary hard coded limit of 100fps when saving dual video.
     Fixed - Converting trajectory data from files created in 0.8.15 was broken.
     Fixed - The delay slider value and framerate were wrong after changing the camera framerate.
     Fixed - Opening a KVA via open video while the previous video was running could cause a crash.

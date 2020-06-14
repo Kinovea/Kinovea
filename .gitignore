@@ -1,22 +1,3 @@
-# Kinovea specifics
-
-Localization/WorkingDirectory/*.resx
-Localization/WorkingDirectory/content.xml
-Localization/WorkingDirectory/.~*
-
-Root/Languages/RootLang.resources
-FileBrowser/Languages/FileBrowserLang.resources
-ScreenManager/Languages/ScreenManagerLang.resources
-Updater/Languages/UpdaterLang.resources
-
-Installer/*.exe
-Installer/OtherFiles/Manuals/*.chm
-Installer/build.log
-Installer/Kinovea.Portable*/*
-Installer/Kinovea-*
-Installer/build-*.txt
-
-*.bak
 
 ##-------------------------------------------------------------------
 ## Ignore Visual Studio temporary files, build results, and
@@ -372,6 +353,28 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+##---------------------------------------------------------------------------------
+# Kinovea specifics
+##---------------------------------------------------------------------------------
+
+Localization/WorkingDirectory/*.resx
+Localization/WorkingDirectory/content.xml
+Localization/WorkingDirectory/.~*
+
+Root/Languages/RootLang.resources
+FileBrowser/Languages/FileBrowserLang.resources
+ScreenManager/Languages/ScreenManagerLang.resources
+Updater/Languages/UpdaterLang.resources
+
+Installer/*.exe
+Installer/OtherFiles/Manuals/*.chm
+Installer/build.log
+Installer/Kinovea.Portable*/*
+Installer/Kinovea-*
+Installer/build-*.txt
+
+*.bak
+
 /Localization/Contrib/*
 /Installer/OtherFiles/Changelog*
 /Installer/OtherFiles/HelpVideos/*.avi
@@ -402,3 +405,4 @@ MigrationBackup/
 /Localization/WorkingDirectory/sr-Latn-CS/Kinovea.Updater.resources.dll
 /Localization/WorkingDirectory/.idea/*
 /Kinovea-*.zip
+/Tools/UnusedResources/UnusedResources/Results*
