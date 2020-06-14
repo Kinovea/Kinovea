@@ -41,7 +41,7 @@ Changelog:
 0.9.2 - June 2020.
     Added - Bulgarian locale.
     Added - Capture: support for "Daheng Imaging" cameras.
-    Added - Capture: "Scheduled" recording mode, saves the buffer only when recording stops.
+    Added - Capture: "Retroactive" recording mode, saves the buffer after recording stops.
     Added - Capture: Ability to record the buffer when the camera stream is paused.
     Added - Annotations: canis and equus skeleton tools.
     Improved - General: the list of recent files now also contains replay observers.
