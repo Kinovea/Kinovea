@@ -341,7 +341,7 @@
    <data name="mnuDrawingTrackingStop" xml:space="preserve"><value>Finalizar seguimiento</value></data>
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Dos pantallas de captura</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>Una pantalla de captura y una pantalla de lectura</value></data>
-   <data name="mnuTwoPlayers" xml:space="preserve"><value>Dos pantallas de Lectura</value></data>
+   <data name="mnuTwoPlayers" xml:space="preserve"><value>Dos pantallas de lectura</value></data>
    <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Exportar la hoja de cálculo</value></data>
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>

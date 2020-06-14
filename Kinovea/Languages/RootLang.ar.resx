@@ -194,7 +194,7 @@
    <data name="mnuHistory" xml:space="preserve"><value>الاخيرة</value></data>
    <data name="mnuHistoryReset" xml:space="preserve"><value>إعادة ضبط سجل التصفح</value></data>
    <data name="mnuImage" xml:space="preserve"><value>صورة</value></data>
-   <data name="mnuLanguages" xml:space="preserve"><value>اللغة:</value></data>
+   <data name="mnuLanguages" xml:space="preserve"><value>اللغة</value></data>
    <data name="mnuVideo" xml:space="preserve"><value>فيديو</value></data>
    <data name="mnuTools" xml:space="preserve"><value>الادوات</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>الخيارات</value></data>
