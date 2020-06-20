@@ -159,7 +159,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual void BeforePlayloop() override;
         virtual void BeforeFrameEnumeration() override;
         virtual void AfterFrameEnumeration() override;
-        virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn) override;
+        virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn) override;
         virtual void ResetDrops() override;
 
     // Construction / Destruction.
@@ -224,7 +224,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         Size FixSize(Size _size, bool sideways);
         void ResetDecodingSize();
         void PreBufferingWorker(Object^ _canceler);
-        bool WorkingZoneFitsInMemory(VideoSection _newZone, int _maxSeconds, int _maxMemory);
+        bool WorkingZoneFitsInMemory(VideoSection _newZone, int _maxMemory);
         bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
         void SwitchDecodingMode(VideoDecodingMode _mode);
         void SwitchToBestAfterCaching();

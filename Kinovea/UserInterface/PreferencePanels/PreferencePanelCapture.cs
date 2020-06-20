@@ -29,7 +29,6 @@ using Kinovea.Root.Properties;
 using Kinovea.ScreenManager;
 using Kinovea.Services;
 using System.Collections.Generic;
-using Microsoft.VisualBasic.Devices;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Globalization;
 
@@ -185,17 +184,8 @@ namespace Kinovea.Root
         {
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
 
-            // Max allocation of memory based on bitness and physical memory.
-            ulong megabytes = 1024 * 1024;
-            ComputerInfo ci = new ComputerInfo();
-            int maxMemory = (int)(ci.TotalPhysicalMemory / megabytes);
-            int thresholdLargeMemory = 3072;
-            int reserve = 2048;
-
-            if (Software.Is32bit || maxMemory < thresholdLargeMemory)
-                trkMemoryBuffer.Maximum = 1024;
-            else
-                trkMemoryBuffer.Maximum = maxMemory - reserve;
+            int maxMemoryBuffer = MemoryHelper.MaxMemoryBuffer();
+            trkMemoryBuffer.Maximum = maxMemoryBuffer;
 
             memoryBuffer = Math.Min(memoryBuffer, trkMemoryBuffer.Maximum);
             trkMemoryBuffer.Value = memoryBuffer;

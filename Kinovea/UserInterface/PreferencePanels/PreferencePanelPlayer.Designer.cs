@@ -49,11 +49,7 @@ namespace Kinovea.Root
         private void InitializeComponent()
         {
       this.chkDeinterlace = new System.Windows.Forms.CheckBox();
-      this.grpSwitchToAnalysis = new System.Windows.Forms.GroupBox();
-      this.lblWorkingZoneLogic = new System.Windows.Forms.Label();
-      this.trkWorkingZoneSeconds = new System.Windows.Forms.TrackBar();
-      this.lblWorkingZoneSeconds = new System.Windows.Forms.Label();
-      this.trkWorkingZoneMemory = new System.Windows.Forms.TrackBar();
+      this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
       this.lblWorkingZoneMemory = new System.Windows.Forms.Label();
       this.tabSubPages = new System.Windows.Forms.TabControl();
       this.tabGeneral = new System.Windows.Forms.TabPage();
@@ -62,6 +58,7 @@ namespace Kinovea.Root
       this.cmbImageFormats = new System.Windows.Forms.ComboBox();
       this.lblImageFormat = new System.Windows.Forms.Label();
       this.chkLockSpeeds = new System.Windows.Forms.CheckBox();
+      this.tabMemory = new System.Windows.Forms.TabPage();
       this.tabUnits = new System.Windows.Forms.TabPage();
       this.tbCustomLengthAb = new System.Windows.Forms.TextBox();
       this.tbCustomLengthUnit = new System.Windows.Forms.TextBox();
@@ -78,14 +75,11 @@ namespace Kinovea.Root
       this.lblSpeedUnit = new System.Windows.Forms.Label();
       this.cmbTimeCodeFormat = new System.Windows.Forms.ComboBox();
       this.lblTimeMarkersFormat = new System.Windows.Forms.Label();
-      this.tabMemory = new System.Windows.Forms.TabPage();
-      this.grpSwitchToAnalysis.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneSeconds)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneMemory)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
-      this.tabUnits.SuspendLayout();
       this.tabMemory.SuspendLayout();
+      this.tabUnits.SuspendLayout();
       this.SuspendLayout();
       // 
       // chkDeinterlace
@@ -98,79 +92,29 @@ namespace Kinovea.Root
       this.chkDeinterlace.UseVisualStyleBackColor = true;
       this.chkDeinterlace.CheckedChanged += new System.EventHandler(this.ChkDeinterlaceCheckedChanged);
       // 
-      // grpSwitchToAnalysis
-      // 
-      this.grpSwitchToAnalysis.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.grpSwitchToAnalysis.Controls.Add(this.lblWorkingZoneLogic);
-      this.grpSwitchToAnalysis.Controls.Add(this.trkWorkingZoneSeconds);
-      this.grpSwitchToAnalysis.Controls.Add(this.lblWorkingZoneSeconds);
-      this.grpSwitchToAnalysis.Controls.Add(this.trkWorkingZoneMemory);
-      this.grpSwitchToAnalysis.Controls.Add(this.lblWorkingZoneMemory);
-      this.grpSwitchToAnalysis.Location = new System.Drawing.Point(7, 11);
-      this.grpSwitchToAnalysis.Name = "grpSwitchToAnalysis";
-      this.grpSwitchToAnalysis.Size = new System.Drawing.Size(469, 191);
-      this.grpSwitchToAnalysis.TabIndex = 26;
-      this.grpSwitchToAnalysis.TabStop = false;
-      this.grpSwitchToAnalysis.Text = "Switch to Analysis Mode";
-      // 
-      // lblWorkingZoneLogic
-      // 
-      this.lblWorkingZoneLogic.AutoSize = true;
-      this.lblWorkingZoneLogic.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblWorkingZoneLogic.Location = new System.Drawing.Point(12, 93);
-      this.lblWorkingZoneLogic.Name = "lblWorkingZoneLogic";
-      this.lblWorkingZoneLogic.Size = new System.Drawing.Size(29, 13);
-      this.lblWorkingZoneLogic.TabIndex = 37;
-      this.lblWorkingZoneLogic.Text = "And";
-      // 
-      // trkWorkingZoneSeconds
-      // 
-      this.trkWorkingZoneSeconds.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.trkWorkingZoneSeconds.BackColor = System.Drawing.Color.White;
-      this.trkWorkingZoneSeconds.Location = new System.Drawing.Point(9, 43);
-      this.trkWorkingZoneSeconds.Maximum = 30;
-      this.trkWorkingZoneSeconds.Minimum = 1;
-      this.trkWorkingZoneSeconds.Name = "trkWorkingZoneSeconds";
-      this.trkWorkingZoneSeconds.Size = new System.Drawing.Size(454, 45);
-      this.trkWorkingZoneSeconds.TabIndex = 38;
-      this.trkWorkingZoneSeconds.Value = 12;
-      this.trkWorkingZoneSeconds.ValueChanged += new System.EventHandler(this.trkWorkingZoneSeconds_ValueChanged);
-      // 
-      // lblWorkingZoneSeconds
-      // 
-      this.lblWorkingZoneSeconds.AutoSize = true;
-      this.lblWorkingZoneSeconds.Location = new System.Drawing.Point(14, 26);
-      this.lblWorkingZoneSeconds.Name = "lblWorkingZoneSeconds";
-      this.lblWorkingZoneSeconds.Size = new System.Drawing.Size(191, 13);
-      this.lblWorkingZoneSeconds.TabIndex = 36;
-      this.lblWorkingZoneSeconds.Text = "Working Zone is less than 12 seconds.";
-      // 
       // trkWorkingZoneMemory
       // 
-      this.trkWorkingZoneMemory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.trkMemoryBuffer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.trkWorkingZoneMemory.BackColor = System.Drawing.Color.White;
-      this.trkWorkingZoneMemory.Location = new System.Drawing.Point(10, 137);
-      this.trkWorkingZoneMemory.Maximum = 1024;
-      this.trkWorkingZoneMemory.Minimum = 16;
-      this.trkWorkingZoneMemory.Name = "trkWorkingZoneMemory";
-      this.trkWorkingZoneMemory.Size = new System.Drawing.Size(453, 45);
-      this.trkWorkingZoneMemory.TabIndex = 35;
-      this.trkWorkingZoneMemory.TickFrequency = 50;
-      this.trkWorkingZoneMemory.Value = 512;
-      this.trkWorkingZoneMemory.ValueChanged += new System.EventHandler(this.trkWorkingZoneMemory_ValueChanged);
+      this.trkMemoryBuffer.BackColor = System.Drawing.Color.White;
+      this.trkMemoryBuffer.Location = new System.Drawing.Point(15, 55);
+      this.trkMemoryBuffer.Maximum = 1024;
+      this.trkMemoryBuffer.Minimum = 16;
+      this.trkMemoryBuffer.Name = "trkWorkingZoneMemory";
+      this.trkMemoryBuffer.Size = new System.Drawing.Size(452, 45);
+      this.trkMemoryBuffer.TabIndex = 35;
+      this.trkMemoryBuffer.TickFrequency = 50;
+      this.trkMemoryBuffer.Value = 512;
+      this.trkMemoryBuffer.ValueChanged += new System.EventHandler(this.trkWorkingZoneMemory_ValueChanged);
       // 
       // lblWorkingZoneMemory
       // 
       this.lblWorkingZoneMemory.AutoSize = true;
-      this.lblWorkingZoneMemory.Location = new System.Drawing.Point(14, 119);
+      this.lblWorkingZoneMemory.Location = new System.Drawing.Point(15, 30);
       this.lblWorkingZoneMemory.Name = "lblWorkingZoneMemory";
-      this.lblWorkingZoneMemory.Size = new System.Drawing.Size(257, 13);
+      this.lblWorkingZoneMemory.Size = new System.Drawing.Size(208, 13);
       this.lblWorkingZoneMemory.TabIndex = 17;
-      this.lblWorkingZoneMemory.Text = "Working Zone will take less than 512 Mib of Memory.";
+      this.lblWorkingZoneMemory.Text = "Memory allocated for frame buffers: {0} MB";
       // 
       // tabSubPages
       // 
@@ -247,6 +191,18 @@ namespace Kinovea.Root
       this.chkLockSpeeds.Text = "dlgPreferences_SyncLockSpeeds";
       this.chkLockSpeeds.UseVisualStyleBackColor = true;
       this.chkLockSpeeds.CheckedChanged += new System.EventHandler(this.ChkLockSpeedsCheckedChanged);
+      // 
+      // tabMemory
+      // 
+      this.tabMemory.Controls.Add(this.trkMemoryBuffer);
+      this.tabMemory.Controls.Add(this.lblWorkingZoneMemory);
+      this.tabMemory.Location = new System.Drawing.Point(4, 22);
+      this.tabMemory.Name = "tabMemory";
+      this.tabMemory.Padding = new System.Windows.Forms.Padding(3);
+      this.tabMemory.Size = new System.Drawing.Size(482, 296);
+      this.tabMemory.TabIndex = 1;
+      this.tabMemory.Text = "Memory";
+      this.tabMemory.UseVisualStyleBackColor = true;
       // 
       // tabUnits
       // 
@@ -406,17 +362,6 @@ namespace Kinovea.Root
       this.lblTimeMarkersFormat.TabIndex = 27;
       this.lblTimeMarkersFormat.Text = "Time markers format :";
       // 
-      // tabMemory
-      // 
-      this.tabMemory.Controls.Add(this.grpSwitchToAnalysis);
-      this.tabMemory.Location = new System.Drawing.Point(4, 22);
-      this.tabMemory.Name = "tabMemory";
-      this.tabMemory.Padding = new System.Windows.Forms.Padding(3);
-      this.tabMemory.Size = new System.Drawing.Size(482, 296);
-      this.tabMemory.TabIndex = 1;
-      this.tabMemory.Text = "Memory";
-      this.tabMemory.UseVisualStyleBackColor = true;
-      // 
       // PreferencePanelPlayer
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -425,16 +370,14 @@ namespace Kinovea.Root
       this.Controls.Add(this.tabSubPages);
       this.Name = "PreferencePanelPlayer";
       this.Size = new System.Drawing.Size(490, 322);
-      this.grpSwitchToAnalysis.ResumeLayout(false);
-      this.grpSwitchToAnalysis.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneSeconds)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneMemory)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).EndInit();
       this.tabSubPages.ResumeLayout(false);
       this.tabGeneral.ResumeLayout(false);
       this.tabGeneral.PerformLayout();
+      this.tabMemory.ResumeLayout(false);
+      this.tabMemory.PerformLayout();
       this.tabUnits.ResumeLayout(false);
       this.tabUnits.PerformLayout();
-      this.tabMemory.ResumeLayout(false);
       this.ResumeLayout(false);
 
         }
@@ -444,12 +387,8 @@ namespace Kinovea.Root
         private System.Windows.Forms.TabPage tabMemory;
         private System.Windows.Forms.TabPage tabGeneral;
         private System.Windows.Forms.TabControl tabSubPages;
-        private System.Windows.Forms.Label lblWorkingZoneSeconds;
-        private System.Windows.Forms.TrackBar trkWorkingZoneSeconds;
-        private System.Windows.Forms.Label lblWorkingZoneLogic;
         private System.Windows.Forms.Label lblWorkingZoneMemory;
-        private System.Windows.Forms.TrackBar trkWorkingZoneMemory;
-        private System.Windows.Forms.GroupBox grpSwitchToAnalysis;
+        private System.Windows.Forms.TrackBar trkMemoryBuffer;
         private System.Windows.Forms.CheckBox chkDeinterlace;
         private System.Windows.Forms.TabPage tabUnits;
         private System.Windows.Forms.ComboBox cmbAngleUnit;

@@ -122,7 +122,7 @@ namespace Kinovea.Video.SVG
             return UpdateCurrent(timestamp);
         }
         
-        public override void UpdateWorkingZone(VideoSection newZone, bool forceReload, int maxSeconds, int maxMemory, Action<DoWorkEventHandler> workerFn)
+        public override void UpdateWorkingZone(VideoSection newZone, bool forceReload, int maxMemory, Action<DoWorkEventHandler> workerFn)
         {
             workingZone = newZone;
         }

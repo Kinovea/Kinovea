@@ -70,8 +70,7 @@ namespace Kinovea.Root
         private string customLengthUnit;
         private string customLengthAbbreviation;
         private bool syncLockSpeeds;
-        private int workingZoneSeconds;
-        private int workingZoneMemory;
+        private int memoryBuffer;
         #endregion
         
         #region Construction & Initialization
@@ -117,32 +116,38 @@ namespace Kinovea.Root
             
             syncLockSpeeds = PreferencesManager.PlayerPreferences.SyncLockSpeed;
             
-            workingZoneSeconds = PreferencesManager.PlayerPreferences.WorkingZoneSeconds;
-            workingZoneMemory = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
+            memoryBuffer = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
         }
         private void InitPage()
         {
-            InitTabGeneral();
-            InitTabUnits();
-            InitTabMemory();
+            InitPageGeneral();
+            InitPageMemory();
+            InitPageUnits();
         }
 
-        private void InitTabGeneral()
+        private void InitPageGeneral()
         {
             tabGeneral.Text = RootLang.dlgPreferences_tabGeneral;
-            chkDeinterlace.Text = RootLang.dlgPreferences_Player_DeinterlaceByDefault;
             chkDetectImageSequences.Text = RootLang.dlgPreferences_Player_ImportImageSequences;
-            chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
             chkLockSpeeds.Text = RootLang.dlgPreferences_Player_SyncLockSpeeds;
+            chkInteractiveTracker.Text = RootLang.dlgPreferences_Player_InteractiveFrameTracker;
 
             // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
             lblImageFormat.Text = RootLang.dlgPreferences_Player_lblImageFormat;
             cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatAuto);
             cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatForce43);
             cmbImageFormats.Items.Add(ScreenManagerLang.mnuFormatForce169);
+            
+            chkDeinterlace.Text = RootLang.dlgPreferences_Player_DeinterlaceByDefault;
+
+            chkDetectImageSequences.Checked = detectImageSequences;
+            chkLockSpeeds.Checked = syncLockSpeeds;
+            chkInteractiveTracker.Checked = interactiveFrameTracker;
+            SelectCurrentImageFormat();
+            chkDeinterlace.Checked = deinterlaceByDefault;
         }
 
-        private void InitTabUnits()
+        private void InitPageUnits()
         {
             // enum Kinovea.Services.TimecodeFormat.
             tabUnits.Text = RootLang.dlgPreferences_Player_tabUnits;
@@ -189,27 +194,20 @@ namespace Kinovea.Root
             cmbAngularAccelerationUnit.Items.Add(String.Format(RootLang.dlgPreferences_Player_UnitsRadiansPerSecondSquared, UnitHelper.AngularAccelerationAbbreviation(AngularAccelerationUnit.RadiansPerSecondSquared)));
 
             lblCustomLength.Text = RootLang.dlgPreferences_Player_UnitsCustom;
+
+            SelectCurrentUnits();
         }
 
-        private void InitTabMemory()
+        private void InitPageMemory()
         {
-            // Memory tab
             tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
-            grpSwitchToAnalysis.Text = RootLang.dlgPreferences_Player_GroupAnalysisMode;
-            lblWorkingZoneLogic.Text = RootLang.dlgPreferences_Player_lblLogicAnd;
 
-            // Fill in initial values.            
-            chkDeinterlace.Checked = deinterlaceByDefault;
-            chkDetectImageSequences.Checked = detectImageSequences;
-            chkLockSpeeds.Checked = syncLockSpeeds;
-            chkInteractiveTracker.Checked = interactiveFrameTracker;
-            SelectCurrentUnits();
-            SelectCurrentImageFormat();
+            int maxMemoryBuffer = MemoryHelper.MaxMemoryBuffer();
+            trkMemoryBuffer.Maximum = maxMemoryBuffer;
 
-            trkWorkingZoneSeconds.Value = workingZoneSeconds;
-            lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
-            trkWorkingZoneMemory.Value = workingZoneMemory;
-            lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneMemory, trkWorkingZoneMemory.Value);
+            memoryBuffer = Math.Min(memoryBuffer, trkMemoryBuffer.Maximum);
+            trkMemoryBuffer.Value = memoryBuffer;
+            UpdateMemoryLabel();
         }
 
         private void SelectCurrentUnits()
@@ -297,15 +295,15 @@ namespace Kinovea.Root
         {
             angularAccelerationUnit = (AngularAccelerationUnit)cmbAngularAccelerationUnit.SelectedIndex;
         }
-        private void trkWorkingZoneSeconds_ValueChanged(object sender, EventArgs e)
-        {
-            lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
-            workingZoneSeconds = trkWorkingZoneSeconds.Value;
-        }
         private void trkWorkingZoneMemory_ValueChanged(object sender, EventArgs e)
         {
-            lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneMemory, trkWorkingZoneMemory.Value);
-            workingZoneMemory = trkWorkingZoneMemory.Value;
+            memoryBuffer = trkMemoryBuffer.Value;
+            UpdateMemoryLabel();
+        }
+        private void UpdateMemoryLabel()
+        {
+            lblWorkingZoneMemory.Text = string.Format("Memory allocated for buffers: {0} MB.", memoryBuffer);
+            //lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneMemory, memoryBuffer);
         }
         private void tbCustomLengthUnit_TextChanged(object sender, EventArgs e)
         {
@@ -330,8 +328,7 @@ namespace Kinovea.Root
             PreferencesManager.PlayerPreferences.AngleUnit = angleUnit;
             PreferencesManager.PlayerPreferences.AngularVelocityUnit = angularVelocityUnit;
             PreferencesManager.PlayerPreferences.AngularAccelerationUnit = angularAccelerationUnit;
-            PreferencesManager.PlayerPreferences.WorkingZoneSeconds = workingZoneSeconds;
-            PreferencesManager.PlayerPreferences.WorkingZoneMemory = workingZoneMemory;
+            PreferencesManager.PlayerPreferences.WorkingZoneMemory = memoryBuffer;
 
             // Special case for the custom unit length.
             if (customLengthUnit == RootLang.dlgPreferences_Player_TrackingPercentage)

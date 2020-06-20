@@ -702,7 +702,7 @@ namespace Kinovea.ScreenManager
                 StopPlaying();
                 OnPauseAsked();
                 VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
-                m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, PreferencesManager.PlayerPreferences.WorkingZoneSeconds, PreferencesManager.PlayerPreferences.WorkingZoneMemory, ProgressWorker);
+                m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, PreferencesManager.PlayerPreferences.WorkingZoneMemory, ProgressWorker);
                 ResizeUpdate(true);
             }
 

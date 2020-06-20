@@ -215,6 +215,7 @@
       <DependentUpon>BenchmarkReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Diagnostics\FrequencyCounter.cs" />
+    <Compile Include="Diagnostics\MemoryHelper.cs" />
     <Compile Include="Diagnostics\WMI\LogicalDisk.cs" />
     <Compile Include="Diagnostics\WMI\DriveType.cs" />
     <Compile Include="Diagnostics\IBenchmarkCounter.cs" />

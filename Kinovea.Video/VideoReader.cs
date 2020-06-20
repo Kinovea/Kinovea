@@ -157,7 +157,7 @@ namespace Kinovea.Video
         /// Updates the internal working zone. Import whole zone to cache if possible.
         /// </summary>
         /// <param name="_workerFn">A function that will start a background thread for the actual import</param>
-        public abstract void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn);
+        public abstract void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxMemory, Action<DoWorkEventHandler> _workerFn);
         
         #region Move playhead
         public bool MovePrev()
