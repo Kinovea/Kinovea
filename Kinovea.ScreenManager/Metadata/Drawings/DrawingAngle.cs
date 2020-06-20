@@ -133,7 +133,6 @@ namespace Kinovea.ScreenManager
 
             styleHelper.Bicolor = new Bicolor(Color.Empty);
             styleHelper.Font = new Font("Arial", 12, FontStyle.Bold);
-
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Angle");
 
@@ -450,10 +449,12 @@ namespace Kinovea.ScreenManager
         {
             DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Angle"));
             style.Bind(styleHelper, "Bicolor", "line color");
+            style.Bind(styleHelper, "Font", "font size");
         }
         private void ComputeValues(IImageToViewportTransformer transformer)
         {
             FixIfNull(transformer);
+            angleHelper.UpdateTextDistance(styleHelper.Font.Size / 12.0f);
             angleHelper.Update(points["o"], points["a"], points["b"], signedAngle, counterClockwise, supplementaryAngle, CalibrationHelper);
         }
         private void FixIfNull(IImageToViewportTransformer transformer)

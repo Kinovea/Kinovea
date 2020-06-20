@@ -45,10 +45,11 @@ namespace Kinovea.ScreenManager
         private int radius;
         private bool tenth;
         private string symbol;
+        private static readonly int defaultTextDistance = 40;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public AngleHelper() :
-            this(40, 0, false, "")
+            this(defaultTextDistance, 0, false, "")
         {
         }
 
@@ -159,6 +160,11 @@ namespace Kinovea.ScreenManager
             y -= (labelSize.Height/2);
 
             return new PointF((float)x, (float)y);
+        }
+    
+        public void UpdateTextDistance(float factor)
+        {
+            this.textDistance = (int)(defaultTextDistance * factor);
         }
     }
 }
