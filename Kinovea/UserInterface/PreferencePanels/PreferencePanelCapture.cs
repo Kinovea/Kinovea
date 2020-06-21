@@ -453,7 +453,11 @@ namespace Kinovea.Root
 
         private void UpdateMemoryLabel()
         {
-            lblMemoryBuffer.Text = String.Format(RootLang.dlgPreferences_Capture_lblMemoryBuffer, trkMemoryBuffer.Value);
+            var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+            nfi.NumberGroupSeparator = " ";
+            string formatted = memoryBuffer.ToString("#,0", nfi);
+
+            lblMemoryBuffer.Text = String.Format(RootLang.dlgPreferences_Capture_lblMemoryBuffer, formatted);
         }
         #endregion
 

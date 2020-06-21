@@ -30,6 +30,7 @@ using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Kinovea.Root
 {
@@ -302,7 +303,11 @@ namespace Kinovea.Root
         }
         private void UpdateMemoryLabel()
         {
-            lblWorkingZoneMemory.Text = string.Format("Memory allocated for buffers: {0} MB.", memoryBuffer);
+            var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+            nfi.NumberGroupSeparator = " ";
+            string formatted = memoryBuffer.ToString("#,0", nfi);
+
+            lblWorkingZoneMemory.Text = string.Format("Buffer memory allocated for each playback screen: {0} MB.", formatted);
             //lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_Player_lblWorkingZoneMemory, memoryBuffer);
         }
         private void tbCustomLengthUnit_TextChanged(object sender, EventArgs e)
