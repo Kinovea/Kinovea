@@ -62,7 +62,12 @@ namespace Kinovea.ScreenManager
 
             // Custom tools (externally defined).
             foreach (AbstractDrawingTool customTool in GenericPostureManager.Tools)
-                tools.Add(customTool.Name, customTool);
+            {
+                if (tools.ContainsKey(customTool.Name))
+                    tools[customTool.Name] = customTool;
+                else
+                    tools.Add(customTool.Name, customTool);
+            }
             
             // Standard tools externally defined.
             ImportExternalTools();
