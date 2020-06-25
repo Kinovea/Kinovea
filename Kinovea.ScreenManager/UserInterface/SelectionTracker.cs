@@ -420,8 +420,8 @@ namespace Kinovea.ScreenManager
         private int GetCoordFromTimestamp(long _ts)
         {
             // Take any timestamp and convert it into a pixel coord.
-            int iret = m_iMinimumPixel + Rescale(_ts - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidthPixel);
-            return iret;
+            int ret = m_iMinimumPixel + (int)Rescale(_ts - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidthPixel);
+            return ret;
         }
         private long GetTimestampFromCoord(int _posPixel)
         {
@@ -430,9 +430,11 @@ namespace Kinovea.ScreenManager
             long ret = m_iMinimum + Rescale(_posPixel - m_iMinimumPixel, m_iMaxWidthPixel, m_iMaximum - m_iMinimum);
             return ret;
         }
-        private int Rescale(long _iOldValue, long _iOldMax, long _iNewMax)
+        private long Rescale(long oldValue, long oldMax, long newMax)
         {
-            return (int)(Math.Round((double)((double)_iOldValue * (double)_iNewMax) / (double)_iOldMax));
+            double normalized = (double)oldValue / oldMax;
+            double newValue = normalized * newMax;
+            return (long)(Math.Round(newValue));
         }
         #endregion 
     }
